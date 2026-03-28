@@ -1,0 +1,326 @@
+<!-- SLIDE_META {"title":"Archive & Database","default":"visible","tags":["linescanner","archive"]} -->
+<div class="slide content ls10" style="justify-content:flex-start; align-items:center; padding:52px 80px 0;">
+  <div class="slide-logo-row"><img src="assets/LOGO SoftSolution grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="assets/logo-litesentry.png" alt="LiteSentry" class="slide-logo-ls"></div>
+
+  <div class="section-label">Traceability &amp; Management</div>
+  <h1 class="slide-title" style="margin-bottom:10px;">Decisions based on <span class="blue">real data</span></h1>
+
+  <!-- ── Tabs ── -->
+  <div class="ls10-tabs">
+    <button class="ls10-tab active" data-tab="archive" onclick="ls10Switch('archive')">Archive</button>
+    <button class="ls10-tab"        data-tab="console" onclick="ls10Switch('console')">Management Console</button>
+  </div>
+
+  <!-- ── Carousel ── -->
+  <div class="ls10-carousel anim-in">
+    <button class="ls10-arrow ls10-prev" id="ls10-prev" disabled>‹</button>
+    <div class="ls10-viewport" id="ls10-viewport" data-pe-carousel=""></div>
+    <button class="ls10-arrow ls10-next" id="ls10-next">›</button>
+    <div class="ls10-counter" id="ls10-counter"></div>
+  </div>
+
+  <!-- ── Feature cards: Archive ── -->
+  <div class="ls10-cards" id="ls10-cards-archive" style="display:grid;">
+    <div class="col-card">
+      <div class="col-list">
+        <div class="col-item"><strong>Accept data</strong> from LineScanner and Osprey</div>
+        <div class="col-item"><strong>Lookup</strong> specific glasses/scans incl. staff evaluation</div>
+        <div class="col-item"><strong>Combine</strong> individual ERP data</div>
+      </div>
+    </div>
+    <div class="col-card">
+      <div class="col-list">
+        <div class="col-item"><strong>Print certificates</strong> per glass / scan</div>
+        <div class="col-item"><strong>Auto reporting</strong> based on schedules</div>
+        <div class="col-item"><strong>Individual statistics</strong> to minimize critical workflows</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Feature cards: Management Console ── -->
+  <div class="ls10-cards" id="ls10-cards-console" style="display:none;">
+    <div class="col-card">
+      <div class="col-list">
+        <div class="col-item"><strong>Live View</strong> — real-time production monitoring</div>
+        <div class="col-item"><strong>Alerts</strong> — by quantity, good/bad ratio, flexible periods</div>
+      </div>
+    </div>
+    <div class="col-card">
+      <div class="col-list">
+        <div class="col-item"><strong>Multiple recipients</strong> per alert rule</div>
+        <div class="col-item"><strong>Central settings</strong> — manage all LineScanner units from one place</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Fullscreen lightbox ── -->
+  <div class="ls10-lb" id="ls10-lb" onclick="ls10LbClose()">
+    <div class="ls10-lb-inner" onclick="event.stopPropagation()">
+      <button class="ls10-lb-close" onclick="ls10LbClose()">×</button>
+      <button class="ls10-lb-arr ls10-lb-prev" id="ls10-lb-prev" onclick="ls10LbNav(-1)">‹</button>
+      <div class="ls10-lb-stage">
+        <img id="ls10-lb-img" src="" alt="">
+        <div id="ls10-lb-cap" class="ls10-lb-cap"></div>
+      </div>
+      <button class="ls10-lb-arr ls10-lb-next" id="ls10-lb-next" onclick="ls10LbNav(1)">›</button>
+      <div class="ls10-lb-thumbs" id="ls10-lb-thumbs"></div>
+    </div>
+  </div>
+
+  <!-- ── Scoped Styles ── -->
+  <style>
+    .ls10 { height: 100%; }
+
+    /* ── Tabs ── */
+    .ls10-tabs { flex-shrink: 0; display: flex; gap: 8px; margin-bottom: 10px; }
+    .ls10-tab {
+      padding: 6px 20px; border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--bg-card); color: var(--text-muted);
+      font-size: 12px; font-weight: 600; font-family: inherit;
+      cursor: pointer; transition: all .2s; letter-spacing: .02em;
+    }
+    .ls10-tab:hover { border-color: #E8711A; color: #E8711A; }
+    .ls10-tab.active { background: rgba(232,113,26,.15); border-color: #E8711A; color: #E8711A; }
+
+    /* ── Carousel ── */
+    .ls10-carousel {
+      flex: 1; min-height: 0;
+      width: 100%; max-width: 860px;
+      position: relative; display: flex; align-items: center;
+    }
+    .ls10-viewport {
+      flex: 1; height: 100%; min-width: 0;
+      position: relative; overflow: hidden;
+      border-radius: 14px; background: #000;
+      border: 1px solid var(--border);
+    }
+    .ls10-slide {
+      position: absolute; inset: 0;
+      display: none; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .ls10-slide.active { display: flex; }
+    .ls10-slide img {
+      flex: 1; min-height: 0;
+      width: 100%; object-fit: contain;
+      cursor: zoom-in; border-radius: 8px;
+      transition: opacity .2s;
+    }
+    .ls10-slide img:hover { opacity: .85; }
+    .ls10-caption {
+      flex-shrink: 0; padding: 6px 0 4px;
+      font-size: 11px; color: var(--text-muted); letter-spacing: .04em;
+    }
+    .ls10-arrow {
+      width: 34px; height: 34px; flex-shrink: 0;
+      border-radius: 50%; border: 1px solid var(--border);
+      background: var(--bg-card); color: var(--text);
+      font-size: 22px; line-height: 1; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s; font-family: inherit; padding: 0; margin: 0 6px;
+    }
+    .ls10-arrow:hover { background: rgba(232,113,26,.15); border-color: #E8711A; color: #E8711A; }
+    .ls10-arrow:disabled { opacity: .2; pointer-events: none; }
+    .ls10-counter {
+      position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+      font-size: 11px; font-weight: 600; color: var(--text-muted); letter-spacing: .06em;
+    }
+
+    /* ── Feature cards ── */
+    .ls10-cards {
+      flex-shrink: 0;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+      width: 100%; max-width: 860px;
+      margin-top: 12px;
+    }
+
+    /* ── Lightbox ── */
+    .ls10-lb {
+      display: none; position: fixed; inset: 0; z-index: 9950;
+      background: rgba(0,0,0,.9); backdrop-filter: blur(14px);
+      align-items: center; justify-content: center;
+    }
+    .ls10-lb.open { display: flex; }
+    .ls10-lb-inner {
+      position: relative; width: 90vw; max-width: 1000px;
+      height: 82vh; display: flex; flex-direction: column; align-items: center;
+    }
+    .ls10-lb-close {
+      position: absolute; top: -14px; right: -14px; z-index: 2;
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+      color: #fff; font-size: 20px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s; font-family: inherit; line-height: 1;
+    }
+    .ls10-lb-close:hover { background: rgba(255,255,255,.25); }
+    .ls10-lb-stage {
+      flex: 1; min-height: 0; width: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .ls10-lb-stage img {
+      max-width: 100%; max-height: calc(100% - 36px); object-fit: contain; border-radius: 10px;
+    }
+    .ls10-lb-cap {
+      flex-shrink: 0; padding: 10px 0 4px;
+      font-size: 12px; color: rgba(255,255,255,.5); letter-spacing: .04em; text-align: center;
+    }
+    .ls10-lb-arr {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 42px; height: 42px; border-radius: 50%;
+      background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.2);
+      color: #fff; font-size: 26px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s; font-family: inherit; z-index: 2; line-height: 1;
+    }
+    .ls10-lb-prev { left: -58px; }
+    .ls10-lb-next { right: -58px; }
+    .ls10-lb-arr:hover  { background: rgba(232,113,26,.4); border-color: #E8711A; }
+    .ls10-lb-arr:disabled { opacity: .2; pointer-events: none; }
+    .ls10-lb-thumbs {
+      flex-shrink: 0; display: flex; gap: 8px; padding: 10px 0 4px; justify-content: center;
+    }
+    .ls10-lb-thumb {
+      width: 56px; height: 38px; border-radius: 6px; overflow: hidden;
+      cursor: pointer; opacity: .4; transition: opacity .2s, outline .2s;
+      outline: 2px solid transparent; flex-shrink: 0;
+    }
+    .ls10-lb-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .ls10-lb-thumb.active { opacity: 1; outline-color: #E8711A; }
+    .ls10-lb-thumb:hover { opacity: .75; }
+  </style>
+
+  <!-- ── Scoped Script ── -->
+  <script>
+  (function () {
+
+    var TABS = {
+      archive: [
+        { src: 'assets/image101.png', caption: 'Archive — full traceability database' },
+        { src: 'assets/image104.png', caption: 'GlassIQ Archive — scan detail' }
+      ],
+      console: [
+        { src: 'assets/Slide43.jpg',  caption: 'Management Console — all controlled by one' },
+        { src: 'assets/image108.png', caption: 'Management Console — production dashboard' },
+        { src: 'assets/Slide44.jpg',  caption: 'Mobile alerts — notifications & thresholds per line' },
+        { src: 'assets/Slide46.jpg',  caption: 'Central settings — all LineScanner units in the group' }
+      ]
+    };
+
+    var activeTab = 'archive';
+    var current   = 0;
+    var lbIdx     = 0;
+
+    var viewport = document.getElementById('ls10-viewport');
+    var prevBtn  = document.getElementById('ls10-prev');
+    var nextBtn  = document.getElementById('ls10-next');
+    var counter  = document.getElementById('ls10-counter');
+    var lb       = document.getElementById('ls10-lb');
+    var lbImg    = document.getElementById('ls10-lb-img');
+    var lbCap    = document.getElementById('ls10-lb-cap');
+    var lbPrev   = document.getElementById('ls10-lb-prev');
+    var lbNext   = document.getElementById('ls10-lb-next');
+    var lbThumbs = document.getElementById('ls10-lb-thumbs');
+
+    function buildSlides(images) {
+      viewport.innerHTML = '';
+      images.forEach(function (img, i) {
+        var slide = document.createElement('div');
+        slide.className = 'ls10-slide' + (i === 0 ? ' active' : '');
+        var imgEl = document.createElement('img');
+        imgEl.src = img.src; imgEl.alt = img.caption || '';
+        imgEl.addEventListener('click', function () { lbOpen(i); });
+        slide.appendChild(imgEl);
+        if (img.caption) {
+          var cap = document.createElement('div');
+          cap.className = 'ls10-caption'; cap.textContent = img.caption;
+          slide.appendChild(cap);
+        }
+        viewport.appendChild(slide);
+      });
+    }
+
+    function buildThumbs(images) {
+      lbThumbs.innerHTML = '';
+      images.forEach(function (img, i) {
+        var t = document.createElement('div');
+        t.className = 'ls10-lb-thumb';
+        var ti = document.createElement('img'); ti.src = img.src; ti.alt = '';
+        t.appendChild(ti);
+        t.addEventListener('click', function () { lbIdx = i; lbRender(); });
+        lbThumbs.appendChild(t);
+      });
+    }
+
+    function render() {
+      var images = TABS[activeTab];
+      counter.textContent = images.length > 1 ? (current + 1) + ' / ' + images.length : '';
+      prevBtn.disabled = current <= 0;
+      nextBtn.disabled = current >= images.length - 1;
+      viewport.querySelectorAll('.ls10-slide').forEach(function (s, i) {
+        s.classList.toggle('active', i === current);
+      });
+    }
+
+    window.ls10Switch = function (tabKey) {
+      if (tabKey === activeTab) return;
+      activeTab = tabKey; current = 0;
+      document.querySelectorAll('.ls10-tab').forEach(function (btn) {
+        btn.classList.toggle('active', btn.dataset.tab === tabKey);
+      });
+      buildSlides(TABS[tabKey]);
+      buildThumbs(TABS[tabKey]);
+      document.getElementById('ls10-cards-archive').style.display = tabKey === 'archive' ? 'grid' : 'none';
+      document.getElementById('ls10-cards-console').style.display = tabKey === 'console' ? 'grid' : 'none';
+      render();
+    };
+
+    viewport._peAddImage = function (src, caption) {
+      TABS[activeTab].push({ src: src, caption: caption });
+      buildSlides(TABS[activeTab]);
+      buildThumbs(TABS[activeTab]);
+      current = TABS[activeTab].length - 1;
+      render();
+    };
+
+    prevBtn.addEventListener('click', function () { if (current > 0) { current--; render(); } });
+    nextBtn.addEventListener('click', function () { if (current < TABS[activeTab].length - 1) { current++; render(); } });
+
+    buildSlides(TABS.archive);
+    buildThumbs(TABS.archive);
+    render();
+
+    function lbOpen(idx) { lbIdx = idx; lb.classList.add('open'); lbRender(); }
+    function lbRender() {
+      var images = TABS[activeTab];
+      lbImg.src = images[lbIdx].src;
+      lbCap.textContent = images[lbIdx].caption || '';
+      lbPrev.disabled = lbIdx <= 0;
+      lbNext.disabled = lbIdx >= images.length - 1;
+      lbThumbs.querySelectorAll('.ls10-lb-thumb').forEach(function (t, i) {
+        t.classList.toggle('active', i === lbIdx);
+      });
+    }
+
+    window.ls10LbClose = function () { lb.classList.remove('open'); };
+    window.ls10LbNav   = function (d) {
+      var n = lbIdx + d;
+      if (n >= 0 && n < TABS[activeTab].length) { lbIdx = n; lbRender(); }
+    };
+
+    document.addEventListener('keydown', function (e) {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'ArrowLeft')  ls10LbNav(-1);
+      if (e.key === 'ArrowRight') ls10LbNav(1);
+      if (e.key === 'Escape')     ls10LbClose();
+    });
+
+  })();
+  </script>
+
+  <script>
+  (function () { var s = document.currentScript;
+    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
+  </script>
+</div>

@@ -1,0 +1,51 @@
+/*
+  Theme: Starglass Spain
+  Brand: Starglass S.A. · #1E22AA navy blue
+  Default mode: dark
+  Usage: Add this inside <style> before _base.css, then set <body class="dark"> as default.
+*/
+
+/* ── Light mode defaults ── */
+:root {
+  --bg:             #ffffff;
+  --bg-card:        rgba(30,34,170,.05);
+  --bg-card-hover:  rgba(30,34,170,.10);
+  --text:           #0a0e2e;
+  --text-muted:     rgba(10,14,46,.50);
+  --border:         rgba(30,34,170,.10);
+  --border-hover:   rgba(74,90,232,.40);
+  --accent:         #1E22AA;
+  --accent-mid:     #4A5AE8;
+  --accent-light:   #7B8FF8;
+  --accent-rgb:     30,34,170;
+  --nav-bg:         rgba(255,255,255,.75);
+  --nav-border:     rgba(30,34,170,.10);
+  --dot-inactive:   rgba(30,34,170,.20);
+  --scrollbar:      rgba(74,90,232,.30);
+  --counter:        #bbb;
+  --orb-a:          rgba(74,90,232,.08);
+  --orb-b:          rgba(30,34,170,.06);
+}
+
+/* ── Dark mode overrides ── */
+/* Note: accent is lightened to #5B6CF0 so it's visible on the dark bg */
+body.dark {
+  --bg:             #070B1A;
+  --bg-card:        rgba(255,255,255,.04);
+  --bg-card-hover:  rgba(91,108,240,.09);
+  --text:           #f0f0f0;
+  --text-muted:     rgba(240,240,240,.45);
+  --border:         rgba(255,255,255,.08);
+  --border-hover:   rgba(91,108,240,.50);
+  --accent:         #5B6CF0;
+  --accent-mid:     #7B8FF8;
+  --accent-light:   #A8B4FF;
+  --accent-rgb:     91,108,240;
+  --nav-bg:         rgba(7,11,26,.65);
+  --nav-border:     rgba(255,255,255,.07);
+  --dot-inactive:   rgba(255,255,255,.20);
+  --scrollbar:      rgba(91,108,240,.30);
+  --counter:        #333;
+  --orb-a:          rgba(91,108,240,.10);
+  --orb-b:          rgba(30,34,170,.07);
+}

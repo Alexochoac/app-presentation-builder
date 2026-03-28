@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Component Library · Softsolution Slides</title>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js"></script>
+<style>
+/* ─── Brand variables (same as slides) ─── */
+:root {
+  --accent:       #F5A623;
+  --accent-mid:   #E8890C;
+  --accent-light: #FFD27F;
+  --accent-rgb:   245,166,35;
+  --text:         #fff;
+  --text-muted:   #aaa;
+  --border:       rgba(255,255,255,.07);
+  --border-hover: rgba(245,166,35,.32);
+  --bg-card:      rgba(255,255,255,.03);
+  --bg-card-hover:rgba(245,166,35,.06);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;
+  background:#111; color:var(--text);
+  display:flex; height:100vh; overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  width:220px; flex-shrink:0;
+  background:#0a0a0a; border-right:1px solid var(--border);
+  display:flex; flex-direction:column;
+  overflow:hidden;
+}
+.sidebar-top {
+  padding:20px 16px 14px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.sidebar-brand { font-size:10px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); }
+.sidebar-title { font-size:13px; font-weight:700; color:var(--text); margin-top:2px; }
+
+.sidebar-list { overflow-y:auto; flex:1; padding:8px 0 20px; }
+.sidebar-list::-webkit-scrollbar { width:3px; }
+.sidebar-list::-webkit-scrollbar-thumb { background:rgba(255,255,255,.08); border-radius:2px; }
+
+.group-label {
+  font-size:9px; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
+  color:rgba(255,255,255,.2); padding:16px 16px 4px;
+}
+.nav-btn {
+  display:block; width:100%; text-align:left;
+  padding:8px 16px; background:none; border:none;
+  font-size:13px; color:var(--text-muted); font-family:inherit;
+  cursor:pointer; border-left:2px solid transparent;
+  transition:all .15s;
+}
+.nav-btn:hover { color:var(--text); background:rgba(255,255,255,.02); }
+.nav-btn.active { color:var(--accent); border-left-color:var(--accent); background:rgba(245,166,35,.04); }
+
+/* ─── MAIN ─── */
+.main {
+  flex:1; display:flex; flex-direction:column; overflow:hidden;
+}
+
+/* ─── TOP BAR ─── */
+.topbar {
+  height:52px; flex-shrink:0;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 28px;
+  background:#0d0d0d;
+}
+.comp-title { font-size:15px; font-weight:700; color:var(--text); }
+.comp-hint  { font-size:12px; color:rgba(255,255,255,.3); margin-left:12px; }
+.topbar-right { display:flex; gap:10px; align-items:center; }
+
+.btn {
+  padding:6px 16px; border-radius:100px; cursor:pointer;
+  font-size:11px; font-weight:700; letter-spacing:.06em; font-family:inherit;
+  transition:all .2s;
+}
+.btn-ghost {
+  background:rgba(255,255,255,.04); border:1px solid var(--border); color:var(--text-muted);
+}
+.btn-ghost:hover { background:rgba(255,255,255,.08); color:var(--text); }
+.btn-accent {
+  background:rgba(var(--accent-rgb),.1); border:1px solid rgba(var(--accent-rgb),.25); color:var(--accent);
+}
+.btn-accent:hover { background:rgba(var(--accent-rgb),.2); border-color:rgba(var(--accent-rgb),.5); }
+.btn-accent.copied { background:rgba(52,199,89,.12); border-color:rgba(52,199,89,.3); color:#34c759; }
+.alpine-tag {
+  font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+  color:rgba(245,166,35,.45); background:rgba(245,166,35,.06);
+  border:1px solid rgba(245,166,35,.12); border-radius:100px; padding:3px 10px;
+}
+
+/* ─── CANVAS AREA ─── */
+.canvas-area {
+  flex:1; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+  padding:32px;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 32px,
+    rgba(255,255,255,.015) 32px, rgba(255,255,255,.015) 33px
+  ),
+  repeating-linear-gradient(
+    90deg, transparent, transparent 32px,
+    rgba(255,255,255,.015) 32px, rgba(255,255,255,.015) 33px
+  );
+}
+
+/* The slide-shaped canvas */
+.slide-canvas {
+  width:100%; max-width:960px;
+  aspect-ratio:16/9;
+  background:radial-gradient(ellipse at center, #0d0d0d 0%, #000 100%);
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 40px 120px rgba(0,0,0,.8);
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:40px 48px;
+  position:relative; overflow:hidden;
+  flex-shrink:0;
+}
+
+/* Glow orbs (same as real slides) */
+.slide-canvas::before {
+  content:''; position:absolute; width:400px; height:400px;
+  border-radius:50%; filter:blur(100px); pointer-events:none;
+  background:radial-gradient(circle, rgba(245,166,35,.07) 0%, transparent 70%);
+  right:-150px; bottom:-150px;
+}
+
+/* Logo row (always in canvas) */
+.slide-logo-row {
+  position:absolute; top:14px; left:20px;
+  display:flex; align-items:center; gap:8px;
+}
+.logo-pill {
+  font-size:8px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+  color:rgba(255,255,255,.3); background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.07); border-radius:100px; padding:3px 10px;
+}
+.logo-sep { width:1px; height:16px; background:rgba(255,255,255,.1); }
+
+/* ─── CODE DRAWER ─── */
+.code-drawer {
+  flex-shrink:0;
+  border-top:1px solid var(--border);
+  background:#0a0a0a;
+  max-height:180px; overflow-y:auto;
+}
+.code-drawer pre {
+  padding:16px 28px;
+  font-family:'SF Mono','Fira Code',monospace;
+  font-size:12px; line-height:1.75;
+  color:rgba(255,255,255,.45);
+  white-space:pre-wrap; word-break:break-word;
+}
+.code-drawer::-webkit-scrollbar { width:4px; }
+.code-drawer::-webkit-scrollbar-thumb { background:rgba(255,255,255,.1); border-radius:2px; }
+
+/* ════════════════════════════════════
+   COMPONENT STYLES  (same as slides)
+════════════════════════════════════ */
+.section-label { font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin-bottom:10px; text-align:center; }
+.divider { width:32px; height:3px; background:linear-gradient(90deg,var(--accent),var(--accent-light)); border-radius:2px; margin:0 auto 20px; }
+h1.slide-title {
+  font-size:clamp(20px,3.5vw,44px); font-weight:700; letter-spacing:-.02em; line-height:1.1; margin-bottom:8px;
+  background:linear-gradient(180deg,#fff 0%,#aaa 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; text-align:center;
+}
+.slide-subtitle { font-size:clamp(11px,1.3vw,15px); color:var(--text-muted); text-align:center; line-height:1.6; max-width:600px; }
+.blue,.amber { background:linear-gradient(90deg,#F5A623 0%,#FFD27F 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; display:inline-block; }
+
+.badge { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:100px; font-size:11px; font-weight:700; letter-spacing:.05em; }
+.badge-primary { background:rgba(6,182,212,.15); color:#22d3ee; border:1px solid rgba(6,182,212,.25); }
+.badge-success { background:rgba(34,197,94,.15);  color:#4ade80; border:1px solid rgba(34,197,94,.25); }
+.badge-danger  { background:rgba(239,68,68,.15);  color:#f87171; border:1px solid rgba(239,68,68,.25); }
+.badge-warning { background:rgba(245,158,11,.15); color:#fbbf24; border:1px solid rgba(245,158,11,.25); }
+.badge-accent  { background:rgba(var(--accent-rgb),.12); color:var(--accent); border:1px solid rgba(var(--accent-rgb),.3); }
+
+.tag-grid { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+.tag { font-size:12px; font-weight:700; padding:7px 16px; border-radius:100px; background:rgba(var(--accent-rgb),.10); border:1px solid rgba(var(--accent-rgb),.22); color:var(--accent); cursor:default; }
+.tag.ok    { background:rgba(52,199,89,.10);   border-color:rgba(52,199,89,.22);   color:#34c759; }
+.tag.error { background:rgba(248,113,113,.10); border-color:rgba(248,113,113,.22); color:#f87171; }
+.tag.warn  { background:rgba(245,166,35,.10);  border-color:rgba(245,166,35,.22);  color:#f5a623; }
+
+.kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; width:100%; max-width:800px; }
+.kpi-card { background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:20px 12px; text-align:center; }
+.kpi-card:hover { background:var(--bg-card-hover); border-color:var(--border-hover); }
+.kpi-value { font-size:clamp(22px,2.8vw,38px); font-weight:900; line-height:1; margin-bottom:6px; background:linear-gradient(135deg,var(--accent),var(--accent-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.kpi-label { font-size:11px; color:var(--text-muted); font-weight:600; line-height:1.4; }
+
+.cards-row { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; width:100%; max-width:860px; }
+.card { background:var(--bg-card); border:1px solid var(--border); border-radius:16px; padding:22px 18px; }
+.card:hover { background:var(--bg-card-hover); border-color:var(--border-hover); }
+.card-icon { width:36px; height:36px; background:linear-gradient(135deg,var(--accent),var(--accent-mid)); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; margin-bottom:12px; }
+.card-title { font-size:14px; font-weight:700; color:var(--text); margin-bottom:6px; }
+.card-desc  { font-size:12px; color:var(--text-muted); line-height:1.6; }
+
+.feature-list { display:flex; flex-direction:column; gap:8px; width:100%; max-width:700px; }
+.feature-item { display:flex; align-items:flex-start; gap:12px; background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; }
+.feature-num { min-width:24px; height:24px; background:linear-gradient(135deg,var(--accent),var(--accent-mid)); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#000; flex-shrink:0; margin-top:1px; }
+.feature-text { font-size:13px; color:var(--text-muted); line-height:1.6; }
+.feature-text strong { color:var(--text); }
+
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:18px; width:100%; max-width:820px; }
+.col-card { background:var(--bg-card); border:1px solid var(--border); border-radius:16px; padding:22px 20px; }
+.col-label { font-size:10px; font-weight:700; letter-spacing:.10em; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.col-list { display:flex; flex-direction:column; gap:8px; }
+.col-item { display:flex; align-items:flex-start; gap:8px; font-size:13px; color:var(--text-muted); line-height:1.5; }
+.col-item::before { content:'›'; color:var(--accent); font-weight:700; font-size:15px; line-height:1.3; flex-shrink:0; }
+.col-item strong { color:var(--text); }
+
+.comparison-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; width:100%; max-width:820px; }
+.comparison-card { border-radius:16px; padding:22px 20px; }
+.comparison-old { background:rgba(239,68,68,.04); border:1px solid rgba(239,68,68,.2); }
+.comparison-new { background:rgba(34,197,94,.04); border:2px solid rgba(34,197,94,.35); }
+.comp-label { font-size:10px; font-weight:700; letter-spacing:.10em; text-transform:uppercase; margin-bottom:12px; }
+.comp-label.red   { color:#f87171; }
+.comp-label.green { color:#4ade80; }
+
+.integration-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; width:100%; max-width:720px; }
+.int-card { background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:16px 12px; text-align:center; }
+.int-card:hover { background:var(--bg-card-hover); border-color:var(--border-hover); }
+.int-name { font-size:14px; font-weight:700; }
+.int-type { font-size:10px; color:var(--text-muted); margin-top:3px; }
+
+.cta-box { background:linear-gradient(135deg,rgba(var(--accent-rgb),.10),rgba(var(--accent-rgb),.03)); border:1px solid rgba(var(--accent-rgb),.22); border-radius:20px; padding:30px 36px; text-align:center; max-width:580px; }
+.cta-box p { font-size:13px; color:var(--text-muted); line-height:1.85; }
+.cta-box strong { color:var(--text); }
+.cta-steps { display:flex; flex-direction:column; gap:8px; margin:14px 0; text-align:left; }
+.cta-step { display:flex; align-items:center; gap:10px; font-size:13px; color:var(--text-muted); }
+.step-num { min-width:22px; height:22px; background:linear-gradient(135deg,var(--accent),var(--accent-mid)); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#000; flex-shrink:0; }
+
+.stat-number { font-size:clamp(48px,8vw,88px); font-weight:900; letter-spacing:-.03em; line-height:1; background:linear-gradient(135deg,var(--accent),var(--accent-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; display:block; text-align:center; }
+.stat-label { font-size:15px; color:var(--text-muted); margin-top:8px; font-weight:500; text-align:center; }
+
+.timeline { display:flex; flex-direction:column; width:100%; max-width:600px; }
+.timeline-item { display:flex; gap:16px; }
+.timeline-line { display:flex; flex-direction:column; align-items:center; }
+.timeline-dot { width:10px; height:10px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent-mid)); flex-shrink:0; margin-top:4px; }
+.timeline-connector { width:2px; flex:1; background:rgba(245,166,35,.2); margin:4px 0; min-height:20px; }
+.timeline-item:last-child .timeline-connector { display:none; }
+.timeline-content { padding-bottom:20px; }
+.timeline-title { font-size:14px; font-weight:700; margin-bottom:3px; }
+.timeline-desc  { font-size:12px; color:var(--text-muted); line-height:1.6; }
+
+.progress-row { display:flex; flex-direction:column; gap:14px; width:100%; max-width:580px; }
+.progress-label { display:flex; justify-content:space-between; font-size:11px; font-weight:600; color:var(--text-muted); margin-bottom:6px; }
+.progress-track { height:5px; background:rgba(255,255,255,.06); border-radius:100px; overflow:hidden; }
+.progress-fill  { height:100%; border-radius:100px; background:linear-gradient(90deg,var(--accent),var(--accent-light)); }
+
+.slide-split { display:grid; grid-template-columns:1fr 1fr; gap:24px; width:100%; max-width:860px; align-items:center; }
+.slide-split-text { display:flex; flex-direction:column; gap:8px; }
+.img-placeholder { width:100%; aspect-ratio:16/9; background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:11px; color:rgba(255,255,255,.2); font-weight:600; letter-spacing:.06em; }
+
+.accordion { width:100%; max-width:580px; display:flex; flex-direction:column; gap:6px; }
+.acc-item { background:var(--bg-card); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.acc-trigger { width:100%; display:flex; align-items:center; justify-content:space-between; padding:14px 16px; cursor:pointer; background:none; border:none; color:var(--text); font-size:13px; font-weight:600; font-family:inherit; text-align:left; }
+.acc-arrow { color:var(--accent); transition:transform .25s; }
+.acc-arrow.open { transform:rotate(180deg); }
+.acc-body { padding:0 16px 14px; font-size:12px; color:var(--text-muted); line-height:1.7; }
+
+.dropdown { position:relative; display:inline-block; }
+.dropdown-trigger { display:flex; align-items:center; gap:8px; padding:9px 16px; border-radius:10px; cursor:pointer; background:var(--bg-card); border:1px solid var(--border); color:var(--text); font-size:13px; font-weight:600; font-family:inherit; }
+.dropdown-menu { position:absolute; top:calc(100% + 5px); left:0; background:#111; border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:5px; min-width:180px; z-index:50; box-shadow:0 16px 50px rgba(0,0,0,.7); }
+.dropdown-item { padding:8px 12px; border-radius:7px; cursor:pointer; font-size:12px; color:var(--text-muted); }
+.dropdown-item:hover { background:rgba(var(--accent-rgb),.08); color:var(--text); }
+
+.tab-row { display:flex; gap:3px; background:rgba(255,255,255,.04); border:1px solid var(--border); border-radius:10px; padding:3px; width:fit-content; }
+.tab-btn { padding:7px 18px; border-radius:7px; border:none; cursor:pointer; font-size:12px; font-weight:600; font-family:inherit; background:transparent; color:var(--text-muted); }
+.tab-btn.active { background:rgba(var(--accent-rgb),.15); color:var(--accent); }
+.tab-content { margin-top:16px; font-size:13px; color:var(--text-muted); line-height:1.7; max-width:580px; text-align:center; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+.anim-in { animation:fadeUp .5s ease forwards; }
+</style>
+</head>
+
+<body x-data="{
+  active: 'blank',
+  showCode: false,
+  copied: false,
+  setActive(key) {
+    this.active = key;
+    this.showCode = false;
+    document.getElementById('code-block').textContent = window.CODES[key] || '';
+  },
+  toggleCode() {
+    document.getElementById('code-block').textContent = window.CODES[this.active] || '';
+    this.showCode = !this.showCode;
+  },
+  copyCode() {
+    const code = window.CODES[this.active] || '';
+    navigator.clipboard.writeText(code);
+    this.copied = true;
+    setTimeout(() => this.copied = false, 1500);
+  }
+}" x-init="document.getElementById('code-block').textContent = window.CODES[active] || ''">
+
+<!-- ════════════════ SIDEBAR ════════════════ -->
+<nav class="sidebar">
+  <div class="sidebar-top">
+    <div class="sidebar-brand">Softsolution</div>
+    <div class="sidebar-title">Component Library</div>
+  </div>
+  <div class="sidebar-list">
+
+    <div class="group-label">Start here</div>
+    <button class="nav-btn" :class="{active:active==='blank'}"    @click="setActive('blank')">📐 Blank slide</button>
+
+    <div class="group-label">Typography</div>
+    <button class="nav-btn" :class="{active:active==='header'}"   @click="setActive('header')">Section header</button>
+    <button class="nav-btn" :class="{active:active==='stat'}"      @click="setActive('stat')">Big stat</button>
+
+    <div class="group-label">Labels</div>
+    <button class="nav-btn" :class="{active:active==='badges'}"   @click="setActive('badges')">Badges</button>
+    <button class="nav-btn" :class="{active:active==='tags'}"     @click="setActive('tags')">Tags</button>
+
+    <div class="group-label">Cards</div>
+    <button class="nav-btn" :class="{active:active==='kpi'}"      @click="setActive('kpi')">KPI row</button>
+    <button class="nav-btn" :class="{active:active==='cards3'}"   @click="setActive('cards3')">3-col feature cards</button>
+    <button class="nav-btn" :class="{active:active==='intgrid'}"  @click="setActive('intgrid')">Integration grid</button>
+
+    <div class="group-label">Lists</div>
+    <button class="nav-btn" :class="{active:active==='flist'}"    @click="setActive('flist')">Numbered list</button>
+    <button class="nav-btn" :class="{active:active==='collist'}"  @click="setActive('collist')">Column list</button>
+    <button class="nav-btn" :class="{active:active==='timeline'}" @click="setActive('timeline')">Timeline</button>
+    <button class="nav-btn" :class="{active:active==='progress'}" @click="setActive('progress')">Progress bars</button>
+
+    <div class="group-label">Layouts</div>
+    <button class="nav-btn" :class="{active:active==='twocol'}"   @click="setActive('twocol')">Two column</button>
+    <button class="nav-btn" :class="{active:active==='compare'}"  @click="setActive('compare')">Old vs new</button>
+    <button class="nav-btn" :class="{active:active==='split'}"    @click="setActive('split')">Image + text</button>
+    <button class="nav-btn" :class="{active:active==='cta'}"      @click="setActive('cta')">CTA box</button>
+
+    <div class="group-label">Interactive</div>
+    <button class="nav-btn" :class="{active:active==='accordion'}" @click="setActive('accordion')">Accordion</button>
+    <button class="nav-btn" :class="{active:active==='dropdown'}"  @click="setActive('dropdown')">Dropdown</button>
+    <button class="nav-btn" :class="{active:active==='tabs'}"      @click="setActive('tabs')">Tab switcher</button>
+
+  </div>
+</nav>
+
+<!-- ════════════════ MAIN ════════════════ -->
+<div class="main">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div style="display:flex;align-items:center;">
+      <span class="comp-title" x-text="({blank:'Blank slide — this is your canvas',header:'Section header',stat:'Big stat',badges:'Badges',tags:'Tags',kpi:'KPI row',cards3:'3-column feature cards',intgrid:'Integration grid',flist:'Numbered feature list',collist:'Column list',timeline:'Timeline',progress:'Progress bars',twocol:'Two column layout',compare:'Old vs new comparison',split:'Image + text split',cta:'CTA box',accordion:'Accordion',dropdown:'Dropdown',tabs:'Tab switcher'})[active]"></span>
+      <span class="comp-hint" x-show="['accordion','dropdown','tabs'].includes(active)">· requires Alpine.js</span>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost" @click="toggleCode()" x-text="showCode ? 'Hide code' : 'Show code'"></button>
+      <button class="btn btn-accent" :class="{copied}" @click="copyCode()" x-text="copied ? '✓ Copied' : 'Copy HTML'"></button>
+    </div>
+  </div>
+
+  <!-- CANVAS -->
+  <div class="canvas-area">
+    <div class="slide-canvas">
+
+      <!-- Always-on logo row -->
+      <div class="slide-logo-row">
+        <span class="logo-pill">Softsolution</span>
+        <span class="logo-sep"></span>
+        <span class="logo-pill">LiteSentry</span>
+      </div>
+
+      <!-- ── BLANK WIREFRAME ── -->
+      <div x-show="active==='blank'" style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:0;position:relative;">
+
+        <!-- Annotation: Logo area -->
+        <div style="position:absolute;top:2px;left:80px;display:flex;align-items:center;gap:6px;">
+          <div style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(245,166,35,.9);">Logo area — always here</div>
+          <div style="width:1px;height:14px;background:rgba(245,166,35,.5);"></div>
+        </div>
+
+        <!-- Main wireframe content -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;max-width:680px;">
+
+          <!-- Section label zone -->
+          <div style="position:relative;width:100%;text-align:center;">
+            <div style="display:inline-block;padding:5px 20px;border:1px dashed rgba(245,166,35,.6);border-radius:100px;">
+              <span style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,166,35,.9);">SECTION LABEL</span>
+            </div>
+            <div style="position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:10px;color:rgba(255,255,255,.6);white-space:nowrap;">← small category text above title</div>
+          </div>
+
+          <!-- Title zone -->
+          <div style="position:relative;width:100%;text-align:center;">
+            <div style="padding:12px 24px;border:1px dashed rgba(255,255,255,.35);border-radius:12px;">
+              <span style="font-size:clamp(18px,3vw,36px);font-weight:700;color:rgba(255,255,255,.55);letter-spacing:-.02em;">Main Slide Title Here</span>
+            </div>
+            <div style="position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:10px;color:rgba(255,255,255,.6);white-space:nowrap;">← h1.slide-title · big &amp; bold</div>
+          </div>
+
+          <!-- Divider zone -->
+          <div style="position:relative;width:100%;display:flex;justify-content:center;">
+            <div style="width:32px;height:3px;background:rgba(245,166,35,.6);border-radius:2px;"></div>
+            <div style="position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:10px;color:rgba(255,255,255,.6);">.divider — optional</div>
+          </div>
+
+          <!-- Subtitle zone -->
+          <div style="position:relative;width:100%;text-align:center;">
+            <div style="padding:8px 16px;border:1px dashed rgba(255,255,255,.25);border-radius:8px;">
+              <span style="font-size:12px;color:rgba(255,255,255,.5);">Optional subtitle — one or two lines of supporting context</span>
+            </div>
+            <div style="position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:10px;color:rgba(255,255,255,.6);">← .slide-subtitle · optional</div>
+          </div>
+
+          <!-- Content zone -->
+          <div style="position:relative;width:100%;margin-top:8px;">
+            <div style="padding:24px;border:2px dashed rgba(245,166,35,.5);border-radius:16px;text-align:center;min-height:80px;display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:11px;color:rgba(245,166,35,.85);font-weight:700;letter-spacing:.08em;text-transform:uppercase;">Pick a component from the sidebar → paste here</span>
+            </div>
+            <div style="position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:10px;color:rgba(255,255,255,.6);white-space:nowrap;">← your layout component</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── HEADER ── -->
+      <div x-show="active==='header'" style="text-align:center;">
+        <div class="section-label">Technology</div>
+        <h1 class="slide-title">The main slide title<br>with an <span class="blue">amber highlight</span></h1>
+        <div class="divider"></div>
+        <p class="slide-subtitle">Supporting subtitle — keep this to two lines max. Use it to frame the context before the main content below.</p>
+      </div>
+
+      <!-- ── STAT ── -->
+      <div x-show="active==='stat'" style="text-align:center;">
+        <div class="section-label">Detection accuracy</div>
+        <span class="stat-number">99.8%</span>
+        <div class="stat-label">of all defects detected at full production speed</div>
+        <div style="margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <span class="badge badge-success">Zero line slowdown</span>
+          <span class="badge badge-primary">24/7 continuous</span>
+        </div>
+      </div>
+
+      <!-- ── BADGES ── -->
+      <div x-show="active==='badges'" style="display:flex;flex-direction:column;align-items:center;gap:20px;">
+        <div class="section-label">Use badges to label status or category</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+          <span class="badge badge-primary">Technology</span>
+          <span class="badge badge-success">Benefit / New way</span>
+          <span class="badge badge-danger">Problem / Old way</span>
+          <span class="badge badge-warning">Caution</span>
+          <span class="badge badge-accent">Softsolution brand</span>
+        </div>
+      </div>
+
+      <!-- ── TAGS ── -->
+      <div x-show="active==='tags'" style="display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;">
+        <div class="section-label">Use tags for lists of items, defect types, features</div>
+        <div class="tag-grid" style="max-width:680px;">
+          <span class="tag">Scratches</span>
+          <span class="tag">Inclusions</span>
+          <span class="tag">Edge chips</span>
+          <span class="tag">Watermarks</span>
+          <span class="tag ok">Auto-detected ✓</span>
+          <span class="tag ok">Classified ✓</span>
+          <span class="tag error">Manual required ✗</span>
+          <span class="tag warn">Review needed ⚠</span>
+        </div>
+      </div>
+
+      <!-- ── KPI ── -->
+      <div x-show="active==='kpi'" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:16px;">
+        <div class="section-label">Key metrics</div>
+        <div class="kpi-row">
+          <div class="kpi-card"><div class="kpi-value">99.8%</div><div class="kpi-label">Detection Accuracy</div></div>
+          <div class="kpi-card"><div class="kpi-value">0.1mm</div><div class="kpi-label">Min Defect Size</div></div>
+          <div class="kpi-card"><div class="kpi-value">3m/s</div><div class="kpi-label">Max Line Speed</div></div>
+          <div class="kpi-card"><div class="kpi-value">24/7</div><div class="kpi-label">Continuous Operation</div></div>
+        </div>
+      </div>
+
+      <!-- ── 3-COL CARDS ── -->
+      <div x-show="active==='cards3'" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px;">
+        <div class="section-label">Capabilities</div>
+        <div class="cards-row">
+          <div class="card"><div class="card-icon">🔍</div><div class="card-title">Surface Inspection</div><div class="card-desc">Scratches, inclusions, watermarks, edge chips — all detected at speed.</div></div>
+          <div class="card"><div class="card-icon">📐</div><div class="card-title">Dimension Control</div><div class="card-desc">Shape, cutouts, drillholes measured to sub-millimetre precision.</div></div>
+          <div class="card"><div class="card-icon">🖨️</div><div class="card-title">Serigrafia Check</div><div class="card-desc">Logo position, print quality, coating uniformity — fully automated.</div></div>
+        </div>
+      </div>
+
+      <!-- ── INTEGRATION GRID ── -->
+      <div x-show="active==='intgrid'" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px;">
+        <div class="section-label">Compatible partners</div>
+        <h1 class="slide-title" style="font-size:clamp(18px,2.5vw,32px);">Works with <span class="blue">your existing machinery</span></h1>
+        <div class="integration-grid">
+          <div class="int-card"><div class="int-name">LiSEC</div><div class="int-type">Processing lines</div></div>
+          <div class="int-card"><div class="int-name">FOREL</div><div class="int-type">Architectural glass</div></div>
+          <div class="int-card"><div class="int-name">Benteler</div><div class="int-type">Automotive glass</div></div>
+          <div class="int-card"><div class="int-name">Glaston</div><div class="int-type">Tempering &amp; bending</div></div>
+          <div class="int-card"><div class="int-name">Hegla</div><div class="int-type">Cutting &amp; storage</div></div>
+          <div class="int-card"><div class="int-name">Bystronic</div><div class="int-type">Cutting &amp; processing</div></div>
+        </div>
+      </div>
+
+      <!-- ── NUMBERED LIST ── -->
+      <div x-show="active==='flist'" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px;">
+        <div class="section-label">How it works</div>
+        <div class="feature-list">
+          <div class="feature-item"><div class="feature-num">1</div><div class="feature-text"><strong>Real-time detection</strong> — defects flagged instantly at production speed, no slowdown.</div></div>
+          <div class="feature-item"><div class="feature-num">2</div><div class="feature-text"><strong>Automatic classification</strong> — each defect categorised by type, size, and severity.</div></div>
+          <div class="feature-item"><div class="feature-num">3</div><div class="feature-text"><strong>Full traceability</strong> — every sheet archived with complete scan data.</div></div>
+        </div>
+      </div>
+
+      <!-- ── COLUMN LIST ── -->
+      <div x-show="active==='collist'" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px;">
+        <div class="section-label">Before vs after</div>
+        <div class="two-col">
+          <div class="col-card">
+            <div class="col-label">Without LineScanner</div>
+            <div class="col-list">
+              <div class="col-item" style="color:#f87171;">Manual visual inspection</div>
+              <div class="col-item" style="color:#f87171;">High scrap rate</div>
+              <div class="col-item" style="color:#f87171;">No traceability</div>
+            </div>
+          </div>
+          <div class="col-card">
+            <div class="col-label">With LineScanner</div>
+            <div class="col-list">
+              <div class="col-item" style="color:#4ade80;">Automated 100% inspection</div>
+              <div class="col-item" style="color:#4ade80;">Near-zero false positives</div>
+              <div class="col-item" style="color:#4ade80;">Full archive</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TIMELINE ── -->
+      <div x-show="active==='timeline'" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px;">
+        <div class="section-label">Installation process</div>
+        <div class="timeline">
+          <div class="timeline-item"><div class="timeline-line"><div class="timeline-dot"></div><div class="timeline-connector"></div></div><div class="timeline-content"><div class="timeline-title">Day 1 — Installation</div><div class="timeline-desc">Mounted on existing conveyor. No line modifications needed.</div></div></div>
+          <div class="timeline-item"><div class="timeline-line"><div class="timeline-dot"></div><div class="timeline-connector"></div></div><div class="timeline-content"><div class="timeline-title">Day 2 — Calibration</div><div class="timeline-desc">Calibrated with customer glass samples. Sensitivity adjusted.</div></div></div>
+          <div class="timeline-item"><div class="timeline-line"><div class="timeline-dot"></div><div class="timeline-connector"></div></div><div class="timeline-content"><div class="timeline-title">Day 3 — Go live</div><div class="timeline-desc">Full production scanning begins. Team trained on dashboard.</div></div></div>
+        </div>
+      </div>
+
+      <!-- ── PROGRESS ── -->
+      <div x-show="active==='progress'" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:16px;">
+        <div class="section-label">Detection performance</div>
+        <div class="progress-row">
+          <div><div class="progress-label"><span>Surface defect detection</span><span>99.8%</span></div><div class="progress-track"><div class="progress-fill" style="width:99.8%"></div></div></div>
+          <div><div class="progress-label"><span>Dimension accuracy</span><span>99.3%</span></div><div class="progress-track"><div class="progress-fill" style="width:99.3%"></div></div></div>
+          <div><div class="progress-label"><span>Serigrafia detection</span><span>97.5%</span></div><div class="progress-track"><div class="progress-fill" style="width:97.5%"></div></div></div>
+        </div>
+      </div>
+
+      <!-- ── TWO COL ── -->
+      <div x-show="active==='twocol'" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px;">
+        <div class="section-label">Two equal columns</div>
+        <div class="two-col">
+          <div class="col-card"><div class="col-label">Left column</div><p style="font-size:12px;color:var(--text-muted);line-height:1.7;">Any content — lists, text, a stat, an image. Both columns are equal width.</p></div>
+          <div class="col-card"><div class="col-label">Right column</div><p style="font-size:12px;color:var(--text-muted);line-height:1.7;">Combine with col-list, feature-list, or KPI cards inside each column.</p></div>
+        </div>
+      </div>
+
+      <!-- ── COMPARE ── -->
+      <div x-show="active==='compare'" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px;">
+        <div class="section-label">The shift</div>
+        <div class="comparison-grid">
+          <div class="comparison-card comparison-old">
+            <div class="comp-label red">❌ Old way</div>
+            <div class="col-list"><div class="col-item" style="color:#f87171;">Manual visual inspection</div><div class="col-item" style="color:#f87171;">High reject rates</div><div class="col-item" style="color:#f87171;">No data</div></div>
+          </div>
+          <div class="comparison-card comparison-new">
+            <div class="comp-label green">✓ With LineScanner</div>
+            <div class="col-list"><div class="col-item" style="color:#4ade80;">Automated 100% inspection</div><div class="col-item" style="color:#4ade80;">Near-zero false positives</div><div class="col-item" style="color:#4ade80;">Full archive</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SPLIT ── -->
+      <div x-show="active==='split'" style="width:100%;">
+        <div class="slide-split">
+          <div class="slide-split-text">
+            <div class="section-label">Technology</div>
+            <h1 class="slide-title" style="font-size:clamp(18px,2.8vw,34px);text-align:left;">Telecentric light<br><span class="blue">sees everything</span></h1>
+            <p style="font-size:12px;color:var(--text-muted);line-height:1.7;">Unlike cameras, telecentric lighting eliminates angle distortion — every pixel at 90 degrees.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;"><span class="badge badge-primary">16-bit depth</span><span class="badge badge-success">0.1mm resolution</span></div>
+          </div>
+          <div class="img-placeholder">IMAGE HERE</div>
+        </div>
+      </div>
+
+      <!-- ── CTA ── -->
+      <div x-show="active==='cta'" style="display:flex;flex-direction:column;align-items:center;gap:14px;">
+        <div class="section-label">Next steps</div>
+        <div class="cta-box">
+          <p>Visit our facility in Austria — bring your glass and we scan them <strong>together, live</strong>.</p>
+          <div class="cta-steps">
+            <div class="cta-step"><div class="step-num">1</div>Meet the team</div>
+            <div class="cta-step"><div class="step-num">2</div>Live demo with your glass</div>
+            <div class="cta-step"><div class="step-num">3</div>Custom technical &amp; commercial proposal</div>
+          </div>
+          <p>Contact: <strong>Softsolution GmbH</strong> · glasquality.com</p>
+        </div>
+      </div>
+
+      <!-- ── ACCORDION ── -->
+      <div x-show="active==='accordion'" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px;">
+        <div class="section-label">Frequently asked</div>
+        <div class="accordion">
+          <div class="acc-item" x-data="{open:false}"><button class="acc-trigger" @click="open=!open"><span>What defect sizes can LineScanner detect?</span><span class="acc-arrow" :class="{open}">⌄</span></button><div class="acc-body" x-show="open" x-transition>From 0.1mm — scratches, inclusions, edge chips, watermarks at full production speed.</div></div>
+          <div class="acc-item" x-data="{open:false}"><button class="acc-trigger" @click="open=!open"><span>How long does installation take?</span><span class="acc-arrow" :class="{open}">⌄</span></button><div class="acc-body" x-show="open" x-transition>Typically 1–3 days. Mounts onto existing conveyor — no line modifications.</div></div>
+          <div class="acc-item" x-data="{open:false}"><button class="acc-trigger" @click="open=!open"><span>Does it integrate with our MES / ERP?</span><span class="acc-arrow" :class="{open}">⌄</span></button><div class="acc-body" x-show="open" x-transition>Yes — via OPC-UA, REST API, or CSV export. Pre-certified with LiSEC, FOREL, Benteler.</div></div>
+        </div>
+      </div>
+
+      <!-- ── DROPDOWN ── -->
+      <div x-show="active==='dropdown'" style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+        <div class="section-label">Interactive filter example</div>
+        <div class="dropdown" x-data="{open:false,selected:'Select glass type'}">
+          <button class="dropdown-trigger" @click="open=!open" @click.away="open=false"><span x-text="selected"></span><span style="color:var(--accent);margin-left:4px;">⌄</span></button>
+          <div class="dropdown-menu" x-show="open" x-transition>
+            <div class="dropdown-item" @click="selected='Architectural glass';open=false">Architectural glass</div>
+            <div class="dropdown-item" @click="selected='Automotive glass';open=false">Automotive glass</div>
+            <div class="dropdown-item" @click="selected='Insulating glass (IG)';open=false">Insulating glass (IG)</div>
+            <div class="dropdown-item" @click="selected='Laminated glass';open=false">Laminated glass</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TABS ── -->
+      <div x-show="active==='tabs'" style="display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;" x-data="{tab:'surface'}">
+        <div class="section-label">Three detection modes</div>
+        <div class="tab-row">
+          <button class="tab-btn" :class="{active:tab==='surface'}"    @click="tab='surface'">Surface</button>
+          <button class="tab-btn" :class="{active:tab==='dimension'}"  @click="tab='dimension'">Dimension</button>
+          <button class="tab-btn" :class="{active:tab==='serigrafia'}" @click="tab='serigrafia'">Serigrafia</button>
+        </div>
+        <div class="tab-content">
+          <div x-show="tab==='surface'">Detects scratches, inclusions, edge chips, watermarks, and fingerprints. Minimum size 0.1mm at full speed.</div>
+          <div x-show="tab==='dimension'">Measures shape, cutouts, and drillholes to sub-millimetre precision without contact.</div>
+          <div x-show="tab==='serigrafia'">Verifies logo position, print quality, and coating uniformity. Detects shifts as small as 0.5mm.</div>
+        </div>
+      </div>
+
+    </div><!-- /slide-canvas -->
+  </div><!-- /canvas-area -->
+
+  <!-- CODE DRAWER -->
+  <div class="code-drawer" x-show="showCode" x-transition style="display:none;">
+    <pre id="code-block"></pre>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// Code snippets stored here — no leaking into the DOM
+window.CODES = {
+  blank:
+`<div class="slide content">
+  <div class="slide-logo-row">
+    <img src="assets/logo-[customer].jpg" alt="">
+    <span class="slide-logo-sep"></span>
+    <img src="assets/logo-litesentry.png" class="slide-logo-ls" alt="">
+  </div>
+  <div class="section-label">Section Label</div>
+  <h1 class="slide-title">Title with <span class="blue">highlight</span></h1>
+  <div class="divider"></div>
+  <p class="slide-subtitle">Optional subtitle here.</p>
+  <!-- paste your component here -->
+</div>`,
+
+  header:
+`<div class="section-label">Technology</div>
+<h1 class="slide-title">Title with <span class="blue">highlight</span></h1>
+<div class="divider"></div>
+<p class="slide-subtitle">Supporting subtitle — max two lines.</p>`,
+
+  stat:
+`<div class="section-label">Label</div>
+<span class="stat-number">99.8%</span>
+<div class="stat-label">Description below the number</div>`,
+
+  badges:
+`<span class="badge badge-primary">Technology</span>
+<span class="badge badge-success">Benefit / New way</span>
+<span class="badge badge-danger">Problem / Old way</span>
+<span class="badge badge-warning">Caution</span>
+<span class="badge badge-accent">Brand</span>`,
+
+  tags:
+`<div class="tag-grid">
+  <span class="tag">Default</span>
+  <span class="tag ok">Positive ✓</span>
+  <span class="tag error">Negative ✗</span>
+  <span class="tag warn">Caution ⚠</span>
+</div>`,
+
+  kpi:
+`<div class="kpi-row">
+  <div class="kpi-card">
+    <div class="kpi-value">99.8%</div>
+    <div class="kpi-label">Detection Accuracy</div>
+  </div>
+  <!-- repeat .kpi-card for each metric -->
+</div>`,
+
+  cards3:
+`<div class="cards-row">
+  <div class="card">
+    <div class="card-icon">🔍</div>
+    <div class="card-title">Card Title</div>
+    <div class="card-desc">Description text.</div>
+  </div>
+  <!-- repeat .card -->
+</div>`,
+
+  intgrid:
+`<div class="integration-grid">
+  <div class="int-card">
+    <div class="int-name">Partner Name</div>
+    <div class="int-type">Category</div>
+  </div>
+  <!-- repeat .int-card -->
+</div>`,
+
+  flist:
+`<div class="feature-list">
+  <div class="feature-item">
+    <div class="feature-num">1</div>
+    <div class="feature-text"><strong>Title</strong> — description.</div>
+  </div>
+  <!-- repeat .feature-item -->
+</div>`,
+
+  collist:
+`<div class="col-card">
+  <div class="col-label">Column Title</div>
+  <div class="col-list">
+    <div class="col-item">Item text</div>
+    <!-- repeat .col-item -->
+  </div>
+</div>`,
+
+  timeline:
+`<div class="timeline">
+  <div class="timeline-item">
+    <div class="timeline-line">
+      <div class="timeline-dot"></div>
+      <div class="timeline-connector"></div>
+    </div>
+    <div class="timeline-content">
+      <div class="timeline-title">Step Title</div>
+      <div class="timeline-desc">Detail text.</div>
+    </div>
+  </div>
+  <!-- last item: omit .timeline-connector -->
+</div>`,
+
+  progress:
+`<div class="progress-row">
+  <div>
+    <div class="progress-label"><span>Label</span><span>99.8%</span></div>
+    <div class="progress-track">
+      <div class="progress-fill" style="width:99.8%"></div>
+    </div>
+  </div>
+  <!-- repeat for each bar -->
+</div>`,
+
+  twocol:
+`<div class="two-col">
+  <div class="col-card">
+    <div class="col-label">Left</div>
+    <!-- content -->
+  </div>
+  <div class="col-card">
+    <div class="col-label">Right</div>
+    <!-- content -->
+  </div>
+</div>`,
+
+  compare:
+`<div class="comparison-grid">
+  <div class="comparison-card comparison-old">
+    <div class="comp-label red">❌ Old way</div>
+    <!-- content -->
+  </div>
+  <div class="comparison-card comparison-new">
+    <div class="comp-label green">✓ New way</div>
+    <!-- content -->
+  </div>
+</div>`,
+
+  split:
+`<div class="slide-split">
+  <div class="slide-split-text">
+    <!-- text, badges, title, etc -->
+  </div>
+  <div class="slide-split-img">
+    <img src="assets/your-image.jpg" onclick="openLb(this.src)">
+  </div>
+</div>`,
+
+  cta:
+`<div class="cta-box">
+  <p>Opening message with <strong>emphasis</strong>.</p>
+  <div class="cta-steps">
+    <div class="cta-step"><div class="step-num">1</div>Step one</div>
+    <div class="cta-step"><div class="step-num">2</div>Step two</div>
+    <div class="cta-step"><div class="step-num">3</div>Step three</div>
+  </div>
+  <p>Contact info here</p>
+</div>`,
+
+  accordion:
+`<div class="accordion">
+  <div class="acc-item" x-data="{open:false}">
+    <button class="acc-trigger" @click="open=!open">
+      <span>Question</span>
+      <span class="acc-arrow" :class="{open}">⌄</span>
+    </button>
+    <div class="acc-body" x-show="open" x-transition>Answer text.</div>
+  </div>
+  <!-- repeat .acc-item -->
+</div>`,
+
+  dropdown:
+`<div class="dropdown" x-data="{open:false, selected:'Choose...'}">
+  <button class="dropdown-trigger" @click="open=!open" @click.away="open=false">
+    <span x-text="selected"></span>
+    <span style="color:var(--accent)">⌄</span>
+  </button>
+  <div class="dropdown-menu" x-show="open" x-transition>
+    <div class="dropdown-item" @click="selected='Option 1'; open=false">Option 1</div>
+    <div class="dropdown-item" @click="selected='Option 2'; open=false">Option 2</div>
+  </div>
+</div>`,
+
+  tabs:
+`<div x-data="{tab:'a'}">
+  <div class="tab-row">
+    <button class="tab-btn" :class="{active:tab==='a'}" @click="tab='a'">Tab A</button>
+    <button class="tab-btn" :class="{active:tab==='b'}" @click="tab='b'">Tab B</button>
+  </div>
+  <div class="tab-content">
+    <div x-show="tab==='a'">Content A</div>
+    <div x-show="tab==='b'">Content B</div>
+  </div>
+</div>`
+};
+
+// Update the pre block whenever Alpine changes the active component
+document.addEventListener('alpine:initialized', () => {
+  Alpine.effect(() => {
+    const app = document.querySelector('[x-data]').__x;
+  });
+});
+
+// Called by Alpine copyCode()
+window.getCode = function(key) {
+  return window.CODES[key] || '';
+};
+</script>
+</body>
+</html>

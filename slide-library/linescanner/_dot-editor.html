@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dot Position Editor — Agents & Distributors</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif; background:#1a1a1a; color:#eee; height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* ── Toolbar ── */
+  .toolbar {
+    flex-shrink:0; display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    padding:9px 16px; background:#111; border-bottom:1px solid #333;
+  }
+  .toolbar h1 { font-size:13px; font-weight:700; color:#F5C842; letter-spacing:.04em; white-space:nowrap; }
+  .toolbar-hint { font-size:11px; color:#666; flex:1; }
+  .btn {
+    padding:6px 14px; border-radius:7px; border:none; cursor:pointer;
+    font-size:11px; font-weight:700; letter-spacing:.04em; transition:all .2s; white-space:nowrap;
+  }
+  .btn-copy   { background:#E8711A; color:#fff; }
+  .btn-copy:hover { background:#c85e0e; }
+  .btn-reset  { background:#2a2a2a; color:#aaa; border:1px solid #444; }
+  .btn-reset:hover { background:#333; color:#fff; }
+  .btn-filter { background:#1a2a3a; color:#6af; border:1px solid #2a4a6a; }
+  .btn-filter:hover { background:#2a3a5a; }
+
+  /* Add mode button — toggles active state */
+  .btn-add { background:#1a2a1a; color:#4caf50; border:1px solid #3a6a3a; }
+  .btn-add:hover { background:#2a3a2a; }
+  .btn-add.active { background:#4caf50; color:#000; border-color:#4caf50; box-shadow:0 0 0 2px rgba(76,175,80,.3); }
+
+  /* Delete selected button */
+  .btn-del { background:#2a1a1a; color:#f87171; border:1px solid #6a2a2a; }
+  .btn-del:hover { background:#3a2a2a; }
+  .btn-del:disabled { opacity:.3; cursor:not-allowed; }
+
+  /* ── Main layout ── */
+  .main { flex:1; display:flex; min-height:0; }
+
+  /* ── Map area ── */
+  .map-area {
+    flex:1; position:relative; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    background:#0a0a0a;
+  }
+  /* Crosshair cursor when in add mode */
+  .map-area.add-mode { cursor:crosshair; }
+  .map-area.add-mode .dot.dist { cursor:crosshair; }
+
+  .map-container {
+    position:relative; display:inline-block;
+    max-width:100%; max-height:100%;
+    filter: invert(1) hue-rotate(180deg) brightness(0.82);
+    transform-origin:center center;
+  }
+  .map-container img { display:block; max-width:100%; max-height:calc(100vh - 100px); object-fit:contain; user-select:none; }
+
+  /* ── Dots ── */
+  .dot {
+    position:absolute; border-radius:50%;
+    transform:translate(-50%,-50%); user-select:none; z-index:10;
+  }
+  .dot.dist {
+    width:14px; height:14px; background:#F5C842; cursor:grab;
+    box-shadow:0 0 0 3px rgba(245,200,66,.3), 0 2px 6px rgba(0,0,0,.6);
+    transition:box-shadow .15s;
+  }
+  .dot.dist:hover { box-shadow:0 0 0 5px rgba(245,200,66,.55), 0 2px 8px rgba(0,0,0,.8); z-index:20; }
+  .dot.dist.selected {
+    background:#fff; box-shadow:0 0 0 3px #F5C842, 0 0 0 6px rgba(245,200,66,.3);
+    z-index:20;
+  }
+  .dot.dist:active { cursor:grabbing; }
+  .dot.office {
+    width:16px; height:16px; background:#E8711A; cursor:default;
+    box-shadow:0 0 0 3px rgba(232,113,26,.35);
+  }
+  .dot-label {
+    position:absolute; top:18px; left:50%; transform:translateX(-50%);
+    font-size:9px; font-weight:700; color:#F5C842; white-space:nowrap;
+    background:rgba(0,0,0,.8); padding:2px 5px; border-radius:3px;
+    pointer-events:none; display:none;
+  }
+  .dot:hover .dot-label, .dot.selected .dot-label { display:block; }
+
+  /* Add-mode crosshair hint */
+  .add-hint {
+    position:fixed; bottom:32px; left:50%; transform:translateX(-50%);
+    background:#4caf50; color:#000; font-size:12px; font-weight:700;
+    padding:7px 18px; border-radius:20px; pointer-events:none;
+    display:none; z-index:200;
+    box-shadow:0 4px 20px rgba(0,0,0,.5);
+  }
+  .add-hint.visible { display:block; }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width:270px; flex-shrink:0; background:#111; border-left:1px solid #222;
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+  .sidebar-head {
+    padding:10px 14px; border-bottom:1px solid #222;
+    font-size:11px; font-weight:700; color:#888; letter-spacing:.06em; text-transform:uppercase;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .dot-count { background:#222; color:#F5C842; font-size:10px; padding:2px 7px; border-radius:10px; }
+
+  .dot-list { flex:1; overflow-y:auto; padding:4px 0; }
+  .dot-list::-webkit-scrollbar { width:4px; }
+  .dot-list::-webkit-scrollbar-thumb { background:#333; border-radius:2px; }
+
+  .dot-item {
+    display:flex; align-items:center; gap:8px;
+    padding:6px 12px; cursor:pointer; transition:background .12s;
+    font-size:11px; color:#bbb; border-left:2px solid transparent;
+  }
+  .dot-item:hover { background:#1a1a1a; }
+  .dot-item.active { background:#1a2a1a; color:#F5C842; border-left-color:#F5C842; }
+  .dot-swatch { width:9px; height:9px; border-radius:50%; flex-shrink:0; background:#F5C842; }
+  .dot-name { flex:1; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .dot-coords { font-size:10px; color:#555; font-family:monospace; flex-shrink:0; }
+  .dot-del-btn {
+    width:18px; height:18px; border-radius:50%; background:transparent;
+    border:1px solid #444; color:#666; font-size:11px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; transition:all .15s; line-height:1;
+  }
+  .dot-item:hover .dot-del-btn,
+  .dot-item.active .dot-del-btn { border-color:#f87171; color:#f87171; background:#2a1a1a; }
+
+  /* ── Output ── */
+  .output-wrap { flex-shrink:0; border-top:1px solid #222; padding:10px 12px; }
+  .output-wrap label { font-size:10px; font-weight:700; color:#666; letter-spacing:.06em; text-transform:uppercase; display:block; margin-bottom:5px; }
+  .output-wrap textarea {
+    width:100%; height:72px; background:#0d0d0d; color:#4caf50;
+    border:1px solid #222; border-radius:6px; padding:7px;
+    font-family:monospace; font-size:9px; resize:none; outline:none; line-height:1.5;
+  }
+
+  /* ── Status bar ── */
+  .statusbar {
+    flex-shrink:0; padding:4px 16px; background:#0a0a0a;
+    border-top:1px solid #1a1a1a; font-size:11px; color:#444;
+    display:flex; gap:20px; align-items:center;
+  }
+  .statusbar b { color:#888; }
+</style>
+</head>
+<body>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <h1>🗺 Dot Editor</h1>
+  <span class="toolbar-hint">Drag to move · Right-click or ✕ to delete · Add mode to place new dots</span>
+  <button class="btn btn-add" id="btnAdd" onclick="toggleAddMode()">＋ Add Mode</button>
+  <button class="btn btn-del" id="btnDel" onclick="deleteSelected()" disabled>✕ Delete Selected</button>
+  <button class="btn btn-filter" onclick="toggleFilter()">☀ Toggle Map</button>
+  <button class="btn btn-reset" onclick="resetPositions()">↺ Reset</button>
+  <button class="btn btn-copy" onclick="copyHTML()">📋 Copy HTML</button>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+  <!-- Map -->
+  <div class="map-area" id="mapArea">
+    <div class="map-container" id="mapContainer">
+      <img src="Slide Images/World Map of locations .jpeg" alt="World Map" id="mapImg" draggable="false">
+
+      <!-- Office pins — fixed, not draggable -->
+      <div class="dot office" style="left:19.5%;top:34%;">
+        <div class="dot-label">Burnsville MN</div>
+      </div>
+      <div class="dot office" style="left:51.2%;top:32.5%;">
+        <div class="dot-label">Waidhofen, Austria</div>
+      </div>
+
+      <!-- Distributor dots — draggable -->
+      <div class="dot dist" data-title="Canada (Toronto)"             style="left:23.6%;top:34.5%;"><div class="dot-label">Canada</div></div>
+      <div class="dot dist" data-title="Mexico (Mexico City)"         style="left:17.8%;top:46.3%;"><div class="dot-label">Mexico</div></div>
+      <div class="dot dist" data-title="Brazil (São Paulo)"           style="left:33.2%;top:67.1%;"><div class="dot-label">Brazil</div></div>
+      <div class="dot dist" data-title="Argentina (Buenos Aires)"     style="left:29.7%;top:72.4%;"><div class="dot-label">Argentina</div></div>
+      <div class="dot dist" data-title="UK (London)"                  style="left:46.8%;top:30.8%;"><div class="dot-label">UK</div></div>
+      <div class="dot dist" data-title="France (Paris)"               style="left:47.5%;top:32.0%;"><div class="dot-label">France</div></div>
+      <div class="dot dist" data-title="Germany (Munich)"             style="left:50.3%;top:32.4%;"><div class="dot-label">Germany</div></div>
+      <div class="dot dist" data-title="Spain (Madrid)"               style="left:45.8%;top:36.1%;"><div class="dot-label">Spain</div></div>
+      <div class="dot dist" data-title="Italy (Milan)"                style="left:49.6%;top:33.7%;"><div class="dot-label">Italy</div></div>
+      <div class="dot dist" data-title="Czech Republic (Prague)"      style="left:51.1%;top:31.4%;"><div class="dot-label">Czech Rep.</div></div>
+      <div class="dot dist" data-title="Turkey (Istanbul)"            style="left:55.4%;top:35.8%;"><div class="dot-label">Turkey</div></div>
+      <div class="dot dist" data-title="Russia (Moscow)"              style="left:57.9%;top:28.7%;"><div class="dot-label">Russia</div></div>
+      <div class="dot dist" data-title="Morocco (Casablanca)"         style="left:44.6%;top:39.4%;"><div class="dot-label">Morocco</div></div>
+      <div class="dot dist" data-title="Egypt (Cairo)"                style="left:56.0%;top:41.1%;"><div class="dot-label">Egypt</div></div>
+      <div class="dot dist" data-title="South Africa (Johannesburg)"  style="left:55.1%;top:68.4%;"><div class="dot-label">S. Africa</div></div>
+      <div class="dot dist" data-title="UAE (Dubai)"                  style="left:63.1%;top:43.5%;"><div class="dot-label">UAE</div></div>
+      <div class="dot dist" data-title="India (Mumbai)"               style="left:68.2%;top:46.4%;"><div class="dot-label">India</div></div>
+      <div class="dot dist" data-title="China (Shanghai)"             style="left:82.5%;top:40.6%;"><div class="dot-label">China</div></div>
+      <div class="dot dist" data-title="South Korea (Seoul)"          style="left:84.1%;top:37.5%;"><div class="dot-label">S. Korea</div></div>
+      <div class="dot dist" data-title="Japan (Tokyo)"                style="left:87.8%;top:38.4%;"><div class="dot-label">Japan</div></div>
+      <div class="dot dist" data-title="Malaysia (Kuala Lumpur)"      style="left:76.7%;top:54.2%;"><div class="dot-label">Malaysia</div></div>
+      <div class="dot dist" data-title="Australia (Sydney)"           style="left:91.2%;top:72.1%;"><div class="dot-label">Australia</div></div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-head">
+      <span>Locations</span>
+      <span class="dot-count" id="dotCount">22</span>
+    </div>
+    <div class="dot-list" id="dotList"></div>
+    <div class="output-wrap">
+      <label>HTML output — copy &amp; paste into slide-02</label>
+      <textarea id="outputBox" readonly spellcheck="false"></textarea>
+    </div>
+  </div>
+
+</div>
+
+<!-- Add mode hint -->
+<div class="add-hint" id="addHint">Click anywhere on the map to place a dot</div>
+
+<!-- Status bar -->
+<div class="statusbar">
+  <span>🟠 Orange = Offices (fixed) &nbsp;|&nbsp; 🟡 Yellow = Drag to move, Right-click to delete</span>
+  <span>Cursor: <b id="cursorPos">—</b></span>
+</div>
+
+<script>
+(function () {
+  const mapArea     = document.getElementById('mapArea');
+  const container   = document.getElementById('mapContainer');
+  const dotListEl   = document.getElementById('dotList');
+  const outputBox   = document.getElementById('outputBox');
+  const cursorPosEl = document.getElementById('cursorPos');
+  const dotCountEl  = document.getElementById('dotCount');
+  const addHint     = document.getElementById('addHint');
+  const btnAdd      = document.getElementById('btnAdd');
+  const btnDel      = document.getElementById('btnDel');
+
+  let addMode    = false;
+  let dragging   = null;
+  let selected   = null;
+  let dragOffX   = 0, dragOffY = 0;
+  let scale      = 1;
+
+  // ── Get all dist dots (live, since we create/remove them) ──
+  function getDots() { return Array.from(container.querySelectorAll('.dot.dist')); }
+
+  // ── Save/restore defaults ──
+  let defaults = [];
+  function saveDefaults() {
+    defaults = getDots().map(d => ({ l: d.style.left, t: d.style.top, title: d.dataset.title }));
+  }
+  saveDefaults();
+
+  // ── Attach drag + right-click to a dot ──
+  function attachEvents(dot) {
+    dot.addEventListener('mousedown', e => {
+      if (addMode) return;
+      if (e.button === 0) {
+        e.preventDefault(); e.stopPropagation();
+        selectDot(dot);
+        dragging = dot;
+        const cr = container.getBoundingClientRect();
+        const dr = dot.getBoundingClientRect();
+        dragOffX = e.clientX - (dr.left + dr.width  / 2 - cr.left) / scale;
+        dragOffY = e.clientY - (dr.top  + dr.height / 2 - cr.top)  / scale;
+        dot.style.transition = 'none';
+      }
+    });
+    dot.addEventListener('contextmenu', e => {
+      e.preventDefault(); e.stopPropagation();
+      removeDot(dot);
+    });
+  }
+
+  // ── Attach events to all existing dots ──
+  getDots().forEach(attachEvents);
+
+  // ── Select / deselect ──
+  function selectDot(dot) {
+    if (selected) selected.classList.remove('selected');
+    selected = dot;
+    if (dot) {
+      dot.classList.add('selected');
+      btnDel.disabled = false;
+      // Scroll sidebar item into view
+      const idx = getDots().indexOf(dot);
+      const items = dotListEl.querySelectorAll('.dot-item');
+      if (items[idx]) items[idx].scrollIntoView({ block: 'nearest' });
+    } else {
+      btnDel.disabled = true;
+    }
+    buildList();
+  }
+
+  // ── Remove a dot ──
+  function removeDot(dot) {
+    if (selected === dot) selectDot(null);
+    dot.remove();
+    buildList();
+    updateOutput();
+  }
+
+  // ── Delete selected (button / Delete key) ──
+  window.deleteSelected = function () {
+    if (selected) removeDot(selected);
+  };
+
+  // ── Delete key ──
+  document.addEventListener('keydown', e => {
+    if ((e.key === 'Delete' || e.key === 'Backspace') && selected &&
+        document.activeElement.tagName !== 'INPUT' &&
+        document.activeElement.tagName !== 'TEXTAREA') {
+      e.preventDefault();
+      removeDot(selected);
+    }
+    if (e.key === 'Escape') { toggleAddMode(false); selectDot(null); }
+  });
+
+  // ── Mouse move (drag + cursor coords) ──
+  document.addEventListener('mousemove', e => {
+    const cr = container.getBoundingClientRect();
+    const rx = ((e.clientX - cr.left) / cr.width  * 100);
+    const ry = ((e.clientY - cr.top)  / cr.height * 100);
+    if (rx >= 0 && rx <= 100 && ry >= 0 && ry <= 100) {
+      cursorPosEl.textContent = rx.toFixed(1) + '%, ' + ry.toFixed(1) + '%';
+    }
+
+    if (!dragging) return;
+    const x = Math.min(99, Math.max(1, (e.clientX - dragOffX * scale - cr.left) / cr.width  * 100));
+    const y = Math.min(99, Math.max(1, (e.clientY - dragOffY * scale - cr.top)  / cr.height * 100));
+    dragging.style.left = x.toFixed(1) + '%';
+    dragging.style.top  = y.toFixed(1) + '%';
+    buildList();
+    updateOutput();
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (dragging) { dragging.style.transition = ''; dragging = null; }
+  });
+
+  // ── Add mode toggle ──
+  window.toggleAddMode = function (forceOff) {
+    addMode = (forceOff === false) ? false : !addMode;
+    btnAdd.classList.toggle('active', addMode);
+    mapArea.classList.toggle('add-mode', addMode);
+    addHint.classList.toggle('visible', addMode);
+  };
+
+  // ── Click on map to add dot ──
+  container.addEventListener('click', e => {
+    if (!addMode) return;
+    if (e.target.classList.contains('dist')) return; // clicked existing dot
+    const name = prompt('Location name (e.g. "Poland (Warsaw)"):', '');
+    if (!name || !name.trim()) return;
+
+    const cr = container.getBoundingClientRect();
+    const x  = ((e.clientX - cr.left) / cr.width  * 100).toFixed(1);
+    const y  = ((e.clientY - cr.top)  / cr.height * 100).toFixed(1);
+
+    const dot = document.createElement('div');
+    dot.className = 'dot dist';
+    dot.dataset.title = name.trim();
+    dot.style.left = x + '%';
+    dot.style.top  = y + '%';
+    dot.innerHTML  = '<div class="dot-label">' + name.split('(')[0].trim() + '</div>';
+    container.appendChild(dot);
+    attachEvents(dot);
+    selectDot(dot);
+    buildList();
+    updateOutput();
+    toggleAddMode(false); // exit add mode after placing one dot
+  });
+
+  // ── Build sidebar list ──
+  function buildList() {
+    const dots = getDots();
+    dotCountEl.textContent = dots.length;
+    dotListEl.innerHTML = '';
+    dots.forEach((dot, i) => {
+      const l = parseFloat(dot.style.left).toFixed(1);
+      const t = parseFloat(dot.style.top).toFixed(1);
+      const isActive = dot === selected;
+      const item = document.createElement('div');
+      item.className = 'dot-item' + (isActive ? ' active' : '');
+
+      const swatch = document.createElement('div'); swatch.className = 'dot-swatch';
+      const name   = document.createElement('div'); name.className = 'dot-name'; name.textContent = dot.dataset.title;
+      const coords = document.createElement('div'); coords.className = 'dot-coords'; coords.textContent = l + ',' + t;
+      const delBtn = document.createElement('button'); delBtn.className = 'dot-del-btn'; delBtn.textContent = '✕'; delBtn.title = 'Delete';
+
+      delBtn.addEventListener('click', e => { e.stopPropagation(); removeDot(dot); });
+      item.addEventListener('click', () => selectDot(dot));
+
+      item.append(swatch, name, coords, delBtn);
+      dotListEl.appendChild(item);
+    });
+  }
+
+  // ── Generate HTML output ──
+  function updateOutput() {
+    const lines = getDots().map(dot => {
+      const l = parseFloat(dot.style.left).toFixed(1);
+      const t = parseFloat(dot.style.top).toFixed(1);
+      return `<div class="dist-pin" style="left:${l}%;top:${t}%;" title="${dot.dataset.title}"></div>`;
+    });
+    outputBox.value = lines.join('\n');
+  }
+
+  // ── Copy HTML ──
+  window.copyHTML = function () {
+    const full = getDots().map(dot => {
+      const l = parseFloat(dot.style.left).toFixed(1);
+      const t = parseFloat(dot.style.top).toFixed(1);
+      return `            <div class="dist-pin" style="left:${l}%;top:${t}%;" title="${dot.dataset.title}"></div>`;
+    }).join('\n');
+    navigator.clipboard.writeText(full).then(() => {
+      const btn = document.querySelector('.btn-copy');
+      btn.textContent = '✅ Copied!';
+      setTimeout(() => btn.textContent = '📋 Copy HTML', 2000);
+    });
+  };
+
+  // ── Reset ──
+  window.resetPositions = function () {
+    if (!confirm('Reset all dots to their starting positions? (This will also restore deleted dots)')) return;
+    getDots().forEach(d => d.remove());
+    defaults.forEach(def => {
+      const dot = document.createElement('div');
+      dot.className = 'dot dist';
+      dot.dataset.title = def.title;
+      dot.style.left = def.l;
+      dot.style.top  = def.t;
+      dot.innerHTML  = '<div class="dot-label">' + def.title.split('(')[0].trim() + '</div>';
+      container.appendChild(dot);
+      attachEvents(dot);
+    });
+    selectDot(null);
+    buildList();
+    updateOutput();
+  };
+
+  // ── Filter toggle ──
+  let filtered = true;
+  window.toggleFilter = function () {
+    filtered = !filtered;
+    container.style.filter = filtered ? 'invert(1) hue-rotate(180deg) brightness(0.82)' : 'none';
+  };
+
+  // ── Scroll to zoom ──
+  mapArea.addEventListener('wheel', e => {
+    e.preventDefault();
+    scale = Math.min(3, Math.max(0.6, scale - e.deltaY * 0.001));
+    container.style.transform = `scale(${scale})`;
+  }, { passive: false });
+
+  // ── Click outside dots to deselect ──
+  mapArea.addEventListener('mousedown', e => {
+    if (!e.target.classList.contains('dist') && !addMode) selectDot(null);
+  });
+
+  // ── Init ──
+  buildList();
+  updateOutput();
+
+})();
+</script>
+</body>
+</html>

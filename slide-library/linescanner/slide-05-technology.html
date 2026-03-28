@@ -1,0 +1,539 @@
+<!-- SLIDE_META {"title":"Technology vs Camera Systems","default":"visible","tags":["linescanner","technology"]} -->
+<div class="slide content t5" style="justify-content:flex-start; align-items:center; padding:52px 80px 0;">
+  <div class="slide-logo-row"><img src="assets/LOGO SoftSolution grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="assets/logo-litesentry.png" alt="LiteSentry" class="slide-logo-ls"></div>
+
+  <div class="section-label">The Technology</div>
+  <h1 class="slide-title" style="margin-bottom:14px;">How LineScanner <span class="blue">sees what others miss</span></h1>
+
+  <div class="t5-panels-wrap">
+
+    <!-- ══ PANEL 1 · How It Works ══ -->
+    <div class="t5-panel active" id="t5-howitworks">
+      <div class="t5-hiw">
+
+        <!-- Top: 2×2 component cards -->
+        <div class="t5-components anim-in" style="">
+          <div class="t5-comp-card"><span class="t5-num">1</span><span class="t5-comp-text"><strong>Telecentric light</strong> — uniform illumination independent of glass position</span></div>
+          <div class="t5-comp-card"><span class="t5-num">2</span><span class="t5-comp-text"><strong>Linear image sensor</strong> — real scanning line-by-line, not a snapshot camera</span></div>
+          <div class="t5-comp-card"><span class="t5-num">3</span><span class="t5-comp-text"><strong>Glass</strong> — inspected continuously at full production speed</span></div>
+          <div class="t5-comp-card"><span class="t5-num">4</span><span class="t5-comp-text"><strong>Electronic module</strong> — 16-bit processing at extreme speed</span></div>
+        </div>
+
+        <!-- Bottom: full-width diagram -->
+        <div class="t5-diagram t5-diagram-full anim-in" onclick="openLb('assets/Image Explaining the technology 1 Telecentric light 2 linear image sensor 3 glass 4 electronic module.png')" style="">
+          <img src="assets/Image Explaining the technology 1 Telecentric light 2 linear image sensor 3 glass 4 electronic module.png" alt="Scanner technology diagram">
+          <div class="t5-img-hint">click to enlarge</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ PANEL 2 · 16-bit Advantage ══ -->
+    <div class="t5-panel" id="t5-sixteenbit">
+      <div class="t5-hiw">
+
+        <!-- Top: 16-bit comparison image -->
+        <div class="t5-diagram t5-diagram-full anim-in" onclick="openLb('assets/16 bit tech.jpg')" style="">
+          <img src="assets/16 bit tech.jpg" alt="8-bit vs 16-bit technology comparison">
+          <div class="t5-img-hint">click to enlarge</div>
+        </div>
+
+        <!-- Bottom: 2×2 feature cards -->
+        <div class="t5-components anim-in" style="">
+          <div class="t5-comp-card"><span class="t5-fnum">1</span><span class="t5-comp-text"><strong>Low-contrast detection:</strong> Identifies defects 8-bit systems cannot see — subtle inclusions, coating variations, micro-scratches.</span></div>
+          <div class="t5-comp-card"><span class="t5-fnum">2</span><span class="t5-comp-text"><strong>Transmission homogenization:</strong> Glass from 15% to 99% processed with the same setup — identical results across all types.</span></div>
+          <div class="t5-comp-card"><span class="t5-fnum">3</span><span class="t5-comp-text"><strong>Every pixel is equal:</strong> No variation by position — always consistent, eliminating false positives and unnecessary rejections.</span></div>
+          <div class="t5-comp-card"><span class="t5-fnum">4</span><span class="t5-comp-text"><strong>Extreme processing speed:</strong> No compromise on throughput. Compatible with automotive and railway production rates.</span></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ PANEL 3 · vs Camera Systems ══ -->
+    <div class="t5-panel" id="t5-vscamera">
+      <div class="t5-vc-wrap anim-in" style="">
+
+        <!-- LEFT — Camera-based -->
+        <div class="t5-cmp-col t5-cmp-bad">
+          <div class="t5-cmp-header">
+            <span class="t5-cmp-icon">📷</span>
+            <span>Camera-based Systems</span>
+          </div>
+          <ul class="t5-cmp-list" id="t5-vc-bad-list">
+            <li><strong>Snapshot coverage:</strong> Takes periodic frames — gaps between shots mean defects between frames go undetected</li>
+            <li><strong>Motion blur at speed:</strong> Fast production lines cause image blur, reducing detection accuracy</li>
+            <li><strong>8-bit depth:</strong> Only 256 grey levels — low-contrast defects are invisible</li>
+            <li><strong>Position-dependent illumination:</strong> Uneven lighting across the field of view distorts results</li>
+            <li><strong>Recalibration required:</strong> Sensitivity must be re-tuned for every glass type and transmission level</li>
+            <li><strong>False positives &amp; rejects:</strong> Pixel variation by position triggers unnecessary alarms</li>
+          </ul>
+          <div class="t5-vc-list-restore" id="t5-vc-bad-restore"></div>
+          <button class="t5-vc-add-btn t5-vc-add-bad">+ Add item</button>
+        </div>
+
+        <!-- CENTER — comparison images -->
+        <div class="t5-vc-imgs" id="t5-vc-imgs">
+
+          <div class="t5-vc-card" id="t5-vc-drillhole">
+            <button class="t5-vc-hide" onclick="t5VcHide('drillhole')" title="Hide">×</button>
+            <div class="t5-diagram" style="flex:1;min-height:0;" onclick="openLb('assets/Comparison on image taken by Camera Above and LineScanner below of a drillhole .jpg')">
+              <img src="assets/Comparison on image taken by Camera Above and LineScanner below of a drillhole .jpg" alt="Drill hole comparison">
+              <div class="t5-img-hint">click to enlarge</div>
+            </div>
+            <div class="t5-vc-label">Drill Hole — Camera vs LineScanner</div>
+          </div>
+
+          <div class="t5-vc-card" id="t5-vc-igunit">
+            <button class="t5-vc-hide" onclick="t5VcHide('igunit')" title="Hide">×</button>
+            <div class="t5-diagram" style="flex:1;min-height:0;" onclick="openLb('assets/Comparison on image taken by Camera Above and LineScanner below of a Ig unit .jpg')">
+              <img src="assets/Comparison on image taken by Camera Above and LineScanner below of a Ig unit .jpg" alt="IG unit comparison">
+              <div class="t5-img-hint">click to enlarge</div>
+            </div>
+            <div class="t5-vc-label">IG Unit — Camera vs LineScanner</div>
+          </div>
+
+          <!-- Restore chips -->
+          <div class="t5-vc-restore" id="t5-vc-restore"></div>
+
+        </div>
+
+        <!-- RIGHT — LineScanner -->
+        <div class="t5-cmp-col t5-cmp-good">
+          <div class="t5-cmp-header">
+            <span class="t5-cmp-icon">✓</span>
+            <span>LineScanner</span>
+          </div>
+          <ul class="t5-cmp-list" id="t5-vc-good-list">
+            <li><strong>100% line-by-line scanning:</strong> Every millimetre of glass is inspected — zero gaps, zero blind spots</li>
+            <li><strong>No motion blur:</strong> Linear sensor reads one line at a time, perfectly synchronised with production speed</li>
+            <li><strong>16-bit depth:</strong> 65,536 grey levels — detects the subtlest inclusions, coating variations and micro-scratches</li>
+            <li><strong>Telecentric illumination:</strong> Uniform light field independent of glass position — consistent results everywhere</li>
+            <li><strong>One setup for all glass:</strong> 15% to 99% transmission handled automatically with the same configuration</li>
+            <li><strong>Every pixel is equal:</strong> No positional variation — eliminates false positives and unnecessary rejections</li>
+          </ul>
+          <div class="t5-vc-list-restore" id="t5-vc-good-restore"></div>
+          <button class="t5-vc-add-btn t5-vc-add-good">+ Add item</button>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- t5-panels-wrap -->
+
+  <!-- Tab bar — bottom -->
+  <div class="t5-tabs">
+    <button class="t5-tab active" onclick="t5Tab(this,'howitworks')">How It Works</button>
+    <button class="t5-tab" onclick="t5Tab(this,'sixteenbit')">16-bit Advantage</button>
+    <button class="t5-tab" onclick="t5Tab(this,'vscamera')">vs Camera Systems</button>
+  </div>
+
+  <style>
+    .t5 { height:100%; }
+
+    /* Tabs — bottom */
+    .t5-tabs {
+      display:flex; gap:4px; flex-shrink:0;
+      background:var(--bg-card); border:1px solid var(--border);
+      border-radius:12px; padding:4px;
+      margin-top:10px; margin-bottom:0; width:100%; max-width:920px;
+    }
+    .t5-tab {
+      flex:1; padding:7px 0; border:none; background:transparent;
+      color:var(--text-muted); font-size:13px; font-weight:600;
+      letter-spacing:.04em; cursor:pointer; border-radius:9px;
+      transition:all .25s; font-family:inherit;
+    }
+    .t5-tab.active { background:var(--accent); color:#fff; }
+    .t5-tab:hover:not(.active) { background:rgba(var(--accent-rgb),.10); color:var(--text); }
+
+    /* Panels */
+    .t5-panels-wrap {
+      flex:1; min-height:0; width:100%; max-width:920px;
+      position:relative; overflow:hidden;
+    }
+    .t5-panel {
+      display:none; flex-direction:column;
+      position:absolute; inset:0;
+      animation:fadeUp .3s ease forwards;
+    }
+    .t5-panel.active { display:flex; }
+
+    /* Grid (16-bit panel) */
+    .t5-grid {
+      display:grid; grid-template-columns:1fr 1fr; gap:20px;
+      height:100%;
+    }
+
+    /* How It Works layout */
+    .t5-hiw {
+      display:flex; flex-direction:column; gap:12px; height:100%;
+    }
+
+    /* 2×2 component cards */
+    .t5-components {
+      display:grid; grid-template-columns:1fr 1fr; gap:8px; flex-shrink:0;
+    }
+    .t5-comp-card {
+      display:flex; align-items:flex-start; gap:10px;
+      padding:8px 12px; border-radius:10px;
+      background:var(--bg-card); border:1px solid var(--border);
+    }
+
+    /* Full-width diagram */
+    .t5-diagram-full {
+      flex:1; min-height:0;
+    }
+
+    /* Left column */
+    .t5-left {
+      display:flex; flex-direction:column; gap:0;
+      overflow-y:auto; min-height:0;
+    }
+    .t5-section-title {
+      font-size:10px; font-weight:700; letter-spacing:.09em;
+      text-transform:uppercase; color:var(--text-muted); opacity:.5;
+      padding:6px 0 4px; flex-shrink:0;
+    }
+
+    /* Component list */
+    .t5-component-list {
+      list-style:none; margin:0; padding:0;
+      display:flex; flex-direction:column; gap:6px; flex-shrink:0;
+    }
+    .t5-component-list li {
+      display:flex; align-items:flex-start; gap:10px;
+      padding:7px 10px; border-radius:10px;
+      background:var(--bg-card); border:1px solid var(--border);
+    }
+    .t5-num {
+      width:20px; height:20px; border-radius:50%; flex-shrink:0;
+      background:rgba(232,113,26,.2); border:1px solid rgba(232,113,26,.4);
+      color:#E8711A; font-size:11px; font-weight:800;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .t5-comp-text { font-size:clamp(11px,1.1vw,13px); color:var(--text-muted); line-height:1.4; }
+    .t5-comp-text strong { color:var(--text); }
+
+    /* USP list */
+    .t5-usp-list {
+      list-style:none; margin:0; padding:0;
+      display:flex; flex-direction:column; gap:4px; flex-shrink:0;
+    }
+    .t5-usp-list li {
+      padding:6px 10px 6px 22px; position:relative;
+      font-size:clamp(11px,1.1vw,13px); color:var(--text-muted); line-height:1.4;
+      border-bottom:1px solid rgba(255,255,255,.04);
+    }
+    .t5-usp-list li::before {
+      content:'›'; position:absolute; left:6px; top:6px;
+      color:#E8711A; font-weight:800; font-size:13px;
+    }
+    .t5-usp-list li strong { color:var(--text); }
+
+    /* Feature list */
+    .t5-feature-list { display:flex; flex-direction:column; gap:8px; overflow-y:auto; }
+    .t5-feature-item {
+      display:flex; gap:12px; align-items:flex-start;
+      padding:10px 12px; border-radius:10px;
+      background:var(--bg-card); border:1px solid var(--border);
+    }
+    .t5-fnum {
+      width:24px; height:24px; border-radius:50%; flex-shrink:0;
+      background:rgba(232,113,26,.2); border:1px solid rgba(232,113,26,.4);
+      color:#E8711A; font-size:12px; font-weight:800;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .t5-ftext { font-size:clamp(11px,1.1vw,13px); color:var(--text-muted); line-height:1.45; }
+    .t5-ftext strong { color:var(--text); }
+
+    /* Diagram */
+    .t5-diagram {
+      border:1px solid var(--border); border-radius:14px;
+      overflow:hidden; cursor:zoom-in; background:#000;
+      display:flex; align-items:center; justify-content:center;
+      position:relative; min-height:0;
+      transition:border-color .2s;
+    }
+    .t5-diagram:hover { border-color:rgba(232,113,26,.4); }
+    .t5-diagram img {
+      width:100%; height:100%; object-fit:contain; display:block;
+      transition:transform .3s;
+    }
+    .t5-diagram:hover img { transform:scale(1.03); }
+
+
+
+    .t5-img-hint {
+      position:absolute; bottom:8px; right:10px;
+      font-size:10px; color:rgba(255,255,255,.3);
+      letter-spacing:.04em; pointer-events:none;
+    }
+
+    /* vs Camera Systems panel */
+    .t5-vc-wrap {
+      display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; height:100%;
+    }
+    .t5-cmp-col {
+      display:flex; flex-direction:column;
+      border-radius:14px; overflow:hidden;
+      border:1px solid var(--border);
+    }
+    .t5-cmp-header {
+      display:flex; align-items:center; gap:10px;
+      padding:12px 16px; flex-shrink:0;
+      font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+    }
+    .t5-cmp-bad .t5-cmp-header {
+      background:rgba(239,68,68,.12); border-bottom:1px solid rgba(239,68,68,.2); color:#f87171;
+    }
+    .t5-cmp-good .t5-cmp-header {
+      background:rgba(34,197,94,.10); border-bottom:1px solid rgba(34,197,94,.2); color:#4ade80;
+    }
+    .t5-cmp-icon { font-size:15px; }
+    .t5-cmp-list {
+      list-style:none; margin:0; padding:10px 16px 12px;
+      display:flex; flex-direction:column; gap:0;
+      overflow-y:auto; flex:1;
+    }
+    .t5-cmp-list li {
+      padding:7px 0 7px 20px; position:relative;
+      font-size:clamp(11px,1.05vw,13px); line-height:1.4; color:var(--text-muted);
+      border-bottom:1px solid rgba(255,255,255,.04);
+    }
+    .t5-cmp-list li:last-child { border-bottom:none; }
+    .t5-cmp-list li strong { color:var(--text); }
+    .t5-cmp-bad .t5-cmp-list li::before {
+      content:'✕'; position:absolute; left:0; top:8px;
+      font-size:10px; font-weight:800; color:#f87171;
+    }
+    .t5-cmp-good .t5-cmp-list li::before {
+      content:'›'; position:absolute; left:2px; top:7px;
+      font-size:14px; font-weight:800; color:#4ade80;
+    }
+
+    /* List item controls */
+    .t5-cmp-list li { position:relative; }
+    .t5-vc-item-controls {
+      position:absolute; right:2px; top:50%; transform:translateY(-50%);
+      display:flex; gap:3px; opacity:0; transition:opacity .2s; z-index:2;
+    }
+    .t5-cmp-list li:hover .t5-vc-item-controls { opacity:1; }
+    .t5-vc-item-btn {
+      width:15px; height:15px; border-radius:3px; padding:0;
+      background:rgba(0,0,0,.5); border:1px solid rgba(255,255,255,.18);
+      color:rgba(255,255,255,.45); font-size:8px; font-weight:900;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+      transition:all .2s; font-family:inherit; line-height:1;
+    }
+    .t5-vc-drag-btn { cursor:grab; font-size:10px; }
+    .t5-vc-drag-btn:active { cursor:grabbing; }
+    .t5-vc-hide-btn:hover { background:rgba(239,68,68,.5); color:#fff; border-color:rgba(239,68,68,.4); }
+    li.t5-vc-dragging { opacity:.35; }
+    li.t5-vc-dragover { border-top:2px solid #E8711A; }
+    li[contenteditable="true"] { outline:1px solid rgba(232,113,26,.5); border-radius:4px; background:rgba(232,113,26,.05); }
+
+    /* Restore + Add per list */
+    .t5-vc-list-restore {
+      display:flex; flex-wrap:wrap; gap:4px;
+      padding:4px 12px; flex-shrink:0;
+    }
+    .t5-vc-list-restore:empty { display:none; }
+    .t5-vc-list-restore-chip {
+      padding:2px 9px; border-radius:20px; cursor:pointer;
+      background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.15);
+      color:var(--text-muted); font-size:10px; font-weight:600;
+      font-family:inherit; transition:all .2s;
+    }
+    .t5-vc-list-restore-chip:hover { background:rgba(255,255,255,.15); color:#fff; }
+    .t5-vc-add-btn {
+      margin:4px 12px 8px; padding:3px 10px; border-radius:20px;
+      background:transparent; border:1px dashed rgba(255,255,255,.15);
+      color:rgba(255,255,255,.25); font-size:10px; font-weight:600;
+      letter-spacing:.04em; font-family:inherit; cursor:pointer;
+      transition:all .2s; align-self:flex-start; flex-shrink:0;
+    }
+    .t5-vc-add-bad:hover  { border-color:rgba(239,68,68,.4); color:#f87171; }
+    .t5-vc-add-good:hover { border-color:rgba(34,197,94,.4); color:#4ade80; }
+
+    /* Right image column */
+    .t5-vc-imgs {
+      display:flex; flex-direction:column; gap:10px; min-height:0; overflow:hidden;
+    }
+    .t5-vc-card {
+      flex:1; min-height:0; display:flex; flex-direction:column; gap:0;
+      border-radius:12px; border:1px solid var(--border);
+      background:var(--bg-card); overflow:hidden; position:relative;
+    }
+    .t5-vc-hide {
+      position:absolute; top:6px; right:6px; z-index:2;
+      width:20px; height:20px; border-radius:4px; padding:0;
+      background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.18);
+      color:rgba(255,255,255,.5); font-size:13px; font-weight:700;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+      transition:all .2s; line-height:1; font-family:inherit;
+    }
+    .t5-vc-hide:hover { background:rgba(239,68,68,.6); color:#fff; border-color:rgba(239,68,68,.4); }
+    .t5-vc-label {
+      padding:5px 10px; font-size:10px; font-weight:600; letter-spacing:.04em;
+      color:var(--text-muted); text-align:center; flex-shrink:0;
+      border-top:1px solid var(--border);
+    }
+    .t5-vc-restore {
+      display:flex; flex-direction:column; gap:4px; flex-shrink:0;
+    }
+    .t5-vc-restore:empty { display:none; }
+    .t5-vc-restore-chip {
+      padding:4px 10px; border-radius:8px; cursor:pointer; text-align:center;
+      background:rgba(255,255,255,.06); border:1px dashed rgba(255,255,255,.2);
+      color:var(--text-muted); font-size:10px; font-weight:600;
+      font-family:inherit; transition:all .2s;
+    }
+    .t5-vc-restore-chip:hover { background:rgba(255,255,255,.14); color:#fff; }
+
+    /* ── Tablet (769–1024px): vs Camera goes 2-col ── */
+    @media(max-width:1024px) and (min-width:769px) {
+      .t5-vc-wrap { grid-template-columns:1fr 1fr; }
+    }
+    /* ── Mobile (≤768px) ── */
+    @media(max-width:768px) {
+      .t5-components { grid-template-columns:1fr; }
+      .t5-vc-wrap { grid-template-columns:1fr; height:auto; overflow-y:auto; }
+    }
+  </style>
+
+  <script>
+  function t5VcInitList(ul, restoreArea, addBtn) {
+    if (!ul || ul._init) return;
+    ul._init = true;
+    var dragSrc = null;
+
+    function initItem(li, isNew) {
+      if (li._init) return;
+      li._init = true;
+
+      var ctrl = document.createElement('div');
+      ctrl.className = 't5-vc-item-controls';
+
+      var dragBtn = document.createElement('button');
+      dragBtn.className = 't5-vc-item-btn t5-vc-drag-btn';
+      dragBtn.textContent = '⠿'; dragBtn.title = 'Drag to reorder';
+      dragBtn.addEventListener('mousedown', function() { li.draggable = true; });
+      dragBtn.addEventListener('mouseup',   function() { li.draggable = false; });
+
+      var hideBtn = document.createElement('button');
+      hideBtn.className = 't5-vc-item-btn t5-vc-hide-btn';
+      hideBtn.textContent = '×';
+      hideBtn.title = isNew ? 'Delete' : 'Hide';
+      hideBtn.onclick = function(e) {
+        e.stopPropagation();
+        if (isNew) {
+          li.remove();
+        } else {
+          var text = li.innerText.replace('⠿×','').trim().substring(0, 40);
+          li.style.display = 'none';
+          if (restoreArea) {
+            var chip = document.createElement('button');
+            chip.className = 't5-vc-list-restore-chip';
+            chip.textContent = '+ ' + text;
+            chip.onclick = function(ev) { ev.stopPropagation(); li.style.display = ''; chip.remove(); };
+            restoreArea.appendChild(chip);
+          }
+        }
+      };
+
+      ctrl.appendChild(dragBtn);
+      ctrl.appendChild(hideBtn);
+      li.appendChild(ctrl);
+
+      li.addEventListener('dblclick', function(e) {
+        if (e.target.closest('.t5-vc-item-controls')) return;
+        e.stopPropagation(); e.preventDefault();
+        li.contentEditable = 'true'; li.focus();
+        li.addEventListener('blur', function done() {
+          li.contentEditable = 'false';
+          li.removeEventListener('blur', done);
+        }, { once: true });
+      });
+      li.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); li.blur(); } });
+
+      li.addEventListener('dragstart', function(ev) {
+        ev.dataTransfer.effectAllowed = 'move';
+        dragSrc = li;
+        setTimeout(function() { li.classList.add('t5-vc-dragging'); }, 0);
+      });
+      li.addEventListener('dragend', function() {
+        li.draggable = false;
+        li.classList.remove('t5-vc-dragging');
+        ul.querySelectorAll('li').forEach(function(r) { r.classList.remove('t5-vc-dragover'); });
+      });
+      li.addEventListener('dragover', function(ev) {
+        ev.preventDefault();
+        ul.querySelectorAll('li').forEach(function(r) { r.classList.remove('t5-vc-dragover'); });
+        if (li !== dragSrc) li.classList.add('t5-vc-dragover');
+      });
+      li.addEventListener('drop', function(ev) {
+        ev.stopPropagation();
+        if (dragSrc && dragSrc !== li) {
+          var items = Array.from(ul.querySelectorAll('li'));
+          var si = items.indexOf(dragSrc), ti = items.indexOf(li);
+          if (si < ti) ul.insertBefore(dragSrc, li.nextSibling);
+          else ul.insertBefore(dragSrc, li);
+        }
+        li.classList.remove('t5-vc-dragover');
+      });
+    }
+
+    ul.querySelectorAll('li').forEach(function(li) { initItem(li, false); });
+
+    if (addBtn) {
+      addBtn.onclick = function(e) {
+        e.stopPropagation();
+        var li = document.createElement('li');
+        li.textContent = 'New item';
+        ul.appendChild(li);
+        initItem(li, true);
+        li.dispatchEvent(new MouseEvent('dblclick'));
+      };
+    }
+  }
+
+  setTimeout(function() {
+    t5VcInitList(
+      document.getElementById('t5-vc-bad-list'),
+      document.getElementById('t5-vc-bad-restore'),
+      document.querySelector('.t5-vc-add-bad')
+    );
+    t5VcInitList(
+      document.getElementById('t5-vc-good-list'),
+      document.getElementById('t5-vc-good-restore'),
+      document.querySelector('.t5-vc-add-good')
+    );
+  }, 0);
+
+  window.t5VcHide = function(key) {
+    var card = document.getElementById('t5-vc-' + key);
+    var restore = document.getElementById('t5-vc-restore');
+    if (!card || !restore) return;
+    card.style.display = 'none';
+    var label = card.querySelector('.t5-vc-label').textContent.trim();
+    var chip = document.createElement('button');
+    chip.className = 't5-vc-restore-chip';
+    chip.textContent = '+ ' + label;
+    chip.onclick = function() { card.style.display = ''; chip.remove(); };
+    restore.appendChild(chip);
+  };
+
+  window.t5Tab = function(btn, id) {
+    var slide = btn.closest('.slide');
+    slide.querySelectorAll('.t5-tab').forEach(function(t) { t.classList.remove('active'); });
+    slide.querySelectorAll('.t5-panel').forEach(function(p) { p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('t5-' + id).classList.add('active');
+  };
+  </script>
+
+  <script>
+  (function () { var s = document.currentScript;
+    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
+  </script>
+</div>
