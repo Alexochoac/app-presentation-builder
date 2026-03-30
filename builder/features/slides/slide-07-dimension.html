@@ -1,0 +1,88 @@
+<div class="slide content ls7" style="justify-content:flex-start; align-items:center; padding:52px 80px 0;">
+  <div class="slide-logo-row"><img src="/slides/shared/LOGO SoftSolution grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="/slides/shared/LOGO LiteSentry Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
+
+  <div class="section-label" data-edit="section-label" contenteditable="" spellcheck="false">Dimensional Control</div>
+  <h1 class="slide-title" data-edit="headline" contenteditable="" spellcheck="false" style="margin-bottom:14px;">Precise measurement of <span class="blue">dimensions and cutoutss</span></h1>
+
+  <!-- ── Carousel ── -->
+  <div class="ls-carousel anim-in" data-edit="carousel" data-counter="" data-track="ls7:carousel" data-zoom-group="" style="flex:1;min-height:0;width:100%;max-width:860px;"><div class="ls-carousel-track" style="transform: translateX(-3440px);">
+      <div class="ls-carousel-slide">
+        <img src="/slides/uploads/Screenshot Scanned Piece of glass with cutouts and a shape and defects.png" alt="Dimensional control — automotive glass shapes" data-zoom="" data-track="ls7:zoom:dimensional-control" data-zoom-init="1">
+      </div>
+      <div class="ls-carousel-slide">
+        <img src="/slides/uploads/Dimension control screenshot drillhole alignment.jpg" alt="Drillhole alignment — dimensional control" data-zoom="" data-track="ls7:zoom:drillhole-alignment" data-zoom-init="1">
+      </div>
+      <div class="ls-carousel-slide">
+        <img src="/slides/uploads/Dimension control screenshot shape piece of glass with and scratch and a inclusion.jpg" alt="Dimensional control — scratch and inclusion detected" data-zoom="" data-track="ls7:zoom:scratch-inclusion" data-zoom-init="1">
+      </div>
+      <div class="ls-carousel-slide">
+        <img src="/slides/uploads/Dimension control Cutouts Drillholes and a Door.jpg" alt="Dimensional control — cutouts, drillholes and door" data-zoom="" data-track="ls7:zoom:cutouts-drillholes" data-zoom-init="1">
+      </div>
+    <div class="ls-carousel-slide"><img src="/slides/uploads/CostOfQualityDefects.png" alt="CostOfQualityDefects"></div></div></div>
+
+  <!-- ── Info cards — always above nav ── -->
+  <div class="ls7-cards anim-in" style="">
+    <div class="col-card">
+      <div class="col-label">What is measured?</div>
+      <div class="col-list">
+        <div class="col-item"><strong>Overall dimensions</strong> of the glass</div>
+        <div class="col-item"><strong>Position and size</strong> of drill holes</div>
+        <div class="col-item"><strong>Cutouts and notches</strong></div>
+        <div class="col-item"><strong>Angles and parallelism</strong> of edges</div>
+        <div class="col-item"><strong>Rotation and position</strong> on line</div>
+      </div>
+    </div>
+    <div class="col-card">
+      <div class="col-label">Setup &amp; tolerances</div>
+      <div class="col-list">
+        <div class="col-item">Compatible with <strong class="ls7-trigger" onclick="ls7OpenTolerances()">individual tolerances per measurement ↗</strong></div>
+        <div class="col-item"><strong>DXF</strong> model import</div>
+        <div class="col-item"><strong>2-step</strong> verification: global + detail</div>
+        <div class="col-item">Compatible with <strong class="ls7-trigger" onclick="ls7OpenConveyor()" data-umami-event="conveyor-gallery-open">belt conveyors ↗</strong></div>
+        <div class="col-item">Parallel light for <strong>maximum precision</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Scoped Styles ── -->
+  <style>
+    .ls7 { height: 100%; }
+
+    /* ── Info cards ── */
+    .ls7-cards {
+      flex-shrink: 0;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+      width: 100%; max-width: 860px;
+      margin-top: 12px;
+    }
+
+    /* ── Clickable text trigger ── */
+    .ls7-trigger {
+      cursor: pointer; color: #E8711A;
+      border-bottom: 1px dashed rgba(232,113,26,.4);
+      transition: border-color .2s;
+    }
+    .ls7-trigger:hover { border-bottom-color: #E8711A; }
+  </style>
+
+  <!-- ── Scoped Script ── -->
+  <script>
+  // Secondary gallery triggers — use global Lightbox component
+  window.ls7OpenTolerances = function () {
+    Lightbox.openGallery([
+      { src: '/slides/uploads/Slide30.jpg', caption: 'Individual tolerances per measurement' }
+    ], 0);
+  };
+  window.ls7OpenConveyor = function () {
+    Lightbox.openGallery([
+      { src: '/slides/uploads/Belt Conveyor Diagram.jpg',           caption: 'Belt conveyor — system diagram' },
+      { src: '/slides/uploads/Band Conveyor Picture.jpg',           caption: 'Band conveyor' },
+      { src: '/slides/uploads/Benteler Conveyor Picture .jpg',      caption: 'Benteler conveyor' },
+      { src: '/slides/uploads/LOGO Benteler.jpg',                   caption: 'Benteler' },
+      { src: '/slides/uploads/Belt Conveyour Diagram Top View.jpg', caption: 'Belt conveyor — top view diagram' }
+    ], 0);
+    if (window.Track) Track.event('ls7:expand:conveyor');
+  };
+
+  </script>
+</div>

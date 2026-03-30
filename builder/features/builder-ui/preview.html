@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LineScanner — Builder Preview</title>
+  <link rel="stylesheet" href="/slides/style.css">
+  <script src="/slides/components/tracker.js"></script>
+  <script src="/slides/components/lightbox.js"></script>
+  <script src="/slides/components/carousel.js"></script>
+  <script src="/slides/components/tabs.js"></script>
+  <style>
+    #previewBadge {
+      position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
+      z-index: 9999; pointer-events: none;
+      background: rgba(245,166,35,.15); border: 1px solid rgba(245,166,35,.35);
+      color: rgba(245,166,35,.8); font-size: 10px; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 100px;
+    }
+    #saveStatus {
+      position: fixed; top: 62px; right: 80px; z-index: 9999;
+      font-size: 10px; font-weight: 700; letter-spacing: .10em; text-transform: uppercase;
+      color: rgba(255,255,255,.35);
+      opacity: 0; transition: opacity .3s;
+      pointer-events: none;
+    }
+    #saveStatus.saving { opacity:1; }
+    #saveStatus.saved  { opacity:1; width:8px; height:8px; border-radius:50%; background:#34c759; font-size:0; }
+    #saveStatus.error  { opacity:1; color:#f87171; }
+  </style>
+</head>
+<body>
+
+  <div class="glow-orb a"></div>
+  <div class="glow-orb b"></div>
+  <div id="previewBadge">Builder Preview</div>
+
+  <div class="slides-container" id="slidesContainer"></div>
+
+  <button class="nav-arrow prev hidden" id="btnPrev">&#8249;</button>
+  <button class="nav-arrow next hidden" id="btnNext">&#8250;</button>
+  <div class="nav-dots" id="navDots"></div>
+  <div class="slide-counter" id="slideCounter"></div>
+  <div id="saveStatus"></div>
+
+  <!-- Lightbox -->
+  <div id="lightbox">
+    <div id="lb-inner">
+      <button id="lb-close">&#10005;</button>
+      <button id="lb-prev" class="lb-nav-btn">&#8249;</button>
+      <div id="lb-stage">
+        <img id="lb-img" src="" alt="">
+        <div id="lb-cap"></div>
+      </div>
+      <button id="lb-next" class="lb-nav-btn">&#8250;</button>
+      <div id="lb-thumbs"></div>
+    </div>
+  </div>
+
+  <script>
+  // ── Slide list ──────────────────────────────────────────────────────────────
+  const SLIDES = [
+    { file: '/slides/slide-01-cover.html',         name: 'cover' },
+    { file: '/slides/slide-02-company.html',        name: 'company' },
+    { file: '/slides/slide-03-why.html',            name: 'why' },
+    { file: '/slides/slide-04-linescanner.html',    name: 'linescanner' },
+    { file: '/slides/slide-05-technology.html',     name: 'technology' },
+    { file: '/slides/slide-06-surface.html',        name: 'surface' },
+    { file: '/slides/slide-07-dimension.html',      name: 'dimension' },
+    { file: '/slides/slide-08-screenprinting.html', name: 'screenprinting' },
+    { file: '/slides/slide-09-logo-check.html',     name: 'logo-check' },
+    { file: '/slides/slide-10-database.html',       name: 'database' },
+    { file: '/slides/slide-11-sensitivity.html',    name: 'sensitivity' },
+    { file: '/slides/slide-12-footprint.html',      name: 'footprint' },
+    { file: '/slides/slide-13-integrations.html',   name: 'integrations' },
+    { file: '/slides/slide-14-cta.html',            name: 'cta' },
+  ];
+
+  // ── State ───────────────────────────────────────────────────────────────────
+  var current        = 0;
+  var slideEls       = [];
+  var loaded         = {};   // { index: htmlString }
+  var slideStartTime = null;
+
+  // ── Fetch a slide HTML fragment ──────────────────────────────────────────────
+  function fetchSlide(index) {
+    if (loaded[index]) return Promise.resolve(loaded[index]);
+    return fetch(SLIDES[index].file)
+      .then(function (r) { return r.text(); })
+      .then(function (html) { loaded[index] = html; return html; });
+  }
+
+  // ── Inject a slide into the container ───────────────────────────────────────
+  function injectSlide(index, html) {
+    if (slideEls[index]) return slideEls[index];
+    var frag = document.createRange().createContextualFragment(html);
+    var el   = frag.querySelector('.slide');
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'slide';
+      el.appendChild(frag);
+    }
+    document.getElementById('slidesContainer').appendChild(el);
+    slideEls[index] = el;
+    if (window.Lightbox) Lightbox.init(el);
+    if (window.Carousel) Carousel.init(el);
+    if (window.Tabs)    Tabs.init(el);
+    return el;
+  }
+
+  // ── Track analytics ──────────────────────────────────────────────────────────
+  function trackEnter(index) {
+    slideStartTime = Date.now();
+    if (window.umami) umami.track('slide:' + SLIDES[index].name);
+  }
+
+  function trackExit(index) {
+    if (slideStartTime === null) return;
+    var seconds = Math.round((Date.now() - slideStartTime) / 1000);
+    slideStartTime = null;
+    if (window.umami && seconds > 0) {
+      umami.track('slide:' + SLIDES[index].name + ':time', { seconds: seconds });
+    }
+  }
+
+  // ── Navigate to a slide ──────────────────────────────────────────────────────
+  function goTo(index, direction) {
+    if (index < 0 || index >= SLIDES.length) return;
+    var prevIndex = current;
+
+    // Track exit of previous slide
+    trackExit(prevIndex);
+
+    // Animate out
+    if (slideEls[prevIndex]) {
+      slideEls[prevIndex].classList.add(direction === 1 ? 'exit-left' : 'exit-right');
+      slideEls[prevIndex].classList.remove('active');
+    }
+
+    current = index;
+
+    // Show new slide (already preloaded)
+    fetchSlide(index).then(function (html) {
+      var el = injectSlide(index, html);
+
+      // Reset entry animations
+      el.querySelectorAll('.anim-in').forEach(function (node) {
+        node.style.animation = 'none';
+        node.offsetHeight; // reflow
+        node.style.animation = '';
+      });
+
+      setTimeout(function () {
+        if (slideEls[prevIndex]) slideEls[prevIndex].classList.remove('exit-left', 'exit-right');
+      }, 700);
+
+      el.classList.add('active');
+      trackEnter(index);
+      updateNav();
+
+      // Preload next slide in background
+      if (index + 1 < SLIDES.length) fetchSlide(index + 1);
+    });
+  }
+
+  // ── Update nav UI ────────────────────────────────────────────────────────────
+  function updateNav() {
+    var btnPrev = document.getElementById('btnPrev');
+    var btnNext = document.getElementById('btnNext');
+    btnPrev.classList.toggle('hidden', current === 0);
+    btnNext.classList.toggle('hidden', current === SLIDES.length - 1);
+    document.getElementById('slideCounter').textContent = (current + 1) + ' / ' + SLIDES.length;
+    document.querySelectorAll('.nav-dot').forEach(function (dot, i) {
+      dot.classList.toggle('active', i === current);
+    });
+  }
+
+  // ── Build nav dots ───────────────────────────────────────────────────────────
+  function buildDots() {
+    var container = document.getElementById('navDots');
+    SLIDES.forEach(function (_, i) {
+      var dot = document.createElement('div');
+      dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', function () { goTo(i, i > current ? 1 : -1); });
+      container.appendChild(dot);
+    });
+  }
+
+  // ── Button handlers ──────────────────────────────────────────────────────────
+  document.getElementById('btnPrev').addEventListener('click', function () { goTo(current - 1, -1); });
+  document.getElementById('btnNext').addEventListener('click', function () { goTo(current + 1,  1); });
+
+  // ── Keyboard ─────────────────────────────────────────────────────────────────
+  document.addEventListener('keydown', function (e) {
+    if (e.target.getAttribute('contenteditable')) return; // don't hijack while editing
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown')  goTo(current + 1,  1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    goTo(current - 1, -1);
+  });
+
+  // ── Touch swipe ──────────────────────────────────────────────────────────────
+  var touchStartX = 0;
+  var touchStartY = 0;
+  document.addEventListener('touchstart', function (e) {
+    touchStartX = e.changedTouches[0].clientX;
+    touchStartY = e.changedTouches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchend', function (e) {
+    var dx = touchStartX - e.changedTouches[0].clientX;
+    var dy = touchStartY - e.changedTouches[0].clientY;
+    // Only trigger if horizontal swipe is dominant and far enough
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+      goTo(dx > 0 ? current + 1 : current - 1, dx > 0 ? 1 : -1);
+    }
+  });
+
+  // ── Carousel save (any slide dispatches slide-carousel-save) ─────────────
+  document.addEventListener('slide-carousel-save', function (e) {
+    var index    = String(current + 1).padStart(2, '0');
+    var filename = 'slide-' + index + '-' + SLIDES[current].name;
+    var editKey  = e.detail.editKey || 'carousel-track';
+    var body     = { slide: filename, edits: {} };
+    body.edits[editKey] = e.detail.html;
+    if (e.detail.autoplay) {
+      body.attrs = {};
+      body.attrs[editKey] = { 'data-autoplay': e.detail.autoplay };
+    }
+    showSaveStatus('saving');
+    fetch('/api/save', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(body)
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (d) { showSaveStatus(d.ok ? 'saved' : 'error'); })
+    .catch(function ()  { showSaveStatus('error'); });
+  });
+
+  // ── Image change (dispatched by slides after upload) ─────────────────────
+  document.addEventListener('slide-image-change', function (e) {
+    var index    = String(current + 1).padStart(2, '0');
+    var filename = 'slide-' + index + '-' + SLIDES[current].name;
+    showSaveStatus('saving');
+    fetch('/api/save-image-src', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ slide: filename, editKey: e.detail.editKey, src: e.detail.src })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) { showSaveStatus(data.ok ? 'saved' : 'error'); })
+    .catch(function ()   { showSaveStatus('error'); });
+  });
+
+  // ── Auto-save ────────────────────────────────────────────────────────────────
+  var saveTimer  = null;
+  var saveStatus = document.getElementById('saveStatus');
+
+  function showSaveStatus(state) {
+    saveStatus.className = state;
+    saveStatus.textContent = state === 'saving' ? 'Saving…' : state === 'error' ? 'Save failed' : '';
+    // error fades after a moment; saved dot stays until next edit
+    if (state === 'error') setTimeout(function () { saveStatus.className = ''; }, 3000);
+  }
+
+  function doSave() {
+    var slideEl  = slideEls[current];
+    var slideDef = SLIDES[current];
+    if (!slideEl || !slideDef) return;
+
+    var edits = {};
+    slideEl.querySelectorAll('[data-edit][contenteditable]').forEach(function (el) {
+      edits[el.getAttribute('data-edit')] = el.innerHTML;
+    });
+
+    if (Object.keys(edits).length === 0) return;
+
+    // Derive filename from slide index + name (e.g. slide-01-cover)
+    var index    = String(current + 1).padStart(2, '0');
+    var filename = 'slide-' + index + '-' + slideDef.name;
+
+    showSaveStatus('saving');
+
+    fetch('/api/save', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ slide: filename, edits: edits })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      showSaveStatus(data.ok ? 'saved' : 'error');
+    })
+    .catch(function () { showSaveStatus('error'); });
+  }
+
+  function scheduleSave() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(doSave, 1500);
+  }
+
+  // Listen for edits anywhere in the slides container
+  document.getElementById('slidesContainer').addEventListener('input', function (e) {
+    if (e.target.hasAttribute('contenteditable')) scheduleSave();
+  });
+
+  // ── Init ─────────────────────────────────────────────────────────────────────
+  buildDots();
+
+  // Load slide 0, preload slide 1
+  fetchSlide(0).then(function (html) {
+    injectSlide(0, html);
+    slideEls[0].classList.add('active');
+    trackEnter(0);
+    updateNav();
+    if (SLIDES.length > 1) fetchSlide(1);
+  }).catch(function (err) {
+    document.getElementById('slidesContainer').innerHTML =
+      '<div style="color:#f87171;padding:40px;font-family:monospace">Failed to load slide: ' + err.message + '</div>';
+  });
+  </script>
+
+</body>
+</html>

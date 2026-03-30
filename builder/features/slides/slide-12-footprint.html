@@ -1,0 +1,66 @@
+<div class="slide content ls12" style="justify-content:flex-start; align-items:center; padding:52px 80px 0;">
+  <div class="slide-logo-row"><img src="/slides/shared/LOGO SoftSolution grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="/slides/shared/LOGO LiteSentry Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
+
+  <div class="section-label" data-edit="section-label" contenteditable="" spellcheck="false">Installation</div>
+  <h1 class="slide-title" data-edit="headline" contenteditable="" spellcheck="false">Modular based — <span class="blue">minimum footprint</span></h1>
+  <p class="slide-subtitle" data-edit="subtitle" contenteditable="" spellcheck="false" style="margin-bottom:12px; margin-top:-6px;">unique · worldwide</p>
+
+  <!-- ── Diagram + badges ── -->
+  <div class="ls12-diagram-wrap anim-in" style="">
+    <img class="ls12-diagram" src="/slides/uploads/Slide66.jpg" alt="LineScanner footprint diagram"
+         data-zoom data-track="ls12:zoom:footprint-diagram">
+
+    <!-- Spec badges overlaid -->
+    <div class="ls12-badge ls12-badge-h">
+      <div class="ls12-badge-title">Horizontal</div>
+      <div class="ls12-badge-spec">Depth ~475 mm</div>
+      <div class="ls12-badge-spec">Individual width as required</div>
+    </div>
+
+    <div class="ls12-badge ls12-badge-v">
+      <div class="ls12-badge-title">Vertical</div>
+      <div class="ls12-badge-spec">Width ~700 mm</div>
+      <div class="ls12-badge-spec">Depth only 420 mm</div>
+    </div>
+  </div>
+
+  <!-- ── Scoped Styles ── -->
+  <style>
+    .ls12 { height: 100%; }
+
+    .ls12-diagram-wrap {
+      flex: 1; min-height: 0;
+      width: 100%; max-width: 860px;
+      position: relative;
+      margin-bottom: 0;
+    }
+
+    .ls12-diagram {
+      width: 100%; height: 100%;
+      object-fit: contain; object-position: center;
+      border-radius: 12px; display: block;
+      transition: opacity .2s;
+    }
+    .ls12-diagram:hover { opacity: .88; }
+
+    /* Spec badges */
+    .ls12-badge {
+      position: absolute;
+      background: #E8711A; color: #fff;
+      border-radius: 20px; padding: 10px 18px;
+      display: flex; flex-direction: column; gap: 2px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.3);
+      pointer-events: none;
+    }
+    .ls12-badge-title { font-size: 13px; font-weight: 800; letter-spacing: .02em; }
+    .ls12-badge-spec  { font-size: 11px; opacity: .9; }
+
+    .ls12-badge-h { top: 12%; right: 4%; }
+    .ls12-badge-v { bottom: 12%; left: 26%; }
+  </style>
+
+  <script>
+  (function () { var s = document.currentScript;
+    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
+  </script>
+</div>
