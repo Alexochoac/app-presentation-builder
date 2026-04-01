@@ -13,9 +13,11 @@ Sales teams use it to build customer-specific decks, then publish to GitHub Page
 - `builder/features/slides/slide-NN-*.html` — Self-contained slide fragments
 - `builder/features/slides/style.css` — Shared CSS for all slides
 - `builder/features/slides/components/` — Reusable JS components:
-  - `carousel.js` — `.ls-carousel` declarative image carousel
+  - `carousel.js` — `.ls-carousel` declarative image carousel (add/delete/reorder/zoom)
   - `lightbox.js` — zoom/gallery lightbox, `data-zoom` + `data-zoom-group`
-  - `tabs.js` — `.ls-tabs` declarative tab switcher (new)
+  - `tabs.js` — `.ls-tabs` declarative tab switcher (add/delete/rename tabs)
+  - `list.js` — `ul[data-ls-list]` editable list (add/hide/delete/reorder/edit)
+  - `table.js` — `table[data-ls-table]` capability matrix (rows + columns fully editable)
   - `tracker.js` — Umami analytics
 
 ## Component Conventions
@@ -24,7 +26,9 @@ Sales teams use it to build customer-specific decks, then publish to GitHub Page
 - `data-counter` on `.ls-carousel` → shows "1 / N" counter
 - `data-builder-only` → element stripped in final customer output
 - `data-edit="key"` → editable in builder, auto-saved to disk
-- Carousel save dispatches `slide-carousel-save` custom event
+- `data-ls-list` on `<ul>` → list.js takes over
+- `data-ls-table` on `<table>` → table.js takes over
+- Carousel/list/table saves dispatch `slide-carousel-save` custom event
 
 ## Completed This Project
 - [x] Builder foundation: Express server, preview.html, save/upload API
@@ -32,17 +36,18 @@ Sales teams use it to build customer-specific decks, then publish to GitHub Page
 - [x] `carousel.js` component — replaces all per-slide carousel implementations
 - [x] `lightbox.js` component — gallery mode with thumbnails, zoom sync
 - [x] `tabs.js` component — add/delete/rename tabs, each panel holds carousel
-- [x] All slides 04–12 migrated to `.ls-carousel` + `data-zoom` (removed ~200–300 lines of per-slide CSS+JS each)
-- [x] Carousel save bug fixed (outerHTML vs innerHTML)
-- [x] Lightbox → carousel zoom-sync on close
+- [x] `list.js` component — add/hide/delete/reorder/edit, auto-save
+- [x] `table.js` component — row/col add/hide/delete/reorder/edit, dot cycling, auto-save
+- [x] All slides 04–12 migrated to `.ls-carousel` + `data-zoom`
+- [x] All tab-bearing slides (02, 04, 05, 10) migrated to `ls-tabs`
+- [x] Slides 03, 05 lists migrated to `list.js`
+- [x] Slide-04 tables migrated to `table.js` (baked-in duplicate controls stripped)
+- [x] Slide-02 world map `data-zoom` added
+- [x] Content padding fix (nav bar overlap)
+- [x] Dark-mode scrollbars
 
 ## Next Steps
-- [ ] Test all migrated slides in browser (carousels, zoom, save/reload)
-- [ ] Migrate slide-10 `ls10-tabs` to new `ls-tabs` component
-- [ ] Migrate slides 02 and 04 tab systems to `ls-tabs` component
-- [ ] IMAGES: Every image component (including single images) should use `.ls-carousel` — add/delete/reorder/zoom/autoplay
-- [ ] TABLES: All tables — reorderable rows, inline-editable cells, add/delete rows, responsive
-- [ ] LISTS: All lists — reorderable, editable, add/delete items, responsive
+- [ ] Test all slides end-to-end in browser (carousels, tabs, lists, tables, zoom, save/reload)
 - [ ] Image alt text editable in builder (renames file for Umami tracking consistency)
 - [ ] `scripts/build.js` — assemble final customer HTML, strip `data-builder-only`
 - [ ] `scripts/deploy.js` — push to GitHub Pages
@@ -53,4 +58,4 @@ Sales teams use it to build customer-specific decks, then publish to GitHub Page
 - **Phase 3** — Interactive slides (polls, Q&A), custom per-slide components
 - **Phase 4** — White-label, AI, CRM integrations
 
-Last updated: 2026-03-30
+Last updated: 2026-04-01

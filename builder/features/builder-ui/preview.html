@@ -9,6 +9,8 @@
   <script src="/slides/components/lightbox.js"></script>
   <script src="/slides/components/carousel.js"></script>
   <script src="/slides/components/tabs.js"></script>
+  <script src="/slides/components/list.js"></script>
+  <script src="/slides/components/table.js"></script>
   <style>
     #previewBadge {
       position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
@@ -106,6 +108,8 @@
     if (window.Lightbox) Lightbox.init(el);
     if (window.Carousel) Carousel.init(el);
     if (window.Tabs)    Tabs.init(el);
+    if (window.List)    List.init(el);
+    if (window.LSTable) LSTable.init(el);
     return el;
   }
 
@@ -252,8 +256,9 @@
   });
 
   // ── Auto-save ────────────────────────────────────────────────────────────────
-  var saveTimer  = null;
-  var saveStatus = document.getElementById('saveStatus');
+  var saveTimer      = null;
+  var saveStatus     = document.getElementById('saveStatus');
+  var dirtyEditKeys  = new Set();
 
   function showSaveStatus(state) {
     saveStatus.className = state;
@@ -271,6 +276,17 @@
     slideEl.querySelectorAll('[data-edit][contenteditable]').forEach(function (el) {
       edits[el.getAttribute('data-edit')] = el.innerHTML;
     });
+
+    // Also save [data-edit] containers whose children were edited (e.g. list items)
+    dirtyEditKeys.forEach(function(key) {
+      if (edits[key]) return; // already saved by standard path
+      var container = slideEl.querySelector('[data-edit="' + key + '"]');
+      if (!container) return;
+      var clone = container.cloneNode(true);
+      clone.querySelectorAll('[data-builder-only]').forEach(function(n) { n.remove(); });
+      edits[key] = clone.innerHTML;
+    });
+    dirtyEditKeys.clear();
 
     if (Object.keys(edits).length === 0) return;
 
@@ -299,7 +315,15 @@
 
   // Listen for edits anywhere in the slides container
   document.getElementById('slidesContainer').addEventListener('input', function (e) {
-    if (e.target.hasAttribute('contenteditable')) scheduleSave();
+    var el = e.target;
+    while (el) {
+      if (el.hasAttribute('data-edit')) {
+        dirtyEditKeys.add(el.getAttribute('data-edit'));
+        break;
+      }
+      el = el.parentElement;
+    }
+    scheduleSave();
   });
 
   // ── Init ─────────────────────────────────────────────────────────────────────

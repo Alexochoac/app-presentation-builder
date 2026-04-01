@@ -1,14 +1,7 @@
 # TODO — Presentation Builder
 
 ## Immediate (test + stabilize)
-- [ ] Test all migrated slides in browser: carousels, zoom, save/reload, zoom-sync
-- [ ] Migrate slide-10 `ls10-tabs` → new `ls-tabs` component
-- [ ] Migrate slides 02 and 04 tab systems → `ls-tabs` component
-
-## Component Standardization (Phase 1 priority)
-- [ ] IMAGES: Every single image in any slide → use `.ls-carousel` (add/delete/reorder/zoom/autoplay)
-- [ ] TABLES: Reorderable rows, inline-editable cells, add/delete rows, responsive
-- [ ] LISTS: Reorderable items, editable, add/delete, responsive
+- [ ] Test all slides end-to-end: carousels, tabs, lists, tables, zoom, save/reload
 - [ ] Image alt text editable in builder → rename file for Umami tracking
 
 ## Build & Deploy
@@ -18,9 +11,18 @@
 ## Completed
 - [x] Builder foundation: Express server, preview.html, save/upload API
 - [x] Slides 01–14 with `data-edit` + `contenteditable`
-- [x] `carousel.js` — reusable carousel component
+- [x] `carousel.js` — reusable carousel (add/delete/reorder/zoom/autoplay)
 - [x] `lightbox.js` — gallery lightbox with thumbnails + zoom sync
 - [x] `tabs.js` — add/delete/rename tabs, each holds carousel
+- [x] `list.js` — add/hide/delete/reorder/dblclick-edit, auto-save
+- [x] `table.js` — row+col add/hide/delete/reorder/edit, dot cycling, auto-save
 - [x] All slides 04–12 migrated to `.ls-carousel` + `data-zoom`
+- [x] All tab-bearing slides (02, 04, 05, 10) migrated to `ls-tabs`
+- [x] Slides 03 + 05 lists migrated to `list.js`
+- [x] Slide-04 tables migrated to `table.js` (stripped 27 duplicate baked-in controls)
+- [x] Slide-02 world map `data-zoom` added
+- [x] Content padding fix (slides hidden behind nav bar)
+- [x] Dark-mode scrollbars
 - [x] Carousel save bug fixed (outerHTML)
 - [x] Lightbox → carousel position sync on close
+- [x] list.js + table.js registered in preview.html
