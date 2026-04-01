@@ -1,28 +1,5 @@
 # Sessions
 
-## 2026-03-30 — Component standardization + new components
-
-### Accomplished
-- Migrated slides 07, 08, 09, 10, 11, 12 from custom per-slide carousel/lightbox (~200–300 lines each) to shared `.ls-carousel` + `data-zoom` components
-- Migrated slide-04 scanner carousel from `ls4CarGo` custom dot-nav to `.ls-carousel`
-- Fixed carousel save bug: `saveCarousel()` was saving `innerHTML` (missing track wrapper) — now saves `outerHTML` and strips runtime-injected captions
-- Added lightbox → carousel zoom-sync: navigating in lightbox then closing jumps the carousel to match
-- Created `tabs.js` component: declarative `.ls-tabs` with add/delete/rename tabs, each panel holds any content including `.ls-carousel`. Builder-only controls stripped in final output
-- Registered `tabs.js` in `preview.html`
-- Created `CONTEXT.md` and `TODO.md` for project
-
-### Pending
-- Test all migrated slides in browser (carousels, zoom, save/reload, zoom-sync on close)
-- Migrate slide-10 `ls10-tabs` → `ls-tabs` component
-- Migrate slides 02 and 04 tab systems → `ls-tabs` component
-- IMAGES: every single image → `.ls-carousel`
-- TABLES: reorderable, editable, add/delete, responsive
-- LISTS: reorderable, editable, add/delete, responsive
-- Image alt text editable → renames file for Umami tracking
-- `scripts/build.js` and `scripts/deploy.js`
-
----
-
 ## 2026-04-01 — list.js + table.js + full tab/list migration
 
 ### Accomplished
@@ -40,6 +17,35 @@
 
 ### Pending
 - Test all slides in browser end-to-end
+- Image alt text editable in builder (rename file for Umami tracking)
+- `scripts/build.js` — assemble customer HTML, strip `data-builder-only`
+- `scripts/deploy.js` — push to GitHub Pages
+
+---
+
+## 2026-04-01 (session 2) — Image management + compare mode + slide-06 migration
+
+### Accomplished
+- Fixed slide-04 proc table "Add row" button (wrong `data-table="proc"` attr → `data-ls-add-row`)
+- Fixed lightbox zoom freeze: MutationObserver caused infinite loop on `classList.remove` — replaced with direct removal in `close()`
+- Fixed `data-zoom-init` persisting to saved HTML blocking re-wiring on reload — switched to JS property `el._lsZoomInit`
+- Fixed slide-04 capability carousel missing `data-edit` (saves were silently failing)
+- Fixed duplicate `.ls-carousel-counter` divs accumulating on every save — `saveCarousel` now strips them before saving
+- Added `data-zoom` attribute to newly uploaded carousel images so they appear in lightbox gallery
+- Added `+ Add Image` button inside lightbox (shown when carousel triggered the open)
+- Added carousel image reorder: ◀▶ buttons on hover per slide, saves to disk
+- Added autoplay toggle button per carousel: cycles Off → 3s → 5s → 10s → 15s
+- Added `ensureMoveButtons` with per-slide mouseenter show/hide for move buttons
+- Added full compare mode to carousel: Split (50/50 static) and Reveal (draggable handle) — `⇔ Compare` button on any single slide, per-side replace, editable labels, exit compare
+- Added `data-no-caption` attribute to suppress auto-caption overlay on carousels with external labels (slide-05 vc-cards)
+- Moved carousel counter to bottom-right corner
+- Created `.claude/settings.json` with allow list for Edit, Write, Read, Bash(node/npm/mkdir/cat/ls/tail) so background agents don't need per-tool approval
+- Migrated slide-06 from custom JS DEFECTS array + custom stage/viewport/arrows to 11 standard `ls-carousel` divs (one per defect category), compare slides use `ls-compare`, selector buttons show/hide the right carousel — removed ~200 lines custom JS/CSS
+
+### Pending
+- Audit slides 07–14 for standalone `<img>` tags that need converting to `ls-carousel`
+- Test slide-06 compare slides (Split/Reveal) in browser
+- Test all slides end-to-end
 - Image alt text editable in builder (rename file for Umami tracking)
 - `scripts/build.js` — assemble customer HTML, strip `data-builder-only`
 - `scripts/deploy.js` — push to GitHub Pages
