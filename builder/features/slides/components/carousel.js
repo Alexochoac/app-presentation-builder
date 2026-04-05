@@ -1,16 +1,23 @@
 /**
  * carousel.js — Presentation Builder Carousel Component
  *
- * One reusable carousel implementation for all slides.
- * Replaces per-slide carousel code with a single declarative component.
+ * Slide modes:
+ *   Single  — one image per slide (default)
+ *   Compare — two images, togglable between Split (50/50) and Reveal (drag handle)
  *
- * HTML structure:
+ * HTML structure (single):
  *   <div class="ls-carousel" data-edit="key" data-autoplay="4000" data-track="ls4:carousel">
  *     <div class="ls-carousel-track">
  *       <div class="ls-carousel-slide">
- *         <img src="/slides/uploads/image.jpg" alt="Caption text">
+ *         <img src="..." alt="Caption">
  *       </div>
  *     </div>
+ *   </div>
+ *
+ * HTML structure (compare, saved):
+ *   <div class="ls-carousel-slide ls-compare" data-compare-mode="split">
+ *     <img class="ls-cmp-left"  src="..." alt="Label A">
+ *     <img class="ls-cmp-right" src="..." alt="Label B">
  *   </div>
  *
  * Usage:
@@ -25,6 +32,7 @@ window.Carousel = (function () {
     var style = document.createElement('style');
     style.id = 'ls-carousel-styles';
     style.textContent = [
+      /* ── Base carousel ── */
       '.ls-carousel{position:relative;overflow:hidden;border-radius:14px;border:1px solid rgba(255,255,255,.07);background:#0a0a0a;width:100%;height:100%;}',
       '.ls-carousel-track{display:flex;height:100%;transition:transform .5s cubic-bezier(.4,0,.2,1);}',
       '.ls-carousel-slide{flex:0 0 100%;height:100%;position:relative;}',
@@ -39,10 +47,78 @@ window.Carousel = (function () {
       '.ls-carousel-del{position:absolute;top:8px;left:8px;z-index:22;width:24px;height:24px;border-radius:50%;background:rgba(180,30,30,.75);border:1px solid rgba(255,100,100,.30);color:#fff;font-size:13px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s,background .2s;font-family:inherit;}',
       '.ls-carousel-slide:hover .ls-carousel-del{opacity:1;}',
       '.ls-carousel-del:hover{background:rgba(220,40,40,1);}',
-      '.ls-carousel-counter{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:.06em;pointer-events:none;z-index:5;}',
+      '.ls-carousel-counter{position:absolute;bottom:10px;right:12px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:.06em;pointer-events:none;z-index:5;}',
+
+      /* ── Compare enter button (on single slides, hover) ── */
+      '.ls-cmp-enter{position:absolute;top:8px;left:50%;transform:translateX(-50%);padding:3px 10px;border-radius:20px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.45);font-size:10px;font-weight:700;letter-spacing:.05em;cursor:pointer;z-index:8;opacity:0;transition:all .2s;font-family:inherit;white-space:nowrap;}',
+      '.ls-carousel-slide:hover .ls-cmp-enter{opacity:1;}',
+      '.ls-cmp-enter:hover{border-color:#E8711A;color:#E8711A;}',
+
+      /* ── Compare slide base ── */
+      '.ls-compare{overflow:hidden;}',
+      '.ls-cmp-side{position:absolute;top:0;bottom:0;overflow:hidden;}',
+      '.ls-cmp-side img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;}',
+
+      /* ── Split mode ── */
+      '.ls-compare.ls-split .ls-cmp-side-left{left:0;right:50.1%;}',
+      '.ls-compare.ls-split .ls-cmp-side-right{left:50.1%;right:0;}',
+      '.ls-cmp-divider{position:absolute;top:0;bottom:0;left:50%;width:2px;background:rgba(255,255,255,.35);transform:translateX(-50%);z-index:6;pointer-events:none;}',
+
+      /* ── Reveal mode ── */
+      '.ls-compare.ls-reveal .ls-cmp-side-left{left:0;right:0;}',
+      '.ls-compare.ls-reveal .ls-cmp-side-right{left:0;right:0;clip-path:inset(0 50% 0 0);}',
+      '.ls-cmp-handle{position:absolute;top:0;bottom:0;left:50%;width:4px;background:#fff;transform:translateX(-50%);cursor:ew-resize;z-index:10;box-shadow:0 0 10px rgba(0,0,0,.5);touch-action:none;}',
+      '.ls-cmp-handle-grip{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:32px;height:32px;border-radius:50%;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:13px;color:#333;user-select:none;pointer-events:none;}',
+
+      /* ── Labels ── */
+      '.ls-cmp-label{position:absolute;bottom:10px;padding:3px 10px;background:rgba(0,0,0,.65);color:#fff;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.03em;white-space:nowrap;z-index:7;cursor:default;}',
+      '.ls-cmp-label-left{left:8px;}',
+      '.ls-cmp-label-right{right:8px;}',
+      '.ls-cmp-label[contenteditable="true"]{outline:1px solid rgba(232,113,26,.6);cursor:text;}',
+
+      /* ── Per-side replace button ── */
+      '.ls-cmp-replace{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);font-size:14px;cursor:pointer;z-index:8;opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;font-family:inherit;}',
+      '.ls-cmp-side:hover .ls-cmp-replace{opacity:1;}',
+      '.ls-cmp-replace:hover{background:rgba(245,166,35,.3);border-color:#F5A623;color:#F5A623;}',
+
+      /* ── Mode toggle + exit buttons ── */
+      '.ls-cmp-mode-btn{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);padding:3px 12px;border-radius:20px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.6);font-size:10px;font-weight:700;letter-spacing:.05em;cursor:pointer;font-family:inherit;z-index:8;transition:all .2s;white-space:nowrap;}',
+      '.ls-cmp-mode-btn:hover{border-color:#E8711A;color:#E8711A;}',
+      '.ls-cmp-exit{position:absolute;top:8px;right:38px;padding:3px 8px;border-radius:20px;background:rgba(0,0,0,.6);border:1px solid rgba(255,100,100,.3);color:rgba(255,100,100,.65);font-size:10px;font-weight:700;letter-spacing:.04em;cursor:pointer;font-family:inherit;z-index:8;opacity:0;transition:opacity .2s;}',
+      '.ls-compare:hover .ls-cmp-exit{opacity:1;}',
+      '.ls-cmp-exit:hover{background:rgba(220,40,40,.3);}',
     ].join('');
     document.head.appendChild(style);
   })();
+
+  // ── Upload helper ─────────────────────────────────────────────────────────
+
+  function uploadImage(file, callback) {
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      fetch('/api/upload-image', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ filename: file.name, data: ev.target.result })
+      })
+      .then(function (r) { return r.json(); })
+      .then(function (data) { if (data.path) callback(data.path); });
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function pickImage(callback) {
+    var input = document.createElement('input');
+    input.type = 'file'; input.accept = 'image/*'; input.style.display = 'none';
+    document.body.appendChild(input);
+    input.addEventListener('change', function (e) {
+      document.body.removeChild(input);
+      var file = e.target.files[0];
+      if (!file) return;
+      uploadImage(file, function (path) { callback(path, file.name.replace(/\.[^.]+$/, '')); });
+    });
+    input.click();
+  }
 
   // ── Init a single carousel element ───────────────────────────────────────
 
@@ -50,17 +126,17 @@ window.Carousel = (function () {
     if (el._lsCarouselInit) return;
     el._lsCarouselInit = true;
 
-    var track      = el.querySelector('.ls-carousel-track');
-    var editKey    = el.getAttribute('data-edit') || 'carousel';
-    var autoplayMs = parseInt(el.getAttribute('data-autoplay'), 10) || 0;
-    var trackId    = el.getAttribute('data-track') || '';
+    var track       = el.querySelector('.ls-carousel-track');
+    var editKey     = el.getAttribute('data-edit') || 'carousel';
+    var autoplayMs  = parseInt(el.getAttribute('data-autoplay'), 10) || 0;
+    var trackId     = el.getAttribute('data-track') || '';
     var showCounter = el.hasAttribute('data-counter') && el.getAttribute('data-counter') !== 'false';
-    var idx        = 0;
-    var timer      = null;
+    var idx         = 0;
+    var timer       = null;
 
     if (!track) return;
 
-    // ── Inject nav buttons ──────────────────────────────────────────────────
+    // ── Nav buttons ─────────────────────────────────────────────────────────
     var prevBtn = document.createElement('button');
     prevBtn.className = 'ls-carousel-btn ls-carousel-prev';
     prevBtn.setAttribute('data-builder-only', '');
@@ -77,6 +153,8 @@ window.Carousel = (function () {
     addBtn.textContent = '+ Image';
 
     // ── Counter (optional) ──────────────────────────────────────────────────
+    // Remove any stale counter divs left over from saved HTML before adding a fresh one
+    el.querySelectorAll('.ls-carousel-counter').forEach(function (n) { n.remove(); });
     var counterEl = null;
     if (showCounter) {
       counterEl = document.createElement('div');
@@ -84,9 +162,38 @@ window.Carousel = (function () {
       el.appendChild(counterEl);
     }
 
+    // ── Autoplay toggle ─────────────────────────────────────────────────────
+    var autoplaySteps = [0, 3000, 5000, 10000, 15000];
+    var autoplayIdx   = Math.max(0, autoplaySteps.indexOf(autoplayMs));
+
+    var autoBtn = document.createElement('button');
+    autoBtn.className = 'ls-carousel-add';
+    autoBtn.setAttribute('data-builder-only', '');
+    autoBtn.style.cssText = 'right:auto;left:10px;bottom:8px;';
+
+    function updateAutoLabel() {
+      var ms = autoplaySteps[autoplayIdx];
+      autoBtn.textContent = ms === 0 ? '⏸ Auto' : '▶ ' + (ms / 1000) + 's';
+      autoBtn.title = ms === 0 ? 'Autoplay off — click to enable' : 'Autoplay ' + (ms / 1000) + 's — click to change';
+    }
+    updateAutoLabel();
+
+    autoBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      autoplayIdx = (autoplayIdx + 1) % autoplaySteps.length;
+      autoplayMs  = autoplaySteps[autoplayIdx];
+      updateAutoLabel();
+      clearInterval(timer);
+      resetTimer();
+      document.dispatchEvent(new CustomEvent('slide-carousel-save', {
+        detail: { editKey: editKey, html: null, autoplay: autoplayMs }
+      }));
+    });
+
     el.appendChild(prevBtn);
     el.appendChild(nextBtn);
     el.appendChild(addBtn);
+    el.appendChild(autoBtn);
 
     // ── Helpers ─────────────────────────────────────────────────────────────
 
@@ -123,14 +230,29 @@ window.Carousel = (function () {
 
     function saveCarousel() {
       var clone = track.cloneNode(true);
-      clone.querySelectorAll('.ls-carousel-del').forEach(function (d) { d.remove(); });
+      clone.querySelectorAll('[data-builder-only]').forEach(function (n) { n.remove(); });
       clone.querySelectorAll('.ls-carousel-caption').forEach(function (c) { c.remove(); });
+      clone.querySelectorAll('[data-zoom-init]').forEach(function (n) { n.removeAttribute('data-zoom-init'); });
+      // Strip stale counter divs that accumulate on repeated saves
+      clone.querySelectorAll('.ls-carousel-counter').forEach(function (n) { n.remove(); });
+
+      // Unwrap compare slides: side divs → flat imgs back on the slide element
+      clone.querySelectorAll('.ls-compare').forEach(function (s) {
+        var li = s.querySelector('.ls-cmp-side-left  img');
+        var ri = s.querySelector('.ls-cmp-side-right img');
+        s.innerHTML = '';
+        if (li) { li.className = 'ls-cmp-left';  li.removeAttribute('data-zoom-init'); s.appendChild(li); }
+        if (ri) { ri.className = 'ls-cmp-right'; ri.removeAttribute('data-zoom-init'); s.appendChild(ri); }
+      });
+
       document.dispatchEvent(new CustomEvent('slide-carousel-save', {
         detail: { editKey: editKey, html: clone.outerHTML }
       }));
     }
 
-    function ensureDelBtn(slide, isNew) {
+    // ── Delete button ────────────────────────────────────────────────────────
+
+    function ensureDelBtn(slide) {
       if (slide.querySelector('.ls-carousel-del')) return;
       var del = document.createElement('button');
       del.className = 'ls-carousel-del';
@@ -149,15 +271,301 @@ window.Carousel = (function () {
       slide.insertBefore(del, slide.firstChild);
     }
 
+    // ── Move left/right buttons ──────────────────────────────────────────────
+
+    function ensureMoveButtons(slide) {
+      if (slide.querySelector('.ls-carousel-move')) return;
+
+      var moveLeft = document.createElement('button');
+      moveLeft.className = 'ls-carousel-btn ls-carousel-move';
+      moveLeft.setAttribute('data-builder-only', '');
+      moveLeft.textContent = '◀';
+      moveLeft.title = 'Move image left';
+      moveLeft.style.cssText = 'position:absolute;top:8px;left:8px;width:26px;height:26px;font-size:13px;z-index:22;opacity:0;transition:opacity .2s;';
+
+      var moveRight = document.createElement('button');
+      moveRight.className = 'ls-carousel-btn ls-carousel-move';
+      moveRight.setAttribute('data-builder-only', '');
+      moveRight.textContent = '▶';
+      moveRight.title = 'Move image right';
+      moveRight.style.cssText = 'position:absolute;top:8px;right:38px;width:26px;height:26px;font-size:13px;z-index:22;opacity:0;transition:opacity .2s;';
+
+      moveLeft.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var slides = getSlides();
+        var i = slides.indexOf(slide);
+        if (i > 0) { track.insertBefore(slide, slides[i - 1]); goTo(i - 1); saveCarousel(); }
+      });
+
+      moveRight.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var slides = getSlides();
+        var i = slides.indexOf(slide);
+        if (i < slides.length - 1) { track.insertBefore(slide, slides[i + 2] || null); goTo(i + 1); saveCarousel(); }
+      });
+
+      slide.addEventListener('mouseenter', function () {
+        var slides = getSlides();
+        var i = slides.indexOf(slide);
+        moveLeft.style.opacity  = i > 0                 ? '1' : '0';
+        moveRight.style.opacity = i < slides.length - 1 ? '1' : '0';
+      });
+      slide.addEventListener('mouseleave', function () {
+        moveLeft.style.opacity = '0';
+        moveRight.style.opacity = '0';
+      });
+
+      slide.appendChild(moveLeft);
+      slide.appendChild(moveRight);
+    }
+
+    // ── Compare mode ─────────────────────────────────────────────────────────
+
+    function ensureCompareBtn(slide) {
+      if (slide.classList.contains('ls-compare')) return;
+      if (slide.querySelector('.ls-cmp-enter')) return;
+      var btn = document.createElement('button');
+      btn.className = 'ls-cmp-enter';
+      btn.setAttribute('data-builder-only', '');
+      btn.textContent = '⇔ Compare';
+      btn.title = 'Compare two images side by side';
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        enterCompare(slide);
+      });
+      slide.appendChild(btn);
+    }
+
+    function enterCompare(slide) {
+      var existingImg = slide.querySelector('img:not([data-builder-only])');
+      if (!existingImg) return;
+      pickImage(function (path, name) {
+        // Mark existing as left
+        existingImg.classList.add('ls-cmp-left');
+        existingImg.setAttribute('data-zoom', '');
+        // Create right img
+        var rightImg = document.createElement('img');
+        rightImg.src = path;
+        rightImg.alt = name;
+        rightImg.className = 'ls-cmp-right';
+        rightImg.setAttribute('data-zoom', '');
+        slide.appendChild(rightImg);
+        // Activate compare
+        slide.classList.add('ls-compare');
+        slide.dataset.compareMode = 'split';
+        // Remove all builder-only controls then rebuild
+        slide.querySelectorAll('[data-builder-only]').forEach(function (n) { n.remove(); });
+        slide._lsCmpBuilt = false;
+        buildCompareUI(slide);
+        ensureDelBtn(slide);
+        ensureMoveButtons(slide);
+        if (window.Lightbox) Lightbox.init(slide);
+        saveCarousel();
+      });
+    }
+
+    function exitCompare(slide) {
+      var leftImg = slide.querySelector('.ls-cmp-side-left img');
+      if (!leftImg) leftImg = slide.querySelector('.ls-cmp-left');
+      var src = leftImg ? leftImg.src  : '';
+      var alt = leftImg ? leftImg.alt  : '';
+      // Rebuild slide as single
+      slide.innerHTML = '';
+      slide.classList.remove('ls-compare', 'ls-split', 'ls-reveal');
+      delete slide.dataset.compareMode;
+      slide._lsCmpBuilt = false;
+      if (src) {
+        var img = document.createElement('img');
+        img.src = src; img.alt = alt;
+        img.setAttribute('data-zoom', '');
+        slide.appendChild(img);
+      }
+      ensureDelBtn(slide);
+      ensureMoveButtons(slide);
+      ensureCompareBtn(slide);
+      if (window.Lightbox) Lightbox.init(slide);
+      saveCarousel();
+    }
+
+    function buildCompareUI(slide) {
+      if (slide._lsCmpBuilt) return;
+      slide._lsCmpBuilt = true;
+
+      var leftImg  = slide.querySelector('img.ls-cmp-left');
+      var rightImg = slide.querySelector('img.ls-cmp-right');
+      if (!leftImg || !rightImg) return;
+
+      var mode = slide.dataset.compareMode || 'split';
+
+      // ── Build side wrappers ────────────────────────────────────────────────
+      var leftSide  = document.createElement('div');
+      leftSide.className = 'ls-cmp-side ls-cmp-side-left';
+
+      var rightSide = document.createElement('div');
+      rightSide.className = 'ls-cmp-side ls-cmp-side-right';
+
+      // Move imgs into sides
+      leftImg.parentNode.insertBefore(leftSide,  leftImg);
+      leftSide.appendChild(leftImg);
+      rightImg.parentNode.insertBefore(rightSide, rightImg);
+      rightSide.appendChild(rightImg);
+
+      // ── Labels (builder-only) ─────────────────────────────────────────────
+      function makeLabel(side, img, pos) {
+        var lbl = document.createElement('div');
+        lbl.className = 'ls-cmp-label ls-cmp-label-' + pos;
+        lbl.setAttribute('data-builder-only', '');
+        lbl.textContent = img.alt || (pos === 'left' ? 'Before' : 'After');
+        lbl.title = 'Double-click to rename';
+        lbl.addEventListener('dblclick', function (e) {
+          e.stopPropagation();
+          lbl.contentEditable = 'true';
+          lbl.focus();
+          var r = document.createRange();
+          r.selectNodeContents(lbl);
+          window.getSelection().removeAllRanges();
+          window.getSelection().addRange(r);
+        });
+        lbl.addEventListener('blur', function () {
+          lbl.contentEditable = 'false';
+          img.alt = lbl.textContent.trim() || img.alt;
+          saveCarousel();
+        });
+        lbl.addEventListener('keydown', function (ev) {
+          if (ev.key === 'Enter')  { ev.preventDefault(); lbl.blur(); }
+          if (ev.key === 'Escape') { lbl.blur(); }
+        });
+        side.appendChild(lbl);
+      }
+      makeLabel(leftSide,  leftImg,  'left');
+      makeLabel(rightSide, rightImg, 'right');
+
+      // ── Per-side replace buttons (builder-only) ───────────────────────────
+      function makeReplaceBtn(side, img) {
+        var btn = document.createElement('button');
+        btn.className = 'ls-cmp-replace';
+        btn.setAttribute('data-builder-only', '');
+        btn.textContent = '⟳';
+        btn.title = 'Replace this image';
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          pickImage(function (path, name) {
+            img.src = path;
+            img.alt = name;
+            var lbl = side.querySelector('.ls-cmp-label');
+            if (lbl) lbl.textContent = name;
+            saveCarousel();
+          });
+        });
+        side.appendChild(btn);
+      }
+      makeReplaceBtn(leftSide,  leftImg);
+      makeReplaceBtn(rightSide, rightImg);
+
+      // ── Divider line (split) and Reveal handle ────────────────────────────
+      var divider = document.createElement('div');
+      divider.className = 'ls-cmp-divider';
+      divider.setAttribute('data-builder-only', '');
+      slide.appendChild(divider);
+
+      var handle = document.createElement('div');
+      handle.className = 'ls-cmp-handle';
+      // NOT data-builder-only — handle works in presentation mode too
+      var grip = document.createElement('div');
+      grip.className = 'ls-cmp-handle-grip';
+      grip.textContent = '⇔';
+      handle.appendChild(grip);
+      slide.appendChild(handle);
+
+      // Reveal drag logic
+      var revealPct = 50;
+      var dragging  = false;
+
+      function setReveal(pct) {
+        revealPct = Math.max(5, Math.min(95, pct));
+        rightSide.style.clipPath = 'inset(0 ' + (100 - revealPct) + '% 0 0)';
+        handle.style.left = revealPct + '%';
+      }
+
+      handle.addEventListener('mousedown',  function (e) { e.stopPropagation(); dragging = true; });
+      handle.addEventListener('touchstart', function (e) { e.stopPropagation(); dragging = true; }, { passive: true });
+      document.addEventListener('mousemove', function (e) {
+        if (!dragging) return;
+        var r = slide.getBoundingClientRect();
+        setReveal(((e.clientX - r.left) / r.width) * 100);
+      });
+      document.addEventListener('touchmove', function (e) {
+        if (!dragging) return;
+        var r = slide.getBoundingClientRect();
+        setReveal(((e.touches[0].clientX - r.left) / r.width) * 100);
+      }, { passive: true });
+      document.addEventListener('mouseup',  function () { dragging = false; });
+      document.addEventListener('touchend', function () { dragging = false; });
+
+      // ── Mode toggle button (builder-only) ─────────────────────────────────
+      var modeBtn = document.createElement('button');
+      modeBtn.className = 'ls-cmp-mode-btn';
+      modeBtn.setAttribute('data-builder-only', '');
+
+      function applyMode(m) {
+        mode = m;
+        slide.dataset.compareMode = m;
+        slide.classList.toggle('ls-split',  m === 'split');
+        slide.classList.toggle('ls-reveal', m === 'reveal');
+        divider.style.display = m === 'split'  ? '' : 'none';
+        handle.style.display  = m === 'reveal' ? '' : 'none';
+        modeBtn.textContent   = m === 'split'  ? '⇔ Switch to Reveal' : '⇔ Switch to Split';
+        if (m === 'reveal') setReveal(50);
+        saveCarousel();
+      }
+
+      modeBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        applyMode(mode === 'split' ? 'reveal' : 'split');
+      });
+      slide.appendChild(modeBtn);
+
+      // ── Exit compare button (builder-only) ────────────────────────────────
+      var exitBtn = document.createElement('button');
+      exitBtn.className = 'ls-cmp-exit';
+      exitBtn.setAttribute('data-builder-only', '');
+      exitBtn.textContent = '✕ Compare';
+      exitBtn.title = 'Exit compare — keeps left image';
+      exitBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        exitCompare(slide);
+      });
+      slide.appendChild(exitBtn);
+
+      // Apply initial mode (no save — just render)
+      mode = slide.dataset.compareMode || 'split';
+      slide.classList.toggle('ls-split',  mode === 'split');
+      slide.classList.toggle('ls-reveal', mode === 'reveal');
+      divider.style.display = mode === 'split'  ? '' : 'none';
+      handle.style.display  = mode === 'reveal' ? '' : 'none';
+      modeBtn.textContent   = mode === 'split'  ? '⇔ Switch to Reveal' : '⇔ Switch to Split';
+      if (mode === 'reveal') setReveal(50);
+    }
+
+    // ── Init a single carousel slide ─────────────────────────────────────────
+
     function initSlide(slide) {
       ensureDelBtn(slide);
-      // Add caption overlay from img alt
-      var img = slide.querySelector('img');
-      if (img && img.alt && !slide.querySelector('.ls-carousel-caption')) {
-        var cap = document.createElement('div');
-        cap.className = 'ls-carousel-caption';
-        cap.textContent = img.alt;
-        slide.appendChild(cap);
+      ensureMoveButtons(slide);
+      if (slide.classList.contains('ls-compare')) {
+        buildCompareUI(slide);
+      } else {
+        ensureCompareBtn(slide);
+        // Caption overlay from img alt — skip if carousel opted out via data-no-caption
+        if (!el.hasAttribute('data-no-caption')) {
+          var img = slide.querySelector('img');
+          if (img && img.alt && !slide.querySelector('.ls-carousel-caption')) {
+            var cap = document.createElement('div');
+            cap.className = 'ls-carousel-caption';
+            cap.textContent = img.alt;
+            slide.appendChild(cap);
+          }
+        }
       }
     }
 
@@ -171,16 +579,14 @@ window.Carousel = (function () {
     // ── Nav button handlers ─────────────────────────────────────────────────
     prevBtn.addEventListener('click', function () {
       var slides = getSlides();
-      var newIdx = idx > 0 ? idx - 1 : slides.length - 1;
-      goTo(newIdx);
+      goTo(idx > 0 ? idx - 1 : slides.length - 1);
       resetTimer();
       if (trackId && window.Track) Track.carousel(trackId.split(':')[0], 'prev');
     });
 
     nextBtn.addEventListener('click', function () {
       var slides = getSlides();
-      var newIdx = idx < slides.length - 1 ? idx + 1 : 0;
-      goTo(newIdx);
+      goTo(idx < slides.length - 1 ? idx + 1 : 0);
       resetTimer();
       if (trackId && window.Track) Track.carousel(trackId.split(':')[0], 'next');
     });
@@ -205,39 +611,21 @@ window.Carousel = (function () {
 
     // ── Add image button ────────────────────────────────────────────────────
     addBtn.addEventListener('click', function () {
-      var input = document.createElement('input');
-      input.type = 'file'; input.accept = 'image/*'; input.style.display = 'none';
-      document.body.appendChild(input);
-      input.addEventListener('change', function (e) {
-        document.body.removeChild(input);
-        var file = e.target.files[0];
-        if (!file) return;
-        var reader = new FileReader();
-        reader.onload = function (ev) {
-          fetch('/api/upload-image', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ filename: file.name, data: ev.target.result })
-          })
-          .then(function (r) { return r.json(); })
-          .then(function (data) {
-            if (!data.path) return;
-            var slide = document.createElement('div');
-            slide.className = 'ls-carousel-slide';
-            var img = document.createElement('img');
-            img.src = data.path;
-            img.alt = file.name.replace(/\.[^.]+$/, '');
-            slide.appendChild(img);
-            track.appendChild(slide);
-            initSlide(slide);
-            goTo(getSlides().length - 1);
-            updateNav();
-            saveCarousel();
-          });
-        };
-        reader.readAsDataURL(file);
+      pickImage(function (path, name) {
+        var slide = document.createElement('div');
+        slide.className = 'ls-carousel-slide';
+        var img = document.createElement('img');
+        img.src = path;
+        img.alt = name;
+        img.setAttribute('data-zoom', '');
+        slide.appendChild(img);
+        track.appendChild(slide);
+        initSlide(slide);
+        if (window.Lightbox) Lightbox.init(slide);
+        goTo(getSlides().length - 1);
+        updateNav();
+        saveCarousel();
       });
-      input.click();
     });
 
     // ── Start autoplay ──────────────────────────────────────────────────────
@@ -247,11 +635,6 @@ window.Carousel = (function () {
 
   // ── Public API ────────────────────────────────────────────────────────────
 
-  /**
-   * Scan root element for .ls-carousel elements and initialise each.
-   * Safe to call multiple times — skips already-initialised carousels.
-   * @param {Element} root
-   */
   function init(root) {
     if (!root) root = document;
     root.querySelectorAll('.ls-carousel').forEach(initOne);

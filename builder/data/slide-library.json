@@ -1,0 +1,16 @@
+[
+  { "id": "slide-01-cover",          "label": "Cover",           "category": "required" },
+  { "id": "slide-02-company",        "label": "Company Intro",   "category": "intro"    },
+  { "id": "slide-03-why",            "label": "Why Us",          "category": "intro"    },
+  { "id": "slide-04-linescanner",    "label": "LineScanner",     "category": "product"  },
+  { "id": "slide-05-technology",     "label": "Technology",      "category": "product"  },
+  { "id": "slide-06-surface",        "label": "Surface Types",   "category": "detail"   },
+  { "id": "slide-07-dimension",      "label": "Dimensions",      "category": "detail"   },
+  { "id": "slide-08-screenprinting", "label": "Screen Printing", "category": "detail"   },
+  { "id": "slide-09-logo-check",     "label": "Logo Check",      "category": "detail"   },
+  { "id": "slide-10-database",       "label": "Database",        "category": "detail"   },
+  { "id": "slide-11-sensitivity",    "label": "Sensitivity",     "category": "detail"   },
+  { "id": "slide-12-footprint",      "label": "Footprint",       "category": "detail"   },
+  { "id": "slide-13-integrations",   "label": "Integrations",    "category": "detail"   },
+  { "id": "slide-14-cta",            "label": "Call to Action",  "category": "required" }
+]

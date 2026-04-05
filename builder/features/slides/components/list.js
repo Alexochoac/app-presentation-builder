@@ -176,7 +176,9 @@ window.List = (function () {
     ul.querySelectorAll('li').forEach(function (li) { initItem(li, false); });
 
     // Recreate restore chips for items already saved as hidden
+    // Clear first so stale chips baked into saved HTML don't persist
     if (restoreArea) {
+      restoreArea.innerHTML = '';
       ul.querySelectorAll('li.ls-list-hidden').forEach(function (li) {
         var text = li.innerText.replace('⠿×', '').trim().substring(0, 40);
         var chip = document.createElement('button');

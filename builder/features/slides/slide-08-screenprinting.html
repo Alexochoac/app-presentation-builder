@@ -10,27 +10,29 @@
 
     <!-- Left: what gets checked -->
     <div class="col-card">
-      <div class="col-label">What LineScanner checks</div>
+      <div class="col-label" data-edit="col-label" contenteditable="" spellcheck="false">What LineScanner checks</div>
       <div class="col-list">
-        <div class="col-item"><strong>Correct position</strong> of screen printing</div>
-        <div class="col-item"><strong>Missing parts</strong> within a logo</div>
-        <div class="col-item"><strong>Print thickness</strong> consistency</div>
-        <div class="col-item"><strong>Detail errors</strong> in graphics</div>
-        <div class="col-item"><strong>Screen printing errors</strong> &amp; defects</div>
-        <div class="col-item"><strong>Logo position &amp; rotation</strong></div>
+        <div class="col-item" data-edit="col-item-1" contenteditable="" spellcheck="false"><strong>Correct position</strong> of screen printing</div>
+        <div class="col-item" data-edit="col-item-2" contenteditable="" spellcheck="false"><strong>Missing parts</strong> within a logo</div>
+        <div class="col-item" data-edit="col-item-3" contenteditable="" spellcheck="false"><strong>Print thickness</strong> consistency</div>
+        <div class="col-item" data-edit="col-item-4" contenteditable="" spellcheck="false"><strong>Detail errors</strong> in graphics</div>
+        <div class="col-item" data-edit="col-item-5" contenteditable="" spellcheck="false"><strong>Screen printing errors</strong> &amp; defects</div>
+        <div class="col-item" data-edit="col-item-6" contenteditable="" spellcheck="false"><strong>Logo position &amp; rotation</strong></div>
       </div>
     </div>
 
     <!-- Right: carousel -->
-    <div class="ls-carousel" data-edit="carousel" data-counter="" data-track="ls8:carousel" data-zoom-group="">
+    <div class="ls-carousel anim-in" data-edit="carousel" data-counter="" data-track="ls8:carousel" data-zoom-group=""><div class="ls-carousel-track" style="transform: translateX(-1298px);">
+        <div class="ls-carousel-slide">
+          <img src="/slides/uploads/Slide35.jpg" alt="Slide35" data-zoom="">
+        </div><div class="ls-carousel-slide">
+          <img src="/slides/uploads/image82.png" alt="Pinhole detection on printed glass" data-zoom="" data-track="ls8:zoom:pinhole-detection">
+        </div>
+        <div class="ls-carousel-slide">
+          <img src="/slides/uploads/image83.png" alt="Logo position check" data-zoom="" data-track="ls8:zoom:logo-position-check">
+        </div>
         
-        <div class="ls-carousel-slide">
-          <img src="/slides/uploads/image82.png" alt="Pinhole detection on printed glass" data-zoom="" data-track="ls8:zoom:pinhole-detection" data-zoom-init="1">
-        <div class="ls-carousel-caption">Pinhole detection on printed glass</div></div>
-        <div class="ls-carousel-slide">
-          <img src="/slides/uploads/image83.png" alt="Logo position check" data-zoom="" data-track="ls8:zoom:logo-position-check" data-zoom-init="1">
-        <div class="ls-carousel-caption">Logo position check</div></div>
-      <div class="ls-carousel-slide"><img src="/slides/uploads/Slide35.jpg" alt="Slide35"><div class="ls-carousel-caption">Slide35</div></div></div>
+      </div></div>
 
   </div>
 
@@ -50,6 +52,8 @@
 
     @media (max-width: 768px) {
       .ls8-layout { grid-template-columns: 1fr; }
+      .ls8-layout .col-item { white-space: normal; }
+      .ls8 { padding: 52px 16px 80px !important; }
     }
 
   </style>

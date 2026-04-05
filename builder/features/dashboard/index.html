@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Presentation Builder</title>
+  <link rel="stylesheet" href="/dashboard.css">
+</head>
+<body>
+
+  <div class="glow glow-a"></div>
+  <div class="glow glow-b"></div>
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <div class="logo-icon">P</div>
+      <span class="logo-text">Presentation Builder</span>
+    </div>
+    <nav class="topbar-nav">
+      <a href="/" class="nav-link active">Dashboard</a>
+      <a href="#" class="nav-link">Settings</a>
+    </nav>
+    <a href="/auth/logout" class="btn-logout">Log out</a>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- Two-Panel Layout -->
+    <div class="panels">
+
+      <!-- Left Panel: Your Deck -->
+      <section class="panel panel-deck">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">Your Presentation</h2>
+            <p class="panel-subtitle" id="deckTitle">Loading…</p>
+          </div>
+          <a href="/builder/preview.html" class="btn-primary">Open Builder &rarr;</a>
+        </div>
+
+        <div class="deck-list-wrap">
+          <ul class="deck-list" id="deckList">
+            <li class="deck-placeholder">Loading slides…</li>
+          </ul>
+        </div>
+
+        <p class="deck-empty hidden" id="deckEmpty">No slides in your deck yet. Add some from the library.</p>
+      </section>
+
+      <!-- Right Panel: Slide Library -->
+      <section class="panel panel-library">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">Slide Library</h2>
+            <p class="panel-subtitle">Click Add to include a slide in your deck</p>
+          </div>
+        </div>
+
+        <div class="library-grid" id="libraryGrid">
+          <div class="deck-placeholder">Loading library…</div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Company Settings -->
+    <section class="settings-section">
+      <div class="settings-header">
+        <h2 class="panel-title">Company Settings</h2>
+        <span class="badge-wip">Coming Soon</span>
+      </div>
+      <p class="settings-note">These fields will populate your slides with your company details. Save functionality is not yet active.</p>
+      <div class="settings-fields">
+        <div class="field">
+          <label for="companyName">Company Name</label>
+          <input type="text" id="companyName" placeholder="e.g. Acme Corp" disabled>
+        </div>
+        <div class="field">
+          <label for="tagline">Tagline</label>
+          <input type="text" id="tagline" placeholder="e.g. Built for speed" disabled>
+        </div>
+        <div class="field">
+          <label for="logoUpload">Logo</label>
+          <div class="logo-upload-wrap">
+            <div class="logo-preview" id="logoPreview">
+              <span class="logo-preview-placeholder">No logo</span>
+            </div>
+            <input type="file" id="logoUpload" accept="image/*" disabled>
+          </div>
+        </div>
+      </div>
+      <button class="btn-save" onclick="showComingSoon(this)">Save Changes</button>
+      <p class="coming-soon-msg hidden" id="comingSoonMsg">Save functionality is coming in a future update.</p>
+    </section>
+
+  </main>
+
+  <script src="/dashboard.js"></script>
+</body>
+</html>

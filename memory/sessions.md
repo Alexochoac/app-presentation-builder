@@ -1,5 +1,32 @@
 # Sessions
 
+## 2026-04-05 — Dashboard, mobile responsiveness, full editability pass
+
+### Accomplished
+- Designed and built the **Dashboard** as post-login home (`/`): two-panel layout (deck manager + slide library), company settings placeholder, top nav with logout
+- Created `builder/data/deck.json` and `builder/data/slide-library.json` as source of truth for deck order/visibility
+- Added `GET/PUT /api/deck` and `GET /api/slide-library` endpoints to `server.js`
+- Modified `preview.html` to fetch deck from API (replaces hardcoded `SLIDES` array)
+- Added `← Dashboard` back link and swipe gesture support to `preview.html`
+- Fixed post-login redirect in `auth.js` to go to `/` (dashboard) instead of deleted `/preview.html`
+- Fixed dashboard JS API response unwrapping (`{ success, data }` envelope)
+- Served dashboard at `/`, builder at `/builder/preview.html`
+- **Full mobile audit** of all 14 slides on iPhone 15 (390px): fixed padding overrides with `!important`, collapsed grids, lightbox button repositioning, nav dot tap targets, CTA button tap targets, swipe navigation
+- **Full editability audit**: added `data-edit` + `contenteditable` to every visible text element across all 14 slides — tab labels, card labels, list items, step descriptions, integration names, spec badges, tier labels, column headers, carousel labels, map pins, KPI labels
+- Fixed broken edit bugs: slide-02 headline, slide-03 `openPopover` JS error, slide-10 inner carousel save keys, slide-14 email href sync
+- Added `data-builder-only=""` to all builder-only UI controls across slides 01, 03, 04, 05
+- Fixed slide-05 stale "New item" restore chips; `list.js` now clears restore area on init (self-healing)
+- Fixed `list.js` stale chip save bug at the root level
+
+### Pending
+- Slide-06 defect selector names are JS-generated — need different approach (move to static HTML or add editable config)
+- Image caption editing UI (currently captions come from `img.alt` with no edit path)
+- `scripts/build.js` — assemble customer HTML, strip `data-builder-only`
+- `scripts/deploy.js` — push to GitHub Pages
+- End-to-end browser test of all slides after editability pass
+
+---
+
 ## 2026-04-01 — list.js + table.js + full tab/list migration
 
 ### Accomplished

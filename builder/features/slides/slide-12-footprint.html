@@ -7,20 +7,23 @@
 
   <!-- ── Diagram + badges ── -->
   <div class="ls12-diagram-wrap anim-in" style="">
-    <img class="ls12-diagram" src="/slides/uploads/Slide66.jpg" alt="LineScanner footprint diagram"
-         data-zoom data-track="ls12:zoom:footprint-diagram">
+    <div class="ls-carousel" data-counter="" data-edit="footprint-diagram" data-track="ls12:carousel:footprint" style="width:100%;height:100%;"><div class="ls-carousel-track" style="transform: translateX(-860px);">
+        <div class="ls-carousel-slide">
+          <img src="/slides/uploads/Slide66.jpg" alt="LineScanner footprint diagram" data-zoom="" data-track="ls12:zoom:footprint-diagram">
+        </div>
+      <div class="ls-carousel-slide"><img src="/slides/uploads/CostOfQualityDefects.png" alt="CostOfQualityDefects" data-zoom=""></div></div></div>
 
     <!-- Spec badges overlaid -->
     <div class="ls12-badge ls12-badge-h">
-      <div class="ls12-badge-title">Horizontal</div>
-      <div class="ls12-badge-spec">Depth ~475 mm</div>
-      <div class="ls12-badge-spec">Individual width as required</div>
+      <div class="ls12-badge-title" data-edit="badge-h-title" contenteditable="" spellcheck="false">Horizontal</div>
+      <div class="ls12-badge-spec" data-edit="badge-h-spec1" contenteditable="" spellcheck="false">Depth ~475 mm</div>
+      <div class="ls12-badge-spec" data-edit="badge-h-spec2" contenteditable="" spellcheck="false">Individual width as required</div>
     </div>
 
     <div class="ls12-badge ls12-badge-v">
-      <div class="ls12-badge-title">Vertical</div>
-      <div class="ls12-badge-spec">Width ~700 mm</div>
-      <div class="ls12-badge-spec">Depth only 420 mm</div>
+      <div class="ls12-badge-title" data-edit="badge-v-title" contenteditable="" spellcheck="false">Vertical</div>
+      <div class="ls12-badge-spec" data-edit="badge-v-spec1" contenteditable="" spellcheck="false">Width ~700 mm</div>
+      <div class="ls12-badge-spec" data-edit="badge-v-spec2" contenteditable="" spellcheck="false">Depth only 420 mm</div>
     </div>
   </div>
 
@@ -34,14 +37,6 @@
       position: relative;
       margin-bottom: 0;
     }
-
-    .ls12-diagram {
-      width: 100%; height: 100%;
-      object-fit: contain; object-position: center;
-      border-radius: 12px; display: block;
-      transition: opacity .2s;
-    }
-    .ls12-diagram:hover { opacity: .88; }
 
     /* Spec badges */
     .ls12-badge {
@@ -57,6 +52,10 @@
 
     .ls12-badge-h { top: 12%; right: 4%; }
     .ls12-badge-v { bottom: 12%; left: 26%; }
+    @media(max-width:768px) {
+      .ls12 { padding: 52px 16px 80px !important; }
+      .ls12-badge-h, .ls12-badge-v { display: none; }
+    }
   </style>
 
   <script>

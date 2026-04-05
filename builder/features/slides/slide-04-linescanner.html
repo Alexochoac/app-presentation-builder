@@ -7,8 +7,8 @@
   <!-- ── Tabs ── -->
   <div class="ls-tabs" data-edit="tabs" data-track="ls4:tabs" style="flex:1;min-height:0;width:100%;max-width:960px;">
     <div class="ls-tab-list">
-      <button class="ls-tab active" data-panel="0" contenteditable="false">Capability Matrix</button>
-      <button class="ls-tab" data-panel="1" contenteditable="false">Where in Your Process</button>
+      <button class="ls-tab active" data-panel="0" data-edit="tab-capability" contenteditable="" spellcheck="false">Capability Matrix</button>
+      <button class="ls-tab" data-panel="1" data-edit="tab-process" contenteditable="" spellcheck="false">Where in Your Process</button>
     </div>
     <div class="ls-tab-panels">
 
@@ -19,7 +19,7 @@
         <!-- Table -->
         <div class="ls4-table-wrap anim-in" style="">
           <table class="ls4-table" data-ls-table="" data-edit="capability-matrix">
-            <colgroup><col><col class="ls4-col-collapsed"><col class=""><col class=""><col class=""><col class=""></colgroup>
+            <colgroup><col><col class=""><col class=""><col class=""><col class=""><col class=""></colgroup>
             <thead>
               <tr>
                 <th class="ls4-check-col"></th>
@@ -33,13 +33,13 @@
             <tbody>
               <tr class="ls4-shaded">
                 <td>Quality Check</td>
-                <td><span class="ls4-dot ls4-dot-off">◇</span></td>
+                <td><span class="ls-dot ls-dot-on">◆</span></td>
                 <td><span class="ls4-dot ls4-dot-on">◆</span></td>
                 <td></td><td></td><td></td>
               </tr>
               <tr>
                 <td>Edge Chips</td>
-                <td><span class="ls4-dot ls4-dot-off">◇</span></td>
+                <td><span class="ls-dot ls-dot-on">◆</span></td>
                 <td><span class="ls4-dot ls4-dot-on">◆</span></td>
                 <td></td><td></td><td></td>
               </tr>
@@ -51,30 +51,30 @@
               </tr>
               <tr>
                 <td>Dimension Check</td>
-                <td><span class="ls4-dot ls4-dot-off">◇</span></td>
+                <td><span class="ls-dot ls-dot-on">◆</span></td>
                 <td><span class="ls4-dot ls4-dot-on">◆</span></td>
                 <td></td><td></td><td></td>
               </tr>
               <tr class="ls4-shaded">
                 <td>Logo Position &amp; Quality Check</td>
-                <td><span class="ls4-dot ls4-dot-off">◇</span></td>
+                <td><span class="ls-dot ls-dot-on">◆</span></td>
                 <td><span class="ls4-dot ls4-dot-on">◆</span></td>
                 <td></td><td></td><td></td>
               </tr>
               <tr>
                 <td>Distortion Check</td>
-                <td><span class="ls4-dot ls4-dot-off">◇</span></td>
+                <td><span class="ls-dot ls-dot-on">◆</span></td>
                 <td></td><td></td><td></td><td></td>
               </tr>
               <tr class="ls4-shaded">
                 <td>Anisotropy Check</td>
-                <td><span class="ls4-dot ls4-dot-off">◇</span></td>
+                <td><span class="ls-dot ls-dot-on">◆</span></td>
                 <td><span class="ls4-dot ls4-dot-on">◆</span></td>
                 <td></td><td></td><td></td>
               </tr>
               <tr>
                 <td>WhiteHaze</td>
-                <td><span class="ls4-dot ls4-dot-off">◇</span></td>
+                <td><span class="ls-dot ls-dot-on">◆</span></td>
                 <td></td>
                 <td><span class="ls4-dot ls4-dot-on">◆</span></td>
                 <td></td><td></td>
@@ -90,20 +90,20 @@
                 <td></td>
                 <td><span class="ls4-dot ls4-dot-on">◆</span></td>
                 <td></td>
-                <td><span class="ls4-dot ls4-dot-off">◇</span></td>
+                <td><span class="ls-dot ls-dot-on">◆</span></td>
                 <td></td>
               </tr>
               <tr class="ls4-shaded">
                 <td>Glass Thickness Check</td>
-                <td><span class="ls4-dot ls4-dot-off">◇</span></td>
+                <td><span class="ls-dot ls-dot-on">◆</span></td>
                 <td><span class="ls4-dot ls4-dot-on">◆</span></td>
                 <td></td>
-                <td><span class="ls4-dot ls4-dot-off">◇</span></td>
+                <td><span class="ls-dot ls-dot-on">◆</span></td>
                 <td></td>
               </tr>
               <tr>
                 <td>Glass Type Recognition</td>
-                <td><span class="ls4-dot ls4-dot-off">◇</span></td>
+                <td><span class="ls-dot ls-dot-on">◆</span></td>
                 <td><span class="ls4-dot ls4-dot-on">◆</span></td>
                 <td></td><td></td><td></td>
               </tr>
@@ -113,39 +113,37 @@
                 <td><span class="ls4-dot ls4-dot-on">◆</span></td>
                 <td></td><td></td><td></td>
               </tr><tr class="" draggable="false">
-                <td contenteditable="false">Break Pattern Check</td>
+                <td>Break Pattern Check</td>
                 <td></td><td></td><td></td><td></td>
-                <td><span class="ls4-dot ls4-dot-off">◇</span></td>
+                <td><span class="ls-dot ls-dot-on">◆</span></td>
               </tr>
               
             </tbody>
           </table>
           <div class="ls4-legend">
-            <span class="ls4-leg-item"><span class="ls4-dot ls4-dot-on">◆</span> Standard</span>
-            <span class="ls4-leg-item"><span class="ls4-dot ls4-dot-off">◇</span> Optional</span>
+            <span class="ls4-leg-item"><span class="ls4-dot ls4-dot-on">◆</span> <span data-edit="legend-standard" contenteditable="" spellcheck="false">Standard</span></span>
+            <span class="ls4-leg-item"><span class="ls4-dot ls4-dot-off">◇</span> <span data-edit="legend-optional" contenteditable="" spellcheck="false">Optional</span></span>
           </div>
-          <div class="ls4-col-restore" data-ls-col-restore=""></div>
-          <div class="ls4-row-restore" data-ls-row-restore=""></div>
-          <button class="ls4-add-row-btn" data-ls-add-row="">+ Add row</button>
+          
+          
+          
         </div>
 
         <!-- Scanner carousel -->
-        <div class="ls-carousel anim-in" data-counter="" data-track="ls4:carousel" data-zoom-group="" style="padding-bottom: 10px;">
-          <div class="ls-carousel-track" style="transform: translateX(0px);">
+        <div class="ls-carousel anim-in" data-counter="" data-edit="capability-carousel" data-track="ls4:carousel" data-zoom-group="" style="padding-bottom: 10px;"><div class="ls-carousel-track" style="transform: translateX(0px);">
             <div class="ls-carousel-slide" style="flex-direction:column;">
-              <img src="/slides/uploads/Vertical LineScanner.png" alt="Vertical LineScanner" data-zoom="" data-track="ls4:zoom:vertical-linescanner" style="flex:1;min-height:0;" data-zoom-init="1">
-              <div class="ls4-car-label">Vertical LineScanner</div>
+              <img src="/slides/uploads/Vertical LineScanner.png" alt="Vertical LineScanner" data-zoom="" data-track="ls4:zoom:vertical-linescanner" style="flex:1;min-height:0;">
+              <div class="ls4-car-label" data-edit="car-label-1" contenteditable="" spellcheck="false">Vertical LineScanner</div>
             <div class="ls-carousel-caption">Vertical LineScanner</div></div>
             <div class="ls-carousel-slide" style="flex-direction:column;">
-              <img src="/slides/uploads/Horizontal LineScanner.png" alt="Horizontal LineScanner" data-zoom="" data-track="ls4:zoom:horizontal-linescanner" style="flex:1;min-height:0;" data-zoom-init="1">
-              <div class="ls4-car-label">Horizontal LineScanner</div>
+              <img src="/slides/uploads/Horizontal LineScanner.png" alt="Horizontal LineScanner" data-zoom="" data-track="ls4:zoom:horizontal-linescanner" style="flex:1;min-height:0;">
+              <div class="ls4-car-label" data-edit="car-label-2" contenteditable="" spellcheck="false">Horizontal LineScanner</div>
             <div class="ls-carousel-caption">Horizontal LineScanner</div></div>
             <div class="ls-carousel-slide" style="flex-direction:column;">
-              <img src="/slides/uploads/Osprey Only.png" alt="Osprey" data-zoom="" data-track="ls4:zoom:osprey" style="flex:1;min-height:0;" data-zoom-init="1">
-              <div class="ls4-car-label">Osprey</div>
+              <img src="/slides/uploads/Osprey Only.png" alt="Osprey" data-zoom="" data-track="ls4:zoom:osprey" style="flex:1;min-height:0;">
+              <div class="ls4-car-label" data-edit="car-label-3" contenteditable="" spellcheck="false">Osprey</div>
             <div class="ls-carousel-caption">Osprey</div></div>
-          </div>
-        <div class="ls-carousel-counter">1 / 3</div><div class="ls-carousel-counter">1 / 3</div><div class="ls-carousel-counter">1 / 3</div><div class="ls-carousel-counter">1 / 3</div><div class="ls-carousel-counter">1 / 3</div><div class="ls-carousel-counter">1 / 3</div><div class="ls-carousel-counter">1 / 3</div></div>
+          </div><div class="ls-carousel-counter">1 / 3</div></div>
 
       </div><!-- ls4-grid -->
     </div><!-- ls4-matrix -->
@@ -157,7 +155,7 @@
         <!-- LEFT: Capability table per scanner -->
         <div class="ls4-proc-table-wrap anim-in" style="">
           <table class="ls4-table ls4-proc-table" data-ls-table="" data-edit="proc-matrix">
-            <colgroup><col><col><col class=""><col class="ls-col-collapsed"></colgroup>
+            <colgroup><col><col class=""><col class=""><col class=""></colgroup>
             <thead>
               <tr>
                 <th class="ls4-check-col"></th>
@@ -248,13 +246,13 @@
             </tbody>
           </table>
           <div class="ls4-legend">
-            <span class="ls4-leg-item"><span class="ls4-dot ls4-dot-on">◆</span> LineScanner Vertical</span>
-            <span class="ls4-leg-item"><span class="ls4-dot ls4-dot-red">◆</span> LineScanner Horizontal</span>
-            <span class="ls4-leg-item"><span class="ls4-dot ls4-dot-blue">◆</span> Osprey-25</span>
+            <span class="ls4-leg-item"><span class="ls4-dot ls4-dot-on">◆</span> <span data-edit="proc-legend-1" contenteditable="" spellcheck="false">LineScanner Vertical</span></span>
+            <span class="ls4-leg-item"><span class="ls4-dot ls4-dot-red">◆</span> <span data-edit="proc-legend-2" contenteditable="" spellcheck="false">LineScanner Horizontal</span></span>
+            <span class="ls4-leg-item"><span class="ls4-dot ls4-dot-blue">◆</span> <span data-edit="proc-legend-3" contenteditable="" spellcheck="false">Osprey-25</span></span>
           </div>
-          <div class="ls4-col-restore" data-ls-col-restore=""><button class="ls-table-restore-chip">+ Osprey-25−</button></div>
-          <div class="ls4-row-restore" data-ls-row-restore=""></div>
-          <button class="ls4-add-row-btn" data-table="proc">+ Add row</button>
+          
+          
+          
         </div>
 
         <!-- RIGHT: Stage render cards -->
@@ -262,22 +260,22 @@
 
           <div class="ls4-proc-card">
             <img src="/slides/uploads/Render Tempering Line.png" alt="Tempering Line" data-zoom="" data-track="ls4:zoom:tempering-line" data-zoom-init="1">
-            <div class="ls4-proc-card-label">Tempering</div>
+            <div class="ls4-proc-card-label" data-edit="proc-label-1" contenteditable="" spellcheck="false">Tempering</div>
             <button class="ls4-card-toggle" onclick="ls4ToggleCard(this,event)" title="Hide">✕</button>
             <div class="ls4-card-move"><button onclick="ls4MoveCard(this,-1,event)" title="Move up">▲</button><button onclick="ls4MoveCard(this,1,event)" title="Move down">▼</button></div>
           </div><div class="ls4-proc-card">
             <img src="/slides/uploads/Render of a Vertical IG Line with LineScanners on Orange to show the position.png" alt="IG Line" data-zoom="" data-track="ls4:zoom:ig-line" data-zoom-init="1">
-            <div class="ls4-proc-card-label">IG Line</div>
+            <div class="ls4-proc-card-label" data-edit="proc-label-2" contenteditable="" spellcheck="false">IG Line</div>
             <button class="ls4-card-toggle" onclick="ls4ToggleCard(this,event)" title="Hide">✕</button>
             <div class="ls4-card-move"><button onclick="ls4MoveCard(this,-1,event)" title="Move up">▲</button><button onclick="ls4MoveCard(this,1,event)" title="Move down">▼</button></div>
           </div><div class="ls4-proc-card">
             <img src="/slides/uploads/Render Lamination Line.png" alt="Lamination Line" data-zoom="" data-track="ls4:zoom:lamination-line" data-zoom-init="1">
-            <div class="ls4-proc-card-label">Lamination</div>
+            <div class="ls4-proc-card-label" data-edit="proc-label-3" contenteditable="" spellcheck="false">Lamination</div>
             <button class="ls4-card-toggle" onclick="ls4ToggleCard(this,event)" title="Hide">✕</button>
             <div class="ls4-card-move"><button onclick="ls4MoveCard(this,-1,event)" title="Move up">▲</button><button onclick="ls4MoveCard(this,1,event)" title="Move down">▼</button></div>
           </div><div class="ls4-proc-card">
             <img src="/slides/uploads/Render Grinding Line.png" alt="Grinding Line" data-zoom="" data-track="ls4:zoom:grinding-line" data-zoom-init="1">
-            <div class="ls4-proc-card-label">Grinding</div>
+            <div class="ls4-proc-card-label" data-edit="proc-label-4" contenteditable="" spellcheck="false">Grinding</div>
             <button class="ls4-card-toggle" onclick="ls4ToggleCard(this,event)" title="Hide">✕</button>
             <div class="ls4-card-move"><button onclick="ls4MoveCard(this,-1,event)" title="Move up">▲</button><button onclick="ls4MoveCard(this,1,event)" title="Move down">▼</button></div>
           </div>
@@ -290,12 +288,12 @@
 
           <div class="ls4-proc-card">
             <img src="/slides/uploads/Render Coating line.png" alt="Coating Line" data-zoom="" data-track="ls4:zoom:coating-line" data-zoom-init="1">
-            <div class="ls4-proc-card-label">Coating</div>
+            <div class="ls4-proc-card-label" data-edit="proc-label-5" contenteditable="" spellcheck="false">Coating</div>
             <button class="ls4-card-toggle" onclick="ls4ToggleCard(this,event)" title="Hide">✕</button>
             <div class="ls4-card-move"><button onclick="ls4MoveCard(this,-1,event)" title="Move up">▲</button><button onclick="ls4MoveCard(this,1,event)" title="Move down">▼</button></div>
           </div><div class="ls4-proc-card">
             <img src="/slides/uploads/Render Automotive Printing Line.png" alt="Automotive Printing Line" data-zoom="" data-track="ls4:zoom:automotive-printing-line" data-zoom-init="1">
-            <div class="ls4-proc-card-label">Automotive Printing</div>
+            <div class="ls4-proc-card-label" data-edit="proc-label-6" contenteditable="" spellcheck="false">Automotive Printing</div>
             <div class="ls4-table-hint" onclick="ls4OpenAutoModal(event)">⊞ view data</div>
             <button class="ls4-card-toggle" onclick="ls4ToggleCard(this,event)" title="Hide">✕</button>
             <div class="ls4-card-move"><button onclick="ls4MoveCard(this,-1,event)" title="Move up">▲</button><button onclick="ls4MoveCard(this,1,event)" title="Move down">▼</button></div>
@@ -351,14 +349,11 @@
     }
     .ls4-table tbody tr td:first-child { text-align:left; color:var(--text); }
     .ls4-shaded td { background:rgba(255,255,255,.02); }
-    .ls4-table tbody tr td:nth-child(3) {
-      background:rgba(232,113,26,.04);
-      border-left:1px solid rgba(232,113,26,.15);
-    }
-    .ls4-table tbody tr td:nth-child(4) {
-      background:rgba(232,113,26,.04);
-      border-right:1px solid rgba(232,113,26,.15);
-    }
+    .ls4-table tbody tr td:nth-child(2) { background:rgba(99,179,237,.03); border-left:1px solid rgba(99,179,237,.1); border-right:1px solid rgba(99,179,237,.1); }
+    .ls4-table tbody tr td:nth-child(3) { background:rgba(232,113,26,.04); border-left:1px solid rgba(232,113,26,.15); border-right:1px solid rgba(232,113,26,.15); }
+    .ls4-table tbody tr td:nth-child(4) { background:rgba(239,68,68,.03); border-left:1px solid rgba(239,68,68,.1); border-right:1px solid rgba(239,68,68,.1); }
+    .ls4-table tbody tr td:nth-child(5) { background:rgba(239,68,68,.03); border-left:1px solid rgba(239,68,68,.1); border-right:1px solid rgba(239,68,68,.1); }
+    .ls4-table tbody tr td:nth-child(6) { background:rgba(239,68,68,.03); border-left:1px solid rgba(239,68,68,.1); border-right:1px solid rgba(239,68,68,.1); }
     .ls4-dot      { font-size:12px; }
     .ls4-dot-on   { color:#E8711A; }
     .ls4-dot-red  { color:#f87171; }
@@ -627,10 +622,11 @@
 
     /* ── Responsive ── */
     @media(max-width:768px) {
+      .ls4 { padding: 52px 16px 80px !important; }
       /* Tab 1 — Capability Matrix */
-      .ls4-grid { grid-template-columns:1fr; }
+      .ls4-grid { grid-template-columns:1fr; height:auto; }
       .ls4-table-wrap { overflow-x:auto; }
-      .ls4-table { font-size:10px; min-width:480px; }
+      .ls4-table { font-size:11px; min-width:480px; }
       .ls4-table tbody tr td:first-child {
         position:sticky; left:0; z-index:1; background:var(--bg);
       }
@@ -640,8 +636,10 @@
       /* Tab 2 — Where in Your Process */
       .ls4-proc-grid {
         grid-template-columns:1fr;
+        height:auto;
         overflow-y:auto;
       }
+      .ls4-proc-table { font-size: 10px; }
       .ls4-proc-table-wrap { overflow-x:auto; }
       .ls4-proc-table { min-width:360px; }
       .ls4-proc-cards {

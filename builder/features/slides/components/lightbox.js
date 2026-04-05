@@ -98,7 +98,11 @@ window.Lightbox = (function () {
 
   // ── Close ────────────────────────────────────────────────────────────────
   function close() {
-    var l = lb(); if (l) l.classList.remove('on');
+    var l = lb();
+    if (l) {
+      l.classList.remove('on');
+      l.classList.remove('has-carousel');
+    }
     // Sync originating carousel to the index last viewed in the lightbox
     if (activeCarousel && typeof activeCarousel._lsGoTo === 'function') {
       activeCarousel._lsGoTo(galIdx);
@@ -130,9 +134,10 @@ window.Lightbox = (function () {
   // ── init(root) — wire [data-zoom] elements ────────────────────────────────
   function init(root) {
     if (!root) root = document;
-    var els = root.querySelectorAll('[data-zoom]:not([data-zoom-init])');
+    var els = root.querySelectorAll('[data-zoom]');
     els.forEach(function (el) {
-      el.setAttribute('data-zoom-init', '1');
+      if (el._lsZoomInit) return;
+      el._lsZoomInit = true;
       el.addEventListener('click', function (e) {
         e.stopPropagation();
 
@@ -151,9 +156,13 @@ window.Lightbox = (function () {
         } else {
           items    = [{ src: el.src || el.getAttribute('data-src') || '', caption: el.alt || el.getAttribute('data-alt') || '' }];
           startIdx = 0;
+          activeCarousel = null;
         }
 
         openGallery(items, startIdx);
+        // Show/hide "Add Image" button in lightbox based on carousel source
+        var lbEl = lb();
+        if (lbEl) lbEl.classList.toggle('has-carousel', !!activeCarousel);
 
         // Fire tracking
         var track = el.getAttribute('data-track');
@@ -166,8 +175,15 @@ window.Lightbox = (function () {
     });
   }
 
+  function triggerAddImage() {
+    if (activeCarousel) {
+      var addBtn = activeCarousel.querySelector('.ls-carousel-add');
+      if (addBtn) { close(); addBtn.click(); }
+    }
+  }
+
   // ── Public API ────────────────────────────────────────────────────────────
-  return { open: open, openGallery: openGallery, close: close, init: init };
+  return { open: open, openGallery: openGallery, close: close, init: init, triggerAddImage: triggerAddImage };
 
 })();
 

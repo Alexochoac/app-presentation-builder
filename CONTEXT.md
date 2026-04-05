@@ -54,10 +54,14 @@ Sales teams use it to build customer-specific decks, then publish to GitHub Page
 - [x] `.claude/settings.json` created with agent permission allow-list
 
 ## Next Steps
-- [ ] Audit slides 07–14 for standalone `<img>` tags needing `ls-carousel` conversion
-- [ ] Test slide-06 compare slides (Split/Reveal) in browser
-- [ ] Test all slides end-to-end (carousels, tabs, lists, tables, zoom, save/reload)
-- [ ] Image alt text editable in builder (renames file for Umami tracking consistency)
+- [x] Dashboard built — post-login home with deck manager + slide library panels
+- [x] `deck.json` + `slide-library.json` as source of truth; deck API endpoints added
+- [x] Full mobile responsiveness pass — all 14 slides fixed for iPhone 15
+- [x] Full editability pass — all visible text across all 14 slides now has `data-edit` + `contenteditable`
+- [x] `data-builder-only` added to all builder-only UI controls
+- [ ] Slide-06 defect selector names — JS-generated, need static HTML or editable config approach
+- [ ] Image caption editing UI (captions come from `img.alt`, no edit path yet)
+- [ ] Test all slides end-to-end in browser after editability pass
 - [ ] `scripts/build.js` — assemble final customer HTML, strip `data-builder-only`
 - [ ] `scripts/deploy.js` — push to GitHub Pages
 
@@ -67,4 +71,4 @@ Sales teams use it to build customer-specific decks, then publish to GitHub Page
 - **Phase 3** — Interactive slides (polls, Q&A), custom per-slide components
 - **Phase 4** — White-label, AI, CRM integrations
 
-Last updated: 2026-04-01
+Last updated: 2026-04-05

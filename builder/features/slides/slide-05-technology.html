@@ -6,9 +6,9 @@
 
   <div class="ls-tabs" data-edit="tabs" data-track="t5:tabs" style="flex:1;min-height:0;width:100%;max-width:920px;flex-direction:column-reverse;">
   <div class="ls-tab-list">
-    <button class="ls-tab active" data-panel="0" contenteditable="false">How It Works</button>
-    <button class="ls-tab" data-panel="1" contenteditable="false">16-bit Advantage</button>
-    <button class="ls-tab" data-panel="2" contenteditable="false">vs Camera Systems</button>
+    <button class="ls-tab active" data-panel="0" data-edit="tab-howitworks" contenteditable="false" spellcheck="false">How It Works</button>
+    <button class="ls-tab" data-panel="1" data-edit="tab-16bit" contenteditable="false" spellcheck="false">16-bit Advantage</button>
+    <button class="ls-tab" data-panel="2" data-edit="tab-vs" contenteditable="" spellcheck="false">vs Camera Systems</button>
   </div>
   <div class="ls-tab-panels">
 
@@ -18,19 +18,19 @@
 
         <!-- Top: 2×2 component cards -->
         <div class="t5-components anim-in" style="">
-          <div class="t5-comp-card"><span class="t5-num">1</span><span class="t5-comp-text"><strong>Telecentric light</strong> — uniform illumination independent of glass position</span></div>
-          <div class="t5-comp-card"><span class="t5-num">2</span><span class="t5-comp-text"><strong>Linear image sensor</strong> — real scanning line-by-line, not a snapshot camera</span></div>
-          <div class="t5-comp-card"><span class="t5-num">3</span><span class="t5-comp-text"><strong>Glass</strong> — inspected continuously at full production speed</span></div>
-          <div class="t5-comp-card"><span class="t5-num">4</span><span class="t5-comp-text"><strong>Electronic module</strong> — 16-bit processing at extreme speed</span></div>
+          <div class="t5-comp-card"><span class="t5-num">1</span><span class="t5-comp-text" data-edit="comp-card-1" contenteditable="" spellcheck="false"><strong>Telecentric light</strong> — uniform illumination independent of glass position</span></div>
+          <div class="t5-comp-card"><span class="t5-num">2</span><span class="t5-comp-text" data-edit="comp-card-2" contenteditable="" spellcheck="false"><strong>Linear image sensor</strong> — real scanning line-by-line, not a snapshot camera</span></div>
+          <div class="t5-comp-card"><span class="t5-num">3</span><span class="t5-comp-text" data-edit="comp-card-3" contenteditable="" spellcheck="false"><strong>Glass</strong> — inspected continuously at full production speed</span></div>
+          <div class="t5-comp-card"><span class="t5-num">4</span><span class="t5-comp-text" data-edit="comp-card-4" contenteditable="" spellcheck="false"><strong>Electronic module</strong> — 16-bit processing at extreme speed</span></div>
         </div>
 
         <!-- Bottom: full-width diagram -->
         <div class="t5-diagram t5-diagram-full anim-in" style="">
           <div class="ls-carousel" data-counter="" data-edit="t5-diagram-howitworks" data-track="t5:carousel:howitworks" style="width:100%;height:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);">
               <div class="ls-carousel-slide">
-                <img src="/slides/uploads/Image Explaining the technology 1 Telecentric light 2 linear image sensor 3 glass 4 electronic module.png" alt="Scanner technology diagram" data-zoom="" data-track="t5:zoom:scanner-technology-diagram" data-zoom-init="1">
+                <img src="/slides/uploads/Image Explaining the technology 1 Telecentric light 2 linear image sensor 3 glass 4 electronic module.png" alt="Scanner technology diagram" data-zoom="" data-track="t5:zoom:scanner-technology-diagram">
               <div class="ls-carousel-caption">Scanner technology diagram</div></div>
-            </div><div class="ls-carousel-counter"></div><div class="ls-carousel-counter"></div><div class="ls-carousel-counter"></div><div class="ls-carousel-counter"></div><div class="ls-carousel-counter"></div><div class="ls-carousel-counter"></div></div>
+            </div><div class="ls-carousel-counter"></div></div>
         </div>
 
       </div>
@@ -43,18 +43,18 @@
         <!-- Top: 16-bit comparison image -->
         <div class="t5-diagram t5-diagram-full anim-in" style="">
           <div class="ls-carousel" data-counter="" data-edit="t5-diagram-16bit" data-track="t5:carousel:16bit" style="width:100%;height:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);">
-              <div class="ls-carousel-slide">
-                <img src="/slides/uploads/16 bit tech.jpg" alt="8-bit vs 16-bit technology comparison" data-zoom="" data-track="t5:zoom:16-bit-comparison" data-zoom-init="1">
-              <div class="ls-carousel-caption">8-bit vs 16-bit technology comparison</div></div>
-            </div><div class="ls-carousel-counter"></div><div class="ls-carousel-counter"></div><div class="ls-carousel-counter"></div><div class="ls-carousel-counter"></div><div class="ls-carousel-counter"></div><div class="ls-carousel-counter"></div></div>
+              
+            <div class="ls-carousel-slide">
+                <img src="/slides/uploads/16 bit tech.jpg" alt="8-bit vs 16-bit technology comparison" data-zoom="" data-track="t5:zoom:16-bit-comparison">
+              <div class="ls-carousel-caption">8-bit vs 16-bit technology comparison</div></div></div><div class="ls-carousel-counter"></div></div>
         </div>
 
         <!-- Bottom: 2×2 feature cards -->
         <div class="t5-components anim-in" style="">
-          <div class="t5-comp-card"><span class="t5-fnum">1</span><span class="t5-comp-text"><strong>Low-contrast detection:</strong> Identifies defects 8-bit systems cannot see — subtle inclusions, coating variations, micro-scratches.</span></div>
-          <div class="t5-comp-card"><span class="t5-fnum">2</span><span class="t5-comp-text"><strong>Transmission homogenization:</strong> Glass from 15% to 99% processed with the same setup — identical results across all types.</span></div>
-          <div class="t5-comp-card"><span class="t5-fnum">3</span><span class="t5-comp-text"><strong>Every pixel is equal:</strong> No variation by position — always consistent, eliminating false positives and unnecessary rejections.</span></div>
-          <div class="t5-comp-card"><span class="t5-fnum">4</span><span class="t5-comp-text"><strong>Extreme processing speed:</strong> No compromise on throughput. Compatible with automotive and railway production rates.</span></div>
+          <div class="t5-comp-card"><span class="t5-fnum">1</span><span class="t5-comp-text" data-edit="feat-card-1" contenteditable="" spellcheck="false"><strong>Low-contrast detection:</strong> Identifies defects 8-bit systems cannot see — subtle inclusions, coating variations, micro-scratches.</span></div>
+          <div class="t5-comp-card"><span class="t5-fnum">2</span><span class="t5-comp-text" data-edit="feat-card-2" contenteditable="" spellcheck="false"><strong>Transmission homogenization:</strong> Glass from 15% to 99% processed with the same setup — identical results across all types.</span></div>
+          <div class="t5-comp-card"><span class="t5-fnum">3</span><span class="t5-comp-text" data-edit="feat-card-3" contenteditable="" spellcheck="false"><strong>Every pixel is equal:</strong> No variation by position — always consistent, eliminating false positives and unnecessary rejections.</span></div>
+          <div class="t5-comp-card"><span class="t5-fnum">4</span><span class="t5-comp-text" data-edit="feat-card-4" contenteditable="" spellcheck="false"><strong>Extreme processing speed:</strong> No compromise on throughput. Compatible with automotive and railway production rates.</span></div>
         </div>
 
       </div>
@@ -68,53 +68,49 @@
         <div class="t5-cmp-col t5-cmp-bad">
           <div class="t5-cmp-header">
             <span class="t5-cmp-icon">📷</span>
-            <span>Camera-based Systems</span>
+            <span data-edit="vc-header-bad" contenteditable="" spellcheck="false">Camera-based Systems</span>
           </div>
           <ul class="t5-cmp-list" id="t5-vc-bad-list" data-edit="t5-vc-bad-list" data-ls-list="">
             <li><strong>Snapshot coverage:</strong> Takes periodic frames — gaps between shots mean defects between frames go undetected</li>
             <li><strong>Motion blur at speed:</strong> Fast production lines cause image blur, reducing detection accuracy</li>
             <li><strong>8-bit depth:</strong> Only 256 grey levels — low-contrast defects are invisible</li>
-            <li><strong>Position-dependent illumination:</strong> Uneven lighting across the field of view distorts results</li>
-            <li class="ls-list-dragging" draggable="true"><strong>False positives &amp; rejects:</strong> Pixel variation by position triggers unnecessary alarms</li><li class=""><strong>Recalibration required:</strong> Sensitivity must be re-tuned for every glass type and transmission level</li>
+            <li class="ls-list-dragging" draggable="true"><strong>Recalibration required:</strong> Sensitivity must be re-tuned for every glass type and transmission level</li><li class=""><strong>Position-dependent illumination:</strong> Uneven lighting across the field of view distorts results</li>
+            <li class="" draggable="false"><strong>False positives &amp; rejects:</strong> Pixel variation by position triggers unnecessary alarms</li>
             
           </ul>
-          <div class="t5-vc-list-restore" id="t5-vc-bad-restore" data-ls-restore=""><button class="ls-list-restore-chip">+ New item
-⠿
-×</button><button class="ls-list-restore-chip">+ New item</button></div>
-          <button class="t5-vc-add-btn t5-vc-add-bad" data-ls-add="">+ Add item</button>
+          <div class="t5-vc-list-restore" id="t5-vc-bad-restore" data-ls-restore=""></div>
+          
         </div>
 
         <!-- CENTER — comparison images -->
         <div class="t5-vc-imgs" id="t5-vc-imgs">
 
           <div class="t5-vc-card" id="t5-vc-drillhole">
-            <button class="t5-vc-hide" onclick="t5VcHide('drillhole')" title="Hide">×</button>
+            
             <div class="t5-diagram" style="flex:1;min-height:0;">
-              <div class="ls-carousel" data-counter="" data-edit="t5-diagram-drillhole" data-track="t5:carousel:drillhole" style="width:100%;height:100%;">
-                <div class="ls-carousel-track" style="transform: translateX(0px);">
+              <div class="ls-carousel" data-counter="" data-no-caption="" data-edit="t5-diagram-drillhole" data-track="t5:carousel:drillhole" style="width:100%;height:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);">
                   <div class="ls-carousel-slide">
-                    <img src="/slides/uploads/Comparison on image taken by Camera Above and LineScanner below of a drillhole .jpg" alt="Drill hole comparison" data-zoom="" data-track="t5:zoom:drillhole-comparison" data-zoom-init="1">
-                  <div class="ls-carousel-caption">Drill hole comparison</div></div>
-                </div>
-              <div class="ls-carousel-counter"></div><div class="ls-carousel-counter"></div><div class="ls-carousel-counter"></div><div class="ls-carousel-counter"></div><div class="ls-carousel-counter"></div><div class="ls-carousel-counter"></div></div>
+                    <img src="/slides/uploads/Comparison on image taken by Camera Above and LineScanner below of a drillhole .jpg" alt="Drill hole comparison" data-zoom="" data-track="t5:zoom:drillhole-comparison">
+                  </div>
+                </div><div class="ls-carousel-counter"></div></div>
             </div>
-            <div class="t5-vc-label">Drill Hole — Camera vs LineScanner</div>
+            <div class="t5-vc-label" data-edit="vc-label-drillhole" contenteditable="" spellcheck="false">Drill Hole, Camera vs LineScanner</div>
           </div>
 
           <div class="t5-vc-card" id="t5-vc-igunit">
-            <button class="t5-vc-hide" onclick="t5VcHide('igunit')" title="Hide">×</button>
+            
             <div class="t5-diagram" style="flex:1;min-height:0;">
-              <div class="ls-carousel" data-counter="" data-edit="t5-diagram-igunit" data-track="t5:carousel:igunit" style="width:100%;height:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);">
+              <div class="ls-carousel" data-counter="" data-no-caption="" data-edit="t5-diagram-igunit" data-track="t5:carousel:igunit" style="width:100%;height:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);">
                   <div class="ls-carousel-slide">
-                    <img src="/slides/uploads/Comparison on image taken by Camera Above and LineScanner below of a Ig unit .jpg" alt="IG unit comparison" data-zoom="" data-track="t5:zoom:ig-unit-comparison" data-zoom-init="1">
-                  <div class="ls-carousel-caption">IG unit comparison</div></div>
-                </div><div class="ls-carousel-counter"></div><div class="ls-carousel-counter"></div><div class="ls-carousel-counter"></div><div class="ls-carousel-counter"></div><div class="ls-carousel-counter"></div><div class="ls-carousel-counter"></div></div>
+                    <img src="/slides/uploads/Comparison on image taken by Camera Above and LineScanner below of a Ig unit .jpg" alt="IG unit comparison" data-zoom="" data-track="t5:zoom:ig-unit-comparison">
+                  </div>
+                </div><div class="ls-carousel-counter"></div></div>
             </div>
-            <div class="t5-vc-label">IG Unit — Camera vs LineScanner</div>
+            <div class="t5-vc-label" data-edit="vc-label-igunit" contenteditable="" spellcheck="false">IG Unit — Camera vs LineScanner</div>
           </div>
 
           <!-- Restore chips -->
-          <div class="t5-vc-restore" id="t5-vc-restore"></div>
+          
 
         </div>
 
@@ -122,20 +118,18 @@
         <div class="t5-cmp-col t5-cmp-good">
           <div class="t5-cmp-header">
             <span class="t5-cmp-icon">✓</span>
-            <span>LineScanner</span>
+            <span data-edit="vc-header-good" contenteditable="" spellcheck="false">LineScanner</span>
           </div>
           <ul class="t5-cmp-list" id="t5-vc-good-list" data-edit="t5-vc-good-list" data-ls-list="">
             <li><strong>100% line-by-line scanning:</strong> Every millimetre of glass is inspected — zero gaps, zero blind spots</li>
             <li><strong>No motion blur:</strong> Linear sensor reads one line at a time, perfectly synchronised with production speed</li>
             <li><strong>16-bit depth:</strong> 65,536 grey levels — detects the subtlest inclusions, coating variations and micro-scratches</li>
             <li><strong>Telecentric illumination:</strong> Uniform light field independent of glass position — consistent results everywhere</li>
-            <li class="" draggable="false"><strong>One setup for all glass:</strong> 15% to 99% transmission handled automatically with the same configuration</li><li class="ls-list-dragging" draggable="true">New item</li><li class="ls-list-dragging" draggable="true"><strong>Every pixel is equal:</strong> No positional variation — eliminates false positives and unnecessary rejections</li>
+            <li class="" draggable="false"><strong>Every pixel is equal:</strong> No positional variation — eliminates false positives and unnecessary rejections</li><li class="" draggable="false"><strong>One setup for all glass:</strong> 15% to 99% transmission handled automatically with the same configuration</li>
             
           </ul>
-          <div class="t5-vc-list-restore" id="t5-vc-good-restore" data-ls-restore=""><button class="ls-list-restore-chip">+ New item
-⠿
-×</button><button class="ls-list-restore-chip">+ New item</button></div>
-          <button class="t5-vc-add-btn t5-vc-add-good" data-ls-add="">+ Add item</button>
+          <div class="t5-vc-list-restore" id="t5-vc-good-restore" data-ls-restore=""></div>
+          
         </div>
 
       </div>
@@ -354,6 +348,7 @@
     }
     /* ── Mobile (≤768px) ── */
     @media(max-width:768px) {
+      .ls5, .t5 { padding: 52px 16px 80px !important; }
       .t5-components { grid-template-columns:1fr; }
       .t5-vc-wrap { grid-template-columns:1fr; height:auto; overflow-y:auto; }
     }

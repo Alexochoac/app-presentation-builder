@@ -10,29 +10,29 @@
     <div class="why3-col prob-col anim-in" style="" draggable="false">
       <div class="why3-col-header">
         <span class="why3-col-icon">⚠️</span>
-        <span class="why3-col-label">Without Inspection Automation</span>
+        <span class="why3-col-label" data-edit="col-header-prob" contenteditable="" spellcheck="false">Without Inspection Automation</span>
       </div>
       <ul class="why3-list" id="why3-prob-list" data-edit="prob-list" data-ls-list="">
-        <div class="why3-tier-label">Human Limitations</div>
+        <div class="why3-tier-label" data-edit="tier-label-1" contenteditable="" spellcheck="false">Human Limitations</div>
         
         <li class="prob-item">Operator fatigue — detection rates drop significantly over long shifts</li>
-        <li class="prob-item prob-clickable" onclick="openPopover('/slides/uploads/EfficiencyCliff.png')" title="Click to view chart">As line speed increases, operator effectiveness declines — higher throughput means more defects slip through undetected <span class="prob-img-hint">📈</span></li>
+        <li class="prob-item prob-clickable" title="Click to view chart">As line speed increases, operator effectiveness declines — higher throughput means more defects slip through undetected <span class="prob-img-hint">📈</span></li>
         <li class="prob-item">100% manual inspection is impossible at production speed</li><li class="prob-item" draggable="false">Distortion &amp; anisotropy are <strong>invisible to the naked eye</strong> — no matter how skilled the operator</li>
-        <div class="why3-tier-label" style="margin-top:8px;">Business Impact</div>
+        <div class="why3-tier-label" data-edit="tier-label-2" contenteditable="" spellcheck="false" style="margin-top:8px;">Business Impact</div>
         <li class="prob-item">Inconsistent quality &amp; frequent customer complaints</li>
-        <li class="prob-item prob-clickable" onclick="openPopover('/slides/uploads/CostOfQualityDefects.png')" title="Click to view chart">Construction site rejections — glass already delivered &amp; installed means transport, rework &amp; project delays <span class="prob-img-hint">💰</span></li>
-        <li class="prob-item prob-clickable" onclick="openPopover('/slides/uploads/CostOfQualityDefects.png')" title="Click to view chart">Automotive: one defect triggers a full batch return — shipping &amp; material costs on the entire load <span class="prob-img-hint">💰</span></li>
-        <li class="prob-item">Increased liability risks &amp; reputational damage</li>
+        <li class="prob-item prob-clickable" title="Click to view chart">Construction site rejections — glass already delivered &amp; installed means transport, rework &amp; project delays <span class="prob-img-hint">💰</span></li>
+        <li class="prob-item prob-clickable" title="Click to view chart">Automotive: one defect triggers a full batch return — shipping &amp; material costs on the entire load <span class="prob-img-hint">💰</span></li><li class="prob-item" draggable="false">Increased liability risks &amp; reputational damage</li>
+        
       </ul>
-      <div class="why3-restore" data-ls-restore=""></div>
-      <button class="why3-add-btn why3-add-prob" data-ls-add="">+ Add item</button>
+      <div class="why3-restore" data-builder-only="" data-ls-restore=""></div>
+      <button class="why3-add-btn why3-add-prob" data-builder-only="" data-ls-add="">+ Add item</button>
     </div>
 
     <!-- RIGHT — Benefits -->
     <div class="why3-col ben-col anim-in" style="" draggable="false">
       <div class="why3-col-header">
         <span class="why3-col-icon">✓</span>
-        <span class="why3-col-label">LineScanner &amp; Osprey</span>
+        <span class="why3-col-label" data-edit="col-header-ben" contenteditable="" spellcheck="false">LineScanner &amp; Osprey</span>
       </div>
       <ul class="why3-list" id="why3-ben-list" data-edit="ben-list" data-ls-list="">
         
@@ -42,10 +42,10 @@
         <li class="ben-item">Database &amp; archive for shift accountability and CpK analysis</li>
         <li class="ben-item">Acceptance procedures for new machinery (e.g. furnaces)</li>
         <li class="ben-item">Increase throughput &amp; reduce costly downstream rejects</li>
-        <li class="ben-item">Mandatory as per industry standards</li><li class="ben-item" draggable="false">Detects distortion, anisotropy &amp; surface defects <strong>invisible to the human eye</strong></li>
+        <li class="ben-item" draggable="false">Detects distortion, anisotropy &amp; surface defects <strong>invisible to the human eye</strong></li><li class="ben-item">Mandatory as per industry standards</li>
       </ul>
-      <div class="why3-restore" data-ls-restore=""></div>
-      <button class="why3-add-btn why3-add-ben" data-ls-add="">+ Add item</button>
+      <div class="why3-restore" data-builder-only="" data-ls-restore=""></div>
+      <button class="why3-add-btn why3-add-ben" data-builder-only="" data-ls-add="">+ Add item</button>
     </div>
 
   </div><!-- why3-grid -->
@@ -146,6 +146,7 @@
     @media(max-width:768px) {
       .why3-grid { grid-template-columns:1fr; gap:12px; }
       .why3-col  { max-height:42vh; }
+      .why3 { padding: 52px 16px 80px !important; }
     }
   </style>
 

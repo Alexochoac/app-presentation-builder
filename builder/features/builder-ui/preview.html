@@ -30,6 +30,15 @@
     #saveStatus.saving { opacity:1; }
     #saveStatus.saved  { opacity:1; width:8px; height:8px; border-radius:50%; background:#34c759; font-size:0; }
     #saveStatus.error  { opacity:1; color:#f87171; }
+    #lb-add-image {
+      display:none; position:absolute; bottom:14px; right:18px;
+      padding:6px 18px; border-radius:20px;
+      background:rgba(245,166,35,.12); border:1px solid rgba(245,166,35,.4);
+      color:#F5A623; font-size:12px; font-weight:700; letter-spacing:.05em;
+      font-family:inherit; cursor:pointer; transition:all .2s; z-index:10;
+    }
+    #lb-add-image:hover { background:rgba(245,166,35,.25); }
+    #lightbox.has-carousel #lb-add-image { display:block; }
   </style>
 </head>
 <body>
@@ -37,6 +46,12 @@
   <div class="glow-orb a"></div>
   <div class="glow-orb b"></div>
   <div id="previewBadge">Builder Preview</div>
+  <a id="dashLink" href="/" style="
+    position:fixed; top:14px; left:18px; z-index:9999;
+    font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    color:rgba(255,255,255,.45); text-decoration:none; font-family:inherit;
+    transition:color .2s; padding:10px 12px;
+  " onmouseover="this.style.color='rgba(255,255,255,.85)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">&#8592; Dashboard</a>
 
   <div class="slides-container" id="slidesContainer"></div>
 
@@ -57,27 +72,38 @@
       </div>
       <button id="lb-next" class="lb-nav-btn">&#8250;</button>
       <div id="lb-thumbs"></div>
+      <button id="lb-add-image" title="Add image to this carousel">+ Add Image</button>
     </div>
   </div>
 
   <script>
+  // ── Lightbox "Add Image" button ──────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', function () {
+    var lbAddImg = document.getElementById('lb-add-image');
+    if (lbAddImg) {
+      lbAddImg.addEventListener('click', function () {
+        if (window.Lightbox) Lightbox.triggerAddImage();
+      });
+    }
+  });
+
   // ── Slide list ──────────────────────────────────────────────────────────────
-  const SLIDES = [
-    { file: '/slides/slide-01-cover.html',         name: 'cover' },
-    { file: '/slides/slide-02-company.html',        name: 'company' },
-    { file: '/slides/slide-03-why.html',            name: 'why' },
-    { file: '/slides/slide-04-linescanner.html',    name: 'linescanner' },
-    { file: '/slides/slide-05-technology.html',     name: 'technology' },
-    { file: '/slides/slide-06-surface.html',        name: 'surface' },
-    { file: '/slides/slide-07-dimension.html',      name: 'dimension' },
-    { file: '/slides/slide-08-screenprinting.html', name: 'screenprinting' },
-    { file: '/slides/slide-09-logo-check.html',     name: 'logo-check' },
-    { file: '/slides/slide-10-database.html',       name: 'database' },
-    { file: '/slides/slide-11-sensitivity.html',    name: 'sensitivity' },
-    { file: '/slides/slide-12-footprint.html',      name: 'footprint' },
-    { file: '/slides/slide-13-integrations.html',   name: 'integrations' },
-    { file: '/slides/slide-14-cta.html',            name: 'cta' },
-  ];
+  // Populated async from /api/deck before init runs
+  var SLIDES = [];
+
+  async function loadDeck() {
+    const res  = await fetch('/api/deck');
+    if (!res.ok) throw new Error('GET /api/deck returned ' + res.status);
+    const deck = await res.json();
+    if (!deck.data || !deck.data.slides) throw new Error('Unexpected deck response: ' + JSON.stringify(deck));
+    return deck.data.slides
+      .filter(function (s) { return s.visible; })
+      .map(function (s) {
+        // s.id is e.g. 'slide-01-cover' → name is the part after the second dash
+        var name = s.id.replace(/^slide-\d+-/, '');
+        return { file: '/slides/' + s.id + '.html', name: name };
+      });
+  }
 
   // ── State ───────────────────────────────────────────────────────────────────
   var current        = 0;
@@ -224,7 +250,7 @@
     var filename = 'slide-' + index + '-' + SLIDES[current].name;
     var editKey  = e.detail.editKey || 'carousel-track';
     var body     = { slide: filename, edits: {} };
-    body.edits[editKey] = e.detail.html;
+    if (e.detail.html != null) body.edits[editKey] = e.detail.html;
     if (e.detail.autoplay) {
       body.attrs = {};
       body.attrs[editKey] = { 'data-autoplay': e.detail.autoplay };
@@ -327,18 +353,25 @@
   });
 
   // ── Init ─────────────────────────────────────────────────────────────────────
-  buildDots();
+  loadDeck().then(function (slides) {
+    SLIDES = slides;
 
-  // Load slide 0, preload slide 1
-  fetchSlide(0).then(function (html) {
-    injectSlide(0, html);
-    slideEls[0].classList.add('active');
-    trackEnter(0);
-    updateNav();
-    if (SLIDES.length > 1) fetchSlide(1);
+    buildDots();
+
+    // Load slide 0, preload slide 1
+    fetchSlide(0).then(function (html) {
+      injectSlide(0, html);
+      slideEls[0].classList.add('active');
+      trackEnter(0);
+      updateNav();
+      if (SLIDES.length > 1) fetchSlide(1);
+    }).catch(function (err) {
+      document.getElementById('slidesContainer').innerHTML =
+        '<div style="color:#f87171;padding:40px;font-family:monospace">Failed to load slide: ' + err.message + '</div>';
+    });
   }).catch(function (err) {
     document.getElementById('slidesContainer').innerHTML =
-      '<div style="color:#f87171;padding:40px;font-family:monospace">Failed to load slide: ' + err.message + '</div>';
+      '<div style="color:#f87171;padding:40px;font-family:monospace">Failed to load deck: ' + err.message + '</div>';
   });
   </script>
 

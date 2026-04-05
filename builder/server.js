@@ -1,32 +1,97 @@
+require('dotenv').config();
+
 const express  = require('express');
 const path     = require('path');
 const fs       = require('fs');
 const cheerio  = require('cheerio');
+const session  = require('express-session');
+const { requireAuth, registerAuthRoutes } = require('./features/auth/auth');
 
 const app  = express();
 const PORT = 3000;
 
 app.use(express.json({ limit: '20mb' }));
+app.use(express.urlencoded({ extended: false }));
 
-// ── Static: uploaded images (checked before slide-library fallback) ──────────
-app.use('/slides/uploads', express.static(path.join(__dirname, 'slides', 'uploads')));
+// ── Sessions ──────────────────────────────────────────────────────────────────
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'dev-secret-change-me',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { httpOnly: true, maxAge: 1000 * 60 * 60 * 8 } // 8 hours
+}));
 
-// ── Static: slide images (read-only from slide-library) ──────────────────────
-app.use('/slides/assets', express.static(
-  path.join(__dirname, '../slide-library/linescanner/Slide Images')
-));
-app.use('/slides/general', express.static(
-  path.join(__dirname, '../slide-library/linescanner/General Slide Images')
-));
-app.use('/slides/shared', express.static(
-  path.join(__dirname, '../docs/shared/assets')
-));
+// ── Auth routes (login / logout) ──────────────────────────────────────────────
+registerAuthRoutes(app);
 
-// ── Static: new slide files ───────────────────────────────────────────────────
-app.use('/slides', express.static(path.join(__dirname, 'slides')));
+// ── Protect everything below this line ───────────────────────────────────────
+app.use(requireAuth);
+
+// ── Static: customer uploads ──────────────────────────────────────────────────
+app.use('/slides/uploads', express.static(path.join(__dirname, 'features/slides/uploads')));
+
+// ── Static: shared brand assets (logos) ──────────────────────────────────────
+app.use('/slides/shared', express.static(path.join(__dirname, 'shared/assets')));
+
+// ── Static: slide files ───────────────────────────────────────────────────────
+app.use('/slides', express.static(path.join(__dirname, 'features/slides')));
+
+// ── Static: dashboard ─────────────────────────────────────────────────────────
+app.use(express.static(path.join(__dirname, 'features/dashboard')));
 
 // ── Static: builder UI ────────────────────────────────────────────────────────
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/builder', express.static(path.join(__dirname, 'features/builder-ui')));
+
+// ── API: deck config ──────────────────────────────────────────────────────────
+var DECK_PATH    = path.join(__dirname, 'data', 'deck.json');
+var LIBRARY_PATH = path.join(__dirname, 'data', 'slide-library.json');
+
+// GET /api/deck — return the current deck config
+app.get('/api/deck', function (req, res) {
+  try {
+    var deck = JSON.parse(fs.readFileSync(DECK_PATH, 'utf8'));
+    res.json({ success: true, data: deck });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// PUT /api/deck — overwrite the deck config
+// Body must be: { title: string (optional), slides: [{ id: string, visible: boolean }] }
+app.put('/api/deck', function (req, res) {
+  var body = req.body;
+
+  if (!body || !Array.isArray(body.slides)) {
+    return res.status(400).json({ success: false, error: 'Body must include a slides array' });
+  }
+
+  for (var i = 0; i < body.slides.length; i++) {
+    var s = body.slides[i];
+    if (typeof s.id !== 'string' || typeof s.visible !== 'boolean') {
+      return res.status(400).json({
+        success: false,
+        error: 'Each slide must have id (string) and visible (boolean). Failed at index ' + i
+      });
+    }
+  }
+
+  try {
+    fs.writeFileSync(DECK_PATH, JSON.stringify(body, null, 2), 'utf8');
+    res.json({ success: true, data: body });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /api/slide-library — return the slide template catalog
+app.get('/api/slide-library', function (req, res) {
+  try {
+    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    res.json({ success: true, data: library });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
 
 // ── API: save slide edits back to disk ────────────────────────────────────────
 // POST /api/save  { slide: 'slide-01-cover', edits: { badge: '...', headline: '...' } }
@@ -43,7 +108,7 @@ app.post('/api/save', function (req, res) {
     return res.status(400).json({ error: 'Invalid slide name' });
   }
 
-  var filePath = path.join(__dirname, 'slides', slide + '.html');
+  var filePath = path.join(__dirname, 'features/slides', slide + '.html');
 
   if (!fs.existsSync(filePath)) {
     return res.status(404).json({ error: 'Slide not found: ' + slide });
@@ -92,7 +157,7 @@ app.post('/api/upload-image', function (req, res) {
   if (!matches) return res.status(400).json({ error: 'Invalid image data' });
 
   try {
-    var uploadsDir = path.join(__dirname, 'slides', 'uploads');
+    var uploadsDir = path.join(__dirname, 'features/slides/uploads');
     if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
     fs.writeFileSync(path.join(uploadsDir, filename), Buffer.from(matches[2], 'base64'));
     res.json({ ok: true, path: '/slides/uploads/' + filename });
@@ -111,7 +176,7 @@ app.post('/api/save-image-src', function (req, res) {
   if (!slide || !editKey || !src) return res.status(400).json({ error: 'Missing params' });
   if (!/^slide-[\w-]+$/.test(slide)) return res.status(400).json({ error: 'Invalid slide name' });
 
-  var filePath = path.join(__dirname, 'slides', slide + '.html');
+  var filePath = path.join(__dirname, 'features/slides', slide + '.html');
   if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Slide not found' });
 
   try {
@@ -127,5 +192,5 @@ app.post('/api/save-image-src', function (req, res) {
 
 app.listen(PORT, function () {
   console.log('Builder running at http://localhost:' + PORT);
-  console.log('Preview:  http://localhost:' + PORT + '/preview.html');
+  console.log('Preview:  http://localhost:' + PORT + '/builder/preview.html');
 });

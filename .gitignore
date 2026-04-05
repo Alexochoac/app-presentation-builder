@@ -1,3 +1,8 @@
 # node_modules
 node_modules/
-builder/slides/uploads/
+
+# uploads
+builder/features/slides/uploads/
+
+# secrets
+.env

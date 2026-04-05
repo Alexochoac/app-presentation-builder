@@ -1,0 +1,61 @@
+{
+  "title": "LineScanner Presentation",
+  "slides": [
+    {
+      "id": "slide-01-cover",
+      "visible": true
+    },
+    {
+      "id": "slide-02-company",
+      "visible": true
+    },
+    {
+      "id": "slide-03-why",
+      "visible": true
+    },
+    {
+      "id": "slide-04-linescanner",
+      "visible": true
+    },
+    {
+      "id": "slide-05-technology",
+      "visible": true
+    },
+    {
+      "id": "slide-06-surface",
+      "visible": true
+    },
+    {
+      "id": "slide-07-dimension",
+      "visible": true
+    },
+    {
+      "id": "slide-08-screenprinting",
+      "visible": true
+    },
+    {
+      "id": "slide-09-logo-check",
+      "visible": true
+    },
+    {
+      "id": "slide-10-database",
+      "visible": true
+    },
+    {
+      "id": "slide-11-sensitivity",
+      "visible": true
+    },
+    {
+      "id": "slide-12-footprint",
+      "visible": true
+    },
+    {
+      "id": "slide-13-integrations",
+      "visible": true
+    },
+    {
+      "id": "slide-14-cta",
+      "visible": true
+    }
+  ]
+}
