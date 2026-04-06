@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard — Presentation Builder</title>
-  <link rel="stylesheet" href="/dashboard.css">
+  <link rel="stylesheet" href="/shared/app-style.css">
 </head>
 <body>
 
@@ -21,7 +21,9 @@
       <a href="/" class="nav-link active">Dashboard</a>
       <a href="#" class="nav-link">Settings</a>
     </nav>
-    <a href="/auth/logout" class="btn-logout">Log out</a>
+    <div class="topbar-right">
+      <a href="/auth/logout" class="btn-logout">Log out</a>
+    </div>
   </header>
 
   <!-- Main Content -->
@@ -98,5 +100,12 @@
   </main>
 
   <script src="/dashboard.js"></script>
+  <script>
+    (function () {
+      var html = document.documentElement;
+      var saved = localStorage.getItem('pb-theme');
+      if (saved) html.setAttribute('data-theme', saved);
+    })();
+  </script>
 </body>
 </html>

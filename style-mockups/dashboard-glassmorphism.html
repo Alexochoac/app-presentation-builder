@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Glassmorphism Mockup</title>
+  <style>
+    /* =============================================
+       CSS CUSTOM PROPERTIES
+    ============================================= */
+    :root {
+      --bg-deep:        #0d0d1a;
+      --bg-navy:        #1a1a2e;
+      --bg-mid:         #0f2040;
+      --accent:         #F5A623;
+      --accent-dim:     rgba(245, 166, 35, 0.15);
+      --accent-glow:    rgba(245, 166, 35, 0.35);
+
+      --glass-bg:       rgba(255, 255, 255, 0.07);
+      --glass-border:   rgba(255, 255, 255, 0.13);
+      --glass-blur:     blur(20px) saturate(180%);
+      --glass-shadow:   0 8px 32px rgba(0, 0, 0, 0.35);
+      --glass-radius:   20px;
+
+      --text-primary:   rgba(255, 255, 255, 0.92);
+      --text-secondary: rgba(255, 255, 255, 0.50);
+      --text-muted:     rgba(255, 255, 255, 0.28);
+
+      --font:           -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+      --spacing-xs:     6px;
+      --spacing-sm:     12px;
+      --spacing-md:     20px;
+      --spacing-lg:     28px;
+      --spacing-xl:     40px;
+    }
+
+    /* =============================================
+       RESET + BASE
+    ============================================= */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    /* =============================================
+       ANIMATED BACKGROUND
+    ============================================= */
+    body {
+      background: linear-gradient(135deg,
+        #0d0d1a 0%,
+        #1a1a2e 25%,
+        #0f2040 50%,
+        #0d0d1a 100%
+      );
+      background-size: 400% 400%;
+      animation: gradientShift 18s ease infinite;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    @keyframes gradientShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* =============================================
+       FLOATING PARTICLES
+    ============================================= */
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.25);
+      animation: floatUp linear infinite;
+    }
+
+    .particle:nth-child(1)  { left: 8%;   animation-duration: 22s; animation-delay: 0s;    width: 2px; height: 2px; }
+    .particle:nth-child(2)  { left: 16%;  animation-duration: 28s; animation-delay: -5s;   width: 1px; height: 1px; opacity: 0.4; }
+    .particle:nth-child(3)  { left: 27%;  animation-duration: 19s; animation-delay: -11s;  width: 3px; height: 3px; opacity: 0.15; }
+    .particle:nth-child(4)  { left: 38%;  animation-duration: 25s; animation-delay: -3s;   width: 2px; height: 2px; }
+    .particle:nth-child(5)  { left: 52%;  animation-duration: 32s; animation-delay: -8s;   width: 1px; height: 1px; opacity: 0.3; }
+    .particle:nth-child(6)  { left: 63%;  animation-duration: 21s; animation-delay: -15s;  width: 2px; height: 2px; }
+    .particle:nth-child(7)  { left: 74%;  animation-duration: 27s; animation-delay: -2s;   width: 3px; height: 3px; opacity: 0.12; }
+    .particle:nth-child(8)  { left: 85%;  animation-duration: 24s; animation-delay: -9s;   width: 1px; height: 1px; opacity: 0.35; }
+    .particle:nth-child(9)  { left: 92%;  animation-duration: 30s; animation-delay: -6s;   width: 2px; height: 2px; }
+    .particle:nth-child(10) { left: 44%;  animation-duration: 20s; animation-delay: -18s;  width: 1px; height: 1px; opacity: 0.2; }
+
+    @keyframes floatUp {
+      0%   { transform: translateY(110vh) scale(1);   opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { transform: translateY(-10vh) scale(0.8); opacity: 0; }
+    }
+
+    /* =============================================
+       LAYOUT WRAPPER
+    ============================================= */
+    .page {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: var(--spacing-md);
+      gap: var(--spacing-md);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* =============================================
+       GLASS PANEL — REUSABLE BASE
+    ============================================= */
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--glass-radius);
+      box-shadow: var(--glass-shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Top highlight line */
+    .glass::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 255, 0.55),
+        transparent
+      );
+      pointer-events: none;
+    }
+
+    /* =============================================
+       TOP BAR
+    ============================================= */
+    .topbar {
+      display: flex;
+      align-items: center;
+      padding: var(--spacing-sm) var(--spacing-lg);
+      gap: var(--spacing-lg);
+      border-radius: 16px;
+      flex-shrink: 0;
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      flex: 1;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #F5A623 0%, #e8910f 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(245, 166, 35, 0.4);
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.2px;
+    }
+
+    .topbar-nav {
+      display: flex;
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 12px;
+      padding: 4px;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 16px;
+      border-radius: 9px;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+    }
+
+    .nav-link.active {
+      background: rgba(245, 166, 35, 0.18);
+      color: var(--accent);
+      border: 1px solid rgba(245, 166, 35, 0.3);
+    }
+
+    .btn-logout {
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding: 7px 18px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* =============================================
+       MAIN CONTENT
+    ============================================= */
+    .main {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+      flex: 1;
+    }
+
+    /* =============================================
+       TWO-PANEL ROW
+    ============================================= */
+    .panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-md);
+    }
+
+    /* =============================================
+       PANEL SHARED
+    ============================================= */
+    .panel {
+      display: flex;
+      flex-direction: column;
+      padding: var(--spacing-lg);
+      gap: var(--spacing-md);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--spacing-sm);
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.2px;
+    }
+
+    .panel-subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+    }
+
+    /* =============================================
+       OPEN BUILDER BUTTON
+    ============================================= */
+    .btn-primary {
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #F5A623, #e8910f);
+      box-shadow: 0 4px 14px rgba(245, 166, 35, 0.35);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* =============================================
+       DECK LIST (LEFT PANEL)
+    ============================================= */
+    .deck-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .deck-row {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+      position: relative;
+    }
+
+    .deck-row:hover {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .deck-row.active {
+      background: rgba(245, 166, 35, 0.1);
+      border-color: rgba(245, 166, 35, 0.3);
+    }
+
+    .slide-number {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      width: 20px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .slide-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      flex: 1;
+    }
+
+    .slide-hidden-badge {
+      font-size: 10px;
+      font-weight: 600;
+      color: #F5A623;
+      background: rgba(245, 166, 35, 0.15);
+      border: 1px solid rgba(245, 166, 35, 0.3);
+      border-radius: 6px;
+      padding: 2px 8px;
+      letter-spacing: 0.3px;
+    }
+
+    .slide-drag-handle {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      opacity: 0.2;
+      flex-shrink: 0;
+    }
+
+    .slide-drag-handle span {
+      display: block;
+      width: 14px;
+      height: 1.5px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 2px;
+    }
+
+    /* =============================================
+       RIGHT PANEL — PREVIEW STATE
+    ============================================= */
+    .panel-preview {
+      min-height: 320px;
+    }
+
+    .preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .btn-close-glass {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-size: 15px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .preview-thumbnail-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-md) 0 var(--spacing-xs);
+    }
+
+    .preview-thumbnail {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle slide preview skeleton lines */
+    .preview-thumbnail::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(transparent 20%, rgba(255,255,255,0.03) 20%, rgba(255,255,255,0.03) 21%, transparent 21%),
+        linear-gradient(transparent 40%, rgba(255,255,255,0.02) 40%, rgba(255,255,255,0.02) 41%, transparent 41%),
+        linear-gradient(transparent 60%, rgba(255,255,255,0.02) 60%, rgba(255,255,255,0.02) 61%, transparent 61%);
+    }
+
+    .preview-slide-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      z-index: 1;
+    }
+
+    .preview-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+
+    .preview-icon svg {
+      width: 18px;
+      height: 18px;
+      opacity: 0.4;
+    }
+
+    .preview-hint {
+      font-size: 11px;
+      color: var(--accent);
+      opacity: 0.75;
+      letter-spacing: 0.2px;
+    }
+
+    /* =============================================
+       COMPANY SETTINGS PANEL
+    ============================================= */
+    .settings-panel {
+      padding: var(--spacing-lg);
+    }
+
+    .settings-header {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .badge-wip {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 2px 8px;
+    }
+
+    .settings-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .field input {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 13px;
+      color: var(--text-primary);
+      font-family: var(--font);
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .field input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .field input:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .logo-upload-wrap {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .logo-preview-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px dashed rgba(255, 255, 255, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-preview-box span {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .btn-upload-stub {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 6px 12px;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .settings-footer {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .btn-save {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(135deg, #F5A623, #e8910f);
+      border: none;
+      border-radius: 10px;
+      padding: 9px 22px;
+      cursor: not-allowed;
+      opacity: 0.65;
+      box-shadow: 0 4px 14px rgba(245, 166, 35, 0.25);
+      font-family: var(--font);
+    }
+
+    .settings-note {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating particles -->
+  <div class="particles" aria-hidden="true">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+
+  <div class="page">
+
+    <!-- TOP BAR -->
+    <header class="topbar glass">
+      <div class="topbar-brand">
+        <div class="logo-icon">P</div>
+        <span class="logo-text">Presentation Builder</span>
+      </div>
+      <nav class="topbar-nav">
+        <a href="#" class="nav-link active">Dashboard</a>
+        <a href="#" class="nav-link">Settings</a>
+      </nav>
+      <a href="#" class="btn-logout">Log out</a>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+      <!-- TWO-PANEL ROW -->
+      <div class="panels">
+
+        <!-- LEFT PANEL: Your Presentation -->
+        <section class="panel panel-deck glass">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title">Your Presentation</h2>
+              <p class="panel-subtitle">LineScanner Sales Deck — 5 slides</p>
+            </div>
+            <a href="#" class="btn-primary">Open Builder &rarr;</a>
+          </div>
+
+          <ul class="deck-list">
+
+            <li class="deck-row">
+              <span class="slide-number">01</span>
+              <span class="slide-name">Cover</span>
+              <div class="slide-drag-handle" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+            </li>
+
+            <li class="deck-row active">
+              <span class="slide-number">02</span>
+              <span class="slide-name">Company</span>
+              <div class="slide-drag-handle" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+            </li>
+
+            <li class="deck-row">
+              <span class="slide-number">03</span>
+              <span class="slide-name">Why Us</span>
+              <div class="slide-drag-handle" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+            </li>
+
+            <li class="deck-row">
+              <span class="slide-number">04</span>
+              <span class="slide-name">LineScanner</span>
+              <div class="slide-drag-handle" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+            </li>
+
+            <li class="deck-row">
+              <span class="slide-number">05</span>
+              <span class="slide-name">Technology</span>
+              <span class="slide-hidden-badge">Extras Menu</span>
+              <div class="slide-drag-handle" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+            </li>
+
+          </ul>
+        </section>
+
+        <!-- RIGHT PANEL: Slide Preview -->
+        <section class="panel panel-preview glass">
+          <div class="preview-header panel-header">
+            <div>
+              <h2 class="panel-title">Preview</h2>
+              <p class="panel-subtitle">Slide 02 — Company</p>
+            </div>
+            <div class="btn-close-glass" aria-label="Close preview">&times;</div>
+          </div>
+
+          <div class="preview-thumbnail-wrap">
+            <div class="preview-thumbnail">
+              <div class="preview-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <rect x="3" y="3" width="18" height="14" rx="2"/>
+                  <path d="M8 21h8M12 17v4"/>
+                </svg>
+              </div>
+              <span class="preview-slide-label">Company</span>
+            </div>
+            <span class="preview-hint">Click to zoom</span>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- COMPANY SETTINGS PANEL -->
+      <section class="settings-panel glass">
+        <div class="settings-header">
+          <h2 class="panel-title">Company Settings</h2>
+          <span class="badge-wip">Coming Soon</span>
+        </div>
+
+        <div class="settings-fields">
+          <div class="field">
+            <label for="companyName">Company Name</label>
+            <input type="text" id="companyName" placeholder="e.g. Acme Corp" disabled>
+          </div>
+          <div class="field">
+            <label for="tagline">Tagline</label>
+            <input type="text" id="tagline" placeholder="e.g. Built for speed" disabled>
+          </div>
+          <div class="field">
+            <label>Logo</label>
+            <div class="logo-upload-wrap">
+              <div class="logo-preview-box">
+                <span>None</span>
+              </div>
+              <span class="btn-upload-stub">Upload</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-footer">
+          <button class="btn-save" disabled>Save Changes</button>
+          <span class="settings-note">Save functionality is not yet active.</span>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+</body>
+</html>

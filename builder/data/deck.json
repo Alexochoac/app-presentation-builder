@@ -18,10 +18,6 @@
       "visible": true
     },
     {
-      "id": "slide-05-technology",
-      "visible": true
-    },
-    {
       "id": "slide-06-surface",
       "visible": true
     },
@@ -51,7 +47,7 @@
     },
     {
       "id": "slide-13-integrations",
-      "visible": true
+      "visible": false
     },
     {
       "id": "slide-14-cta",

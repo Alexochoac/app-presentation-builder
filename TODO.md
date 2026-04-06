@@ -1,8 +1,18 @@
 # TODO — Presentation Builder
 
 ## Immediate (test + stabilize)
-- [ ] Test all slides end-to-end in browser after editability pass
-- [ ] Slide-06 defect selector names — JS-generated, need static HTML or editable config approach
+- [ ] Delete old `dashboard.css` after confirming new `app-style.css` works in browser
+- [ ] Test dashboard in browser with new Apple Keynote style
+- [ ] Test slide preview thumbnail and lightbox in dashboard
+- [ ] Test clone slide flow end-to-end
+- [ ] Test all slides end-to-end in builder
+
+## Dashboard & UI
+- [ ] Presentation view — clean read-only mode (visible slides + hidden slides in CTA extras menu)
+- [ ] Settings page — theme toggle (dark/light) lives here
+
+## Slides
+- [ ] Slide-06 defect selector names — JS-generated, move to static HTML
 - [ ] Image caption editing UI (captions come from `img.alt`, no edit path yet)
 
 ## Build & Deploy
@@ -18,14 +28,14 @@
 - [x] `table.js` — row+col add/hide/delete/reorder/edit, dot cycling, auto-save
 - [x] All slides 01–14 created and migrated to component system
 - [x] Slide-06 migrated to 11 `ls-carousel` divs + standard compare mode
-- [x] Carousel compare mode: Split + Reveal (draggable handle), per-side replace, editable labels
-- [x] Dashboard built — post-login home, deck manager + slide library, company settings placeholder
-- [x] `deck.json` + `slide-library.json` as source of truth for deck order/visibility
+- [x] Dashboard built — post-login home, deck manager + slide library
+- [x] `deck.json` + `slide-library.json` as source of truth
 - [x] `GET/PUT /api/deck` and `GET /api/slide-library` endpoints
-- [x] `preview.html` fetches deck from API (no more hardcoded SLIDES array)
-- [x] Swipe gesture navigation in builder
-- [x] Auth redirects fixed (post-login → dashboard)
-- [x] Full mobile responsiveness — all 14 slides fixed for iPhone 15 (390px)
-- [x] Full editability pass — all visible text in all 14 slides has `data-edit` + `contenteditable`
-- [x] `data-builder-only` on all builder-only UI controls (slides 01, 03, 04, 05)
-- [x] Broken edit bugs fixed: slide-02 headline, slide-03 JS error, slide-10 carousel keys, slide-14 email href
+- [x] `POST /api/clone-slide` endpoint
+- [x] `preview.html` fetches deck from API
+- [x] Full mobile responsiveness — all 14 slides fixed for iPhone 15
+- [x] Full editability pass — all visible text in all 14 slides
+- [x] Dashboard slide library redesign: hides in-deck slides, clone flow, two-way preview
+- [x] Scaled iframe thumbnail preview + lightbox zoom in dashboard
+- [x] `builder/shared/app-style.css` — Apple Keynote dark/light theme system
+- [x] GitHub repo created: `Alexochoac/app-presentation-builder`

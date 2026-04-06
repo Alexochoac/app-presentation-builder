@@ -520,3 +520,243 @@ input::placeholder { color: var(--text-dim); }
   font-size: 12px;
   color: rgba(245,166,35,.7);
 }
+
+/* ── Preview Panel ── */
+.preview-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn-close-preview {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font);
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
+  align-self: flex-start;
+}
+.btn-close-preview:hover {
+  color: var(--text);
+  border-color: rgba(255,255,255,.2);
+}
+
+.preview-thumbnail {
+  position: relative;
+  width: 100%;
+  cursor: zoom-in;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #000;
+}
+
+.preview-scale-wrap {
+  pointer-events: none; /* prevent iframe from capturing mouse inside thumbnail */
+}
+
+.preview-zoom-hint {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0,0,0,.65);
+  color: rgba(255,255,255,.8);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 100px;
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+  letter-spacing: .04em;
+}
+
+/* ── Slide Preview Lightbox ── */
+.preview-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0,0,0,.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+.preview-lightbox-inner {
+  position: relative;
+  width: 100%;
+  max-width: 1280px;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,.6);
+}
+
+.preview-lightbox-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,.6);
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s;
+}
+.preview-lightbox-close:hover {
+  background: rgba(0,0,0,.85);
+}
+
+/* ── Badge Hidden (Extras Menu label) ── */
+.badge-hidden {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: rgba(245,166,35,.7);
+  background: rgba(245,166,35,.08);
+  border: 1px solid rgba(245,166,35,.2);
+  border-radius: 100px;
+  padding: 2px 7px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Library Empty State ── */
+.library-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px 16px;
+  text-align: center;
+}
+
+.library-empty-text {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.library-empty-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-clone {
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font);
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.btn-clone:hover {
+  background: rgba(255,255,255,.1);
+  border-color: rgba(255,255,255,.18);
+}
+
+.btn-add-new {
+  background: rgba(245,166,35,.1);
+  border: 1px solid rgba(245,166,35,.3);
+  border-radius: 8px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font);
+  padding: 8px 16px;
+  cursor: pointer;
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+/* ── Clone Select ── */
+.clone-select-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  width: 100%;
+}
+
+.clone-select {
+  width: 100%;
+  padding: 9px 12px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 13px;
+  font-family: var(--font);
+  outline: none;
+  cursor: pointer;
+}
+
+.clone-select:focus {
+  border-color: rgba(245,166,35,.5);
+}
+
+.btn-clone-confirm {
+  background: linear-gradient(135deg, #F5A623, #E8711A);
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  font-size: 12px;
+  font-weight: 800;
+  font-family: var(--font);
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+.btn-clone-confirm:hover { opacity: .88; }
+
+/* ── Deck row — slide title clickable ── */
+.slide-title-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  font-family: var(--font);
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color .15s;
+}
+.slide-title-btn:hover { color: var(--accent); }
+.slide-title-btn.is-hidden { color: var(--text-muted); }
+
+/* ── Lib card — clickable for preview ── */
+.lib-card {
+  cursor: pointer;
+}

@@ -1,5 +1,33 @@
 # Sessions
 
+## 2026-04-05 (session 2) — Dashboard redesign, style system, GitHub repo
+
+### Accomplished
+- Created GitHub repo `Alexochoac/app-presentation-builder` (public), pushed all code
+- Added `README.md` with project description and setup instructions
+- Improved `.gitignore` with OS/editor/log entries
+- **Dashboard slide library redesign**: library now hides slides already in deck; empty state shows "Clone Existing" button
+- **Two-way slide preview**: click slide title in deck → preview iframe (scaled thumbnail) in right panel; click library card → preview in left panel
+- **Scaled thumbnail preview**: full 1280×720 slide rendered via CSS `scale()` to fit panel — no scroll, full slide visible
+- **Lightbox on click**: clicking thumbnail opens fullscreen overlay (16:9, click outside or Escape to close)
+- **Clone slide**: `POST /api/clone-slide` endpoint — copies HTML structure, resets editable text to placeholder values, clears images, adds to library + deck
+- **Hidden slides**: show "Extras Menu" amber badge in deck list
+- **Debugger pass**: fixed 3 bugs — wrong panel selectors (`.panel-right` → `.panel-deck`), iframe clipped by `<ul>` wrapper, CSS class mismatch on close button
+- **Style system**: created `builder/shared/app-style.css` — Apple Keynote dark/light theme with CSS variables, replaces `dashboard.css`
+- Dark/light theme toggle with `localStorage` persistence, applied via `data-theme` on `<html>`
+- Server now serves `/shared/*` for shared app assets
+- Built 4 dashboard style mockups for review (apple-keynote, apple-minimal, modern-saas-dark, glassmorphism)
+- Final style decision: Apple Keynote dark/light — theme toggle to live in Settings (not topbar)
+
+### Pending
+- Delete old `dashboard.css` after confirming new style works
+- Test dashboard in browser with new style
+- Presentation view (clean read-only mode): visible slides + hidden slides in CTA extras menu
+- Slide-06 defect selector names — move to static HTML
+- `scripts/build.js` and `scripts/deploy.js`
+
+---
+
 ## 2026-04-05 — Dashboard, mobile responsiveness, full editability pass
 
 ### Accomplished
@@ -11,68 +39,30 @@
 - Fixed post-login redirect in `auth.js` to go to `/` (dashboard) instead of deleted `/preview.html`
 - Fixed dashboard JS API response unwrapping (`{ success, data }` envelope)
 - Served dashboard at `/`, builder at `/builder/preview.html`
-- **Full mobile audit** of all 14 slides on iPhone 15 (390px): fixed padding overrides with `!important`, collapsed grids, lightbox button repositioning, nav dot tap targets, CTA button tap targets, swipe navigation
-- **Full editability audit**: added `data-edit` + `contenteditable` to every visible text element across all 14 slides — tab labels, card labels, list items, step descriptions, integration names, spec badges, tier labels, column headers, carousel labels, map pins, KPI labels
-- Fixed broken edit bugs: slide-02 headline, slide-03 `openPopover` JS error, slide-10 inner carousel save keys, slide-14 email href sync
+- Full mobile audit of all 14 slides on iPhone 15 (390px)
+- Full editability audit: added `data-edit` + `contenteditable` to every visible text element across all 14 slides
+- Fixed broken edit bugs across slides 02, 03, 10, 14
 - Added `data-builder-only=""` to all builder-only UI controls across slides 01, 03, 04, 05
-- Fixed slide-05 stale "New item" restore chips; `list.js` now clears restore area on init (self-healing)
-- Fixed `list.js` stale chip save bug at the root level
+- Fixed `list.js` stale chip save bug and self-healing restore area
 
 ### Pending
-- Slide-06 defect selector names are JS-generated — need different approach (move to static HTML or add editable config)
-- Image caption editing UI (currently captions come from `img.alt` with no edit path)
-- `scripts/build.js` — assemble customer HTML, strip `data-builder-only`
-- `scripts/deploy.js` — push to GitHub Pages
-- End-to-end browser test of all slides after editability pass
+- Slide-06 defect selector names are JS-generated — need static HTML approach
+- Image caption editing UI
+- `scripts/build.js` and `scripts/deploy.js`
+- End-to-end browser test of all slides
 
 ---
 
-## 2026-04-01 — list.js + table.js + full tab/list migration
+## 2026-04-01 — list.js + table.js + full tab/list migration + image management
 
 ### Accomplished
-- Created `list.js` component (`ul[data-ls-list]`): add item, hide item (restorable via chip), delete (shift+click), drag reorder, dblclick-edit, auto-save on every change
-- Created `table.js` component (`table[data-ls-table]`): row add/hide/delete/reorder/dblclick-edit, column hide/restore, dot cell cycling (filled→outline→empty), auto-save
-- Migrated slide-03 (why) lists to `list.js` — removed ~130 lines of duplicate JS/CSS
-- Migrated slide-05 (technology) lists to `list.js` — removed ~80 lines of duplicate CSS + disabled old `t5VcInitList`
-- Migrated slide-05 custom `.t5-tabs` to `ls-tabs` (column-reverse so bar stays at bottom) — removed `t5Tab()` JS
-- Migrated slide-02 custom `.ls2-tabs` to `ls-tabs` with carousel as default panel 0 (no active tab) + toggle-to-carousel click behaviour — removed `ls2Tab()` JS, removed ~40 lines CSS
-- Added `data-zoom` to slide-02 world map image
-- Migrated slide-04 tables to `table.js` — added `data-ls-table`, `data-ls-col-restore`, `data-ls-row-restore`, `data-ls-add-row` attrs; stripped 27 baked-in `ls4-row-hide-btn` + drag handles + 8 col-toggle buttons from HTML; disabled `ls4InitTable()`
-- Registered `list.js` and `table.js` in `preview.html` (script tags + `List.init` / `LSTable.init` in `injectSlide`)
-- Fixed content hidden behind nav bar: `.slide.content { padding-bottom: 70px !important }` in style.css
-- Fixed dark-mode scrollbars in style.css
+- Created `list.js` and `table.js` reusable components
+- Migrated slides 02, 03, 04, 05 lists/tables/tabs to standard components
+- Added carousel compare mode (Split + Reveal), reorder buttons, autoplay toggle, Add Image from lightbox
+- Migrated slide-06 to 11 standard `ls-carousel` divs
+- Fixed zoom freeze bug, data-zoom-init persistence bug, duplicate counter bug
+- Created `.claude/settings.json` agent permission allow-list
 
 ### Pending
-- Test all slides in browser end-to-end
-- Image alt text editable in builder (rename file for Umami tracking)
-- `scripts/build.js` — assemble customer HTML, strip `data-builder-only`
-- `scripts/deploy.js` — push to GitHub Pages
-
----
-
-## 2026-04-01 (session 2) — Image management + compare mode + slide-06 migration
-
-### Accomplished
-- Fixed slide-04 proc table "Add row" button (wrong `data-table="proc"` attr → `data-ls-add-row`)
-- Fixed lightbox zoom freeze: MutationObserver caused infinite loop on `classList.remove` — replaced with direct removal in `close()`
-- Fixed `data-zoom-init` persisting to saved HTML blocking re-wiring on reload — switched to JS property `el._lsZoomInit`
-- Fixed slide-04 capability carousel missing `data-edit` (saves were silently failing)
-- Fixed duplicate `.ls-carousel-counter` divs accumulating on every save — `saveCarousel` now strips them before saving
-- Added `data-zoom` attribute to newly uploaded carousel images so they appear in lightbox gallery
-- Added `+ Add Image` button inside lightbox (shown when carousel triggered the open)
-- Added carousel image reorder: ◀▶ buttons on hover per slide, saves to disk
-- Added autoplay toggle button per carousel: cycles Off → 3s → 5s → 10s → 15s
-- Added `ensureMoveButtons` with per-slide mouseenter show/hide for move buttons
-- Added full compare mode to carousel: Split (50/50 static) and Reveal (draggable handle) — `⇔ Compare` button on any single slide, per-side replace, editable labels, exit compare
-- Added `data-no-caption` attribute to suppress auto-caption overlay on carousels with external labels (slide-05 vc-cards)
-- Moved carousel counter to bottom-right corner
-- Created `.claude/settings.json` with allow list for Edit, Write, Read, Bash(node/npm/mkdir/cat/ls/tail) so background agents don't need per-tool approval
-- Migrated slide-06 from custom JS DEFECTS array + custom stage/viewport/arrows to 11 standard `ls-carousel` divs (one per defect category), compare slides use `ls-compare`, selector buttons show/hide the right carousel — removed ~200 lines custom JS/CSS
-
-### Pending
-- Audit slides 07–14 for standalone `<img>` tags that need converting to `ls-carousel`
-- Test slide-06 compare slides (Split/Reveal) in browser
 - Test all slides end-to-end
-- Image alt text editable in builder (rename file for Umami tracking)
-- `scripts/build.js` — assemble customer HTML, strip `data-builder-only`
-- `scripts/deploy.js` — push to GitHub Pages
+- `scripts/build.js` and `scripts/deploy.js`

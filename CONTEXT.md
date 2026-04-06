@@ -8,10 +8,13 @@ Sales teams use it to build customer-specific decks, then publish to GitHub Page
 **Phase 1** — Local app, single user, single company. Login portal + builder UI + publish to GitHub Pages.
 
 ## Architecture
-- `builder/server.js` — Express server, save/upload APIs
+- `builder/server.js` — Express server, save/upload/clone APIs
 - `builder/features/builder-ui/preview.html` — Builder UI (slide editor)
+- `builder/features/dashboard/index.html` — Dashboard (post-login home)
+- `builder/features/dashboard/dashboard.js` — Deck manager, slide library, preview, clone
+- `builder/shared/app-style.css` — Shared app stylesheet (dark/light theme, Apple Keynote style)
 - `builder/features/slides/slide-NN-*.html` — Self-contained slide fragments
-- `builder/features/slides/style.css` — Shared CSS for all slides
+- `builder/features/slides/style.css` — Shared CSS for all slides (separate from app style)
 - `builder/features/slides/components/` — Reusable JS components:
   - `carousel.js` — `.ls-carousel` declarative image carousel (add/delete/reorder/zoom/compare/autoplay)
   - `lightbox.js` — zoom/gallery lightbox, `data-zoom` + `data-zoom-group`, `+ Add Image` button
@@ -20,6 +23,12 @@ Sales teams use it to build customer-specific decks, then publish to GitHub Page
   - `table.js` — `table[data-ls-table]` capability matrix (rows + columns fully editable)
   - `tracker.js` — Umami analytics
 - `.claude/settings.json` — Agent permission allow-list (Edit, Write, Bash)
+
+## Style System
+- **App style**: `builder/shared/app-style.css` — Apple Keynote aesthetic, dark/light via `data-theme` on `<html>`, persisted in `localStorage` as `pb-theme`
+- **Theme toggle**: lives in Settings (not topbar) — applies to app shell only
+- **Slide style**: `builder/features/slides/style.css` — Softsolution brand, separate from app style
+- **Style mockups**: `style-mockups/` — reference HTML files for visual decisions
 
 ## Component Conventions
 - Any `[data-zoom]` image → lightbox on click
@@ -36,32 +45,25 @@ Sales teams use it to build customer-specific decks, then publish to GitHub Page
 ## Completed This Project
 - [x] Builder foundation: Express server, preview.html, save/upload API
 - [x] Slides 01–14 created with `data-edit` + `contenteditable` on all text
-- [x] `carousel.js` — reusable carousel with add/delete/reorder/zoom/autoplay toggle/compare mode
-- [x] `lightbox.js` — gallery lightbox, thumbnails, zoom sync, `+ Add Image` from lightbox
-- [x] `tabs.js` — add/delete/rename tabs, each panel holds carousel
-- [x] `list.js` — add/hide/delete/reorder/dblclick-edit, auto-save
-- [x] `table.js` — row+col add/hide/delete/reorder/edit, dot cycling, auto-save
-- [x] All slides 04–12 migrated to `.ls-carousel` + `data-zoom`
-- [x] All tab-bearing slides (02, 04, 05, 10) migrated to `ls-tabs`
-- [x] Slides 03, 05 lists migrated to `list.js`
-- [x] Slide-04 tables migrated to `table.js`
-- [x] Slide-05 vc-cards use `data-no-caption`, duplicate counters cleaned
-- [x] Slide-06 fully migrated: 11 `ls-carousel` divs (one per defect), compare slides use standard `ls-compare`, ~200 lines of custom JS/CSS removed
-- [x] Carousel compare mode: Split (50/50) + Reveal (draggable handle), per-side replace, editable labels
-- [x] Lightbox zoom freeze bug fixed (MutationObserver → direct class removal)
-- [x] `data-zoom-init` persistence bug fixed (DOM attr → JS property)
-- [x] Carousel counter moved to bottom-right
-- [x] `.claude/settings.json` created with agent permission allow-list
+- [x] All components: carousel.js, lightbox.js, tabs.js, list.js, table.js
+- [x] All slides migrated to component system
+- [x] Dashboard: deck manager + slide library + company settings placeholder
+- [x] `deck.json` + `slide-library.json` as source of truth; deck API endpoints
+- [x] `preview.html` fetches deck from API
+- [x] Full mobile responsiveness — all 14 slides fixed for iPhone 15
+- [x] Full editability pass — all visible text across all 14 slides
+- [x] Dashboard slide library redesign: hides in-deck slides, empty state, clone flow
+- [x] Two-way slide preview with scaled iframe thumbnail + lightbox zoom
+- [x] `POST /api/clone-slide` endpoint
+- [x] `builder/shared/app-style.css` — shared app style with dark/light theme
+- [x] GitHub repo created: `Alexochoac/app-presentation-builder`
 
 ## Next Steps
-- [x] Dashboard built — post-login home with deck manager + slide library panels
-- [x] `deck.json` + `slide-library.json` as source of truth; deck API endpoints added
-- [x] Full mobile responsiveness pass — all 14 slides fixed for iPhone 15
-- [x] Full editability pass — all visible text across all 14 slides now has `data-edit` + `contenteditable`
-- [x] `data-builder-only` added to all builder-only UI controls
-- [ ] Slide-06 defect selector names — JS-generated, need static HTML or editable config approach
+- [ ] Delete old `dashboard.css` after confirming new style works in browser
+- [ ] Test dashboard in browser with new `app-style.css`
+- [ ] Presentation view — clean read-only mode: visible slides full-screen + hidden slides in CTA extras menu
+- [ ] Slide-06 defect selector names — move to static HTML (currently JS-generated)
 - [ ] Image caption editing UI (captions come from `img.alt`, no edit path yet)
-- [ ] Test all slides end-to-end in browser after editability pass
 - [ ] `scripts/build.js` — assemble final customer HTML, strip `data-builder-only`
 - [ ] `scripts/deploy.js` — push to GitHub Pages
 

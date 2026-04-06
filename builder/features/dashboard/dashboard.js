@@ -4,6 +4,7 @@
 
 let deck = { title: '', slides: [] };
 let library = [];
+let activePreview = null; // { origin: 'deck'|'library', slideId }
 
 // ── Boot ───────────────────────────────────────────────────────────────────
 
@@ -88,9 +89,6 @@ function renderDeck() {
   deck.slides.forEach(function (slide, index) {
     listEl.appendChild(buildDeckRow(slide, index));
   });
-
-  // Re-sync library cards after deck changes
-  syncLibraryState();
 }
 
 function buildDeckRow(slide, index) {
@@ -100,6 +98,7 @@ function buildDeckRow(slide, index) {
   li.draggable = true;
 
   const isVisible = slide.visible !== false; // default to true if undefined
+  const hiddenBadge = isVisible ? '' : '<span class="badge-hidden">Extras Menu</span>';
 
   li.innerHTML =
     '<span class="drag-handle" aria-hidden="true">&#8942;</span>' +
@@ -107,6 +106,7 @@ function buildDeckRow(slide, index) {
     '<span class="slide-title' + (isVisible ? '' : ' is-hidden') + '">' +
       escapeText(idToLabel(slide.id)) +
     '</span>' +
+    hiddenBadge +
     '<button class="btn-visibility' + (isVisible ? ' is-visible' : '') + '" ' +
       'title="' + (isVisible ? 'Hide slide' : 'Show slide') + '" ' +
       'aria-label="' + (isVisible ? 'Hide' : 'Show') + ' slide">' +
@@ -115,6 +115,10 @@ function buildDeckRow(slide, index) {
     '<button class="btn-remove" title="Remove slide" aria-label="Remove slide">' +
       '&times;' +
     '</button>';
+
+  li.querySelector('.slide-title').addEventListener('click', function () {
+    showPreview(slide.id, 'deck');
+  });
 
   li.querySelector('.btn-visibility').addEventListener('click', function () {
     toggleVisibility(slide.id);
@@ -141,15 +145,35 @@ function renderLibrary() {
   }
 
   const deckIds = getDeckIds();
+  const available = library.filter(function (item) { return !deckIds.has(item.id); });
 
-  library.forEach(function (item) {
-    gridEl.appendChild(buildLibCard(item, deckIds.has(item.id)));
+  if (available.length === 0) {
+    // All slides are already in the deck — show empty state with action buttons
+    const empty = document.createElement('div');
+    empty.className = 'library-empty-state';
+    empty.innerHTML =
+      '<p class="deck-placeholder">All slides are in the deck.</p>' +
+      '<div class="library-empty-actions">' +
+        '<button class="btn-add-new" disabled>Add New</button>' +
+        '<button class="btn-clone">Clone Existing</button>' +
+      '</div>';
+
+    empty.querySelector('.btn-clone').addEventListener('click', function () {
+      openCloneDialog();
+    });
+
+    gridEl.appendChild(empty);
+    return;
+  }
+
+  available.forEach(function (item) {
+    gridEl.appendChild(buildLibCard(item));
   });
 }
 
-function buildLibCard(item, inDeck) {
+function buildLibCard(item) {
   const card = document.createElement('div');
-  card.className = 'lib-card' + (inDeck ? ' in-deck' : '');
+  card.className = 'lib-card';
   card.dataset.id = item.id;
 
   card.innerHTML =
@@ -158,38 +182,19 @@ function buildLibCard(item, inDeck) {
       '<span class="badge-category" title="' + escapeText(item.category) + '">' +
         escapeText(item.category) +
       '</span>' +
-      (inDeck
-        ? '<span class="btn-in-deck">In Deck</span>'
-        : '<button class="btn-add">Add</button>') +
+      '<button class="btn-add">Add</button>' +
     '</div>';
 
-  if (!inDeck) {
-    card.querySelector('.btn-add').addEventListener('click', function () {
-      addSlide(item);
-    });
-  }
+  card.querySelector('.btn-add').addEventListener('click', function (e) {
+    e.stopPropagation();
+    addSlide(item);
+  });
+
+  card.addEventListener('click', function () {
+    showPreview(item.id, 'library');
+  });
 
   return card;
-}
-
-// Keep library cards in sync with current deck state without a full re-render
-function syncLibraryState() {
-  const deckIds = getDeckIds();
-  const gridEl = document.getElementById('libraryGrid');
-
-  gridEl.querySelectorAll('.lib-card').forEach(function (card) {
-    const id = card.dataset.id;
-    const shouldBeInDeck = deckIds.has(id);
-    const isInDeck = card.classList.contains('in-deck');
-
-    if (shouldBeInDeck === isInDeck) return;
-
-    // Rebuild just this card
-    const item = library.find(function (l) { return l.id === id; });
-    if (!item) return;
-    const newCard = buildLibCard(item, shouldBeInDeck);
-    card.replaceWith(newCard);
-  });
 }
 
 // ── Deck Mutations ─────────────────────────────────────────────────────────
@@ -204,12 +209,14 @@ function toggleVisibility(id) {
   slide.visible = slide.visible === false ? true : false;
   putDeck().catch(console.error);
   renderDeck();
+  renderLibrary();
 }
 
 function removeSlide(id) {
   deck.slides = deck.slides.filter(function (s) { return s.id !== id; });
   putDeck().catch(console.error);
   renderDeck();
+  renderLibrary();
 }
 
 function addSlide(item) {
@@ -218,6 +225,172 @@ function addSlide(item) {
   putDeck().catch(console.error);
   renderDeck();
   renderLibrary();
+}
+
+// ── Clone Slide ────────────────────────────────────────────────────────────
+
+async function cloneSlide(sourceId) {
+  try {
+    const res = await fetch('/api/clone-slide', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sourceId })
+    });
+    if (!res.ok) throw new Error('POST /api/clone-slide failed');
+    const json = await res.json();
+    const newSlide = json.data || json; // { id, label, category }
+    library.push(newSlide);
+    renderLibrary();
+    console.log('Clone created:', newSlide.id);
+  } catch (e) {
+    console.error('Failed to clone slide:', e);
+  }
+}
+
+function openCloneDialog() {
+  const gridEl = document.getElementById('libraryGrid');
+
+  if (deck.slides.length === 0) {
+    console.log('No slides in deck to clone.');
+    return;
+  }
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'clone-dialog';
+
+  const options = deck.slides.map(function (s) {
+    return '<option value="' + escapeText(s.id) + '">' + escapeText(idToLabel(s.id)) + '</option>';
+  }).join('');
+
+  wrapper.innerHTML =
+    '<p>Select a slide to clone:</p>' +
+    '<select class="clone-select">' + options + '</select>' +
+    '<div class="clone-dialog-actions">' +
+      '<button class="btn-clone-confirm">Clone</button>' +
+      '<button class="btn-clone-cancel">Cancel</button>' +
+    '</div>';
+
+  wrapper.querySelector('.btn-clone-confirm').addEventListener('click', function () {
+    const selectedId = wrapper.querySelector('.clone-select').value;
+    cloneSlide(selectedId);
+  });
+
+  wrapper.querySelector('.btn-clone-cancel').addEventListener('click', function () {
+    renderLibrary();
+  });
+
+  gridEl.innerHTML = '';
+  gridEl.appendChild(wrapper);
+}
+
+// ── Preview ────────────────────────────────────────────────────────────────
+
+function showPreview(slideId, origin) {
+  activePreview = { origin, slideId };
+
+  // Slide is 1280×720. We render it at full size inside the iframe,
+  // then scale it down to fit the panel (≈460px wide → scale ≈ 0.36).
+  // The outer wrapper clips to the scaled height so no scroll appears.
+  const SLIDE_W = 1280;
+  const SLIDE_H = 720;
+  const FIT_W   = 460; // approximate panel content width
+  const scale   = FIT_W / SLIDE_W;
+  const scaledH = Math.round(SLIDE_H * scale);
+
+  const thumbnailHtml =
+    '<div class="preview-thumbnail" onclick="openPreviewLightbox(\'' + slideId + '\')" title="Click to zoom">' +
+      '<div class="preview-scale-wrap" style="width:' + SLIDE_W + 'px;height:' + SLIDE_H + 'px;transform:scale(' + scale + ');transform-origin:top left;">' +
+        '<iframe ' +
+          'src="/slides/' + slideId + '.html" ' +
+          'style="width:' + SLIDE_W + 'px;height:' + SLIDE_H + 'px;border:none;" ' +
+          'scrolling="no" ' +
+          'title="Slide preview"' +
+        '></iframe>' +
+      '</div>' +
+      '<div class="preview-zoom-hint">&#x26F6; Click to zoom</div>' +
+    '</div>';
+
+  const closeBtn =
+    '<button class="btn-close-preview" onclick="closePreview()">&#x2715; Close Preview</button>';
+
+  if (origin === 'deck') {
+    const headerEl = document.querySelector('.panel-library .panel-header');
+    const gridEl = document.getElementById('libraryGrid');
+    if (headerEl) {
+      const existing = headerEl.querySelector('.btn-close-preview');
+      if (existing) existing.remove();
+      headerEl.insertAdjacentHTML('beforeend', closeBtn);
+    }
+    gridEl.innerHTML = '<div style="height:' + scaledH + 'px;overflow:hidden;border-radius:10px;">' + thumbnailHtml + '</div>';
+  } else {
+    const headerEl = document.querySelector('.panel-deck .panel-header');
+    const listEl = document.getElementById('deckList');
+    if (headerEl) {
+      const existing = headerEl.querySelector('.btn-close-preview');
+      if (existing) existing.remove();
+      headerEl.insertAdjacentHTML('beforeend', closeBtn);
+    }
+    listEl.innerHTML = '<div style="height:' + scaledH + 'px;overflow:hidden;border-radius:10px;">' + thumbnailHtml + '</div>';
+  }
+}
+
+function openPreviewLightbox(slideId) {
+  const existing = document.getElementById('preview-lightbox');
+  if (existing) existing.remove();
+
+  const lb = document.createElement('div');
+  lb.id = 'preview-lightbox';
+  lb.className = 'preview-lightbox';
+  lb.innerHTML =
+    '<div class="preview-lightbox-inner">' +
+      '<button class="preview-lightbox-close" onclick="closePreviewLightbox()">&#x2715;</button>' +
+      '<iframe ' +
+        'src="/slides/' + slideId + '.html" ' +
+        'style="width:100%;height:100%;border:none;" ' +
+        'title="Slide fullscreen preview"' +
+      '></iframe>' +
+    '</div>';
+
+  lb.addEventListener('click', function (e) {
+    if (e.target === lb) closePreviewLightbox();
+  });
+
+  document.body.appendChild(lb);
+
+  document.addEventListener('keydown', function escHandler(e) {
+    if (e.key === 'Escape') {
+      closePreviewLightbox();
+      document.removeEventListener('keydown', escHandler);
+    }
+  });
+}
+
+function closePreviewLightbox() {
+  const lb = document.getElementById('preview-lightbox');
+  if (lb) lb.remove();
+}
+
+function closePreview() {
+  if (!activePreview) return;
+
+  const origin = activePreview.origin;
+  activePreview = null;
+
+  if (origin === 'deck') {
+    const headerEl = document.querySelector('.panel-library .panel-header');
+    if (headerEl) {
+      const btn = headerEl.querySelector('.btn-close-preview');
+      if (btn) btn.remove();
+    }
+    renderLibrary();
+  } else {
+    const headerEl = document.querySelector('.panel-deck .panel-header');
+    if (headerEl) {
+      const btn = headerEl.querySelector('.btn-close-preview');
+      if (btn) btn.remove();
+    }
+    renderDeck();
+  }
 }
 
 // ── Drag and Drop (HTML5 native) ───────────────────────────────────────────

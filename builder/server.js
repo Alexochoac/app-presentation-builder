@@ -33,6 +33,9 @@ app.use('/slides/uploads', express.static(path.join(__dirname, 'features/slides/
 // ── Static: shared brand assets (logos) ──────────────────────────────────────
 app.use('/slides/shared', express.static(path.join(__dirname, 'shared/assets')));
 
+// ── Static: shared app styles ─────────────────────────────────────────────────
+app.use('/shared', express.static(path.join(__dirname, 'shared')));
+
 // ── Static: slide files ───────────────────────────────────────────────────────
 app.use('/slides', express.static(path.join(__dirname, 'features/slides')));
 
@@ -186,6 +189,76 @@ app.post('/api/save-image-src', function (req, res) {
     fs.writeFileSync(filePath, $.html(), 'utf8');
     res.json({ ok: true });
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── API: clone a slide ────────────────────────────────────────────────────────
+// POST /api/clone-slide  { sourceId: 'slide-02-company' }
+app.post('/api/clone-slide', function (req, res) {
+  var sourceId = req.body.sourceId;
+
+  if (!sourceId || !/^slide-[\w-]+$/.test(sourceId)) {
+    return res.status(400).json({ error: 'Missing or invalid sourceId' });
+  }
+
+  var slidesDir = path.join(__dirname, 'features/slides');
+  var sourceFile = path.join(slidesDir, sourceId + '.html');
+
+  if (!fs.existsSync(sourceFile)) {
+    return res.status(404).json({ error: 'Source slide not found: ' + sourceId });
+  }
+
+  try {
+    // --- 1. Find the highest existing slide number ---
+    var files = fs.readdirSync(slidesDir);
+    var maxNum = 0;
+    files.forEach(function (f) {
+      var m = f.match(/^slide-(\d+)-/);
+      if (m) {
+        var n = parseInt(m[1], 10);
+        if (n > maxNum) maxNum = n;
+      }
+    });
+    var newNum = String(maxNum + 1).padStart(2, '0');
+
+    // --- 2. Extract the source name part (e.g. "company" from "slide-02-company") ---
+    var namePart = sourceId.replace(/^slide-\d+-/, '');
+    var newId = 'slide-' + newNum + '-clone-of-' + namePart;
+
+    // --- 3. Read source HTML and reset editable content via cheerio ---
+    var html = fs.readFileSync(sourceFile, 'utf8');
+    var $ = cheerio.load(html, { decodeEntities: false }, false);
+
+    $('[data-edit]').each(function () {
+      var key = $(this).attr('data-edit');
+      $(this).text(key);
+    });
+
+    $('img').each(function () {
+      $(this).attr('src', '/slides/shared/placeholder.png');
+    });
+
+    // --- 4. Write new slide file ---
+    var newFile = path.join(slidesDir, newId + '.html');
+    fs.writeFileSync(newFile, $.html(), 'utf8');
+
+    // --- 5. Update slide-library.json ---
+    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var sourceEntry = library.find(function (e) { return e.id === sourceId; });
+    var sourceLabel = sourceEntry ? sourceEntry.label : namePart;
+    var newEntry = { id: newId, label: 'Clone of ' + sourceLabel, category: 'custom' };
+    library.push(newEntry);
+    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+
+    // --- 6. Update deck.json ---
+    var deck = JSON.parse(fs.readFileSync(DECK_PATH, 'utf8'));
+    deck.slides.push({ id: newId, visible: true });
+    fs.writeFileSync(DECK_PATH, JSON.stringify(deck, null, 2), 'utf8');
+
+    res.json({ ok: true, data: newEntry });
+  } catch (err) {
+    console.error('Clone error:', err.message);
     res.status(500).json({ error: err.message });
   }
 });

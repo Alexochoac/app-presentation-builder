@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Presentation Builder</title>
+  <style>
+    /* ─── Reset ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ─── Dark Theme (default) ─── */
+    :root {
+      --bg:            #000000;
+      --body-bg:       radial-gradient(ellipse at center, #1a1a1a 0%, #000000 100%);
+      --surface:       rgba(255,255,255,0.05);
+      --surface-hov:   rgba(255,255,255,0.08);
+      --border:        rgba(255,255,255,0.10);
+      --border-hov:    rgba(255,255,255,0.20);
+      --text:          #ffffff;
+      --muted:         #a1a1a1;
+      --accent:        #F5A623;
+      --accent-dim:    rgba(245,166,35,0.15);
+      --accent-glow:   rgba(245,166,35,0.30);
+      --topbar-bg:     rgba(0,0,0,0.60);
+      --input-bg:      rgba(255,255,255,0.04);
+      --thumb-bg:      rgba(0,0,0,0.40);
+      --thumb-line:    rgba(255,255,255,0.6);
+      --thumb-rect:    rgba(255,255,255,0.12);
+      --thumb-hint-bg: rgba(0,0,0,0.5);
+      --glow-a:        rgba(120,60,200,0.18);
+      --glow-b:        rgba(245,166,35,0.10);
+      --icon-btn-hov:  rgba(255,255,255,0.10);
+      --remove-hov-bg: rgba(255,80,80,0.15);
+      --remove-hov-fg: #ff6b6b;
+      --logo-preview:  rgba(255,255,255,0.06);
+      --save-bg:       rgba(255,255,255,0.06);
+      --nav-active:    rgba(255,255,255,0.10);
+      --radius-card:   24px;
+      --radius-btn:    100px;
+      --blur:          blur(20px);
+      --font:          -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    }
+
+    /* ─── Light Theme ─── */
+    [data-theme="light"] {
+      --bg:            #f5f5f7;
+      --body-bg:       #f5f5f7;
+      --surface:       rgba(255,255,255,0.85);
+      --surface-hov:   rgba(0,0,0,0.03);
+      --border:        rgba(0,0,0,0.08);
+      --border-hov:    rgba(0,0,0,0.18);
+      --text:          #1d1d1f;
+      --muted:         #86868b;
+      --topbar-bg:     rgba(245,245,247,0.85);
+      --input-bg:      rgba(0,0,0,0.03);
+      --thumb-bg:      rgba(0,0,0,0.04);
+      --thumb-line:    rgba(0,0,0,0.25);
+      --thumb-rect:    rgba(0,0,0,0.06);
+      --thumb-hint-bg: rgba(255,255,255,0.9);
+      --glow-a:        rgba(0,0,0,0);
+      --glow-b:        rgba(245,166,35,0.06);
+      --icon-btn-hov:  rgba(0,0,0,0.07);
+      --remove-hov-bg: rgba(220,53,69,0.10);
+      --remove-hov-fg: #dc3545;
+      --logo-preview:  rgba(0,0,0,0.04);
+      --save-bg:       rgba(0,0,0,0.05);
+      --nav-active:    rgba(0,0,0,0.08);
+    }
+
+    /* ─── Base ─── */
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 15px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background: var(--body-bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* ─── Glow Orbs ─── */
+    .glow {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+      transition: background 0.3s;
+    }
+    .glow-a {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, var(--glow-a) 0%, transparent 70%);
+      top: -180px; left: -120px;
+    }
+    .glow-b {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, var(--glow-b) 0%, transparent 70%);
+      bottom: -100px; right: -80px;
+    }
+
+    /* ─── Top Bar ─── */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 64px;
+      background: var(--topbar-bg);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .topbar-brand { display: flex; align-items: center; gap: 12px; }
+    .logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, #F5A623 0%, #e8850a 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 17px; color: #000; letter-spacing: -0.5px;
+      box-shadow: 0 4px 16px rgba(245,166,35,0.35);
+    }
+    .logo-text { font-size: 15px; font-weight: 600; letter-spacing: -0.3px; color: var(--text); }
+
+    .topbar-nav {
+      display: flex; align-items: center; gap: 4px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-btn); padding: 4px;
+    }
+    .nav-link {
+      padding: 6px 18px; border-radius: var(--radius-btn);
+      font-size: 14px; font-weight: 500; text-decoration: none;
+      color: var(--muted); transition: color 0.2s, background 0.2s;
+    }
+    .nav-link.active { background: var(--nav-active); color: var(--text); }
+
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+
+    /* ─── Theme Toggle ─── */
+    .btn-theme-toggle {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s, background 0.2s, transform 0.2s;
+      flex-shrink: 0;
+    }
+    .btn-theme-toggle:hover {
+      color: var(--text);
+      border-color: var(--border-hov);
+      transform: rotate(20deg);
+    }
+    .btn-theme-toggle svg { display: block; }
+
+    .btn-logout {
+      font-size: 13px; font-weight: 500; color: var(--muted);
+      text-decoration: none; padding: 7px 16px;
+      border-radius: var(--radius-btn); border: 1px solid var(--border);
+      background: var(--surface);
+      transition: color 0.2s, border-color 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+    .btn-logout:hover { color: var(--text); border-color: var(--border-hov); transform: translateY(-1px); }
+
+    /* ─── Main ─── */
+    .main {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 0 auto;
+      padding: 40px 24px 80px;
+      display: flex; flex-direction: column; gap: 28px;
+    }
+
+    /* ─── Panels ─── */
+    .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+    .panel {
+      background: var(--surface);
+      backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      overflow: hidden; display: flex; flex-direction: column;
+      box-shadow: 0 2px 24px rgba(0,0,0,0.08);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .panel-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 24px 18px; border-bottom: 1px solid var(--border);
+    }
+    .panel-title { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; color: var(--text); }
+    .panel-subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+    /* ─── Buttons ─── */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 18px; border-radius: var(--radius-btn);
+      background: var(--accent); color: #000;
+      font-size: 13px; font-weight: 600; text-decoration: none; white-space: nowrap;
+      transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(245,166,35,0.25);
+    }
+    .btn-primary:hover { opacity: 0.92; transform: translateY(-2px); box-shadow: 0 6px 24px rgba(245,166,35,0.40); }
+
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: var(--radius-btn);
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); font-size: 13px; font-weight: 500;
+      text-decoration: none; cursor: pointer;
+      transition: color 0.2s, border-color 0.2s, transform 0.2s;
+    }
+    .btn-secondary:hover { color: var(--text); border-color: var(--border-hov); transform: translateY(-2px); }
+
+    /* ─── Deck List ─── */
+    .deck-list { list-style: none; padding: 12px 16px; flex: 1; }
+    .deck-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 10px; border-radius: 14px;
+      transition: background 0.15s; cursor: default;
+    }
+    .deck-row:hover { background: var(--surface-hov); }
+
+    .drag-handle {
+      color: var(--border-hov); font-size: 13px; cursor: grab;
+      letter-spacing: 1px; line-height: 1; flex-shrink: 0;
+    }
+    .slide-num { font-size: 11px; font-weight: 500; color: var(--muted); width: 20px; text-align: right; flex-shrink: 0; }
+    .slide-title { flex: 1; font-size: 14px; font-weight: 500; color: var(--text); }
+    .deck-row.hidden-slide .slide-title {
+      color: var(--muted);
+      text-decoration: line-through;
+      text-decoration-color: rgba(128,128,128,0.4);
+    }
+
+    .badge {
+      font-size: 10px; font-weight: 600;
+      padding: 3px 8px; border-radius: var(--radius-btn);
+      letter-spacing: 0.3px; white-space: nowrap;
+    }
+    .badge-extras {
+      background: rgba(245,166,35,0.12);
+      color: #F5A623;
+      border: 1px solid rgba(245,166,35,0.28);
+    }
+
+    .row-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .icon-btn {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: none; background: transparent; color: var(--muted);
+      font-size: 14px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background 0.15s, color 0.15s;
+    }
+    .icon-btn:hover { background: var(--icon-btn-hov); color: var(--text); }
+    .icon-btn.remove:hover { background: var(--remove-hov-bg); color: var(--remove-hov-fg); }
+
+    .deck-divider { height: 1px; background: var(--border); margin: 4px 16px; }
+
+    /* ─── Preview ─── */
+    .preview-area {
+      flex: 1; padding: 20px;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .preview-label {
+      font-size: 12px; font-weight: 500; color: var(--muted);
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .preview-thumb {
+      flex: 1; min-height: 260px;
+      background: var(--thumb-bg);
+      border: 1px solid var(--border); border-radius: 16px;
+      position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .thumb-inner {
+      width: 85%; opacity: 0.4;
+      display: flex; flex-direction: column; gap: 10px; align-items: flex-start;
+    }
+    .thumb-line { height: 10px; border-radius: 6px; background: var(--thumb-line); }
+    .thumb-line-accent { height: 10px; border-radius: 6px; background: var(--accent); }
+    .thumb-rect { height: 60px; width: 100%; border-radius: 8px; background: var(--thumb-rect); }
+    .thumb-zoom-hint {
+      position: absolute; bottom: 12px; right: 14px;
+      font-size: 11px; color: var(--muted);
+      display: flex; align-items: center; gap: 5px;
+      background: var(--thumb-hint-bg); padding: 4px 10px;
+      border-radius: var(--radius-btn); border: 1px solid var(--border);
+    }
+    .preview-slide-name {
+      text-align: center; font-size: 13px; font-weight: 500; color: var(--muted);
+    }
+
+    /* ─── Settings ─── */
+    .settings-section {
+      background: var(--surface);
+      backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+      border: 1px solid var(--border); border-radius: var(--radius-card);
+      padding: 28px 28px 32px;
+      box-shadow: 0 2px 24px rgba(0,0,0,0.06);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .settings-header { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+    .badge-wip {
+      font-size: 10px; font-weight: 600; padding: 3px 10px;
+      border-radius: var(--radius-btn); background: var(--surface-hov);
+      border: 1px solid var(--border); color: var(--muted); letter-spacing: 0.5px;
+    }
+    .settings-note { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+    .settings-fields {
+      display: grid; grid-template-columns: 1fr 1fr auto;
+      gap: 16px; align-items: end; opacity: 0.45;
+    }
+    .field label {
+      display: block; font-size: 12px; font-weight: 500; color: var(--muted);
+      margin-bottom: 7px; letter-spacing: 0.3px; text-transform: uppercase;
+    }
+    .field input[type="text"] {
+      width: 100%; background: var(--input-bg);
+      border: 1px solid var(--border); border-radius: 12px;
+      padding: 10px 14px; font-family: var(--font); font-size: 14px;
+      color: var(--text); outline: none; cursor: not-allowed;
+    }
+    .logo-upload-wrap { display: flex; align-items: center; gap: 12px; }
+    .logo-preview {
+      width: 48px; height: 48px; border-radius: 10px;
+      background: var(--logo-preview); border: 1px dashed var(--border);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-preview-placeholder { font-size: 10px; color: var(--muted); text-align: center; }
+    .settings-footer { margin-top: 24px; display: flex; align-items: center; gap: 16px; }
+    .btn-save {
+      padding: 9px 22px; border-radius: var(--radius-btn);
+      background: var(--save-bg); border: 1px solid var(--border);
+      color: var(--muted); font-family: var(--font); font-size: 14px;
+      font-weight: 500; cursor: not-allowed; opacity: 0.5;
+    }
+    .coming-soon-msg { font-size: 12px; color: var(--muted); }
+  </style>
+</head>
+<body>
+
+  <div class="glow glow-a"></div>
+  <div class="glow glow-b"></div>
+
+  <header class="topbar">
+    <div class="topbar-brand">
+      <div class="logo-icon">P</div>
+      <span class="logo-text">Presentation Builder</span>
+    </div>
+    <nav class="topbar-nav">
+      <a href="#" class="nav-link active">Dashboard</a>
+      <a href="#" class="nav-link">Settings</a>
+    </nav>
+    <div class="topbar-right">
+      <button class="btn-theme-toggle" id="themeToggle" title="Toggle theme">
+        <!-- Half-circle icon — filled half = dark, outline half = light -->
+        <svg id="themeIcon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1.5 A6.5 6.5 0 0 1 8 14.5 Z" fill="currentColor"/>
+        </svg>
+      </button>
+      <a href="#" class="btn-logout">Log out</a>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <div class="panels">
+
+      <!-- Left: Your Presentation -->
+      <section class="panel panel-deck">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">Your Presentation</h2>
+            <p class="panel-subtitle">LineScanner Sales Deck</p>
+          </div>
+          <a href="#" class="btn-primary">Open Builder &rarr;</a>
+        </div>
+        <ul class="deck-list">
+          <li class="deck-row">
+            <span class="drag-handle">&#9783;</span>
+            <span class="slide-num">01</span>
+            <span class="slide-title">Cover</span>
+            <div class="row-actions">
+              <button class="icon-btn">&#128065;</button>
+              <button class="icon-btn remove">&times;</button>
+            </div>
+          </li>
+          <li class="deck-row">
+            <span class="drag-handle">&#9783;</span>
+            <span class="slide-num">02</span>
+            <span class="slide-title">Company</span>
+            <div class="row-actions">
+              <button class="icon-btn">&#128065;</button>
+              <button class="icon-btn remove">&times;</button>
+            </div>
+          </li>
+          <li class="deck-row">
+            <span class="drag-handle">&#9783;</span>
+            <span class="slide-num">03</span>
+            <span class="slide-title">Why Us</span>
+            <div class="row-actions">
+              <button class="icon-btn">&#128065;</button>
+              <button class="icon-btn remove">&times;</button>
+            </div>
+          </li>
+          <li class="deck-row">
+            <span class="drag-handle">&#9783;</span>
+            <span class="slide-num">04</span>
+            <span class="slide-title">LineScanner</span>
+            <div class="row-actions">
+              <button class="icon-btn">&#128065;</button>
+              <button class="icon-btn remove">&times;</button>
+            </div>
+          </li>
+          <li class="deck-divider"></li>
+          <li class="deck-row hidden-slide">
+            <span class="drag-handle">&#9783;</span>
+            <span class="slide-num">05</span>
+            <span class="slide-title">Technology</span>
+            <span class="badge badge-extras">Extras Menu</span>
+            <div class="row-actions">
+              <button class="icon-btn" style="opacity:0.4;">&#128065;</button>
+              <button class="icon-btn remove">&times;</button>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Right: Preview -->
+      <section class="panel panel-library">
+        <div class="panel-header">
+          <div>
+            <h2 class="panel-title">Slide Library</h2>
+            <p class="panel-subtitle">Previewing slide 04</p>
+          </div>
+          <button class="btn-secondary">&#x2715; Close Preview</button>
+        </div>
+        <div class="preview-area">
+          <span class="preview-label">LineScanner</span>
+          <div class="preview-thumb">
+            <div class="thumb-inner">
+              <div class="thumb-line-accent" style="width:38%;"></div>
+              <div class="thumb-line" style="width:70%;"></div>
+              <div class="thumb-line" style="width:55%;opacity:.6;"></div>
+              <div class="thumb-rect" style="margin-top:8px;"></div>
+              <div style="display:flex;gap:8px;width:100%;margin-top:4px;">
+                <div class="thumb-rect" style="height:40px;flex:1;"></div>
+                <div class="thumb-rect" style="height:40px;flex:1;"></div>
+                <div class="thumb-rect" style="height:40px;flex:1;"></div>
+              </div>
+              <div class="thumb-line" style="width:45%;margin-top:4px;"></div>
+            </div>
+            <div class="thumb-zoom-hint">&#8599; Click to zoom</div>
+          </div>
+          <p class="preview-slide-name">Slide 04 &mdash; LineScanner</p>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Company Settings -->
+    <section class="settings-section">
+      <div class="settings-header">
+        <h2 class="panel-title">Company Settings</h2>
+        <span class="badge-wip">Coming Soon</span>
+      </div>
+      <p class="settings-note">These fields will populate your slides with your company details. Save functionality is not yet active.</p>
+      <div class="settings-fields">
+        <div class="field">
+          <label>Company Name</label>
+          <input type="text" placeholder="e.g. Acme Corp" disabled>
+        </div>
+        <div class="field">
+          <label>Tagline</label>
+          <input type="text" placeholder="e.g. Built for speed" disabled>
+        </div>
+        <div class="field">
+          <label>Logo</label>
+          <div class="logo-upload-wrap">
+            <div class="logo-preview">
+              <span class="logo-preview-placeholder">No logo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="settings-footer">
+        <button class="btn-save" disabled>Save Changes</button>
+        <span class="coming-soon-msg">Save functionality is coming in a future update.</span>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const html = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+
+    // Persist preference
+    const saved = localStorage.getItem('pb-theme');
+    if (saved) html.setAttribute('data-theme', saved);
+
+    btn.addEventListener('click', function () {
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('pb-theme', next);
+    });
+  </script>
+
+</body>
+</html>
