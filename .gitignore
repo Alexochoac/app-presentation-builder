@@ -6,3 +6,17 @@ builder/features/slides/uploads/
 
 # secrets
 .env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
