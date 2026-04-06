@@ -139,13 +139,13 @@ ul { list-style: none; }
 /* ── Two Panels ── */
 .panels {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 20px;
   align-items: start;
 }
 
-@media (max-width: 860px) {
-  .panels { grid-template-columns: 1fr; }
+@media (min-width: 861px) {
+  .panels { grid-template-columns: 1fr 1fr; }
 }
 
 /* ── Panel Card ── */
@@ -621,6 +621,36 @@ input::placeholder { color: var(--text-dim); }
 }
 .preview-lightbox-close:hover {
   background: rgba(0,0,0,.85);
+}
+
+.preview-lightbox-actions {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-lightbox-edit {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 14px;
+  background: var(--accent);
+  border-radius: 100px;
+  color: #000;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: opacity .15s, transform .15s;
+  text-decoration: none;
+}
+.btn-lightbox-edit:hover {
+  opacity: .88;
+  transform: translateY(-1px);
 }
 
 /* ── Badge Hidden (Extras Menu label) ── */

@@ -126,10 +126,16 @@
     }
     .s6-defect-btn.active .s6-emoji-icon { background: #D42B2B; }
 
-    @media(max-width:768px) {
-      .s6-defect-btn { min-width:60px; padding:6px; }
-      .s6-defect-btn span { font-size:11px; }
-      .s6 { padding: 52px 16px 80px !important; }
+    /* ── Mobile base ── */
+    .s6-defect-btn { min-width:60px; padding:6px; }
+    .s6-defect-btn span { font-size:11px; }
+    .s6 { padding: 52px 16px 80px !important; }
+
+    /* ── Desktop overrides ── */
+    @media(min-width:769px) {
+      .s6-defect-btn { min-width:76px; padding:8px 10px; }
+      .s6-defect-btn span { font-size:10px; }
+      .s6 { padding: 52px 80px 0 !important; }
     }
   </style>
 

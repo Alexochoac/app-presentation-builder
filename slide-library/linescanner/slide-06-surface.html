@@ -44,9 +44,12 @@
     }
     .s6-defect-btn {
       display: flex; flex-direction: column; align-items: center; gap: 5px;
-      padding: 8px 10px; border-radius: 12px; cursor: pointer;
+      padding: 6px 6px; border-radius: 12px; cursor: pointer;
       background: var(--bg-card); border: 1px solid var(--border);
-      transition: all .2s; min-width: 76px; font-family: inherit;
+      transition: all .2s; min-width: 60px; font-family: inherit;
+    }
+    @media(min-width:769px) {
+      .s6-defect-btn { min-width:76px; padding:8px 10px; }
     }
     .s6-defect-btn:hover { border-color: rgba(232,113,26,.4); background: var(--bg-card-hover); }
     .s6-defect-btn.active {
@@ -54,8 +57,11 @@
       box-shadow: 0 0 0 1px rgba(232,113,26,.25);
     }
     .s6-defect-btn span {
-      font-size: 10px; font-weight: 600; letter-spacing: .03em;
+      font-size: 9px; font-weight: 600; letter-spacing: .03em;
       color: var(--text-muted); white-space: nowrap; transition: color .2s;
+    }
+    @media(min-width:769px) {
+      .s6-defect-btn span { font-size:10px; }
     }
     .s6-defect-btn.active span { color: #E8711A; }
 
@@ -107,7 +113,10 @@
     /* ── Comparison entry (side-by-side) ── */
     .s6-compare-wrap {
       flex: 1; min-height: 0; width: 100%;
-      display: flex; align-items: stretch; gap: 0;
+      display: flex; flex-direction: column; align-items: stretch; gap: 0;
+    }
+    @media(min-width:769px) {
+      .s6-compare-wrap { flex-direction:row; }
     }
     .s6-compare-side {
       flex: 1; min-width: 0;
@@ -126,7 +135,10 @@
     .s6-compare-label.lbl-camera     { color: #60a5fa; }   /* blue  */
     .s6-compare-label.lbl-scanner    { color: #E8711A; }   /* amber */
     .s6-compare-divider {
-      width: 1px; background: var(--border); flex-shrink: 0; align-self: stretch; margin: 10px 0;
+      width: 100%; height: 1px; background: var(--border); flex-shrink: 0; align-self: auto; margin: 0;
+    }
+    @media(min-width:769px) {
+      .s6-compare-divider { width:1px; height:auto; align-self:stretch; margin:10px 0; }
     }
 
     /* Empty state */
@@ -197,12 +209,7 @@
     }
     .s6-car-dot.active { background: #E8711A; transform: scale(1.3); }
 
-    @media(max-width:768px) {
-      .s6-compare-wrap { flex-direction:column; }
-      .s6-compare-divider { width:100%; height:1px; margin:0; align-self:auto; }
-      .s6-defect-btn { min-width:60px; padding:6px 6px; }
-      .s6-defect-btn span { font-size:9px; }
-    }
+    /* Mobile-first — desktop overrides above */
   </style>
 
   <!-- ── Scoped Script ── -->

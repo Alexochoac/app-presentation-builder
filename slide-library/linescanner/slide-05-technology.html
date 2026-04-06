@@ -171,7 +171,10 @@
 
     /* 2×2 component cards */
     .t5-components {
-      display:grid; grid-template-columns:1fr 1fr; gap:8px; flex-shrink:0;
+      display:grid; grid-template-columns:1fr; gap:8px; flex-shrink:0;
+    }
+    @media(min-width:769px) {
+      .t5-components { grid-template-columns:1fr 1fr; }
     }
     .t5-comp-card {
       display:flex; align-items:flex-start; gap:10px;
@@ -271,7 +274,13 @@
 
     /* vs Camera Systems panel */
     .t5-vc-wrap {
-      display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; height:100%;
+      display:grid; grid-template-columns:1fr; gap:14px; height:auto; overflow-y:auto;
+    }
+    @media(min-width:769px) {
+      .t5-vc-wrap { grid-template-columns:1fr 1fr; height:100%; overflow-y:unset; }
+    }
+    @media(min-width:1025px) {
+      .t5-vc-wrap { grid-template-columns:1fr 1fr 1fr; }
     }
     .t5-cmp-col {
       display:flex; flex-direction:column;
@@ -390,15 +399,7 @@
     }
     .t5-vc-restore-chip:hover { background:rgba(255,255,255,.14); color:#fff; }
 
-    /* ── Tablet (769–1024px): vs Camera goes 2-col ── */
-    @media(max-width:1024px) and (min-width:769px) {
-      .t5-vc-wrap { grid-template-columns:1fr 1fr; }
-    }
-    /* ── Mobile (≤768px) ── */
-    @media(max-width:768px) {
-      .t5-components { grid-template-columns:1fr; }
-      .t5-vc-wrap { grid-template-columns:1fr; height:auto; overflow-y:auto; }
-    }
+    /* Mobile-first — desktop overrides above */
   </style>
 
   <script>

@@ -47,7 +47,7 @@ Sales teams use it to build customer-specific decks, then publish to GitHub Page
 - [x] Slides 01–14 created with `data-edit` + `contenteditable` on all text
 - [x] All components: carousel.js, lightbox.js, tabs.js, list.js, table.js
 - [x] All slides migrated to component system
-- [x] Dashboard: deck manager + slide library + company settings placeholder
+- [x] Dashboard: deck manager + slide library + customer settings placeholder
 - [x] `deck.json` + `slide-library.json` as source of truth; deck API endpoints
 - [x] `preview.html` fetches deck from API
 - [x] Full mobile responsiveness — all 14 slides fixed for iPhone 15
@@ -57,10 +57,17 @@ Sales teams use it to build customer-specific decks, then publish to GitHub Page
 - [x] `POST /api/clone-slide` endpoint
 - [x] `builder/shared/app-style.css` — shared app style with dark/light theme
 - [x] GitHub repo created: `Alexochoac/app-presentation-builder`
+- [x] Server-side slide preview shell (`GET /slides/preview/:id`)
+- [x] Save handler bug fixed — filename derived from `SLIDES[current].file`
+- [x] Mobile-first CSS conversion — all files converted to `min-width` breakpoints
+- [x] `table.js` fully wired in slide-04 — restore chips, resizable column, correct classes
+- [x] Settings page (`/settings`) — Theme toggle + Coming Soon sections
+- [x] Dashboard renamed to Customer Settings with customer-specific fields
+- [x] `style.css` shared components mobile-first (cards, kpi, two-col, split, etc.)
 
 ## Next Steps
+- [ ] Per-slide inline CSS mobile audit — each slide's `<style>` block needs responsive layout
 - [ ] Delete old `dashboard.css` after confirming new style works in browser
-- [ ] Test dashboard in browser with new `app-style.css`
 - [ ] Presentation view — clean read-only mode: visible slides full-screen + hidden slides in CTA extras menu
 - [ ] Slide-06 defect selector names — move to static HTML (currently JS-generated)
 - [ ] Image caption editing UI (captions come from `img.alt`, no edit path yet)
@@ -73,4 +80,4 @@ Sales teams use it to build customer-specific decks, then publish to GitHub Page
 - **Phase 3** — Interactive slides (polls, Q&A), custom per-slide components
 - **Phase 4** — White-label, AI, CRM integrations
 
-Last updated: 2026-04-05
+Last updated: 2026-04-06

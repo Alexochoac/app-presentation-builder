@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — Presentation Builder</title>
+  <link rel="stylesheet" href="/shared/app-style.css">
+</head>
+<body>
+
+  <div class="glow glow-a"></div>
+  <div class="glow glow-b"></div>
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <div class="logo-icon">P</div>
+      <span class="logo-text">Presentation Builder</span>
+    </div>
+    <nav class="topbar-nav">
+      <a href="/" class="nav-link">Dashboard</a>
+      <a href="/settings" class="nav-link active">Settings</a>
+    </nav>
+    <div class="topbar-right">
+      <a href="/auth/logout" class="btn-logout">Log out</a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- Theme -->
+    <section class="settings-section">
+      <div class="settings-header">
+        <h2 class="panel-title">Theme</h2>
+      </div>
+      <div class="theme-options">
+        <button class="theme-option" id="themeDark" onclick="setTheme('dark')">Dark</button>
+        <button class="theme-option" id="themeLight" onclick="setTheme('light')">Light</button>
+      </div>
+    </section>
+
+    <!-- Company Profile -->
+    <section class="settings-section">
+      <div class="settings-header">
+        <h2 class="panel-title">Company Profile</h2>
+        <span class="badge-wip">Coming Soon</span>
+      </div>
+      <p class="settings-note">These fields will populate your slides with your company details. Save functionality is not yet active.</p>
+      <div class="settings-fields">
+        <div class="field">
+          <label for="companyName">Company Name</label>
+          <input type="text" id="companyName" placeholder="e.g. Acme Corp" disabled>
+        </div>
+        <div class="field">
+          <label for="tagline">Tagline</label>
+          <input type="text" id="tagline" placeholder="e.g. Built for speed" disabled>
+        </div>
+        <div class="field">
+          <label for="logoUpload">Logo</label>
+          <div class="logo-upload-wrap">
+            <div class="logo-preview" id="logoPreview">
+              <span class="logo-preview-placeholder">No logo</span>
+            </div>
+            <input type="file" id="logoUpload" accept="image/*" disabled>
+          </div>
+        </div>
+      </div>
+      <button class="btn-save" disabled>Save Changes</button>
+    </section>
+
+    <!-- Presentation Defaults -->
+    <section class="settings-section">
+      <div class="settings-header">
+        <h2 class="panel-title">Presentation Defaults</h2>
+        <span class="badge-wip">Coming Soon</span>
+      </div>
+      <p class="settings-note">Set default options applied to every new presentation.</p>
+      <div class="settings-fields">
+        <div class="field">
+          <label for="defaultTheme">Default Theme</label>
+          <select id="defaultTheme" disabled style="padding:10px 14px;background:var(--input-bg);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;font-family:var(--font);outline:none;opacity:0.35;cursor:not-allowed;">
+            <option>Dark</option>
+            <option>Light</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="defaultLanguage">Default Language</label>
+          <input type="text" id="defaultLanguage" placeholder="e.g. English" disabled>
+        </div>
+      </div>
+    </section>
+
+    <!-- Integrations -->
+    <section class="settings-section">
+      <div class="settings-header">
+        <h2 class="panel-title">Integrations</h2>
+        <span class="badge-wip">Coming Soon</span>
+      </div>
+      <p class="settings-note">Connect CRM, email, and analytics tools.</p>
+    </section>
+
+    <!-- Account -->
+    <section class="settings-section">
+      <div class="settings-header">
+        <h2 class="panel-title">Account</h2>
+        <span class="badge-wip">Coming Soon</span>
+      </div>
+      <p class="settings-note">Manage your login, password, and connected accounts.</p>
+    </section>
+
+  </main>
+
+  <script>
+    (function () {
+      var html = document.documentElement;
+      var saved = localStorage.getItem('pb-theme');
+      if (saved) html.setAttribute('data-theme', saved);
+    })();
+
+    function setTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      localStorage.setItem('pb-theme', t);
+      updateThemeButtons();
+    }
+
+    function updateThemeButtons() {
+      var current = document.documentElement.getAttribute('data-theme') || 'dark';
+      document.getElementById('themeDark').classList.toggle('active', current === 'dark');
+      document.getElementById('themeLight').classList.toggle('active', current === 'light');
+    }
+
+    document.addEventListener('DOMContentLoaded', updateThemeButtons);
+  </script>
+</body>
+</html>

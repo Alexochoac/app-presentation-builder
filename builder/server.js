@@ -27,6 +27,55 @@ registerAuthRoutes(app);
 // ── Protect everything below this line ───────────────────────────────────────
 app.use(requireAuth);
 
+// ── Slide preview wrapper ─────────────────────────────────────────────────────
+// GET /slides/preview/:id — wraps a bare slide fragment in a full HTML shell
+// Must be registered before the /slides static middleware or it will be intercepted
+app.get('/slides/preview/:id', function (req, res) {
+  var id = req.params.id;
+
+  // Sanitize: only allow alphanumeric and hyphens — blocks path traversal
+  if (!/^[a-z0-9-]+$/i.test(id)) {
+    return res.status(400).type('text/plain').send('Invalid slide id');
+  }
+
+  var filePath = path.join(__dirname, 'features/slides', id + '.html');
+
+  fs.promises.readFile(filePath, 'utf8')
+    .then(function (fragment) {
+      var page = [
+        '<!DOCTYPE html>',
+        '<html lang="en">',
+        '<head>',
+        '  <meta charset="UTF-8">',
+        '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+        '  <link rel="stylesheet" href="/slides/style.css">',
+        '  <style>',
+        '    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }',
+        '    html, body { width: 100%; height: 100%; overflow: hidden; }',
+        '    .slides-container { position: relative; width: 100%; height: 100%; }',
+        '    /* Force slide visible — no JS in preview shell */',
+        '    .slide { opacity: 1 !important; pointer-events: none !important; transform: scale(1) !important; }',
+        '  </style>',
+        '</head>',
+        '<body>',
+        '  <div class="slides-container">',
+        fragment,
+        '  </div>',
+        '</body>',
+        '</html>'
+      ].join('\n');
+
+      res.type('text/html').send(page);
+    })
+    .catch(function (err) {
+      if (err.code === 'ENOENT') {
+        return res.status(404).type('text/plain').send('Slide not found: ' + id);
+      }
+      console.error('Preview error:', err.message);
+      res.status(500).type('text/plain').send('Server error');
+    });
+});
+
 // ── Static: customer uploads ──────────────────────────────────────────────────
 app.use('/slides/uploads', express.static(path.join(__dirname, 'features/slides/uploads')));
 
@@ -41,6 +90,11 @@ app.use('/slides', express.static(path.join(__dirname, 'features/slides')));
 
 // ── Static: dashboard ─────────────────────────────────────────────────────────
 app.use(express.static(path.join(__dirname, 'features/dashboard')));
+
+// ── Page: settings ────────────────────────────────────────────────────────────
+app.get('/settings', function (_req, res) {
+  res.sendFile(path.join(__dirname, 'features/settings/index.html'));
+});
 
 // ── Static: builder UI ────────────────────────────────────────────────────────
 app.use('/builder', express.static(path.join(__dirname, 'features/builder-ui')));

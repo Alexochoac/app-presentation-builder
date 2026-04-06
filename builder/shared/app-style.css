@@ -227,13 +227,13 @@ ul { list-style: none; }
 
 .panels {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 20px;
   align-items: start;
 }
 
-@media (max-width: 860px) {
-  .panels { grid-template-columns: 1fr; }
+@media (min-width: 861px) {
+  .panels { grid-template-columns: 1fr 1fr; }
 }
 
 
@@ -331,7 +331,6 @@ ul { list-style: none; }
 .deck-list {
   list-style: none;
   padding: 12px 16px;
-  flex: 1;
   max-height: 420px;
   overflow-y: auto;
 }
@@ -802,6 +801,37 @@ ul { list-style: none; }
 }
 .preview-lightbox-close:hover { background: rgba(0,0,0,0.85); }
 
+.preview-lightbox-actions {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-lightbox-edit {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 14px;
+  background: var(--accent);
+  border-radius: 100px;
+  color: #000;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+  text-decoration: none;
+}
+.btn-lightbox-edit:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
 
 /* ── 14. Company Settings ────────────────────────────────────── */
 
@@ -821,6 +851,37 @@ ul { list-style: none; }
   align-items: center;
   gap: 14px;
   margin-bottom: 8px;
+}
+
+.theme-options {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.theme-option {
+  padding: 8px 24px;
+  border-radius: var(--radius-btn);
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all 0.2s;
+}
+
+.theme-option:hover {
+  border-color: var(--border-hov);
+  color: var(--text);
+}
+
+.theme-option.active {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
 }
 
 .badge-wip {

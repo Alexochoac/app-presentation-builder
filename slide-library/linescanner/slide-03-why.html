@@ -56,9 +56,12 @@
     .why3 { height:100%; }
 
     .why3-grid {
-      display:grid; grid-template-columns:1fr 1fr; gap:20px;
+      display:grid; grid-template-columns:1fr; gap:12px;
       width:100%; max-width:920px; flex:1; min-height:0;
       padding-bottom:0;
+    }
+    @media(min-width:769px) {
+      .why3-grid { grid-template-columns:1fr 1fr; gap:20px; }
     }
 
     .why3-col {
@@ -66,6 +69,10 @@
       border-radius:16px; overflow:hidden;
       border:1px solid var(--border);
       background:var(--bg-card);
+      max-height:42vh;
+    }
+    @media(min-width:769px) {
+      .why3-col { max-height:none; }
     }
 
     /* Column headers */
@@ -193,10 +200,7 @@
     .why3-add-prob:hover { border-color:rgba(239,68,68,.4); color:#f87171; }
     .why3-add-ben:hover  { border-color:rgba(34,197,94,.4);  color:#4ade80; }
 
-    @media(max-width:768px) {
-      .why3-grid { grid-template-columns:1fr; gap:12px; }
-      .why3-col  { max-height:42vh; }
-    }
+    /* Mobile-first — desktop overrides above */
   </style>
 
   <script>

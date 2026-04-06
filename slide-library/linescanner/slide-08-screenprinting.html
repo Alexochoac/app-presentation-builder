@@ -64,11 +64,14 @@
 
     .ls8-layout {
       display: grid;
-      grid-template-columns: auto 1fr;
+      grid-template-columns: 1fr;
       gap: 20px;
       width: 100%; max-width: 960px;
       flex: 1; min-height: 0;
       margin-top: 4px;
+    }
+    @media (min-width: 769px) {
+      .ls8-layout { grid-template-columns: auto 1fr; }
     }
     /* Keep each item on one line */
     .ls8-layout .col-item { white-space: nowrap; }
@@ -120,9 +123,7 @@
     body.light .col-item { color: rgba(0,0,0,.65); }
     body.light .col-item strong { color: #0a0a0a; }
 
-    @media (max-width: 768px) {
-      .ls8-layout { grid-template-columns: 1fr; }
-    }
+    /* Mobile-first — desktop override above */
 
     /* ── Lightbox ── */
     .ls8p-lb {

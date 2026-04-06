@@ -95,6 +95,11 @@ window.LSTable = (function () {
       /* ── Add row button ── */
       '[data-ls-add-row]{align-self:flex-start;padding:3px 10px;border-radius:20px;cursor:pointer;background:transparent;border:1px dashed rgba(255,255,255,.15);color:rgba(255,255,255,.25);font-size:10px;font-weight:600;letter-spacing:.04em;font-family:inherit;margin-top:2px;transition:all .2s;display:inline-block;}',
       '[data-ls-add-row]:hover{border-color:rgba(232,113,26,.4);color:#E8711A;}',
+
+      /* ── First column resize handle ── */
+      '.ls-col-resize-handle{position:absolute;top:0;right:0;width:6px;height:100%;cursor:col-resize;z-index:10;user-select:none;}',
+      '.ls-col-resize-handle:hover,.ls-col-resize-handle.ls-resizing{background:rgba(232,113,26,.5);}',
+      '[data-ls-table] thead th:first-child{position:relative;}',
     ].join('');
     document.head.appendChild(style);
   })();
@@ -134,6 +139,39 @@ window.LSTable = (function () {
     var colRestore  = wrap ? wrap.querySelector('[data-ls-col-restore]') : null;
     var rowRestore  = wrap ? wrap.querySelector('[data-ls-row-restore]') : null;
     var addRowBtn   = wrap ? wrap.querySelector('[data-ls-add-row]')     : null;
+
+    // ── First column resize handle ────────────────────────────────────────
+    (function () {
+      var firstTh = table.querySelector('thead th:first-child');
+      var firstCol = table.querySelector('colgroup col:first-child');
+      if (!firstTh || !firstCol || firstTh.querySelector('.ls-col-resize-handle')) return;
+
+      var handle = document.createElement('div');
+      handle.className = 'ls-col-resize-handle';
+      handle.setAttribute('data-builder-only', '');
+      firstTh.appendChild(handle);
+
+      handle.addEventListener('mousedown', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        handle.classList.add('ls-resizing');
+        var startX = e.clientX;
+        var startW = firstTh.offsetWidth;
+
+        function onMove(ev) {
+          var newW = Math.max(60, startW + (ev.clientX - startX));
+          firstCol.style.width = newW + 'px';
+        }
+        function onUp() {
+          handle.classList.remove('ls-resizing');
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+          saveTable(table);
+        }
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      });
+    })();
 
     // ── Column toggle buttons ─────────────────────────────────────────────
     table.querySelectorAll('thead th').forEach(function (th, idx) {

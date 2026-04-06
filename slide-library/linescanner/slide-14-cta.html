@@ -34,10 +34,13 @@
   <!-- ── Scoped Styles ── -->
   <style>
     .cta-contact {
-      display:flex; align-items:center; justify-content:space-between; gap:20px;
+      display:flex; flex-direction:column; align-items:flex-start; justify-content:space-between; gap:14px;
       margin-top:24px; padding-top:20px;
       border-top:1px solid rgba(var(--accent-rgb),.2);
       flex-wrap:wrap;
+    }
+    @media(min-width:769px) {
+      .cta-contact { flex-direction:row; align-items:center; gap:20px; }
     }
     .cta-contact-name { display:flex; flex-direction:column; gap:3px; }
     .cta-contact-name strong { font-size:15px; color:var(--text); }
@@ -46,9 +49,12 @@
     .cta-contact-btns { display:flex; flex-direction:column; gap:10px; }
     .cta-btn-wa, .cta-btn-email {
       display:inline-flex; align-items:center; gap:10px;
-      padding:10px 20px; border-radius:100px;
-      font-size:13px; font-weight:600; text-decoration:none;
+      padding:9px 16px; border-radius:100px;
+      font-size:12px; font-weight:600; text-decoration:none;
       transition:all .2s; white-space:nowrap;
+    }
+    @media(min-width:769px) {
+      .cta-btn-wa, .cta-btn-email { font-size:13px; padding:10px 20px; }
     }
     .cta-btn-wa {
       background:rgba(37,211,102,.15); border:1px solid rgba(37,211,102,.35);
@@ -60,11 +66,11 @@
       color:var(--accent);
     }
     .cta-btn-email:hover { background:rgba(var(--accent-rgb),.22); border-color:rgba(var(--accent-rgb),.55); }
-    @media(max-width:768px){
-      .ls14 { padding:52px 20px 0 !important; }
-      .cta-contact { flex-direction:column; align-items:flex-start; gap:14px; }
-      .cta-btn-wa, .cta-btn-email { font-size:12px; padding:9px 16px; }
+    .ls14 { padding:52px 20px 0 !important; }
+    @media(min-width:769px) {
+      .ls14 { padding:60px 80px 0 !important; }
     }
+    /* Mobile-first — desktop overrides above */
   </style>
   <script>
   (function () { var s = document.currentScript;

@@ -19,7 +19,7 @@
     </div>
     <nav class="topbar-nav">
       <a href="/" class="nav-link active">Dashboard</a>
-      <a href="#" class="nav-link">Settings</a>
+      <a href="/settings" class="nav-link">Settings</a>
     </nav>
     <div class="topbar-right">
       <a href="/auth/logout" class="btn-logout">Log out</a>
@@ -67,29 +67,33 @@
 
     </div>
 
-    <!-- Company Settings -->
+    <!-- Customer Settings -->
     <section class="settings-section">
       <div class="settings-header">
-        <h2 class="panel-title">Company Settings</h2>
+        <h2 class="panel-title">Customer Settings</h2>
         <span class="badge-wip">Coming Soon</span>
       </div>
-      <p class="settings-note">These fields will populate your slides with your company details. Save functionality is not yet active.</p>
+      <p class="settings-note">Details about the customer receiving this presentation. These will be used to personalize the deck.</p>
       <div class="settings-fields">
         <div class="field">
-          <label for="companyName">Company Name</label>
-          <input type="text" id="companyName" placeholder="e.g. Acme Corp" disabled>
+          <label for="customerName">Customer Company</label>
+          <input type="text" id="customerName" placeholder="e.g. Acme Glass Co." disabled>
         </div>
         <div class="field">
-          <label for="tagline">Tagline</label>
-          <input type="text" id="tagline" placeholder="e.g. Built for speed" disabled>
+          <label for="contactName">Contact Person</label>
+          <input type="text" id="contactName" placeholder="e.g. John Smith" disabled>
         </div>
         <div class="field">
-          <label for="logoUpload">Logo</label>
+          <label for="contactTitle">Contact Title</label>
+          <input type="text" id="contactTitle" placeholder="e.g. Head of Quality" disabled>
+        </div>
+        <div class="field">
+          <label for="customerLogo">Customer Logo</label>
           <div class="logo-upload-wrap">
-            <div class="logo-preview" id="logoPreview">
+            <div class="logo-preview" id="customerLogoPreview">
               <span class="logo-preview-placeholder">No logo</span>
             </div>
-            <input type="file" id="logoUpload" accept="image/*" disabled>
+            <input type="file" id="customerLogo" accept="image/*" disabled>
           </div>
         </div>
       </div>

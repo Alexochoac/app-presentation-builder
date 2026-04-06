@@ -308,15 +308,32 @@
     }
     .ls1-add-btn:hover { background:rgba(var(--accent-rgb),.15); border-color:var(--accent); color:var(--accent); }
 
-    @media(max-width:900px) { .ls1-car-wrap { width:90vw; height:54vw; } .ls1-car-track { height:54vw; } .ls1-car-slide { flex:0 0 90vw; width:90vw; height:54vw; } .ls1-car-slide--text { flex:0 0 90vw; } }
-    @media(max-width:768px) {
-      .ls1-customer-logo { position: static; transform: none; margin: 16px auto 0; width: 160px; height: 160px; padding: 18px; }
-      .ls1-gallery-btn { bottom:80px; right:16px; }
-      .ls1-car-wrap { width: 100%; height: auto; }
-      .ls1-car-track { height: auto; }
-      .ls1-car-slide { flex: 0 0 100%; width: 100%; height: auto; }
-      .ls1-car-slide img { width: 100%; height: auto; object-fit: contain; }
-      .ls1-car-slide--text { flex: 0 0 100%; }
+    /* ── Mobile base ── */
+    .ls1-customer-logo { position: static; transform: none; margin: 16px auto 0; width: 160px; height: 160px; padding: 18px; }
+    .ls1-gallery-btn { bottom:80px; right:16px; }
+    .ls1-car-wrap { width: 100%; height: auto; }
+    .ls1-car-track { height: auto; }
+    .ls1-car-slide { flex: 0 0 100%; width: 100%; height: auto; }
+    .ls1-car-slide img { width: 100%; height: auto; object-fit: contain; }
+    .ls1-car-slide--text { flex: 0 0 100%; }
+
+    /* ── Tablet (769–900px) ── */
+    @media(min-width:769px) and (max-width:900px) {
+      .ls1-car-wrap { width:90vw; height:54vw; }
+      .ls1-car-track { height:54vw; }
+      .ls1-car-slide { flex:0 0 90vw; width:90vw; height:54vw; }
+      .ls1-car-slide--text { flex:0 0 90vw; }
+    }
+
+    /* ── Desktop (>900px) ── */
+    @media(min-width:901px) {
+      .ls1-customer-logo { position: absolute; left: 75%; top: 50%; transform: translate(-50%, -50%); margin: 0; width: auto; height: auto; padding: 0; }
+      .ls1-gallery-btn { bottom:64px; right:32px; }
+      .ls1-car-wrap { width:760px; height:460px; }
+      .ls1-car-track { height:460px; }
+      .ls1-car-slide { flex:0 0 760px; width:760px; height:460px; }
+      .ls1-car-slide img { width:100%; height:100%; object-fit:contain; }
+      .ls1-car-slide--text { flex:0 0 760px; }
     }
   </style>
 

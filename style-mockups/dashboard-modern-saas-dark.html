@@ -196,13 +196,13 @@
     /* ── Two Panels ── */
     .panels {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 20px;
       align-items: start;
     }
 
-    @media (max-width: 860px) {
-      .panels { grid-template-columns: 1fr; }
+    @media (min-width: 861px) {
+      .panels { grid-template-columns: 1fr 1fr; }
     }
 
     /* ── Panel Header ── */

@@ -2,18 +2,18 @@
   <div class="slide-logo-row"><img src="/slides/shared/LOGO SoftSolution grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="/slides/shared/LOGO LiteSentry Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
 
   <div class="section-label" data-edit="section-label" contenteditable="" spellcheck="false">The Technology</div>
-  <h1 class="slide-title" data-edit="headline" contenteditable="" spellcheck="false" style="margin-bottom:14px;">How LineScanner <span class="blue">sees what others misss</span></h1>
+  <h1 class="slide-title" data-edit="headline" contenteditable="" spellcheck="false" style="margin-bottom:14px;">How LineScanner <span class="blue">sees what others miss</span></h1>
 
   <div class="ls-tabs" data-edit="tabs" data-track="t5:tabs" style="flex:1;min-height:0;width:100%;max-width:920px;flex-direction:column-reverse;">
   <div class="ls-tab-list">
-    <button class="ls-tab active" data-panel="0" data-edit="tab-howitworks" contenteditable="false" spellcheck="false">How It Works</button>
+    <button class="ls-tab" data-panel="0" data-edit="tab-howitworks" contenteditable="false" spellcheck="false">How It Works</button>
     <button class="ls-tab" data-panel="1" data-edit="tab-16bit" contenteditable="false" spellcheck="false">16-bit Advantage</button>
-    <button class="ls-tab" data-panel="2" data-edit="tab-vs" contenteditable="" spellcheck="false">vs Camera Systems</button>
+    <button class="ls-tab active" data-panel="2" data-edit="tab-vs" contenteditable="false" spellcheck="false">vs Camera Systems</button>
   </div>
   <div class="ls-tab-panels">
 
     <!-- ══ PANEL 0 · How It Works ══ -->
-    <div class="ls-tab-panel active" data-panel="0">
+    <div class="ls-tab-panel" data-panel="0">
       <div class="t5-hiw">
 
         <!-- Top: 2×2 component cards -->
@@ -61,7 +61,7 @@
     </div>
 
     <!-- ══ PANEL 2 · vs Camera Systems ══ -->
-    <div class="ls-tab-panel" data-panel="2">
+    <div class="ls-tab-panel active" data-panel="2">
       <div class="t5-vc-wrap anim-in" style="">
 
         <!-- LEFT — Camera-based -->
@@ -342,15 +342,21 @@
     }
     .t5-vc-restore-chip:hover { background:rgba(255,255,255,.14); color:#fff; }
 
+    /* ── Mobile base ── */
+    .ls5, .t5 { padding: 52px 16px 80px !important; }
+    .t5-components { grid-template-columns:1fr; }
+    .t5-vc-wrap { grid-template-columns:1fr; height:auto; overflow-y:auto; }
+
     /* ── Tablet (769–1024px): vs Camera goes 2-col ── */
-    @media(max-width:1024px) and (min-width:769px) {
+    @media(min-width:769px) and (max-width:1024px) {
       .t5-vc-wrap { grid-template-columns:1fr 1fr; }
     }
-    /* ── Mobile (≤768px) ── */
-    @media(max-width:768px) {
-      .ls5, .t5 { padding: 52px 16px 80px !important; }
-      .t5-components { grid-template-columns:1fr; }
-      .t5-vc-wrap { grid-template-columns:1fr; height:auto; overflow-y:auto; }
+
+    /* ── Desktop (>1024px) ── */
+    @media(min-width:1025px) {
+      .ls5, .t5 { padding: 52px 80px 0 !important; }
+      .t5-components { grid-template-columns:1fr 1fr; }
+      .t5-vc-wrap { grid-template-columns:1fr 1fr 1fr; height:100%; overflow-y:unset; }
     }
   </style>
 

@@ -246,8 +246,7 @@
 
   // ── Carousel save (any slide dispatches slide-carousel-save) ─────────────
   document.addEventListener('slide-carousel-save', function (e) {
-    var index    = String(current + 1).padStart(2, '0');
-    var filename = 'slide-' + index + '-' + SLIDES[current].name;
+    var filename = SLIDES[current].file.replace('/slides/', '').replace('.html', '');
     var editKey  = e.detail.editKey || 'carousel-track';
     var body     = { slide: filename, edits: {} };
     if (e.detail.html != null) body.edits[editKey] = e.detail.html;
@@ -268,8 +267,7 @@
 
   // ── Image change (dispatched by slides after upload) ─────────────────────
   document.addEventListener('slide-image-change', function (e) {
-    var index    = String(current + 1).padStart(2, '0');
-    var filename = 'slide-' + index + '-' + SLIDES[current].name;
+    var filename = SLIDES[current].file.replace('/slides/', '').replace('.html', '');
     showSaveStatus('saving');
     fetch('/api/save-image-src', {
       method:  'POST',
@@ -316,9 +314,7 @@
 
     if (Object.keys(edits).length === 0) return;
 
-    // Derive filename from slide index + name (e.g. slide-01-cover)
-    var index    = String(current + 1).padStart(2, '0');
-    var filename = 'slide-' + index + '-' + slideDef.name;
+    var filename = slideDef.file.replace('/slides/', '').replace('.html', '');
 
     showSaveStatus('saving');
 

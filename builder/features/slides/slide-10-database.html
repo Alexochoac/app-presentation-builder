@@ -84,9 +84,14 @@
       width: 100%; max-width: 860px;
       margin-top: 12px;
     }
-    @media(max-width:768px) {
-      .ls10 { padding: 52px 16px 80px !important; }
-      .ls10-cards { grid-template-columns: 1fr; }
+    /* ── Mobile base ── */
+    .ls10 { padding: 52px 16px 80px !important; }
+    .ls10-cards { grid-template-columns: 1fr; }
+
+    /* ── Desktop overrides ── */
+    @media(min-width:769px) {
+      .ls10 { padding: 52px 80px 0 !important; }
+      .ls10-cards { grid-template-columns: 1fr 1fr; }
     }
   </style>
 

@@ -50,10 +50,16 @@
     }
     .ls8-layout .col-item { white-space: nowrap; }
 
-    @media (max-width: 768px) {
-      .ls8-layout { grid-template-columns: 1fr; }
-      .ls8-layout .col-item { white-space: normal; }
-      .ls8 { padding: 52px 16px 80px !important; }
+    /* ── Mobile base ── */
+    .ls8-layout { grid-template-columns: 1fr; }
+    .ls8-layout .col-item { white-space: normal; }
+    .ls8 { padding: 52px 16px 80px !important; }
+
+    /* ── Desktop overrides ── */
+    @media (min-width: 769px) {
+      .ls8-layout { grid-template-columns: auto 1fr; }
+      .ls8-layout .col-item { white-space: nowrap; }
+      .ls8 { padding: 52px 80px 0 !important; }
     }
 
   </style>

@@ -288,20 +288,34 @@ function openCloneDialog() {
 function showPreview(slideId, origin) {
   activePreview = { origin, slideId };
 
-  // Slide is 1280×720. We render it at full size inside the iframe,
-  // then scale it down to fit the panel (≈460px wide → scale ≈ 0.36).
-  // The outer wrapper clips to the scaled height so no scroll appears.
   const SLIDE_W = 1280;
   const SLIDE_H = 720;
-  const FIT_W   = 460; // approximate panel content width
-  const scale   = FIT_W / SLIDE_W;
-  const scaledH = Math.round(SLIDE_H * scale);
+
+  // Measure the panel that will show the preview
+  var panelEl = origin === 'deck'
+    ? document.querySelector('.panel-library')
+    : document.querySelector('.panel-deck');
+  var headerEl2 = panelEl ? panelEl.querySelector('.panel-header') : null;
+
+  var panelW = panelEl ? panelEl.clientWidth : 500;
+  var panelH = panelEl ? panelEl.clientHeight : 400;
+  var headerH = headerEl2 ? headerEl2.offsetHeight : 70;
+
+  // Fit the slide inside available space (width × height), maintaining 16:9
+  var availW = panelW;
+  var availH = panelH - headerH - 16; // 16px breathing room
+  var scaleW = availW / SLIDE_W;
+  var scaleH = availH / SLIDE_H;
+  var scale  = Math.min(scaleW, scaleH);
+
+  var fitW   = Math.round(SLIDE_W * scale);
+  var fitH   = Math.round(SLIDE_H * scale);
 
   const thumbnailHtml =
-    '<div class="preview-thumbnail" onclick="openPreviewLightbox(\'' + slideId + '\')" title="Click to zoom">' +
+    '<div class="preview-thumbnail" id="preview-thumb-active" onclick="openPreviewLightbox(\'' + slideId + '\')" title="Click to zoom" style="width:' + fitW + 'px;height:' + fitH + 'px;overflow:hidden;cursor:pointer;position:relative;">' +
       '<div class="preview-scale-wrap" style="width:' + SLIDE_W + 'px;height:' + SLIDE_H + 'px;transform:scale(' + scale + ');transform-origin:top left;">' +
         '<iframe ' +
-          'src="/slides/' + slideId + '.html" ' +
+          'src="/slides/preview/' + slideId + '" ' +
           'style="width:' + SLIDE_W + 'px;height:' + SLIDE_H + 'px;border:none;" ' +
           'scrolling="no" ' +
           'title="Slide preview"' +
@@ -321,7 +335,7 @@ function showPreview(slideId, origin) {
       if (existing) existing.remove();
       headerEl.insertAdjacentHTML('beforeend', closeBtn);
     }
-    gridEl.innerHTML = '<div style="height:' + scaledH + 'px;overflow:hidden;border-radius:10px;">' + thumbnailHtml + '</div>';
+    gridEl.innerHTML = thumbnailHtml;
   } else {
     const headerEl = document.querySelector('.panel-deck .panel-header');
     const listEl = document.getElementById('deckList');
@@ -330,8 +344,9 @@ function showPreview(slideId, origin) {
       if (existing) existing.remove();
       headerEl.insertAdjacentHTML('beforeend', closeBtn);
     }
-    listEl.innerHTML = '<div style="height:' + scaledH + 'px;overflow:hidden;border-radius:10px;">' + thumbnailHtml + '</div>';
+    listEl.innerHTML = thumbnailHtml;
   }
+
 }
 
 function openPreviewLightbox(slideId) {
@@ -343,9 +358,12 @@ function openPreviewLightbox(slideId) {
   lb.className = 'preview-lightbox';
   lb.innerHTML =
     '<div class="preview-lightbox-inner">' +
-      '<button class="preview-lightbox-close" onclick="closePreviewLightbox()">&#x2715;</button>' +
+      '<div class="preview-lightbox-actions">' +
+        '<a class="btn-lightbox-edit" href="/builder/preview.html" target="_blank">Edit Slide &#x2192;</a>' +
+        '<button class="preview-lightbox-close" onclick="closePreviewLightbox()">&#x2715;</button>' +
+      '</div>' +
       '<iframe ' +
-        'src="/slides/' + slideId + '.html" ' +
+        'src="/slides/preview/' + slideId + '" ' +
         'style="width:100%;height:100%;border:none;" ' +
         'title="Slide fullscreen preview"' +
       '></iframe>' +

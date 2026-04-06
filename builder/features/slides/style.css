@@ -276,47 +276,82 @@ h1.slide-title {
 *::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 10px; }
 *::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.28); }
 
-/* ── Mobile ── */
-@media(max-width:768px){
-  body, .slides-container { height:100dvh; }
-  .slide.hero { padding:0 20px 56px 20px; height:100dvh; overflow:hidden; }
-  .softsolution-credit { right:20px; top:24px; font-size:10px; }
-  .hero-content h1 { font-size:clamp(28px,8vw,48px); }
+/* ── Mobile base (default) ── */
+body, .slides-container { height:100dvh; }
+.slide.hero { padding:0 20px 56px 20px; height:100dvh; overflow:hidden; }
+.softsolution-credit { right:20px; top:24px; font-size:10px; }
+.hero-content h1 { font-size:clamp(28px,8vw,48px); }
 
-  /* Content slides: allow scrolling, pad top to clear logo row */
-  .slide.content {
-    padding: 70px 16px 80px !important;
-    overflow-y: auto;
-    overflow-x: hidden;
-    align-items: flex-start;
-    justify-content: flex-start;
-  }
-
-  /* Logo row: smaller on mobile */
-  .slide-logo-row { top:14px; left:16px; }
-  .slide-logo-row img { height:22px; }
-  .slide-logo-ls { height:18px !important; }
-
-  .cards-row { grid-template-columns:1fr; }
-  .kpi-row { grid-template-columns:repeat(2,1fr); gap:10px; }
-  .two-col { grid-template-columns:1fr; }
-  .integration-grid { grid-template-columns:repeat(2,1fr); }
-  .nav-arrow { display:none !important; }
-  .glow-orb { display:none; }
-  .slide-logo { top:14px; left:14px; height:20px; }
-  .cta-box { padding:28px 20px; }
-  h1.slide-title { font-size:clamp(22px,6vw,38px); }
-  .feature-text { font-size:13px; }
-  .slide-split { grid-template-columns:1fr; }
-  .screenshots-row { flex-direction:column; }
-  .screenshot-wrap { max-width:100%; }
+/* Content slides: allow scrolling, pad top to clear logo row */
+.slide.content {
+  padding: 70px 16px 80px !important;
+  overflow-y: auto;
+  overflow-x: hidden;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
-/* ── Lightbox: mobile nav buttons ── */
-@media(max-width:768px) {
-  #lb-prev { left: 8px; }
-  #lb-next { right: 8px; }
-  #lb-inner { width: 100vw; padding: 0 60px; box-sizing: border-box; }
+/* Logo row: smaller on mobile */
+.slide-logo-row { top:14px; left:16px; }
+.slide-logo-row img { height:22px; }
+.slide-logo-ls { height:18px !important; }
+
+.cards-row { grid-template-columns:1fr; }
+.kpi-row { grid-template-columns:repeat(2,1fr); gap:10px; }
+.two-col { grid-template-columns:1fr; }
+.integration-grid { grid-template-columns:repeat(2,1fr); }
+.nav-arrow { display:none !important; }
+.glow-orb { display:none; }
+.slide-logo { top:14px; left:14px; height:20px; }
+.cta-box { padding:28px 20px; }
+h1.slide-title { font-size:clamp(22px,6vw,38px); }
+.feature-text { font-size:13px; }
+.slide-split { grid-template-columns:1fr; }
+.screenshots-row { flex-direction:column; }
+.screenshot-wrap { max-width:100%; }
+
+/* Lightbox: mobile nav buttons (base) */
+#lb-prev { left: 8px; }
+#lb-next { right: 8px; }
+#lb-inner { width: 100vw; padding: 0 60px; box-sizing: border-box; }
+
+/* ── Desktop overrides ── */
+@media(min-width:769px){
+  .slide.hero { padding:0 80px 80px 80px; height:100dvh; overflow:hidden; }
+  .softsolution-credit { right:80px; top:42px; font-size:11px; }
+  .hero-content h1 { font-size:clamp(38px,5.5vw,72px); }
+
+  .slide.content {
+    padding: 60px 80px 80px !important;
+    padding-bottom: 70px !important;
+    overflow-y: unset;
+    overflow-x: unset;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .slide-logo-row { top:22px; left:36px; }
+  .slide-logo-row img { height:30px; }
+  .slide-logo-ls { height:26px !important; }
+
+  .cards-row { grid-template-columns:repeat(3,1fr); }
+  .kpi-row { grid-template-columns:repeat(4,1fr); gap:14px; }
+  .two-col { grid-template-columns:1fr 1fr; }
+  .integration-grid { grid-template-columns:repeat(3,1fr); }
+  .nav-arrow { display:flex !important; }
+  .glow-orb { display:block; }
+  .slide-logo { top:22px; left:36px; height:24px; }
+  .cta-box { padding:36px 44px; }
+  h1.slide-title { font-size:clamp(26px,4vw,50px); }
+  .feature-text { font-size:14px; }
+  .slide-split { grid-template-columns:1fr 1fr; }
+  .screenshots-row { flex-direction:row; }
+  .screenshot-wrap { max-width:480px; }
+
+  /* Lightbox: desktop nav buttons */
+  #lb-prev { left: -58px; }
+  #lb-next { right: -58px; }
+  #lb-inner { width: 90vw; padding: 0; box-sizing: content-box; }
 }
 
 /* ── Lightbox close: minimum 44×44 tap target ── */

@@ -52,9 +52,14 @@
 
     .ls12-badge-h { top: 12%; right: 4%; }
     .ls12-badge-v { bottom: 12%; left: 26%; }
-    @media(max-width:768px) {
-      .ls12 { padding: 52px 16px 80px !important; }
-      .ls12-badge-h, .ls12-badge-v { display: none; }
+    /* ── Mobile base ── */
+    .ls12 { padding: 52px 16px 80px !important; }
+    .ls12-badge-h, .ls12-badge-v { display: none; }
+
+    /* ── Desktop overrides ── */
+    @media(min-width:769px) {
+      .ls12 { padding: 52px 80px 0 !important; }
+      .ls12-badge-h, .ls12-badge-v { display: flex; }
     }
   </style>
 
