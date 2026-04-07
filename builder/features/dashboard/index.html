@@ -11,20 +11,64 @@
   <div class="glow glow-a"></div>
   <div class="glow glow-b"></div>
 
-  <!-- Top Bar -->
-  <header class="topbar">
-    <div class="topbar-brand">
+  <!-- Mobile Top Bar -->
+  <header class="topbar-mobile">
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">&#9776;</button>
+    <div class="logo-icon">P</div>
+    <span class="logo-text">Presentation Builder</span>
+  </header>
+
+  <!-- Sidebar Overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
       <div class="logo-icon">P</div>
       <span class="logo-text">Presentation Builder</span>
     </div>
-    <nav class="topbar-nav">
-      <a href="/" class="nav-link active">Dashboard</a>
-      <a href="/settings" class="nav-link">Settings</a>
-    </nav>
-    <div class="topbar-right">
-      <a href="/auth/logout" class="btn-logout">Log out</a>
+
+    <ul class="sidebar-nav">
+      <li>
+        <a href="/" class="sidebar-nav-item active">
+          <span class="nav-icon">&#9632;</span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="/builder/preview.html" class="sidebar-nav-item">
+          <span class="nav-icon">&#9654;</span>
+          <span class="nav-label">Builder</span>
+        </a>
+      </li>
+      <li>
+        <a href="/slides" class="sidebar-nav-item">
+          <span class="nav-icon">&#9783;</span>
+          <span class="nav-label">Slides</span>
+        </a>
+      </li>
+      <li>
+        <a href="/settings" class="sidebar-nav-item">
+          <span class="nav-icon">&#9881;</span>
+          <span class="nav-label">Settings</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-logout">
+      <a href="/auth/logout" class="sidebar-nav-item">
+        <span class="nav-icon">&#8617;</span>
+        <span class="nav-label">Log out</span>
+      </a>
     </div>
-  </header>
+
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Collapse sidebar">
+      <span class="toggle-icon">&#8249;</span>
+    </button>
+  </nav>
+
+  <!-- App Body -->
+  <div class="app-body" id="appBody">
 
   <!-- Main Content -->
   <main class="main">
@@ -103,12 +147,50 @@
 
   </main>
 
+  </div><!-- /.app-body -->
+
   <script src="/dashboard.js"></script>
   <script>
     (function () {
       var html = document.documentElement;
       var saved = localStorage.getItem('pb-theme');
       if (saved) html.setAttribute('data-theme', saved);
+    })();
+
+    // ── Sidebar JS ──────────────────────────────────────────────
+    (function () {
+      var sidebar  = document.getElementById('sidebar');
+      var overlay  = document.getElementById('sidebarOverlay');
+      var toggle   = document.getElementById('sidebarToggle');
+      var hamburger = document.getElementById('hamburgerBtn');
+      var appBody  = document.getElementById('appBody');
+
+      // Restore desktop collapsed state
+      if (localStorage.getItem('pb-sidebar-collapsed') === '1') {
+        sidebar.classList.add('collapsed');
+        appBody.classList.add('sidebar-collapsed');
+      }
+
+      // Desktop: collapse toggle
+      toggle.addEventListener('click', function () {
+        var collapsed = sidebar.classList.toggle('collapsed');
+        appBody.classList.toggle('sidebar-collapsed', collapsed);
+        localStorage.setItem('pb-sidebar-collapsed', collapsed ? '1' : '0');
+      });
+
+      // Mobile: open sidebar
+      hamburger.addEventListener('click', function () {
+        sidebar.classList.add('open');
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+
+      // Mobile: close via overlay
+      overlay.addEventListener('click', function () {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      });
     })();
   </script>
 </body>

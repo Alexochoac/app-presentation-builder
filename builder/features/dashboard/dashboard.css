@@ -326,6 +326,7 @@ ul { list-style: none; }
 
 /* ── Library Card ── */
 .lib-card {
+  position: relative;
   background: rgba(255,255,255,.03);
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -335,6 +336,27 @@ ul { list-style: none; }
   gap: 10px;
   transition: border-color .2s, background .2s;
 }
+
+.btn-lib-delete {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,80,80,0.15);
+  color: #ff6b6b;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.lib-card:hover .btn-lib-delete { opacity: 1; }
 .lib-card:hover {
   border-color: rgba(255,255,255,.16);
   background: rgba(255,255,255,.05);
@@ -662,6 +684,21 @@ input::placeholder { color: var(--text-dim); }
   color: rgba(245,166,35,.7);
   background: rgba(245,166,35,.08);
   border: 1px solid rgba(245,166,35,.2);
+  border-radius: 100px;
+  padding: 2px 7px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Badge Library (Custom slide from layout builder) ── */
+.badge-library {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-glow);
   border-radius: 100px;
   padding: 2px 7px;
   white-space: nowrap;

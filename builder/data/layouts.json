@@ -1,0 +1,101 @@
+[
+  {
+    "name": "TEST",
+    "components": [],
+    "rows": [
+      {
+        "cols": [
+          {
+            "components": [
+              {
+                "type": "Text Block"
+              },
+              {
+                "type": "Title"
+              },
+              {
+                "type": "Tabs"
+              },
+              {
+                "type": "Carousel"
+              }
+            ]
+          }
+        ],
+        "layout": "full",
+        "height": "auto"
+      }
+    ],
+    "id": "layout-1775559861227",
+    "createdAt": "2026-04-07T11:04:21.227Z"
+  },
+  {
+    "name": "Untitled Slide",
+    "components": [],
+    "rows": [
+      {
+        "id": "row-1775590526772",
+        "layout": "full",
+        "height": "auto",
+        "cols": [
+          {
+            "components": [
+              {
+                "type": "Subtitle"
+              },
+              {
+                "type": "Title"
+              },
+              {
+                "type": "Text Block"
+              },
+              {
+                "type": "Carousel"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "row-1775590557614",
+        "layout": "thirds",
+        "height": "auto",
+        "cols": [
+          {
+            "components": [
+              {
+                "type": "Carousel"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Carousel"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Carousel"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "row-1775590615163",
+        "layout": "full",
+        "height": "auto",
+        "cols": [
+          {
+            "components": []
+          }
+        ]
+      }
+    ],
+    "id": "layout-1775590521546",
+    "createdAt": "2026-04-07T19:35:21.546Z"
+  }
+]

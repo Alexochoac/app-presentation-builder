@@ -1,5 +1,32 @@
 # Sessions
 
+## 2026-04-07 (session 2) — Sidebar nav, Slides section, layout builder, deck connection
+
+### Accomplished
+- **Collapsible sidebar nav**: replaced top-bar pill nav with mobile-first collapsible sidebar across dashboard, settings — hamburger on mobile, collapse toggle on desktop, localStorage persistence
+- **Mobile click bug fixed**: `.sidebar-overlay` was blocking all taps — fixed with `pointer-events: none` when closed
+- **Settings page**: added working Presentation Name field (loads/saves via `PUT /api/deck`), fixed `PUT /api/deck` to do merge instead of full overwrite (partial updates now supported)
+- **Layouts → Slides section** (`/slides`): built layout builder with full-screen editor, split-pane (canvas left, preview right), preset column layouts (Full / 1/2+1/2 / 1/3+2/3 / 2/3+1/3 / thirds), row height toggles (Auto/Tall/Short), component picker, dummy content preview, Desktop/Mobile viewport toggle with phone frame
+- **Slides architecture decided**: Templates → My Library → Deck (playlist model). Slides in library can be in or out of deck independently
+- **Deck ↔ Library connection**: `POST /api/deck/slides` to add layout slide to deck, `DELETE /api/deck/slides/:id` to remove, `GET /api/deck` enriches layout slides with name+rows from layouts.json
+- **Server-side layout renderer**: `GET /slides/deck-slide-:id.html` generates HTML fragment from layout JSON so old builder can render new slides without changes
+- **Delete cloned slides**: added `DELETE /api/slide-library/:id`, delete button on custom library cards
+- **Enrichment pollution fix**: `PUT /api/deck` now strips derived fields before writing — only persists `id`, `visible`, `layoutId`
+- **Save bug fixed**: layout save was 404 because API response `{ success, data }` wrapper wasn't being unwrapped — fixed in createLayout and loadLayouts
+- **Preview toggle fix**: `.preview-phone` `max-width: 100%` → `max-width: 390px` so mobile frame is visually distinct
+- **Slides architecture saved to memory**: `memory/project_slides_architecture.md`
+
+### Pending
+- Rebuild `/slides` as 3-tab page: Templates | My Library | Layouts
+- Build template gallery with visual previews (new generic templates, not product-specific)
+- "Use This" flow: clone template into My Library
+- "Save as Template" flow: promote library slide to template
+- In Deck / Not in Deck toggle on library slide cards
+- Design system refactor (carried forward — still high priority)
+- Delete old `dashboard.css`
+
+---
+
 ## 2026-04-07 — Mobile responsiveness refactor + /idea skill
 
 ### Accomplished
@@ -51,20 +78,3 @@
 - Slide-06 defect selector names — static HTML
 - `scripts/build.js` and `scripts/deploy.js`
 
----
-
-## 2026-04-05 (session 2) — Dashboard redesign, style system, GitHub repo
-
-### Accomplished
-- Created GitHub repo `Alexochoac/app-presentation-builder`, pushed all code
-- Dashboard slide library redesign: hides in-deck slides, clone flow, two-way preview
-- Scaled thumbnail preview + lightbox zoom in dashboard
-- `POST /api/clone-slide` endpoint
-- `builder/shared/app-style.css` — Apple Keynote dark/light theme
-- Server serves `/shared/*` for shared app assets
-
-### Pending
-- Delete old `dashboard.css`
-- Presentation view
-- Slide-06 defect selector names
-- `scripts/build.js` and `scripts/deploy.js`

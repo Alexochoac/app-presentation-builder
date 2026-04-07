@@ -80,12 +80,13 @@ All content slides now use this structure:
 - [x] `IDEAS.md` created with 2 logged ideas
 
 ## Next Steps
-- [ ] **Design system refactor** (priority) — eliminate 3-layer CSS conflict; one source of truth in style.css; carousels use `aspect-ratio`; columns use `.slide-cols` standard class
-- [ ] Dual-preview layout builder (desktop + mobile side by side) — see IDEAS.md
-- [ ] Delete old `dashboard.css` after confirming new style works
+- [ ] **Rebuild `/slides` as 3-tab page**: Templates | My Library | Layouts
+- [ ] **Template gallery**: visual previews of new generic templates, "Use This" clones to My Library
+- [ ] **My Library tab**: slide cards with In Deck toggle, Edit, Save as Template, Delete
+- [ ] **Design system refactor** (carried) — eliminate 3-layer CSS conflict; one source of truth in style.css
+- [ ] Delete old `dashboard.css`
 - [ ] Presentation view — clean read-only mode
 - [ ] Slide-06 defect selector names — move to static HTML
-- [ ] Image caption editing UI
 - [ ] `scripts/build.js` — assemble final customer HTML, strip `data-builder-only`
 - [ ] `scripts/deploy.js` — push to GitHub Pages
 
@@ -95,4 +96,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-04-07
+Last updated: 2026-04-07 (session 2)

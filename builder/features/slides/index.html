@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slides — Presentation Builder</title>
+  <link rel="stylesheet" href="/shared/app-style.css">
+  <style>
+    /* ── Layouts page ─────────────────────────────────────────── */
+
+    /* Page header row */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+    .page-title {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+
+    /* Empty state */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 72px 24px;
+      text-align: center;
+    }
+    .empty-icon {
+      font-size: 48px;
+      opacity: 0.3;
+    }
+    .empty-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .empty-desc {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 340px;
+      line-height: 1.6;
+    }
+
+    /* Layouts grid */
+    .layouts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .layout-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .layout-card:hover {
+      border-color: var(--border-hov);
+      background: var(--surface-hov);
+    }
+    .layout-card-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .layout-card-meta {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-count {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 10px;
+      border-radius: 100px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid var(--accent-glow);
+    }
+    .layout-card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: auto;
+    }
+    .btn-edit {
+      flex: 1;
+      padding: 7px 12px;
+      border-radius: var(--radius-btn);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-edit:hover {
+      border-color: var(--border-hov);
+      background: var(--surface-hov);
+    }
+    .btn-delete {
+      padding: 7px 12px;
+      border-radius: var(--radius-btn);
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .btn-delete:hover {
+      color: var(--remove-hov-fg);
+      border-color: var(--remove-hov-fg);
+      background: var(--remove-hov-bg);
+    }
+    .btn-add-to-deck {
+      padding: 7px 12px;
+      border-radius: var(--radius-btn);
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-glow);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+    .btn-add-to-deck:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .btn-add-to-deck:disabled {
+      opacity: 0.55;
+      cursor: default;
+      pointer-events: none;
+    }
+    .badge-in-deck {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 100px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid var(--accent-glow);
+      white-space: nowrap;
+    }
+
+    /* ── Layout Builder — full-screen overlay ───────────────────── */
+
+    #layoutBuilder {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      flex-direction: column;
+      background: var(--bg);
+    }
+    #layoutBuilder.builder-visible {
+      display: flex;
+    }
+
+    /* ── Builder top bar ─────────────────────────────────────────── */
+
+    .builder-topbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--topbar-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      flex-shrink: 0;
+    }
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: var(--radius-btn);
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .btn-back:hover { color: var(--text); border-color: var(--border-hov); }
+
+    .layout-name-input {
+      flex: 1;
+      min-width: 120px;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid transparent;
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 600;
+      font-family: var(--font);
+      padding: 2px 4px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .layout-name-input:hover,
+    .layout-name-input:focus {
+      border-bottom-color: var(--border-hov);
+    }
+
+    /* Viewport toggle */
+    .viewport-toggle {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-btn);
+      padding: 3px;
+      flex-shrink: 0;
+    }
+    .viewport-btn {
+      padding: 5px 14px;
+      border-radius: 100px;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .viewport-btn.active {
+      background: var(--nav-active);
+      color: var(--text);
+    }
+    .viewport-btn:hover:not(.active) { color: var(--text); }
+
+    /* Save status */
+    .save-status {
+      font-size: 12px;
+      color: var(--dim);
+      flex-shrink: 0;
+      min-width: 56px;
+      text-align: right;
+    }
+    .save-status.saving { color: var(--accent); }
+    .save-status.saved  { color: var(--muted); }
+
+    /* ── Builder body: split pane ────────────────────────────────── */
+
+    .builder-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    /* ── Canvas panel ────────────────────────────────────────────── */
+
+    .builder-canvas {
+      width: 50%;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+    }
+    .canvas-inner {
+      flex: 1;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .canvas-add-row {
+      padding-top: 4px;
+    }
+    .btn-add-row {
+      width: 100%;
+      padding: 10px;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-add-row:hover {
+      color: var(--text);
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    /* Builder row */
+    .builder-row {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color 0.2s;
+    }
+    .builder-row:hover { border-color: var(--border-hov); }
+
+    /* Row header line */
+    .row-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .drag-handle {
+      color: var(--dim);
+      font-size: 16px;
+      cursor: grab;
+      flex-shrink: 0;
+      user-select: none;
+    }
+    .row-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      flex-shrink: 0;
+    }
+    .row-controls {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    /* Column layout picker pills */
+    .layout-picker {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .layout-pill {
+      padding: 3px 9px;
+      border-radius: 100px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .layout-pill.active {
+      background: var(--accent-dim);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .layout-pill:hover:not(.active) {
+      color: var(--text);
+      border-color: var(--border-hov);
+    }
+
+    /* Row height toggle */
+    .height-toggle {
+      display: flex;
+      gap: 3px;
+    }
+    .height-btn {
+      padding: 2px 8px;
+      border-radius: 100px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--dim);
+      font-size: 10px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .height-btn.active {
+      background: var(--surface-hov);
+      border-color: var(--border-hov);
+      color: var(--muted);
+    }
+    .height-btn:hover:not(.active) {
+      border-color: var(--border-hov);
+      color: var(--muted);
+    }
+
+    .btn-remove-row {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 14px;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: color 0.2s, background 0.2s, border-color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .btn-remove-row:hover {
+      color: var(--remove-hov-fg);
+      background: var(--remove-hov-bg);
+      border-color: var(--remove-hov-fg);
+    }
+
+    /* Column drop zones */
+    .row-cols {
+      display: grid;
+      gap: 8px;
+    }
+    .builder-col {
+      min-height: 64px;
+      background: var(--input-bg);
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .builder-col:hover { border-color: var(--border-hov); }
+    .builder-col.col-empty {
+      align-items: center;
+      justify-content: center;
+    }
+
+    .col-add-btn {
+      width: 100%;
+      padding: 6px;
+      background: transparent;
+      border: none;
+      color: var(--dim);
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: color 0.15s, background 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font);
+    }
+    .col-add-btn:hover {
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    /* Component chips */
+    .component-chip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: var(--surface-hov);
+      border: 1px solid var(--border);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .chip-remove {
+      background: transparent;
+      border: none;
+      color: var(--dim);
+      font-size: 14px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 2px;
+      font-family: var(--font);
+      transition: color 0.15s;
+    }
+    .chip-remove:hover { color: var(--remove-hov-fg); }
+
+    /* ── Component picker (overlay) ──────────────────────────────── */
+
+    .picker-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .picker-panel {
+      background: #111;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 24px;
+      width: 100%;
+      max-width: 360px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .picker-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .picker-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .picker-item {
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .picker-item:hover {
+      background: var(--surface-hov);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .picker-cancel {
+      padding: 8px;
+      border-radius: var(--radius-btn);
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .picker-cancel:hover { color: var(--text); border-color: var(--border-hov); }
+
+    /* ── Preview panel ───────────────────────────────────────────── */
+
+    .builder-preview {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--bg);
+    }
+    .preview-inner {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow: auto;
+    }
+
+    /* Desktop preview frame — 16:9 */
+    .preview-frame-wrap {
+      width: 100%;
+      max-width: 100%;
+    }
+    .preview-frame {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+      padding: 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Phone frame wrapper — scales down to fit panel */
+    .preview-phone-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* JS sets transform: scale() on this */
+    }
+    .preview-phone {
+      width: 390px;
+      height: 844px;
+      border-radius: 44px;
+      border: 3px solid var(--border-hov);
+      background: var(--surface);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05);
+      padding: 60px 16px 40px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    /* Phone notch pill */
+    .preview-phone::before {
+      content: '';
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 22px;
+      background: var(--bg);
+      border-radius: 100px;
+      border: 2px solid var(--border-hov);
+    }
+
+    /* Preview rows */
+    .preview-row {
+      display: grid;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .preview-row.height-tall  { min-height: 160px; }
+    .preview-row.height-short { min-height: 60px; }
+
+    .preview-col {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      overflow: hidden;
+    }
+
+    /* Dummy component renders */
+    .pv-title {
+      padding: 6px 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      border-bottom: 2px solid var(--accent);
+      margin-bottom: 2px;
+    }
+    .pv-subtitle {
+      padding: 4px 8px;
+      font-size: 11px;
+      color: var(--muted);
+      font-style: italic;
+    }
+    .pv-text {
+      padding: 6px 8px;
+      font-size: 9px;
+      color: var(--muted);
+      line-height: 1.6;
+      background: var(--input-bg);
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    .pv-tabs {
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .pv-tabs-header {
+      display: flex;
+      background: var(--input-bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .pv-tab {
+      padding: 3px 8px;
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .pv-tab.active-tab {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+    }
+    .pv-tabs-body {
+      padding: 6px 8px;
+      font-size: 9px;
+      color: var(--dim);
+    }
+    .pv-carousel {
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 10px 8px;
+      min-height: 48px;
+    }
+    .pv-carousel-icon {
+      font-size: 16px;
+      color: var(--dim);
+    }
+    .pv-carousel-label {
+      font-size: 8px;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .pv-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .pv-table th {
+      background: var(--input-bg);
+      color: var(--muted);
+      padding: 3px 5px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+    }
+    .pv-table td {
+      color: var(--dim);
+      padding: 3px 5px;
+      border-bottom: 1px solid var(--border);
+    }
+    .pv-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 4px 6px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .pv-list-item {
+      font-size: 9px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .pv-list-item::before {
+      content: '›';
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .pv-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px 12px;
+      border-radius: 100px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      align-self: flex-start;
+    }
+    .pv-empty-col {
+      flex: 1;
+      min-height: 32px;
+      border-radius: 6px;
+      border: 1px dashed var(--border);
+      opacity: 0.35;
+    }
+
+    /* Preview empty state */
+    .preview-placeholder {
+      text-align: center;
+      color: var(--dim);
+      font-size: 13px;
+      padding: 40px 0;
+    }
+
+    /* ── Mobile: single pane + bottom tabs ─────────────────────── */
+
+    .bottom-tabs {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 52px;
+      background: var(--topbar-bg);
+      border-top: 1px solid var(--border);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      z-index: 300;
+    }
+    .bottom-tabs-inner {
+      display: flex;
+      height: 100%;
+    }
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .tab-btn.active { color: var(--accent); }
+    .tab-btn:hover:not(.active) { color: var(--text); }
+
+    /* Mobile preview viewport toggle strip */
+    .mobile-preview-header {
+      display: none;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      justify-content: center;
+    }
+
+    /* ── Responsive ──────────────────────────────────────────── */
+
+    @media (max-width: 768px) {
+      .builder-canvas,
+      .builder-preview {
+        width: 100%;
+        border-right: none;
+      }
+      .builder-body {
+        flex-direction: column;
+      }
+      .builder-wrap .builder-canvas.tab-hidden,
+      .builder-wrap .builder-preview.tab-hidden {
+        display: none;
+      }
+      .builder-body .builder-canvas.tab-hidden,
+      .builder-body .builder-preview.tab-hidden {
+        display: none;
+      }
+      .bottom-tabs { display: flex; }
+      .mobile-preview-header { display: flex; }
+      #layoutBuilder { padding-bottom: 52px; }
+      .save-status { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow glow-a"></div>
+  <div class="glow glow-b"></div>
+
+  <!-- Mobile Top Bar -->
+  <header class="topbar-mobile" id="topbar-mobile">
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">&#9776;</button>
+    <div class="logo-icon">P</div>
+    <span class="logo-text">Presentation Builder</span>
+  </header>
+
+  <!-- Sidebar Overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo-icon">P</div>
+      <span class="logo-text">Presentation Builder</span>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li>
+        <a href="/" class="sidebar-nav-item">
+          <span class="nav-icon">&#9632;</span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="/builder/preview.html" class="sidebar-nav-item">
+          <span class="nav-icon">&#9654;</span>
+          <span class="nav-label">Builder</span>
+        </a>
+      </li>
+      <li>
+        <a href="/slides" class="sidebar-nav-item active">
+          <span class="nav-icon">&#9783;</span>
+          <span class="nav-label">Slides</span>
+        </a>
+      </li>
+      <li>
+        <a href="/settings" class="sidebar-nav-item">
+          <span class="nav-icon">&#9881;</span>
+          <span class="nav-label">Settings</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-logout">
+      <a href="/auth/logout" class="sidebar-nav-item">
+        <span class="nav-icon">&#8617;</span>
+        <span class="nav-label">Log out</span>
+      </a>
+    </div>
+
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Collapse sidebar">
+      <span class="toggle-icon">&#8249;</span>
+    </button>
+  </nav>
+
+  <!-- App Body -->
+  <div class="app-body" id="appBody">
+
+    <!-- ══ Section A: Slides Home ══════════════════════════════ -->
+    <div id="layoutsHome">
+      <main class="main">
+
+        <div class="page-header">
+          <h1 class="page-title">Slides</h1>
+          <button class="btn-primary" onclick="createLayout()">+ New Slide</button>
+        </div>
+
+        <p style="margin: -16px 0 24px; font-size: 14px; color: var(--muted);">Your slide library — each slide has a layout and content</p>
+
+        <!-- Empty state -->
+        <div class="empty-state" id="layoutsEmpty">
+          <div class="empty-icon">&#9645;</div>
+          <div class="empty-title">No slides yet</div>
+          <p class="empty-desc">Create your first slide. Each slide has a layout that controls how it looks on desktop and mobile.</p>
+          <button class="btn-primary" onclick="createLayout()">Create your first slide</button>
+        </div>
+
+        <!-- Grid of layout cards -->
+        <div class="layouts-grid hidden" id="layoutsGrid"></div>
+
+      </main>
+    </div>
+
+  </div><!-- /.app-body -->
+
+  <!-- ══ Section B: Slide Editor (full-screen) ═══════════════════ -->
+  <div id="layoutBuilder">
+
+    <!-- Top bar -->
+    <div class="builder-topbar">
+      <button class="btn-back" onclick="backToLayouts()">&#8592; Slides</button>
+      <input
+        class="layout-name-input"
+        id="layoutNameInput"
+        type="text"
+        value="Untitled Slide"
+        placeholder="Slide name…"
+        aria-label="Slide name"
+        onblur="saveLayoutName(this.value)"
+      >
+      <div class="viewport-toggle" id="viewportToggle">
+        <button class="viewport-btn active" id="vpDesktop" onclick="setViewMode('desktop')">Desktop</button>
+        <button class="viewport-btn" id="vpMobile" onclick="setViewMode('mobile')">Mobile</button>
+      </div>
+      <div class="save-status" id="saveStatus"></div>
+    </div>
+
+    <!-- Builder body: canvas + preview -->
+    <div class="builder-body">
+
+      <!-- Canvas (left / edit tab) -->
+      <div class="builder-canvas" id="builderCanvas">
+        <div class="canvas-inner" id="canvasInner">
+          <!-- Rows rendered here by renderCanvas() -->
+          <div class="canvas-add-row">
+            <button class="btn-add-row" onclick="addRow()">&#43; Add Row</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview (right / preview tab) -->
+      <div class="builder-preview" id="builderPreview">
+        <!-- Mobile-only: viewport toggle in preview pane -->
+        <div class="mobile-preview-header">
+          <div class="viewport-toggle">
+            <button class="viewport-btn active" id="vpDesktopMobile" onclick="setViewMode('desktop')">Desktop</button>
+            <button class="viewport-btn" id="vpMobileMobile" onclick="setViewMode('mobile')">Mobile</button>
+          </div>
+        </div>
+        <div class="preview-inner" id="previewInner">
+          <!-- Rendered by renderPreview() -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Mobile bottom tab bar -->
+    <div class="bottom-tabs" id="bottomTabs">
+      <div class="bottom-tabs-inner">
+        <button class="tab-btn active" id="tabEdit" onclick="setActiveTab('edit')">Edit</button>
+        <button class="tab-btn" id="tabPreview" onclick="setActiveTab('preview')">Preview</button>
+      </div>
+    </div>
+
+  </div><!-- /#layoutBuilder -->
+
+  <!-- Component Picker (overlay) -->
+  <div class="picker-overlay hidden" id="pickerOverlay">
+    <div class="picker-panel">
+      <div class="picker-title">Add Component</div>
+      <div class="picker-list" id="pickerList"></div>
+      <button class="picker-cancel" onclick="closePicker()">Cancel</button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var html = document.documentElement;
+      var saved = localStorage.getItem('pb-theme');
+      if (saved) html.setAttribute('data-theme', saved);
+    })();
+
+    // ── Sidebar JS ──────────────────────────────────────────────
+    (function () {
+      var sidebar   = document.getElementById('sidebar');
+      var overlay   = document.getElementById('sidebarOverlay');
+      var toggle    = document.getElementById('sidebarToggle');
+      var hamburger = document.getElementById('hamburgerBtn');
+      var appBody   = document.getElementById('appBody');
+
+      if (localStorage.getItem('pb-sidebar-collapsed') === '1') {
+        sidebar.classList.add('collapsed');
+        appBody.classList.add('sidebar-collapsed');
+      }
+
+      toggle.addEventListener('click', function () {
+        var collapsed = sidebar.classList.toggle('collapsed');
+        appBody.classList.toggle('sidebar-collapsed', collapsed);
+        localStorage.setItem('pb-sidebar-collapsed', collapsed ? '1' : '0');
+      });
+
+      hamburger.addEventListener('click', function () {
+        sidebar.classList.add('open');
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+
+      overlay.addEventListener('click', function () {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    })();
+
+    // ── State ───────────────────────────────────────────────────
+    var layouts       = [];
+    var currentLayout = null; // { id, name, rows: [...] }
+    var viewMode      = 'desktop'; // 'desktop' | 'mobile'
+    var activeTab     = 'edit';    // 'edit' | 'preview'
+
+    // Picker state
+    var pickerTarget = null; // { rowIdx, colIdx }
+
+    // Save debounce timer
+    var saveTimer = null;
+
+    // Component types available in the picker
+    var COMPONENT_TYPES = ['Text Block', 'Title', 'Subtitle', 'Tabs', 'Carousel', 'Table', 'List', 'Button'];
+
+    // Column layout definitions
+    var COL_LAYOUTS = {
+      'full':      ['1fr'],
+      'half-half': ['1fr', '1fr'],
+      'third-two': ['1fr', '2fr'],
+      'two-third': ['2fr', '1fr'],
+      'thirds':    ['1fr', '1fr', '1fr']
+    };
+
+    var COL_LAYOUT_LABELS = {
+      'full':      'Full',
+      'half-half': '1/2 + 1/2',
+      'third-two': '1/3 + 2/3',
+      'two-third': '2/3 + 1/3',
+      'thirds':    '1/3 + 1/3 + 1/3'
+    };
+
+    var ROW_HEIGHTS = {
+      'auto':  'auto',
+      'tall':  '280px',
+      'short': '120px'
+    };
+
+    // ── Layouts list ─────────────────────────────────────────────
+
+    function loadLayouts() {
+      Promise.all([
+        fetch('/api/layouts').then(function (r) { return r.json(); }),
+        fetch('/api/deck').then(function (r) { return r.json(); })
+      ]).then(function (results) {
+        layouts = (results[0] && results[0].data) ? results[0].data : [];
+        var deck = (results[1] && results[1].data) ? results[1].data : {};
+        var deckLayoutIds = (deck.slides || [])
+          .filter(function (s) { return s.layoutId; })
+          .map(function (s) { return s.layoutId; });
+        renderLayoutsGrid(deckLayoutIds);
+      }).catch(function () {
+        layouts = [];
+        renderLayoutsGrid([]);
+      });
+    }
+
+    function renderLayoutsGrid(deckLayoutIds) {
+      deckLayoutIds = deckLayoutIds || [];
+      var empty = document.getElementById('layoutsEmpty');
+      var grid  = document.getElementById('layoutsGrid');
+
+      if (layouts.length === 0) {
+        empty.classList.remove('hidden');
+        grid.classList.add('hidden');
+        return;
+      }
+
+      empty.classList.add('hidden');
+      grid.classList.remove('hidden');
+
+      grid.innerHTML = '';
+      for (var i = 0; i < layouts.length; i++) {
+        grid.appendChild(buildLayoutCard(layouts[i], deckLayoutIds));
+      }
+    }
+
+    function buildLayoutCard(layout, deckLayoutIds) {
+      deckLayoutIds = deckLayoutIds || [];
+      var totalComponents = 0;
+      if (layout.rows) {
+        for (var r = 0; r < layout.rows.length; r++) {
+          var row = layout.rows[r];
+          if (row.cols) {
+            for (var c = 0; c < row.cols.length; c++) {
+              totalComponents += (row.cols[c].components || []).length;
+            }
+          }
+        }
+      }
+
+      var alreadyInDeck = deckLayoutIds.indexOf(layout.id) !== -1;
+
+      var card = document.createElement('div');
+      card.className = 'layout-card';
+
+      var name = document.createElement('div');
+      name.className = 'layout-card-name';
+      name.textContent = layout.name || 'Untitled Slide';
+
+      var meta = document.createElement('div');
+      meta.className = 'layout-card-meta';
+
+      var badge = document.createElement('span');
+      badge.className = 'badge-count';
+      badge.textContent = totalComponents + ' component' + (totalComponents !== 1 ? 's' : '');
+
+      meta.appendChild(badge);
+
+      if (alreadyInDeck) {
+        var inDeckBadge = document.createElement('span');
+        inDeckBadge.className = 'badge-in-deck';
+        inDeckBadge.textContent = '\u2713 In Deck';
+        meta.appendChild(inDeckBadge);
+      }
+
+      var actions = document.createElement('div');
+      actions.className = 'layout-card-actions';
+
+      var editBtn = document.createElement('button');
+      editBtn.className = 'btn-edit';
+      editBtn.textContent = 'Edit Slide';
+      (function (l) {
+        editBtn.addEventListener('click', function () { openBuilder(l); });
+      })(layout);
+
+      var delBtn = document.createElement('button');
+      delBtn.className = 'btn-delete';
+      delBtn.textContent = 'Delete';
+      (function (l) {
+        delBtn.addEventListener('click', function () { deleteLayout(l.id); });
+      })(layout);
+
+      actions.appendChild(editBtn);
+
+      if (!alreadyInDeck) {
+        var addBtn = document.createElement('button');
+        addBtn.className = 'btn-add-to-deck';
+        addBtn.textContent = 'Add to Deck';
+        (function (l, btn) {
+          btn.addEventListener('click', function () {
+            btn.disabled = true;
+            btn.textContent = 'Adding\u2026';
+            fetch('/api/deck/slides', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ layoutId: l.id })
+            })
+              .then(function (res) {
+                if (res.status === 409) {
+                  btn.textContent = 'In Deck';
+                  return;
+                }
+                if (!res.ok) throw new Error('Failed');
+                btn.textContent = 'Added!';
+                setTimeout(function () {
+                  btn.textContent = 'In Deck';
+                }, 1500);
+              })
+              .catch(function () {
+                btn.disabled = false;
+                btn.textContent = 'Add to Deck';
+              });
+          });
+        })(layout, addBtn);
+        actions.appendChild(addBtn);
+      }
+
+      actions.appendChild(delBtn);
+
+      card.appendChild(name);
+      card.appendChild(meta);
+      card.appendChild(actions);
+
+      return card;
+    }
+
+    function createLayout() {
+      fetch('/api/layouts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: 'Untitled Slide', rows: [] })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (res) {
+          openBuilder(res.data);
+        })
+        .catch(function (err) {
+          console.warn('[layouts] Could not create layout:', err);
+        });
+    }
+
+    function deleteLayout(id) {
+      fetch('/api/layouts/' + id, { method: 'DELETE' })
+        .then(function () { loadLayouts(); })
+        .catch(function () { loadLayouts(); });
+    }
+
+    // ── Builder ──────────────────────────────────────────────────
+
+    function openBuilder(layout) {
+      currentLayout = {
+        id:   layout.id,
+        name: layout.name || 'Untitled Slide',
+        rows: layout.rows ? JSON.parse(JSON.stringify(layout.rows)) : []
+      };
+
+      // Hide the home view
+      document.getElementById('layoutsHome').classList.add('hidden');
+
+      // Hide sidebar and mobile topbar
+      var sidebar = document.getElementById('sidebar');
+      var topbarMobile = document.getElementById('topbar-mobile');
+      var appBody = document.getElementById('appBody');
+      if (sidebar) sidebar.style.display = 'none';
+      if (topbarMobile) topbarMobile.style.display = 'none';
+      if (appBody) appBody.style.marginLeft = '0';
+
+      // Show the full-screen builder
+      document.body.classList.add('editor-active');
+      document.getElementById('layoutBuilder').classList.add('builder-visible');
+      document.getElementById('layoutNameInput').value = currentLayout.name;
+
+      activeTab = 'edit';
+      applyTabClasses();
+      renderCanvas();
+      renderPreview();
+    }
+
+    function backToLayouts() {
+      // Hide builder
+      document.getElementById('layoutBuilder').classList.remove('builder-visible');
+      document.body.classList.remove('editor-active');
+
+      // Restore sidebar
+      var sidebar = document.getElementById('sidebar');
+      var topbarMobile = document.getElementById('topbar-mobile');
+      var appBody = document.getElementById('appBody');
+      if (sidebar) sidebar.style.display = '';
+      if (topbarMobile) topbarMobile.style.display = '';
+
+      // Restore app body margin from localStorage state
+      if (appBody) {
+        var collapsed = localStorage.getItem('pb-sidebar-collapsed') === '1';
+        appBody.style.marginLeft = '';
+        if (collapsed) {
+          appBody.classList.add('sidebar-collapsed');
+        } else {
+          appBody.classList.remove('sidebar-collapsed');
+        }
+      }
+
+      // Show home
+      document.getElementById('layoutsHome').classList.remove('hidden');
+      currentLayout = null;
+      loadLayouts();
+    }
+
+    function saveLayoutName(name) {
+      if (!currentLayout) return;
+      name = name.trim() || 'Untitled Slide';
+      currentLayout.name = name;
+      document.getElementById('layoutNameInput').value = name;
+      scheduleSave();
+    }
+
+    // ── Row / Col / Component manipulation ──────────────────────
+
+    function addRow() {
+      if (!currentLayout) return;
+      currentLayout.rows.push({
+        id: 'row-' + Date.now(),
+        layout: 'full',
+        height: 'auto',
+        cols: [{ components: [] }]
+      });
+      renderCanvas();
+      renderPreview();
+      scheduleSave();
+    }
+
+    function setRowLayout(rowIdx, layoutKey) {
+      if (!currentLayout) return;
+      var row = currentLayout.rows[rowIdx];
+      if (!row) return;
+
+      var fractions = COL_LAYOUTS[layoutKey];
+      if (!fractions) return;
+
+      row.layout = layoutKey;
+      var existing = row.cols || [];
+      var newCols = [];
+      for (var i = 0; i < fractions.length; i++) {
+        newCols.push(existing[i] || { components: [] });
+      }
+      row.cols = newCols;
+
+      renderCanvas();
+      renderPreview();
+      scheduleSave();
+    }
+
+    function setRowHeight(rowIdx, heightKey) {
+      if (!currentLayout) return;
+      var row = currentLayout.rows[rowIdx];
+      if (!row) return;
+      row.height = heightKey;
+      renderCanvas();
+      renderPreview();
+      scheduleSave();
+    }
+
+    // Keep legacy setRowCols for any lingering calls
+    function setRowCols(rowIdx, count) {
+      var keyMap = { 1: 'full', 2: 'half-half', 3: 'thirds' };
+      setRowLayout(rowIdx, keyMap[count] || 'full');
+    }
+
+    function removeRow(rowIdx) {
+      if (!currentLayout) return;
+      currentLayout.rows.splice(rowIdx, 1);
+      renderCanvas();
+      renderPreview();
+      scheduleSave();
+    }
+
+    function addComponent(rowIdx, colIdx, type) {
+      if (!currentLayout) return;
+      var col = currentLayout.rows[rowIdx].cols[colIdx];
+      col.components.push({ type: type });
+      renderCanvas();
+      renderPreview();
+      scheduleSave();
+    }
+
+    function removeComponent(rowIdx, colIdx, compIdx) {
+      if (!currentLayout) return;
+      currentLayout.rows[rowIdx].cols[colIdx].components.splice(compIdx, 1);
+      renderCanvas();
+      renderPreview();
+      scheduleSave();
+    }
+
+    // ── Render: Canvas ───────────────────────────────────────────
+
+    function renderCanvas() {
+      var inner = document.getElementById('canvasInner');
+      inner.innerHTML = '';
+
+      var rows = currentLayout ? currentLayout.rows : [];
+
+      for (var r = 0; r < rows.length; r++) {
+        inner.appendChild(buildRowElement(r, rows[r]));
+      }
+
+      // Add Row button always at bottom
+      var addWrap = document.createElement('div');
+      addWrap.className = 'canvas-add-row';
+      var addBtn = document.createElement('button');
+      addBtn.className = 'btn-add-row';
+      addBtn.innerHTML = '&#43; Add Row';
+      addBtn.addEventListener('click', addRow);
+      addWrap.appendChild(addBtn);
+      inner.appendChild(addWrap);
+    }
+
+    function buildRowElement(rowIdx, row) {
+      var rowEl = document.createElement('div');
+      rowEl.className = 'builder-row';
+
+      var currentLayoutKey = row.layout || 'full';
+      var currentHeight    = row.height || 'auto';
+      var fractions = COL_LAYOUTS[currentLayoutKey] || ['1fr'];
+
+      // Row header
+      var header = document.createElement('div');
+      header.className = 'row-header';
+
+      var handle = document.createElement('span');
+      handle.className = 'drag-handle';
+      handle.innerHTML = '&#8942;';
+      handle.title = 'Drag to reorder (coming soon)';
+
+      var label = document.createElement('span');
+      label.className = 'row-label';
+      label.textContent = 'Row ' + (rowIdx + 1);
+
+      // Controls wrapper (layout picker + height toggle)
+      var controls = document.createElement('div');
+      controls.className = 'row-controls';
+
+      // Layout picker
+      var layoutPicker = document.createElement('div');
+      layoutPicker.className = 'layout-picker';
+
+      var layoutKeys = Object.keys(COL_LAYOUTS);
+      for (var k = 0; k < layoutKeys.length; k++) {
+        var key = layoutKeys[k];
+        var pill = document.createElement('button');
+        pill.className = 'layout-pill' + (currentLayoutKey === key ? ' active' : '');
+        pill.textContent = COL_LAYOUT_LABELS[key];
+        pill.title = COL_LAYOUT_LABELS[key];
+        (function (lk) {
+          pill.addEventListener('click', function () { setRowLayout(rowIdx, lk); });
+        })(key);
+        layoutPicker.appendChild(pill);
+      }
+
+      // Height toggle
+      var heightToggle = document.createElement('div');
+      heightToggle.className = 'height-toggle';
+
+      var heightKeys = ['auto', 'tall', 'short'];
+      for (var h = 0; h < heightKeys.length; h++) {
+        var hk = heightKeys[h];
+        var hBtn = document.createElement('button');
+        hBtn.className = 'height-btn' + (currentHeight === hk ? ' active' : '');
+        hBtn.textContent = hk.charAt(0).toUpperCase() + hk.slice(1);
+        (function (heightKey) {
+          hBtn.addEventListener('click', function () { setRowHeight(rowIdx, heightKey); });
+        })(hk);
+        heightToggle.appendChild(hBtn);
+      }
+
+      controls.appendChild(layoutPicker);
+      controls.appendChild(heightToggle);
+
+      var removeBtn = document.createElement('button');
+      removeBtn.className = 'btn-remove-row';
+      removeBtn.innerHTML = '&#215;';
+      removeBtn.title = 'Remove row';
+      (function (ri) {
+        removeBtn.addEventListener('click', function () { removeRow(ri); });
+      })(rowIdx);
+
+      header.appendChild(handle);
+      header.appendChild(label);
+      header.appendChild(controls);
+      header.appendChild(removeBtn);
+
+      // Columns grid
+      var colsEl = document.createElement('div');
+      colsEl.className = 'row-cols';
+      colsEl.style.gridTemplateColumns = fractions.join(' ');
+
+      // Apply row height
+      if (currentHeight === 'tall') {
+        colsEl.style.minHeight = '200px';
+      } else if (currentHeight === 'short') {
+        colsEl.style.minHeight = '80px';
+      }
+
+      var cols = row.cols || [];
+      for (var c = 0; c < cols.length; c++) {
+        colsEl.appendChild(buildColElement(rowIdx, c, cols[c]));
+      }
+
+      rowEl.appendChild(header);
+      rowEl.appendChild(colsEl);
+
+      return rowEl;
+    }
+
+    function buildColElement(rowIdx, colIdx, col) {
+      var colEl = document.createElement('div');
+      var components = col.components || [];
+
+      if (components.length === 0) {
+        colEl.className = 'builder-col col-empty';
+        var addBtn = document.createElement('button');
+        addBtn.className = 'col-add-btn';
+        addBtn.innerHTML = '&#43;';
+        addBtn.title = 'Add component';
+        (function (ri, ci) {
+          addBtn.addEventListener('click', function () { openPicker(ri, ci); });
+        })(rowIdx, colIdx);
+        colEl.appendChild(addBtn);
+      } else {
+        colEl.className = 'builder-col';
+        for (var i = 0; i < components.length; i++) {
+          colEl.appendChild(buildChip(rowIdx, colIdx, i, components[i].type));
+        }
+        // "+" add more button at bottom
+        var moreBtn = document.createElement('button');
+        moreBtn.className = 'col-add-btn';
+        moreBtn.innerHTML = '&#43;';
+        moreBtn.title = 'Add component';
+        moreBtn.style.fontSize = '14px';
+        (function (ri, ci) {
+          moreBtn.addEventListener('click', function () { openPicker(ri, ci); });
+        })(rowIdx, colIdx);
+        colEl.appendChild(moreBtn);
+      }
+
+      return colEl;
+    }
+
+    function buildChip(rowIdx, colIdx, compIdx, type) {
+      var chip = document.createElement('div');
+      chip.className = 'component-chip';
+
+      var label = document.createElement('span');
+      label.textContent = type;
+
+      var removeBtn = document.createElement('button');
+      removeBtn.className = 'chip-remove';
+      removeBtn.innerHTML = '&#215;';
+      removeBtn.title = 'Remove component';
+      (function (ri, ci, idx) {
+        removeBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          removeComponent(ri, ci, idx);
+        });
+      })(rowIdx, colIdx, compIdx);
+
+      chip.appendChild(label);
+      chip.appendChild(removeBtn);
+      return chip;
+    }
+
+    // ── Render: Preview ──────────────────────────────────────────
+
+    function renderPreview() {
+      var inner = document.getElementById('previewInner');
+      inner.innerHTML = '';
+
+      var rows = (currentLayout && currentLayout.rows) ? currentLayout.rows : [];
+
+      if (viewMode === 'mobile') {
+        // Phone frame with scale-to-fit
+        var wrapEl = document.createElement('div');
+        wrapEl.className = 'preview-phone-wrap';
+
+        var phoneEl = document.createElement('div');
+        phoneEl.className = 'preview-phone';
+
+        if (rows.length === 0) {
+          var ph = document.createElement('div');
+          ph.className = 'preview-placeholder';
+          ph.textContent = 'Add rows to see a preview';
+          phoneEl.appendChild(ph);
+        } else {
+          for (var r = 0; r < rows.length; r++) {
+            phoneEl.appendChild(buildPreviewRow(rows[r], true));
+          }
+        }
+
+        wrapEl.appendChild(phoneEl);
+        inner.appendChild(wrapEl);
+
+        // Scale phone to fit panel width
+        requestAnimationFrame(function () {
+          var panelW = inner.offsetWidth - 40;
+          var scale  = Math.min(1, panelW / 390);
+          wrapEl.style.transform = 'scale(' + scale + ')';
+          wrapEl.style.transformOrigin = 'top center';
+          wrapEl.style.height = (844 * scale) + 'px';
+        });
+
+      } else {
+        // Desktop 16:9 frame
+        var frameWrap = document.createElement('div');
+        frameWrap.className = 'preview-frame-wrap';
+
+        var frameEl = document.createElement('div');
+        frameEl.className = 'preview-frame';
+
+        if (rows.length === 0) {
+          var phd = document.createElement('div');
+          phd.className = 'preview-placeholder';
+          phd.textContent = 'Add rows to see a preview';
+          frameEl.appendChild(phd);
+        } else {
+          for (var rd = 0; rd < rows.length; rd++) {
+            frameEl.appendChild(buildPreviewRow(rows[rd], false));
+          }
+        }
+
+        frameWrap.appendChild(frameEl);
+        inner.appendChild(frameWrap);
+      }
+    }
+
+    function buildPreviewRow(row, isMobile) {
+      var rowEl = document.createElement('div');
+      var layoutKey = row.layout || 'full';
+      var fractions = COL_LAYOUTS[layoutKey] || ['1fr'];
+      var heightKey = row.height || 'auto';
+
+      rowEl.className = 'preview-row' + (heightKey !== 'auto' ? ' height-' + heightKey : '');
+
+      if (isMobile) {
+        // Stack columns vertically on mobile
+        rowEl.style.gridTemplateColumns = '1fr';
+      } else {
+        rowEl.style.gridTemplateColumns = fractions.join(' ');
+      }
+
+      var cols = row.cols || [];
+      for (var c = 0; c < cols.length; c++) {
+        rowEl.appendChild(buildPreviewCol(cols[c]));
+      }
+
+      return rowEl;
+    }
+
+    function buildPreviewCol(col) {
+      var colEl = document.createElement('div');
+      colEl.className = 'preview-col';
+
+      var components = col.components || [];
+      if (components.length === 0) {
+        var empty = document.createElement('div');
+        empty.className = 'pv-empty-col';
+        colEl.appendChild(empty);
+      } else {
+        for (var i = 0; i < components.length; i++) {
+          colEl.appendChild(buildPreviewComponent(components[i].type));
+        }
+      }
+
+      return colEl;
+    }
+
+    function buildPreviewComponent(type) {
+      var el;
+
+      if (type === 'Title') {
+        el = document.createElement('div');
+        el.className = 'pv-title';
+        el.textContent = 'Slide Title';
+
+      } else if (type === 'Subtitle') {
+        el = document.createElement('div');
+        el.className = 'pv-subtitle';
+        el.textContent = 'Supporting headline goes here';
+
+      } else if (type === 'Text Block') {
+        el = document.createElement('div');
+        el.className = 'pv-text';
+        el.textContent = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+
+      } else if (type === 'Tabs') {
+        el = document.createElement('div');
+        el.className = 'pv-tabs';
+        var tabHeader = document.createElement('div');
+        tabHeader.className = 'pv-tabs-header';
+        var t1 = document.createElement('div');
+        t1.className = 'pv-tab active-tab';
+        t1.textContent = 'Tab 1';
+        var t2 = document.createElement('div');
+        t2.className = 'pv-tab';
+        t2.textContent = 'Tab 2';
+        var t3 = document.createElement('div');
+        t3.className = 'pv-tab';
+        t3.textContent = 'Tab 3';
+        tabHeader.appendChild(t1);
+        tabHeader.appendChild(t2);
+        tabHeader.appendChild(t3);
+        var tabBody = document.createElement('div');
+        tabBody.className = 'pv-tabs-body';
+        tabBody.textContent = 'Tab content area';
+        el.appendChild(tabHeader);
+        el.appendChild(tabBody);
+
+      } else if (type === 'Carousel') {
+        el = document.createElement('div');
+        el.className = 'pv-carousel';
+        var icon = document.createElement('div');
+        icon.className = 'pv-carousel-icon';
+        icon.textContent = '▶';
+        var clabel = document.createElement('div');
+        clabel.className = 'pv-carousel-label';
+        clabel.textContent = 'Image Carousel';
+        el.appendChild(icon);
+        el.appendChild(clabel);
+
+      } else if (type === 'Table') {
+        el = document.createElement('table');
+        el.className = 'pv-table';
+        var thead = document.createElement('thead');
+        var hrow = document.createElement('tr');
+        for (var h = 0; h < 3; h++) {
+          var th = document.createElement('th');
+          th.textContent = 'Header ' + (h + 1);
+          hrow.appendChild(th);
+        }
+        thead.appendChild(hrow);
+        var tbody = document.createElement('tbody');
+        for (var tr = 0; tr < 2; tr++) {
+          var trow = document.createElement('tr');
+          for (var td = 0; td < 3; td++) {
+            var tcell = document.createElement('td');
+            tcell.textContent = 'Cell';
+            trow.appendChild(tcell);
+          }
+          tbody.appendChild(trow);
+        }
+        el.appendChild(thead);
+        el.appendChild(tbody);
+
+      } else if (type === 'List') {
+        el = document.createElement('div');
+        el.className = 'pv-list';
+        var items = ['List item one', 'List item two', 'List item three', 'List item four'];
+        for (var li = 0; li < items.length; li++) {
+          var item = document.createElement('div');
+          item.className = 'pv-list-item';
+          item.textContent = items[li];
+          el.appendChild(item);
+        }
+
+      } else if (type === 'Button') {
+        el = document.createElement('div');
+        el.className = 'pv-button';
+        el.textContent = 'Call to Action';
+
+      } else {
+        // Fallback for unknown types
+        el = document.createElement('div');
+        el.className = 'pv-text';
+        el.textContent = type;
+      }
+
+      return el;
+    }
+
+    // ── Component picker ─────────────────────────────────────────
+
+    function openPicker(rowIdx, colIdx) {
+      pickerTarget = { rowIdx: rowIdx, colIdx: colIdx };
+
+      var list = document.getElementById('pickerList');
+      list.innerHTML = '';
+
+      for (var i = 0; i < COMPONENT_TYPES.length; i++) {
+        var btn = document.createElement('button');
+        btn.className = 'picker-item';
+        btn.textContent = COMPONENT_TYPES[i];
+        (function (type) {
+          btn.addEventListener('click', function () {
+            addComponent(pickerTarget.rowIdx, pickerTarget.colIdx, type);
+            closePicker();
+          });
+        })(COMPONENT_TYPES[i]);
+        list.appendChild(btn);
+      }
+
+      document.getElementById('pickerOverlay').classList.remove('hidden');
+    }
+
+    function closePicker() {
+      document.getElementById('pickerOverlay').classList.add('hidden');
+      pickerTarget = null;
+    }
+
+    // Close picker on overlay click
+    document.getElementById('pickerOverlay').addEventListener('click', function (e) {
+      if (e.target === this) closePicker();
+    });
+
+    // ── View mode (desktop / mobile preview) ─────────────────────
+
+    function setViewMode(mode) {
+      viewMode = mode;
+
+      document.getElementById('vpDesktop').classList.toggle('active', mode === 'desktop');
+      document.getElementById('vpMobile').classList.toggle('active', mode === 'mobile');
+
+      var vpdm = document.getElementById('vpDesktopMobile');
+      var vpmm = document.getElementById('vpMobileMobile');
+      if (vpdm) vpdm.classList.toggle('active', mode === 'desktop');
+      if (vpmm) vpmm.classList.toggle('active', mode === 'mobile');
+
+      renderPreview();
+    }
+
+    // ── Mobile tab switching ──────────────────────────────────────
+
+    function setActiveTab(tab) {
+      activeTab = tab;
+      applyTabClasses();
+    }
+
+    function applyTabClasses() {
+      var canvas  = document.getElementById('builderCanvas');
+      var preview = document.getElementById('builderPreview');
+      var tabEdit    = document.getElementById('tabEdit');
+      var tabPreview = document.getElementById('tabPreview');
+
+      if (activeTab === 'edit') {
+        canvas.classList.remove('tab-hidden');
+        preview.classList.add('tab-hidden');
+        tabEdit.classList.add('active');
+        tabPreview.classList.remove('active');
+      } else {
+        canvas.classList.add('tab-hidden');
+        preview.classList.remove('tab-hidden');
+        tabEdit.classList.remove('active');
+        tabPreview.classList.add('active');
+      }
+    }
+
+    // ── Save ──────────────────────────────────────────────────────
+
+    function setSaveStatus(state) {
+      var el = document.getElementById('saveStatus');
+      if (!el) return;
+      if (state === 'saving') {
+        el.textContent = 'Saving\u2026';
+        el.className = 'save-status saving';
+      } else if (state === 'saved') {
+        el.textContent = 'Saved';
+        el.className = 'save-status saved';
+      } else {
+        el.textContent = '';
+        el.className = 'save-status';
+      }
+    }
+
+    function scheduleSave() {
+      setSaveStatus('saving');
+      if (saveTimer) clearTimeout(saveTimer);
+      saveTimer = setTimeout(saveLayout, 800);
+    }
+
+    function saveLayout() {
+      if (!currentLayout) return;
+      fetch('/api/layouts/' + currentLayout.id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: currentLayout.name,
+          rows: currentLayout.rows
+        })
+      }).then(function (res) {
+        if (!res.ok) console.warn('[layouts] Save failed:', res.status, res.statusText);
+        setSaveStatus('saved');
+        setTimeout(function () { setSaveStatus(''); }, 2000);
+        return res;
+      }).catch(function (err) {
+        console.warn('[layouts] Save error:', err);
+        setSaveStatus('');
+      });
+    }
+
+    // ── Init ──────────────────────────────────────────────────────
+    loadLayouts();
+  </script>
+</body>
+</html>

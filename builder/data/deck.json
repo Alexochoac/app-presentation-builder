@@ -1,5 +1,5 @@
 {
-  "title": "LineScanner Presentation",
+  "title": "GlassQuality",
   "slides": [
     {
       "id": "slide-01-cover",
@@ -55,6 +55,16 @@
     },
     {
       "id": "slide-14-cta",
+      "visible": true
+    },
+    {
+      "id": "deck-slide-1775592117157",
+      "layoutId": "layout-1775559861227",
+      "visible": true
+    },
+    {
+      "id": "deck-slide-1775592118437",
+      "layoutId": "layout-1775590521546",
       "visible": true
     }
   ]

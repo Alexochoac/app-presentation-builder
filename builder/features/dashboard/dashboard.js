@@ -99,13 +99,18 @@ function buildDeckRow(slide, index) {
 
   const isVisible = slide.visible !== false; // default to true if undefined
   const hiddenBadge = isVisible ? '' : '<span class="badge-hidden">Extras Menu</span>';
+  const slideLabel = slide.name || idToLabel(slide.id);
+  const libraryBadge = slide.layoutId
+    ? '<span class="badge-library" title="From slide library">Custom</span>'
+    : '';
 
   li.innerHTML =
     '<span class="drag-handle" aria-hidden="true">&#8942;</span>' +
     '<span class="slide-num">' + (index + 1) + '</span>' +
     '<span class="slide-title' + (isVisible ? '' : ' is-hidden') + '">' +
-      escapeText(idToLabel(slide.id)) +
+      escapeText(slideLabel) +
     '</span>' +
+    libraryBadge +
     hiddenBadge +
     '<button class="btn-visibility' + (isVisible ? ' is-visible' : '') + '" ' +
       'title="' + (isVisible ? 'Hide slide' : 'Show slide') + '" ' +
@@ -190,11 +195,34 @@ function buildLibCard(item) {
     addSlide(item);
   });
 
+  if (item.category === 'custom') {
+    var delBtn = document.createElement('button');
+    delBtn.className = 'btn-lib-delete';
+    delBtn.title = 'Delete slide';
+    delBtn.textContent = '×';
+    delBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (!confirm('Delete "' + item.label + '" from the library? This cannot be undone.')) return;
+      deleteFromLibrary(item.id);
+    });
+    card.appendChild(delBtn);
+  }
+
   card.addEventListener('click', function () {
     showPreview(item.id, 'library');
   });
 
   return card;
+}
+
+function deleteFromLibrary(id) {
+  fetch('/api/slide-library/' + id, { method: 'DELETE' })
+    .then(function (r) { return r.json(); })
+    .then(function () {
+      library = library.filter(function (s) { return s.id !== id; });
+      renderLibrary();
+    })
+    .catch(console.error);
 }
 
 // ── Deck Mutations ─────────────────────────────────────────────────────────

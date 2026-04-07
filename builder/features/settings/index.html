@@ -11,23 +11,80 @@
   <div class="glow glow-a"></div>
   <div class="glow glow-b"></div>
 
-  <!-- Top Bar -->
-  <header class="topbar">
-    <div class="topbar-brand">
+  <!-- Mobile Top Bar -->
+  <header class="topbar-mobile">
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">&#9776;</button>
+    <div class="logo-icon">P</div>
+    <span class="logo-text">Presentation Builder</span>
+  </header>
+
+  <!-- Sidebar Overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
       <div class="logo-icon">P</div>
       <span class="logo-text">Presentation Builder</span>
     </div>
-    <nav class="topbar-nav">
-      <a href="/" class="nav-link">Dashboard</a>
-      <a href="/settings" class="nav-link active">Settings</a>
-    </nav>
-    <div class="topbar-right">
-      <a href="/auth/logout" class="btn-logout">Log out</a>
-    </div>
-  </header>
 
-  <!-- Main Content -->
+    <ul class="sidebar-nav">
+      <li>
+        <a href="/" class="sidebar-nav-item">
+          <span class="nav-icon">&#9632;</span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a href="/builder/preview.html" class="sidebar-nav-item">
+          <span class="nav-icon">&#9654;</span>
+          <span class="nav-label">Builder</span>
+        </a>
+      </li>
+      <li>
+        <a href="/slides" class="sidebar-nav-item">
+          <span class="nav-icon">&#9783;</span>
+          <span class="nav-label">Slides</span>
+        </a>
+      </li>
+      <li>
+        <a href="/settings" class="sidebar-nav-item active">
+          <span class="nav-icon">&#9881;</span>
+          <span class="nav-label">Settings</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-logout">
+      <a href="/auth/logout" class="sidebar-nav-item">
+        <span class="nav-icon">&#8617;</span>
+        <span class="nav-label">Log out</span>
+      </a>
+    </div>
+
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Collapse sidebar">
+      <span class="toggle-icon">&#8249;</span>
+    </button>
+  </nav>
+
+  <!-- App Body -->
+  <div class="app-body" id="appBody">
   <main class="main">
+
+    <!-- Presentation -->
+    <section class="settings-section">
+      <div class="settings-header">
+        <h2 class="panel-title">Presentation</h2>
+        <span class="save-status" id="nameSaveStatus"></span>
+      </div>
+      <p class="settings-note">The name of your presentation as it appears in the builder and exported deck.</p>
+      <div class="settings-fields">
+        <div class="field">
+          <label for="presentationName">Presentation Name</label>
+          <input type="text" id="presentationName" placeholder="e.g. LineScanner Presentation">
+        </div>
+      </div>
+    </section>
 
     <!-- Theme -->
     <section class="settings-section">
@@ -46,7 +103,7 @@
         <h2 class="panel-title">Company Profile</h2>
         <span class="badge-wip">Coming Soon</span>
       </div>
-      <p class="settings-note">These fields will populate your slides with your company details. Save functionality is not yet active.</p>
+      <p class="settings-note">These fields will populate your slides with your company details.</p>
       <div class="settings-fields">
         <div class="field">
           <label for="companyName">Company Name</label>
@@ -110,6 +167,7 @@
     </section>
 
   </main>
+  </div><!-- /.app-body -->
 
   <script>
     (function () {
@@ -131,6 +189,68 @@
     }
 
     document.addEventListener('DOMContentLoaded', updateThemeButtons);
+
+    // ── Presentation Name ───────────────────────────────────────
+    (function () {
+      var input  = document.getElementById('presentationName');
+      var status = document.getElementById('nameSaveStatus');
+
+      fetch('/api/deck')
+        .then(function (r) { return r.json(); })
+        .then(function (data) { input.value = data.data.title || ''; });
+
+      input.addEventListener('blur', function () {
+        var title = input.value.trim();
+        if (!title) return;
+        status.textContent = 'Saving…';
+        fetch('/api/deck', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: title })
+        })
+        .then(function (r) {
+          if (!r.ok) throw new Error('failed');
+          return r.json();
+        })
+        .then(function () {
+          status.textContent = 'Saved';
+          setTimeout(function () { status.textContent = ''; }, 2000);
+        })
+        .catch(function () { status.textContent = 'Error'; });
+      });
+    })();
+
+    // ── Sidebar ─────────────────────────────────────────────────
+    (function () {
+      var sidebar   = document.getElementById('sidebar');
+      var overlay   = document.getElementById('sidebarOverlay');
+      var toggle    = document.getElementById('sidebarToggle');
+      var hamburger = document.getElementById('hamburgerBtn');
+      var appBody   = document.getElementById('appBody');
+
+      if (localStorage.getItem('pb-sidebar-collapsed') === '1') {
+        sidebar.classList.add('collapsed');
+        appBody.classList.add('sidebar-collapsed');
+      }
+
+      toggle.addEventListener('click', function () {
+        var collapsed = sidebar.classList.toggle('collapsed');
+        appBody.classList.toggle('sidebar-collapsed', collapsed);
+        localStorage.setItem('pb-sidebar-collapsed', collapsed ? '1' : '0');
+      });
+
+      hamburger.addEventListener('click', function () {
+        sidebar.classList.add('open');
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+
+      overlay.addEventListener('click', function () {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    })();
   </script>
 </body>
 </html>
