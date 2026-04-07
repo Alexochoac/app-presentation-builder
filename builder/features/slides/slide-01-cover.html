@@ -136,15 +136,16 @@
   <!-- Scoped styles — slide-01 only -->
   <style>
     .ls1-customer-logo {
-      position: absolute; left: 75%; top: 50%;
-      transform: translate(-50%, -50%);
+      position: static;
+      transform: none;
+      margin: 16px auto 0;
       z-index: 10;
       display: flex; align-items: center; justify-content: center;
       background: #ffffff;
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255,255,255,.18);
-      border-radius: 24px; padding: 28px;
-      width: clamp(150px,15vw,250px); height: clamp(150px,15vw,250px);
+      border-radius: 24px; padding: 18px;
+      width: 160px; height: 160px;
     }
     .ls1-customer-logo { cursor: pointer; }
     .ls1-customer-logo::after {
@@ -171,7 +172,7 @@
     .ls1-cust-placeholder small { font-size:11px; opacity:.65; }
 
     .ls1-gallery-btn {
-      position:absolute; bottom:64px; right:32px; z-index:10;
+      position:absolute; bottom:80px; right:16px; z-index:10;
       display:flex; align-items:center; gap:6px;
       padding:7px 14px;
       background:rgba(0,0,0,.40); border:1px solid rgba(255,255,255,.20);
@@ -205,9 +206,9 @@
     }
     .ls1-gallery-close:hover { background:rgba(255,255,255,.20); color:#fff; }
 
-    .ls1-car-wrap { position:relative; width:760px; height:460px; border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,.12); box-shadow:0 24px 80px rgba(0,0,0,.7); }
-    .ls1-car-track { display:flex; height:460px; transition:transform .55s cubic-bezier(.4,0,.2,1); }
-    .ls1-car-slide { flex:0 0 760px; width:760px; height:460px; position:relative; background:#111; }
+    .ls1-car-wrap { position:relative; width:100%; height:auto; border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,.12); box-shadow:0 24px 80px rgba(0,0,0,.7); }
+    .ls1-car-track { display:flex; height:auto; transition:transform .55s cubic-bezier(.4,0,.2,1); }
+    .ls1-car-slide { flex:0 0 100%; width:100%; height:auto; position:relative; background:#111; }
     .ls1-car-slide img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; user-select:none; pointer-events:none; }
     .ls1-car-caption { position:absolute; bottom:0; left:0; right:0; padding:10px 18px; background:linear-gradient(transparent,rgba(0,0,0,.75)); color:rgba(255,255,255,.85); font-size:12px; font-weight:600; letter-spacing:.05em; text-align:center; }
     .ls1-car-caption:focus { outline:none; }
@@ -253,7 +254,7 @@
     .ls1-car-slide:hover .ls1-car-del { opacity:1; }
     .ls1-car-del:hover { background:rgba(220,40,40,1); }
 
-    .ls1-car-slide--text { flex:0 0 760px; background:linear-gradient(135deg,#0d1117 0%,#1a1f2e 100%); display:flex; align-items:center; justify-content:center; }
+    .ls1-car-slide--text { flex:0 0 100%; background:linear-gradient(135deg,#0d1117 0%,#1a1f2e 100%); display:flex; align-items:center; justify-content:center; }
     .ls1-stat-block { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:32px; width:100%; text-align:center; }
     .ls1-stat-block .stat-number { font-size:clamp(48px,8vw,88px); font-weight:900; letter-spacing:-.03em; line-height:1; background:linear-gradient(135deg,var(--accent),var(--accent-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; display:block; }
     .ls1-stat-block .stat-label { font-size:15px; color:var(--text-muted); margin-top:8px; font-weight:500; }
@@ -308,26 +309,9 @@
     }
     .ls1-add-btn:hover { background:rgba(var(--accent-rgb),.15); border-color:var(--accent); color:var(--accent); }
 
-    /* ── Mobile base ── */
-    .ls1-customer-logo { position: static; transform: none; margin: 16px auto 0; width: 160px; height: 160px; padding: 18px; }
-    .ls1-gallery-btn { bottom:80px; right:16px; }
-    .ls1-car-wrap { width: 100%; height: auto; }
-    .ls1-car-track { height: auto; }
-    .ls1-car-slide { flex: 0 0 100%; width: 100%; height: auto; }
-    .ls1-car-slide img { width: 100%; height: auto; object-fit: contain; }
-    .ls1-car-slide--text { flex: 0 0 100%; }
-
-    /* ── Tablet (769–900px) ── */
-    @media(min-width:769px) and (max-width:900px) {
-      .ls1-car-wrap { width:90vw; height:54vw; }
-      .ls1-car-track { height:54vw; }
-      .ls1-car-slide { flex:0 0 90vw; width:90vw; height:54vw; }
-      .ls1-car-slide--text { flex:0 0 90vw; }
-    }
-
-    /* ── Desktop (>900px) ── */
-    @media(min-width:901px) {
-      .ls1-customer-logo { position: absolute; left: 75%; top: 50%; transform: translate(-50%, -50%); margin: 0; width: auto; height: auto; padding: 0; }
+    /* ── Desktop (≥769px) ── */
+    @media(min-width:769px) {
+      .ls1-customer-logo { position: absolute; left: 75%; top: 50%; transform: translate(-50%, -50%); margin: 0; width: clamp(150px,15vw,250px); height: clamp(150px,15vw,250px); padding: 28px; }
       .ls1-gallery-btn { bottom:64px; right:32px; }
       .ls1-car-wrap { width:760px; height:460px; }
       .ls1-car-track { height:460px; }

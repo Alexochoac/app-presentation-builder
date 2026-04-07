@@ -1,23 +1,52 @@
 # Sessions
 
+## 2026-04-07 — Mobile responsiveness refactor + /idea skill
+
+### Accomplished
+- **Mobile audit pass 1**: Launched parallel frontend-builder agents on all 15 slides to fix inline `<style>` blocks (grid columns, flex rows, fixed widths → mobile-first)
+- **Root cause identified**: `.slide.content` uses `position:absolute; inset:0` — `height:auto` on children does nothing. Slides clip instead of scroll on mobile
+- **Standard slide anatomy introduced**: Added `slide-layout` / `slide-head` / `slide-body` wrapper structure to all 14 content slides (01-cover exempt)
+- **style.css updates**: Added `.slide-layout` and `.slide-body` standard CSS rules; added `height:100%` to `.slide.content` on desktop; added `align-items:center` to `.slide-layout`; added `padding-top:52px` to `.slide-layout` mobile to clear logo row
+- **Per-slide bugs fixed**:
+  - slide-02: wrong tab active on load (carousel hidden)
+  - slide-03: `max-height:42vh` removed from mobile lists
+  - slide-04: proc-table `overflow-y:auto` added, mobile padding reduced
+  - slide-05: image cards `min-height:180px` added
+  - slide-06: `showDefault()` now calls `Carousel.init` + `Lightbox.init`
+  - slide-07/09/11/12: `position:relative` removed from root div (was breaking absolute positioning)
+  - slide-08: carousel sizing added, layout `min-height` added
+  - slide-09/11/12: stale carousel transforms reset to `translateX(0px)`
+  - slide-10: Archive tab + panel restored (was deleted during refactor)
+  - slide-14: `position:relative` removed, kept `overflow:hidden`
+  - slides 06/08/11: additional stale transforms reset
+- **`/idea` skill created**: Global command for capturing mid-session project ideas. Checks TODO.md → CONTEXT.md → IDEAS.md for duplicates before logging
+- **IDEAS.md created**: Logged 2 ideas — Public Landing Page, Dual-Preview Layout Builder
+
+### Pending
+- **Design system refactor** (next session priority): Eliminate 3-layer CSS conflict (style.css vs per-slide `<style>` vs inline style). Plan: one source of truth in style.css, per-slide styles handle decoration only, carousels use `aspect-ratio` not `height`, columns use `.slide-cols` standard class
+- Remaining mobile/desktop layout issues still present on some slides — need design system fix first
+- Delete old `dashboard.css`
+- Slide-06 defect selector names — static HTML
+- `scripts/build.js` and `scripts/deploy.js`
+
+---
+
 ## 2026-04-06 — Preview fix, mobile-first conversion, table fixes, settings page
 
 ### Accomplished
-- **Slide preview in dashboard**: fixed iframe loading bare fragments (no CSS/JS) — added server-side shell route `GET /slides/preview/:id` that wraps fragment in full HTML page with `style.css`
-- **Preview thumbnail sizing**: fixed scale computation using `requestAnimationFrame` then switched to measuring stable panel element; thumbnail now fills available panel width correctly
-- **Slide visibility bug**: `.slide { opacity:0 }` default — shell now forces `.slide { opacity:1 !important }` so slide renders in preview without JS
-- **Save handler bug**: all 3 save handlers in `preview.html` were constructing wrong filenames from carousel position index — fixed to derive from `SLIDES[current].file` directly
-- **Mobile-first conversion**: converted ALL `@media (max-width)` to `@media (min-width)` across active slides, slide library, style mockups, and shared CSS files (3 parallel agents)
-- **table.js fixes in slide-04**: added missing `[data-ls-col-restore]`, `[data-ls-row-restore]`, `[data-ls-add-row]` to both tables; fixed `ls4-col-label` → `ls-col-label`; fixed `ls4-dot` → `ls-dot` class names; removed dead inline JS (`ls4InitTable` etc.); fixed `text-align` on first column
-- **Resizable first column**: added drag handle to `table.js` — applies to all `data-ls-table` tables, saves width on release
-- **Column collapse fix**: proc-matrix colgroup had all columns saved as `ls-col-collapsed` — cleared saved state so all columns visible on load
-- **Settings page**: built `/settings` with Theme toggle (dark/light, working), Company Profile, Presentation Defaults, Integrations, Account (all Coming Soon)
-- **Dashboard nav**: Settings link now routes to `/settings`; Theme section removed from dashboard
-- **Customer Settings**: renamed dashboard "Company Settings" → "Customer Settings" with customer-specific fields (company, contact person, title, logo)
+- **Slide preview in dashboard**: fixed iframe loading bare fragments — added server-side shell route `GET /slides/preview/:id`
+- **Preview thumbnail sizing**: fixed scale computation using stable panel element measurement
+- **Slide visibility bug**: shell forces `.slide { opacity:1 !important }` so slide renders without JS
+- **Save handler bug**: all 3 save handlers fixed to derive filename from `SLIDES[current].file`
+- **Mobile-first conversion**: converted ALL `@media (max-width)` to `@media (min-width)` across active slides, style mockups, and shared CSS files
+- **table.js fixes in slide-04**: added missing restore/add-row elements; fixed class names; removed dead inline JS; fixed text-align
+- **Resizable first column**: added drag handle to `table.js`
+- **Settings page**: built `/settings` with Theme toggle (dark/light), Company Profile, and Coming Soon sections
+- **Customer Settings**: renamed dashboard "Company Settings" → "Customer Settings" with customer-specific fields
 
 ### Pending
-- Slides need true mobile-first layout audit — `style.css` shared components done, but each slide's inline `<style>` block needs per-slide responsive layout
-- Delete old `dashboard.css` after confirming new style works
+- Design system refactor (carried forward)
+- Delete old `dashboard.css`
 - Presentation view (read-only mode)
 - Slide-06 defect selector names — static HTML
 - `scripts/build.js` and `scripts/deploy.js`
@@ -27,43 +56,15 @@
 ## 2026-04-05 (session 2) — Dashboard redesign, style system, GitHub repo
 
 ### Accomplished
-- Created GitHub repo `Alexochoac/app-presentation-builder` (public), pushed all code
-- Added `README.md` with project description and setup instructions
-- Improved `.gitignore` with OS/editor/log entries
-- **Dashboard slide library redesign**: library now hides slides already in deck; empty state shows "Clone Existing" button
-- **Two-way slide preview**: click slide title in deck → preview iframe (scaled thumbnail) in right panel; click library card → preview in left panel
-- **Scaled thumbnail preview**: full 1280×720 slide rendered via CSS `scale()` to fit panel — no scroll, full slide visible
-- **Lightbox on click**: clicking thumbnail opens fullscreen overlay (16:9, click outside or Escape to close)
-- **Clone slide**: `POST /api/clone-slide` endpoint — copies HTML structure, resets editable text to placeholder values, clears images, adds to library + deck
-- **Hidden slides**: show "Extras Menu" amber badge in deck list
-- **Style system**: created `builder/shared/app-style.css` — Apple Keynote dark/light theme with CSS variables, replaces `dashboard.css`
-- Dark/light theme toggle with `localStorage` persistence, applied via `data-theme` on `<html>`
-- Server now serves `/shared/*` for shared app assets
-- Built 4 dashboard style mockups for review
-- Final style decision: Apple Keynote dark/light — theme toggle lives in Settings
+- Created GitHub repo `Alexochoac/app-presentation-builder`, pushed all code
+- Dashboard slide library redesign: hides in-deck slides, clone flow, two-way preview
+- Scaled thumbnail preview + lightbox zoom in dashboard
+- `POST /api/clone-slide` endpoint
+- `builder/shared/app-style.css` — Apple Keynote dark/light theme
+- Server serves `/shared/*` for shared app assets
 
 ### Pending
-- Delete old `dashboard.css` after confirming new style works
-- Test dashboard in browser with new style
-- Presentation view (clean read-only mode)
-- Slide-06 defect selector names — move to static HTML
-- `scripts/build.js` and `scripts/deploy.js`
-
----
-
-## 2026-04-05 — Dashboard, mobile responsiveness, full editability pass
-
-### Accomplished
-- Designed and built the **Dashboard** as post-login home (`/`): two-panel layout (deck manager + slide library), company settings placeholder, top nav with logout
-- Created `builder/data/deck.json` and `builder/data/slide-library.json` as source of truth
-- Added `GET/PUT /api/deck` and `GET /api/slide-library` endpoints to `server.js`
-- Modified `preview.html` to fetch deck from API (replaces hardcoded `SLIDES` array)
-- Full mobile audit of all 14 slides on iPhone 15 (390px)
-- Full editability audit: added `data-edit` + `contenteditable` to every visible text element across all 14 slides
-- Fixed broken edit bugs across slides 02, 03, 10, 14
-- Fixed `list.js` stale chip save bug and self-healing restore area
-
-### Pending
-- Slide-06 defect selector names are JS-generated — need static HTML approach
-- Image caption editing UI
+- Delete old `dashboard.css`
+- Presentation view
+- Slide-06 defect selector names
 - `scripts/build.js` and `scripts/deploy.js`

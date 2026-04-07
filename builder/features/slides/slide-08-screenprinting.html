@@ -1,10 +1,13 @@
-<div class="slide content ls8" style="justify-content:flex-start; align-items:center; padding:52px 80px 0;">
+<div class="slide content ls8">
   <div class="slide-logo-row"><img src="/slides/shared/LOGO SoftSolution grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="/slides/shared/LOGO LiteSentry Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
 
-  <div class="section-label" data-edit="section-label" contenteditable="" spellcheck="false">Screen Printing</div>
-  <h1 class="slide-title" data-edit="headline" contenteditable="" spellcheck="false" style="margin-bottom:8px;">Automatic quality control for <span class="blue">screen-printed glass</span></h1>
-  <p class="slide-subtitle" data-edit="subtitle" contenteditable="" spellcheck="false" style="margin-bottom:16px;">The quality inspection of logos and screen printing is now standard — fully automated, 100% of the time.</p>
-
+  <div class="slide-layout">
+  <header class="slide-head">
+    <div class="section-label" data-edit="section-label" contenteditable="" spellcheck="false">Screen Printing</div>
+    <h1 class="slide-title" data-edit="headline" contenteditable="" spellcheck="false" style="margin-bottom:8px;">Automatic quality control for <span class="blue">screen-printed glass</span></h1>
+    <p class="slide-subtitle" data-edit="subtitle" contenteditable="" spellcheck="false" style="margin-bottom:16px;">The quality inspection of logos and screen printing is now standard — fully automated, 100% of the time.</p>
+  </header>
+  <div class="slide-body">
   <!-- ── Two column: checks list + screenshots ── -->
   <div class="ls8-layout">
 
@@ -22,7 +25,7 @@
     </div>
 
     <!-- Right: carousel -->
-    <div class="ls-carousel anim-in" data-edit="carousel" data-counter="" data-track="ls8:carousel" data-zoom-group=""><div class="ls-carousel-track" style="transform: translateX(-1298px);">
+    <div class="ls-carousel anim-in" data-edit="carousel" data-counter="" data-track="ls8:carousel" data-zoom-group="" style="width:100%;flex:1;min-height:0;"><div class="ls-carousel-track" style="transform: translateX(0px);">
         <div class="ls-carousel-slide">
           <img src="/slides/uploads/Slide35.jpg" alt="Slide35" data-zoom="">
         </div><div class="ls-carousel-slide">
@@ -35,10 +38,12 @@
       </div></div>
 
   </div>
+  </div><!-- slide-body -->
+  </div><!-- slide-layout -->
 
   <!-- ── Scoped Styles ── -->
   <style>
-    .ls8 { height: 100%; }
+    .ls8 {  }
 
     .ls8-layout {
       display: grid;
@@ -52,6 +57,7 @@
 
     /* ── Mobile base ── */
     .ls8-layout { grid-template-columns: 1fr; }
+    .ls8-layout { min-height: 320px; }
     .ls8-layout .col-item { white-space: normal; }
     .ls8 { padding: 52px 16px 80px !important; }
 

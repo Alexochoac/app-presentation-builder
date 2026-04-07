@@ -1,4 +1,4 @@
-<div class="slide content ls2" style="justify-content:flex-start; align-items:center; padding:52px 80px 0;">
+<div class="slide content ls2" style="">
 
   <!-- Softsolution + LiteSentry logo row — top left -->
   <div class="slide-logo-row">
@@ -7,13 +7,19 @@
     <img src="/slides/shared/LOGO LiteSentry Greys.png" alt="LiteSentry" class="slide-logo-ls">
   </div>
 
+  <div class="slide-layout">
+
   <!-- Credit line: top right -->
   <span class="softsolution-credit" data-edit="credit" contenteditable="" spellcheck="false">by GlassQuality.com</span>
 
   <!-- Header -->
+  <header class="slide-head">
   <div class="section-label" data-edit="section-label" contenteditable="" spellcheck="false">Our Company</div>
   <h1 class="slide-title" data-edit="headline" contenteditable="" spellcheck="false" style="margin-bottom:6px;">Quality inspection <span class="blue">is all we do</span></h1>
   <p class="slide-subtitle anim-in" data-edit="tagline" contenteditable="" spellcheck="false">We inspect every quality aspect of your glass guaranteeing peak performance and the best quality..</p>
+  </header>
+
+  <div class="slide-body">
 
   <!-- Tabs + Panels (ls-tabs component) -->
   <div class="ls-tabs ls2-tabs-wrap" data-edit="tabs" data-track="ls2:tabs" style="flex:1;min-height:0;width:100%;max-width:860px;">
@@ -203,11 +209,12 @@
     <div class="kpi-card"><div class="kpi-value" data-edit="stat-systems" contenteditable="" spellcheck="false">2050+</div><div class="kpi-label" data-edit="stat-label-systems" contenteditable="" spellcheck="false">Systems installed</div></div>
     <div class="kpi-card"><div class="kpi-value" data-edit="stat-countries" contenteditable="" spellcheck="false">23</div><div class="kpi-label" data-edit="stat-label-countries" contenteditable="" spellcheck="false">Countries · 6 continents</div></div>
     <div class="kpi-card"><div class="kpi-value" data-edit="stat-employees" contenteditable="" spellcheck="false">60</div><div class="kpi-label" data-edit="stat-label-employees" contenteditable="" spellcheck="false">Specialized employees</div></div>
-  </div>
+  </div><!-- /.slide-body -->
+  </div><!-- /.slide-layout -->
 
   <!-- Scoped styles — slide-02 only -->
   <style>
-    .ls2 { height:100%; }
+    .ls2 { }
 
 
     /* ── About Us: Pillars ── */
@@ -268,7 +275,7 @@
 
     /* ── Stats bar ── */
     .ls2-stats {
-      display:grid; grid-template-columns:repeat(4,1fr); gap:12px;
+      display:grid; grid-template-columns:repeat(2,1fr); gap:8px;
       width:100%; max-width:860px;
       flex-shrink:0; padding:10px 0 16px;
     }
@@ -277,7 +284,7 @@
 
     /* ── IQC Group panel ── */
     .ls2-iqc-grid {
-      display:grid; grid-template-columns:repeat(4,1fr);
+      display:grid; grid-template-columns:repeat(2,1fr);
       gap:12px; padding:12px 0 8px; flex:1; min-height:0;
     }
     .ls2-iqc-card {
@@ -306,7 +313,6 @@
     .ls2-iqc-products li::before { content:'› '; color:var(--accent); font-weight:700; }
 
     /* ── Mobile base ── */
-    .ls2-iqc-grid { grid-template-columns:repeat(2,1fr); }
     .ls2 { padding:52px 16px 80px !important; overflow-y:auto; }
     .ls2-tabs { margin-top:8px; }
     .ls2-tab { font-size:11px; padding:7px 0; }
@@ -314,14 +320,13 @@
     .ls2-pillar { padding:0 14px; min-height:70px; }
     .ls2-pillar-content { margin-left:52px; }
     .ls2-pillar-num { font-size:48px; }
-    .ls2-stats { grid-template-columns:repeat(2,1fr); gap:8px; }
     .ls2-panels-wrap { min-height:260px; }
 
     [contenteditable]:focus { outline:none; }
 
     /* ── Desktop overrides ── */
     @media(min-width:769px) {
-      .ls2-iqc-grid { grid-template-columns:repeat(4,1fr); }
+      .ls2-iqc-grid { grid-template-columns:repeat(4,1fr); gap:12px; }
       .ls2 { padding:52px 80px 0 !important; overflow-y:unset; }
       .ls2-pillars { gap:8px; padding:12px 0 8px; }
       .ls2-pillar { padding:0 28px; min-height:60px; }
@@ -349,4 +354,5 @@
   }, 0);
   </script>
 
+</div>
 </div>

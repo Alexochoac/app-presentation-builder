@@ -1,9 +1,12 @@
-<div class="slide content why3" style="justify-content:flex-start; align-items:center; padding:52px 80px 0;">
+<div class="slide content why3">
   <div class="slide-logo-row"><img src="/slides/shared/LOGO SoftSolution grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="/slides/shared/LOGO LiteSentry Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
 
-  <div class="section-label" data-edit="section-label" contenteditable="" spellcheck="false">The Case for Inspection</div>
-  <h1 class="slide-title" data-edit="headline" contenteditable="" spellcheck="false" style="margin-bottom:18px;">Why inspection automation <span class="blue">makes sensee</span></h1>
-
+  <div class="slide-layout">
+  <header class="slide-head">
+    <div class="section-label" data-edit="section-label" contenteditable="" spellcheck="false">The Case for Inspection</div>
+    <h1 class="slide-title" data-edit="headline" contenteditable="" spellcheck="false" style="margin-bottom:18px;">Why inspection automation <span class="blue">makes sensee</span></h1>
+  </header>
+  <div class="slide-body">
   <div class="why3-grid">
 
     <!-- LEFT — Problems -->
@@ -49,10 +52,12 @@
     </div>
 
   </div><!-- why3-grid -->
+  </div><!-- slide-body -->
+  </div><!-- slide-layout -->
 
   <!-- Scoped Styles -->
   <style>
-    .why3 { height:100%; }
+    .why3 {  }
 
     .why3-grid {
       display:grid; grid-template-columns:1fr 1fr; gap:20px;
@@ -145,7 +150,7 @@
 
     /* ── Mobile base ── */
     .why3-grid { grid-template-columns:1fr; gap:12px; }
-    .why3-col  { max-height:42vh; }
+
     .why3 { padding: 52px 16px 80px !important; }
 
     /* ── Desktop overrides ── */

@@ -1,8 +1,13 @@
-<div class="slide content ls4" style="justify-content:flex-start; align-items:center; padding:52px 80px 0;">
+<div class="slide content ls4" style="">
   <div class="slide-logo-row"><img src="/slides/shared/LOGO SoftSolution grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="/slides/shared/LOGO LiteSentry Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
 
+  <div class="slide-layout">
+  <header class="slide-head">
   <div class="section-label" data-edit="section-label" contenteditable="" spellcheck="false">The Product</div>
   <h1 class="slide-title" data-edit="headline" contenteditable="" spellcheck="false" style="margin-bottom:14px;">LineScanner <span class="blue">Capability Overview</span></h1>
+  </header>
+
+  <div class="slide-body">
 
   <!-- ── Tabs ── -->
   <div class="ls-tabs" data-edit="tabs" data-track="ls4:tabs" style="flex:1;min-height:0;width:100%;max-width:960px;">
@@ -118,7 +123,7 @@
                 <td><span class="ls-dot ls-dot-on">◆</span></td>
               </tr>
               
-            <tr><td>New row</td><td></td><td></td><td></td><td></td><td></td></tr></tbody>
+            <tr class=""><td>New row</td><td></td><td></td><td></td><td></td><td></td></tr></tbody>
           </table>
           <div data-ls-col-restore=""></div>
           <div data-ls-row-restore=""></div>
@@ -318,13 +323,16 @@
     </div><!-- ls-tab-panels -->
   </div><!-- ls-tabs -->
 
+  </div><!-- /.slide-body -->
+  </div><!-- /.slide-layout -->
+
   <style>
-    .ls4 { height:100%; }
+    .ls4 { }
 
     /* ── Panel 0: grid ── */
     .ls4-grid {
-      display:grid; grid-template-columns:1.4fr 1fr; gap:16px;
-      height:100%;
+      display:grid; grid-template-columns:1fr; gap:16px;
+      height:auto;
     }
     .ls4-table-wrap {
       display:flex; flex-direction:column; gap:6px;
@@ -393,13 +401,13 @@
 
     /* ── Panel 2: process layout ── */
     .ls4-proc-grid {
-      display:grid; grid-template-columns:1.4fr 1fr; gap:16px;
-      height:100%;
+      display:grid; grid-template-columns:1fr; gap:16px;
+      height:auto; overflow-y:auto;
     }
     .ls4-proc-table-wrap {
       display:flex; flex-direction:column; gap:6px;
       min-height:0; overflow:hidden;
-      padding-bottom:72px;
+      padding-bottom:16px;
     }
     /* Tighter sizing for proc table so all rows fit without scrolling */
     .ls4-proc-table { font-size:clamp(8.5px,0.82vw,10px); }
@@ -626,7 +634,6 @@
     /* ── Mobile base ── */
     .ls4 { padding: 52px 16px 80px !important; }
     /* Tab 1 — Capability Matrix */
-    .ls4-grid { grid-template-columns:1fr; height:auto; }
     .ls4-table-wrap { overflow-x:auto; }
     .ls4-table { font-size:11px; min-width:480px; }
     .ls4-table tbody tr td:first-child {
@@ -636,11 +643,6 @@
     .ls4-cards { flex-direction:row; }
 
     /* Tab 2 — Where in Your Process */
-    .ls4-proc-grid {
-      grid-template-columns:1fr;
-      height:auto;
-      overflow-y:auto;
-    }
     .ls4-proc-table { font-size: 10px; }
     .ls4-proc-table-wrap { overflow-x:auto; }
     .ls4-proc-table { min-width:360px; }
@@ -672,7 +674,7 @@
         overflow-y:unset;
       }
       .ls4-proc-table { font-size: inherit; }
-      .ls4-proc-table-wrap { overflow-x:unset; }
+      .ls4-proc-table-wrap { overflow-x:unset; overflow-y:auto; }
       .ls4-proc-table { min-width:unset; }
       .ls4-proc-cards {
         flex-direction:column;
