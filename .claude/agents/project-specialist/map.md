@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-04-07
+Last updated: 2026-04-07 (session 2)
 
 ---
 
@@ -30,8 +30,9 @@ App-presentation-builder/
     ├── .env                        ← SESSION_SECRET, BUILDER_USER, BUILDER_PASS (not in git)
     ├── .env.example                ← Template for env vars
     ├── data/
-    │   ├── deck.json               ← Source of truth for slide order + visibility
-    │   └── slide-library.json      ← Catalog of all available slide templates
+    │   ├── deck.json               ← Source of truth for slide order + visibility (stores layoutId refs for new slides)
+    │   ├── slide-library.json      ← Catalog of all available slide templates
+    │   └── layouts.json            ← User-created slide layouts (new system)
 ├── IDEAS.md                        ← Mid-session ideas log (landing page, dual-preview builder)
     ├── features/
     │   ├── auth/
@@ -42,7 +43,11 @@ App-presentation-builder/
     │   │   ├── dashboard.css       ← Dashboard styles (legacy — being replaced by app-style.css)
     │   │   └── dashboard.js        ← Deck manager + slide library + preview + drag-to-reorder
     │   ├── settings/
-    │   │   └── index.html          ← Settings page (served at /settings)
+    │   │   └── index.html          ← Settings page (/settings) — has Presentation Name field, sidebar nav
+    │   ├── layouts/
+    │   │   └── index.html          ← Old layouts page (superseded by slides/index.html)
+    │   ├── slides-new/             ← NEW: /slides page with 3-tab UI (Templates | My Library | Layouts)
+    │   │   └── index.html          ← Layout builder + slide library (served at /slides)
     │   ├── builder-ui/
     │   │   ├── index.html          ← Stub (unused)
     │   │   └── preview.html        ← Builder UI (served at /builder/preview.html)
@@ -77,15 +82,24 @@ Browser → Express (server.js)
               ├── Static: /slides          → features/slides/
               ├── Static: /shared          → shared/
               ├── Static: /               → features/dashboard/   ← dashboard served here
-              ├── GET    /settings         → features/settings/index.html
-              ├── Static: /builder        → features/builder-ui/  ← preview.html here
-              ├── GET  /api/deck           → reads builder/data/deck.json
-              ├── PUT  /api/deck           → overwrites deck.json (order + visibility)
-              ├── GET  /api/slide-library  → reads builder/data/slide-library.json
-              ├── POST /api/save           → edits slide HTML via Cheerio, writes to disk
-              ├── POST /api/upload-image   → saves base64 image to uploads/
-              ├── POST /api/save-image-src → updates img src in slide file via Cheerio
-              └── POST /api/clone-slide    → copies slide HTML, resets text/images, adds to library+deck
+              ├── GET    /settings              → features/settings/index.html
+              ├── GET    /slides                → features/slides/index.html (new slides section)
+              ├── Static: /builder             → features/builder-ui/  ← preview.html here
+              ├── GET  /api/deck               → reads deck.json, enriches layout slides with name+rows
+              ├── PUT  /api/deck               → merges into deck.json (strips derived fields before write)
+              ├── POST /api/deck/slides         → adds layout-backed slide to deck { layoutId }
+              ├── DELETE /api/deck/slides/:id   → removes slide from deck (keeps layout intact)
+              ├── GET  /api/layouts             → reads layouts.json
+              ├── POST /api/layouts             → creates new layout
+              ├── PUT  /api/layouts/:id         → updates layout
+              ├── DELETE /api/layouts/:id       → deletes layout
+              ├── GET  /slides/deck-slide-:id.html → renders layout JSON as HTML fragment (for old builder)
+              ├── GET  /api/slide-library       → reads slide-library.json
+              ├── DELETE /api/slide-library/:id → removes entry from slide-library.json
+              ├── POST /api/save               → edits slide HTML via Cheerio, writes to disk
+              ├── POST /api/upload-image        → saves base64 image to uploads/
+              ├── POST /api/save-image-src      → updates img src in slide file via Cheerio
+              └── POST /api/clone-slide         → copies slide HTML, resets text/images, adds to library+deck
 ```
 
 ---
@@ -110,16 +124,31 @@ Browser → Express (server.js)
   "title": "LineScanner Presentation",
   "slides": [
     { "id": "slide-01-cover", "visible": true },
-    { "id": "slide-02-company", "visible": true },
-    ...
+    { "id": "deck-slide-1234567890", "layoutId": "layout-1234567890", "visible": true }
   ]
 }
 ```
 
-- `id` matches the filename without `.html`
+- Old slides: `id` matches the filename without `.html`
+- New layout slides: `id` is `deck-slide-<timestamp>`, `layoutId` references `layouts.json`
 - `visible: false` hides a slide from the builder without removing it
 - Order in array = order in presentation
-- Dashboard PUT /api/deck with full array to update
+- GET /api/deck enriches layout slides with `name` + `rows` from layouts.json (for display)
+- PUT /api/deck strips derived fields before writing — only persists `id`, `visible`, `layoutId`
+
+## Slides Architecture (decided 2026-04-07)
+
+Three-tab model at `/slides`:
+
+| Tab | Data | Purpose |
+|-----|------|---------|
+| Templates | Built-in HTML slides + custom saved templates | Starting points — "Use This" clones to My Library |
+| My Library | layouts.json | User's personal slides — edit, toggle In Deck, Save as Template |
+| Layouts | layouts.json (structure only) | Advanced layout builder for power users |
+
+**Playlist model:** Slides in My Library are independent from the deck. In Deck = yes/no toggle.
+**Reference model:** deck.json stores `layoutId` pointer, not a copy of layout data.
+**Flow:** Templates → "Use This" → My Library → edit → "Add to Deck" → Dashboard
 
 ---
 
@@ -202,15 +231,18 @@ Browser → Express (server.js)
 - **No export yet** — `scripts/build.js` (strip builder-only, inject customer config) not built
 - **No deploy yet** — `scripts/deploy.js` (push to GitHub Pages) not built
 - **dashboard.css** — legacy file still present, should be deleted once confirmed unused
+- **Sidebar nav** — added to dashboard + settings but NOT yet added to builder-ui/preview.html (uses its own nav)
+- **layouts/index.html** — old file still exists, superseded by slides/index.html. Should be cleaned up.
+- **3-tab /slides page not fully built** — current /slides is a single-pane layout builder, needs rebuild as Templates | My Library | Layouts
 
 ---
 
 ## What's Next
 
-1. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css; carousels use `aspect-ratio`; columns use `.slide-cols` standard class
-2. Fix slide-06 defect selector names (move to static HTML)
-3. Presentation view — read-only mode (visible slides + hidden slides in extras menu)
-4. `scripts/build.js` — assemble final customer HTML, strip `data-builder-only`
-5. `scripts/deploy.js` — push to GitHub Pages
-6. Image caption editing UI
-7. Dual-preview layout builder (desktop + mobile side by side) — see IDEAS.md
+1. **Rebuild `/slides` as proper 3-tab page** — Templates | My Library | Layouts (next session priority)
+2. **Template gallery** — new generic templates with dummy data + visual preview, "Use This" flow
+3. **My Library tab** — slide cards with In Deck toggle, Edit, Save as Template, Delete
+4. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
+5. Fix slide-06 defect selector names (move to static HTML)
+6. Presentation view — read-only mode
+7. `scripts/build.js` / `scripts/deploy.js`
