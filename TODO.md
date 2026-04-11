@@ -1,10 +1,9 @@
 # TODO — Presentation Builder
 
 ## High Priority — Next Session
-- [ ] **Rebuild `/slides` as 3-tab page**: Templates | My Library | Layouts
-- [ ] **Template gallery**: new generic templates with dummy data, visual preview, "Use This" → clones to My Library
-- [ ] **My Library tab**: slide cards with In Deck toggle, Edit button, Save as Template, Delete
-- [ ] **"Save as Template" flow**: promote a library slide to a reusable template
+- [ ] **Test all 14 slides** visually against originals — fix per-slide issues as found
+- [ ] **Slide-06 defect gallery**: verify JS defect selector works through render path; fix if broken
+- [ ] **Slide-12 headline split**: agent split into `headline` + `headline-emphasis` — verify or consolidate to single key
 
 ## High Priority — Carried
 - [ ] **Design system refactor** — eliminate 3-layer CSS conflict (style.css vs per-slide `<style>` vs inline styles). One source of truth in style.css.
@@ -15,7 +14,6 @@
 - [ ] Delete old `dashboard.css`
 
 ## Slides
-- [ ] Slide-06 defect selector names — JS-generated, move to static HTML
 - [ ] Image caption editing UI
 
 ## Build & Deploy
@@ -27,6 +25,12 @@
 - [ ] Dual-preview layout builder (desktop + mobile side by side)
 
 ## Completed
+- [x] All 14 slides have server-side render functions (`renderXxxLayout`) in `server.js`
+- [x] `renderLayoutToHtml` dispatches all 14 `tpl-new-*` template IDs
+- [x] `table.js` saveTable: saves parent `.ls-tabs` container when inside tabs (column-hide persists)
+- [x] `tabs.js`: calls `LSTable.init` on tab switch (table buttons on non-active tabs)
+- [x] Slide 04 mobile: carousel above table via `order:-1`; table scrollable below
+- [x] `builder/data/renderers/` — render function source files for slides 06–14
 - [x] Collapsible sidebar nav (mobile hamburger + desktop collapse) across all pages
 - [x] Mobile click bug fixed (sidebar overlay pointer-events)
 - [x] Presentation Name field in settings — saves via PUT /api/deck
@@ -43,7 +47,6 @@
 - [x] All slides 01–15 created and migrated to component system
 - [x] Dashboard built — deck manager + slide library
 - [x] `deck.json` + `slide-library.json` as source of truth
-- [x] `GET/PUT /api/deck`, `GET /api/slide-library`, `POST /api/clone-slide` endpoints
 - [x] Full editability pass — all visible text in all slides
 - [x] Dashboard slide library redesign: clone flow, two-way preview
 - [x] Scaled iframe thumbnail + lightbox zoom in dashboard

@@ -78,15 +78,18 @@ All content slides now use this structure:
 - [x] Standard slide anatomy (`slide-layout`/`slide-head`/`slide-body`) added to all 14 content slides
 - [x] `/idea` skill created for mid-session idea capture
 - [x] `IDEAS.md` created with 2 logged ideas
+- [x] Template→Library→Deck render chain: server-side render functions for all 14 slides
+- [x] `table.js` saveTable fixed — saves parent `.ls-tabs` container (fixes column-hide persistence)
+- [x] `tabs.js` fixed — calls `LSTable.init` on tab switch (fixes table buttons on non-active tabs)
+- [x] Slide 04 mobile: carousel above table via `order:-1`
+- [x] `builder/data/renderers/` — individual render function files for slides 06–14
 
 ## Next Steps
-- [ ] **Rebuild `/slides` as 3-tab page**: Templates | My Library | Layouts
-- [ ] **Template gallery**: visual previews of new generic templates, "Use This" clones to My Library
-- [ ] **My Library tab**: slide cards with In Deck toggle, Edit, Save as Template, Delete
+- [ ] **Test all 14 slides** visually against originals — fix per-slide issues as found
+- [ ] **Slide-06 defect gallery**: verify JS defect selector works through render path
 - [ ] **Design system refactor** (carried) — eliminate 3-layer CSS conflict; one source of truth in style.css
 - [ ] Delete old `dashboard.css`
 - [ ] Presentation view — clean read-only mode
-- [ ] Slide-06 defect selector names — move to static HTML
 - [ ] `scripts/build.js` — assemble final customer HTML, strip `data-builder-only`
 - [ ] `scripts/deploy.js` — push to GitHub Pages
 
@@ -96,4 +99,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-04-07 (session 2)
+Last updated: 2026-04-11

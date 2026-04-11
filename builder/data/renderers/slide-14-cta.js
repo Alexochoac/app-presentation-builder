@@ -1,0 +1,122 @@
+function renderCtaLayout(slideId, savedEdits) {
+  savedEdits = savedEdits || {};
+
+  function applyEdit(key, defaultVal, edits) {
+    return edits[key] != null ? edits[key] : defaultVal;
+  }
+
+  var defaultStep1 = 'Analyse [Customer]\'s current production line';
+  var defaultStep2 = 'Live demo with [Customer] glass samples';
+  var defaultStep3 = 'Customised technical and commercial proposal';
+
+  var defaultIntro = 'We propose that your team visit our facilities in Austria so we can carry out an on-site demonstration with <strong>your own glass samples</strong> \u2014 together.';
+
+  var waSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"></path><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.554 4.103 1.523 5.83L.057 23.25a.75.75 0 0 0 .918.919l5.42-1.466A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.694 9.694 0 0 1-4.946-1.355l-.354-.212-3.658.989.989-3.658-.212-.354A9.694 9.694 0 0 1 2.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"></path></svg>';
+  var emailSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>';
+
+  var contactEmail = applyEdit('contact-email', 'alex.ochoa@softsolution.at', savedEdits);
+  var emailHref = 'mailto:' + contactEmail;
+
+  return [
+    '<div class="slide content ls14" data-slide="' + slideId + '" style="overflow:hidden;">',
+    '  <img src="/slides/uploads/image112.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.06;pointer-events:none;z-index:0;">',
+    '  <div class="slide-logo-row"><img src="/slides/shared/LOGO SoftSolution grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="/slides/shared/LOGO LiteSentry Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>',
+    '  <div class="slide-layout">',
+    '    <header class="slide-head">',
+    '      <div class="section-label" data-edit="section-label" contenteditable="" spellcheck="false">' + applyEdit('section-label', 'Next Steps', savedEdits) + '</div>',
+    '      <h1 class="slide-title" data-edit="headline" contenteditable="" spellcheck="false">' + applyEdit('headline', 'Ready for a<br><span class="blue">live demonstration?</span>', savedEdits) + '</h1>',
+    '      <div class="divider"></div>',
+    '    </header>',
+    '    <div class="slide-body">',
+    '  <div class="cta-box anim-in" style="flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center; padding-bottom:72px; max-width:680px; width:100%; text-align:left;">',
+    '    <p data-edit="intro" contenteditable="" spellcheck="false">' + applyEdit('intro', defaultIntro, savedEdits) + '</p>',
+    '    <div class="cta-steps">',
+    '      <div class="cta-step" data-umami-event="cta-step" data-umami-event-step="1-analysis"><div class="step-num">1</div><span data-edit="step1" contenteditable="" spellcheck="false">' + applyEdit('step1', defaultStep1, savedEdits) + '</span></div>',
+    '      <div class="cta-step" data-umami-event="cta-step" data-umami-event-step="2-live-demo"><div class="step-num">2</div><span data-edit="step2" contenteditable="" spellcheck="false">' + applyEdit('step2', defaultStep2, savedEdits) + '</span></div>',
+    '      <div class="cta-step" data-umami-event="cta-step" data-umami-event-step="3-proposal"><div class="step-num">3</div><span data-edit="step3" contenteditable="" spellcheck="false">' + applyEdit('step3', defaultStep3, savedEdits) + '</span></div>',
+    '    </div>',
+    '    <div class="cta-contact">',
+    '      <div class="cta-contact-name">',
+    '        <strong data-edit="contact-name" contenteditable="" spellcheck="false">' + applyEdit('contact-name', 'Alex Ochoa', savedEdits) + '</strong>',
+    '        <span class="cta-contact-role" data-edit="contact-title" contenteditable="" spellcheck="false">' + applyEdit('contact-title', 'Sales Manager', savedEdits) + '</span>',
+    '        <span class="cta-contact-addr" data-edit="contact-addr" contenteditable="" spellcheck="false">' + applyEdit('contact-addr', 'Im Vogelsang 18 \u00b7 3340 Waidhofen \u00b7 Austria', savedEdits) + '</span>',
+    '      </div>',
+    '      <div class="cta-contact-btns">',
+    '        <a class="cta-btn-wa" href="#" target="_blank" data-umami-event="cta-whatsapp">',
+    '          ' + waSvg,
+    '          WhatsApp',
+    '        </a>',
+    '        <a class="cta-btn-email" href="' + emailHref + '" data-umami-event="cta-email">',
+    '          ' + emailSvg,
+    '          <span data-edit="contact-email" contenteditable="" spellcheck="false">' + contactEmail + '</span>',
+    '        </a>',
+    '      </div>',
+    '    </div>',
+    '  </div>',
+    '    </div><!-- /.slide-body -->',
+    '  </div><!-- /.slide-layout -->',
+    '',
+    '  <!-- \u2500\u2500 Scoped Styles \u2500\u2500 -->',
+    '  <style>',
+    '    .cta-contact {',
+    '      display:flex; align-items:center; justify-content:space-between; gap:20px;',
+    '      margin-top:24px; padding-top:20px;',
+    '      border-top:1px solid rgba(var(--accent-rgb),.2);',
+    '      flex-wrap:wrap;',
+    '    }',
+    '    .cta-contact-name { display:flex; flex-direction:column; gap:3px; }',
+    '    .cta-contact-name strong { font-size:15px; color:var(--text); }',
+    '    .cta-contact-role { font-size:13px; color:var(--text-muted); }',
+    '    .cta-contact-addr { font-size:12px; color:var(--text-muted); opacity:.7; }',
+    '    .cta-contact-btns { display:flex; flex-direction:column; gap:10px; }',
+    '    .cta-btn-wa, .cta-btn-email {',
+    '      display:inline-flex; align-items:center; gap:10px;',
+    '      padding:10px 20px; border-radius:100px;',
+    '      font-size:13px; font-weight:600; text-decoration:none;',
+    '      transition:all .2s; white-space:nowrap;',
+    '    }',
+    '    .cta-btn-wa {',
+    '      background:rgba(37,211,102,.15); border:1px solid rgba(37,211,102,.35);',
+    '      color:#25d366;',
+    '    }',
+    '    .cta-btn-wa:hover { background:rgba(37,211,102,.25); border-color:rgba(37,211,102,.6); }',
+    '    .cta-btn-email {',
+    '      background:rgba(var(--accent-rgb),.12); border:1px solid rgba(var(--accent-rgb),.3);',
+    '      color:var(--accent);',
+    '    }',
+    '    .cta-btn-email:hover { background:rgba(var(--accent-rgb),.22); border-color:rgba(var(--accent-rgb),.55); }',
+    '    /* \u2500\u2500 Mobile base \u2500\u2500 */',
+    '    .ls14 { padding:52px 20px 80px !important; }',
+    '    .cta-contact { flex-direction:column; align-items:flex-start; gap:14px; }',
+    '    .cta-btn-wa, .cta-btn-email { font-size:14px; padding:14px 20px; min-height:44px; }',
+    '',
+    '    /* \u2500\u2500 Desktop overrides \u2500\u2500 */',
+    '    @media(min-width:769px){',
+    '      .ls14 { padding:60px 80px 0 !important; }',
+    '      .cta-contact { flex-direction:row; align-items:center; gap:20px; }',
+    '      .cta-btn-wa, .cta-btn-email { font-size:13px; padding:10px 20px; min-height:unset; }',
+    '    }',
+    '  </style>',
+    '  <script>',
+    '  (function () { var s = document.currentScript;',
+    '    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest(\'.slide\')); }, 0); })();',
+    '  <\/script>',
+    '',
+    '  <script>',
+    '  (function() {',
+    '    function syncLinks() {',
+    '      var emailEl = document.querySelector(\'[data-edit="contact-email"]\');',
+    '      var emailBtn = document.querySelector(\'.cta-btn-email\');',
+    '      if (emailEl && emailBtn) {',
+    '        var email = emailEl.textContent.trim();',
+    '        if (email) emailBtn.href = \'mailto:\' + email;',
+    '      }',
+    '    }',
+    '    document.addEventListener(\'DOMContentLoaded\', syncLinks);',
+    '    var emailEl = document.querySelector(\'[data-edit="contact-email"]\');',
+    '    if (emailEl) emailEl.addEventListener(\'input\', syncLinks);',
+    '  })();',
+    '  <\/script>',
+    '</div>'
+  ].join('\n');
+}

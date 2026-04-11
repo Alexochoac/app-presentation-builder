@@ -116,8 +116,21 @@ window.LSTable = (function () {
     return 'ls-dot-on';
   }
 
-  /** Save full table HTML to disk */
+  /** Save full table HTML to disk.
+   *  If the table lives inside a .ls-tabs[data-edit] container, save the
+   *  whole tabs container so the rendered slide can restore full state. */
   function saveTable(table) {
+    var tabsEl = table.closest('.ls-tabs[data-edit]');
+    if (tabsEl) {
+      var editKey = tabsEl.getAttribute('data-edit');
+      var clone = tabsEl.cloneNode(true);
+      clone.querySelectorAll('[data-builder-only]').forEach(function (n) { n.remove(); });
+      clone.querySelectorAll('[contenteditable]').forEach(function (n) { n.removeAttribute('contenteditable'); });
+      document.dispatchEvent(new CustomEvent('slide-carousel-save', {
+        detail: { editKey: editKey, html: clone.innerHTML }
+      }));
+      return;
+    }
     var editKey = table.getAttribute('data-edit') || 'table';
     var clone = table.cloneNode(true);
     clone.querySelectorAll('[data-builder-only]').forEach(function (n) { n.remove(); });

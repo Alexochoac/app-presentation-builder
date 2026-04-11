@@ -2,70 +2,74 @@
   "title": "GlassQuality",
   "slides": [
     {
-      "id": "slide-01-cover",
-      "visible": true
+      "id": "deck-cover",
+      "visible": true,
+      "librarySlideId": "lib-cover"
     },
     {
-      "id": "slide-02-company",
-      "visible": true
+      "id": "deck-company",
+      "visible": true,
+      "librarySlideId": "lib-company"
     },
     {
-      "id": "slide-03-why",
-      "visible": true
+      "id": "deck-comparison",
+      "visible": true,
+      "librarySlideId": "lib-comparison"
     },
     {
-      "id": "slide-04-linescanner",
-      "visible": true
+      "id": "deck-capability",
+      "visible": true,
+      "librarySlideId": "lib-capability"
     },
     {
-      "id": "slide-05-technology",
-      "visible": true
+      "id": "deck-technology",
+      "visible": true,
+      "librarySlideId": "lib-technology"
     },
     {
-      "id": "slide-06-surface",
-      "visible": true
+      "id": "deck-surface",
+      "visible": true,
+      "librarySlideId": "lib-surface"
     },
     {
-      "id": "slide-07-dimension",
-      "visible": true
+      "id": "deck-dimension",
+      "visible": true,
+      "librarySlideId": "lib-dimension"
     },
     {
-      "id": "slide-08-screenprinting",
-      "visible": true
+      "id": "deck-screenprint",
+      "visible": true,
+      "librarySlideId": "lib-screenprint"
     },
     {
-      "id": "slide-09-logo-check",
-      "visible": true
+      "id": "deck-logo-check",
+      "visible": true,
+      "librarySlideId": "lib-logo-check"
     },
     {
-      "id": "slide-10-database",
-      "visible": true
+      "id": "deck-database",
+      "visible": true,
+      "librarySlideId": "lib-database"
     },
     {
-      "id": "slide-11-sensitivity",
-      "visible": true
+      "id": "deck-sensitivity",
+      "visible": true,
+      "librarySlideId": "lib-sensitivity"
     },
     {
-      "id": "slide-12-footprint",
-      "visible": true
+      "id": "deck-footprint",
+      "visible": true,
+      "librarySlideId": "lib-footprint"
     },
     {
-      "id": "slide-13-integrations",
-      "visible": true
+      "id": "deck-integrations",
+      "visible": true,
+      "librarySlideId": "lib-integrations"
     },
     {
-      "id": "slide-14-cta",
-      "visible": true
-    },
-    {
-      "id": "deck-slide-1775592117157",
-      "layoutId": "layout-1775559861227",
-      "visible": true
-    },
-    {
-      "id": "deck-slide-1775592118437",
-      "layoutId": "layout-1775590521546",
-      "visible": true
+      "id": "deck-cta",
+      "visible": true,
+      "librarySlideId": "lib-cta"
     }
   ]
 }

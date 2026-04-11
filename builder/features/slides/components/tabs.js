@@ -90,6 +90,7 @@ window.Tabs = (function () {
       // Init any carousels inside the newly visible panel
       var activePanel = panelsEl.querySelector('.ls-tab-panel.active');
       if (activePanel && window.Carousel) Carousel.init(activePanel);
+      if (activePanel && window.LSTable)  LSTable.init(activePanel);
       if (trackId && window.Track) Track.click(trackId.split(':')[0], 'tab-' + panelId);
     }
 
