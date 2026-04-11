@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-04-07 (session 2)
+Last updated: 2026-04-11
 
 ---
 
@@ -22,50 +22,59 @@ App-presentation-builder/
 ├── PLAN.md                         ← Full product roadmap + TODO
 ├── CONTEXT.md                      ← Project context + next steps
 ├── TODO.md                         ← Current task list
+├── IDEAS.md                        ← Mid-session ideas log
 ├── memory/sessions.md              ← Session history
 │
 └── builder/                        ← The runnable web app
-    ├── server.js                   ← Express server — all API endpoints + static serving
+    ├── server.js                   ← Express server — all API endpoints + slide render functions
     ├── package.json                ← Dependencies: express, cheerio, dotenv, express-session
     ├── .env                        ← SESSION_SECRET, BUILDER_USER, BUILDER_PASS (not in git)
     ├── .env.example                ← Template for env vars
     ├── data/
-    │   ├── deck.json               ← Source of truth for slide order + visibility (stores layoutId refs for new slides)
-    │   ├── slide-library.json      ← Catalog of all available slide templates
-    │   └── layouts.json            ← User-created slide layouts (new system)
-├── IDEAS.md                        ← Mid-session ideas log (landing page, dual-preview builder)
+    │   ├── deck.json               ← Slide order + visibility (librarySlideId refs)
+    │   ├── slide-library.json      ← Catalog of library slides (templateId + edits)
+    │   ├── slide-templates.json    ← Template definitions (id, defaultContent)
+    │   ├── layouts.json            ← User-created layouts (legacy new-slide system)
+    │   ├── settings.json           ← App settings (heroBg, heroBgFocal, etc.)
+    │   └── renderers/              ← Source files for per-slide render functions (agents write here)
+    │       ├── slide-06-surface.js     ← renderDefectGalleryLayout
+    │       ├── slide-07-dimension.js   ← renderCarouselCardsLayout
+    │       ├── slide-08-screenprint.js ← renderChecklistCarouselLayout
+    │       ├── slide-09-logo-check.js  ← renderCarouselTagsLayout
+    │       ├── slide-10-database.js    ← renderTabsCarouselLayout
+    │       ├── slide-11-sensitivity.js ← renderCarouselStepsLayout
+    │       ├── slide-12-footprint.js   ← renderFullCarouselLayout
+    │       ├── slide-13-integrations.js← renderCardsGridLayout
+    │       └── slide-14-cta.js         ← renderCtaLayout
     ├── features/
     │   ├── auth/
     │   │   ├── auth.js             ← Session auth middleware + login/logout routes
     │   │   └── login.html          ← Login page (dark theme)
     │   ├── dashboard/
     │   │   ├── index.html          ← Dashboard (served at /) — post-login home
-    │   │   ├── dashboard.css       ← Dashboard styles (legacy — being replaced by app-style.css)
+    │   │   ├── dashboard.css       ← Legacy styles (to be deleted)
     │   │   └── dashboard.js        ← Deck manager + slide library + preview + drag-to-reorder
     │   ├── settings/
-    │   │   └── index.html          ← Settings page (/settings) — has Presentation Name field, sidebar nav
-    │   ├── layouts/
-    │   │   └── index.html          ← Old layouts page (superseded by slides/index.html)
-    │   ├── slides-new/             ← NEW: /slides page with 3-tab UI (Templates | My Library | Layouts)
-    │   │   └── index.html          ← Layout builder + slide library (served at /slides)
-    │   ├── builder-ui/
-    │   │   ├── index.html          ← Stub (unused)
-    │   │   └── preview.html        ← Builder UI (served at /builder/preview.html)
-    │   └── slides/
-    │       ├── style.css           ← Shared slide CSS — mobile-first, all 15 slides
-    │       ├── slide-01-cover.html
-    │       ├── ... (slides 02-15)
-    │       ├── uploads/            ← Customer-uploaded images (gitignored)
-    │       └── components/
-    │           ├── carousel.js     ← ls-carousel: add/delete/reorder/zoom/autoplay/compare
-    │           ├── lightbox.js     ← Zoom lightbox + Add Image button
-    │           ├── tabs.js         ← ls-tabs: add/delete/rename tabs
-    │           ├── list.js         ← ul[data-ls-list]: add/hide/delete/reorder/edit
-    │           ├── table.js        ← table[data-ls-table]: row+col edit, dot cycling, resizable col
-    │           └── tracker.js      ← Umami analytics tracker
+    │   │   └── index.html          ← Settings page (/settings) — Presentation Name, sidebar nav
+    │   ├── slides/
+    │   │   ├── index.html          ← /slides page (Templates | My Library | Deck tabs)
+    │   │   ├── style.css           ← Shared slide CSS — mobile-first, all 15 slides
+    │   │   ├── slide-01-cover.html ← Original HTML fragments (source of truth for content)
+    │   │   ├── ... (slides 02-15)
+    │   │   ├── uploads/            ← Customer-uploaded images (gitignored)
+    │   │   └── components/
+    │   │       ├── carousel.js     ← ls-carousel: add/delete/reorder/zoom/autoplay/compare
+    │   │       ├── lightbox.js     ← Zoom lightbox + Add Image button
+    │   │       ├── tabs.js         ← ls-tabs: add/delete/rename; calls LSTable.init on tab switch
+    │   │       ├── list.js         ← ul[data-ls-list]: add/hide/delete/reorder/edit
+    │   │       ├── table.js        ← table[data-ls-table]: row+col edit, dot cycling, resizable col
+    │   │       │                     saveTable saves parent .ls-tabs container when inside tabs
+    │   │       └── tracker.js      ← Umami analytics tracker
+    │   └── builder-ui/
+    │       └── preview.html        ← Builder UI (served at /builder/preview.html)
     └── shared/
-        ├── app-style.css           ← Shared app shell CSS (dashboard, settings, topbar — dark/light theme)
-        └── assets/                 ← Brand logos, product images (served at /slides/shared/)
+        ├── app-style.css           ← Shared app shell CSS (dark/light theme)
+        └── assets/                 ← Brand logos (served at /slides/shared/)
 ```
 
 ---
@@ -78,99 +87,123 @@ Browser → Express (server.js)
               ├── requireAuth middleware (gates everything below)
               ├── Static: /slides/uploads  → features/slides/uploads/
               ├── Static: /slides/shared   → shared/assets/
-              ├── GET    /slides/preview/:id → shell route: wraps fragment in full HTML + style.css
+              ├── GET /slides/:deckSlideId.html  ← NEW: renders library slide via render chain
+              ├── GET /slides/preview/:id        ← shell route: wraps fragment in full HTML
               ├── Static: /slides          → features/slides/
-              ├── Static: /shared          → shared/
-              ├── Static: /               → features/dashboard/   ← dashboard served here
-              ├── GET    /settings              → features/settings/index.html
-              ├── GET    /slides                → features/slides/index.html (new slides section)
-              ├── Static: /builder             → features/builder-ui/  ← preview.html here
-              ├── GET  /api/deck               → reads deck.json, enriches layout slides with name+rows
-              ├── PUT  /api/deck               → merges into deck.json (strips derived fields before write)
-              ├── POST /api/deck/slides         → adds layout-backed slide to deck { layoutId }
-              ├── DELETE /api/deck/slides/:id   → removes slide from deck (keeps layout intact)
-              ├── GET  /api/layouts             → reads layouts.json
-              ├── POST /api/layouts             → creates new layout
-              ├── PUT  /api/layouts/:id         → updates layout
-              ├── DELETE /api/layouts/:id       → deletes layout
-              ├── GET  /slides/deck-slide-:id.html → renders layout JSON as HTML fragment (for old builder)
-              ├── GET  /api/slide-library       → reads slide-library.json
-              ├── DELETE /api/slide-library/:id → removes entry from slide-library.json
-              ├── POST /api/save               → edits slide HTML via Cheerio, writes to disk
+              ├── Static: /               → features/dashboard/
+              ├── GET  /settings              → features/settings/index.html
+              ├── GET  /slides                → features/slides/index.html
+              ├── Static: /builder        → features/builder-ui/
+              ├── GET  /api/deck               → reads deck.json + enriches with library data
+              ├── PUT  /api/deck               → merges into deck.json (preserves librarySlideId)
+              ├── POST /api/deck/slides/:id/edits  ← NEW: saves edits to library slide
+              ├── POST /api/library            ← NEW: create library slide
+              ├── POST /api/library/:id/edits  ← NEW: save edits to library slide directly
+              ├── GET  /api/slide-library      → reads slide-library.json
+              ├── DELETE /api/slide-library/:id → removes entry
+              ├── POST /api/save               → edits slide HTML via Cheerio (old slides)
               ├── POST /api/upload-image        → saves base64 image to uploads/
-              ├── POST /api/save-image-src      → updates img src in slide file via Cheerio
-              └── POST /api/clone-slide         → copies slide HTML, resets text/images, adds to library+deck
+              ├── POST /api/save-image-src      → updates img src in slide file
+              └── POST /api/clone-slide         → copies slide HTML, adds to library+deck
 ```
 
 ---
 
-## User Flow
+## Template → Library → Deck Render Chain (implemented 2026-04-11)
 
-1. `http://localhost:3000` → redirects to `/auth/login` if not logged in
-2. Login → redirects to `/` (dashboard)
-3. Dashboard: manage deck order/visibility, add/remove slides from library, preview slides
-4. Click slide title → scaled iframe thumbnail preview; click thumbnail → fullscreen lightbox with Edit button
-5. Click "Open Builder →" → `/builder/preview.html` with all visible slides
-6. Edit any text (click to type), upload images, reorder carousel slides
-7. Changes auto-save to disk every 1.5s of inactivity
-8. `/settings` → Theme toggle (dark/light), Company Profile, and other Coming Soon sections
+**The 3-level chain:**
+
+```
+slide-templates.json  →  slide-library.json  →  deck.json
+  (tpl-new-cover)          (lib-cover)           (deck-cover)
+  defaultContent            edits: {}             librarySlideId: "lib-cover"
+                                                  visible: true
+```
+
+**How a slide renders:**
+
+1. Browser requests `GET /slides/deck-cover.html`
+2. server.js looks up `deck-cover` in deck.json → gets `librarySlideId: "lib-cover"`
+3. Looks up `lib-cover` in slide-library.json → gets `templateId: "tpl-new-cover"`, `edits: {}`
+4. Calls `renderLayoutToHtml(tpl, deckSlideId, savedEdits)`
+5. `renderLayoutToHtml` dispatches to the correct render function by `tpl.id`
+6. Returns full HTML fragment
+
+**All 14 dispatch lines in server.js (~line 2572):**
+```js
+if (tplId === 'tpl-new-cover')              return renderHeroLayout(...)
+if (tplId === 'tpl-new-company')            return renderCompanyLayout(...)
+if (tplId === 'tpl-new-comparison')         return renderComparisonLayout(...)
+if (tplId === 'tpl-new-capability-matrix')  return renderCapabilityLayout(...)
+if (tplId === 'tpl-new-technology')         return renderTechnologyLayout(...)
+if (tplId === 'tpl-new-defect-gallery')     return renderDefectGalleryLayout(...)
+if (tplId === 'tpl-new-carousel-cards')     return renderCarouselCardsLayout(...)
+if (tplId === 'tpl-new-checklist-carousel') return renderChecklistCarouselLayout(...)
+if (tplId === 'tpl-new-carousel-tags')      return renderCarouselTagsLayout(...)
+if (tplId === 'tpl-new-tabs-carousel')      return renderTabsCarouselLayout(...)
+if (tplId === 'tpl-new-carousel-steps')     return renderCarouselStepsLayout(...)
+if (tplId === 'tpl-new-full-carousel')      return renderFullCarouselLayout(...)
+if (tplId === 'tpl-new-cards-grid')         return renderCardsGridLayout(...)
+if (tplId === 'tpl-new-cta')               return renderCtaLayout(...)
+```
+
+**Render function pattern:**
+```js
+function renderXxxLayout(slideId, savedEdits) {
+  savedEdits = savedEdits || {};
+  // Simple text:
+  applyEdit('key', 'default text', savedEdits)
+  // Complex containers (tabs/carousels/lists):
+  (savedEdits['key'] != null ? savedEdits['key'] : defaultHtml)
+  // Returns joined array of HTML strings
+}
+```
+
+**Save path for library-backed slides:**
+- Text fields: `doSave()` → `POST /api/deck/slides/:id/edits` → saves to library slide's `edits`
+- Carousels/tables/lists: dispatch `slide-carousel-save` event → same endpoint
+- Table inside `.ls-tabs`: `saveTable` detects ancestor `.ls-tabs[data-edit]` → saves whole tabs container under tabs' `data-edit` key (not just the table)
 
 ---
 
-## Deck Config (`builder/data/deck.json`)
+## deck.json Structure (current)
 
 ```json
 {
-  "title": "LineScanner Presentation",
+  "title": "GlassQuality",
   "slides": [
-    { "id": "slide-01-cover", "visible": true },
-    { "id": "deck-slide-1234567890", "layoutId": "layout-1234567890", "visible": true }
+    { "id": "deck-cover",      "librarySlideId": "lib-cover",      "visible": true },
+    { "id": "deck-company",    "librarySlideId": "lib-company",     "visible": true },
+    { "id": "deck-comparison", "librarySlideId": "lib-comparison",  "visible": true },
+    { "id": "deck-capability", "librarySlideId": "lib-capability",  "visible": true },
+    { "id": "deck-technology", "librarySlideId": "lib-technology",  "visible": true },
+    ... (14 total)
   ]
 }
 ```
 
-- Old slides: `id` matches the filename without `.html`
-- New layout slides: `id` is `deck-slide-<timestamp>`, `layoutId` references `layouts.json`
-- `visible: false` hides a slide from the builder without removing it
-- Order in array = order in presentation
-- GET /api/deck enriches layout slides with `name` + `rows` from layouts.json (for display)
-- PUT /api/deck strips derived fields before writing — only persists `id`, `visible`, `layoutId`
-
-## Slides Architecture (decided 2026-04-07)
-
-Three-tab model at `/slides`:
-
-| Tab | Data | Purpose |
-|-----|------|---------|
-| Templates | Built-in HTML slides + custom saved templates | Starting points — "Use This" clones to My Library |
-| My Library | layouts.json | User's personal slides — edit, toggle In Deck, Save as Template |
-| Layouts | layouts.json (structure only) | Advanced layout builder for power users |
-
-**Playlist model:** Slides in My Library are independent from the deck. In Deck = yes/no toggle.
-**Reference model:** deck.json stores `layoutId` pointer, not a copy of layout data.
-**Flow:** Templates → "Use This" → My Library → edit → "Add to Deck" → Dashboard
+`PUT /api/deck` merges incoming slides with existing data — preserves `librarySlideId` even if not in incoming payload.
 
 ---
 
-## Slides (15 total — LineScanner product)
+## Slides (14 active — LineScanner product)
 
-| File | Content | Editable text |
-|------|---------|---------------|
-| slide-01-cover | Hero — customer logo + tagline + bg image | headline, subheadline, badge, stats, captions |
-| slide-02-company | Company stats, tabs (About/Tech/Map/IQC) | headlines, KPI values+labels, tab labels, pillar text, tech cards, map pins |
-| slide-03-why | Two-column comparison list (problems vs benefits) | column headers, tier labels, list items (via list.js) |
-| slide-04-linescanner | Capability matrix table + process flow | headlines, tab labels, table cells (via table.js), carousel labels, legend |
-| slide-05-technology | 3-tab: How It Works / 16-bit / vs Camera | headlines, tab labels, 8 component cards, column headers, comparison labels |
-| slide-06-surface | 11 defect carousels + defect selector | headlines, subtitle; defect names are JS-generated (NOT editable yet) |
-| slide-07-dimension | Two info cards + main carousel | headlines, card headers, 10 list items, trigger link text |
-| slide-08-screenprinting | Feature list + carousel | headline, card label, 6 list items |
-| slide-09-logo-check | Logo defect tags + carousel | headline, 6 tag labels |
-| slide-10-database | Two-tab: Archive / Management Console | headline, tab labels, 10 list items, 2 carousels |
-| slide-11-sensitivity | Steps + carousel | headline, steps label, 5 steps, tagline |
-| slide-12-footprint | Diagram + spec badges | headline, subtitle, 6 badge values |
-| slide-13-integrations | 9 integration partner cards | headline, subtitle, 9 names + 9 types |
-| slide-14-cta | Contact info + next steps | all text fully editable, email href syncs live |
-| slide-15-clone-of-integrations | Clone of slide-13 | same as integrations |
+| Deck ID | Library ID | Template ID | Render Function | Source HTML |
+|---------|-----------|-------------|-----------------|-------------|
+| deck-cover | lib-cover | tpl-new-cover | renderHeroLayout | slide-01-cover.html |
+| deck-company | lib-company | tpl-new-company | renderCompanyLayout | slide-02-company.html |
+| deck-comparison | lib-comparison | tpl-new-comparison | renderComparisonLayout | slide-03-why.html |
+| deck-capability | lib-capability | tpl-new-capability-matrix | renderCapabilityLayout | slide-04-linescanner.html |
+| deck-technology | lib-technology | tpl-new-technology | renderTechnologyLayout | slide-05-technology.html |
+| deck-surface | lib-surface | tpl-new-defect-gallery | renderDefectGalleryLayout | slide-06-surface.html |
+| deck-dimension | lib-dimension | tpl-new-carousel-cards | renderCarouselCardsLayout | slide-07-dimension.html |
+| deck-screenprint | lib-screenprint | tpl-new-checklist-carousel | renderChecklistCarouselLayout | slide-08-screenprinting.html |
+| deck-logo-check | lib-logo-check | tpl-new-carousel-tags | renderCarouselTagsLayout | slide-09-logo-check.html |
+| deck-database | lib-database | tpl-new-tabs-carousel | renderTabsCarouselLayout | slide-10-database.html |
+| deck-sensitivity | lib-sensitivity | tpl-new-carousel-steps | renderCarouselStepsLayout | slide-11-sensitivity.html |
+| deck-footprint | lib-footprint | tpl-new-full-carousel | renderFullCarouselLayout | slide-12-footprint.html |
+| deck-integrations | lib-integrations | tpl-new-cards-grid | renderCardsGridLayout | slide-13-integrations.html |
+| deck-cta | lib-cta | tpl-new-cta | renderCtaLayout | slide-14-cta.html |
 
 ---
 
@@ -178,71 +211,45 @@ Three-tab model at `/slides`:
 
 | Component | Attribute | What it does |
 |-----------|-----------|--------------|
-| carousel.js | `data-edit="key"` on `.ls-carousel` | Add/delete/reorder images, zoom, autoplay toggle, compare mode (Split/Reveal) |
+| carousel.js | `data-edit="key"` on `.ls-carousel` | Add/delete/reorder images, zoom, autoplay, compare |
 | lightbox.js | `data-zoom` on `<img>` | Click to zoom, gallery group, Add Image button |
-| tabs.js | `.ls-tabs` wrapper | Tab switcher, add/delete/rename |
+| tabs.js | `.ls-tabs` wrapper | Tab switcher, add/delete/rename; **calls LSTable.init on tab switch** |
 | list.js | `ul[data-ls-list]` | Add/hide/delete/reorder items, dblclick to edit |
-| table.js | `table[data-ls-table]` | Row+col add/hide/delete, dot cycling (●○·), edit cells, **resizable first column** |
+| table.js | `table[data-ls-table]` | Row+col add/hide/delete, dot cycling, resizable col; **saveTable saves parent .ls-tabs container** |
 
-**Save pattern:** All components dispatch `slide-carousel-save` custom event → preview.html catches it → derives filename from `SLIDES[current].file` → POST `/api/save`
+**Save pattern (library slides):** Components dispatch `slide-carousel-save` → preview.html catches → `POST /api/deck/slides/:id/edits` → writes to library slide's edits in slide-library.json
 
-**table.js requirements:** Each `table[data-ls-table]` wrapper div must contain `[data-ls-col-restore]`, `[data-ls-row-restore]`, and `[data-ls-add-row]` elements for full functionality. Column headers need `<span class="ls-col-label">` (not `ls4-col-label`). Dot cells need `ls-dot ls-dot-on/off/red/blue` classes (not `ls4-dot-*`).
+**table.js requirements:** Each `table[data-ls-table]` wrapper div must contain `[data-ls-col-restore]`, `[data-ls-row-restore]`, and `[data-ls-add-row]` elements. Column headers need `<span class="ls-col-label">`. Dot spans use `ls-dot ls-dot-on/off/red/blue` classes.
 
 ---
 
 ## Style System
 
-- **App shell styles:** `builder/shared/app-style.css` — Apple Keynote aesthetic, dark/light via `data-theme` on `<html>`, persisted in `localStorage` as `pb-theme`
-- **Theme toggle:** lives at `/settings` — works on both settings and dashboard pages via localStorage restore IIFE
-- **Slide styles:** `builder/features/slides/style.css` — Softsolution brand, **mobile-first** (`min-width` breakpoints), separate from app style
-- All CSS files converted to mobile-first (`max-width` → `min-width` breakpoints)
-- **Standard slide anatomy** introduced 2026-04-07: all 14 content slides now use `slide-layout` / `slide-head` / `slide-body` wrapper structure (slide-01-cover exempt)
-- `.slide-layout` and `.slide-body` CSS rules added to `style.css` — mobile-first, desktop via `min-width:769px`
-- **Known conflict**: 3-layer CSS (style.css vs per-slide `<style>` vs inline styles) causes desktop/mobile fixes to break each other — design system refactor is top next priority
+- **App shell styles:** `builder/shared/app-style.css` — Apple Keynote aesthetic, dark/light via `data-theme`, persisted as `pb-theme`
+- **Slide styles:** `builder/features/slides/style.css` — mobile-first (`min-width` breakpoints)
+- **Standard slide anatomy:** all 14 content slides use `slide-layout`/`slide-head`/`slide-body` wrappers
+- **Known conflict:** 3-layer CSS (style.css vs per-slide `<style>` vs inline styles) — design system refactor planned
 
----
-
-## Dashboard vs Settings Distinction
-
-- **Dashboard → Customer Settings** = the company *receiving* the presentation (name, contact, logo)
-- **Settings → Company Profile** = the user's own company (Softsolution/LiteSentry)
-
----
-
-## Key Conventions
-
-- `data-edit="key"` + `contenteditable=""` → text is editable, auto-saves
-- `data-builder-only=""` → stripped from final customer output
-- `data-ls-list` → list.js takes over the `<ul>`
-- `data-ls-table` → table.js takes over the `<table>`
-- `data-zoom` on `<img>` → lightbox on click
-- `data-no-caption` on `.ls-carousel` → suppress auto-caption overlay
-- Captions are runtime-only (generated from `img.alt`) — NOT saved to disk
-- Slide preview iframes point to `/slides/preview/:id` (shell route), NOT the raw `.html` fragment
+**Slide 04 mobile fix (2026-04-11):** `.ls4-grid` uses `display:flex; flex-direction:column` on mobile with `.ls-carousel { order:-1 }` to show carousel above table. Resets to `display:grid` on desktop.
 
 ---
 
 ## Known Issues / Open Items
 
-- **3-layer CSS conflict** — style.css, per-slide `<style>` blocks, and inline styles fight each other. Fixing one breaks the other. Planned fix: style.css is single source of truth for layout; per-slide styles handle decoration only; carousels use `aspect-ratio`; columns use `.slide-cols` class
-- **Per-slide inline CSS mobile audit** — anatomy refactor done but layout still inconsistent across slides
-- **Slide-06 defect names** — selector button labels are JS-generated from a hardcoded array; cannot be edited without refactoring to static HTML
-- **Image caption editing** — no UI to edit `img.alt` (captions come from this)
-- **No export yet** — `scripts/build.js` (strip builder-only, inject customer config) not built
-- **No deploy yet** — `scripts/deploy.js` (push to GitHub Pages) not built
-- **dashboard.css** — legacy file still present, should be deleted once confirmed unused
-- **Sidebar nav** — added to dashboard + settings but NOT yet added to builder-ui/preview.html (uses its own nav)
-- **layouts/index.html** — old file still exists, superseded by slides/index.html. Should be cleaned up.
-- **3-tab /slides page not fully built** — current /slides is a single-pane layout builder, needs rebuild as Templates | My Library | Layouts
+- **3-layer CSS conflict** — style.css, per-slide `<style>` blocks, and inline styles conflict. Planned fix: style.css as single source of truth
+- **Slide-06 defect names** — selector button labels are JS-generated; needs testing through render path
+- **Slide-12 headline split** — agent split `headline` into `headline` + `headline-emphasis` keys; may need consolidation
+- **No export yet** — `scripts/build.js` not built
+- **No deploy yet** — `scripts/deploy.js` not built
+- **dashboard.css** — legacy file, should be deleted
+- **Image caption editing** — no UI to edit `img.alt`
 
 ---
 
 ## What's Next
 
-1. **Rebuild `/slides` as proper 3-tab page** — Templates | My Library | Layouts (next session priority)
-2. **Template gallery** — new generic templates with dummy data + visual preview, "Use This" flow
-3. **My Library tab** — slide cards with In Deck toggle, Edit, Save as Template, Delete
-4. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
-5. Fix slide-06 defect selector names (move to static HTML)
-6. Presentation view — read-only mode
-7. `scripts/build.js` / `scripts/deploy.js`
+1. **Test all 14 slides** visually against originals — fix per-slide issues as found
+2. **Slide-06 defect gallery** — verify JS defect selector works through render path
+3. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
+4. `scripts/build.js` / `scripts/deploy.js`
+5. Presentation view — read-only mode
