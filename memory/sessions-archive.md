@@ -1,5 +1,21 @@
 # Sessions Archive
 
+## 2026-04-07 — Mobile responsiveness refactor + /idea skill
+
+### Accomplished
+- **Mobile audit pass 1**: Parallel agents fixed inline `<style>` blocks across all 15 slides
+- **Standard slide anatomy**: `slide-layout`/`slide-head`/`slide-body` wrapper added to all 14 content slides
+- **style.css updates**: `.slide-layout`, `.slide-body` rules added; mobile padding; align-items
+- **Per-slide bugs fixed**: tabs active state, max-height removed from lists, overflow added, carousel init fixes
+- **`/idea` skill created** for mid-session idea capture; `IDEAS.md` created
+
+### Pending
+- Design system refactor
+- Remaining per-slide layout issues
+- Delete old `dashboard.css`
+
+---
+
 ## 2026-04-06 — Preview fix, mobile-first conversion, table fixes, settings page
 
 ### Accomplished

@@ -1,5 +1,30 @@
 # Sessions
 
+## 2026-04-11 — Mobile carousel fixes across all slides
+
+### Accomplished
+- **Root cause identified**: on mobile, `.slide-body` is `height:auto` so carousels with `flex:1` or `height:100%` collapse to 0px — invisible
+- **Fix pattern established**: add `.lsX .slide-body { width:100%; align-items:center; }` + `.lsX .ls-carousel { min-height:260px !important; height:260px !important; }` scoped per slide; override to `height:100%` at desktop breakpoint
+- **Critical discovery**: all fixes must go in `server.js` render functions — the `.html` files and `builder/data/renderers/` are NOT served; `server.js` is the single source of truth
+- **All slides fixed** (6, 7, 8, 9, 10, 11, 12, 14 + 2, 4, 5):
+  - Slides 6, 7, 9, 11: direct flex carousel — `min-height` fix applied
+  - Slide 8: two-column flex layout (text left, carousel right) — `width:100%` on slide-body, `flex:1` on carousel desktop
+  - Slide 10: carousels inside tabs — same `min-height` pattern
+  - Slide 12: `.ls12-diagram-wrap` was `display:block` — changed to `display:flex; flex-direction:column`; badges moved inside first carousel slide so they don't float over all images
+  - Slide 14: `overflow:hidden` on slide root blocked mobile scroll — removed
+  - Slide 2: company carousel in tabs panel — same `min-height` fix
+  - Slide 4: vertical column headers on mobile (`writing-mode:vertical-rl`); tab 2 proc-grid forced to single column with `!important`; slide scrollable on mobile
+  - Slide 5: tabs with carousels — same `min-height` fix
+
+### Pending
+- Slide-06 defect gallery: verify JS defect selector works through render path
+- Design system refactor (carried)
+- `scripts/build.js` and `scripts/deploy.js`
+- Presentation view (read-only mode)
+- Delete old `dashboard.css`
+
+---
+
 ## 2026-04-11 — Server-side render functions for all 14 slides
 
 ### Accomplished
@@ -10,7 +35,6 @@
 - **table.js save fix**: `saveTable` now detects when a table is inside `.ls-tabs[data-edit]` and saves the whole tabs container instead of just the table — fixes column-hide persistence across reloads
 - **tabs.js fix**: `switchTo` now calls `LSTable.init(activePanel)` when switching tabs — fixes column hide/show buttons not initializing on non-default tabs
 - **Slide 04 mobile fix**: carousel moved above table on mobile using `order:-1`; carousel has fixed height; table is scrollable below
-- **Technology slide (05)**: added `renderTechnologyLayout` with 3-tab structure (How It Works, 16-bit Advantage, vs Camera Systems)
 
 ### Pending
 - Test each slide visually against originals — fix per-slide issues as found
@@ -38,19 +62,3 @@
 - Design system refactor (carried)
 - Delete old `dashboard.css`
 - `scripts/build.js` and `scripts/deploy.js`
-
----
-
-## 2026-04-07 — Mobile responsiveness refactor + /idea skill
-
-### Accomplished
-- **Mobile audit pass 1**: Parallel agents fixed inline `<style>` blocks across all 15 slides
-- **Standard slide anatomy**: `slide-layout`/`slide-head`/`slide-body` wrapper added to all 14 content slides
-- **style.css updates**: `.slide-layout`, `.slide-body` rules added; mobile padding; align-items
-- **Per-slide bugs fixed**: tabs active state, max-height removed from lists, overflow added, carousel init fixes
-- **`/idea` skill created** for mid-session idea capture; `IDEAS.md` created
-
-### Pending
-- Design system refactor
-- Remaining per-slide layout issues
-- Delete old `dashboard.css`

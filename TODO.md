@@ -1,9 +1,7 @@
 # TODO — Presentation Builder
 
 ## High Priority — Next Session
-- [ ] **Test all 14 slides** visually against originals — fix per-slide issues as found
 - [ ] **Slide-06 defect gallery**: verify JS defect selector works through render path; fix if broken
-- [ ] **Slide-12 headline split**: agent split into `headline` + `headline-emphasis` — verify or consolidate to single key
 
 ## High Priority — Carried
 - [ ] **Design system refactor** — eliminate 3-layer CSS conflict (style.css vs per-slide `<style>` vs inline styles). One source of truth in style.css.
@@ -25,6 +23,12 @@
 - [ ] Dual-preview layout builder (desktop + mobile side by side)
 
 ## Completed
+- [x] Mobile carousel fix — all slides: `min-height:260px !important` pattern on mobile, `height:100%` desktop
+- [x] `server.js` confirmed as sole source of truth for rendered slides (HTML files and renderers/ are not served)
+- [x] Slide 8: two-column flex desktop layout (text + carousel)
+- [x] Slide 12: badges inside first carousel slide; `.ls12-diagram-wrap` flex column; `overflow:hidden` removed from slide root
+- [x] Slide 14: `overflow:hidden` removed from slide root — mobile scrollable
+- [x] Slide 4: vertical column headers on mobile; tab 2 single-column; slide scrollable
 - [x] All 14 slides have server-side render functions (`renderXxxLayout`) in `server.js`
 - [x] `renderLayoutToHtml` dispatches all 14 `tpl-new-*` template IDs
 - [x] `table.js` saveTable: saves parent `.ls-tabs` container when inside tabs (column-hide persists)

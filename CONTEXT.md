@@ -83,9 +83,13 @@ All content slides now use this structure:
 - [x] `tabs.js` fixed — calls `LSTable.init` on tab switch (fixes table buttons on non-active tabs)
 - [x] Slide 04 mobile: carousel above table via `order:-1`
 - [x] `builder/data/renderers/` — individual render function files for slides 06–14
+- [x] Mobile carousel fix — all slides (6–12, 14, 2, 4, 5): `min-height` pattern, `slide-body width:100%`, `overflow:hidden` removed from slide-14
+- [x] Slide 8 desktop fix — two-column flex layout with carousel filling right column
+- [x] Slide 12 — badges moved inside first carousel slide; `.ls12-diagram-wrap` made flex column
+- [x] Slide 4 mobile — vertical column headers, proc-grid single column, scrollable
+- [x] Root cause documented: `server.js` is the only source of truth for rendered slides
 
 ## Next Steps
-- [ ] **Test all 14 slides** visually against originals — fix per-slide issues as found
 - [ ] **Slide-06 defect gallery**: verify JS defect selector works through render path
 - [ ] **Design system refactor** (carried) — eliminate 3-layer CSS conflict; one source of truth in style.css
 - [ ] Delete old `dashboard.css`
@@ -99,4 +103,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-04-11
+Last updated: 2026-04-11 (session 2)
