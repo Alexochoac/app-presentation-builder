@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-04-12 (session 3)
+Last updated: 2026-04-12 (session 4)
 
 ---
 
@@ -36,6 +36,7 @@ App-presentation-builder/
     │   ├── slide-templates.json    ← Template definitions (id, defaultContent)
     │   ├── layouts.json            ← User-created layouts (legacy new-slide system)
     │   ├── settings.json           ← App settings (heroBg, heroBgFocal, etc.)
+    │   ├── presentations.json      ← NEW (2026-04-12): Finished presentations snapshot history
     │   └── renderers/              ← Source files for per-slide render functions (agents write here)
     │       ├── slide-06-surface.js     ← renderDefectGalleryLayout
     │       ├── slide-07-dimension.js   ← renderCarouselCardsLayout
@@ -51,13 +52,13 @@ App-presentation-builder/
     │   │   ├── auth.js             ← Session auth middleware + login/logout routes
     │   │   └── login.html          ← Login page (dark theme)
     │   ├── dashboard/
-    │   │   ├── index.html          ← Dashboard (served at /) — overview only + Finished Presentations skeleton
+    │   │   ├── index.html          ← Dashboard (served at /) — overview + Finished Presentations list
     │   │   ├── dashboard.css       ← Legacy styles (to be deleted)
     │   │   └── dashboard.js        ← Legacy deck manager (no longer loaded by dashboard)
     │   ├── settings/
     │   │   └── index.html          ← Settings page (/settings) — Presentation Name, sidebar nav
     │   ├── slides/
-    │   │   ├── index.html          ← Builder page (/slides) — two tabs: My Deck | Slide Manager
+    │   │   ├── index.html          ← Builder page (/slides) — My Deck tab + Slide Manager tab; Create Presentation modal
     │   │   ├── style.css           ← Shared slide CSS — mobile-first, all 15 slides
     │   │   ├── slide-01-cover.html ← Original HTML fragments (source of truth for content)
     │   │   ├── ... (slides 02-15)
@@ -70,6 +71,7 @@ App-presentation-builder/
     │   │       ├── table.js        ← table[data-ls-table]: row+col edit, dot cycling, resizable col
     │   │       │                     saveTable saves parent .ls-tabs container when inside tabs
     │   │       └── tracker.js      ← Umami analytics tracker
+    │   ├── presentation-view/      ← PLANNED: Read-only viewer page for finished presentations
     │   └── builder-ui/
     │       └── preview.html        ← Builder UI (served at /builder/preview.html)
     └── shared/
@@ -88,7 +90,7 @@ Browser → Express (server.js)
               ├── Static: /slides/uploads  → features/slides/uploads/
               ├── Static: /slides/shared   → shared/assets/
               ├── GET /slides/:deckSlideId.html      ← renders library slide via render chain (bare fragment)
-              ├── GET /slides/deck-preview/:id       ← NEW (2026-04-12): renders deck slide + full HTML shell
+              ├── GET /slides/deck-preview/:id       ← renders deck slide + full HTML shell with component JS (carousel.js, tabs.js, etc.)
               ├── GET /slides/preview/:id            ← shell route: wraps static fragment in full HTML
               ├── Static: /slides          → features/slides/
               ├── Static: /               → features/dashboard/
@@ -97,16 +99,46 @@ Browser → Express (server.js)
               ├── Static: /builder        → features/builder-ui/
               ├── GET  /api/deck               → reads deck.json + enriches with library data
               ├── PUT  /api/deck               → merges into deck.json (preserves librarySlideId)
-              ├── POST /api/deck/slides/:id/edits  ← NEW: saves edits to library slide
-              ├── POST /api/library            ← NEW: create library slide
-              ├── POST /api/library/:id/edits  ← NEW: save edits to library slide directly
+              ├── POST /api/deck/slides/:id/edits  ← saves edits to library slide
+              ├── POST /api/library            ← create library slide
+              ├── POST /api/library/:id/edits  ← save edits to library slide directly
               ├── GET  /api/slide-library      → reads slide-library.json
               ├── DELETE /api/slide-library/:id → removes entry
+              ├── GET  /api/presentations      ← NEW (2026-04-12): returns all finished presentations
+              ├── POST /api/presentations      ← NEW (2026-04-12): saves new presentation snapshot
+              ├── GET  /api/presentations/:id  ← PLANNED: single presentation route
+              ├── POST /api/presentations/:id/publish ← PLANNED: GitHub Pages publish
               ├── POST /api/save               → edits slide HTML via Cheerio (old slides)
               ├── POST /api/upload-image        → saves base64 image to uploads/
               ├── POST /api/save-image-src      → updates img src in slide file
               └── POST /api/clone-slide         → copies slide HTML, adds to library+deck
 ```
+
+---
+
+## presentations.json Structure (NEW 2026-04-12)
+
+```json
+{
+  "presentations": [
+    {
+      "id": "pres-001",
+      "createdAt": "2026-04-12T14:30:00Z",
+      "customerName": "Acme Corp",
+      "contactName": "Jane Doe",
+      "contactTitle": "VP Sales",
+      "slideCount": 14,
+      "slides": [
+        { "id": "deck-cover", "librarySlideId": "lib-cover", "name": "Cover" },
+        { "id": "deck-company", "librarySlideId": "lib-company", "name": "Company" },
+        ...
+      ]
+    }
+  ]
+}
+```
+
+**Note:** Finished presentations are snapshots — deck structure + library slide references recorded at creation time. Slide content still served live from library (editable).
 
 ---
 
@@ -253,45 +285,58 @@ Additional per-slide fixes:
 
 ---
 
-## Known Issues / Open Items
-
-- **3-layer CSS conflict** — style.css, per-slide `<style>` blocks, and inline styles conflict. Planned fix: style.css as single source of truth
-- **Slide-06 defect names** — selector button labels are JS-generated; needs testing through render path
-- **Slide-12 headline split** — agent split `headline` into `headline` + `headline-emphasis` keys; may need consolidation
-- **No export yet** — `scripts/build.js` not built
-- **No deploy yet** — `scripts/deploy.js` not built
-- **dashboard.css** — legacy file, should be deleted
-- **Image caption editing** — no UI to edit `img.alt`
-
----
-
 ## Navigation Structure (updated 2026-04-12)
 
 **Sidebar nav in all pages:** Dashboard | Builder | Settings
 
 | Route | Page | Purpose |
 |-------|------|---------|
-| `/` | Dashboard | Overview + Finished Presentations skeleton (read-only) |
-| `/slides` | Builder | Active editing workspace |
+| `/` | Dashboard | Overview + Finished Presentations list (read-only) |
+| `/slides` | Builder | Active editing workspace with Create Presentation modal |
 | `/settings` | Settings | Presentation config, branding |
 | `/builder/preview.html` | Preview | Full-screen slide viewer |
 
-**Builder (`/slides`) tab structure:**
-- **My Deck tab** (default): 2-col top (Your Presentation deck left | Slide Preview right) + Customer Settings below
+**Builder (`/slides`) tab structure (updated 2026-04-12):**
+- **My Deck tab** (default): 2-col layout (Deck list left | Slide Preview right)
+  - Customer Settings section removed entirely
+  - "Create Presentation" button in Slide Preview header → opens `#createPresentationModal`
+  - Preview arrows with prev/next buttons + `N / total` slide counter
+  - Slide name displays in subtitle below counter
+  - Themed scrollbar on `.deck-list-scroll`
 - **Slide Manager tab**: My Library + Templates (management only)
+
+**Create Presentation modal:**
+- Fields: Company (required), Contact Name, Contact Title
+- Calls `POST /api/presentations` with current deck snapshot
+- Prepends new presentation to `presentations.json`
 
 **Deck list behavior:** rows with drag-to-reorder, eye toggle, remove. Click slide name → renders preview via `/slides/deck-preview/:id` in right pane.
 
-**`/slides/deck-preview/:id`:** renders deck slide via `renderLayoutToHtml` + wraps in full HTML shell with `style.css`. Use this for any in-app preview of deck slides (not `/slides/{id}.html` which returns a bare unstyled fragment).
+**`/slides/deck-preview/:id`:** renders deck slide via `renderLayoutToHtml` + wraps in full HTML shell with `style.css` + includes component JS scripts (carousel.js, tabs.js, lightbox.js, list.js, table.js) + runs init block calling `Carousel.init()`, `Tabs.init()`, `Lightbox.init()`, `List.init()`, `LSTable.init()`.
 
 ---
 
-## What's Next
+## Known Issues / Open Items
 
-1. **Finished Presentations** — wire up real data + read-only preview link
-2. **Add Slide modal** — replace stub (`openNewSlideModal`) with real template picker inside Builder
-3. **Customer Settings** — wire fields to deck personalization API
-4. **Slide-06 defect gallery** — verify JS defect selector works through render path
-5. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
-6. `scripts/build.js` / `scripts/deploy.js`
-7. Delete old `dashboard.css`
+- **3-layer CSS conflict** — style.css, per-slide `<style>` blocks, and inline styles conflict. Planned fix: style.css as single source of truth
+- **Slide-06 defect names** — selector button labels are JS-generated; needs testing through render path
+- **Slide-12 headline split** — agent split `headline` into `headline` + `headline-emphasis` keys; may need consolidation
+- **No viewer yet** — `/view/:id` and `GET /api/presentations/:id` not built
+- **No publish yet** — `POST /api/presentations/:id/publish` not built (needs GITHUB_TOKEN + GITHUB_REPO in .env)
+- **dashboard.css** — legacy file, should be deleted
+- **Image caption editing** — no UI to edit `img.alt`
+- **Add Slide modal** — still a stub in Builder
+
+---
+
+## What's Next (updated 2026-04-12)
+
+1. **`GET /api/presentations/:id`** — single presentation route (fetch for viewer)
+2. **`/view/:id`** — read-only full-screen slideshow page (click from Dashboard)
+3. **`POST /api/presentations/:id/publish`** — GitHub Pages publish + Publish button on Dashboard
+4. **Add Slide modal** — replace stub with real template picker
+5. **Slide-06 defect gallery** — verify JS defect selector works through render path
+6. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
+7. **`scripts/build.js` / `scripts/deploy.js`** — automation scripts
+8. Delete old `dashboard.css`
+
