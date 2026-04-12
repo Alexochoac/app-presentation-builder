@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-04-11 (session 2)
+Last updated: 2026-04-12 (session 3)
 
 ---
 
@@ -11,7 +11,7 @@ A local web app for building customized sales presentations for Softsolution's L
 **Status:** Active — Phase 1 in development
 **Runs locally at:** `http://localhost:3000`
 **Start command:** `cd builder && node server.js`
-**Login → Dashboard → Open Builder → preview.html**
+**Login → Dashboard → Builder (`/slides`) → Open Builder → preview.html**
 
 ---
 
@@ -51,13 +51,13 @@ App-presentation-builder/
     │   │   ├── auth.js             ← Session auth middleware + login/logout routes
     │   │   └── login.html          ← Login page (dark theme)
     │   ├── dashboard/
-    │   │   ├── index.html          ← Dashboard (served at /) — post-login home
+    │   │   ├── index.html          ← Dashboard (served at /) — overview only + Finished Presentations skeleton
     │   │   ├── dashboard.css       ← Legacy styles (to be deleted)
-    │   │   └── dashboard.js        ← Deck manager + slide library + preview + drag-to-reorder
+    │   │   └── dashboard.js        ← Legacy deck manager (no longer loaded by dashboard)
     │   ├── settings/
     │   │   └── index.html          ← Settings page (/settings) — Presentation Name, sidebar nav
     │   ├── slides/
-    │   │   ├── index.html          ← /slides page (Templates | My Library | Deck tabs)
+    │   │   ├── index.html          ← Builder page (/slides) — two tabs: My Deck | Slide Manager
     │   │   ├── style.css           ← Shared slide CSS — mobile-first, all 15 slides
     │   │   ├── slide-01-cover.html ← Original HTML fragments (source of truth for content)
     │   │   ├── ... (slides 02-15)
@@ -87,8 +87,9 @@ Browser → Express (server.js)
               ├── requireAuth middleware (gates everything below)
               ├── Static: /slides/uploads  → features/slides/uploads/
               ├── Static: /slides/shared   → shared/assets/
-              ├── GET /slides/:deckSlideId.html  ← NEW: renders library slide via render chain
-              ├── GET /slides/preview/:id        ← shell route: wraps fragment in full HTML
+              ├── GET /slides/:deckSlideId.html      ← renders library slide via render chain (bare fragment)
+              ├── GET /slides/deck-preview/:id       ← NEW (2026-04-12): renders deck slide + full HTML shell
+              ├── GET /slides/preview/:id            ← shell route: wraps static fragment in full HTML
               ├── Static: /slides          → features/slides/
               ├── Static: /               → features/dashboard/
               ├── GET  /settings              → features/settings/index.html
@@ -264,10 +265,33 @@ Additional per-slide fixes:
 
 ---
 
+## Navigation Structure (updated 2026-04-12)
+
+**Sidebar nav in all pages:** Dashboard | Builder | Settings
+
+| Route | Page | Purpose |
+|-------|------|---------|
+| `/` | Dashboard | Overview + Finished Presentations skeleton (read-only) |
+| `/slides` | Builder | Active editing workspace |
+| `/settings` | Settings | Presentation config, branding |
+| `/builder/preview.html` | Preview | Full-screen slide viewer |
+
+**Builder (`/slides`) tab structure:**
+- **My Deck tab** (default): 2-col top (Your Presentation deck left | Slide Preview right) + Customer Settings below
+- **Slide Manager tab**: My Library + Templates (management only)
+
+**Deck list behavior:** rows with drag-to-reorder, eye toggle, remove. Click slide name → renders preview via `/slides/deck-preview/:id` in right pane.
+
+**`/slides/deck-preview/:id`:** renders deck slide via `renderLayoutToHtml` + wraps in full HTML shell with `style.css`. Use this for any in-app preview of deck slides (not `/slides/{id}.html` which returns a bare unstyled fragment).
+
+---
+
 ## What's Next
 
-1. **Slide-06 defect gallery** — verify JS defect selector works through render path
-2. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
-3. `scripts/build.js` / `scripts/deploy.js`
-4. Presentation view — read-only mode
-5. Delete old `dashboard.css`
+1. **Finished Presentations** — wire up real data + read-only preview link
+2. **Add Slide modal** — replace stub (`openNewSlideModal`) with real template picker inside Builder
+3. **Customer Settings** — wire fields to deck personalization API
+4. **Slide-06 defect gallery** — verify JS defect selector works through render path
+5. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
+6. `scripts/build.js` / `scripts/deploy.js`
+7. Delete old `dashboard.css`
