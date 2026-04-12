@@ -7,7 +7,8 @@
 - [ ] **Design system refactor** — eliminate 3-layer CSS conflict (style.css vs per-slide `<style>` vs inline styles). One source of truth in style.css.
 
 ## Dashboard & UI
-- [ ] Presentation view — clean read-only mode
+- [ ] Finished Presentations — wire up real data + link to read-only preview
+- [ ] Add Slide modal — replace stub with real template picker modal
 - [ ] Customer Settings — wire up fields to actual deck personalization
 - [ ] Delete old `dashboard.css`
 
@@ -23,6 +24,13 @@
 - [ ] Dual-preview layout builder (desktop + mobile side by side)
 
 ## Completed
+- [x] UI refactor: Dashboard / Builder / Slides separated into distinct sections
+- [x] Dashboard cleaned up: overview only, Finished Presentations skeleton added
+- [x] Builder page: My Deck tab (2-col deck+preview) + Customer Settings + Slide Manager tab
+- [x] Deck list: row style with drag-and-drop, eye toggle, remove button
+- [x] Slide preview in Builder: click slide → renders in right pane via `/slides/deck-preview/:id`
+- [x] `GET /slides/deck-preview/:id` server route (full HTML shell with style.css)
+- [x] Nav synced across all pages: Dashboard | Builder | Settings
 - [x] Mobile carousel fix — all slides: `min-height:260px !important` pattern on mobile, `height:100%` desktop
 - [x] `server.js` confirmed as sole source of truth for rendered slides (HTML files and renderers/ are not served)
 - [x] Slide 8: two-column flex desktop layout (text + carousel)

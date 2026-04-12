@@ -36,15 +36,9 @@
         </a>
       </li>
       <li>
-        <a href="/builder/preview.html" class="sidebar-nav-item">
+        <a href="/slides" class="sidebar-nav-item">
           <span class="nav-icon">&#9654;</span>
           <span class="nav-label">Builder</span>
-        </a>
-      </li>
-      <li>
-        <a href="/slides" class="sidebar-nav-item">
-          <span class="nav-icon">&#9783;</span>
-          <span class="nav-label">Slides</span>
         </a>
       </li>
       <li>
@@ -73,83 +67,23 @@
   <!-- Main Content -->
   <main class="main">
 
-    <!-- Two-Panel Layout -->
-    <div class="panels">
-
-      <!-- Left Panel: Your Deck -->
-      <section class="panel panel-deck">
-        <div class="panel-header">
-          <div>
-            <h2 class="panel-title">Your Presentation</h2>
-            <p class="panel-subtitle" id="deckTitle">Loading…</p>
-          </div>
-          <a href="/builder/preview.html" class="btn-primary">Open Builder &rarr;</a>
-        </div>
-
-        <div class="deck-list-wrap">
-          <ul class="deck-list" id="deckList">
-            <li class="deck-placeholder">Loading slides…</li>
-          </ul>
-        </div>
-
-        <p class="deck-empty hidden" id="deckEmpty">No slides in your deck yet. Add some from the library.</p>
-      </section>
-
-      <!-- Right Panel: Slide Library -->
-      <section class="panel panel-library">
-        <div class="panel-header">
-          <div>
-            <h2 class="panel-title">Slide Library</h2>
-            <p class="panel-subtitle">Click Add to include a slide in your deck</p>
-          </div>
-        </div>
-
-        <div class="library-grid" id="libraryGrid">
-          <div class="deck-placeholder">Loading library…</div>
-        </div>
-      </section>
-
-    </div>
-
-    <!-- Customer Settings -->
-    <section class="settings-section">
-      <div class="settings-header">
-        <h2 class="panel-title">Customer Settings</h2>
-        <span class="badge-wip">Coming Soon</span>
-      </div>
-      <p class="settings-note">Details about the customer receiving this presentation. These will be used to personalize the deck.</p>
-      <div class="settings-fields">
-        <div class="field">
-          <label for="customerName">Customer Company</label>
-          <input type="text" id="customerName" placeholder="e.g. Acme Glass Co." disabled>
-        </div>
-        <div class="field">
-          <label for="contactName">Contact Person</label>
-          <input type="text" id="contactName" placeholder="e.g. John Smith" disabled>
-        </div>
-        <div class="field">
-          <label for="contactTitle">Contact Title</label>
-          <input type="text" id="contactTitle" placeholder="e.g. Head of Quality" disabled>
-        </div>
-        <div class="field">
-          <label for="customerLogo">Customer Logo</label>
-          <div class="logo-upload-wrap">
-            <div class="logo-preview" id="customerLogoPreview">
-              <span class="logo-preview-placeholder">No logo</span>
-            </div>
-            <input type="file" id="customerLogo" accept="image/*" disabled>
-          </div>
+    <!-- Finished Presentations -->
+    <section class="panel">
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">Finished Presentations</h2>
+          <p class="panel-subtitle">Completed customer decks</p>
         </div>
       </div>
-      <button class="btn-save" onclick="showComingSoon(this)">Save Changes</button>
-      <p class="coming-soon-msg hidden" id="comingSoonMsg">Save functionality is coming in a future update.</p>
+
+      <p class="deck-empty">No finished presentations yet.</p>
+      <ul class="finished-list" id="finishedList"></ul>
     </section>
 
   </main>
 
   </div><!-- /.app-body -->
 
-  <script src="/dashboard.js"></script>
   <script>
     (function () {
       var html = document.documentElement;

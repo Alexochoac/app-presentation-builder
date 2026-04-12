@@ -1,5 +1,20 @@
 # Sessions Archive
 
+## 2026-04-07 (session 2) — Sidebar nav, Slides section, layout builder, deck connection
+
+### Accomplished
+- **Collapsible sidebar nav**: replaced top-bar pill nav with mobile-first collapsible sidebar across dashboard, settings — hamburger on mobile, collapse toggle on desktop, localStorage persistence
+- **Mobile click bug fixed**: `.sidebar-overlay` was blocking all taps — fixed with `pointer-events: none` when closed
+- **Settings page**: added working Presentation Name field (loads/saves via `PUT /api/deck`), fixed `PUT /api/deck` to do merge instead of full overwrite (partial updates now supported)
+- **Layouts → Slides section** (`/slides`): built layout builder with full-screen editor, split-pane (canvas left, preview right), preset column layouts, row height toggles, component picker, dummy content preview, Desktop/Mobile viewport toggle
+- **Slides architecture decided**: Templates → My Library → Deck (playlist model)
+- **Deck ↔ Library connection**: `POST /api/deck/slides`, `DELETE /api/deck/slides/:id`, enriched `GET /api/deck`
+- **Server-side layout renderer**: `GET /slides/deck-slide-:id.html`
+- **Delete cloned slides**: `DELETE /api/slide-library/:id`
+- **Enrichment pollution fix**: `PUT /api/deck` strips derived fields before writing
+
+---
+
 ## 2026-04-07 — Mobile responsiveness refactor + /idea skill
 
 ### Accomplished
