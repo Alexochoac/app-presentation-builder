@@ -7,7 +7,8 @@
 - [ ] **Design system refactor** — eliminate 3-layer CSS conflict (style.css vs per-slide `<style>` vs inline styles). One source of truth in style.css.
 
 ## Dashboard & UI
-- [ ] Finished Presentations — wire up real data + link to read-only preview
+- [ ] **Presentation viewer** — `/view/:id` read-only full-screen slideshow (click from Dashboard)
+- [ ] **GitHub publish** — "Publish to GitHub Pages" button on finished presentation
 - [ ] Add Slide modal — replace stub with real template picker modal
 - [ ] Customer Settings — wire up fields to actual deck personalization
 - [ ] Delete old `dashboard.css`
@@ -31,6 +32,13 @@
 - [x] Slide preview in Builder: click slide → renders in right pane via `/slides/deck-preview/:id`
 - [x] `GET /slides/deck-preview/:id` server route (full HTML shell with style.css)
 - [x] Nav synced across all pages: Dashboard | Builder | Settings
+- [x] Slide Preview: component JS added to deck-preview shell (carousels/tabs now render correctly)
+- [x] Slide Preview: prev/next arrows with slide counter
+- [x] Deck list scrollbar: theme-sensitive (dark/light mode)
+- [x] Create Presentation modal: customer fields → saves to presentations.json
+- [x] `POST /api/presentations` + `GET /api/presentations` server routes
+- [x] `presentations.json` data store created
+- [x] Dashboard Finished Presentations: wired to real data from API
 - [x] Mobile carousel fix — all slides: `min-height:260px !important` pattern on mobile, `height:100%` desktop
 - [x] `server.js` confirmed as sole source of truth for rendered slides (HTML files and renderers/ are not served)
 - [x] Slide 8: two-column flex desktop layout (text + carousel)

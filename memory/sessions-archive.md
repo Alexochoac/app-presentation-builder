@@ -1,5 +1,17 @@
 # Sessions Archive
 
+## 2026-04-12 — UI Refactor: Dashboard / Builder / Slides separation
+
+### Accomplished
+- Dashboard cleaned to overview only + Finished Presentations skeleton
+- Builder page (`/slides`): My Deck tab (2-col deck+preview) + Slide Manager tab
+- Deck list: row style with drag-and-drop, eye toggle, remove button
+- `GET /slides/deck-preview/:id` route: full HTML shell with style.css + component JS
+- Nav synced across all pages: Dashboard | Builder | Settings
+- `renderDeckList()` called on init so deck loads immediately
+
+---
+
 ## 2026-04-07 (session 2) — Sidebar nav, Slides section, layout builder, deck connection
 
 ### Accomplished

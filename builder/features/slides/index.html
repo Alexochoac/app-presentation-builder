@@ -1259,7 +1259,10 @@
       font-size: 14px;
       font-family: var(--font);
       outline: none;
+      transition: border-color 0.15s;
     }
+    .field input:focus { border-color: var(--accent); }
+    .field input::placeholder { color: var(--muted); }
     .logo-upload-wrap {
       display: flex;
       align-items: center;
@@ -1366,6 +1369,51 @@
       transition: color 0.15s;
     }
     .btn-remove:hover { color: var(--remove-hov-fg, #f87171); }
+
+    /* ── Preview nav arrows ──────────────────────────────────────────── */
+    .preview-nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .preview-nav.hidden { display: none; }
+    .preview-nav-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius-btn);
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .preview-nav-btn:hover { border-color: var(--border-hov); background: var(--surface-hov); }
+    .preview-nav-btn:disabled { opacity: 0.3; cursor: default; }
+    .preview-nav-count {
+      font-size: 12px;
+      color: var(--muted);
+      min-width: 36px;
+      text-align: center;
+    }
+
+    /* ── Deck list scrollbar (theme-sensitive) ───────────────────────── */
+    .deck-list-scroll {
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-hov) transparent;
+    }
+    .deck-list-scroll::-webkit-scrollbar { width: 5px; }
+    .deck-list-scroll::-webkit-scrollbar-track { background: transparent; }
+    .deck-list-scroll::-webkit-scrollbar-thumb {
+      background: var(--border-hov);
+      border-radius: 99px;
+    }
+    .deck-list-scroll::-webkit-scrollbar-thumb:hover {
+      background: var(--muted);
+    }
 
     .btn-secondary {
       display: inline-flex;
@@ -1499,7 +1547,15 @@
           <div class="panel-header">
             <div>
               <h2 class="panel-title">Slide Preview</h2>
-              <p class="panel-subtitle">Select a slide to preview</p>
+              <p class="panel-subtitle" id="previewSubtitle">Select a slide to preview</p>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="preview-nav hidden" id="previewNav">
+                <button class="preview-nav-btn" id="previewPrev" title="Previous slide">&#8592;</button>
+                <span class="preview-nav-count" id="previewCount"></span>
+                <button class="preview-nav-btn" id="previewNext" title="Next slide">&#8594;</button>
+              </div>
+              <button class="btn-primary" onclick="openCreatePresentationModal()" style="white-space:nowrap;">Create Presentation</button>
             </div>
           </div>
           <div class="preview-pane" id="slidePreviewPane">
@@ -1512,40 +1568,6 @@
         </section>
 
       </div>
-
-      <!-- ── Customer Settings ─────────────────────────────────── -->
-      <section class="settings-section" style="margin-top:24px;">
-        <div class="settings-header">
-          <h2 class="panel-title">Customer Settings</h2>
-          <span class="badge-wip">Coming Soon</span>
-        </div>
-        <p class="settings-note">Details about the customer receiving this presentation. These will be used to personalize the deck.</p>
-        <div class="settings-fields">
-          <div class="field">
-            <label for="customerName">Customer Company</label>
-            <input type="text" id="customerName" placeholder="e.g. Acme Glass Co." disabled>
-          </div>
-          <div class="field">
-            <label for="contactName">Contact Person</label>
-            <input type="text" id="contactName" placeholder="e.g. John Smith" disabled>
-          </div>
-          <div class="field">
-            <label for="contactTitle">Contact Title</label>
-            <input type="text" id="contactTitle" placeholder="e.g. Head of Quality" disabled>
-          </div>
-          <div class="field">
-            <label for="customerLogo">Customer Logo</label>
-            <div class="logo-upload-wrap">
-              <div class="logo-preview" id="customerLogoPreview">
-                <span class="logo-preview-placeholder">No logo</span>
-              </div>
-              <input type="file" id="customerLogo" accept="image/*" disabled>
-            </div>
-          </div>
-        </div>
-        <button class="btn-save" onclick="showComingSoon(this)">Save Changes</button>
-        <p class="coming-soon-msg hidden" id="comingSoonMsg">Save functionality is coming in a future update.</p>
-      </section>
 
       </div><!-- /#btab-deck -->
 
@@ -1609,6 +1631,36 @@
 
     </main>
   </div><!-- /.app-body -->
+
+  <!-- ── Create Presentation Modal ───────────────────────────────── -->
+  <div class="picker-overlay hidden" id="createPresentationModal">
+    <div class="picker-panel" style="max-width:480px;width:100%;">
+      <div class="picker-title" style="margin-bottom:4px;">Create Presentation for Customer</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px;">Fill in the customer details. This will save a finished copy of the current deck.</p>
+
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="field">
+          <label for="cpCustomerName">Customer Company <span style="color:var(--accent);">*</span></label>
+          <input type="text" id="cpCustomerName" placeholder="e.g. Acme Glass Co." autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="cpContactName">Contact Person</label>
+          <input type="text" id="cpContactName" placeholder="e.g. John Smith">
+        </div>
+        <div class="field">
+          <label for="cpContactTitle">Contact Title</label>
+          <input type="text" id="cpContactTitle" placeholder="e.g. Head of Quality">
+        </div>
+      </div>
+
+      <p class="coming-soon-msg hidden" id="cpError" style="color:#f87171;margin-top:12px;"></p>
+
+      <div style="display:flex;gap:8px;margin-top:20px;">
+        <button class="picker-cancel" onclick="closeCreatePresentationModal()" style="flex:0 0 auto;">Cancel</button>
+        <button class="btn-primary" onclick="submitCreatePresentation()" style="flex:1;" id="cpSubmitBtn">Save Presentation</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ── New Slide Modal ─────────────────────────────────────────── -->
   <div class="picker-overlay hidden" id="newSlideModal">
@@ -1993,6 +2045,61 @@
     }
 
     // ── New Slide Modal ──────────────────────────────────────────────
+
+    function openCreatePresentationModal() {
+      document.getElementById('cpCustomerName').value = '';
+      document.getElementById('cpContactName').value  = '';
+      document.getElementById('cpContactTitle').value = '';
+      document.getElementById('cpError').classList.add('hidden');
+      document.getElementById('cpError').textContent = '';
+      document.getElementById('createPresentationModal').classList.remove('hidden');
+      setTimeout(function () { document.getElementById('cpCustomerName').focus(); }, 50);
+    }
+
+    function closeCreatePresentationModal() {
+      document.getElementById('createPresentationModal').classList.add('hidden');
+    }
+
+    function submitCreatePresentation() {
+      var customerName = document.getElementById('cpCustomerName').value.trim();
+      var contactName  = document.getElementById('cpContactName').value.trim();
+      var contactTitle = document.getElementById('cpContactTitle').value.trim();
+      var errEl        = document.getElementById('cpError');
+      var submitBtn    = document.getElementById('cpSubmitBtn');
+
+      if (!customerName) {
+        errEl.textContent = 'Customer company name is required.';
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Saving…';
+
+      fetch('/api/presentations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customerName: customerName,
+          contactName:  contactName,
+          contactTitle: contactTitle
+        })
+      })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res.success) throw new Error(res.error || 'Failed to save');
+        closeCreatePresentationModal();
+        showToast('Presentation saved for ' + customerName);
+      })
+      .catch(function (err) {
+        errEl.textContent = err.message || 'Something went wrong.';
+        errEl.classList.remove('hidden');
+      })
+      .finally(function () {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Save Presentation';
+      });
+    }
 
     function showComingSoon(btn) {
       var msg = document.getElementById('comingSoonMsg');
@@ -2423,11 +2530,23 @@
       });
     }
 
+    var previewIdx = -1;
+
     function showSlidePreview(deckSlide) {
+      var idx = deckSlides.findIndex(function (s) { return s.id === deckSlide.id; });
+      previewIdx = idx;
+      renderPreviewAt(previewIdx);
+      updatePreviewNav();
+    }
+
+    function renderPreviewAt(idx) {
+      var slide = deckSlides[idx];
+      if (!slide) return;
+
       var pane = document.getElementById('slidePreviewPane');
       if (!pane) return;
 
-      var src = '/slides/deck-preview/' + deckSlide.id;
+      var src = '/slides/deck-preview/' + slide.id;
       var SLIDE_W = 1280, SLIDE_H = 720;
       var availW = pane.clientWidth  || 500;
       var availH = pane.clientHeight || 320;
@@ -2441,7 +2560,37 @@
             '<iframe src="' + src + '" style="width:' + SLIDE_W + 'px;height:' + SLIDE_H + 'px;border:none;" scrolling="no" title="Slide preview"></iframe>' +
           '</div>' +
         '</div>';
+
+      var subtitle = document.getElementById('previewSubtitle');
+      if (subtitle) subtitle.textContent = slide.name || 'Slide ' + (idx + 1);
     }
+
+    function updatePreviewNav() {
+      var nav   = document.getElementById('previewNav');
+      var prev  = document.getElementById('previewPrev');
+      var next  = document.getElementById('previewNext');
+      var count = document.getElementById('previewCount');
+      if (!nav) return;
+
+      if (previewIdx < 0 || deckSlides.length === 0) {
+        nav.classList.add('hidden');
+        return;
+      }
+
+      nav.classList.remove('hidden');
+      prev.disabled = previewIdx === 0;
+      next.disabled = previewIdx === deckSlides.length - 1;
+      count.textContent = (previewIdx + 1) + ' / ' + deckSlides.length;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('previewPrev').addEventListener('click', function () {
+        if (previewIdx > 0) { previewIdx--; renderPreviewAt(previewIdx); updatePreviewNav(); }
+      });
+      document.getElementById('previewNext').addEventListener('click', function () {
+        if (previewIdx < deckSlides.length - 1) { previewIdx++; renderPreviewAt(previewIdx); updatePreviewNav(); }
+      });
+    });
 
     function escapeHtml(str) {
       var d = document.createElement('div');

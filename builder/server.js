@@ -56,17 +56,32 @@ app.get('/slides/deck-preview/:id', function (req, res) {
       '  <meta charset="UTF-8">',
       '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
       '  <link rel="stylesheet" href="/slides/style.css">',
+      '  <script src="/slides/components/lightbox.js"></script>',
+      '  <script src="/slides/components/carousel.js"></script>',
+      '  <script src="/slides/components/tabs.js"></script>',
+      '  <script src="/slides/components/list.js"></script>',
+      '  <script src="/slides/components/table.js"></script>',
       '  <style>',
       '    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }',
       '    html, body { width: 100%; height: 100%; overflow: hidden; }',
       '    .slides-container { position: relative; width: 100%; height: 100%; }',
-      '    .slide { opacity: 1 !important; pointer-events: none !important; transform: scale(1) !important; }',
+      '    .slide { opacity: 1 !important; transform: scale(1) !important; }',
       '  </style>',
       '</head>',
       '<body>',
       '  <div class="slides-container">',
       fragment,
       '  </div>',
+      '  <script>',
+      '    document.addEventListener("DOMContentLoaded", function () {',
+      '      var root = document.querySelector(".slides-container");',
+      '      if (window.Carousel) Carousel.init(root);',
+      '      if (window.Tabs)     Tabs.init(root);',
+      '      if (window.Lightbox) Lightbox.init(root);',
+      '      if (window.List)     List.init(root);',
+      '      if (window.LSTable)  LSTable.init(root);',
+      '    });',
+      '  </script>',
       '</body>',
       '</html>'
     ].join('\n');
@@ -2836,8 +2851,9 @@ app.post('/api/settings/hero-bg', function (req, res) {
 });
 
 // ── API: deck config ──────────────────────────────────────────────────────────
-var DECK_PATH      = path.join(__dirname, 'data', 'deck.json');
-var LIBRARY_PATH   = path.join(__dirname, 'data', 'slide-library.json');
+var DECK_PATH          = path.join(__dirname, 'data', 'deck.json');
+var LIBRARY_PATH       = path.join(__dirname, 'data', 'slide-library.json');
+var PRESENTATIONS_PATH = path.join(__dirname, 'data', 'presentations.json');
 var LAYOUTS_PATH   = path.join(__dirname, 'data', 'layouts.json');
 var TEMPLATES_PATH = path.join(__dirname, 'data', 'slide-templates.json');
 var SETTINGS_PATH  = path.join(__dirname, 'data', 'settings.json');
@@ -2984,6 +3000,58 @@ app.post('/api/library/:id/edits', function (req, res) {
     libSlide.edits = Object.assign({}, libSlide.edits || {}, edits);
     fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
     res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /api/presentations — list all finished presentations
+app.get('/api/presentations', function (req, res) {
+  try {
+    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    res.json({ success: true, data: data.presentations || [] });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/presentations — save a new finished presentation (snapshot of current deck + customer info)
+app.post('/api/presentations', function (req, res) {
+  var body = req.body || {};
+  var customerName = (body.customerName || '').trim();
+  if (!customerName) {
+    return res.status(400).json({ success: false, error: 'customerName is required' });
+  }
+  try {
+    var deck     = JSON.parse(fs.readFileSync(DECK_PATH, 'utf8'));
+    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+
+    // Build a snapshot: deck slide order + names
+    var slides = (deck.slides || []).map(function (s) {
+      var lib = library.slides.find(function (l) { return l.id === s.librarySlideId; });
+      return {
+        id:            s.id,
+        librarySlideId: s.librarySlideId,
+        name:          (lib && lib.name) || s.id,
+        visible:       s.visible !== false
+      };
+    });
+
+    var presentation = {
+      id:           'pres-' + Date.now(),
+      createdAt:    new Date().toISOString().slice(0, 10),
+      customerName: customerName,
+      contactName:  (body.contactName  || '').trim(),
+      contactTitle: (body.contactTitle || '').trim(),
+      slideCount:   slides.length,
+      slides:       slides
+    };
+
+    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    data.presentations.unshift(presentation); // newest first
+    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+
+    res.json({ success: true, data: presentation });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
