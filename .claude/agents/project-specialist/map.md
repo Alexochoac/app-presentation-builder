@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-04-11
+Last updated: 2026-04-11 (session 2)
 
 ---
 
@@ -26,7 +26,7 @@ App-presentation-builder/
 ├── memory/sessions.md              ← Session history
 │
 └── builder/                        ← The runnable web app
-    ├── server.js                   ← Express server — all API endpoints + slide render functions
+    ├── server.js                   ← Express server — all API endpoints + slide render functions ⚠️ SOLE SOURCE OF TRUTH FOR SLIDES
     ├── package.json                ← Dependencies: express, cheerio, dotenv, express-session
     ├── .env                        ← SESSION_SECRET, BUILDER_USER, BUILDER_PASS (not in git)
     ├── .env.example                ← Template for env vars
@@ -230,7 +230,25 @@ function renderXxxLayout(slideId, savedEdits) {
 - **Standard slide anatomy:** all 14 content slides use `slide-layout`/`slide-head`/`slide-body` wrappers
 - **Known conflict:** 3-layer CSS (style.css vs per-slide `<style>` vs inline styles) — design system refactor planned
 
-**Slide 04 mobile fix (2026-04-11):** `.ls4-grid` uses `display:flex; flex-direction:column` on mobile with `.ls-carousel { order:-1 }` to show carousel above table. Resets to `display:grid` on desktop.
+**⚠️ IMPORTANT — server.js is the sole source of truth for slides:**
+The `.html` files in `builder/features/slides/` and `builder/data/renderers/` are NOT served. Edits to those files have no effect. All slide CSS, HTML structure, and content must be changed inside the render functions in `server.js`. Restart the server after any change.
+
+**Mobile carousel root cause & fix pattern (session 2, 2026-04-11):**
+On mobile, `.slide-body` is `height:auto` so carousels with `flex:1` or `height:100%` collapse to 0px (invisible). Fix applied to all slides in `server.js`:
+```css
+.lsX .slide-body { width:100%; align-items:center; }
+.lsX .ls-carousel { min-height:260px !important; height:260px !important; }
+@media(min-width:769px) {
+  .lsX .ls-carousel { min-height:0 !important; height:100% !important; }
+}
+```
+Additional per-slide fixes:
+- **Slide 8**: two-column flex layout — carousel `flex:1` on desktop, explicit height on mobile
+- **Slide 12**: `.ls12-diagram-wrap` → `display:flex; flex-direction:column`; spec badges moved inside first carousel slide
+- **Slide 14**: `overflow:hidden` removed from slide root so mobile can scroll
+- **Slide 4**: vertical column headers (`writing-mode:vertical-rl`) on mobile; proc-grid forced to single column; slide scrollable
+
+**Slide 04 mobile layout:** `.ls4-grid` uses `display:flex; flex-direction:column` on mobile. Tab 1: carousel below table (`order:1`). Tab 2: proc-grid single column (`!important`), cards stacked. Resets to `display:grid` on desktop.
 
 ---
 
@@ -248,8 +266,8 @@ function renderXxxLayout(slideId, savedEdits) {
 
 ## What's Next
 
-1. **Test all 14 slides** visually against originals — fix per-slide issues as found
-2. **Slide-06 defect gallery** — verify JS defect selector works through render path
-3. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
-4. `scripts/build.js` / `scripts/deploy.js`
-5. Presentation view — read-only mode
+1. **Slide-06 defect gallery** — verify JS defect selector works through render path
+2. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
+3. `scripts/build.js` / `scripts/deploy.js`
+4. Presentation view — read-only mode
+5. Delete old `dashboard.css`
