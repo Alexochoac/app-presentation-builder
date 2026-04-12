@@ -179,8 +179,10 @@ window.Tabs = (function () {
 
     // ── Wire click on a tab ──────────────────────────────────────────────────
     function wireTab(tabBtn) {
-      addDelBtn(tabBtn);
-      wireRename(tabBtn);
+      if (!window.PB_READONLY) {
+        addDelBtn(tabBtn);
+        wireRename(tabBtn);
+      }
       if (tabBtn._lsClickWired) return;
       tabBtn._lsClickWired = true;
       tabBtn.addEventListener('click', function (e) {
@@ -191,48 +193,50 @@ window.Tabs = (function () {
     }
 
     // ── "+ Tab" button ───────────────────────────────────────────────────────
-    var addBtn = document.createElement('button');
-    addBtn.className = 'ls-tab-add';
-    addBtn.setAttribute('data-builder-only', '');
-    addBtn.textContent = '+ Tab';
-    addBtn.addEventListener('click', function () {
-      var id = nextPanelId();
+    if (!window.PB_READONLY) {
+      var addBtn = document.createElement('button');
+      addBtn.className = 'ls-tab-add';
+      addBtn.setAttribute('data-builder-only', '');
+      addBtn.textContent = '+ Tab';
+      addBtn.addEventListener('click', function () {
+        var id = nextPanelId();
 
-      // New tab button
-      var newTab = document.createElement('button');
-      newTab.className = 'ls-tab';
-      newTab.dataset.panel = id;
-      newTab.textContent = 'New Tab';
-      tabList.insertBefore(newTab, addBtn);
+        // New tab button
+        var newTab = document.createElement('button');
+        newTab.className = 'ls-tab';
+        newTab.dataset.panel = id;
+        newTab.textContent = 'New Tab';
+        tabList.insertBefore(newTab, addBtn);
 
-      // New empty panel
-      var newPanel = document.createElement('div');
-      newPanel.className = 'ls-tab-panel';
-      newPanel.dataset.panel = id;
-      newPanel.innerHTML = [
-        '<div class="ls-carousel" data-counter data-zoom-group style="flex:1;min-height:0;width:100%;">',
-        '  <div class="ls-carousel-track">',
-        '    <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;">',
-        '      <span style="color:rgba(255,255,255,.2);font-size:13px;font-style:italic;">Add images with the + Image button</span>',
-        '    </div>',
-        '  </div>',
-        '</div>',
-      ].join('');
-      panelsEl.appendChild(newPanel);
+        // New empty panel
+        var newPanel = document.createElement('div');
+        newPanel.className = 'ls-tab-panel';
+        newPanel.dataset.panel = id;
+        newPanel.innerHTML = [
+          '<div class="ls-carousel" data-counter data-zoom-group style="flex:1;min-height:0;width:100%;">',
+          '  <div class="ls-carousel-track">',
+          '    <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;">',
+          '      <span style="color:rgba(255,255,255,.2);font-size:13px;font-style:italic;">Add images with the + Image button</span>',
+          '    </div>',
+          '  </div>',
+          '</div>',
+        ].join('');
+        panelsEl.appendChild(newPanel);
 
-      wireTab(newTab);
-      updateDelBtns();
-      switchTo(id);
-      saveTabs();
+        wireTab(newTab);
+        updateDelBtns();
+        switchTo(id);
+        saveTabs();
 
-      // Trigger rename immediately
-      setTimeout(function () { newTab.dispatchEvent(new MouseEvent('dblclick')); }, 50);
-    });
-    tabList.appendChild(addBtn);
+        // Trigger rename immediately
+        setTimeout(function () { newTab.dispatchEvent(new MouseEvent('dblclick')); }, 50);
+      });
+      tabList.appendChild(addBtn);
+    }
 
     // ── Init existing tabs + panels ──────────────────────────────────────────
     getTabs().forEach(wireTab);
-    updateDelBtns();
+    if (!window.PB_READONLY) updateDelBtns();
 
     // Ensure one active tab; activate first if none
     if (!tabList.querySelector('.ls-tab.active')) {

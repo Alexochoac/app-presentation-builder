@@ -30,7 +30,8 @@ app.use(requireAuth);
 // ── Slide preview wrapper ─────────────────────────────────────────────────────
 // GET /slides/deck-preview/:id — renders a deck slide and wraps it in the full HTML preview shell
 app.get('/slides/deck-preview/:id', function (req, res) {
-  var id = req.params.id;
+  var id       = req.params.id;
+  var readonly = req.query.readonly === '1';
   if (!/^[a-z0-9-]+$/i.test(id)) {
     return res.status(400).type('text/plain').send('Invalid slide id');
   }
@@ -56,6 +57,7 @@ app.get('/slides/deck-preview/:id', function (req, res) {
       '  <meta charset="UTF-8">',
       '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
       '  <link rel="stylesheet" href="/slides/style.css">',
+      readonly ? '  <script>window.PB_READONLY = true;</script>' : '',
       '  <script src="/slides/components/lightbox.js"></script>',
       '  <script src="/slides/components/carousel.js"></script>',
       '  <script src="/slides/components/tabs.js"></script>',
@@ -3055,6 +3057,27 @@ app.post('/api/presentations', function (req, res) {
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
+});
+
+// GET /api/presentations/:id — return a single finished presentation
+app.get('/api/presentations/:id', function (req, res) {
+  try {
+    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pres = (data.presentations || []).find(function (p) { return p.id === req.params.id; });
+    if (!pres) return res.status(404).json({ success: false, error: 'Not found' });
+    res.json({ success: true, data: pres });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /view/:id — read-only presentation slideshow viewer
+app.get('/view/:id', function (req, res) {
+  var id = req.params.id;
+  if (!/^[a-z0-9-]+$/i.test(id)) {
+    return res.status(400).type('text/plain').send('Invalid presentation id');
+  }
+  res.sendFile(path.join(__dirname, 'features/presentation-view/index.html'));
 });
 
 // GET /api/slide-library — return the slide library catalog

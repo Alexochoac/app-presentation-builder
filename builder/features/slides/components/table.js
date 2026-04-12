@@ -154,78 +154,80 @@ window.LSTable = (function () {
     var addRowBtn   = wrap ? wrap.querySelector('[data-ls-add-row]')     : null;
 
     // ── First column resize handle ────────────────────────────────────────
-    (function () {
-      var firstTh = table.querySelector('thead th:first-child');
-      var firstCol = table.querySelector('colgroup col:first-child');
-      if (!firstTh || !firstCol || firstTh.querySelector('.ls-col-resize-handle')) return;
+    if (!window.PB_READONLY) {
+      (function () {
+        var firstTh = table.querySelector('thead th:first-child');
+        var firstCol = table.querySelector('colgroup col:first-child');
+        if (!firstTh || !firstCol || firstTh.querySelector('.ls-col-resize-handle')) return;
 
-      var handle = document.createElement('div');
-      handle.className = 'ls-col-resize-handle';
-      handle.setAttribute('data-builder-only', '');
-      firstTh.appendChild(handle);
+        var handle = document.createElement('div');
+        handle.className = 'ls-col-resize-handle';
+        handle.setAttribute('data-builder-only', '');
+        firstTh.appendChild(handle);
 
-      handle.addEventListener('mousedown', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        handle.classList.add('ls-resizing');
-        var startX = e.clientX;
-        var startW = firstTh.offsetWidth;
+        handle.addEventListener('mousedown', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          handle.classList.add('ls-resizing');
+          var startX = e.clientX;
+          var startW = firstTh.offsetWidth;
 
-        function onMove(ev) {
-          var newW = Math.max(60, startW + (ev.clientX - startX));
-          firstCol.style.width = newW + 'px';
-        }
-        function onUp() {
-          handle.classList.remove('ls-resizing');
-          document.removeEventListener('mousemove', onMove);
-          document.removeEventListener('mouseup', onUp);
-          saveTable(table);
-        }
-        document.addEventListener('mousemove', onMove);
-        document.addEventListener('mouseup', onUp);
-      });
-    })();
-
-    // ── Column toggle buttons ─────────────────────────────────────────────
-    table.querySelectorAll('thead th').forEach(function (th, idx) {
-      if (idx === 0) return; // skip label column
-      if (th.querySelector('.ls-col-toggle')) return; // already has one
-
-      var btn = document.createElement('button');
-      btn.className = 'ls-col-toggle';
-      btn.setAttribute('data-builder-only', '');
-      btn.textContent = '−';
-      btn.title = 'Hide column (Shift+click to show all)';
-      btn.onclick = function (e) {
-        e.stopPropagation();
-        if (e.shiftKey) {
-          // Shift+click: restore all hidden columns
-          table.querySelectorAll('colgroup col.ls-col-collapsed').forEach(function (c) {
-            c.classList.remove('ls-col-collapsed');
-          });
-          if (colRestore) colRestore.innerHTML = '';
-          saveTable(table);
-          return;
-        }
-        var col = table.querySelectorAll('colgroup col')[idx];
-        var name = th.querySelector('.ls-col-label') ? th.querySelector('.ls-col-label').textContent.trim() : th.textContent.trim();
-        col.classList.add('ls-col-collapsed');
-        saveTable(table);
-        if (colRestore) {
-          var chip = document.createElement('button');
-          chip.className = 'ls-table-restore-chip';
-          chip.textContent = '+ ' + name;
-          chip.onclick = function (ev) {
-            ev.stopPropagation();
-            col.classList.remove('ls-col-collapsed');
-            chip.remove();
+          function onMove(ev) {
+            var newW = Math.max(60, startW + (ev.clientX - startX));
+            firstCol.style.width = newW + 'px';
+          }
+          function onUp() {
+            handle.classList.remove('ls-resizing');
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
             saveTable(table);
-          };
-          colRestore.appendChild(chip);
-        }
-      };
-      th.appendChild(btn);
-    });
+          }
+          document.addEventListener('mousemove', onMove);
+          document.addEventListener('mouseup', onUp);
+        });
+      })();
+
+      // ── Column toggle buttons ─────────────────────────────────────────────
+      table.querySelectorAll('thead th').forEach(function (th, idx) {
+        if (idx === 0) return; // skip label column
+        if (th.querySelector('.ls-col-toggle')) return; // already has one
+
+        var btn = document.createElement('button');
+        btn.className = 'ls-col-toggle';
+        btn.setAttribute('data-builder-only', '');
+        btn.textContent = '−';
+        btn.title = 'Hide column (Shift+click to show all)';
+        btn.onclick = function (e) {
+          e.stopPropagation();
+          if (e.shiftKey) {
+            // Shift+click: restore all hidden columns
+            table.querySelectorAll('colgroup col.ls-col-collapsed').forEach(function (c) {
+              c.classList.remove('ls-col-collapsed');
+            });
+            if (colRestore) colRestore.innerHTML = '';
+            saveTable(table);
+            return;
+          }
+          var col = table.querySelectorAll('colgroup col')[idx];
+          var name = th.querySelector('.ls-col-label') ? th.querySelector('.ls-col-label').textContent.trim() : th.textContent.trim();
+          col.classList.add('ls-col-collapsed');
+          saveTable(table);
+          if (colRestore) {
+            var chip = document.createElement('button');
+            chip.className = 'ls-table-restore-chip';
+            chip.textContent = '+ ' + name;
+            chip.onclick = function (ev) {
+              ev.stopPropagation();
+              col.classList.remove('ls-col-collapsed');
+              chip.remove();
+              saveTable(table);
+            };
+            colRestore.appendChild(chip);
+          }
+        };
+        th.appendChild(btn);
+      });
+    }
 
     // ── Row init ──────────────────────────────────────────────────────────
     function initRow(tr, isNew) {
@@ -233,89 +235,91 @@ window.LSTable = (function () {
       if (!firstTd) return;
       if (firstTd.querySelector('.ls-row-hide-btn')) return; // already init
 
-      // Drag handle
-      var drag = document.createElement('span');
-      drag.className = 'ls-row-drag';
-      drag.setAttribute('data-builder-only', '');
-      drag.textContent = '⠿';
-      drag.title = 'Drag to reorder';
-      drag.addEventListener('mousedown', function () { tr.draggable = true; });
-      drag.addEventListener('mouseup',   function () { tr.draggable = false; });
-      firstTd.insertBefore(drag, firstTd.firstChild);
+      if (!window.PB_READONLY) {
+        // Drag handle
+        var drag = document.createElement('span');
+        drag.className = 'ls-row-drag';
+        drag.setAttribute('data-builder-only', '');
+        drag.textContent = '⠿';
+        drag.title = 'Drag to reorder';
+        drag.addEventListener('mousedown', function () { tr.draggable = true; });
+        drag.addEventListener('mouseup',   function () { tr.draggable = false; });
+        firstTd.insertBefore(drag, firstTd.firstChild);
 
-      // Row drag & drop
-      tr.addEventListener('dragstart', function (ev) {
-        ev.dataTransfer.effectAllowed = 'move';
-        tr.classList.add('ls-row-dragging');
-        tbody._dragSrc = tr;
-      });
-      tr.addEventListener('dragend', function () {
-        tr.draggable = false;
-        tr.classList.remove('ls-row-dragging');
-        tbody.querySelectorAll('tr').forEach(function (r) { r.classList.remove('ls-row-dragover'); });
-        saveTable(table);
-      });
-      tr.addEventListener('dragover', function (ev) {
-        ev.preventDefault();
-        tbody.querySelectorAll('tr').forEach(function (r) { r.classList.remove('ls-row-dragover'); });
-        if (tr !== tbody._dragSrc) tr.classList.add('ls-row-dragover');
-      });
-      tr.addEventListener('drop', function (ev) {
-        ev.stopPropagation();
-        var src = tbody._dragSrc;
-        if (src && src !== tr) {
-          var rows = Array.from(tbody.children);
-          if (rows.indexOf(src) < rows.indexOf(tr)) tbody.insertBefore(src, tr.nextSibling);
-          else tbody.insertBefore(src, tr);
-        }
-        tr.classList.remove('ls-row-dragover');
-      });
-
-      // Hide / Delete button
-      var hideBtn = document.createElement('button');
-      hideBtn.className = 'ls-row-hide-btn';
-      hideBtn.setAttribute('data-builder-only', '');
-      hideBtn.textContent = '×';
-      hideBtn.title = isNew ? 'Delete row' : 'Hide row (Shift+click to delete)';
-      hideBtn.onclick = function (ev) {
-        ev.stopPropagation();
-        if (isNew || ev.shiftKey) {
-          tr.remove();
+        // Row drag & drop
+        tr.addEventListener('dragstart', function (ev) {
+          ev.dataTransfer.effectAllowed = 'move';
+          tr.classList.add('ls-row-dragging');
+          tbody._dragSrc = tr;
+        });
+        tr.addEventListener('dragend', function () {
+          tr.draggable = false;
+          tr.classList.remove('ls-row-dragging');
+          tbody.querySelectorAll('tr').forEach(function (r) { r.classList.remove('ls-row-dragover'); });
           saveTable(table);
-        } else {
-          var rowName = firstTd.innerText.replace('×⠿', '').replace('×', '').trim().substring(0, 35);
-          tr.classList.add('ls-row-hidden');
-          saveTable(table);
-          if (rowRestore) {
-            var chip = document.createElement('button');
-            chip.className = 'ls-table-restore-chip ls-table-row-chip';
-            chip.textContent = '+ ' + rowName;
-            chip.onclick = function (cev) {
-              cev.stopPropagation();
-              tr.classList.remove('ls-row-hidden');
-              chip.remove();
-              saveTable(table);
-            };
-            rowRestore.appendChild(chip);
+        });
+        tr.addEventListener('dragover', function (ev) {
+          ev.preventDefault();
+          tbody.querySelectorAll('tr').forEach(function (r) { r.classList.remove('ls-row-dragover'); });
+          if (tr !== tbody._dragSrc) tr.classList.add('ls-row-dragover');
+        });
+        tr.addEventListener('drop', function (ev) {
+          ev.stopPropagation();
+          var src = tbody._dragSrc;
+          if (src && src !== tr) {
+            var rows = Array.from(tbody.children);
+            if (rows.indexOf(src) < rows.indexOf(tr)) tbody.insertBefore(src, tr.nextSibling);
+            else tbody.insertBefore(src, tr);
           }
-        }
-      };
-      firstTd.insertBefore(hideBtn, firstTd.firstChild);
+          tr.classList.remove('ls-row-dragover');
+        });
 
-      // Double-click first cell to edit label text
-      firstTd.addEventListener('dblclick', function (ev) {
-        ev.stopPropagation();
-        firstTd.contentEditable = 'true';
-        firstTd.focus();
-      });
-      firstTd.addEventListener('blur', function () {
-        firstTd.contentEditable = 'false';
-        saveTable(table);
-      });
-      firstTd.addEventListener('keydown', function (ev) {
-        if (ev.key === 'Enter')  { ev.preventDefault(); firstTd.blur(); }
-        if (ev.key === 'Escape') { firstTd.blur(); }
-      });
+        // Hide / Delete button
+        var hideBtn = document.createElement('button');
+        hideBtn.className = 'ls-row-hide-btn';
+        hideBtn.setAttribute('data-builder-only', '');
+        hideBtn.textContent = '×';
+        hideBtn.title = isNew ? 'Delete row' : 'Hide row (Shift+click to delete)';
+        hideBtn.onclick = function (ev) {
+          ev.stopPropagation();
+          if (isNew || ev.shiftKey) {
+            tr.remove();
+            saveTable(table);
+          } else {
+            var rowName = firstTd.innerText.replace('×⠿', '').replace('×', '').trim().substring(0, 35);
+            tr.classList.add('ls-row-hidden');
+            saveTable(table);
+            if (rowRestore) {
+              var chip = document.createElement('button');
+              chip.className = 'ls-table-restore-chip ls-table-row-chip';
+              chip.textContent = '+ ' + rowName;
+              chip.onclick = function (cev) {
+                cev.stopPropagation();
+                tr.classList.remove('ls-row-hidden');
+                chip.remove();
+                saveTable(table);
+              };
+              rowRestore.appendChild(chip);
+            }
+          }
+        };
+        firstTd.insertBefore(hideBtn, firstTd.firstChild);
+
+        // Double-click first cell to edit label text
+        firstTd.addEventListener('dblclick', function (ev) {
+          ev.stopPropagation();
+          firstTd.contentEditable = 'true';
+          firstTd.focus();
+        });
+        firstTd.addEventListener('blur', function () {
+          firstTd.contentEditable = 'false';
+          saveTable(table);
+        });
+        firstTd.addEventListener('keydown', function (ev) {
+          if (ev.key === 'Enter')  { ev.preventDefault(); firstTd.blur(); }
+          if (ev.key === 'Escape') { firstTd.blur(); }
+        });
+      }
 
       // Click dot cells to cycle: filled → outline → empty
       Array.from(tr.children).slice(1).forEach(function (td, i) {
@@ -383,7 +387,7 @@ window.LSTable = (function () {
     }
 
     // Add row button
-    if (addRowBtn && !addRowBtn._lsInit) {
+    if (addRowBtn && !addRowBtn._lsInit && !window.PB_READONLY) {
       addRowBtn._lsInit = true;
       addRowBtn.onclick = function (ev) {
         ev.stopPropagation();

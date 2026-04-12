@@ -147,11 +147,6 @@ window.Carousel = (function () {
     nextBtn.setAttribute('data-builder-only', '');
     nextBtn.textContent = '›';
 
-    var addBtn = document.createElement('button');
-    addBtn.className = 'ls-carousel-add';
-    addBtn.setAttribute('data-builder-only', '');
-    addBtn.textContent = '+ Image';
-
     // ── Counter (optional) ──────────────────────────────────────────────────
     // Remove any stale counter divs left over from saved HTML before adding a fresh one
     el.querySelectorAll('.ls-carousel-counter').forEach(function (n) { n.remove(); });
@@ -166,34 +161,42 @@ window.Carousel = (function () {
     var autoplaySteps = [0, 3000, 5000, 10000, 15000];
     var autoplayIdx   = Math.max(0, autoplaySteps.indexOf(autoplayMs));
 
-    var autoBtn = document.createElement('button');
-    autoBtn.className = 'ls-carousel-add';
-    autoBtn.setAttribute('data-builder-only', '');
-    autoBtn.style.cssText = 'right:auto;left:10px;bottom:8px;';
-
-    function updateAutoLabel() {
-      var ms = autoplaySteps[autoplayIdx];
-      autoBtn.textContent = ms === 0 ? '⏸ Auto' : '▶ ' + (ms / 1000) + 's';
-      autoBtn.title = ms === 0 ? 'Autoplay off — click to enable' : 'Autoplay ' + (ms / 1000) + 's — click to change';
-    }
-    updateAutoLabel();
-
-    autoBtn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      autoplayIdx = (autoplayIdx + 1) % autoplaySteps.length;
-      autoplayMs  = autoplaySteps[autoplayIdx];
-      updateAutoLabel();
-      clearInterval(timer);
-      resetTimer();
-      document.dispatchEvent(new CustomEvent('slide-carousel-save', {
-        detail: { editKey: editKey, html: null, autoplay: autoplayMs }
-      }));
-    });
-
     el.appendChild(prevBtn);
     el.appendChild(nextBtn);
-    el.appendChild(addBtn);
-    el.appendChild(autoBtn);
+
+    if (!window.PB_READONLY) {
+      var addBtn = document.createElement('button');
+      addBtn.className = 'ls-carousel-add';
+      addBtn.setAttribute('data-builder-only', '');
+      addBtn.textContent = '+ Image';
+
+      var autoBtn = document.createElement('button');
+      autoBtn.className = 'ls-carousel-add';
+      autoBtn.setAttribute('data-builder-only', '');
+      autoBtn.style.cssText = 'right:auto;left:10px;bottom:8px;';
+
+      function updateAutoLabel() {
+        var ms = autoplaySteps[autoplayIdx];
+        autoBtn.textContent = ms === 0 ? '⏸ Auto' : '▶ ' + (ms / 1000) + 's';
+        autoBtn.title = ms === 0 ? 'Autoplay off — click to enable' : 'Autoplay ' + (ms / 1000) + 's — click to change';
+      }
+      updateAutoLabel();
+
+      autoBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        autoplayIdx = (autoplayIdx + 1) % autoplaySteps.length;
+        autoplayMs  = autoplaySteps[autoplayIdx];
+        updateAutoLabel();
+        clearInterval(timer);
+        resetTimer();
+        document.dispatchEvent(new CustomEvent('slide-carousel-save', {
+          detail: { editKey: editKey, html: null, autoplay: autoplayMs }
+        }));
+      });
+
+      el.appendChild(addBtn);
+      el.appendChild(autoBtn);
+    }
 
     // ── Helpers ─────────────────────────────────────────────────────────────
 
@@ -411,56 +414,58 @@ window.Carousel = (function () {
       rightSide.appendChild(rightImg);
 
       // ── Labels (builder-only) ─────────────────────────────────────────────
-      function makeLabel(side, img, pos) {
-        var lbl = document.createElement('div');
-        lbl.className = 'ls-cmp-label ls-cmp-label-' + pos;
-        lbl.setAttribute('data-builder-only', '');
-        lbl.textContent = img.alt || (pos === 'left' ? 'Before' : 'After');
-        lbl.title = 'Double-click to rename';
-        lbl.addEventListener('dblclick', function (e) {
-          e.stopPropagation();
-          lbl.contentEditable = 'true';
-          lbl.focus();
-          var r = document.createRange();
-          r.selectNodeContents(lbl);
-          window.getSelection().removeAllRanges();
-          window.getSelection().addRange(r);
-        });
-        lbl.addEventListener('blur', function () {
-          lbl.contentEditable = 'false';
-          img.alt = lbl.textContent.trim() || img.alt;
-          saveCarousel();
-        });
-        lbl.addEventListener('keydown', function (ev) {
-          if (ev.key === 'Enter')  { ev.preventDefault(); lbl.blur(); }
-          if (ev.key === 'Escape') { lbl.blur(); }
-        });
-        side.appendChild(lbl);
-      }
-      makeLabel(leftSide,  leftImg,  'left');
-      makeLabel(rightSide, rightImg, 'right');
-
-      // ── Per-side replace buttons (builder-only) ───────────────────────────
-      function makeReplaceBtn(side, img) {
-        var btn = document.createElement('button');
-        btn.className = 'ls-cmp-replace';
-        btn.setAttribute('data-builder-only', '');
-        btn.textContent = '⟳';
-        btn.title = 'Replace this image';
-        btn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          pickImage(function (path, name) {
-            img.src = path;
-            img.alt = name;
-            var lbl = side.querySelector('.ls-cmp-label');
-            if (lbl) lbl.textContent = name;
+      if (!window.PB_READONLY) {
+        function makeLabel(side, img, pos) {
+          var lbl = document.createElement('div');
+          lbl.className = 'ls-cmp-label ls-cmp-label-' + pos;
+          lbl.setAttribute('data-builder-only', '');
+          lbl.textContent = img.alt || (pos === 'left' ? 'Before' : 'After');
+          lbl.title = 'Double-click to rename';
+          lbl.addEventListener('dblclick', function (e) {
+            e.stopPropagation();
+            lbl.contentEditable = 'true';
+            lbl.focus();
+            var r = document.createRange();
+            r.selectNodeContents(lbl);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(r);
+          });
+          lbl.addEventListener('blur', function () {
+            lbl.contentEditable = 'false';
+            img.alt = lbl.textContent.trim() || img.alt;
             saveCarousel();
           });
-        });
-        side.appendChild(btn);
+          lbl.addEventListener('keydown', function (ev) {
+            if (ev.key === 'Enter')  { ev.preventDefault(); lbl.blur(); }
+            if (ev.key === 'Escape') { lbl.blur(); }
+          });
+          side.appendChild(lbl);
+        }
+        makeLabel(leftSide,  leftImg,  'left');
+        makeLabel(rightSide, rightImg, 'right');
+
+        // ── Per-side replace buttons (builder-only) ───────────────────────────
+        function makeReplaceBtn(side, img) {
+          var btn = document.createElement('button');
+          btn.className = 'ls-cmp-replace';
+          btn.setAttribute('data-builder-only', '');
+          btn.textContent = '⟳';
+          btn.title = 'Replace this image';
+          btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            pickImage(function (path, name) {
+              img.src = path;
+              img.alt = name;
+              var lbl = side.querySelector('.ls-cmp-label');
+              if (lbl) lbl.textContent = name;
+              saveCarousel();
+            });
+          });
+          side.appendChild(btn);
+        }
+        makeReplaceBtn(leftSide,  leftImg);
+        makeReplaceBtn(rightSide, rightImg);
       }
-      makeReplaceBtn(leftSide,  leftImg);
-      makeReplaceBtn(rightSide, rightImg);
 
       // ── Divider line (split) and Reveal handle ────────────────────────────
       var divider = document.createElement('div');
@@ -503,39 +508,41 @@ window.Carousel = (function () {
       document.addEventListener('touchend', function () { dragging = false; });
 
       // ── Mode toggle button (builder-only) ─────────────────────────────────
-      var modeBtn = document.createElement('button');
-      modeBtn.className = 'ls-cmp-mode-btn';
-      modeBtn.setAttribute('data-builder-only', '');
+      if (!window.PB_READONLY) {
+        var modeBtn = document.createElement('button');
+        modeBtn.className = 'ls-cmp-mode-btn';
+        modeBtn.setAttribute('data-builder-only', '');
 
-      function applyMode(m) {
-        mode = m;
-        slide.dataset.compareMode = m;
-        slide.classList.toggle('ls-split',  m === 'split');
-        slide.classList.toggle('ls-reveal', m === 'reveal');
-        divider.style.display = m === 'split'  ? '' : 'none';
-        handle.style.display  = m === 'reveal' ? '' : 'none';
-        modeBtn.textContent   = m === 'split'  ? '⇔ Switch to Reveal' : '⇔ Switch to Split';
-        if (m === 'reveal') setReveal(50);
-        saveCarousel();
+        function applyMode(m) {
+          mode = m;
+          slide.dataset.compareMode = m;
+          slide.classList.toggle('ls-split',  m === 'split');
+          slide.classList.toggle('ls-reveal', m === 'reveal');
+          divider.style.display = m === 'split'  ? '' : 'none';
+          handle.style.display  = m === 'reveal' ? '' : 'none';
+          modeBtn.textContent   = m === 'split'  ? '⇔ Switch to Reveal' : '⇔ Switch to Split';
+          if (m === 'reveal') setReveal(50);
+          saveCarousel();
+        }
+
+        modeBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          applyMode(mode === 'split' ? 'reveal' : 'split');
+        });
+        slide.appendChild(modeBtn);
+
+        // ── Exit compare button (builder-only) ────────────────────────────────
+        var exitBtn = document.createElement('button');
+        exitBtn.className = 'ls-cmp-exit';
+        exitBtn.setAttribute('data-builder-only', '');
+        exitBtn.textContent = '✕ Compare';
+        exitBtn.title = 'Exit compare — keeps left image';
+        exitBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          exitCompare(slide);
+        });
+        slide.appendChild(exitBtn);
       }
-
-      modeBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        applyMode(mode === 'split' ? 'reveal' : 'split');
-      });
-      slide.appendChild(modeBtn);
-
-      // ── Exit compare button (builder-only) ────────────────────────────────
-      var exitBtn = document.createElement('button');
-      exitBtn.className = 'ls-cmp-exit';
-      exitBtn.setAttribute('data-builder-only', '');
-      exitBtn.textContent = '✕ Compare';
-      exitBtn.title = 'Exit compare — keeps left image';
-      exitBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        exitCompare(slide);
-      });
-      slide.appendChild(exitBtn);
 
       // Apply initial mode (no save — just render)
       mode = slide.dataset.compareMode || 'split';
@@ -543,19 +550,23 @@ window.Carousel = (function () {
       slide.classList.toggle('ls-reveal', mode === 'reveal');
       divider.style.display = mode === 'split'  ? '' : 'none';
       handle.style.display  = mode === 'reveal' ? '' : 'none';
-      modeBtn.textContent   = mode === 'split'  ? '⇔ Switch to Reveal' : '⇔ Switch to Split';
+      if (!window.PB_READONLY && typeof modeBtn !== 'undefined') {
+        modeBtn.textContent = mode === 'split' ? '⇔ Switch to Reveal' : '⇔ Switch to Split';
+      }
       if (mode === 'reveal') setReveal(50);
     }
 
     // ── Init a single carousel slide ─────────────────────────────────────────
 
     function initSlide(slide) {
-      ensureDelBtn(slide);
-      ensureMoveButtons(slide);
+      if (!window.PB_READONLY) {
+        ensureDelBtn(slide);
+        ensureMoveButtons(slide);
+      }
       if (slide.classList.contains('ls-compare')) {
         buildCompareUI(slide);
       } else {
-        ensureCompareBtn(slide);
+        if (!window.PB_READONLY) ensureCompareBtn(slide);
         // Caption overlay from img alt — skip if carousel opted out via data-no-caption
         if (!el.hasAttribute('data-no-caption')) {
           var img = slide.querySelector('img');
@@ -610,23 +621,25 @@ window.Carousel = (function () {
     });
 
     // ── Add image button ────────────────────────────────────────────────────
-    addBtn.addEventListener('click', function () {
-      pickImage(function (path, name) {
-        var slide = document.createElement('div');
-        slide.className = 'ls-carousel-slide';
-        var img = document.createElement('img');
-        img.src = path;
-        img.alt = name;
-        img.setAttribute('data-zoom', '');
-        slide.appendChild(img);
-        track.appendChild(slide);
-        initSlide(slide);
-        if (window.Lightbox) Lightbox.init(slide);
-        goTo(getSlides().length - 1);
-        updateNav();
-        saveCarousel();
+    if (!window.PB_READONLY) {
+      addBtn.addEventListener('click', function () {
+        pickImage(function (path, name) {
+          var slide = document.createElement('div');
+          slide.className = 'ls-carousel-slide';
+          var img = document.createElement('img');
+          img.src = path;
+          img.alt = name;
+          img.setAttribute('data-zoom', '');
+          slide.appendChild(img);
+          track.appendChild(slide);
+          initSlide(slide);
+          if (window.Lightbox) Lightbox.init(slide);
+          goTo(getSlides().length - 1);
+          updateNav();
+          saveCarousel();
+        });
       });
-    });
+    }
 
     // ── Start autoplay ──────────────────────────────────────────────────────
     resetTimer();

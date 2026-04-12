@@ -116,7 +116,8 @@
                   (p.contactName ? escDash(p.contactName) + (p.contactTitle ? ' · ' + escDash(p.contactTitle) : '') + ' · ' : '') +
                   p.slideCount + ' slides · ' + p.createdAt +
                 '</div>' +
-              '</div>';
+              '</div>' +
+              '<a href="/view/' + p.id + '" style="border:1px solid var(--accent);color:var(--accent);background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;text-decoration:none;white-space:nowrap;">View</a>';
             list.appendChild(li);
           });
         })

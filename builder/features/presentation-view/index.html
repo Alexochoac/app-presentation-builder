@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Presentation Viewer</title>
+  <link rel="stylesheet" href="/shared/app-style.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0a0a;
+      color: var(--text, #e5e5e5);
+      font-family: var(--font, system-ui, sans-serif);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Header bar ───────────────────────────────────────────── */
+    #header {
+      height: 48px;
+      min-height: 48px;
+      background: var(--surface, #111);
+      border-bottom: 1px solid var(--border, #2a2a2a);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 16px;
+    }
+
+    #backBtn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: none;
+      color: var(--muted, #888);
+      font-size: 13px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    #backBtn:hover { color: var(--text, #e5e5e5); background: var(--hover, #1e1e1e); }
+
+    #presTitle {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text, #e5e5e5);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #counter {
+      font-size: 13px;
+      color: var(--muted, #888);
+      white-space: nowrap;
+    }
+
+    /* ── Main viewer area ─────────────────────────────────────── */
+    #viewer {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #slideFrame {
+      flex: 1;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* ── Nav arrows ───────────────────────────────────────────── */
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      border: none;
+      color: #fff;
+      font-size: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: background 0.15s;
+      user-select: none;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,0.22); }
+    .nav-btn:disabled { opacity: 0.2; cursor: default; }
+    #prevBtn { left: 12px; }
+    #nextBtn { right: 12px; }
+
+    /* ── Footer ───────────────────────────────────────────────── */
+    #footer {
+      height: 36px;
+      min-height: 36px;
+      background: #0a0a0a;
+      border-top: 1px solid var(--border, #2a2a2a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #slideName {
+      font-size: 12px;
+      color: var(--muted, #888);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 80%;
+    }
+
+    /* ── Loading / error states ───────────────────────────────── */
+    #loadMsg {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--muted, #888);
+      background: #0a0a0a;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div id="header">
+    <a id="backBtn" href="/">&#8592; Back</a>
+    <div id="presTitle">Loading…</div>
+    <div id="counter"></div>
+  </div>
+
+  <!-- Viewer -->
+  <div id="viewer">
+    <div id="loadMsg">Loading presentation…</div>
+    <iframe id="slideFrame" src="about:blank" style="display:none;"></iframe>
+    <button class="nav-btn" id="prevBtn" disabled>&#8249;</button>
+    <button class="nav-btn" id="nextBtn" disabled>&#8250;</button>
+  </div>
+
+  <!-- Footer -->
+  <div id="footer">
+    <div id="slideName"></div>
+  </div>
+
+  <script>
+    (function () {
+      var presId = location.pathname.split('/view/')[1] || '';
+      var slides = [];
+      var currentIndex = 0;
+
+      var presTitle = document.getElementById('presTitle');
+      var counter   = document.getElementById('counter');
+      var slideName = document.getElementById('slideName');
+      var frame     = document.getElementById('slideFrame');
+      var loadMsg   = document.getElementById('loadMsg');
+      var prevBtn   = document.getElementById('prevBtn');
+      var nextBtn   = document.getElementById('nextBtn');
+
+      function render() {
+        if (!slides.length) return;
+        var slide = slides[currentIndex];
+        frame.src = '/slides/deck-preview/' + slide.id + '?readonly=1';
+        counter.textContent = (currentIndex + 1) + ' / ' + slides.length;
+        slideName.textContent = slide.name || '';
+        prevBtn.disabled = currentIndex === 0;
+        nextBtn.disabled = currentIndex === slides.length - 1;
+      }
+
+      function goTo(index) {
+        if (index < 0 || index >= slides.length) return;
+        currentIndex = index;
+        render();
+      }
+
+      prevBtn.addEventListener('click', function () { goTo(currentIndex - 1); });
+      nextBtn.addEventListener('click', function () { goTo(currentIndex + 1); });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft')  goTo(currentIndex - 1);
+        if (e.key === 'ArrowRight') goTo(currentIndex + 1);
+      });
+
+      // Fetch presentation
+      fetch('/api/presentations/' + presId)
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.success || !res.data) throw new Error(res.error || 'Not found');
+          var pres = res.data;
+          slides = pres.slides || [];
+          presTitle.textContent = pres.customerName || 'Presentation';
+
+          loadMsg.style.display = 'none';
+          frame.style.display = 'block';
+          prevBtn.disabled = false;
+          nextBtn.disabled = false;
+
+          render();
+        })
+        .catch(function (err) {
+          loadMsg.textContent = 'Could not load presentation: ' + err.message;
+        });
+    })();
+  </script>
+</body>
+</html>

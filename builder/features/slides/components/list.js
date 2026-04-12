@@ -76,101 +76,103 @@ window.List = (function () {
       if (li._lsListItemInit) return;
       li._lsListItemInit = true;
 
-      var ctrl = document.createElement('div');
-      ctrl.className = 'ls-list-item-controls';
-      ctrl.setAttribute('data-builder-only', '');
+      if (!window.PB_READONLY) {
+        var ctrl = document.createElement('div');
+        ctrl.className = 'ls-list-item-controls';
+        ctrl.setAttribute('data-builder-only', '');
 
-      // ── Drag handle ──────────────────────────────────────────────────────
-      var dragBtn = document.createElement('button');
-      dragBtn.className = 'ls-list-item-btn ls-list-drag-btn';
-      dragBtn.textContent = '⠿';
-      dragBtn.title = 'Drag to reorder';
-      dragBtn.addEventListener('mousedown', function () { li.draggable = true; });
-      dragBtn.addEventListener('mouseup',   function () { li.draggable = false; });
+        // ── Drag handle ──────────────────────────────────────────────────────
+        var dragBtn = document.createElement('button');
+        dragBtn.className = 'ls-list-item-btn ls-list-drag-btn';
+        dragBtn.textContent = '⠿';
+        dragBtn.title = 'Drag to reorder';
+        dragBtn.addEventListener('mousedown', function () { li.draggable = true; });
+        dragBtn.addEventListener('mouseup',   function () { li.draggable = false; });
 
-      // ── Hide / Delete button ─────────────────────────────────────────────
-      // Normal click  → hide (restoreable)
-      // Shift+click   → delete permanently
-      // New items     → always delete
-      var hideBtn = document.createElement('button');
-      hideBtn.className = 'ls-list-item-btn ls-list-hide-btn';
-      hideBtn.textContent = '×';
-      hideBtn.title = isNew ? 'Delete' : 'Hide (Shift+click to delete)';
-      hideBtn.onclick = function (e) {
-        e.stopPropagation();
-        if (isNew || e.shiftKey) {
-          li.remove();
-          saveList();
-        } else {
-          var text = li.innerText.replace('⠿×', '').trim().substring(0, 40);
-          li.classList.add('ls-list-hidden');
-          saveList();
-          if (restoreArea) {
-            var chip = document.createElement('button');
-            chip.className = 'ls-list-restore-chip';
-            chip.textContent = '+ ' + text;
-            chip.onclick = function (ev) {
-              ev.stopPropagation();
-              li.classList.remove('ls-list-hidden');
-              chip.remove();
-              saveList();
-            };
-            restoreArea.appendChild(chip);
+        // ── Hide / Delete button ─────────────────────────────────────────────
+        // Normal click  → hide (restoreable)
+        // Shift+click   → delete permanently
+        // New items     → always delete
+        var hideBtn = document.createElement('button');
+        hideBtn.className = 'ls-list-item-btn ls-list-hide-btn';
+        hideBtn.textContent = '×';
+        hideBtn.title = isNew ? 'Delete' : 'Hide (Shift+click to delete)';
+        hideBtn.onclick = function (e) {
+          e.stopPropagation();
+          if (isNew || e.shiftKey) {
+            li.remove();
+            saveList();
+          } else {
+            var text = li.innerText.replace('⠿×', '').trim().substring(0, 40);
+            li.classList.add('ls-list-hidden');
+            saveList();
+            if (restoreArea) {
+              var chip = document.createElement('button');
+              chip.className = 'ls-list-restore-chip';
+              chip.textContent = '+ ' + text;
+              chip.onclick = function (ev) {
+                ev.stopPropagation();
+                li.classList.remove('ls-list-hidden');
+                chip.remove();
+                saveList();
+              };
+              restoreArea.appendChild(chip);
+            }
           }
-        }
-      };
+        };
 
-      ctrl.appendChild(dragBtn);
-      ctrl.appendChild(hideBtn);
-      li.appendChild(ctrl);
+        ctrl.appendChild(dragBtn);
+        ctrl.appendChild(hideBtn);
+        li.appendChild(ctrl);
 
-      // ── Double-click to edit ─────────────────────────────────────────────
-      // Suppresses onclick (e.g. popover) during editing
-      li.addEventListener('dblclick', function (e) {
-        if (e.target.closest('.ls-list-item-controls')) return;
-        e.stopPropagation(); e.preventDefault();
-        var orig = li.onclick;
-        li.onclick = null;
-        li.contentEditable = 'true'; li.focus();
-        li.addEventListener('blur', function done() {
-          li.contentEditable = 'false';
-          li.onclick = orig;
-          li.removeEventListener('blur', done);
+        // ── Double-click to edit ─────────────────────────────────────────────
+        // Suppresses onclick (e.g. popover) during editing
+        li.addEventListener('dblclick', function (e) {
+          if (e.target.closest('.ls-list-item-controls')) return;
+          e.stopPropagation(); e.preventDefault();
+          var orig = li.onclick;
+          li.onclick = null;
+          li.contentEditable = 'true'; li.focus();
+          li.addEventListener('blur', function done() {
+            li.contentEditable = 'false';
+            li.onclick = orig;
+            li.removeEventListener('blur', done);
+            saveList();
+          }, { once: true });
+        });
+        li.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') { e.preventDefault(); li.blur(); }
+          if (e.key === 'Escape') { li.blur(); }
+        });
+
+        // ── Drag & drop reorder ──────────────────────────────────────────────
+        li.addEventListener('dragstart', function (ev) {
+          ev.dataTransfer.effectAllowed = 'move';
+          dragSrc = li;
+          setTimeout(function () { li.classList.add('ls-list-dragging'); }, 0);
+        });
+        li.addEventListener('dragend', function () {
+          li.draggable = false;
+          li.classList.remove('ls-list-dragging');
+          ul.querySelectorAll('li').forEach(function (r) { r.classList.remove('ls-list-dragover'); });
+        });
+        li.addEventListener('dragover', function (ev) {
+          ev.preventDefault();
+          ul.querySelectorAll('li').forEach(function (r) { r.classList.remove('ls-list-dragover'); });
+          if (li !== dragSrc) li.classList.add('ls-list-dragover');
+        });
+        li.addEventListener('drop', function (ev) {
+          ev.stopPropagation();
+          if (dragSrc && dragSrc !== li) {
+            var items = Array.from(ul.querySelectorAll('li'));
+            var si = items.indexOf(dragSrc), ti = items.indexOf(li);
+            if (si < ti) ul.insertBefore(dragSrc, li.nextSibling);
+            else         ul.insertBefore(dragSrc, li);
+          }
+          li.classList.remove('ls-list-dragover');
           saveList();
-        }, { once: true });
-      });
-      li.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') { e.preventDefault(); li.blur(); }
-        if (e.key === 'Escape') { li.blur(); }
-      });
-
-      // ── Drag & drop reorder ──────────────────────────────────────────────
-      li.addEventListener('dragstart', function (ev) {
-        ev.dataTransfer.effectAllowed = 'move';
-        dragSrc = li;
-        setTimeout(function () { li.classList.add('ls-list-dragging'); }, 0);
-      });
-      li.addEventListener('dragend', function () {
-        li.draggable = false;
-        li.classList.remove('ls-list-dragging');
-        ul.querySelectorAll('li').forEach(function (r) { r.classList.remove('ls-list-dragover'); });
-      });
-      li.addEventListener('dragover', function (ev) {
-        ev.preventDefault();
-        ul.querySelectorAll('li').forEach(function (r) { r.classList.remove('ls-list-dragover'); });
-        if (li !== dragSrc) li.classList.add('ls-list-dragover');
-      });
-      li.addEventListener('drop', function (ev) {
-        ev.stopPropagation();
-        if (dragSrc && dragSrc !== li) {
-          var items = Array.from(ul.querySelectorAll('li'));
-          var si = items.indexOf(dragSrc), ti = items.indexOf(li);
-          if (si < ti) ul.insertBefore(dragSrc, li.nextSibling);
-          else         ul.insertBefore(dragSrc, li);
-        }
-        li.classList.remove('ls-list-dragover');
-        saveList();
-      });
+        });
+      }
     }
 
     ul.querySelectorAll('li').forEach(function (li) { initItem(li, false); });
@@ -195,7 +197,7 @@ window.List = (function () {
     }
 
     // ── Add new item ─────────────────────────────────────────────────────
-    if (addBtn) {
+    if (addBtn && !window.PB_READONLY) {
       addBtn.onclick = function (e) {
         e.stopPropagation();
         var li = document.createElement('li');

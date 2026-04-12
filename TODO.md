@@ -7,8 +7,9 @@
 - [ ] **Design system refactor** — eliminate 3-layer CSS conflict (style.css vs per-slide `<style>` vs inline styles). One source of truth in style.css.
 
 ## Dashboard & UI
-- [ ] **Presentation viewer** — `/view/:id` read-only full-screen slideshow (click from Dashboard)
-- [ ] **GitHub publish** — "Publish to GitHub Pages" button on finished presentation
+- [x] **Presentation viewer** — `/view/:id` read-only full-screen slideshow (session 5)
+- [x] `PB_READONLY` — all 4 components skip edit controls in viewer (session 5)
+- [ ] **GitHub publish** — `POST /api/presentations/:id/publish` + Publish button on Dashboard
 - [ ] Add Slide modal — replace stub with real template picker modal
 - [ ] Customer Settings — wire up fields to actual deck personalization
 - [ ] Delete old `dashboard.css`

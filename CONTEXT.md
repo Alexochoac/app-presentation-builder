@@ -90,10 +90,13 @@ All content slides now use this structure:
 - [x] Root cause documented: `server.js` is the only source of truth for rendered slides
 
 ## Next Steps
+- [x] Presentation view — `/view/:id` read-only slideshow viewer (session 5)
+- [x] `PB_READONLY` mode — all 4 components skip edit controls (session 5)
+- [ ] **GitHub Pages publish** — `POST /api/presentations/:id/publish` + Publish button on Dashboard
 - [ ] **Slide-06 defect gallery**: verify JS defect selector works through render path
 - [ ] **Design system refactor** (carried) — eliminate 3-layer CSS conflict; one source of truth in style.css
 - [ ] Delete old `dashboard.css`
-- [ ] Presentation view — clean read-only mode
+- [ ] Add Slide modal — replace stub with real template picker
 - [ ] `scripts/build.js` — assemble final customer HTML, strip `data-builder-only`
 - [ ] `scripts/deploy.js` — push to GitHub Pages
 
@@ -103,4 +106,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-04-11 (session 2)
+Last updated: 2026-04-12 (session 5)

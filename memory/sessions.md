@@ -1,28 +1,36 @@
 # Sessions
 
+## 2026-04-12 (session 5) — Read-only viewer + PB_READONLY components
+
+### Accomplished
+- `?readonly=1` flag on `/slides/deck-preview/:id` — sets `window.PB_READONLY = true` before components load
+- All 4 components updated: `carousel.js`, `tabs.js`, `list.js`, `table.js` skip edit controls when `PB_READONLY`; navigation/display features (arrows, tab switching, dot cycling) still work
+- `GET /api/presentations/:id` — single presentation route added to server.js
+- `GET /view/:id` — auth-protected route added; serves `features/presentation-view/index.html`
+- `features/presentation-view/index.html` — full-screen dark slideshow viewer (back button, customer title, counter, iframe-per-slide, prev/next arrows, keyboard nav, slide name footer)
+- Dashboard: "View" pill button added to each finished presentation row → links to `/view/:id`
+
+### Pending
+- GitHub Pages publish button (`POST /api/presentations/:id/publish`)
+- Slide-06 defect gallery verification
+- Design system refactor (CSS conflict)
+- Add Slide modal (replace stub)
+- `scripts/build.js` / `scripts/deploy.js`
+
+---
+
 ## 2026-04-12 (session 2) — Preview fixes, Create Presentation flow, scrollbar
 
 ### Accomplished
-- **Slide Preview fixed**: added all component JS (`carousel.js`, `tabs.js`, `lightbox.js`, `list.js`, `table.js`) + `DOMContentLoaded` init to `/slides/deck-preview/:id` shell — slides now render correctly with tabs, carousels, and styles
-- **Preview arrows**: prev/next buttons in Slide Preview panel header; shows `← N / 14 →` counter; subtitle updates to slide name on selection
-- **Themed scrollbar**: `.deck-list-scroll` uses `--border-hov` / `--muted` CSS vars — adapts to dark and light mode automatically
-- **Customer Settings removed from Builder**: no longer a static section in My Deck tab
-- **Create Presentation flow**:
-  - "Create Presentation" button in Slide Preview panel header
-  - Modal with Customer Company (required), Contact Person, Contact Title
-  - `POST /api/presentations` saves snapshot of current deck + customer info to `presentations.json`
-  - Toast confirmation on success
-- **`presentations.json`** created as new data store (`builder/data/presentations.json`)
-- **Dashboard wired**: Finished Presentations list loads from `GET /api/presentations`; shows customer name, contact, slide count, date
-- **First real presentation saved**: SoftSolution / General / Sales — 14 slides
+- Slide Preview fixed: added all component JS + init to `/slides/deck-preview/:id` shell
+- Preview arrows: prev/next with `N / 14` counter; subtitle updates to slide name
+- Themed scrollbar on `.deck-list-scroll`
+- Customer Settings removed from Builder
+- Create Presentation flow: modal → `POST /api/presentations` → `presentations.json`
+- Dashboard Finished Presentations list wired to real data
 
 ### Pending
-- **Presentation viewer**: click a finished presentation → read-only full-screen slideshow (`/view/:id`)
-- **GitHub publish**: "Publish to GitHub Pages" button on finished presentation
-- Add Slide modal (stub only)
-- Slide-06 defect gallery JS verify
-- Design system refactor (carried)
-- `scripts/build.js` / `scripts/deploy.js`
+- Presentation viewer, GitHub publish, Add Slide modal, Slide-06, design system refactor
 
 ---
 
@@ -34,26 +42,6 @@
 - Deck list: row style with drag-and-drop, eye toggle, remove button
 - `GET /slides/deck-preview/:id` route: full HTML shell with style.css + component JS
 - Nav synced across all pages: Dashboard | Builder | Settings
-- `renderDeckList()` called on init so deck loads immediately
 
 ### Pending
-- Finished Presentations: wire up real data + link to read-only preview
-- Add Slide modal, Customer Settings wiring
-- Slide-06 defect gallery JS
-- Design system refactor, build/deploy scripts
-
----
-
-## 2026-04-11 — Mobile carousel fixes across all slides
-
-### Accomplished
-- Root cause: `.slide-body` is `height:auto` on mobile — carousels collapse
-- Fix pattern: `min-height:260px !important` on mobile, `height:100%` at desktop breakpoint
-- All slides fixed (6, 7, 8, 9, 10, 11, 12, 14 + 2, 4, 5)
-- Critical: all fixes live in `server.js` render functions only
-
-### Pending
-- Slide-06 defect gallery JS verify
-- Design system refactor
-- Build/deploy scripts
-- Delete old `dashboard.css`
+- Finished Presentations wiring, Add Slide modal, Slide-06, design system refactor, build/deploy scripts
