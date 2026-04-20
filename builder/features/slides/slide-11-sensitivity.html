@@ -63,6 +63,23 @@
   <style>
     .ls11 { }
 
+    /* ── slide-body: must be full width so children don't collapse ── */
+    /* .slide-layout uses align-items:center which shrinks .slide-body
+       to content width unless we force it to 100%. */
+    .ls11 .slide-body {
+      width: 100%;
+      align-items: center; /* center the max-width children */
+    }
+
+    /* ── Mobile: give carousel a concrete height floor ── */
+    /* On mobile, .slide-body is height:auto so flex:1 collapses to 0.
+       A min-height here gives the carousel a real pixel value to work against. */
+    @media (max-width: 768px) {
+      .ls11 .ls-carousel { min-height: 260px; }
+      /* Mobile base padding */
+      .ls11 { padding: 52px 16px 80px !important; }
+    }
+
     /* ── Steps ── */
     .ls11-steps-wrap {
       flex-shrink: 0;
@@ -91,8 +108,6 @@
       font-size: 12px; font-style: italic; color: var(--text-muted);
       letter-spacing: .03em; padding-left: 2px; margin-top: 4px;
     }
-    /* ── Mobile base ── */
-    .ls11 { padding: 52px 16px 80px !important; }
 
     /* ── Desktop overrides ── */
     @media(min-width:769px) {

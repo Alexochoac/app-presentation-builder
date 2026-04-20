@@ -50,6 +50,9 @@ app.get('/slides/deck-preview/:id', function (req, res) {
     if (!tpl) return res.status(404).type('text/plain').send('Template not found');
 
     var fragment = renderLayoutToHtml(tpl, id, libSlide.edits || {});
+    if (readonly) {
+      fragment = fragment.replace(/ contenteditable=""/g, '').replace(/ contenteditable=''/g, '');
+    }
     var page = [
       '<!DOCTYPE html>',
       '<html lang="en">',
@@ -67,12 +70,23 @@ app.get('/slides/deck-preview/:id', function (req, res) {
       '    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }',
       '    html, body { width: 100%; height: 100%; overflow: hidden; }',
       '    .slides-container { position: relative; width: 100%; height: 100%; }',
-      '    .slide { opacity: 1 !important; transform: scale(1) !important; }',
+      '    .slide { opacity: 1 !important; transform: scale(1) !important; pointer-events: auto !important; }',
+      readonly ? '    [data-builder-only],[data-ls-add-row],[data-ls-add],[data-ls-restore]{ display:none !important; }' : '',
       '  </style>',
       '</head>',
       '<body>',
       '  <div class="slides-container">',
       fragment,
+      '  </div>',
+      // Lightbox DOM — required by lightbox.js (resolves #lightbox, #lb-img, etc.)
+      '  <div id="lightbox">',
+      '    <div id="lb-inner">',
+      '      <button id="lb-close">&#10005;</button>',
+      '      <button id="lb-prev" class="lb-nav-btn">&#8249;</button>',
+      '      <div id="lb-stage"><img id="lb-img" src="" alt=""><div id="lb-cap"></div></div>',
+      '      <button id="lb-next" class="lb-nav-btn">&#8250;</button>',
+      '      <div id="lb-thumbs"></div>',
+      '    </div>',
       '  </div>',
       '  <script>',
       '    document.addEventListener("DOMContentLoaded", function () {',
@@ -389,7 +403,7 @@ function renderHeroLayout(slideId, savedEdits) {
     '  </div>',
 
     '  <!-- Gallery button -->',
-    '  <button class="' + p + '-gallery-btn" data-builder-only="" onclick="' + p + 'OpenGallery()" title="Show installation gallery">',
+    '  <button class="' + p + '-gallery-btn" onclick="' + p + 'OpenGallery()" title="Show installation gallery">',
     '    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">',
     '      <rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect>',
     '      <rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect>',
@@ -397,12 +411,12 @@ function renderHeroLayout(slideId, savedEdits) {
     '  </button>',
 
     '  <!-- Gallery overlay -->',
-    '  <div class="' + p + '-gallery-overlay" id="' + p + 'GalleryOverlay" data-builder-only="" style="display:none;">',
+    '  <div class="' + p + '-gallery-overlay" id="' + p + 'GalleryOverlay" style="display:none;">',
     '    <div class="' + p + '-gallery-popup">',
     '      <button class="' + p + '-gallery-close" onclick="' + p + 'CloseGallery()">✕</button>',
     '      <div class="' + p + '-car-wrap" id="' + p + 'CarWrap">',
     '        <div class="' + p + '-car-track" id="' + p + 'CarTrack" data-autoplay="8">',
-    savedEdits['carousel-track-html'] ||
+    (savedEdits['carousel-track-html'] || '').replace(/\bh[a-z][a-zA-Z0-9]*-/g, p + '-').replace(/\bh[a-z][a-z0-9]+(?=[A-Z])/g, p) ||
     [
       '          <div class="' + p + '-car-slide">',
       '            <img src="" alt="Gallery image 1">',
@@ -464,6 +478,8 @@ function renderHeroLayout(slideId, savedEdits) {
     '    .' + p + '-car-move { position:absolute; bottom:10px; z-index:20; width:28px; height:28px; border-radius:50%; background:rgba(0,0,0,.65); border:1px solid rgba(255,255,255,.30); color:#fff; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s; font-family:inherit; }',
     '    .' + p + '-car-slide:hover .' + p + '-car-move { opacity:1; }',
     '    .' + p + '-car-move--l { right:48px; } .' + p + '-car-move--r { right:12px; }',
+    '    .' + p + '-car-delete { position:absolute; top:8px; right:8px; z-index:20; width:26px; height:26px; border-radius:50%; background:rgba(180,40,40,.80); border:1px solid rgba(255,80,80,.40); color:#fff; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s; font-family:inherit; padding:0; line-height:1; }',
+    '    .' + p + '-car-slide:hover .' + p + '-car-delete { opacity:1; }',
     '    .' + p + '-car-slide--text { flex:0 0 100%; background:linear-gradient(135deg,#0d1117 0%,#1a1f2e 100%); display:flex; align-items:center; justify-content:center; }',
     '    .' + p + '-stat-block { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:32px; width:100%; text-align:center; }',
     '    .' + p + '-stat-block .stat-number { font-size:clamp(48px,8vw,88px); font-weight:900; letter-spacing:-.03em; line-height:1; background:linear-gradient(135deg,var(--accent),var(--accent-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; display:block; }',
@@ -516,7 +532,45 @@ function renderHeroLayout(slideId, savedEdits) {
     '    var wrap = document.getElementById(P + "CarWrap");',
     '    wrap.addEventListener("mouseenter", stopAutoplay);',
     '    wrap.addEventListener("mouseleave", function () { if (document.getElementById(P + "GalleryOverlay").style.display !== "none") startAutoplay(); });',
-    '    window[P + "OpenGallery"]  = function () { document.getElementById(P + "GalleryOverlay").style.display = "flex"; goTo(0); buildThumbs(); startAutoplay(); };',
+    '    window[P + "DeleteCarSlide"] = function (btn) {',
+    '      var slide = btn.closest("." + P + "-car-slide");',
+    '      var slides = getSlides();',
+    '      if (slides.length <= 1) return;',
+    '      var i = slides.indexOf(slide);',
+    '      slide.parentNode.removeChild(slide);',
+    '      goTo(Math.min(i, getSlides().length - 1));',
+    '      buildThumbs();',
+    '      saveCarouselTrack();',
+    '    };',
+    '    function injectBuilderControls() {',
+    '      getSlides().forEach(function (slide) {',
+    '        if (!slide.querySelector("." + P + "-car-move--l")) {',
+    '          var ml = document.createElement("button");',
+    '          ml.className = P + "-car-move " + P + "-car-move--l";',
+    '          ml.setAttribute("data-builder-only", "");',
+    '          ml.onclick = function () { window[P + "MoveCarSlide"](ml, -1); };',
+    '          ml.textContent = "\u2039";',
+    '          slide.appendChild(ml);',
+    '        }',
+    '        if (!slide.querySelector("." + P + "-car-move--r")) {',
+    '          var mr = document.createElement("button");',
+    '          mr.className = P + "-car-move " + P + "-car-move--r";',
+    '          mr.setAttribute("data-builder-only", "");',
+    '          mr.onclick = function () { window[P + "MoveCarSlide"](mr, 1); };',
+    '          mr.textContent = "\u203a";',
+    '          slide.appendChild(mr);',
+    '        }',
+    '        if (!slide.querySelector("." + P + "-car-delete")) {',
+    '          var del = document.createElement("button");',
+    '          del.className = P + "-car-delete";',
+    '          del.setAttribute("data-builder-only", "");',
+    '          del.onclick = function () { window[P + "DeleteCarSlide"](del); };',
+    '          del.textContent = "\u2715";',
+    '          slide.appendChild(del);',
+    '        }',
+    '      });',
+    '    }',
+    '    window[P + "OpenGallery"]  = function () { var o = document.getElementById(P + "GalleryOverlay"); document.body.appendChild(o); o.style.display = "flex"; goTo(0); buildThumbs(); injectBuilderControls(); startAutoplay(); };',
     '    window[P + "CloseGallery"] = function () { document.getElementById(P + "GalleryOverlay").style.display = "none"; stopAutoplay(); };',
     '    window[P + "CarMove"]      = function (dir) { goTo(idx + dir); };',
     '    window[P + "MoveCarSlide"] = function (btn, dir) {',
@@ -539,7 +593,7 @@ function renderHeroLayout(slideId, savedEdits) {
     '      var n = getSlides().length + 1;',
     '      var slide = document.createElement("div");',
     '      slide.className = P + "-car-slide";',
-    '      slide.innerHTML = \'<img src="" alt="Gallery image"><div class="\' + P + \'-car-caption" contenteditable="" spellcheck="false">New image</div><div class="\' + P + \'-car-img-overlay" onclick="\' + P + \'ChangeCarImage(this)">Change Image</div><button class="\' + P + \'-car-move \' + P + \'-car-move--l" onclick="\' + P + \'MoveCarSlide(this,-1)">‹</button><button class="\' + P + \'-car-move \' + P + \'-car-move--r" onclick="\' + P + \'MoveCarSlide(this,1)">›</button>\';',
+    '      slide.innerHTML = \'<img src="" alt="Gallery image"><div class="\' + P + \'-car-caption" contenteditable="" spellcheck="false">New image</div><div class="\' + P + \'-car-img-overlay" onclick="\' + P + \'ChangeCarImage(this)">Change Image</div><button class="\' + P + \'-car-move \' + P + \'-car-move--l" onclick="\' + P + \'MoveCarSlide(this,-1)">‹</button><button class="\' + P + \'-car-move \' + P + \'-car-move--r" onclick="\' + P + \'MoveCarSlide(this,1)">›</button><button class="\' + P + \'-car-delete" data-builder-only="" onclick="\' + P + \'DeleteCarSlide(this)">\u2715</button>\';',
     '      track.appendChild(slide);',
     '      goTo(getSlides().length - 1);',
     '      buildThumbs();',
@@ -549,7 +603,7 @@ function renderHeroLayout(slideId, savedEdits) {
     '      var track = document.getElementById(P + "CarTrack");',
     '      var slide = document.createElement("div");',
     '      slide.className = P + "-car-slide " + P + "-car-slide--text";',
-    '      slide.innerHTML = \'<div class="\' + P + \'-stat-block"><div class="section-label" contenteditable="" spellcheck="false">Label</div><span class="stat-number" contenteditable="" spellcheck="false">Value</span><div class="stat-label" contenteditable="" spellcheck="false">Description</div></div><button class="\' + P + \'-car-move \' + P + \'-car-move--l" onclick="\' + P + \'MoveCarSlide(this,-1)">‹</button><button class="\' + P + \'-car-move \' + P + \'-car-move--r" onclick="\' + P + \'MoveCarSlide(this,1)">›</button>\';',
+    '      slide.innerHTML = \'<div class="\' + P + \'-stat-block"><div class="section-label" contenteditable="" spellcheck="false">Label</div><span class="stat-number" contenteditable="" spellcheck="false">Value</span><div class="stat-label" contenteditable="" spellcheck="false">Description</div></div><button class="\' + P + \'-car-move \' + P + \'-car-move--l" onclick="\' + P + \'MoveCarSlide(this,-1)">‹</button><button class="\' + P + \'-car-move \' + P + \'-car-move--r" onclick="\' + P + \'MoveCarSlide(this,1)">›</button><button class="\' + P + \'-car-delete" data-builder-only="" onclick="\' + P + \'DeleteCarSlide(this)">\u2715</button>\';',
     '      track.appendChild(slide);',
     '      goTo(getSlides().length - 1);',
     '      buildThumbs();',
@@ -605,7 +659,7 @@ function renderHeroLayout(slideId, savedEdits) {
     '        thumb.className = P + "-thumb" + (i === idx ? " " + P + "-thumb--active" : "");',
     '        var img = slide.querySelector("img");',
     '        if (img && img.src) { thumb.style.backgroundImage = "url(" + img.src + ")"; }',
-    '        else { thumb.classList.add(P + "-thumb--text"); thumb.textContent = "Text"; }',
+    '        else { thumb.classList.add(P + "-thumb--text"); var lbl = slide.querySelector(".section-label"); thumb.textContent = lbl && lbl.textContent.trim() ? lbl.textContent.trim().substring(0, 14) : "Text"; }',
     '        thumb.addEventListener("click", function () { goTo(i); });',
     '        strip.appendChild(thumb);',
     '      });',
@@ -656,7 +710,7 @@ function renderCompanyLayout(slideId, savedEdits) {
     '<div class="ls-tab-panels">',
     '<div class="ls-tab-panel" data-panel="0" style="padding-top:12px;">',
     '  <div class="ls-carousel" data-counter="" data-edit="company-carousel" data-track="ls2:carousel:company" style="flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform:translateX(0px);">',
-    '    <div class="ls-carousel-slide"><img src="/slides/uploads/Group-Picture-of-the-Team-members-.png" alt="Group Picture of the Team members">',
+    '    <div class="ls-carousel-slide"><img src="/slides/uploads/Group-Picture-of-the-Team-members-.png" alt="Group Picture of the Team members" data-zoom="">',
     '      <div class="ls-carousel-caption" data-edit="company-caption" contenteditable="" spellcheck="false">Group Picture of the Team members</div></div></div><div class="ls-carousel-counter"></div></div>',
     '</div>',
     '<div class="ls-tab-panel active" data-panel="1">',
@@ -694,7 +748,7 @@ function renderCompanyLayout(slideId, savedEdits) {
     '</div>',
     '<div class="ls-tab-panel" data-panel="3">',
     '  <div class="ls2-map-wrap">',
-    '    <img class="ls2-map-img" src="/slides/uploads/World Map of locations .jpeg" alt="World Map">',
+    '    <img class="ls2-map-img" src="/slides/uploads/World Map of locations .jpeg" alt="World Map" data-zoom="">',
     '    <div class="ls2-pin" style="left:19.5%;top:34%;"><div class="ls2-pin-dot"></div><div class="ls2-pin-ring"></div><div class="ls2-pin-label" data-edit="pin-burnsville" contenteditable="" spellcheck="false">Burnsville MN, USA</div></div>',
     '    <div class="ls2-pin" style="left:51.2%;top:32.5%;"><div class="ls2-pin-dot"></div><div class="ls2-pin-ring"></div><div class="ls2-pin-label" data-edit="pin-waidhofen" contenteditable="" spellcheck="false">Waidhofen, Austria</div></div>',
     '    <div class="ls2-dist" style="left:19.1%;top:24.4%;" title="Canada"></div><div class="ls2-dist" style="left:10.9%;top:42.5%;" title="Mexico"></div>',
@@ -1625,62 +1679,62 @@ function renderDefectGalleryLayout(slideId, savedEdits) {
     '  <div class="s6-selector anim-in" id="s6-selector"></div>',
     '',
     '  <!-- ── Default carousel (shown when no defect is selected) ── -->',
-    '  <div class="ls-carousel s6-car-wrap" id="s6CarWrap" data-counter="" data-edit="s6-default-carousel" data-track="s6:carousel:default" data-autoplay="5000" style="flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
+    '  <div class="ls-carousel s6-car-wrap" id="s6CarWrap" data-counter="" data-edit="s6-default-carousel" data-track="s6:carousel:default" data-autoplay="5000" data-zoom-group="" style="flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
     (savedEdits['s6-default-carousel'] != null ? savedEdits['s6-default-carousel'] : defaultCarouselHtml),
     '  </div>',
     '',
     '  <!-- ── Scratches ── -->',
-    '  <div class="ls-carousel s6-defect-car" id="s6-car-scratches" data-counter="" data-edit="s6-defect-scratches" data-track="s6:carousel:scratches" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
+    '  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-scratches" data-counter="" data-edit="s6-defect-scratches" data-track="s6:carousel:scratches" data-zoom-group="" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
     (savedEdits['s6-defect-scratches'] != null ? savedEdits['s6-defect-scratches'] : defaultScratchesHtml),
     '  </div>',
     '',
     '  <!-- ── Inclusions ── -->',
-    '  <div class="ls-carousel s6-defect-car" id="s6-car-inclusions" data-counter="" data-edit="s6-defect-inclusions" data-track="s6:carousel:inclusions" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;" data-autoplay="15000">',
+    '  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-inclusions" data-counter="" data-edit="s6-defect-inclusions" data-track="s6:carousel:inclusions" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;" data-autoplay="15000">',
     (savedEdits['s6-defect-inclusions'] != null ? savedEdits['s6-defect-inclusions'] : defaultInclusionsHtml),
     '  </div>',
     '',
     '  <!-- ── Dirt ── -->',
-    '  <div class="ls-carousel s6-defect-car" id="s6-car-dirt" data-counter="" data-edit="s6-defect-dirt" data-track="s6:carousel:dirt" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
+    '  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-dirt" data-counter="" data-edit="s6-defect-dirt" data-track="s6:carousel:dirt" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
     (savedEdits['s6-defect-dirt'] != null ? savedEdits['s6-defect-dirt'] : defaultDirtHtml),
     '  </div>',
     '',
     '  <!-- ── Dust ── -->',
-    '  <div class="ls-carousel s6-defect-car" id="s6-car-dust" data-counter="" data-edit="s6-defect-dust" data-track="s6:carousel:dust" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
+    '  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-dust" data-counter="" data-edit="s6-defect-dust" data-track="s6:carousel:dust" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
     (savedEdits['s6-defect-dust'] != null ? savedEdits['s6-defect-dust'] : defaultDustHtml),
     '  </div>',
     '',
     '  <!-- ── Water ── -->',
-    '  <div class="ls-carousel s6-defect-car" id="s6-car-water" data-counter="" data-edit="s6-defect-water" data-track="s6:carousel:water" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
+    '  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-water" data-counter="" data-edit="s6-defect-water" data-track="s6:carousel:water" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
     (savedEdits['s6-defect-water'] != null ? savedEdits['s6-defect-water'] : defaultWaterHtml),
     '  </div>',
     '',
     '  <!-- ── Fingerprints ── -->',
-    '  <div class="ls-carousel s6-defect-car" id="s6-car-fingerprints" data-counter="" data-edit="s6-defect-fingerprints" data-track="s6:carousel:fingerprints" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
+    '  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-fingerprints" data-counter="" data-edit="s6-defect-fingerprints" data-track="s6:carousel:fingerprints" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
     (savedEdits['s6-defect-fingerprints'] != null ? savedEdits['s6-defect-fingerprints'] : defaultFingerprintsHtml),
     '  </div>',
     '',
     '  <!-- ── Ignore ── -->',
-    '  <div class="ls-carousel s6-defect-car" id="s6-car-ignore" data-counter="" data-edit="s6-defect-ignore" data-track="s6:carousel:ignore" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
+    '  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-ignore" data-counter="" data-edit="s6-defect-ignore" data-track="s6:carousel:ignore" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
     (savedEdits['s6-defect-ignore'] != null ? savedEdits['s6-defect-ignore'] : defaultIgnoreHtml),
     '  </div>',
     '',
     '  <!-- ── Edge defects ── -->',
-    '  <div class="ls-carousel s6-defect-car" id="s6-car-edge-defects" data-counter="" data-edit="s6-defect-edge-defects" data-track="s6:carousel:edge-defects" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
+    '  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-edge-defects" data-counter="" data-edit="s6-defect-edge-defects" data-track="s6:carousel:edge-defects" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
     (savedEdits['s6-defect-edge-defects'] != null ? savedEdits['s6-defect-edge-defects'] : defaultEdgeDefectsHtml),
     '  </div>',
     '',
     '  <!-- ── Frame & bars ── -->',
-    '  <div class="ls-carousel s6-defect-car" id="s6-car-frame-bars" data-counter="" data-edit="s6-defect-frame-bars" data-track="s6:carousel:frame-bars" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
+    '  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-frame-bars" data-counter="" data-edit="s6-defect-frame-bars" data-track="s6:carousel:frame-bars" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
     (savedEdits['s6-defect-frame-bars'] != null ? savedEdits['s6-defect-frame-bars'] : defaultFrameBarsHtml),
     '  </div>',
     '',
     '  <!-- ── Undefined ── -->',
-    '  <div class="ls-carousel s6-defect-car" id="s6-car-undefined" data-counter="" data-edit="s6-defect-undefined" data-track="s6:carousel:undefined" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
+    '  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-undefined" data-counter="" data-edit="s6-defect-undefined" data-track="s6:carousel:undefined" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
     (savedEdits['s6-defect-undefined'] != null ? savedEdits['s6-defect-undefined'] : defaultUndefinedHtml),
     '  </div>',
     '',
     '  <!-- ── Coating ── -->',
-    '  <div class="ls-carousel s6-defect-car" id="s6-car-coating" data-counter="" data-edit="s6-defect-coating" data-track="s6:carousel:coating" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
+    '  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-coating" data-counter="" data-edit="s6-defect-coating" data-track="s6:carousel:coating" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
     (savedEdits['s6-defect-coating'] != null ? savedEdits['s6-defect-coating'] : defaultCoatingHtml),
     '  </div>',
     '',
@@ -2552,6 +2606,8 @@ function renderCtaLayout(slideId, savedEdits) {
 
   var contactEmail = applyEdit('contact-email', 'alex.ochoa@softsolution.at', savedEdits);
   var emailHref = 'mailto:' + contactEmail;
+  var contactPhone = applyEdit('contact-phone', '', savedEdits);
+  var waHref = contactPhone ? 'https://wa.me/' + contactPhone.replace(/\D/g, '') : '#';
 
   return [
     '<div class="slide content ls14" data-slide="' + slideId + '">',
@@ -2576,9 +2632,10 @@ function renderCtaLayout(slideId, savedEdits) {
     '        <strong data-edit="contact-name" contenteditable="" spellcheck="false">' + applyEdit('contact-name', 'Alex Ochoa', savedEdits) + '</strong>',
     '        <span class="cta-contact-role" data-edit="contact-title" contenteditable="" spellcheck="false">' + applyEdit('contact-title', 'Sales Manager', savedEdits) + '</span>',
     '        <span class="cta-contact-addr" data-edit="contact-addr" contenteditable="" spellcheck="false">' + applyEdit('contact-addr', 'Im Vogelsang 18 \u00b7 3340 Waidhofen \u00b7 Austria', savedEdits) + '</span>',
+    '        <span class="cta-contact-phone" data-edit="contact-phone" contenteditable="" spellcheck="false" title="WhatsApp phone number (digits only, e.g. 4366412345678)">' + applyEdit('contact-phone', '+43 664 123 45678', savedEdits) + '</span>',
     '      </div>',
     '      <div class="cta-contact-btns">',
-    '        <a class="cta-btn-wa" href="#" target="_blank" data-umami-event="cta-whatsapp">',
+    '        <a class="cta-btn-wa" href="' + waHref + '" target="_blank" data-umami-event="cta-whatsapp">',
     '          ' + waSvg,
     '          WhatsApp',
     '        </a>',
@@ -2604,6 +2661,7 @@ function renderCtaLayout(slideId, savedEdits) {
     '    .cta-contact-name strong { font-size:15px; color:var(--text); }',
     '    .cta-contact-role { font-size:13px; color:var(--text-muted); }',
     '    .cta-contact-addr { font-size:12px; color:var(--text-muted); opacity:.7; }',
+    '    .cta-contact-phone { font-size:12px; color:var(--text-muted); opacity:.7; }',
     '    .cta-contact-btns { display:flex; flex-direction:column; gap:10px; }',
     '    .cta-btn-wa, .cta-btn-email {',
     '      display:inline-flex; align-items:center; gap:10px;',
@@ -3028,6 +3086,41 @@ app.post('/api/presentations', function (req, res) {
     var deck     = JSON.parse(fs.readFileSync(DECK_PATH, 'utf8'));
     var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
 
+    // Personalize cover slide with customer info
+    var contactName  = (body.contactName  || '').trim();
+    var contactTitle = (body.contactTitle || '').trim();
+    var subheadline = 'Proposal for ' + customerName;
+    if (contactName)  subheadline += ' \u00b7 ' + contactName;
+    if (contactTitle) subheadline += ', ' + contactTitle;
+    var coverSlide = (library.slides || []).find(function (s) { return s.id === 'lib-cover'; });
+    if (coverSlide) {
+      coverSlide.edits = coverSlide.edits || {};
+      coverSlide.edits.subheadline = subheadline;
+
+      // Save customer logo if provided
+      var logoFilename = (body.logoFilename || '').trim();
+      var logoData     = (body.logoData     || '').trim();
+      if (logoFilename && logoData) {
+        var logoMatches = logoData.match(/^data:([A-Za-z0-9+/]+);base64,(.+)$/);
+        if (logoMatches) {
+          var logoBuffer  = Buffer.from(logoMatches[2], 'base64');
+          var logoSafe    = path.basename(logoFilename).replace(/[^a-zA-Z0-9._-]/g, '_');
+          var logoDest    = path.join(__dirname, 'features', 'slides', 'uploads', logoSafe);
+          fs.writeFileSync(logoDest, logoBuffer);
+          var logoSrc = '/slides/uploads/' + logoSafe;
+          coverSlide.edits['customer-logo-src'] = logoSrc;
+          // Update src in the customer-logo HTML edit if it exists
+          if (coverSlide.edits['customer-logo']) {
+            coverSlide.edits['customer-logo'] = coverSlide.edits['customer-logo']
+              .replace(/(<img[^>]*class="[^"]*cust-img[^"]*"[^>]*src=")[^"]*(")/,
+                       '$1' + logoSrc + '$2');
+          }
+        }
+      }
+
+      fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    }
+
     // Build a snapshot: deck slide order + names
     var slides = (deck.slides || []).map(function (s) {
       var lib = library.slides.find(function (l) { return l.id === s.librarySlideId; });
@@ -3043,8 +3136,8 @@ app.post('/api/presentations', function (req, res) {
       id:           'pres-' + Date.now(),
       createdAt:    new Date().toISOString().slice(0, 10),
       customerName: customerName,
-      contactName:  (body.contactName  || '').trim(),
-      contactTitle: (body.contactTitle || '').trim(),
+      contactName:  contactName,
+      contactTitle: contactTitle,
       slideCount:   slides.length,
       slides:       slides
     };
@@ -3066,6 +3159,39 @@ app.get('/api/presentations/:id', function (req, res) {
     var pres = (data.presentations || []).find(function (p) { return p.id === req.params.id; });
     if (!pres) return res.status(404).json({ success: false, error: 'Not found' });
     res.json({ success: true, data: pres });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// PUT /api/presentations/:id — update metadata (customerName, contactName, contactTitle)
+app.put('/api/presentations/:id', function (req, res) {
+  try {
+    var body = req.body || {};
+    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pres = (data.presentations || []).find(function (p) { return p.id === req.params.id; });
+    if (!pres) return res.status(404).json({ success: false, error: 'Not found' });
+    if (body.customerName !== undefined) pres.customerName = (body.customerName || '').trim();
+    if (body.contactName  !== undefined) pres.contactName  = (body.contactName  || '').trim();
+    if (body.contactTitle !== undefined) pres.contactTitle = (body.contactTitle || '').trim();
+    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+    res.json({ success: true, data: pres });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// DELETE /api/presentations/:id — remove a finished presentation
+app.delete('/api/presentations/:id', function (req, res) {
+  try {
+    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var before = (data.presentations || []).length;
+    data.presentations = (data.presentations || []).filter(function (p) { return p.id !== req.params.id; });
+    if (data.presentations.length === before) {
+      return res.status(404).json({ success: false, error: 'Not found' });
+    }
+    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2));
+    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

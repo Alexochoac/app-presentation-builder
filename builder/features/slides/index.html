@@ -1651,6 +1651,13 @@
           <label for="cpContactTitle">Contact Title</label>
           <input type="text" id="cpContactTitle" placeholder="e.g. Head of Quality">
         </div>
+        <div class="field">
+          <label for="cpLogo">Customer Logo</label>
+          <input type="file" id="cpLogo" accept="image/*" style="color:var(--text);">
+          <div id="cpLogoPreview" style="margin-top:8px;display:none;">
+            <img id="cpLogoPreviewImg" style="max-height:48px;border-radius:4px;border:1px solid var(--border);" alt="Logo preview">
+          </div>
+        </div>
       </div>
 
       <p class="coming-soon-msg hidden" id="cpError" style="color:#f87171;margin-top:12px;"></p>
@@ -2050,11 +2057,26 @@
       document.getElementById('cpCustomerName').value = '';
       document.getElementById('cpContactName').value  = '';
       document.getElementById('cpContactTitle').value = '';
+      document.getElementById('cpLogo').value         = '';
+      document.getElementById('cpLogoPreview').style.display = 'none';
       document.getElementById('cpError').classList.add('hidden');
       document.getElementById('cpError').textContent = '';
       document.getElementById('createPresentationModal').classList.remove('hidden');
       setTimeout(function () { document.getElementById('cpCustomerName').focus(); }, 50);
     }
+
+    document.getElementById('cpLogo').addEventListener('change', function () {
+      var file = this.files[0];
+      var preview = document.getElementById('cpLogoPreview');
+      var img     = document.getElementById('cpLogoPreviewImg');
+      if (file) {
+        var reader = new FileReader();
+        reader.onload = function (e) { img.src = e.target.result; preview.style.display = 'block'; };
+        reader.readAsDataURL(file);
+      } else {
+        preview.style.display = 'none';
+      }
+    });
 
     function closeCreatePresentationModal() {
       document.getElementById('createPresentationModal').classList.add('hidden');
@@ -2064,6 +2086,7 @@
       var customerName = document.getElementById('cpCustomerName').value.trim();
       var contactName  = document.getElementById('cpContactName').value.trim();
       var contactTitle = document.getElementById('cpContactTitle').value.trim();
+      var logoFile     = document.getElementById('cpLogo').files[0];
       var errEl        = document.getElementById('cpError');
       var submitBtn    = document.getElementById('cpSubmitBtn');
 
@@ -2076,29 +2099,38 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Saving…';
 
-      fetch('/api/presentations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          customerName: customerName,
-          contactName:  contactName,
-          contactTitle: contactTitle
+      function doSubmit(logoFilename, logoData) {
+        var payload = { customerName: customerName, contactName: contactName, contactTitle: contactTitle };
+        if (logoFilename) { payload.logoFilename = logoFilename; payload.logoData = logoData; }
+        fetch('/api/presentations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
         })
-      })
-      .then(function (r) { return r.json(); })
-      .then(function (res) {
-        if (!res.success) throw new Error(res.error || 'Failed to save');
-        closeCreatePresentationModal();
-        showToast('Presentation saved for ' + customerName);
-      })
-      .catch(function (err) {
-        errEl.textContent = err.message || 'Something went wrong.';
-        errEl.classList.remove('hidden');
-      })
-      .finally(function () {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Save Presentation';
-      });
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.success) throw new Error(res.error || 'Failed to save');
+          closeCreatePresentationModal();
+          showToast('Presentation saved for ' + customerName);
+        })
+        .catch(function (err) {
+          errEl.textContent = err.message || 'Something went wrong.';
+          errEl.classList.remove('hidden');
+        })
+        .finally(function () {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Save Presentation';
+        });
+      }
+
+      if (logoFile) {
+        var reader = new FileReader();
+        reader.onload = function (e) { doSubmit(logoFile.name, e.target.result); };
+        reader.onerror = function () { doSubmit(null, null); };
+        reader.readAsDataURL(logoFile);
+      } else {
+        doSubmit(null, null);
+      }
     }
 
     function showComingSoon(btn) {
@@ -2235,6 +2267,7 @@
 
         renderLibraryGrid();
         renderDeckList();
+        if (deckSlides.length > 0) { previewIdx = 0; renderPreviewAt(0); updatePreviewNav(); }
       }).catch(function () {
         librarySlides = [];
         deckSlides = [];

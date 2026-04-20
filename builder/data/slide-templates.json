@@ -1,0 +1,395 @@
+[
+  {
+    "id": "tpl-cover",
+    "name": "Cover Slide",
+    "description": "Hero slide with title, subtitle, and logo area",
+    "category": "cover",
+    "label": "old",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"},{"type":"Button"}] }] }
+    ]
+  },
+  {
+    "id": "tpl-title-text",
+    "name": "Title + Text",
+    "description": "Header with two columns — text left, image right",
+    "category": "content",
+    "label": "old",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
+      { "id": "r2", "layout": "half-half", "height": "tall", "cols": [{ "components": [{"type":"Text Block"}] }, { "components": [{"type":"Carousel"}] }] }
+    ]
+  },
+  {
+    "id": "tpl-three-kpis",
+    "name": "Three KPIs",
+    "description": "Header with three stat/metric cards",
+    "category": "metrics",
+    "label": "old",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"}] }] },
+      { "id": "r2", "layout": "thirds", "height": "tall", "cols": [{ "components": [{"type":"Text Block"}] }, { "components": [{"type":"Text Block"}] }, { "components": [{"type":"Text Block"}] }] }
+    ]
+  },
+  {
+    "id": "tpl-tabs-content",
+    "name": "Tabs + Content",
+    "description": "Header with tabbed sections for features or categories",
+    "category": "content",
+    "label": "old",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
+      { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Tabs"}] }] }
+    ]
+  },
+  {
+    "id": "tpl-full-carousel",
+    "name": "Full Carousel",
+    "description": "Header with full-width image carousel",
+    "category": "visual",
+    "label": "old",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"}] }] },
+      { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Carousel"}] }] }
+    ]
+  },
+  {
+    "id": "tpl-two-col",
+    "name": "Two Column",
+    "description": "Header with list left and carousel right",
+    "category": "content",
+    "label": "old",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
+      { "id": "r2", "layout": "half-half", "height": "tall", "cols": [{ "components": [{"type":"List"}] }, { "components": [{"type":"Carousel"}] }] }
+    ]
+  },
+  {
+    "id": "tpl-comparison-table",
+    "name": "Comparison Table",
+    "description": "Header with feature comparison table",
+    "category": "content",
+    "label": "old",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
+      { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Table"}] }] }
+    ]
+  },
+  {
+    "id": "tpl-process-steps",
+    "name": "Process Steps",
+    "description": "Header with horizontal step-by-step cards",
+    "category": "content",
+    "label": "old",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
+      { "id": "r2", "layout": "thirds", "height": "auto", "cols": [{ "components": [{"type":"Text Block"}] }, { "components": [{"type":"Text Block"}] }, { "components": [{"type":"Text Block"}] }] }
+    ]
+  },
+  {
+    "id": "tpl-tabs-table",
+    "name": "Tabs + Table",
+    "description": "Tabbed sections each containing a data table",
+    "category": "data",
+    "label": "old",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"}] }] },
+      { "id": "r2", "layout": "two-third", "height": "tall", "cols": [{ "components": [{"type":"Table"}] }, { "components": [{"type":"List"}] }] }
+    ]
+  },
+  {
+    "id": "tpl-cta",
+    "name": "Call to Action",
+    "description": "Closing slide with big text, button, and contact info",
+    "category": "cta",
+    "label": "old",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"},{"type":"Text Block"},{"type":"Button"}] }] }
+    ]
+  },
+  {
+    "id": "tpl-new-cover",
+    "name": "Cover Slide",
+    "description": "Hero cover with full-bleed background, headline, and gallery carousel",
+    "category": "cover",
+    "label": "new",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"},{"type":"Carousel"}] }] },
+      { "id": "r2", "layout": "full", "height": "short", "cols": [{ "components": [{"type":"Stats Bar"}] }] }
+    ],
+    "defaultContent": {
+      "badge": "GlassQuality.com · LineScanner · Osprey",
+      "headline": "Quality Inspection<br>for <span class=\"blue\">Flat Glass</span>",
+      "subheadline": "Proposal for [Customer] · [Name], [Title]",
+      "credit": "by GlassQuality.com"
+    }
+  },
+  {
+    "id": "tpl-new-company",
+    "name": "Company Overview",
+    "description": "Title and subtitle with tabbed content sections and stats bar",
+    "category": "content",
+    "label": "new",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
+      { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Tabs"}] }] },
+      { "id": "r3", "layout": "full", "height": "short", "cols": [{ "components": [{"type":"Stats Bar"}] }] }
+    ],
+    "defaultContent": {
+      "section-label": "Our Company",
+      "title": "Quality inspection is all we do",
+      "subtitle": "We inspect every quality aspect of your glass guaranteeing peak performance and the best quality.",
+      "title-0-0": "Quality inspection is all we do",
+      "subtitle-0-0": "We inspect every quality aspect of your glass guaranteeing peak performance and the best quality.",
+      "stats-2-0": "<div class=\"kpi-card\"><div class=\"kpi-value\" contenteditable=\"\" spellcheck=\"false\">1999</div><div class=\"kpi-label\" contenteditable=\"\" spellcheck=\"false\">Founded</div></div><div class=\"kpi-card\"><div class=\"kpi-value\" contenteditable=\"\" spellcheck=\"false\">2050+</div><div class=\"kpi-label\" contenteditable=\"\" spellcheck=\"false\">Systems installed</div></div><div class=\"kpi-card\"><div class=\"kpi-value\" contenteditable=\"\" spellcheck=\"false\">23</div><div class=\"kpi-label\" contenteditable=\"\" spellcheck=\"false\">Countries · 6 continents</div></div><div class=\"kpi-card\"><div class=\"kpi-value\" contenteditable=\"\" spellcheck=\"false\">60</div><div class=\"kpi-label\" contenteditable=\"\" spellcheck=\"false\">Specialized employees</div></div>"
+    }
+  },
+  {
+    "id": "tpl-new-comparison",
+    "name": "Side by Side Comparison",
+    "description": "Two equal columns each showing a feature or product list",
+    "category": "content",
+    "label": "new",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
+      { "id": "r2", "layout": "half-half", "height": "tall", "cols": [{ "components": [{"type":"List"}] }, { "components": [{"type":"List"}] }] }
+    ],
+    "defaultContent": {
+      "section-label": "The Case for Inspection",
+      "title": "Why inspection automation makes sense",
+      "subtitle": "",
+      "title-0-0": "Why inspection automation makes sense",
+      "list-1-0": "<li contenteditable=\"\" spellcheck=\"false\">Human limitations at high line speed</li><li contenteditable=\"\" spellcheck=\"false\">Inconsistent results across shifts</li><li contenteditable=\"\" spellcheck=\"false\">Defects reach the customer undetected</li><li contenteditable=\"\" spellcheck=\"false\">No data trail for quality audits</li><li contenteditable=\"\" spellcheck=\"false\">High cost of late defect discovery</li>",
+      "list-1-1": "<li contenteditable=\"\" spellcheck=\"false\">24 / 7 automated inspection at full line speed</li><li contenteditable=\"\" spellcheck=\"false\">Consistent, shift-independent quality</li><li contenteditable=\"\" spellcheck=\"false\">Every defect caught before shipment</li><li contenteditable=\"\" spellcheck=\"false\">Full traceability — every piece, every scan</li><li contenteditable=\"\" spellcheck=\"false\">Cost of quality reduced by up to 10×</li>"
+    }
+  },
+  {
+    "id": "tpl-new-capability-matrix",
+    "name": "Capability Matrix",
+    "description": "Tabbed sections each containing a data table for capability comparison",
+    "category": "data",
+    "label": "new",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
+      { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Tabs"}] }] }
+    ],
+    "defaultContent": {
+      "section-label": "The Product",
+      "title": "LineScanner Capability Overview",
+      "subtitle": "",
+      "title-0-0": "LineScanner Capability Overview"
+    }
+  },
+  {
+    "id": "tpl-new-technology",
+    "name": "Technology Tabs",
+    "description": "Tabs showcasing technologies with card grids and carousel inside",
+    "category": "content",
+    "label": "new",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
+      { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Tabs"},{"type":"Cards Grid"},{"type":"Carousel"}] }] }
+    ],
+    "defaultContent": {
+      "section-label": "The Technology",
+      "title": "How LineScanner sees what others miss",
+      "subtitle": "",
+      "title-0-0": "How LineScanner sees what others miss",
+      "tabs-1-0": "<div class=\"ls-tab-list\"><button class=\"ls-tab\" data-panel=\"0\">How It Works</button><button class=\"ls-tab active\" data-panel=\"1\">16-bit Advantage</button><button class=\"ls-tab\" data-panel=\"2\">vs Camera Systems</button></div><div class=\"ls-tab-panels\"><div class=\"ls-tab-panel\" data-panel=\"0\"><p class=\"slide-text\" contenteditable=\"\" spellcheck=\"false\">Telecentric light — uniform illumination independent of glass position. Linear image sensor scanning line-by-line at full production speed.</p></div><div class=\"ls-tab-panel active\" data-panel=\"1\"><p class=\"slide-text\" contenteditable=\"\" spellcheck=\"false\">Low-contrast detection: identifies defects 8-bit systems cannot see. Every pixel is equal — no variation by position.</p></div><div class=\"ls-tab-panel\" data-panel=\"2\"><p class=\"slide-text\" contenteditable=\"\" spellcheck=\"false\">Camera-based systems capture snapshots. LineScanner scans every millimetre continuously — no missed zones, no motion blur.</p></div></div>"
+    }
+  },
+  {
+    "id": "tpl-new-defect-gallery",
+    "name": "Gallery with Selector",
+    "description": "Tag-filtered image gallery with carousel viewer",
+    "category": "visual",
+    "label": "new",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
+      { "id": "r2", "layout": "full", "height": "short", "cols": [{ "components": [{"type":"Tags"}] }] },
+      { "id": "r3", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Carousel"}] }] }
+    ],
+    "defaultContent": {
+      "section-label": "Surface Quality",
+      "title": "Defect detection with Artificial Intelligence",
+      "subtitle": "Neural network trained to automatically classify every defect type.",
+      "title-0-0": "Defect detection with Artificial Intelligence",
+      "subtitle-0-0": "Neural network trained to automatically classify every defect type.",
+      "tags-1-0": "<button class=\"slide-tag active\" contenteditable=\"\" spellcheck=\"false\">Scratches</button><button class=\"slide-tag\" contenteditable=\"\" spellcheck=\"false\">Inclusions</button><button class=\"slide-tag\" contenteditable=\"\" spellcheck=\"false\">Dirt</button><button class=\"slide-tag\" contenteditable=\"\" spellcheck=\"false\">Dust</button><button class=\"slide-tag\" contenteditable=\"\" spellcheck=\"false\">Water</button><button class=\"slide-tag\" contenteditable=\"\" spellcheck=\"false\">Fingerprints</button><button class=\"slide-tag\" contenteditable=\"\" spellcheck=\"false\">Edge defects</button><button class=\"slide-tag\" contenteditable=\"\" spellcheck=\"false\">Coating</button>"
+    }
+  },
+  {
+    "id": "tpl-new-carousel-cards",
+    "name": "Carousel + Info Cards",
+    "description": "Full-width carousel above two info text columns",
+    "category": "visual",
+    "label": "new",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Carousel"}] }] },
+      { "id": "r2", "layout": "half-half", "height": "auto", "cols": [{ "components": [{"type":"Text Block"}] }, { "components": [{"type":"Text Block"}] }] }
+    ],
+    "defaultContent": {
+      "section-label": "Dimensional Control",
+      "title": "Precise measurement of dimensions and cutouts",
+      "subtitle": "",
+      "text-1-0": "What is measured?\n\nOverall dimensions · Position and size of drill holes · Cutouts and notches · Angles and parallelism of edges · Rotation and position on line",
+      "text-1-1": "Setup & tolerances\n\nCompatible with individual tolerances per measurement · DXF model import · 2-step verification: global + detail · Compatible with belt conveyors · Parallel light for maximum precision"
+    }
+  },
+  {
+    "id": "tpl-new-checklist-carousel",
+    "name": "Checklist + Carousel",
+    "description": "Checklist on the left with a carousel visual on the right",
+    "category": "content",
+    "label": "new",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
+      { "id": "r2", "layout": "third-two", "height": "tall", "cols": [{ "components": [{"type":"List"}] }, { "components": [{"type":"Carousel"}] }] }
+    ],
+    "defaultContent": {
+      "section-label": "Screen Printing",
+      "title": "Automatic quality control for screen-printed glass",
+      "subtitle": "The quality inspection of logos and screen printing is now standard — fully automated, 100% of the time.",
+      "title-0-0": "Automatic quality control for screen-printed glass",
+      "subtitle-0-0": "The quality inspection of logos and screen printing is now standard — fully automated, 100% of the time.",
+      "list-1-0": "<li contenteditable=\"\" spellcheck=\"false\"><strong>Correct position</strong> of screen printing</li><li contenteditable=\"\" spellcheck=\"false\"><strong>Missing parts</strong> within a logo</li><li contenteditable=\"\" spellcheck=\"false\"><strong>Print thickness</strong> consistency</li><li contenteditable=\"\" spellcheck=\"false\"><strong>Detail errors</strong> in graphics</li><li contenteditable=\"\" spellcheck=\"false\"><strong>Screen printing errors</strong> &amp; defects</li><li contenteditable=\"\" spellcheck=\"false\"><strong>Logo position &amp; rotation</strong></li>"
+    }
+  },
+  {
+    "id": "tpl-new-carousel-tags",
+    "name": "Carousel + Tags",
+    "description": "Full carousel with tag labels below",
+    "category": "visual",
+    "label": "new",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
+      { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Carousel"}] }] },
+      { "id": "r3", "layout": "full", "height": "short", "cols": [{ "components": [{"type":"Tags"}] }] }
+    ],
+    "defaultContent": {
+      "section-label": "Screen Printing & Logo",
+      "title": "Position and print quality control",
+      "subtitle": "",
+      "title-0-0": "Position and print quality control",
+      "tags-2-0": "<button class=\"slide-tag active\" contenteditable=\"\" spellcheck=\"false\">❌ Missing print</button><button class=\"slide-tag\" contenteditable=\"\" spellcheck=\"false\">📐 Distortion</button><button class=\"slide-tag\" contenteditable=\"\" spellcheck=\"false\">💡 Shiny ink</button><button class=\"slide-tag\" contenteditable=\"\" spellcheck=\"false\">🔄 Rotation</button><button class=\"slide-tag\" contenteditable=\"\" spellcheck=\"false\">📍 Out of position</button><button class=\"slide-tag\" contenteditable=\"\" spellcheck=\"false\">⬛ \"Filled\" items</button>"
+    }
+  },
+  {
+    "id": "tpl-new-tabs-carousel",
+    "name": "Tabs with Carousel",
+    "description": "Tabs above with two text summary columns below",
+    "category": "content",
+    "label": "new",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
+      { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Tabs"}] }] },
+      { "id": "r3", "layout": "half-half", "height": "auto", "cols": [{ "components": [{"type":"Text Block"}] }, { "components": [{"type":"Text Block"}] }] }
+    ],
+    "defaultContent": {
+      "section-label": "Traceability & Management",
+      "title": "Decisions based on real data.",
+      "subtitle": "",
+      "title-0-0": "Decisions based on real data.",
+      "tabs-1-0": "<div class=\"ls-tab-list\"><button class=\"ls-tab active\" data-panel=\"0\">Archive</button><button class=\"ls-tab\" data-panel=\"1\">Management Console</button></div><div class=\"ls-tab-panels\"><div class=\"ls-tab-panel active\" data-panel=\"0\"><p class=\"slide-text\" contenteditable=\"\" spellcheck=\"false\">Full history — every inspected piece stored and searchable. Filter by date, line, or defect type — instant results. Export reports in PDF or CSV for quality audits.</p></div><div class=\"ls-tab-panel\" data-panel=\"1\"><p class=\"slide-text\" contenteditable=\"\" spellcheck=\"false\">Live View — real-time production monitoring. Alerts by quantity, good/bad ratio, flexible periods. Central settings — manage all LineScanner units from one place.</p></div></div>",
+      "text-2-0": "Full history — every inspected piece stored and searchable. Filter by date, line, or defect type.",
+      "text-2-1": "Live View — real-time monitoring. Alerts by quantity and good/bad ratio. Central settings for all LineScanner units."
+    }
+  },
+  {
+    "id": "tpl-new-carousel-steps",
+    "name": "Carousel + Steps",
+    "description": "Carousel visual followed by a process steps section",
+    "category": "content",
+    "label": "new",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
+      { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Carousel"}] }] },
+      { "id": "r3", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Steps"}] }] }
+    ],
+    "defaultContent": {
+      "section-label": "Sensitivity Adjustment",
+      "title": "Fully automatic sensitivity adjustment",
+      "subtitle": "LineScanner — as easy as a smart-phone",
+      "title-0-0": "Fully automatic sensitivity adjustment",
+      "subtitle-0-0": "LineScanner — as easy as a smart-phone",
+      "steps-2-0": "<div class=\"slide-step\"><span class=\"step-num\">1</span><span class=\"step-text\" contenteditable=\"\" spellcheck=\"false\">Receives glass info via interface (transfer file, PLC…)</span></div><div class=\"slide-step\"><span class=\"step-num\">2</span><span class=\"step-text\" contenteditable=\"\" spellcheck=\"false\">Logo detected → selects Tempered Glass sensitivity</span></div><div class=\"slide-step\"><span class=\"step-num\">3</span><span class=\"step-text\" contenteditable=\"\" spellcheck=\"false\">GSS sensor detects laminated lite → Laminated Glass settings</span></div><div class=\"slide-step\"><span class=\"step-num\">4</span><span class=\"step-text\" contenteditable=\"\" spellcheck=\"false\">Coating detected → Coated Glass sensitivity setting</span></div><div class=\"slide-step\"><span class=\"step-num\">5</span><span class=\"step-text\" contenteditable=\"\" spellcheck=\"false\">Any other case → Default quality &amp; sensitivity settings</span></div>"
+    }
+  },
+  {
+    "id": "tpl-new-full-carousel",
+    "name": "Full Carousel",
+    "description": "Header with a large full-width carousel",
+    "category": "visual",
+    "label": "new",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
+      { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Carousel"}] }] }
+    ],
+    "defaultContent": {
+      "section-label": "Installation",
+      "title": "Modular based — minimum footprint",
+      "subtitle": "unique · worldwide",
+      "title-0-0": "Modular based — minimum footprint",
+      "subtitle-0-0": "unique · worldwide"
+    }
+  },
+  {
+    "id": "tpl-new-cards-grid",
+    "name": "Cards Grid",
+    "description": "Header with a grid of integration or feature cards",
+    "category": "content",
+    "label": "new",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
+      { "id": "r2", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Integration Cards"}] }] }
+    ],
+    "defaultContent": {
+      "section-label": "Integrations",
+      "title": "Compatible with your current machinery",
+      "subtitle": "LineScanner is already integrated with the leading glass machinery manufacturers — if you already run any of these lines, integration is direct.",
+      "title-0-0": "Compatible with your current machinery",
+      "subtitle-0-0": "LineScanner is already integrated with the leading glass machinery manufacturers — if you already run any of these lines, integration is direct.",
+      "integrations-1-0": "<div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">LiSEC</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Processing lines</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">FOREL</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Architectural glass</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">Benteler</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Automotive glass</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">CMS Tecglass</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Digital printing</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">Bystronic</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Cutting and processing</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">Hegla</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Cutting and storage</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">Glaston</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Tempering and bending</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">TecoFerrari</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Insulating glass</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">Erdman</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Automated lines</div></div>"
+    }
+  },
+  {
+    "id": "tpl-new-cta",
+    "name": "Call to Action",
+    "description": "Closing slide with message, bullet points, and action button",
+    "category": "cta",
+    "label": "new",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
+      { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Text Block"},{"type":"List"},{"type":"Button"}] }] }
+    ],
+    "defaultContent": {
+      "section-label": "Next Steps",
+      "title": "Ready for a live demonstration?",
+      "subtitle": "We propose that your team visit our facilities in Austria so we can carry out an on-site demonstration with your own glass samples — together.",
+      "title-0-0": "Ready for a live demonstration?",
+      "subtitle-0-0": "We propose that your team visit our facilities in Austria so we can carry out an on-site demonstration with your own glass samples — together.",
+      "text-1-0": "We propose that your team visit our facilities in Austria so we can carry out an on-site demonstration with your own glass samples — together.",
+      "list-1-0": "<li contenteditable=\"\" spellcheck=\"false\">Analyse [Customer]'s current production line</li><li contenteditable=\"\" spellcheck=\"false\">Live demo with [Customer] glass samples</li><li contenteditable=\"\" spellcheck=\"false\">Customised technical and commercial proposal</li>",
+      "btn-1-0": "Request a Demo"
+    }
+  },
+  {
+    "id": "tpl-new-cards-grid-2",
+    "name": "Cards Grid (Variant)",
+    "description": "Header with a variant layout of integration or feature cards",
+    "category": "content",
+    "label": "new",
+    "rows": [
+      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
+      { "id": "r2", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Integration Cards"}] }] }
+    ],
+    "defaultContent": {
+      "section-label": "Integrations",
+      "title": "Compatible with your current machinery",
+      "subtitle": "LineScanner is already integrated with the leading glass machinery manufacturers — if you already run any of these lines, integration is direct.",
+      "title-0-0": "Compatible with your current machinery",
+      "subtitle-0-0": "LineScanner is already integrated with the leading glass machinery manufacturers — if you already run any of these lines, integration is direct.",
+      "integrations-1-0": "<div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">LiSEC</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Processing lines</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">FOREL</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Architectural glass</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">Benteler</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Automotive glass</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">CMS Tecglass</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Digital printing</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">Bystronic</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Cutting and processing</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">Hegla</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Cutting and storage</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">Glaston</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Tempering and bending</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">TecoFerrari</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Insulating glass</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">Erdman</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Automated lines</div></div>"
+    }
+  }
+]

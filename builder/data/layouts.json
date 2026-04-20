@@ -1,55 +1,22 @@
 [
   {
-    "name": "TEST",
+    "name": "Cover Slide",
     "components": [],
     "rows": [
       {
+        "id": "r1",
+        "layout": "full",
+        "height": "tall",
         "cols": [
           {
             "components": [
-              {
-                "type": "Text Block"
-              },
               {
                 "type": "Title"
               },
-              {
-                "type": "Tabs"
-              },
-              {
-                "type": "Carousel"
-              }
-            ]
-          }
-        ],
-        "layout": "full",
-        "height": "auto"
-      }
-    ],
-    "id": "layout-1775559861227",
-    "createdAt": "2026-04-07T11:04:21.227Z"
-  },
-  {
-    "name": "Untitled Slide",
-    "components": [],
-    "rows": [
-      {
-        "id": "row-1775590526772",
-        "layout": "full",
-        "height": "auto",
-        "cols": [
-          {
-            "components": [
               {
                 "type": "Subtitle"
               },
               {
-                "type": "Title"
-              },
-              {
-                "type": "Text Block"
-              },
-              {
                 "type": "Carousel"
               }
             ]
@@ -57,45 +24,169 @@
         ]
       },
       {
-        "id": "row-1775590557614",
-        "layout": "thirds",
-        "height": "auto",
-        "cols": [
-          {
-            "components": [
-              {
-                "type": "Carousel"
-              }
-            ]
-          },
-          {
-            "components": [
-              {
-                "type": "Carousel"
-              }
-            ]
-          },
-          {
-            "components": [
-              {
-                "type": "Carousel"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "row-1775590615163",
+        "id": "r2",
         "layout": "full",
-        "height": "auto",
+        "height": "short",
         "cols": [
           {
-            "components": []
+            "components": [
+              {
+                "type": "Stats Bar"
+              }
+            ]
           }
         ]
       }
     ],
-    "id": "layout-1775590521546",
-    "createdAt": "2026-04-07T19:35:21.546Z"
+    "fromTemplate": "tpl-new-cover",
+    "id": "layout-1775627541877",
+    "createdAt": "2026-04-08T05:52:21.877Z"
+  },
+  {
+    "name": "Company Overview",
+    "components": [],
+    "rows": [
+      {
+        "id": "r1",
+        "layout": "full",
+        "height": "auto",
+        "cols": [
+          {
+            "components": [
+              {
+                "type": "Title"
+              },
+              {
+                "type": "Subtitle"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "r2",
+        "layout": "full",
+        "height": "tall",
+        "cols": [
+          {
+            "components": [
+              {
+                "type": "Tabs"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "r3",
+        "layout": "full",
+        "height": "short",
+        "cols": [
+          {
+            "components": [
+              {
+                "type": "Stats Bar"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "fromTemplate": "tpl-new-company",
+    "id": "layout-1775637880108",
+    "createdAt": "2026-04-08T08:44:40.108Z"
+  },
+  {
+    "name": "Capability Matrix",
+    "components": [],
+    "rows": [
+      {
+        "id": "r1",
+        "layout": "full",
+        "height": "auto",
+        "cols": [
+          {
+            "components": [
+              {
+                "type": "Title"
+              },
+              {
+                "type": "Subtitle"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "r2",
+        "layout": "full",
+        "height": "tall",
+        "cols": [
+          {
+            "components": [
+              {
+                "type": "Tabs"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "fromTemplate": "tpl-new-capability-matrix",
+    "id": "layout-1775642556487",
+    "createdAt": "2026-04-08T10:02:36.487Z"
+  },
+  {
+    "name": "Untitled Slide",
+    "components": [],
+    "rows": [],
+    "id": "layout-1775642559129",
+    "createdAt": "2026-04-08T10:02:39.129Z"
+  },
+  {
+    "name": "Technology Tabs",
+    "components": [],
+    "rows": [
+      {
+        "id": "r1",
+        "layout": "full",
+        "height": "auto",
+        "cols": [
+          {
+            "components": [
+              {
+                "type": "Title"
+              },
+              {
+                "type": "Subtitle"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "r2",
+        "layout": "full",
+        "height": "tall",
+        "cols": [
+          {
+            "components": [
+              {
+                "type": "Tabs"
+              },
+              {
+                "type": "Cards Grid"
+              },
+              {
+                "type": "Carousel"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "fromTemplate": "tpl-new-technology",
+    "id": "layout-1775642565789",
+    "createdAt": "2026-04-08T10:02:45.789Z"
   }
 ]

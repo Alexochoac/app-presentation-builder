@@ -45,6 +45,14 @@
   <style>
     .ls9 { }
 
+    /* ── Mobile: give carousel a concrete height floor ── */
+    /* On mobile, .slide-body is height:auto so flex:1 and height:100%
+       both collapse to 0. A min-height here gives the carousel
+       a real pixel value to work against. */
+    @media (max-width: 768px) {
+      #ls9-carousel { min-height: 260px; }
+    }
+
     @media (min-width: 769px) {
       .ls9 { }
     }

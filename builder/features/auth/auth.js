@@ -7,10 +7,13 @@ const path = require('path');
 // Routes that don't require a login
 const PUBLIC_PATHS = ['/auth/login', '/auth/logout'];
 
-// Middleware: redirect to /login if not authenticated
+// Middleware: redirect to /login if not authenticated (JSON 401 for API calls)
 function requireAuth(req, res, next) {
   if (PUBLIC_PATHS.includes(req.path)) return next();
   if (req.session && req.session.loggedIn) return next();
+  if (req.path.startsWith('/api/')) {
+    return res.status(401).json({ success: false, error: 'Session expired. Please reload and log in again.' });
+  }
   res.redirect('/auth/login');
 }
 

@@ -38,10 +38,17 @@
     .ls12 { }
 
     .ls12-diagram-wrap {
+      display: flex; flex-direction: column;
       flex: 1; min-height: 0;
       width: 100%; max-width: 860px;
       position: relative;
       margin-bottom: 0;
+    }
+
+    /* ── Mobile: diagram-wrap collapses when slide-body has height:auto ── */
+    @media (max-width: 768px) {
+      .ls12-diagram-wrap { min-height: 300px; flex: none; }
+      .ls12-diagram-wrap .ls-carousel { flex: 1; min-height: 0; height: 100%; }
     }
 
     /* Spec badges */

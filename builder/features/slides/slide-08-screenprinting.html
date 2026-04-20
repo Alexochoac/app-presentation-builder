@@ -25,7 +25,7 @@
     </div>
 
     <!-- Right: carousel -->
-    <div class="ls-carousel anim-in" data-edit="carousel" data-counter="" data-track="ls8:carousel" data-zoom-group="" style="width:100%;flex:1;min-height:0;"><div class="ls-carousel-track" style="transform: translateX(0px);">
+    <div class="ls-carousel anim-in" data-edit="carousel" data-counter="" data-track="ls8:carousel" data-zoom-group=""><div class="ls-carousel-track" style="transform: translateX(0px);">
         <div class="ls-carousel-slide">
           <img src="/slides/uploads/Slide35.jpg" alt="Slide35" data-zoom="">
         </div><div class="ls-carousel-slide">
@@ -46,26 +46,25 @@
     .ls8 {  }
 
     .ls8-layout {
-      display: grid;
-      grid-template-columns: auto 1fr;
+      display: flex;
+      flex-direction: column;
       gap: 20px;
       width: 100%; max-width: 960px;
-      flex: 1; min-height: 0;
       margin-top: 4px;
     }
-    .ls8-layout .col-item { white-space: nowrap; }
-
-    /* ── Mobile base ── */
-    .ls8-layout { grid-template-columns: 1fr; }
-    .ls8-layout { min-height: 320px; }
+    .ls8-layout .col-card { flex-shrink: 0; }
     .ls8-layout .col-item { white-space: normal; }
     .ls8 { padding: 52px 16px 80px !important; }
+    /* Mobile: carousel stacks below, fixed height so it's visible */
+    .ls8-layout .ls-carousel { width: 100% !important; height: 260px !important; flex: none !important; }
 
     /* ── Desktop overrides ── */
     @media (min-width: 769px) {
-      .ls8-layout { grid-template-columns: auto 1fr; }
+      .ls8-layout { flex-direction: row; align-items: stretch; flex: 1; min-height: 0; height: 100%; }
       .ls8-layout .col-item { white-space: nowrap; }
       .ls8 { padding: 52px 80px 0 !important; }
+      /* carousel fills remaining column width; height resolves from parent's explicit height */
+      .ls8-layout .ls-carousel { flex: 1 !important; width: auto !important; height: 100% !important; min-height: 0; }
     }
 
   </style>

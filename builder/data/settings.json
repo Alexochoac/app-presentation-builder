@@ -1,0 +1,16 @@
+{
+  "logos": [
+    {
+      "src": "/slides/shared/LOGO SoftSolution grays.png",
+      "alt": "Softsolution"
+    },
+    {
+      "src": "/slides/shared/LOGO LiteSentry Greys.png",
+      "alt": "LiteSentry"
+    }
+  ],
+  "logosOnAllSlides": true,
+  "heroBg": "/slides/uploads/Panther_Eye.jpeg",
+  "heroBgFocal": "25% 75%",
+  "heroBgFocalGrid": 5
+}

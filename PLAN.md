@@ -89,6 +89,12 @@ Designed to start as a local single-user tool and grow into a full multi-user Sa
 
 > Goal: Deploy to the web. Multiple users, multiple companies, teams with permissions.
 
+### Public Landing Page
+- [ ] Single-page scrollable marketing site with nav menu
+- [ ] Sections: hero, feature highlights/examples, subscription pricing tiers, integrations showcase, investor section
+- [ ] Can be built as a static page first (no real auth) and wired to sign-up later
+- [ ] Depends on: auth infrastructure, Phase 2 deployment
+
 ### Infrastructure — Start Here
 - [ ] `docker-compose.yml` with Postgres — first thing to set up in Phase 2
 - [ ] All user/customer/session data moves from JSON files → Postgres
@@ -137,6 +143,11 @@ Designed to start as a local single-user tool and grow into a full multi-user Sa
 - [ ] One user account can manage multiple company brands
 - [ ] Switch between companies in the portal
 - [ ] Separate team per company
+
+### Builder UI
+- [ ] Dual-preview mode — desktop and mobile side by side in the builder
+- [ ] Mobile-first: desktop layout adapts from mobile, not the other way around
+- [ ] Depends on: design system refactor (standard slide anatomy, no per-slide layout CSS)
 
 ### Slide Template Library
 - [ ] Grow fixed layout options (title, feature, comparison, pricing, team, etc.)

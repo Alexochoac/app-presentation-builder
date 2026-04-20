@@ -137,6 +137,13 @@
     .s6-defect-btn span { font-size:11px; }
     .s6 { padding: 52px 16px 80px !important; }
 
+    /* ── Mobile carousel fix ──
+       On mobile, .slide-body has height:auto so flex:1 and height:100% on the
+       carousel both resolve to 0. Give carousels a min-height so they are visible. */
+    @media(max-width:768px) {
+      .s6 .ls-carousel { min-height: 260px; }
+    }
+
     /* ── Desktop overrides ── */
     @media(min-width:769px) {
       .s6-defect-btn { min-width:76px; padding:8px 10px; }

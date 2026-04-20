@@ -66,6 +66,14 @@
     .ls7-cards { grid-template-columns: 1fr; }
     .ls7 { padding: 52px 16px 80px !important; }
 
+    /* ── Mobile: give carousel a real height floor ── */
+    /* On mobile the parent has height:auto so flex:1 collapses to 0.
+       min-height gives the carousel a visible floor without touching
+       the injected component CSS (which sets height:100%). */
+    @media(max-width:768px) {
+      .ls7 .ls-carousel { min-height: 260px; }
+    }
+
     /* ── Desktop overrides ── */
     @media(min-width:769px) {
       .ls7-cards { grid-template-columns: 1fr 1fr; }

@@ -12,16 +12,38 @@
   <script src="/slides/components/list.js"></script>
   <script src="/slides/components/table.js"></script>
   <style>
+    #header {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 48px; min-height: 48px;
+      background: var(--surface, #111);
+      border-bottom: 1px solid var(--border, #2a2a2a);
+      display: flex; align-items: center;
+      padding: 0 16px; gap: 16px; z-index: 9999;
+    }
+    #backBtn {
+      display: flex; align-items: center; gap: 6px;
+      background: transparent; border: none;
+      color: var(--muted, #888); font-size: 13px;
+      cursor: pointer; padding: 4px 8px; border-radius: 6px;
+      text-decoration: none; white-space: nowrap; font-family: inherit;
+    }
+    #backBtn:hover { color: var(--text, #e5e5e5); background: var(--hover, #1e1e1e); }
+    #presTitle {
+      flex: 1; font-size: 14px; font-weight: 600;
+      color: var(--text, #e5e5e5); white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
+    }
     #previewBadge {
-      position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
-      z-index: 9999; pointer-events: none;
       background: rgba(245,166,35,.15); border: 1px solid rgba(245,166,35,.35);
       color: rgba(245,166,35,.8); font-size: 10px; font-weight: 700;
       letter-spacing: .12em; text-transform: uppercase;
-      padding: 5px 14px; border-radius: 100px;
+      padding: 4px 12px; border-radius: 100px; white-space: nowrap;
+    }
+    #counter {
+      font-size: 13px; color: var(--muted, #888); white-space: nowrap;
     }
     #saveStatus {
-      position: fixed; top: 62px; right: 80px; z-index: 9999;
+      position: fixed; top: 56px; right: 80px; z-index: 9999;
       font-size: 10px; font-weight: 700; letter-spacing: .10em; text-transform: uppercase;
       color: rgba(255,255,255,.35);
       opacity: 0; transition: opacity .3s;
@@ -39,19 +61,20 @@
     }
     #lb-add-image:hover { background:rgba(245,166,35,.25); }
     #lightbox.has-carousel #lb-add-image { display:block; }
+    body { padding-top: 48px; }
   </style>
 </head>
 <body>
 
   <div class="glow-orb a"></div>
   <div class="glow-orb b"></div>
-  <div id="previewBadge">Builder Preview</div>
-  <a id="dashLink" href="/" style="
-    position:fixed; top:14px; left:18px; z-index:9999;
-    font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
-    color:rgba(255,255,255,.45); text-decoration:none; font-family:inherit;
-    transition:color .2s; padding:10px 12px;
-  " onmouseover="this.style.color='rgba(255,255,255,.85)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">&#8592; Dashboard</a>
+
+  <div id="header">
+    <a id="backBtn" href="#" onclick="history.back(); return false;">&#8592; Back</a>
+    <div id="presTitle">Builder Preview</div>
+    <div id="previewBadge">Preview</div>
+    <div id="counter"></div>
+  </div>
 
   <div class="slides-container" id="slidesContainer"></div>
 
@@ -97,11 +120,14 @@
     const deck = await res.json();
     if (!deck.data || !deck.data.slides) throw new Error('Unexpected deck response: ' + JSON.stringify(deck));
     return deck.data.slides
-      .filter(function (s) { return s.visible; })
-      .map(function (s) {
-        // s.id is e.g. 'slide-01-cover' → name is the part after the second dash
-        var name = s.id.replace(/^slide-\d+-/, '');
-        return { file: '/slides/' + s.id + '.html', name: name };
+      .filter(function(s) { return s.visible; })
+      .map(function(s) {
+        return {
+          id: s.id,
+          file: '/slides/' + s.id + '.html',
+          name: s.name || s.id.replace(/^deck-/, ''),
+          librarySlideId: s.librarySlideId || null
+        };
       });
   }
 
@@ -200,7 +226,9 @@
     var btnNext = document.getElementById('btnNext');
     btnPrev.classList.toggle('hidden', current === 0);
     btnNext.classList.toggle('hidden', current === SLIDES.length - 1);
-    document.getElementById('slideCounter').textContent = (current + 1) + ' / ' + SLIDES.length;
+    var txt = (current + 1) + ' / ' + SLIDES.length;
+    document.getElementById('slideCounter').textContent = txt;
+    document.getElementById('counter').textContent = txt;
     document.querySelectorAll('.nav-dot').forEach(function (dot, i) {
       dot.classList.toggle('active', i === current);
     });
@@ -246,37 +274,60 @@
 
   // ── Carousel save (any slide dispatches slide-carousel-save) ─────────────
   document.addEventListener('slide-carousel-save', function (e) {
-    var filename = SLIDES[current].file.replace('/slides/', '').replace('.html', '');
+    var slideDef = SLIDES[current];
     var editKey  = e.detail.editKey || 'carousel-track';
-    var body     = { slide: filename, edits: {} };
+    var body     = { slide: slideDef.file.replace('/slides/', '').replace('.html', ''), edits: {} };
     if (e.detail.html != null) body.edits[editKey] = e.detail.html;
     if (e.detail.autoplay) {
       body.attrs = {};
       body.attrs[editKey] = { 'data-autoplay': e.detail.autoplay };
     }
     showSaveStatus('saving');
-    fetch('/api/save', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify(body)
-    })
-    .then(function (r) { return r.json(); })
-    .then(function (d) { showSaveStatus(d.ok ? 'saved' : 'error'); })
-    .catch(function ()  { showSaveStatus('error'); });
+    var carFetch;
+    if (slideDef.librarySlideId) {
+      carFetch = fetch('/api/deck/slides/' + slideDef.id + '/edits', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ edits: body.edits })
+      });
+    } else {
+      carFetch = fetch('/api/save', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(body)
+      });
+    }
+    carFetch
+      .then(function (r) { return r.json(); })
+      .then(function (d) { showSaveStatus(d.ok ? 'saved' : 'error'); })
+      .catch(function ()  { showSaveStatus('error'); });
   });
 
   // ── Image change (dispatched by slides after upload) ─────────────────────
   document.addEventListener('slide-image-change', function (e) {
-    var filename = SLIDES[current].file.replace('/slides/', '').replace('.html', '');
+    var slideDef = SLIDES[current];
     showSaveStatus('saving');
-    fetch('/api/save-image-src', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ slide: filename, editKey: e.detail.editKey, src: e.detail.src })
-    })
-    .then(function (r) { return r.json(); })
-    .then(function (data) { showSaveStatus(data.ok ? 'saved' : 'error'); })
-    .catch(function ()   { showSaveStatus('error'); });
+    var imgFetch;
+    if (slideDef.librarySlideId) {
+      var imgEdits = {};
+      imgEdits[e.detail.editKey] = e.detail.src;
+      imgFetch = fetch('/api/deck/slides/' + slideDef.id + '/edits', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ edits: imgEdits })
+      });
+    } else {
+      var filename = slideDef.file.replace('/slides/', '').replace('.html', '');
+      imgFetch = fetch('/api/save-image-src', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ slide: filename, editKey: e.detail.editKey, src: e.detail.src })
+      });
+    }
+    imgFetch
+      .then(function (r) { return r.json(); })
+      .then(function (data) { showSaveStatus(data.ok ? 'saved' : 'error'); })
+      .catch(function ()   { showSaveStatus('error'); });
   });
 
   // ── Auto-save ────────────────────────────────────────────────────────────────
@@ -314,15 +365,27 @@
 
     if (Object.keys(edits).length === 0) return;
 
-    var filename = slideDef.file.replace('/slides/', '').replace('.html', '');
-
     showSaveStatus('saving');
 
-    fetch('/api/save', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ slide: filename, edits: edits })
-    })
+    var fetchPromise;
+    if (slideDef.librarySlideId) {
+      // Library-backed slide — save edits via deck slide id (server routes to library)
+      fetchPromise = fetch('/api/deck/slides/' + slideDef.id + '/edits', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ edits: edits })
+      });
+    } else {
+      // Hardcoded HTML slide — save to file
+      var filename = slideDef.file.replace('/slides/', '').replace('.html', '');
+      fetchPromise = fetch('/api/save', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ slide: filename, edits: edits })
+      });
+    }
+
+    fetchPromise
     .then(function (r) { return r.json(); })
     .then(function (data) {
       showSaveStatus(data.ok ? 'saved' : 'error');

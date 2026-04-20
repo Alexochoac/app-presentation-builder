@@ -12,13 +12,13 @@
   <!-- ── Tabs ── -->
   <div class="ls-tabs" data-edit="tabs" data-track="ls10:tabs" style="flex:1;min-height:0;width:100%;max-width:860px;">
     <div class="ls-tab-list">
-      <button class="ls-tab" data-panel="0" data-edit="tab-archive" contenteditable="false">Archive</button>
-      <button class="ls-tab active" data-panel="1" data-edit="tab-console" contenteditable="false">Management Console</button>
+      <button class="ls-tab active" data-panel="0" data-edit="tab-archive" contenteditable="false">Archive</button>
+      <button class="ls-tab" data-panel="1" data-edit="tab-console" contenteditable="false">Management Console</button>
     </div>
     <div class="ls-tab-panels">
 
       <!-- ── Panel 0: Archive ── -->
-      <div class="ls-tab-panel" data-panel="0">
+      <div class="ls-tab-panel active" data-panel="0">
         <div class="ls-carousel anim-in" data-counter="" data-edit="archive-carousel" data-track="ls10:carousel:archive" data-zoom-group="" style="flex: 1 1 0%; min-height: 0px; width: 100%;">
           <div class="ls-carousel-track" style="transform: translateX(0px);">
             <div class="ls-carousel-slide">
@@ -44,7 +44,7 @@
       </div>
 
       <!-- ── Panel 1: Management Console ── -->
-      <div class="ls-tab-panel active" data-panel="1">
+      <div class="ls-tab-panel" data-panel="1">
         <div class="ls-carousel anim-in" data-counter="" data-edit="carousel-console" data-track="ls10:carousel:console" data-zoom-group="" style="flex: 1 1 0%; min-height: 0px; width: 100%;">
           <div class="ls-carousel-track" style="transform: translateX(0px);">
             
@@ -88,6 +88,11 @@
       display: grid; grid-template-columns: 1fr; gap: 14px;
       width: 100%; max-width: 860px;
       margin-top: 12px;
+    }
+
+    /* ── Mobile: carousels inside tab panels collapse because slide-body has no height ── */
+    @media (max-width: 768px) {
+      .ls10 .ls-carousel { min-height: 260px; }
     }
 
     /* ── Desktop overrides ── */
