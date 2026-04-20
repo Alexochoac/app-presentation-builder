@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-04-12 (session 4)
+Last updated: 2026-04-20 (session 6)
 
 ---
 
@@ -106,7 +106,10 @@ Browser → Express (server.js)
               ├── DELETE /api/slide-library/:id → removes entry
               ├── GET  /api/presentations      ← NEW (2026-04-12): returns all finished presentations
               ├── POST /api/presentations      ← NEW (2026-04-12): saves new presentation snapshot
-              ├── GET  /api/presentations/:id  ← PLANNED: single presentation route
+              ├── GET  /api/presentations/:id  ← returns single presentation
+              ├── PUT  /api/presentations/:id  ← NEW (2026-04-20): edit name/contact/title
+              ├── DELETE /api/presentations/:id ← NEW (2026-04-20): delete presentation + deck file
+              ├── GET  /view/:id              ← read-only slideshow viewer (auth-protected)
               ├── POST /api/presentations/:id/publish ← PLANNED: GitHub Pages publish
               ├── POST /api/save               → edits slide HTML via Cheerio (old slides)
               ├── POST /api/upload-image        → saves base64 image to uploads/
@@ -296,14 +299,19 @@ Additional per-slide fixes:
 | `/settings` | Settings | Presentation config, branding |
 | `/builder/preview.html` | Preview | Full-screen slide viewer |
 
-**Builder (`/slides`) tab structure (updated 2026-04-12):**
+**Builder (`/slides`) tab structure (updated 2026-04-20):**
 - **My Deck tab** (default): 2-col layout (Deck list left | Slide Preview right)
-  - Customer Settings section removed entirely
+  - Customer Settings section — fields wired to deck personalization (name, title, contact)
   - "Create Presentation" button in Slide Preview header → opens `#createPresentationModal`
   - Preview arrows with prev/next buttons + `N / total` slide counter
   - Slide name displays in subtitle below counter
+  - Cover slide shown by default on load
   - Themed scrollbar on `.deck-list-scroll`
-- **Slide Manager tab**: My Library + Templates (management only)
+- **Slide Manager tab**: My Library + Templates — Add Slide modal with real template picker
+
+**Builder preview (`/builder/preview.html`) header bar (added 2026-04-20):**
+- Fixed header: ← Back (history.back), "Builder Preview" title, orange badge, slide counter
+- `body { padding-top: 48px }` to prevent slide content hiding under header
 
 **Create Presentation modal:**
 - Fields: Company (required), Contact Name, Contact Title
@@ -321,22 +329,34 @@ Additional per-slide fixes:
 - **3-layer CSS conflict** — style.css, per-slide `<style>` blocks, and inline styles conflict. Planned fix: style.css as single source of truth
 - **Slide-06 defect names** — selector button labels are JS-generated; needs testing through render path
 - **Slide-12 headline split** — agent split `headline` into `headline` + `headline-emphasis` keys; may need consolidation
-- **No viewer yet** — `/view/:id` and `GET /api/presentations/:id` not built
 - **No publish yet** — `POST /api/presentations/:id/publish` not built (needs GITHUB_TOKEN + GITHUB_REPO in .env)
 - **dashboard.css** — legacy file, should be deleted
 - **Image caption editing** — no UI to edit `img.alt`
-- **Add Slide modal** — still a stub in Builder
+- **Builder header reposition** — `.builder-header` may need to move into slide container (task: builder-preview-header-move-to-slide-container)
 
 ---
 
-## What's Next (updated 2026-04-12)
+## Session 6 — Completed (2026-04-20)
 
-1. **`GET /api/presentations/:id`** — single presentation route (fetch for viewer)
-2. **`/view/:id`** — read-only full-screen slideshow page (click from Dashboard)
-3. **`POST /api/presentations/:id/publish`** — GitHub Pages publish + Publish button on Dashboard
-4. **Add Slide modal** — replace stub with real template picker
-5. **Slide-06 defect gallery** — verify JS defect selector works through render path
-6. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
-7. **`scripts/build.js` / `scripts/deploy.js`** — automation scripts
-8. Delete old `dashboard.css`
+- Add Slide modal — real template picker replacing stub
+- Builder preview nav bar — proper header (title, badge, counter, history.back)
+- Builder slide preview default — cover slide shown on load
+- Customer Settings — wired to deck personalization
+- Edit panel text truncation — fixed
+- Slide-06 defect gallery — fixed JS selectors, gallery button, add/delete image, clipping
+- Cover slide gallery — fixed overlay clipping (moved to body), prefix normalization, dynamic delete/move buttons
+- Edit presentation metadata — inline edit Name/Contact/Position via `PUT /api/presentations/:id`
+- Delete presentation — `DELETE /api/presentations/:id` + confirmation
+- Viewer cover slide gallery button — exposed in readonly mode
+- Viewer carousel autoplay — fixed timing bug in iframe readonly context
+
+---
+
+## What's Next (updated 2026-04-20)
+
+1. **`POST /api/presentations/:id/publish`** — GitHub Pages publish + Publish button on Dashboard ← **main Phase 1 milestone**
+2. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
+3. **`scripts/build.js` / `scripts/deploy.js`** — automation scripts
+4. Delete old `dashboard.css`
+5. Builder header reposition (move to slide container)
 
