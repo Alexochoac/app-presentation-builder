@@ -92,11 +92,17 @@ All content slides now use this structure:
 ## Next Steps
 - [x] Presentation view — `/view/:id` read-only slideshow viewer (session 5)
 - [x] `PB_READONLY` mode — all 4 components skip edit controls (session 5)
+- [x] Add Slide modal — replaced stub with real template picker (2026-04-20)
+- [x] Builder preview nav bar — proper header with counter, badge, history.back (2026-04-20)
+- [x] Slide-06 defect gallery — fixed JS selector, gallery button, add/delete, clipping (2026-04-20)
+- [x] Cover slide gallery — fixed overlay, prefix normalization, delete/move buttons (2026-04-20)
+- [x] Edit presentation metadata — inline edit Name/Contact/Position via PUT API (2026-04-20)
+- [x] Delete presentation — confirmation + DELETE API, removes entry + deck file (2026-04-20)
+- [x] Viewer cover slide gallery button — exposed in readonly mode (2026-04-20)
+- [x] Viewer carousel autoplay — fixed timing bug in iframe readonly context (2026-04-20)
 - [ ] **GitHub Pages publish** — `POST /api/presentations/:id/publish` + Publish button on Dashboard
-- [ ] **Slide-06 defect gallery**: verify JS defect selector works through render path
 - [ ] **Design system refactor** (carried) — eliminate 3-layer CSS conflict; one source of truth in style.css
 - [ ] Delete old `dashboard.css`
-- [ ] Add Slide modal — replace stub with real template picker
 - [ ] `scripts/build.js` — assemble final customer HTML, strip `data-builder-only`
 - [ ] `scripts/deploy.js` — push to GitHub Pages
 
@@ -106,4 +112,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-04-12 (session 5)
+Last updated: 2026-04-20
