@@ -8,22 +8,22 @@
     },
     {
       "id": "deck-company",
-      "visible": true,
+      "visible": false,
       "librarySlideId": "lib-company"
     },
     {
       "id": "deck-comparison",
-      "visible": true,
+      "visible": false,
       "librarySlideId": "lib-comparison"
     },
     {
       "id": "deck-capability",
-      "visible": true,
+      "visible": false,
       "librarySlideId": "lib-capability"
     },
     {
       "id": "deck-technology",
-      "visible": true,
+      "visible": false,
       "librarySlideId": "lib-technology"
     },
     {

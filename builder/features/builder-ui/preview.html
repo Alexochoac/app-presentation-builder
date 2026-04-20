@@ -18,7 +18,18 @@
       background: var(--surface, #111);
       border-bottom: 1px solid var(--border, #2a2a2a);
       display: flex; align-items: center;
-      padding: 0 16px; gap: 16px; z-index: 9999;
+      padding: 0 16px; z-index: 9999;
+    }
+    #header-left {
+      display: flex; align-items: center; gap: 8px;
+      flex: 1; min-width: 0;
+    }
+    #header-center {
+      display: flex; align-items: center; gap: 6px;
+    }
+    #header-right {
+      display: flex; align-items: center; gap: 12px;
+      flex: 1; justify-content: flex-end;
     }
     #backBtn {
       display: flex; align-items: center; gap: 6px;
@@ -29,7 +40,7 @@
     }
     #backBtn:hover { color: var(--text, #e5e5e5); background: var(--hover, #1e1e1e); }
     #presTitle {
-      flex: 1; font-size: 14px; font-weight: 600;
+      font-size: 14px; font-weight: 600;
       color: var(--text, #e5e5e5); white-space: nowrap;
       overflow: hidden; text-overflow: ellipsis;
     }
@@ -41,6 +52,31 @@
     }
     #counter {
       font-size: 13px; color: var(--muted, #888); white-space: nowrap;
+    }
+    #header-center .nav-arrow {
+      position: static; transform: none;
+      width: 28px; height: 28px; font-size: 16px; flex-shrink: 0;
+    }
+    #header-center .nav-arrow:active { transform: scale(.93); }
+    #header-center .nav-dots {
+      position: static; transform: none;
+      bottom: auto; left: auto; flex-shrink: 0;
+      background: none; border: none; backdrop-filter: none;
+      padding: 0; gap: 4px;
+    }
+    #header-center .nav-dot {
+      width: 22px; height: 22px; padding: 0; box-sizing: border-box;
+      background: rgba(255,255,255,.12); color: rgba(255,255,255,.4);
+      font-size: 10px; font-weight: 600; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all .25s;
+    }
+    #header-center .nav-dot.active {
+      background: #F5A623; color: #111;
+      width: 22px; border-radius: 50%;
+    }
+    #header-center .nav-dot:hover:not(.active) {
+      background: rgba(255,255,255,.22); color: rgba(255,255,255,.7);
     }
     #saveStatus {
       position: fixed; top: 56px; right: 80px; z-index: 9999;
@@ -62,6 +98,7 @@
     #lb-add-image:hover { background:rgba(245,166,35,.25); }
     #lightbox.has-carousel #lb-add-image { display:block; }
     body { padding-top: 48px; }
+    #slidesContainer { height: calc(100dvh - 48px); }
   </style>
 </head>
 <body>
@@ -70,18 +107,22 @@
   <div class="glow-orb b"></div>
 
   <div id="header">
-    <a id="backBtn" href="#" onclick="history.back(); return false;">&#8592; Back</a>
-    <div id="presTitle">Builder Preview</div>
-    <div id="previewBadge">Preview</div>
-    <div id="counter"></div>
+    <div id="header-left">
+      <a id="backBtn" href="#" onclick="history.back(); return false;">&#8592; Back</a>
+      <div id="presTitle">Builder Preview</div>
+    </div>
+    <div id="header-center">
+      <button class="nav-arrow prev hidden" id="btnPrev">&#8249;</button>
+      <div class="nav-dots" id="navDots"></div>
+      <button class="nav-arrow next hidden" id="btnNext">&#8250;</button>
+    </div>
+    <div id="header-right">
+      <div id="previewBadge">Preview</div>
+      <div id="counter"></div>
+    </div>
   </div>
 
   <div class="slides-container" id="slidesContainer"></div>
-
-  <button class="nav-arrow prev hidden" id="btnPrev">&#8249;</button>
-  <button class="nav-arrow next hidden" id="btnNext">&#8250;</button>
-  <div class="nav-dots" id="navDots"></div>
-  <div class="slide-counter" id="slideCounter"></div>
   <div id="saveStatus"></div>
 
   <!-- Lightbox -->
@@ -227,7 +268,6 @@
     btnPrev.classList.toggle('hidden', current === 0);
     btnNext.classList.toggle('hidden', current === SLIDES.length - 1);
     var txt = (current + 1) + ' / ' + SLIDES.length;
-    document.getElementById('slideCounter').textContent = txt;
     document.getElementById('counter').textContent = txt;
     document.querySelectorAll('.nav-dot').forEach(function (dot, i) {
       dot.classList.toggle('active', i === current);
@@ -240,6 +280,7 @@
     SLIDES.forEach(function (_, i) {
       var dot = document.createElement('div');
       dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+      dot.textContent = String(i + 1);
       dot.addEventListener('click', function () { goTo(i, i > current ? 1 : -1); });
       container.appendChild(dot);
     });
@@ -252,8 +293,8 @@
   // ── Keyboard ─────────────────────────────────────────────────────────────────
   document.addEventListener('keydown', function (e) {
     if (e.target.getAttribute('contenteditable')) return; // don't hijack while editing
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown')  goTo(current + 1,  1);
-    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    goTo(current - 1, -1);
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ')     { e.preventDefault(); goTo(current + 1,  1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp'   || e.key === 'Backspace') { e.preventDefault(); goTo(current - 1, -1); }
   });
 
   // ── Touch swipe ──────────────────────────────────────────────────────────────
