@@ -100,6 +100,7 @@ All content slides now use this structure:
 - [x] Delete presentation — confirmation + DELETE API, removes entry + deck file (2026-04-20)
 - [x] Viewer cover slide gallery button — exposed in readonly mode (2026-04-20)
 - [x] Viewer carousel autoplay — fixed timing bug in iframe readonly context (2026-04-20)
+- [x] **Asset cleanup** — moved all slide-library images to uploads/, deleted slide-library/ folder (2026-04-20)
 - [ ] **GitHub Pages publish** — `POST /api/presentations/:id/publish` + Publish button on Dashboard
 - [ ] **Design system refactor** (carried) — eliminate 3-layer CSS conflict; one source of truth in style.css
 - [ ] Delete old `dashboard.css`
@@ -112,4 +113,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-04-20
+Last updated: 2026-04-20 (session 2)

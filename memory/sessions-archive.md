@@ -92,3 +92,18 @@
 - Presentation view
 - Slide-06 defect selector names
 - `scripts/build.js` and `scripts/deploy.js`
+
+---
+
+## 2026-04-12 (session 2) — Preview fixes, Create Presentation flow, scrollbar
+
+### Accomplished
+- Slide Preview fixed: added all component JS + init to `/slides/deck-preview/:id` shell
+- Preview arrows: prev/next with `N / 14` counter; subtitle updates to slide name
+- Themed scrollbar on `.deck-list-scroll`
+- Customer Settings removed from Builder
+- Create Presentation flow: modal → `POST /api/presentations` → `presentations.json`
+- Dashboard Finished Presentations list wired to real data
+
+### Pending
+- Presentation viewer, GitHub publish, Add Slide modal, Slide-06, design system refactor

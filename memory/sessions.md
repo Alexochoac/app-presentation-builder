@@ -1,5 +1,21 @@
 # Sessions
 
+## 2026-04-20 — Asset cleanup: slide-library consolidated into uploads
+
+### Accomplished
+- Audited `slide-library/` vs `builder/features/slides/uploads/` and `builder/shared/assets/`
+- Confirmed all slide-referenced images were already present in `uploads/` and `shared/assets/`
+- Copied 166 new images from `Slide Images/` and `General Slide Images/` into `uploads/`
+- Deleted entire `slide-library/` folder (archive-only, not referenced by any app code)
+
+### Pending
+- GitHub Pages publish button (`POST /api/presentations/:id/publish`)
+- Design system refactor (CSS conflict, carried)
+- Delete old `dashboard.css`
+- `scripts/build.js` / `scripts/deploy.js`
+
+---
+
 ## 2026-04-20 — Builder polish: Add Slide modal, cover gallery, viewer fixes, dashboard actions
 
 ### Accomplished
@@ -10,7 +26,6 @@
 - **Edit panel text truncation** — fixed text fields showing only half the content
 - **Slide-06 defect gallery** — fixed JS selector bugs, gallery button click, add/delete image, visibility clipping
 - **Cover slide gallery** — fixed overlay clipping (moved to body on open), fixed old prefix normalization, added delete + move buttons injected dynamically
-- **Builder preview nav bar** (header refactor task completed)
 - **Edit presentation metadata** — inline edit for Name, Contact name, Position; `PUT /api/presentations/:id`
 - **Delete presentation** — confirmation prompt + `DELETE /api/presentations/:id`, removes entry + deck file
 - **Viewer — cover slide gallery button** — removed `data-builder-only` from trigger + overlay; kept on edit-only controls
@@ -28,31 +43,14 @@
 
 ### Accomplished
 - `?readonly=1` flag on `/slides/deck-preview/:id` — sets `window.PB_READONLY = true` before components load
-- All 4 components updated: `carousel.js`, `tabs.js`, `list.js`, `table.js` skip edit controls when `PB_READONLY`; navigation/display features (arrows, tab switching, dot cycling) still work
+- All 4 components updated: `carousel.js`, `tabs.js`, `list.js`, `table.js` skip edit controls when `PB_READONLY`
 - `GET /api/presentations/:id` — single presentation route added to server.js
-- `GET /view/:id` — auth-protected route added; serves `features/presentation-view/index.html`
-- `features/presentation-view/index.html` — full-screen dark slideshow viewer (back button, customer title, counter, iframe-per-slide, prev/next arrows, keyboard nav, slide name footer)
-- Dashboard: "View" pill button added to each finished presentation row → links to `/view/:id`
+- `GET /view/:id` — auth-protected route; serves `features/presentation-view/index.html`
+- `features/presentation-view/index.html` — full-screen dark slideshow viewer
+- Dashboard: "View" pill button added to each finished presentation row
 
 ### Pending
-- GitHub Pages publish button (`POST /api/presentations/:id/publish`)
-- Slide-06 defect gallery verification
-- Design system refactor (CSS conflict)
-- Add Slide modal (replace stub)
+- GitHub Pages publish button
+- Design system refactor
+- Add Slide modal
 - `scripts/build.js` / `scripts/deploy.js`
-
----
-
-## 2026-04-12 (session 2) — Preview fixes, Create Presentation flow, scrollbar
-
-### Accomplished
-- Slide Preview fixed: added all component JS + init to `/slides/deck-preview/:id` shell
-- Preview arrows: prev/next with `N / 14` counter; subtitle updates to slide name
-- Themed scrollbar on `.deck-list-scroll`
-- Customer Settings removed from Builder
-- Create Presentation flow: modal → `POST /api/presentations` → `presentations.json`
-- Dashboard Finished Presentations list wired to real data
-
-### Pending
-- Presentation viewer, GitHub publish, Add Slide modal, Slide-06, design system refactor
-

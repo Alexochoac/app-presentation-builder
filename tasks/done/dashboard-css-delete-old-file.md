@@ -1,7 +1,7 @@
 ---
 title: Dashboard — CSS — Delete old dashboard.css
 priority: low
-status: pending
+status: done
 area: dashboard-ui
 ---
 

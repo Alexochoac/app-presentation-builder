@@ -1,7 +1,7 @@
 ---
 title: Builder — Preview — Header — Move nav bar inside slide container
 priority: normal
-status: pending
+status: done
 area: builder
 ---
 
