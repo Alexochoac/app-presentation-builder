@@ -3319,14 +3319,17 @@ app.post('/api/presentations', function (req, res) {
       };
     });
 
+    var customerLogoSrc = (coverSlide && coverSlide.edits && coverSlide.edits['customer-logo-src']) || '';
+
     var presentation = {
-      id:           'pres-' + Date.now(),
-      createdAt:    new Date().toISOString().slice(0, 10),
-      customerName: customerName,
-      contactName:  contactName,
-      contactTitle: contactTitle,
-      slideCount:   slides.length,
-      slides:       slides
+      id:              'pres-' + Date.now(),
+      createdAt:       new Date().toISOString().slice(0, 10),
+      customerName:    customerName,
+      contactName:     contactName,
+      contactTitle:    contactTitle,
+      customerLogoSrc: customerLogoSrc,
+      slideCount:      slides.filter(function (s) { return s.visible; }).length,
+      slides:          slides
     };
 
     var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));

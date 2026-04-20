@@ -1,11 +1,12 @@
 {
   "presentations": [
     {
-      "id": "pres-1776708076269",
+      "id": "pres-1776710979732",
       "createdAt": "2026-04-20",
-      "customerName": "1",
-      "contactName": "1",
-      "contactTitle": "1",
+      "customerName": "SoftSolution",
+      "contactName": "Juan Ochoa",
+      "contactTitle": "Head of Quality",
+      "customerLogoSrc": "/slides/uploads/LOGO_StrainOptics.png",
       "slideCount": 14,
       "slides": [
         {

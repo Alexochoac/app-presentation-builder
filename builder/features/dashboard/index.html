@@ -74,6 +74,10 @@
           <h2 class="panel-title">Finished Presentations</h2>
           <p class="panel-subtitle">Completed customer decks</p>
         </div>
+        <div style="display:flex;gap:6px;">
+          <button id="viewList" aria-label="List view" title="List view" style="border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:6px;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;">&#9776;</button>
+          <button id="viewGrid" aria-label="Grid view" title="Grid view" style="border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:6px;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;">&#9632;&#9632;</button>
+        </div>
       </div>
 
       <p class="deck-empty hidden" id="finishedEmpty">No finished presentations yet.</p>
@@ -107,11 +111,77 @@
   </div>
 </div>
 
+  <style>
+    #finishedList.grid-view {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+      padding-top: 8px;
+    }
+    #finishedList.grid-view .pres-item {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: stretch !important;
+      border: 1px solid var(--border) !important;
+      border-bottom: 1px solid var(--border) !important;
+      border-radius: 10px;
+      padding: 0 !important;
+      overflow: hidden;
+      background: var(--surface);
+    }
+    #finishedList.grid-view .pres-thumb {
+      display: flex !important;
+    }
+    #finishedList.grid-view .pres-body {
+      padding: 10px 12px 8px;
+    }
+    #finishedList.grid-view .pres-actions {
+      padding: 0 12px 10px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    /* hide thumb in list view */
+    .pres-thumb { display: none; }
+    /* active toggle button */
+    .view-btn-active {
+      background: var(--accent) !important;
+      color: #fff !important;
+      border-color: var(--accent) !important;
+    }
+  </style>
+
   <script>
     (function () {
       var html = document.documentElement;
       var saved = localStorage.getItem('pb-theme');
       if (saved) html.setAttribute('data-theme', saved);
+    })();
+
+    // ── View Toggle ──────────────────────────────────────────────────
+    (function () {
+      var list    = document.getElementById('finishedList');
+      var btnList = document.getElementById('viewList');
+      var btnGrid = document.getElementById('viewGrid');
+      var current = localStorage.getItem('pb-pres-view') || 'list';
+
+      function applyView(v) {
+        current = v;
+        localStorage.setItem('pb-pres-view', v);
+        if (v === 'grid') {
+          list.classList.add('grid-view');
+          btnGrid.classList.add('view-btn-active');
+          btnList.classList.remove('view-btn-active');
+        } else {
+          list.classList.remove('grid-view');
+          btnList.classList.add('view-btn-active');
+          btnGrid.classList.remove('view-btn-active');
+        }
+      }
+
+      btnList.addEventListener('click', function () { applyView('list'); });
+      btnGrid.addEventListener('click', function () { applyView('grid'); });
+      applyView(current);
     })();
 
     // ── Load Finished Presentations ──────────────────────────────────
@@ -130,26 +200,36 @@
 
           empty.classList.add('hidden');
           items.forEach(function (p) {
+            var initials = (p.customerName || '?').trim().split(/\s+/).map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase();
+            var thumbInner = p.customerLogoSrc
+              ? '<img src="' + p.customerLogoSrc + '" alt="" style="width:100%;height:100%;object-fit:cover;">'
+              : '<span>' + initials + '</span>';
             var li = document.createElement('li');
+            li.className = 'pres-item';
             li.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);';
             li.innerHTML =
-              '<div style="flex:1;min-width:0;">' +
-                '<div style="font-size:14px;font-weight:600;color:var(--text);">' + escDash(p.customerName) + '</div>' +
-                '<div style="font-size:12px;color:var(--muted);margin-top:2px;">' +
+              '<div class="pres-thumb" style="display:none;position:relative;align-items:center;justify-content:center;background:var(--surface-alt,var(--border));height:130px;overflow:hidden;">' +
+                thumbInner +
+              '</div>' +
+              '<div class="pres-body" style="flex:1;min-width:0;">' +
+                '<div class="pres-name" style="font-size:14px;font-weight:600;color:var(--text);">' + escDash(p.customerName) + '</div>' +
+                '<div class="pres-meta" style="font-size:12px;color:var(--muted);margin-top:2px;">' +
                   (p.contactName ? escDash(p.contactName) + (p.contactTitle ? ' · ' + escDash(p.contactTitle) : '') + ' · ' : '') +
                   p.slideCount + ' slides · ' + p.createdAt +
                 '</div>' +
               '</div>' +
-              '<a href="/view/' + p.id + '" style="border:1px solid var(--accent);color:var(--accent);background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;text-decoration:none;white-space:nowrap;">View</a>' +
-              '<button class="btn-edit" data-id="' + p.id + '" style="border:1px solid var(--border);color:var(--text);background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;cursor:pointer;white-space:nowrap;">Edit</button>' +
-              '<button class="btn-delete" data-id="' + p.id + '" style="border:1px solid #e55;color:#e55;background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;cursor:pointer;white-space:nowrap;">Delete</button>';
+              '<div class="pres-actions" style="display:flex;gap:6px;flex-shrink:0;">' +
+                '<a href="/view/' + p.id + '" style="border:1px solid var(--accent);color:var(--accent);background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;text-decoration:none;white-space:nowrap;">View</a>' +
+                '<button class="btn-edit" data-id="' + p.id + '" style="border:1px solid var(--border);color:var(--text);background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;cursor:pointer;white-space:nowrap;">Edit</button>' +
+                '<button class="btn-delete" data-id="' + p.id + '" style="border:1px solid #e55;color:#e55;background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;cursor:pointer;white-space:nowrap;">Delete</button>' +
+              '</div>';
 
             li.querySelector('.btn-edit').addEventListener('click', function () {
               openEditModal(p, li);
             });
             li.querySelector('.btn-delete').addEventListener('click', function () {
               var id = this.getAttribute('data-id');
-              var name = this.closest('li').querySelector('[style*="font-weight:600"]').textContent;
+              var name = li.querySelector('.pres-name').textContent;
               if (!confirm('Delete presentation for "' + name + '"? This cannot be undone.')) return;
               var btn = this;
               fetch('/api/presentations/' + id, { method: 'DELETE' })
