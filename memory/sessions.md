@@ -1,5 +1,23 @@
 # Sessions
 
+## 2026-04-20 — Dashboard list/grid view toggle + customer logo on cards
+
+### Accomplished
+- Added list/grid view toggle to Finished Presentations panel header (☰ / ▪▪ icons, accent highlight on active)
+- View preference persisted in `localStorage` (`pb-pres-view`)
+- Grid cards show customer logo image (or initials fallback); logo fills card edge-to-edge (`object-fit:cover`)
+- `customerLogoSrc` now captured and stored in the presentation record at save time (`server.js`)
+- Fixed `slideCount` to only count visible slides (was counting all 14 including hidden ones)
+- Slide count badge removed from card thumb — shown only in text metadata below
+
+### Pending
+- GitHub Pages publish button (`POST /api/presentations/:id/publish`)
+- Design system refactor (CSS conflict, carried)
+- Delete old `dashboard.css`
+- `scripts/deploy.js`
+
+---
+
 ## 2026-04-20 — Frozen presentation build system
 
 ### Accomplished
@@ -35,23 +53,3 @@
 - `scripts/build.js` / `scripts/deploy.js`
 
 ---
-
-## 2026-04-20 — Builder polish: Add Slide modal, cover gallery, viewer fixes, dashboard actions
-
-### Accomplished
-- **Add Slide modal** — replaced stub with real template picker (slide library browser)
-- **Builder preview nav bar** — replaced floating back link with proper header bar (title, badge, counter, history.back)
-- **Builder slide preview default** — cover slide shown automatically on load instead of empty state
-- **Customer Settings wired up** — fields now drive deck personalization (name, title, contact)
-- **Edit panel text truncation** — fixed text fields showing only half the content
-- **Slide-06 defect gallery** — fixed JS selector bugs, gallery button click, add/delete image, visibility clipping
-- **Cover slide gallery** — fixed overlay clipping, old prefix normalization, delete + move buttons
-- **Edit presentation metadata** — inline edit for Name, Contact name, Position; `PUT /api/presentations/:id`
-- **Delete presentation** — confirmation prompt + `DELETE /api/presentations/:id`
-- **Viewer — cover slide gallery button** — removed `data-builder-only` from trigger + overlay
-- **Viewer — carousel autoplay fix** — fixed timing bug in readonly iframe context
-
-### Pending
-- GitHub Pages publish button
-- Design system refactor
-- `scripts/build.js` / `scripts/deploy.js`
