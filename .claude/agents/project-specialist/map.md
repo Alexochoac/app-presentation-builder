@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-04-20 (session 3)
+Last updated: 2026-04-20 (session 4)
 
 ---
 
@@ -57,7 +57,7 @@ App-presentation-builder/
     │   │   ├── auth.js             ← Session auth middleware + login/logout routes
     │   │   └── login.html          ← Login page (dark theme)
     │   ├── dashboard/
-    │   │   ├── index.html          ← Dashboard (served at /) — overview + Finished Presentations list
+    │   │   ├── index.html          ← Dashboard (served at /) — overview + Finished Presentations list/grid toggle
     │   │   ├── dashboard.css       ← Legacy styles (to be deleted)
     │   │   └── dashboard.js        ← Legacy deck manager (no longer loaded by dashboard)
     │   ├── settings/
@@ -136,7 +136,8 @@ Browser → Express (server.js)
       "customerName": "Acme Corp",
       "contactName": "Jane Doe",
       "contactTitle": "VP Sales",
-      "slideCount": 14,
+      "customerLogoSrc": "/slides/uploads/logo.png",
+    "slideCount": 3,
       "slides": [
         { "id": "deck-cover", "librarySlideId": "lib-cover", "name": "Cover" },
         { "id": "deck-company", "librarySlideId": "lib-company", "name": "Company" },
@@ -148,6 +149,8 @@ Browser → Express (server.js)
 ```
 
 **Note:** When a presentation is created, `buildFrozenPresentation()` auto-runs and writes a fully self-contained `finished-presentations/[presId]/index.html` (CSS+JS inlined, images in `../shared/`). That frozen file is immutable — future builder edits only affect new builds. Deleting a presentation also removes its frozen folder.
+
+**`customerLogoSrc`** (added 2026-04-20): captured from `coverSlide.edits['customer-logo-src']` at save time and stored on the presentation record. Older records without this field show initials fallback in grid view.
 
 ---
 
@@ -343,6 +346,16 @@ Additional per-slide fixes:
 
 ---
 
+## Session 4 — Completed (2026-04-20)
+
+- **Dashboard list/grid view toggle** — ☰/▪▪ buttons in Finished Presentations panel header; `localStorage` key `pb-pres-view`
+- **Grid cards** — customer logo full-bleed (`object-fit:cover`), initials fallback, card border-radius, overflow hidden
+- **`customerLogoSrc`** — captured from `coverSlide.edits['customer-logo-src']` at save time and stored on presentation record in `presentations.json`
+- **`slideCount` fix** — now counts only visible slides (was counting all including hidden)
+- Slide count badge removed from card thumb — shown only in text metadata
+
+---
+
 ## Session 3 — Completed (2026-04-20)
 
 - `buildFrozenPresentation()` — auto-runs on every `POST /api/presentations`; renders all visible slides, strips builder-only elements, inlines CSS+JS
@@ -369,7 +382,7 @@ Additional per-slide fixes:
 
 ---
 
-## What's Next (updated 2026-04-20)
+## What's Next (updated 2026-04-20, session 4)
 
 1. **`POST /api/presentations/:id/publish`** — GitHub Pages publish + Publish button on Dashboard ← **main Phase 1 milestone**
 2. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
