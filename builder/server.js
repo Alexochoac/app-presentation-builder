@@ -3065,6 +3065,193 @@ app.post('/api/library/:id/edits', function (req, res) {
   }
 });
 
+// ── Frozen presentation builder ───────────────────────────────────────────────
+// Renders a presentation snapshot to finished-presentations/[presId]/index.html
+// All images are copied to finished-presentations/shared/ (shared across all
+// presentations) so assets are never duplicated. Each HTML file references them
+// via the relative path ../shared/filename.
+function buildFrozenPresentation(presentation) {
+  var presId   = presentation.id;
+  var outDir   = path.join(__dirname, '..', 'finished-presentations', presId);
+  var assetDir = path.join(__dirname, '..', 'finished-presentations', 'shared');
+  fs.mkdirSync(outDir,    { recursive: true });
+  fs.mkdirSync(assetDir,  { recursive: true });
+
+  var library   = JSON.parse(fs.readFileSync(LIBRARY_PATH,  'utf8'));
+  var templates = JSON.parse(fs.readFileSync(TEMPLATES_PATH, 'utf8'));
+
+  // Image path mappings: URL prefix → filesystem dir
+  var imgRoots = [
+    { prefix: '/slides/uploads/', dir: path.join(__dirname, 'features', 'slides', 'uploads') },
+    { prefix: '/slides/shared/',  dir: path.join(__dirname, 'shared', 'assets') },
+    { prefix: '/slides/assets/',  dir: path.join(__dirname, 'features', 'slides', 'assets') },
+    { prefix: '/shared/assets/',  dir: path.join(__dirname, 'shared', 'assets') }
+  ];
+
+  var copiedAssets = {}; // src url → relative path used in output
+
+  function resolveAndCopyAsset(src) {
+    if (!src || src.startsWith('data:') || src.startsWith('http')) return src;
+    if (copiedAssets[src]) return copiedAssets[src];
+    for (var i = 0; i < imgRoots.length; i++) {
+      var root = imgRoots[i];
+      if (src.startsWith(root.prefix)) {
+        var filename = src.slice(root.prefix.length);
+        var srcPath  = path.join(root.dir, filename);
+        if (fs.existsSync(srcPath)) {
+          var safeName = filename.replace(/[^a-zA-Z0-9._-]/g, '_');
+          var destPath = path.join(assetDir, safeName);
+          if (!fs.existsSync(destPath)) fs.copyFileSync(srcPath, destPath);
+          copiedAssets[src] = '../shared/' + safeName;
+          return '../shared/' + safeName;
+        }
+      }
+    }
+    return src; // leave unchanged if not found
+  }
+
+  function rewriteImagePaths(html) {
+    // Rewrite src="..." and src='...' attributes
+    return html
+      .replace(/\bsrc="([^"]+)"/g, function (_, s) { return 'src="' + resolveAndCopyAsset(s) + '"'; })
+      .replace(/\bsrc='([^']+)'/g, function (_, s) { return "src='" + resolveAndCopyAsset(s) + "'"; });
+  }
+
+  // Read and inline CSS + JS
+  var slidesCss = fs.readFileSync(path.join(__dirname, 'features', 'slides', 'style.css'), 'utf8');
+  var components = ['lightbox', 'carousel', 'tabs', 'list', 'table'];
+  var inlineJs = components.map(function (c) {
+    return fs.readFileSync(path.join(__dirname, 'features', 'slides', 'components', c + '.js'), 'utf8');
+  }).join('\n');
+
+  // Render each visible slide
+  var slideFragments = [];
+  var slideNames = [];
+  (presentation.slides || []).forEach(function (s, idx) {
+    if (!s.visible) return;
+    var libSlide = (library.slides || []).find(function (l) { return l.id === s.librarySlideId; });
+    if (!libSlide) return;
+    var tpl = (templates || []).find(function (t) { return t.id === libSlide.templateId; });
+    if (!tpl) return;
+
+    var fragment = renderLayoutToHtml(tpl, s.id, libSlide.edits || {});
+
+    // Strip builder-only elements + contenteditable
+    var $ = cheerio.load(fragment, { xmlMode: false });
+    $('[data-builder-only],[data-ls-add-row],[data-ls-add],[data-ls-restore]').remove();
+    $('[contenteditable]').removeAttr('contenteditable');
+    $('[spellcheck]').removeAttr('spellcheck');
+    fragment = $.html('body > *') || $.html();
+
+    // Rewrite image paths
+    fragment = rewriteImagePaths(fragment);
+
+    slideFragments.push('<div class="fp-slide" data-slide-index="' + slideFragments.length + '" style="' + (slideFragments.length === 0 ? '' : 'display:none;') + '">\n' + fragment + '\n</div>');
+    slideNames.push(s.name || s.id);
+  });
+
+  var totalSlides = slideFragments.length;
+
+  var html = [
+    '<!DOCTYPE html>',
+    '<html lang="en">',
+    '<head>',
+    '  <meta charset="UTF-8">',
+    '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+    '  <title>' + (presentation.customerName || 'Presentation') + '</title>',
+    '  <style>',
+    slidesCss,
+    '    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }',
+    '    html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0a0a; }',
+    '    #fp-shell { display: flex; flex-direction: column; height: 100vh; }',
+    '    #fp-header { height: 44px; min-height: 44px; background: #111; border-bottom: 1px solid #2a2a2a; display: flex; align-items: center; padding: 0 16px; gap: 12px; }',
+    '    #fp-title { flex: 1; font-size: 13px; font-weight: 600; color: #e5e5e5; font-family: system-ui, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }',
+    '    #fp-counter { font-size: 12px; color: #888; font-family: system-ui, sans-serif; white-space: nowrap; }',
+    '    #fp-viewer { flex: 1; position: relative; overflow: hidden; }',
+    '    .fp-slide { position: absolute; inset: 0; }',
+    '    .fp-slide .slide { opacity: 1 !important; transform: scale(1) !important; pointer-events: auto !important; }',
+    '    .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.12); border: none; color: #fff; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }',
+    '    .nav-btn:hover { background: rgba(255,255,255,0.22); }',
+    '    .nav-btn:disabled { opacity: 0.2; cursor: default; }',
+    '    #fp-prev { left: 12px; }',
+    '    #fp-next { right: 12px; }',
+    '    #fp-footer { height: 32px; min-height: 32px; background: #0a0a0a; border-top: 1px solid #2a2a2a; display: flex; align-items: center; justify-content: center; }',
+    '    #fp-slide-name { font-size: 11px; color: #888; font-family: system-ui, sans-serif; }',
+    '  </style>',
+    '</head>',
+    '<body>',
+    '<div id="fp-shell">',
+    '  <div id="fp-header">',
+    '    <div id="fp-title">' + (presentation.customerName || '') + '</div>',
+    '    <div id="fp-counter">1 / ' + totalSlides + '</div>',
+    '  </div>',
+    '  <div id="fp-viewer">',
+    '    <div class="slides-container">',
+    slideFragments.join('\n'),
+    '    </div>',
+    '    <button class="nav-btn" id="fp-prev" disabled>&#8249;</button>',
+    '    <button class="nav-btn" id="fp-next"' + (totalSlides <= 1 ? ' disabled' : '') + '>&#8250;</button>',
+    '  </div>',
+    '  <div id="fp-footer"><div id="fp-slide-name">' + (slideNames[0] || '') + '</div></div>',
+    '</div>',
+    '  <div id="lightbox">',
+    '    <div id="lb-inner">',
+    '      <button id="lb-close">&#10005;</button>',
+    '      <button id="lb-prev" class="lb-nav-btn">&#8249;</button>',
+    '      <div id="lb-stage"><img id="lb-img" src="" alt=""><div id="lb-cap"></div></div>',
+    '      <button id="lb-next" class="lb-nav-btn">&#8250;</button>',
+    '      <div id="lb-thumbs"></div>',
+    '    </div>',
+    '  </div>',
+    '<script>',
+    inlineJs,
+    '(function () {',
+    '  var slides = document.querySelectorAll(".fp-slide");',
+    '  var names  = ' + JSON.stringify(slideNames) + ';',
+    '  var total  = slides.length;',
+    '  var idx    = 0;',
+    '  var counter   = document.getElementById("fp-counter");',
+    '  var slideName = document.getElementById("fp-slide-name");',
+    '  var prevBtn   = document.getElementById("fp-prev");',
+    '  var nextBtn   = document.getElementById("fp-next");',
+    '  function goTo(n) {',
+    '    if (n < 0 || n >= total) return;',
+    '    slides[idx].style.display = "none";',
+    '    idx = n;',
+    '    slides[idx].style.display = "";',
+    '    counter.textContent = (idx + 1) + " / " + total;',
+    '    slideName.textContent = names[idx] || "";',
+    '    prevBtn.disabled = idx === 0;',
+    '    nextBtn.disabled = idx === total - 1;',
+    '    var root = slides[idx].querySelector(".slides-container,.slide");',
+    '    if (!root) root = slides[idx];',
+    '    if (window.Carousel) Carousel.init(root);',
+    '    if (window.Tabs)     Tabs.init(root);',
+    '    if (window.Lightbox) Lightbox.init(root);',
+    '    if (window.List)     List.init(root);',
+    '    if (window.LSTable)  LSTable.init(root);',
+    '  }',
+    '  prevBtn.addEventListener("click", function () { goTo(idx - 1); });',
+    '  nextBtn.addEventListener("click", function () { goTo(idx + 1); });',
+    '  document.addEventListener("keydown", function (e) {',
+    '    if (e.key === "ArrowRight") goTo(idx + 1);',
+    '    if (e.key === "ArrowLeft")  goTo(idx - 1);',
+    '  });',
+    '  // Init first slide',
+    '  document.addEventListener("DOMContentLoaded", function () {',
+    '    goTo(0);',
+    '    prevBtn.disabled = true;',
+    '  });',
+    '})();',
+    '</script>',
+    '</body>',
+    '</html>'
+  ].join('\n');
+
+  fs.writeFileSync(path.join(outDir, 'index.html'), html, 'utf8');
+  return outDir;
+}
+
 // GET /api/presentations — list all finished presentations
 app.get('/api/presentations', function (req, res) {
   try {
@@ -3146,6 +3333,12 @@ app.post('/api/presentations', function (req, res) {
     data.presentations.unshift(presentation); // newest first
     fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
 
+    try {
+      buildFrozenPresentation(presentation);
+    } catch (buildErr) {
+      console.error('Frozen build failed:', buildErr.message);
+    }
+
     res.json({ success: true, data: presentation });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -3181,7 +3374,7 @@ app.put('/api/presentations/:id', function (req, res) {
   }
 });
 
-// DELETE /api/presentations/:id — remove a finished presentation
+// DELETE /api/presentations/:id — remove a finished presentation + its frozen folder
 app.delete('/api/presentations/:id', function (req, res) {
   try {
     var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
@@ -3191,17 +3384,29 @@ app.delete('/api/presentations/:id', function (req, res) {
       return res.status(404).json({ success: false, error: 'Not found' });
     }
     fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2));
+    var frozenDir = path.join(__dirname, '..', 'finished-presentations', req.params.id);
+    if (fs.existsSync(frozenDir)) {
+      fs.rmSync(frozenDir, { recursive: true, force: true });
+    }
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
 });
 
-// GET /view/:id — read-only presentation slideshow viewer
+// Static: serve frozen finished presentations (index.html + assets/)
+// Mounted before /view redirect so relative asset paths resolve correctly.
+app.use('/finished', express.static(path.join(__dirname, '..', 'finished-presentations')));
+
+// GET /view/:id — redirect to frozen file if it exists; fall back to live viewer
 app.get('/view/:id', function (req, res) {
   var id = req.params.id;
   if (!/^[a-z0-9-]+$/i.test(id)) {
     return res.status(400).type('text/plain').send('Invalid presentation id');
+  }
+  var frozenFile = path.join(__dirname, '..', 'finished-presentations', id, 'index.html');
+  if (fs.existsSync(frozenFile)) {
+    return res.redirect('/finished/' + id + '/');
   }
   res.sendFile(path.join(__dirname, 'features/presentation-view/index.html'));
 });

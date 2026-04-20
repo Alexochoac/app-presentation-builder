@@ -1,7 +1,7 @@
 ---
 title: Build/Deploy — Presentations — Snapshot — Generate isolated output file per presentation
 priority: high
-status: pending
+status: done
 area: build-deploy
 ---
 

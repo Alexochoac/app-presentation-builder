@@ -101,10 +101,15 @@ All content slides now use this structure:
 - [x] Viewer cover slide gallery button — exposed in readonly mode (2026-04-20)
 - [x] Viewer carousel autoplay — fixed timing bug in iframe readonly context (2026-04-20)
 - [x] **Asset cleanup** — moved all slide-library images to uploads/, deleted slide-library/ folder (2026-04-20)
+- [x] `scripts/build.js` — assemble final customer HTML, strip `data-builder-only` (2026-04-20)
+- [x] `buildFrozenPresentation()` in server.js — auto-runs on every `POST /api/presentations` (2026-04-20)
+- [x] `finished-presentations/[presId]/index.html` — self-contained frozen output per presentation (2026-04-20)
+- [x] Shared asset pool — `finished-presentations/shared/` deduplicated across all presentations (2026-04-20)
+- [x] Delete frozen folder on dashboard delete — `fs.rmSync` in DELETE endpoint (2026-04-20)
+- [x] `/finished/:presId/` static route — serves frozen file; `/view/:id` redirects to it (2026-04-20)
 - [ ] **GitHub Pages publish** — `POST /api/presentations/:id/publish` + Publish button on Dashboard
 - [ ] **Design system refactor** (carried) — eliminate 3-layer CSS conflict; one source of truth in style.css
 - [ ] Delete old `dashboard.css`
-- [ ] `scripts/build.js` — assemble final customer HTML, strip `data-builder-only`
 - [ ] `scripts/deploy.js` — push to GitHub Pages
 
 ## Phase Roadmap
@@ -113,4 +118,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-04-20 (session 2)
+Last updated: 2026-04-20 (session 3)

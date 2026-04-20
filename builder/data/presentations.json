@@ -1,11 +1,11 @@
 {
   "presentations": [
     {
-      "id": "pres-1776695809715",
+      "id": "pres-1776708076269",
       "createdAt": "2026-04-20",
-      "customerName": "Hide Slides",
-      "contactName": "",
-      "contactTitle": "",
+      "customerName": "1",
+      "contactName": "1",
+      "contactTitle": "1",
       "slideCount": 14,
       "slides": [
         {
@@ -42,7 +42,7 @@
           "id": "deck-surface",
           "librarySlideId": "lib-surface",
           "name": "Surface Types",
-          "visible": true
+          "visible": false
         },
         {
           "id": "deck-dimension",
@@ -54,131 +54,37 @@
           "id": "deck-screenprint",
           "librarySlideId": "lib-screenprint",
           "name": "Screen Printing",
-          "visible": true
+          "visible": false
         },
         {
           "id": "deck-logo-check",
           "librarySlideId": "lib-logo-check",
           "name": "Logo Check",
-          "visible": true
+          "visible": false
         },
         {
           "id": "deck-database",
           "librarySlideId": "lib-database",
           "name": "Traceability",
-          "visible": true
+          "visible": false
         },
         {
           "id": "deck-sensitivity",
           "librarySlideId": "lib-sensitivity",
           "name": "Sensitivity",
-          "visible": true
+          "visible": false
         },
         {
           "id": "deck-footprint",
           "librarySlideId": "lib-footprint",
           "name": "Installation",
-          "visible": true
+          "visible": false
         },
         {
           "id": "deck-integrations",
           "librarySlideId": "lib-integrations",
           "name": "Integrations",
-          "visible": true
-        },
-        {
-          "id": "deck-cta",
-          "librarySlideId": "lib-cta",
-          "name": "Call to Action",
-          "visible": true
-        }
-      ]
-    },
-    {
-      "id": "pres-1776695737438",
-      "createdAt": "2026-04-20",
-      "customerName": "TEST 1",
-      "contactName": "test 1",
-      "contactTitle": "Test 1",
-      "slideCount": 14,
-      "slides": [
-        {
-          "id": "deck-lib-cover-1775977704536",
-          "librarySlideId": "lib-cover",
-          "name": "Cover",
-          "visible": true
-        },
-        {
-          "id": "deck-company",
-          "librarySlideId": "lib-company",
-          "name": "Company Intro",
-          "visible": true
-        },
-        {
-          "id": "deck-comparison",
-          "librarySlideId": "lib-comparison",
-          "name": "Why Us",
-          "visible": true
-        },
-        {
-          "id": "deck-capability",
-          "librarySlideId": "lib-capability",
-          "name": "LineScanner Overview",
-          "visible": true
-        },
-        {
-          "id": "deck-technology",
-          "librarySlideId": "lib-technology",
-          "name": "Technology",
-          "visible": true
-        },
-        {
-          "id": "deck-surface",
-          "librarySlideId": "lib-surface",
-          "name": "Surface Types",
-          "visible": true
-        },
-        {
-          "id": "deck-dimension",
-          "librarySlideId": "lib-dimension",
-          "name": "Dimensions",
-          "visible": true
-        },
-        {
-          "id": "deck-screenprint",
-          "librarySlideId": "lib-screenprint",
-          "name": "Screen Printing",
-          "visible": true
-        },
-        {
-          "id": "deck-logo-check",
-          "librarySlideId": "lib-logo-check",
-          "name": "Logo Check",
-          "visible": true
-        },
-        {
-          "id": "deck-database",
-          "librarySlideId": "lib-database",
-          "name": "Traceability",
-          "visible": true
-        },
-        {
-          "id": "deck-sensitivity",
-          "librarySlideId": "lib-sensitivity",
-          "name": "Sensitivity",
-          "visible": true
-        },
-        {
-          "id": "deck-footprint",
-          "librarySlideId": "lib-footprint",
-          "name": "Installation",
-          "visible": true
-        },
-        {
-          "id": "deck-integrations",
-          "librarySlideId": "lib-integrations",
-          "name": "Integrations",
-          "visible": true
+          "visible": false
         },
         {
           "id": "deck-cta",

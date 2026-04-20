@@ -1,7 +1,7 @@
 ---
 title: Scripts — Build — Assemble customer HTML and strip builder-only elements
 priority: normal
-status: pending
+status: done
 area: build-deploy
 ---
 

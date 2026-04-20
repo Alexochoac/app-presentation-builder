@@ -107,3 +107,19 @@
 
 ### Pending
 - Presentation viewer, GitHub publish, Add Slide modal, Slide-06, design system refactor
+
+## 2026-04-12 (session 5) — Read-only viewer + PB_READONLY components
+
+### Accomplished
+- `?readonly=1` flag on `/slides/deck-preview/:id` — sets `window.PB_READONLY = true` before components load
+- All 4 components updated: `carousel.js`, `tabs.js`, `list.js`, `table.js` skip edit controls when `PB_READONLY`
+- `GET /api/presentations/:id` — single presentation route added to server.js
+- `GET /view/:id` — auth-protected route; serves `features/presentation-view/index.html`
+- `features/presentation-view/index.html` — full-screen dark slideshow viewer
+- Dashboard: "View" pill button added to each finished presentation row
+
+### Pending
+- GitHub Pages publish button
+- Design system refactor
+- Add Slide modal
+- `scripts/build.js` / `scripts/deploy.js`
