@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-04-20 (session 7)
+Last updated: 2026-04-20 (session 3)
 
 ---
 
@@ -21,9 +21,14 @@ A local web app for building customized sales presentations for Softsolution's L
 App-presentation-builder/
 ├── PLAN.md                         ← Full product roadmap + TODO
 ├── CONTEXT.md                      ← Project context + next steps
-├── TODO.md                         ← Current task list
-├── IDEAS.md                        ← Mid-session ideas log
 ├── memory/sessions.md              ← Session history
+├── scripts/
+│   ├── build.js                    ← NEW (2026-04-20): CLI to rebuild frozen presentations (no server needed)
+│   └── deploy.js                   ← PLANNED: GitHub Pages deploy script
+├── finished-presentations/         ← NEW (2026-04-20): Self-contained frozen presentation outputs
+│   ├── [presId]/
+│   │   └── index.html              ← Frozen output (CSS+JS inlined, images via ../shared/)
+│   └── shared/                     ← Deduplicated image pool shared across all presentations
 │
 └── builder/                        ← The runnable web app
     ├── server.js                   ← Express server — all API endpoints + slide render functions ⚠️ SOLE SOURCE OF TRUTH FOR SLIDES
@@ -107,9 +112,10 @@ Browser → Express (server.js)
               ├── GET  /api/presentations      ← NEW (2026-04-12): returns all finished presentations
               ├── POST /api/presentations      ← NEW (2026-04-12): saves new presentation snapshot
               ├── GET  /api/presentations/:id  ← returns single presentation
-              ├── PUT  /api/presentations/:id  ← NEW (2026-04-20): edit name/contact/title
-              ├── DELETE /api/presentations/:id ← NEW (2026-04-20): delete presentation + deck file
-              ├── GET  /view/:id              ← read-only slideshow viewer (auth-protected)
+              ├── PUT  /api/presentations/:id  ← edit name/contact/title
+              ├── DELETE /api/presentations/:id ← delete presentation + frozen folder (fs.rmSync)
+              ├── Static: /finished           → finished-presentations/ (frozen outputs)
+              ├── GET  /view/:id              ← redirects to /finished/:presId/ if frozen file exists; else live viewer
               ├── POST /api/presentations/:id/publish ← PLANNED: GitHub Pages publish
               ├── POST /api/save               → edits slide HTML via Cheerio (old slides)
               ├── POST /api/upload-image        → saves base64 image to uploads/
@@ -141,7 +147,7 @@ Browser → Express (server.js)
 }
 ```
 
-**Note:** Finished presentations are snapshots — deck structure + library slide references recorded at creation time. Slide content still served live from library (editable).
+**Note:** When a presentation is created, `buildFrozenPresentation()` auto-runs and writes a fully self-contained `finished-presentations/[presId]/index.html` (CSS+JS inlined, images in `../shared/`). That frozen file is immutable — future builder edits only affect new builds. Deleting a presentation also removes its frozen folder.
 
 ---
 
@@ -317,6 +323,7 @@ Additional per-slide fixes:
 - Fields: Company (required), Contact Name, Contact Title
 - Calls `POST /api/presentations` with current deck snapshot
 - Prepends new presentation to `presentations.json`
+- Triggers `buildFrozenPresentation()` server-side → writes `finished-presentations/[presId]/index.html`
 
 **Deck list behavior:** rows with drag-to-reorder, eye toggle, remove. Click slide name → renders preview via `/slides/deck-preview/:id` in right pane.
 
@@ -336,7 +343,17 @@ Additional per-slide fixes:
 
 ---
 
-## Session 6 — Completed (2026-04-20)
+## Session 3 — Completed (2026-04-20)
+
+- `buildFrozenPresentation()` — auto-runs on every `POST /api/presentations`; renders all visible slides, strips builder-only elements, inlines CSS+JS
+- `finished-presentations/[presId]/index.html` — self-contained frozen output per presentation
+- `finished-presentations/shared/` — deduplicated image pool; files only copied once (checked before copy)
+- DELETE endpoint — now also removes frozen folder with `fs.rmSync`
+- `/finished/` static route — serves frozen presentations; `/view/:id` redirects to it
+- `scripts/build.js` — CLI to rebuild any/all presentations without the server running
+- Stale folders cleaned up (presentations deleted before fix was in place)
+
+## Session 2 — Completed (2026-04-20)
 
 - Add Slide modal — real template picker replacing stub
 - Builder preview nav bar — proper header (title, badge, counter, history.back)
@@ -356,7 +373,7 @@ Additional per-slide fixes:
 
 1. **`POST /api/presentations/:id/publish`** — GitHub Pages publish + Publish button on Dashboard ← **main Phase 1 milestone**
 2. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
-3. **`scripts/build.js` / `scripts/deploy.js`** — automation scripts
+3. **`scripts/deploy.js`** — push to GitHub Pages
 4. Delete old `dashboard.css`
 5. Builder header reposition (move to slide container)
 

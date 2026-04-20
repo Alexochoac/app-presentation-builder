@@ -28,7 +28,7 @@
     },
     {
       "id": "deck-surface",
-      "visible": true,
+      "visible": false,
       "librarySlideId": "lib-surface"
     },
     {
@@ -38,32 +38,32 @@
     },
     {
       "id": "deck-screenprint",
-      "visible": true,
+      "visible": false,
       "librarySlideId": "lib-screenprint"
     },
     {
       "id": "deck-logo-check",
-      "visible": true,
+      "visible": false,
       "librarySlideId": "lib-logo-check"
     },
     {
       "id": "deck-database",
-      "visible": true,
+      "visible": false,
       "librarySlideId": "lib-database"
     },
     {
       "id": "deck-sensitivity",
-      "visible": true,
+      "visible": false,
       "librarySlideId": "lib-sensitivity"
     },
     {
       "id": "deck-footprint",
-      "visible": true,
+      "visible": false,
       "librarySlideId": "lib-footprint"
     },
     {
       "id": "deck-integrations",
-      "visible": true,
+      "visible": false,
       "librarySlideId": "lib-integrations"
     },
     {
