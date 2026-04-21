@@ -1,5 +1,21 @@
 # Sessions
 
+## 2026-04-21 — Duplicate presentation + hidden slides behavior
+
+### Accomplished
+- Implemented duplicate presentation feature — clone a presentation with reconfigured customer settings
+- Fixed hidden slides visual and output behavior — hidden slides correctly excluded from frozen output and UI counts
+- Built 3 real customer presentations: linescanner-softsolution, litesentry-osprey, strainoptics
+- Modified `server.js`, `dashboard/index.html`, `slides/index.html`, and deck/presentations/slide-library JSON files
+
+### Pending
+- GitHub Pages publish button (`POST /api/presentations/:id/publish`)
+- Design system refactor (CSS conflict, carried)
+- Delete old `dashboard.css`
+- `scripts/deploy.js`
+
+---
+
 ## 2026-04-20 — Dashboard list/grid view toggle + customer logo on cards
 
 ### Accomplished
@@ -35,21 +51,5 @@
 - Design system refactor (CSS conflict, carried)
 - Delete old `dashboard.css`
 - `scripts/deploy.js`
-
----
-
-## 2026-04-20 — Asset cleanup: slide-library consolidated into uploads
-
-### Accomplished
-- Audited `slide-library/` vs `builder/features/slides/uploads/` and `builder/shared/assets/`
-- Confirmed all slide-referenced images were already present in `uploads/` and `shared/assets/`
-- Copied 166 new images from `Slide Images/` and `General Slide Images/` into `uploads/`
-- Deleted entire `slide-library/` folder (archive-only, not referenced by any app code)
-
-### Pending
-- GitHub Pages publish button (`POST /api/presentations/:id/publish`)
-- Design system refactor (CSS conflict, carried)
-- Delete old `dashboard.css`
-- `scripts/build.js` / `scripts/deploy.js`
 
 ---

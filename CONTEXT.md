@@ -110,6 +110,8 @@ All content slides now use this structure:
 - [x] **Dashboard list/grid view toggle** — ☰/▪▪ toggle in panel header, localStorage persistence (2026-04-20)
 - [x] **Grid cards with customer logo** — logo fills card; initials fallback; `customerLogoSrc` stored at save time (2026-04-20)
 - [x] **slideCount fix** — only counts visible slides (2026-04-20)
+- [x] **Duplicate presentation** — clone with reconfigured customer settings (2026-04-21)
+- [x] **Hidden slides visual + output behavior** — hidden slides excluded from counts and frozen output (2026-04-21)
 - [ ] **GitHub Pages publish** — `POST /api/presentations/:id/publish` + Publish button on Dashboard
 - [ ] **Design system refactor** (carried) — eliminate 3-layer CSS conflict; one source of truth in style.css
 - [ ] Delete old `dashboard.css`
@@ -121,4 +123,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-04-20 (session 4)
+Last updated: 2026-04-21 (session 5)

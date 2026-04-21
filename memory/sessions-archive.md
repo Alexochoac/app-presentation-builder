@@ -1,5 +1,21 @@
 # Sessions Archive
 
+## 2026-04-20 — Asset cleanup: slide-library consolidated into uploads
+
+### Accomplished
+- Audited `slide-library/` vs `builder/features/slides/uploads/` and `builder/shared/assets/`
+- Confirmed all slide-referenced images were already present in `uploads/` and `shared/assets/`
+- Copied 166 new images from `Slide Images/` and `General Slide Images/` into `uploads/`
+- Deleted entire `slide-library/` folder (archive-only, not referenced by any app code)
+
+### Pending
+- GitHub Pages publish button (`POST /api/presentations/:id/publish`)
+- Design system refactor (CSS conflict, carried)
+- Delete old `dashboard.css`
+- `scripts/build.js` / `scripts/deploy.js`
+
+---
+
 ## 2026-04-12 — UI Refactor: Dashboard / Builder / Slides separation
 
 ### Accomplished

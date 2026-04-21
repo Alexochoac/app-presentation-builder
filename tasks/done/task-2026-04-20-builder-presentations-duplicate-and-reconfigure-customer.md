@@ -1,7 +1,7 @@
 ---
 title: Builder — Presentations — Duplicate — Copy presentation and reassign customer logo and info
 priority: normal
-status: pending
+status: done
 area: builder
 ---
 
