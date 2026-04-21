@@ -3002,7 +3002,15 @@ app.post('/api/deck/slides', function (req, res) {
 
     var deck     = JSON.parse(fs.readFileSync(DECK_PATH, 'utf8'));
     var newSlide = { id: 'deck-' + librarySlideId + '-' + Date.now(), librarySlideId: librarySlideId, visible: true };
-    deck.slides.push(newSlide);
+    if (librarySlideId === 'lib-cover') {
+      deck.slides = deck.slides.filter(function (s) { return s.librarySlideId !== 'lib-cover'; });
+      deck.slides.unshift(newSlide);
+    } else if (librarySlideId === 'lib-cta') {
+      deck.slides = deck.slides.filter(function (s) { return s.librarySlideId !== 'lib-cta'; });
+      deck.slides.push(newSlide);
+    } else {
+      deck.slides.push(newSlide);
+    }
     fs.writeFileSync(DECK_PATH, JSON.stringify(deck, null, 2), 'utf8');
     res.json({ success: true, data: newSlide });
   } catch (err) {
@@ -3124,6 +3132,18 @@ function buildFrozenPresentation(presentation) {
     return fs.readFileSync(path.join(__dirname, 'features', 'slides', 'components', c + '.js'), 'utf8');
   }).join('\n');
 
+  // Per-presentation cover overrides (never written back to library)
+  var coverEdits = {};
+  if (presentation.customerName) {
+    var sub = 'Proposal for ' + presentation.customerName;
+    if (presentation.contactName)  sub += ' \u00b7 ' + presentation.contactName;
+    if (presentation.contactTitle) sub += ', ' + presentation.contactTitle;
+    coverEdits.subheadline = sub;
+  }
+  if (presentation.customerLogoSrc) {
+    coverEdits['customer-logo-src'] = presentation.customerLogoSrc;
+  }
+
   // Render each visible slide
   var slideFragments = [];
   var slideNames = [];
@@ -3134,13 +3154,18 @@ function buildFrozenPresentation(presentation) {
     var tpl = (templates || []).find(function (t) { return t.id === libSlide.templateId; });
     if (!tpl) return;
 
-    var fragment = renderLayoutToHtml(tpl, s.id, libSlide.edits || {});
+    var edits = Object.assign({}, libSlide.edits || {});
+    if (s.librarySlideId === 'lib-cover') Object.assign(edits, coverEdits);
 
-    // Strip builder-only elements + contenteditable
+    var fragment = renderLayoutToHtml(tpl, s.id, edits);
+
+    // Strip builder-only elements + contenteditable + logo change interactivity
     var $ = cheerio.load(fragment, { xmlMode: false });
     $('[data-builder-only],[data-ls-add-row],[data-ls-add],[data-ls-restore]').remove();
     $('[contenteditable]').removeAttr('contenteditable');
     $('[spellcheck]').removeAttr('spellcheck');
+    $('[data-edit="customer-logo"]').removeAttr('onclick').removeAttr('title');
+    $('input[type="file"]').remove();
     fragment = $.html('body > *') || $.html();
 
     // Rewrite image paths
@@ -3150,7 +3175,35 @@ function buildFrozenPresentation(presentation) {
     slideNames.push(s.name || s.id);
   });
 
+  // Render hidden slides as optional extras
+  var hiddenFragments = [];
+  var hiddenNames = [];
+  (presentation.slides || []).forEach(function (s) {
+    if (s.visible !== false) return;
+    var libSlide = (library.slides || []).find(function (l) { return l.id === s.librarySlideId; });
+    if (!libSlide) return;
+    var tpl = (templates || []).find(function (t) { return t.id === libSlide.templateId; });
+    if (!tpl) return;
+
+    var edits = Object.assign({}, libSlide.edits || {});
+    if (s.librarySlideId === 'lib-cover') Object.assign(edits, coverEdits);
+
+    var fragment = renderLayoutToHtml(tpl, s.id, edits);
+    var $ = cheerio.load(fragment, { xmlMode: false });
+    $('[data-builder-only],[data-ls-add-row],[data-ls-add],[data-ls-restore]').remove();
+    $('[contenteditable]').removeAttr('contenteditable');
+    $('[spellcheck]').removeAttr('spellcheck');
+    $('[data-edit="customer-logo"]').removeAttr('onclick').removeAttr('title');
+    $('input[type="file"]').remove();
+    fragment = $.html('body > *') || $.html();
+    fragment = rewriteImagePaths(fragment);
+
+    hiddenFragments.push('<div class="fp-slide fp-optional" data-optional-index="' + hiddenFragments.length + '" style="display:none;">\n' + fragment + '\n</div>');
+    hiddenNames.push(s.name || s.id);
+  });
+
   var totalSlides = slideFragments.length;
+  var hasExtras   = hiddenFragments.length > 0;
 
   var html = [
     '<!DOCTYPE html>',
@@ -3168,29 +3221,46 @@ function buildFrozenPresentation(presentation) {
     '    #fp-title { flex: 1; font-size: 13px; font-weight: 600; color: #e5e5e5; font-family: system-ui, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }',
     '    #fp-counter { font-size: 12px; color: #888; font-family: system-ui, sans-serif; white-space: nowrap; }',
     '    #fp-viewer { flex: 1; position: relative; overflow: hidden; }',
+    '    #fp-viewer .slides-container { height: 100% !important; width: 100% !important; }',
     '    .fp-slide { position: absolute; inset: 0; }',
-    '    .fp-slide .slide { opacity: 1 !important; transform: scale(1) !important; pointer-events: auto !important; }',
-    '    .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.12); border: none; color: #fff; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }',
-    '    .nav-btn:hover { background: rgba(255,255,255,0.22); }',
-    '    .nav-btn:disabled { opacity: 0.2; cursor: default; }',
-    '    #fp-prev { left: 12px; }',
-    '    #fp-next { right: 12px; }',
+    '    .fp-slide .slide { opacity: 1 !important; transform: scale(1) !important; pointer-events: auto !important; height: 100% !important; }',
+    '    [data-edit="customer-logo"] { cursor: default !important; pointer-events: none !important; }',
+    '    #fp-dash-btn { background: none; border: none; color: #888; font-size: 12px; font-family: system-ui, sans-serif; padding: 4px 8px; border-radius: 4px; cursor: pointer; white-space: nowrap; text-decoration: none; display: flex; align-items: center; gap: 4px; }',
+    '    #fp-dash-btn:hover { color: #ccc; background: rgba(255,255,255,0.08); }',
+    '    .fp-nav-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: #e5e5e5; font-size: 18px; font-family: system-ui, sans-serif; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }',
+    '    .fp-nav-btn:hover { background: rgba(255,255,255,0.18); }',
+    '    .fp-nav-btn:disabled { opacity: 0.25; cursor: default; }',
     '    #fp-footer { height: 32px; min-height: 32px; background: #0a0a0a; border-top: 1px solid #2a2a2a; display: flex; align-items: center; justify-content: center; }',
     '    #fp-slide-name { font-size: 11px; color: #888; font-family: system-ui, sans-serif; }',
+    '    /* Optional extras */',
+    '    #fp-extras-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #e5e5e5; font-size: 12px; font-family: system-ui, sans-serif; padding: 5px 12px; border-radius: 4px; cursor: pointer; white-space: nowrap; display: none; }',
+    '    #fp-extras-btn:hover { background: rgba(255,255,255,0.18); }',
+    '    #fp-back-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #e5e5e5; font-size: 12px; font-family: system-ui, sans-serif; padding: 5px 12px; border-radius: 4px; cursor: pointer; white-space: nowrap; display: none; }',
+    '    #fp-back-btn:hover { background: rgba(255,255,255,0.18); }',
+    '    #fp-extras-panel { position: absolute; top: 44px; right: 16px; background: #1a1a1a; border: 1px solid #333; border-radius: 6px; padding: 8px 0; min-width: 220px; z-index: 100; box-shadow: 0 8px 24px rgba(0,0,0,0.6); display: none; }',
+    '    .fp-extras-title { font-size: 11px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.06em; padding: 4px 16px 8px; }',
+    '    .fp-extras-item { display: block; width: 100%; text-align: left; background: none; border: none; color: #ccc; font-size: 13px; font-family: system-ui, sans-serif; padding: 8px 16px; cursor: pointer; }',
+    '    .fp-extras-item:hover { background: rgba(255,255,255,0.08); color: #fff; }',
     '  </style>',
     '</head>',
     '<body>',
     '<div id="fp-shell">',
     '  <div id="fp-header">',
+    '    <a href="/" id="fp-dash-btn">&#8592; Dashboard</a>',
+    '    <div style="width:1px;height:20px;background:#333;flex-shrink:0;"></div>',
     '    <div id="fp-title">' + (presentation.customerName || '') + '</div>',
+    '    <button class="fp-nav-btn" id="fp-prev" disabled>&#8249;</button>',
     '    <div id="fp-counter">1 / ' + totalSlides + '</div>',
+    '    <button class="fp-nav-btn" id="fp-next"' + (totalSlides <= 1 ? ' disabled' : '') + '>&#8250;</button>',
+    (hasExtras ? '    <button id="fp-extras-btn">More &#9662;</button>' : ''),
+    (hasExtras ? '    <button id="fp-back-btn">&#8592; Back to Presentation</button>' : ''),
     '  </div>',
+    (hasExtras ? '  <div id="fp-extras-panel"><div class="fp-extras-title">Optional Slides</div>' + hiddenNames.map(function (n, i) { return '    <button class="fp-extras-item" data-opt="' + i + '">' + n + '</button>'; }).join('\n') + '</div>' : ''),
     '  <div id="fp-viewer">',
     '    <div class="slides-container">',
     slideFragments.join('\n'),
+    hiddenFragments.join('\n'),
     '    </div>',
-    '    <button class="nav-btn" id="fp-prev" disabled>&#8249;</button>',
-    '    <button class="nav-btn" id="fp-next"' + (totalSlides <= 1 ? ' disabled' : '') + '>&#8250;</button>',
     '  </div>',
     '  <div id="fp-footer"><div id="fp-slide-name">' + (slideNames[0] || '') + '</div></div>',
     '</div>',
@@ -3206,38 +3276,95 @@ function buildFrozenPresentation(presentation) {
     '<script>',
     inlineJs,
     '(function () {',
-    '  var slides = document.querySelectorAll(".fp-slide");',
-    '  var names  = ' + JSON.stringify(slideNames) + ';',
-    '  var total  = slides.length;',
-    '  var idx    = 0;',
-    '  var counter   = document.getElementById("fp-counter");',
-    '  var slideName = document.getElementById("fp-slide-name");',
-    '  var prevBtn   = document.getElementById("fp-prev");',
-    '  var nextBtn   = document.getElementById("fp-next");',
-    '  function goTo(n) {',
-    '    if (n < 0 || n >= total) return;',
-    '    slides[idx].style.display = "none";',
-    '    idx = n;',
-    '    slides[idx].style.display = "";',
-    '    counter.textContent = (idx + 1) + " / " + total;',
-    '    slideName.textContent = names[idx] || "";',
-    '    prevBtn.disabled = idx === 0;',
-    '    nextBtn.disabled = idx === total - 1;',
-    '    var root = slides[idx].querySelector(".slides-container,.slide");',
-    '    if (!root) root = slides[idx];',
+    '  var mainSlides = document.querySelectorAll(".fp-slide:not(.fp-optional)");',
+    '  var optSlides  = document.querySelectorAll(".fp-slide.fp-optional");',
+    '  var mainNames  = ' + JSON.stringify(slideNames) + ';',
+    '  var optNames   = ' + JSON.stringify(hiddenNames) + ';',
+    '  var total      = mainSlides.length;',
+    '  var idx        = 0;',
+    '  var inOptional = false;',
+    '  var counter    = document.getElementById("fp-counter");',
+    '  var slideName  = document.getElementById("fp-slide-name");',
+    '  var prevBtn    = document.getElementById("fp-prev");',
+    '  var nextBtn    = document.getElementById("fp-next");',
+    '  var extrasBtn  = document.getElementById("fp-extras-btn");',
+    '  var backBtn    = document.getElementById("fp-back-btn");',
+    '  var extrasPanel = document.getElementById("fp-extras-panel");',
+    '',
+    '  function initSlide(el) {',
+    '    var root = el.querySelector(".slides-container,.slide");',
+    '    if (!root) root = el;',
     '    if (window.Carousel) Carousel.init(root);',
     '    if (window.Tabs)     Tabs.init(root);',
     '    if (window.Lightbox) Lightbox.init(root);',
     '    if (window.List)     List.init(root);',
     '    if (window.LSTable)  LSTable.init(root);',
     '  }',
-    '  prevBtn.addEventListener("click", function () { goTo(idx - 1); });',
-    '  nextBtn.addEventListener("click", function () { goTo(idx + 1); });',
+    '',
+    '  function goTo(n) {',
+    '    if (n < 0 || n >= total) return;',
+    '    mainSlides[idx].style.display = "none";',
+    '    idx = n;',
+    '    inOptional = false;',
+    '    mainSlides[idx].style.display = "";',
+    '    counter.textContent = (idx + 1) + " / " + total;',
+    '    slideName.textContent = mainNames[idx] || "";',
+    '    prevBtn.disabled = idx === 0;',
+    '    nextBtn.disabled = idx === total - 1;',
+    '    if (extrasBtn) extrasBtn.style.display = (idx === total - 1 && optSlides.length > 0) ? "" : "none";',
+    '    if (backBtn)   backBtn.style.display = "none";',
+    '    if (extrasPanel) extrasPanel.style.display = "none";',
+    '    initSlide(mainSlides[idx]);',
+    '  }',
+    '',
+    '  function goToOptional(n) {',
+    '    if (n < 0 || n >= optSlides.length) return;',
+    '    mainSlides[idx].style.display = "none";',
+    '    optSlides.forEach(function (s) { s.style.display = "none"; });',
+    '    inOptional = true;',
+    '    optSlides[n].style.display = "";',
+    '    counter.textContent = "";',
+    '    slideName.textContent = optNames[n] || "";',
+    '    prevBtn.disabled = true;',
+    '    nextBtn.disabled = true;',
+    '    if (extrasBtn) extrasBtn.style.display = "none";',
+    '    if (backBtn)   backBtn.style.display = "";',
+    '    if (extrasPanel) extrasPanel.style.display = "none";',
+    '    initSlide(optSlides[n]);',
+    '  }',
+    '',
+    '  prevBtn.addEventListener("click", function () { if (!inOptional) goTo(idx - 1); });',
+    '  nextBtn.addEventListener("click", function () { if (!inOptional) goTo(idx + 1); });',
     '  document.addEventListener("keydown", function (e) {',
+    '    if (inOptional) return;',
     '    if (e.key === "ArrowRight") goTo(idx + 1);',
     '    if (e.key === "ArrowLeft")  goTo(idx - 1);',
     '  });',
-    '  // Init first slide',
+    '',
+    '  if (extrasBtn) {',
+    '    extrasBtn.addEventListener("click", function (e) {',
+    '      e.stopPropagation();',
+    '      var open = extrasPanel.style.display !== "none";',
+    '      extrasPanel.style.display = open ? "none" : "";',
+    '    });',
+    '  }',
+    '  if (backBtn) {',
+    '    backBtn.addEventListener("click", function () {',
+    '      optSlides.forEach(function (s) { s.style.display = "none"; });',
+    '      goTo(idx);',
+    '    });',
+    '  }',
+    '  document.querySelectorAll(".fp-extras-item").forEach(function (btn) {',
+    '    btn.addEventListener("click", function () {',
+    '      goToOptional(parseInt(btn.dataset.opt, 10));',
+    '    });',
+    '  });',
+    '  document.addEventListener("click", function (e) {',
+    '    if (extrasPanel && !extrasPanel.contains(e.target) && e.target !== extrasBtn) {',
+    '      extrasPanel.style.display = "none";',
+    '    }',
+    '  });',
+    '',
     '  document.addEventListener("DOMContentLoaded", function () {',
     '    goTo(0);',
     '    prevBtn.disabled = true;',
@@ -3251,6 +3378,36 @@ function buildFrozenPresentation(presentation) {
   fs.writeFileSync(path.join(outDir, 'index.html'), html, 'utf8');
   return outDir;
 }
+
+function makePresId(customerName) {
+  var slug = (customerName || 'untitled')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 40) || 'untitled';
+  return 'pres-' + slug + '-' + Date.now();
+}
+
+// POST /api/presentations/rebuild-all — regenerate all frozen HTML files
+app.post('/api/presentations/rebuild-all', function (req, res) {
+  try {
+    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var presentations = data.presentations || [];
+    var rebuilt = 0;
+    var errors = [];
+    presentations.forEach(function (p) {
+      try {
+        buildFrozenPresentation(p);
+        rebuilt++;
+      } catch (e) {
+        errors.push({ id: p.id, error: e.message });
+      }
+    });
+    res.json({ success: true, rebuilt: rebuilt, errors: errors });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
 
 // GET /api/presentations — list all finished presentations
 app.get('/api/presentations', function (req, res) {
@@ -3270,59 +3427,40 @@ app.post('/api/presentations', function (req, res) {
     return res.status(400).json({ success: false, error: 'customerName is required' });
   }
   try {
-    var deck     = JSON.parse(fs.readFileSync(DECK_PATH, 'utf8'));
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var deck    = JSON.parse(fs.readFileSync(DECK_PATH, 'utf8'));
+    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
 
-    // Personalize cover slide with customer info
     var contactName  = (body.contactName  || '').trim();
     var contactTitle = (body.contactTitle || '').trim();
-    var subheadline = 'Proposal for ' + customerName;
-    if (contactName)  subheadline += ' \u00b7 ' + contactName;
-    if (contactTitle) subheadline += ', ' + contactTitle;
-    var coverSlide = (library.slides || []).find(function (s) { return s.id === 'lib-cover'; });
-    if (coverSlide) {
-      coverSlide.edits = coverSlide.edits || {};
-      coverSlide.edits.subheadline = subheadline;
 
-      // Save customer logo if provided
-      var logoFilename = (body.logoFilename || '').trim();
-      var logoData     = (body.logoData     || '').trim();
-      if (logoFilename && logoData) {
-        var logoMatches = logoData.match(/^data:([A-Za-z0-9+/]+);base64,(.+)$/);
-        if (logoMatches) {
-          var logoBuffer  = Buffer.from(logoMatches[2], 'base64');
-          var logoSafe    = path.basename(logoFilename).replace(/[^a-zA-Z0-9._-]/g, '_');
-          var logoDest    = path.join(__dirname, 'features', 'slides', 'uploads', logoSafe);
-          fs.writeFileSync(logoDest, logoBuffer);
-          var logoSrc = '/slides/uploads/' + logoSafe;
-          coverSlide.edits['customer-logo-src'] = logoSrc;
-          // Update src in the customer-logo HTML edit if it exists
-          if (coverSlide.edits['customer-logo']) {
-            coverSlide.edits['customer-logo'] = coverSlide.edits['customer-logo']
-              .replace(/(<img[^>]*class="[^"]*cust-img[^"]*"[^>]*src=")[^"]*(")/,
-                       '$1' + logoSrc + '$2');
-          }
-        }
+    // Save logo file if provided — store path in presentation record only, never in library
+    var customerLogoSrc = '';
+    var logoFilename = (body.logoFilename || '').trim();
+    var logoData     = (body.logoData     || '').trim();
+    if (logoFilename && logoData) {
+      var logoMatches = logoData.match(/^data:([A-Za-z0-9+/]+);base64,(.+)$/);
+      if (logoMatches) {
+        var logoBuffer = Buffer.from(logoMatches[2], 'base64');
+        var logoSafe   = path.basename(logoFilename).replace(/[^a-zA-Z0-9._-]/g, '_');
+        var logoDest   = path.join(__dirname, 'features', 'slides', 'uploads', logoSafe);
+        fs.writeFileSync(logoDest, logoBuffer);
+        customerLogoSrc = '/slides/uploads/' + logoSafe;
       }
-
-      fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
     }
 
     // Build a snapshot: deck slide order + names
     var slides = (deck.slides || []).map(function (s) {
       var lib = library.slides.find(function (l) { return l.id === s.librarySlideId; });
       return {
-        id:            s.id,
+        id:             s.id,
         librarySlideId: s.librarySlideId,
-        name:          (lib && lib.name) || s.id,
-        visible:       s.visible !== false
+        name:           (lib && lib.name) || s.id,
+        visible:        s.visible !== false
       };
     });
 
-    var customerLogoSrc = (coverSlide && coverSlide.edits && coverSlide.edits['customer-logo-src']) || '';
-
     var presentation = {
-      id:              'pres-' + Date.now(),
+      id:              makePresId(customerName),
       createdAt:       new Date().toISOString().slice(0, 10),
       customerName:    customerName,
       contactName:     contactName,
@@ -3333,7 +3471,7 @@ app.post('/api/presentations', function (req, res) {
     };
 
     var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
-    data.presentations.unshift(presentation); // newest first
+    data.presentations.unshift(presentation);
     fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
 
     try {
@@ -3360,17 +3498,36 @@ app.get('/api/presentations/:id', function (req, res) {
   }
 });
 
-// PUT /api/presentations/:id — update metadata (customerName, contactName, contactTitle)
+// PUT /api/presentations/:id — update metadata + logo, rebuild frozen HTML
 app.put('/api/presentations/:id', function (req, res) {
   try {
     var body = req.body || {};
     var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
     var pres = (data.presentations || []).find(function (p) { return p.id === req.params.id; });
     if (!pres) return res.status(404).json({ success: false, error: 'Not found' });
+
     if (body.customerName !== undefined) pres.customerName = (body.customerName || '').trim();
     if (body.contactName  !== undefined) pres.contactName  = (body.contactName  || '').trim();
     if (body.contactTitle !== undefined) pres.contactTitle = (body.contactTitle || '').trim();
+
+    // Save logo file if provided — store path in presentation record only, never in library
+    var logoFilename = (body.logoFilename || '').trim();
+    var logoData     = (body.logoData     || '').trim();
+    if (logoFilename && logoData) {
+      var logoMatches = logoData.match(/^data:([A-Za-z0-9+/]+);base64,(.+)$/);
+      if (logoMatches) {
+        var logoBuffer = Buffer.from(logoMatches[2], 'base64');
+        var logoSafe   = path.basename(logoFilename).replace(/[^a-zA-Z0-9._-]/g, '_');
+        var logoDest   = path.join(__dirname, 'features', 'slides', 'uploads', logoSafe);
+        fs.writeFileSync(logoDest, logoBuffer);
+        pres.customerLogoSrc = '/slides/uploads/' + logoSafe;
+      }
+    }
+
     fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+
+    try { buildFrozenPresentation(pres); } catch (e) { console.error('Rebuild failed:', e.message); }
+
     res.json({ success: true, data: pres });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -3392,6 +3549,67 @@ app.delete('/api/presentations/:id', function (req, res) {
       fs.rmSync(frozenDir, { recursive: true, force: true });
     }
     res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/presentations/:id/duplicate — copy a presentation with new customer info
+app.post('/api/presentations/:id/duplicate', function (req, res) {
+  var body = req.body || {};
+  var customerName = (body.customerName || '').trim();
+  if (!customerName) {
+    return res.status(400).json({ success: false, error: 'customerName is required' });
+  }
+  try {
+    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var src  = (data.presentations || []).find(function (p) { return p.id === req.params.id; });
+    if (!src) return res.status(404).json({ success: false, error: 'Not found' });
+
+    var contactName  = (body.contactName  || '').trim();
+    var contactTitle = (body.contactTitle || '').trim();
+
+    // Save logo file if provided — inherit source logo otherwise
+    var logoSrc = src.customerLogoSrc || '';
+    var logoFilename = (body.logoFilename || '').trim();
+    var logoData     = (body.logoData     || '').trim();
+    if (logoFilename && logoData) {
+      var logoMatches = logoData.match(/^data:([A-Za-z0-9+/]+);base64,(.+)$/);
+      if (logoMatches) {
+        var logoBuffer = Buffer.from(logoMatches[2], 'base64');
+        var logoSafe   = path.basename(logoFilename).replace(/[^a-zA-Z0-9._-]/g, '_');
+        var logoDest   = path.join(__dirname, 'features', 'slides', 'uploads', logoSafe);
+        fs.writeFileSync(logoDest, logoBuffer);
+        logoSrc = '/slides/uploads/' + logoSafe;
+      }
+    }
+
+    var slides = (src.slides || []).map(function (s) {
+      return { id: s.id, librarySlideId: s.librarySlideId, name: s.name, visible: s.visible };
+    });
+
+    var presentation = {
+      id:              makePresId(customerName),
+      createdAt:       new Date().toISOString().slice(0, 10),
+      customerName:    customerName,
+      contactName:     contactName,
+      contactTitle:    contactTitle,
+      customerLogoSrc: logoSrc,
+      slideCount:      slides.filter(function (s) { return s.visible; }).length,
+      slides:          slides
+    };
+
+    data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    data.presentations.unshift(presentation);
+    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+
+    try {
+      buildFrozenPresentation(presentation);
+    } catch (buildErr) {
+      console.error('Frozen build failed:', buildErr.message);
+    }
+
+    res.json({ success: true, data: presentation });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

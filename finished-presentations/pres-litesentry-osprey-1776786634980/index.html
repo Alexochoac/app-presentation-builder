@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SoftSolution</title>
+  <title>LiteSentry-Osprey</title>
   <style>
 /*
   Presentation Builder — Softsolution
@@ -399,23 +399,41 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     #fp-title { flex: 1; font-size: 13px; font-weight: 600; color: #e5e5e5; font-family: system-ui, sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #fp-counter { font-size: 12px; color: #888; font-family: system-ui, sans-serif; white-space: nowrap; }
     #fp-viewer { flex: 1; position: relative; overflow: hidden; }
+    #fp-viewer .slides-container { height: 100% !important; width: 100% !important; }
     .fp-slide { position: absolute; inset: 0; }
-    .fp-slide .slide { opacity: 1 !important; transform: scale(1) !important; pointer-events: auto !important; }
-    .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.12); border: none; color: #fff; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }
-    .nav-btn:hover { background: rgba(255,255,255,0.22); }
-    .nav-btn:disabled { opacity: 0.2; cursor: default; }
-    #fp-prev { left: 12px; }
-    #fp-next { right: 12px; }
+    .fp-slide .slide { opacity: 1 !important; transform: scale(1) !important; pointer-events: auto !important; height: 100% !important; }
+    [data-edit="customer-logo"] { cursor: default !important; pointer-events: none !important; }
+    #fp-dash-btn { background: none; border: none; color: #888; font-size: 12px; font-family: system-ui, sans-serif; padding: 4px 8px; border-radius: 4px; cursor: pointer; white-space: nowrap; text-decoration: none; display: flex; align-items: center; gap: 4px; }
+    #fp-dash-btn:hover { color: #ccc; background: rgba(255,255,255,0.08); }
+    .fp-nav-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: #e5e5e5; font-size: 18px; font-family: system-ui, sans-serif; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .fp-nav-btn:hover { background: rgba(255,255,255,0.18); }
+    .fp-nav-btn:disabled { opacity: 0.25; cursor: default; }
     #fp-footer { height: 32px; min-height: 32px; background: #0a0a0a; border-top: 1px solid #2a2a2a; display: flex; align-items: center; justify-content: center; }
     #fp-slide-name { font-size: 11px; color: #888; font-family: system-ui, sans-serif; }
+    /* Optional extras */
+    #fp-extras-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #e5e5e5; font-size: 12px; font-family: system-ui, sans-serif; padding: 5px 12px; border-radius: 4px; cursor: pointer; white-space: nowrap; display: none; }
+    #fp-extras-btn:hover { background: rgba(255,255,255,0.18); }
+    #fp-back-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #e5e5e5; font-size: 12px; font-family: system-ui, sans-serif; padding: 5px 12px; border-radius: 4px; cursor: pointer; white-space: nowrap; display: none; }
+    #fp-back-btn:hover { background: rgba(255,255,255,0.18); }
+    #fp-extras-panel { position: absolute; top: 44px; right: 16px; background: #1a1a1a; border: 1px solid #333; border-radius: 6px; padding: 8px 0; min-width: 220px; z-index: 100; box-shadow: 0 8px 24px rgba(0,0,0,0.6); display: none; }
+    .fp-extras-title { font-size: 11px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.06em; padding: 4px 16px 8px; }
+    .fp-extras-item { display: block; width: 100%; text-align: left; background: none; border: none; color: #ccc; font-size: 13px; font-family: system-ui, sans-serif; padding: 8px 16px; cursor: pointer; }
+    .fp-extras-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
   </style>
 </head>
 <body>
 <div id="fp-shell">
   <div id="fp-header">
-    <div id="fp-title">SoftSolution</div>
-    <div id="fp-counter">1 / 3</div>
+    <a href="/" id="fp-dash-btn">&#8592; Dashboard</a>
+    <div style="width:1px;height:20px;background:#333;flex-shrink:0;"></div>
+    <div id="fp-title">LiteSentry-Osprey</div>
+    <button class="fp-nav-btn" id="fp-prev" disabled>&#8249;</button>
+    <div id="fp-counter">1 / 13</div>
+    <button class="fp-nav-btn" id="fp-next">&#8250;</button>
+    <button id="fp-extras-btn">More &#9662;</button>
+    <button id="fp-back-btn">&#8592; Back to Presentation</button>
   </div>
+  <div id="fp-extras-panel"><div class="fp-extras-title">Optional Slides</div>    <button class="fp-extras-item" data-opt="0">Why Us</button></div>
   <div id="fp-viewer">
     <div class="slides-container">
 <div class="fp-slide" data-slide-index="0" style="">
@@ -429,8 +447,8 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   <!-- Credit line -->
   <span class="softsolution-credit" data-edit="credit">by GlassQuality.com</span>
   <!-- Customer logo -->
-  <div class="h77704536-customer-logo" data-edit="customer-logo" onclick="document.getElementById('h77704536-logo-file').click()" title="Click to change logo">
-    <img class="h77704536-cust-img" src="../shared/LOGO_StrainOptics.png" alt="Customer Logo">
+  <div class="h77704536-customer-logo" data-edit="customer-logo">
+    <img class="h77704536-cust-img" src="../shared/LOGO_LiteSentry_Greys.png" alt="Customer Logo">
     <label class="h77704536-cust-placeholder" for="h77704536-logo-file" title="Click to upload logo">
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="3"></rect>
@@ -439,7 +457,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
       </svg>
       <span>Customer Logo</span><small>Click to upload</small>
     </label>
-    <input type="file" id="h77704536-logo-file" accept="image/*" style="display:none;">
+    
   </div>
   <!-- Hero background -->
   <img class="hero-bg" src="../shared/Panther_Eye.jpeg" alt="Hero background" data-edit="hero-bg" style="object-position:25% 75%;">
@@ -448,7 +466,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   <div class="hero-content">
     <div class="brand-badge" data-edit="badge">GlassQuality.com · LineScanner · Osprey</div>
     <h1 data-edit="headline">Quality Inspection<br>for <span class="blue">Flat Glass</span></h1>
-    <h2 data-edit="subheadline">Proposal for SoftSolution · Juan Ochoa, Head of Quality</h2>
+    <h2 data-edit="subheadline">Proposal for LiteSentry-Osprey · Juan Ochoa, Head of Quality</h2>
     
   </div>
   <!-- Gallery button -->
@@ -490,7 +508,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
       
     </div>
   </div>
-  <input type="file" id="h77704536-carousel-file" accept="image/*" style="display:none;">
+  
   <style>
     .h77704536-customer-logo { position:static; transform:none; margin:16px auto 0; z-index:10; display:flex; align-items:center; justify-content:center; background:#fff; backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.18); border-radius:24px; padding:18px; width:160px; height:160px; cursor:pointer; }
     .h77704536-customer-logo::after { content:"Change Logo"; position:absolute; inset:0; border-radius:24px; background:rgba(0,0,0,.55); color:#fff; font-size:12px; font-weight:700; letter-spacing:.06em; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s; }
@@ -727,6 +745,1007 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 </div>
 </div>
 <div class="fp-slide" data-slide-index="1" style="display:none;">
+<div class="slide content ls2" data-slide="deck-company">
+  <div class="slide-logo-row">
+    <img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution">
+    <span class="slide-logo-sep"></span>
+    <img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls">
+  </div>
+  <div class="slide-layout">
+  <span class="softsolution-credit" data-edit="credit">by GlassQuality.com</span>
+  <header class="slide-head">
+    <div class="section-label" data-edit="section-label">Our Company</div>
+    <h1 class="slide-title" data-edit="headline">Quality inspection <span class="blue">is all we do</span></h1>
+    <p class="slide-subtitle anim-in" data-edit="tagline">We inspect every quality aspect of your glass guaranteeing peak performance and the best quality.</p>
+  </header>
+  <div class="slide-body">
+  <div class="ls-tabs ls2-tabs-wrap" data-edit="tabs" data-track="ls2:tabs" style="flex:1;min-height:0;width:100%;max-width:860px;">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="ls-tab-list">
+  <button class="ls-tab" data-panel="1" data-edit="tab-about">About Us</button>
+  <button class="ls-tab" data-panel="2" data-edit="tab-technologies">Technologies</button>
+  <button class="ls-tab" data-panel="3" data-edit="tab-network">Global Network</button>
+  <button class="ls-tab" data-panel="4" data-edit="tab-iqc">IQC Group</button>
+<button class="ls-tab" data-panel="5">Extras</button></div>
+<div class="ls-tab-panels">
+<div class="ls-tab-panel active" data-panel="0" style="padding-top:12px;">
+  <div class="ls-carousel" data-counter="" data-edit="company-carousel" data-track="ls2:carousel:company" style="flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform:translateX(0px);">
+    <div class="ls-carousel-slide"><img src="../shared/Group-Picture-of-the-Team-members-.png" alt="Group Picture of the Team members">
+      <div class="ls-carousel-caption" data-edit="company-caption">Group Picture of the Team members</div></div></div><div class="ls-carousel-counter"></div></div>
+</div>
+<div class="ls-tab-panel" data-panel="1">
+  <div class="ls2-pillars">
+    <div class="ls2-pillar anim-in" style="">
+      <div class="ls2-pillar-num">01</div>
+      <div class="ls2-pillar-content">
+        <div class="ls2-pillar-title" data-edit="pillar-1-title">One Partner</div>
+        <div class="ls2-pillar-desc" data-edit="pillar-1-desc">for all your quality inspection needs — surface, geometry, dimension, and more</div>
+      </div>
+    </div>
+    <div class="ls2-pillar anim-in" style="">
+      <div class="ls2-pillar-num">02</div>
+      <div class="ls2-pillar-content">
+        <div class="ls2-pillar-title" data-edit="pillar-2-title">Global Presence</div>
+        <div class="ls2-pillar-desc" data-edit="pillar-2-desc">global support hubs with local experts in 23 countries across 6 continents</div>
+      </div>
+    </div>
+    <div class="ls2-pillar anim-in" style="">
+      <div class="ls2-pillar-num">03</div>
+      <div class="ls2-pillar-content">
+        <div class="ls2-pillar-title" data-edit="pillar-3-title">Technological Leadership</div>
+        <div class="ls2-pillar-desc" data-edit="pillar-3-desc">true scanning · bright-field · dark-field · reflection · spectrometer</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="ls-tab-panel" data-panel="2">
+  <div class="feature-list" style="margin:12px 0 0;gap:8px;">
+    <div class="feature-item anim-in" style=""><div class="feature-num">1</div><div class="feature-text"><strong data-edit="tech-1-name">90° Parallel-Light System</strong><span data-edit="tech-1-desc"> — Sensor-based technology using a 90° parallel-light beam to detect surface defects.</span></div></div>
+    <div class="feature-item anim-in" style=""><div class="feature-num">2</div><div class="feature-text"><strong data-edit="tech-2-name">Bright-field &amp; Dark-field</strong><span data-edit="tech-2-desc"> — Camera-based technology combining both illumination modes.</span></div></div>
+    <div class="feature-item anim-in" style=""><div class="feature-num">3</div><div class="feature-text"><strong data-edit="tech-3-name">Reflexion Technology</strong><span data-edit="tech-3-desc"> — Sensor and stray-light technology using reflexion principles.</span></div></div>
+    <div class="feature-item anim-in" style=""><div class="feature-num">4</div><div class="feature-text"><strong data-edit="tech-4-name">Spectrometer</strong><span data-edit="tech-4-desc"> — Polarized filter sensor-technology for spectral analysis.</span></div></div>
+  </div>
+</div>
+<div class="ls-tab-panel" data-panel="3">
+  <div class="ls2-map-wrap">
+    <img class="ls2-map-img" src="../shared/World_Map_of_locations_.jpeg" alt="World Map">
+    <div class="ls2-pin" style="left:19.5%;top:34%;"><div class="ls2-pin-dot"></div><div class="ls2-pin-ring"></div><div class="ls2-pin-label" data-edit="pin-burnsville">Burnsville MN, USA</div></div>
+    <div class="ls2-pin" style="left:51.2%;top:32.5%;"><div class="ls2-pin-dot"></div><div class="ls2-pin-ring"></div><div class="ls2-pin-label" data-edit="pin-waidhofen">Waidhofen, Austria</div></div>
+    <div class="ls2-dist" style="left:19.1%;top:24.4%;" title="Canada"></div><div class="ls2-dist" style="left:10.9%;top:42.5%;" title="Mexico"></div>
+    <div class="ls2-dist" style="left:24.3%;top:66.5%;" title="Brazil"></div><div class="ls2-dist" style="left:43.5%;top:28.2%;" title="UK"></div>
+    <div class="ls2-dist" style="left:42.0%;top:36.1%;" title="Spain"></div><div class="ls2-dist" style="left:47.1%;top:34.6%;" title="Italy"></div>
+    <div class="ls2-dist" style="left:55.4%;top:35.8%;" title="Turkey"></div><div class="ls2-dist" style="left:61.3%;top:25.2%;" title="Russia"></div>
+    <div class="ls2-dist" style="left:72.1%;top:39.3%;" title="China"></div><div class="ls2-dist" style="left:83.2%;top:73.3%;" title="Australia"></div>
+    <div class="ls2-dist" style="left:46.7%;top:23.0%;" title="Norway"></div><div class="ls2-dist" style="left:73.3%;top:48.5%;" title="Thailand"></div>
+    <div class="ls2-dist" style="left:52.9%;top:31.5%;" title="Moldova"></div><div class="ls2-dist" style="left:16.8%;top:43.5%;" title="Cuba"></div>
+  </div>
+  <div class="ls2-map-legend">
+    <span class="ls2-leg-item"><span class="ls2-leg-dot" style="background:#E8711A;box-shadow:0 0 6px rgba(232,113,26,.7);"></span>Offices</span>
+    <span class="ls2-leg-item"><span class="ls2-leg-dot" style="background:#F5C842;box-shadow:0 0 6px rgba(245,200,66,.6);"></span>Agents &amp; Distributors</span>
+    <span class="ls2-leg-count" data-edit="network-count">23 countries · 6 continents</span>
+  </div>
+</div>
+<div class="ls-tab-panel" data-panel="4">
+  <div class="ls2-iqc-grid">
+    <div class="ls2-iqc-card"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution" class="ls2-iqc-logo"><div class="ls2-iqc-country">Austria</div><ul class="ls2-iqc-products"><li>LineScanner</li><li>BowScanner</li><li>CulletScanner</li><li>VirtualDigitizing</li></ul></div>
+    <div class="ls2-iqc-card"><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="ls2-iqc-logo"><div class="ls2-iqc-country">United States</div><ul class="ls2-iqc-products"><li>Osprey® 25 Distortion Inspection</li><li>Osprey® 25 Anisotropy Inspection</li><li>Owl – Furnace Control</li><li>LoadValidator</li><li>TS 4000 Thickness &amp; Coating Sensor</li></ul></div>
+    <div class="ls2-iqc-card"><img src="../shared/LOGO_StrainOptics.png" alt="Strainoptics" class="ls2-iqc-logo" style="transform:scale(1.3);"><div class="ls2-iqc-country">United States</div><ul class="ls2-iqc-products"><li>GASP</li><li>Polarimeter</li></ul></div>
+    <div class="ls2-iqc-card"><img src="../shared/LOGO_AVALON.png" alt="Avalon Vision" class="ls2-iqc-logo"><div class="ls2-iqc-country">United States</div><ul class="ls2-iqc-products"><li>MoldWatcher</li><li>ThermalWatch</li><li>NightHawk</li><li>QualityStation</li></ul></div>
+  </div>
+</div>
+<div class="ls-tab-panel" data-panel="5"><div class="ls-carousel" data-counter="" data-zoom-group="" style="flex:1;min-height:0;width:100%;">  <div class="ls-carousel-track" style="transform: translateX(0px);">      <div class="ls-carousel-slide"><img src="../shared/Slide4.jpg" alt="Slide4" data-zoom=""><div class="ls-carousel-caption">Slide4</div></div></div><div class="ls-carousel-counter"></div></div></div></div><!-- /.ls-tab-panels -->
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </div>
+  <div class="ls2-stats">
+    <div class="kpi-card"><div class="kpi-value" data-edit="stat-founded">1999</div><div class="kpi-label" data-edit="stat-label-founded">Founded</div></div>
+    <div class="kpi-card"><div class="kpi-value" data-edit="stat-systems">2050+</div><div class="kpi-label" data-edit="stat-label-systems">Systems installed</div></div>
+    <div class="kpi-card"><div class="kpi-value" data-edit="stat-countries">23</div><div class="kpi-label" data-edit="stat-label-countries">Countries · 6 continents</div></div>
+    <div class="kpi-card"><div class="kpi-value" data-edit="stat-employees">60</div><div class="kpi-label" data-edit="stat-label-employees">Specialized employees</div></div>
+  </div>
+  </div>
+  </div>
+  <style>
+    .ls2-pillars{flex:1;display:flex;flex-direction:column;gap:8px;padding:12px 0 8px;min-height:0;}
+    .ls2-pillar{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;background:var(--bg-card);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:12px;padding:0 28px;transition:background .2s;min-height:60px;}
+    .ls2-pillar:hover{background:var(--bg-card-hover);}
+    .ls2-pillar-num{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:clamp(60px,9vw,120px);font-weight:900;line-height:1;color:rgba(245,166,35,.08);pointer-events:none;user-select:none;letter-spacing:-.03em;}
+    .ls2-pillar-content{margin-left:clamp(70px,10vw,140px);z-index:1;}
+    .ls2-pillar-title{font-size:clamp(16px,2.2vw,32px);font-weight:800;color:var(--text);line-height:1.1;}
+    .ls2-pillar-desc{font-size:clamp(11px,1.1vw,15px);color:var(--text-muted);margin-top:4px;line-height:1.4;}
+    .ls2-pillar-title:focus,.ls2-pillar-desc:focus{outline:none;}
+    .ls2-map-wrap{position:relative;flex:1;min-height:0;border-radius:14px;overflow:hidden;border:1px solid var(--border);margin-top:12px;}
+    .ls2-map-img{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(.55) saturate(.4);}
+    .ls2-pin{position:absolute;transform:translate(-50%,-50%);}
+    .ls2-pin-dot{width:10px;height:10px;border-radius:50%;background:#E8711A;box-shadow:0 0 8px rgba(232,113,26,.9);position:relative;z-index:2;}
+    .ls2-pin-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;border:2px solid rgba(232,113,26,.5);animation:ls2Pulse 2s ease-in-out infinite;}
+    @keyframes ls2Pulse{0%,100%{opacity:.8;transform:translate(-50%,-50%) scale(1)}50%{opacity:0;transform:translate(-50%,-50%) scale(1.8)}}
+    .ls2-pin-label{position:absolute;top:-22px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:9px;font-weight:700;letter-spacing:.05em;color:#fff;background:rgba(0,0,0,.70);padding:2px 6px;border-radius:4px;}
+    .ls2-dist{position:absolute;width:6px;height:6px;border-radius:50%;background:#F5C842;box-shadow:0 0 5px rgba(245,200,66,.7);transform:translate(-50%,-50%);}
+    .ls2-map-legend{display:flex;align-items:center;gap:16px;padding:6px 0 4px;flex-shrink:0;}
+    .ls2-leg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);font-weight:600;}
+    .ls2-leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+    .ls2-leg-count{margin-left:auto;font-size:11px;color:var(--text-muted);opacity:.5;}
+    .ls2-leg-count:focus{outline:none;}
+    .ls2-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;width:100%;max-width:860px;flex-shrink:0;padding:10px 0 16px;}
+    .ls2-stats .kpi-card{padding:14px 12px;}
+    .ls2-stats .kpi-value{font-size:clamp(18px,2.2vw,32px);}
+    .ls2-iqc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:12px 0 8px;flex:1;min-height:0;}
+    .ls2-iqc-card{display:grid;grid-template-rows:80px auto 1fr;justify-items:center;align-content:start;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px 14px 14px;gap:8px;text-align:center;}
+    .ls2-iqc-logo{height:auto;max-height:44px;width:auto;max-width:120px;object-fit:contain;align-self:center;filter:brightness(0) invert(.7);}
+    .ls2-iqc-country{font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.07em;text-transform:uppercase;}
+    .ls2-iqc-products{list-style:none;margin:0;padding:0;font-size:11px;color:var(--text-muted);line-height:1;opacity:.75;text-align:left;width:100%;}
+    .ls2-iqc-products li{padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+    .ls2-iqc-products li:last-child{border-bottom:none;}
+    .ls2-iqc-products li::before{content:"› ";color:var(--accent);font-weight:700;}
+    [contenteditable]:focus{outline:none;}
+    .ls2 .slide-body{width:100%;align-items:center;}
+    .ls2 .ls-carousel{min-height:260px !important;height:260px !important;}
+    .ls2{padding:52px 16px 80px !important;overflow-y:auto;}
+    @media(min-width:769px){
+      .ls2 .ls-carousel{min-height:0 !important;height:100% !important;}
+      .ls2{padding:52px 80px 0 !important;overflow-y:unset;}
+      .ls2-iqc-grid{grid-template-columns:repeat(4,1fr);}
+      .ls2-stats{grid-template-columns:repeat(4,1fr);gap:12px;}
+    }
+  </style>
+  <script>
+  setTimeout(function(){
+    var tabList=document.querySelector(".ls2-tabs-wrap .ls-tab-list");
+    if(!tabList)return;
+    tabList.addEventListener("click",function(e){
+      var btn=e.target.closest(".ls-tab");
+      if(!btn||!btn.classList.contains("active"))return;
+      e.stopImmediatePropagation();
+      var tabsEl=btn.closest(".ls-tabs");
+      tabsEl.querySelectorAll(".ls-tab").forEach(function(t){t.classList.remove("active");});
+      tabsEl.querySelectorAll(".ls-tab-panel").forEach(function(p){p.classList.remove("active");});
+      tabsEl.querySelector(".ls-tab-panel[data-panel=\"0\"]").classList.add("active");
+    },true);
+  },0);
+  </script>
+  <script>(function(){var s=document.currentScript;setTimeout(function(){if(window.PE&&s)PE.initSlide(s.closest(".slide"));},0);})()</script>
+</div>
+</div>
+<div class="fp-slide" data-slide-index="2" style="display:none;">
+<div class="slide content ls4" data-slide="deck-capability">
+  <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
+
+  <div class="slide-layout">
+  <header class="slide-head">
+    <div class="section-label" data-edit="section-label">The Product</div>
+    <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;">LineScanner <span class="blue">Capability Overview</span></h1>
+  </header>
+  <div class="slide-body">
+  <div class="ls-tabs" data-edit="tabs" data-track="ls4:tabs" style="flex:1;min-height:0;width:100%;max-width:960px;">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="ls-tab-list">
+  <button class="ls-tab active" data-panel="0" data-edit="tab-capability">Capability Matrix</button>
+  <button class="ls-tab" data-panel="1" data-edit="tab-process">Where in Your Process</button>
+<button class="ls-tab" data-panel="2">Extras</button></div>
+<div class="ls-tab-panels">
+<!-- ══ PANEL 0 · Capability Matrix ══ -->
+<div class="ls-tab-panel active" data-panel="0">
+  <div class="ls4-grid">
+    <div class="ls4-table-wrap anim-in" style="">
+      <table class="ls4-table" data-ls-table="" data-edit="capability-matrix">
+        <colgroup><col><col class="ls-col-collapsed"><col class=""><col class="ls-col-collapsed"><col class="ls-col-collapsed"><col class="ls-col-collapsed"></colgroup>
+        <thead><tr>
+          <th class="ls4-check-col"></th>
+          <th class="ls4-prod-col"><span class="ls-col-label">Osprey-25</span></th>
+          <th class="ls4-prod-col ls4-highlight-col"><span class="ls-col-label">LineScanner</span></th>
+          <th class="ls4-prod-col ls4-highlight-col"><span class="ls-col-label">White Haze</span></th>
+          <th class="ls4-prod-col"><span class="ls-col-label">BowScanner</span></th>
+          <th class="ls4-prod-col"><span class="ls-col-label">CulletScanner</span></th>
+        </tr></thead>
+        <tbody>
+          
+          <tr class="ls4-shaded" draggable="false"><td>Sight Line Check</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr><tr class=""><td>Edge Chips</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr class="ls4-shaded" draggable="false"><td>Quality Check</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr><td>Dimension Check</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr class="ls4-shaded"><td>Logo Position &amp; Quality Check</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr><td>Distortion Check</td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td><td></td></tr>
+          <tr class="ls4-shaded"><td>Anisotropy Check</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr><td>WhiteHaze</td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td></tr>
+          <tr class="ls4-shaded"><td>Load Control</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr><td>Overall Bending Check</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td></tr>
+          <tr class="ls4-shaded"><td>Glass Thickness Check</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td></tr>
+          <tr><td>Glass Type Recognition</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr class="ls4-shaded"><td>Data Matrix Code Interpretation</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr><td>Break Pattern Check</td><td></td><td></td><td></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td></tr>
+        <tr><td>New row</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>New row</td><td></td><td></td><td></td><td></td><td></td></tr></tbody>
+      </table>
+      <div data-ls-col-restore=""><button class="ls-table-restore-chip">+ White Haze</button><button class="ls-table-restore-chip">+ BowScanner</button><button class="ls-table-restore-chip">+ CulletScanner</button><button class="ls-table-restore-chip">+ Osprey-25</button></div>
+      <div data-ls-row-restore=""></div>
+      
+      <div class="ls4-legend">
+        <span class="ls4-leg-item"><span class="ls-dot ls-dot-on">◆</span> <span data-edit="legend-standard">Standard</span></span>
+        <span class="ls4-leg-item"><span class="ls4-dot ls4-dot-off">◇</span> <span data-edit="legend-optional">Optional</span></span>
+      </div>
+    </div>
+    <div class="ls-carousel anim-in" data-counter="" data-edit="capability-carousel" data-zoom-group="" style="padding-bottom: 10px;">
+      <div class="ls-carousel-track" style="transform: translateX(0px);">
+        <div class="ls-carousel-slide" style="flex-direction:column;">
+          <img src="../shared/Vertical_LineScanner.png" alt="Vertical LineScanner" data-zoom="" style="flex:1;min-height:0;">
+          <div class="ls4-car-label" data-edit="car-label-1">Vertical LineScanner</div>
+        <div class="ls-carousel-caption">Vertical LineScanner</div></div>
+        <div class="ls-carousel-slide" style="flex-direction:column;">
+          <img src="../shared/Horizontal_LineScanner.png" alt="Horizontal LineScanner" data-zoom="" style="flex:1;min-height:0;">
+          <div class="ls4-car-label" data-edit="car-label-2">Horizontal LineScanner</div>
+        <div class="ls-carousel-caption">Horizontal LineScanner</div></div>
+        <div class="ls-carousel-slide" style="flex-direction:column;">
+          <img src="../shared/Osprey_Only.png" alt="Osprey" data-zoom="" style="flex:1;min-height:0;">
+          <div class="ls4-car-label" data-edit="car-label-3">Osprey</div>
+        <div class="ls-carousel-caption">Osprey</div></div>
+      </div>
+      
+    <div class="ls-carousel-counter">1 / 3</div></div>
+  </div>
+</div>
+<!-- ══ PANEL 1 · Where in Your Process ══ -->
+<div class="ls-tab-panel" data-panel="1">
+  <div class="ls4-proc-grid" style="grid-template-columns:1.4fr 1fr;">
+    <div class="ls4-proc-table-wrap anim-in" style="">
+      <table class="ls4-table ls4-proc-table" data-ls-table="" data-edit="proc-matrix">
+        <colgroup><col><col class=""><col class=""><col class="ls-col-collapsed"></colgroup>
+        <thead><tr>
+          <th class="ls4-check-col"></th>
+          <th class="ls4-prod-col ls4-col-orange"><span class="ls-col-label">LSC-V</span></th>
+          <th class="ls4-prod-col ls4-col-red"><span class="ls-col-label">LSC-H</span></th>
+          <th class="ls4-prod-col ls4-col-blue"><span class="ls-col-label">Osprey-25</span></th>
+        </tr></thead>
+        <tbody>
+          <tr class="ls4-shaded"><td>Quality Check (Scratches, Inclusions, Finger Prints, Dirt, Coating Voids, Automotive)</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
+          <tr><td>Edge Chips</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
+          <tr class="ls4-shaded"><td>Sight Line Check for IG Unit, Butyl Defects, Grid Alignement</td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td></tr>
+          <tr><td>Dimension Check (Overall Dimension, Position of Drill Holes, Diameter of Drill Holes, Cut Outs)</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
+          <tr class="ls4-shaded"><td>Logo Quality Check (Existence and Position of Logo, Quality of Logo)</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
+          <tr><td>Distortion Check (Rollerwave, EdgeLift, Pocket Distortion, Center Kink, Picture Framing)</td><td></td><td></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
+          <tr class="ls4-shaded"><td>Anisotropy Check (Retardation, Isotropy Values)</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
+          <tr><td>WhiteHaze (Prediction, Real Optical effect)</td><td></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
+          <tr class="ls4-shaded"><td>Load Control (Location of Glasses, Distance, Long and Wide Load, Broken Corners)</td><td></td><td><span class="ls-dot ls-dot-red">◆</span></td><td></td></tr>
+          <tr><td>Overall Bending Check (6 Measurement for all Edges)</td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td></tr>
+          <tr class="ls4-shaded"><td>Glass Thickness Check (Thickness, Side of Coating)</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
+          <tr><td>Glass Type Recognition / Coating Type and Thickness Recognition</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
+          <tr class="ls4-shaded"><td>Data Matrix Code Interpretation</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
+        </tbody>
+      </table>
+      <div data-ls-col-restore=""><button class="ls-table-restore-chip">+ Osprey-25</button></div>
+      <div data-ls-row-restore=""></div>
+      
+      <div class="ls4-legend">
+        <span class="ls4-leg-item"><span class="ls-dot ls-dot-on">◆</span> <span data-edit="proc-legend-1">LineScanner Vertical</span></span>
+        <span class="ls4-leg-item"><span class="ls-dot ls-dot-red">◆</span> <span data-edit="proc-legend-2">LineScanner Horizontal</span></span>
+        <span class="ls4-leg-item"><span class="ls-dot ls-dot-blue">◆</span> <span data-edit="proc-legend-3">Osprey-25</span></span>
+      </div>
+    </div>
+    <div class="ls4-proc-cards anim-in" style="">
+      <div class="ls4-proc-card"><img src="../shared/Render_Tempering_Line.png" alt="Tempering Line" data-zoom=""><div class="ls4-proc-card-label" data-edit="proc-label-1">Tempering</div><button class="ls4-card-toggle" onclick="ls4ToggleCard(this,event)" title="Hide">✕</button><div class="ls4-card-move"><button onclick="ls4MoveCard(this,-1,event)" title="Move up">▲</button><button onclick="ls4MoveCard(this,1,event)" title="Move down">▼</button></div></div>
+      <div class="ls4-proc-card"><img src="../shared/Render_Lamination_Line.png" alt="Lamination Line" data-zoom=""><div class="ls4-proc-card-label" data-edit="proc-label-3">Lamination</div><button class="ls4-card-toggle" onclick="ls4ToggleCard(this,event)" title="Hide">✕</button><div class="ls4-card-move"><button onclick="ls4MoveCard(this,-1,event)" title="Move up">▲</button><button onclick="ls4MoveCard(this,1,event)" title="Move down">▼</button></div></div><div class="ls4-proc-card"><img src="../shared/Render_of_a_Vertical_IG_Line_with_LineScanners_on_Orange_to_show_the_position.png" alt="IG Line" data-zoom=""><div class="ls4-proc-card-label" data-edit="proc-label-2">IG Line</div><button class="ls4-card-toggle" onclick="ls4ToggleCard(this,event)" title="Hide">✕</button><div class="ls4-card-move"><button onclick="ls4MoveCard(this,-1,event)" title="Move up">▲</button><button onclick="ls4MoveCard(this,1,event)" title="Move down">▼</button></div></div>
+      
+      <div class="ls4-proc-card"><img src="../shared/Render_Grinding_Line.png" alt="Grinding Line" data-zoom=""><div class="ls4-proc-card-label" data-edit="proc-label-4">Grinding</div><button class="ls4-card-toggle" onclick="ls4ToggleCard(this,event)" title="Hide">✕</button><div class="ls4-card-move"><button onclick="ls4MoveCard(this,-1,event)" title="Move up">▲</button><button onclick="ls4MoveCard(this,1,event)" title="Move down">▼</button></div></div>
+      <div class="ls4-proc-card"><img src="../shared/Render_Coating_line.png" alt="Coating Line" data-zoom=""><div class="ls4-proc-card-label" data-edit="proc-label-5">Coating</div><button class="ls4-card-toggle" onclick="ls4ToggleCard(this,event)" title="Hide">✕</button><div class="ls4-card-move"><button onclick="ls4MoveCard(this,-1,event)" title="Move up">▲</button><button onclick="ls4MoveCard(this,1,event)" title="Move down">▼</button></div></div><div class="ls4-proc-card"><img src="../shared/Render_Automotive_Printing_Line.png" alt="Automotive Printing Line" data-zoom=""><div class="ls4-proc-card-label" data-edit="proc-label-6">Automotive Printing</div><div class="ls4-table-hint" onclick="ls4OpenAutoModal(event)">⊞ view data</div><button class="ls4-card-toggle" onclick="ls4ToggleCard(this,event)" title="Hide">✕</button><div class="ls4-card-move"><button onclick="ls4MoveCard(this,-1,event)" title="Move up">▲</button><button onclick="ls4MoveCard(this,1,event)" title="Move down">▼</button></div></div>
+      
+    </div>
+  </div>
+</div>
+<div class="ls-tab-panel" data-panel="2"><div class="ls-carousel" data-counter="" data-zoom-group="" style="flex:1;min-height:0;width:100%;">  <div class="ls-carousel-track" style="transform: translateX(0px);">      <div class="ls-carousel-slide"><img src="../shared/Slide14.jpg" alt="Slide14" data-zoom=""><div class="ls-carousel-caption">Slide14</div></div></div><div class="ls-carousel-counter"></div></div></div></div><!-- ls-tab-panels -->
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </div><!-- ls-tabs -->
+  </div><!-- slide-body -->
+  </div><!-- slide-layout -->
+
+  <style>
+    .ls4 { }
+    .ls4-grid { display:grid; grid-template-columns:1fr; gap:16px; height:auto; }
+    .ls4-table-wrap { display:flex; flex-direction:column; gap:6px; min-height:0; overflow:auto; }
+    .ls4-table { width:100%; border-collapse:collapse; font-size:clamp(10px,1.05vw,12px); }
+    .ls4-table thead tr { border-bottom:2px solid rgba(232,113,26,.4); }
+    .ls4-table th { padding:7px 6px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; font-size:10px; color:var(--text-muted); text-align:center; }
+    .ls4-check-col { text-align:left !important; width:38%; }
+    .ls4-prod-col  { width:12%; }
+    .ls4-highlight-col { color:#E8711A !important; background:rgba(232,113,26,.07); border-left:1px solid rgba(232,113,26,.2); border-right:1px solid rgba(232,113,26,.2); }
+    .ls4-table tbody tr td { padding:4px 6px; color:var(--text-muted); border-bottom:1px solid rgba(255,255,255,.04); text-align:center; }
+    .ls4-table tbody tr td:first-child { text-align:left; color:var(--text); }
+    .ls4-shaded td { background:rgba(255,255,255,.02); }
+    .ls4-table tbody tr td:nth-child(2) { background:rgba(99,179,237,.03); border-left:1px solid rgba(99,179,237,.1); border-right:1px solid rgba(99,179,237,.1); }
+    .ls4-table tbody tr td:nth-child(3) { background:rgba(232,113,26,.04); border-left:1px solid rgba(232,113,26,.15); border-right:1px solid rgba(232,113,26,.15); }
+    .ls4-table tbody tr td:nth-child(4) { background:rgba(239,68,68,.03); border-left:1px solid rgba(239,68,68,.1); border-right:1px solid rgba(239,68,68,.1); }
+    .ls4-table tbody tr td:nth-child(5) { background:rgba(239,68,68,.03); border-left:1px solid rgba(239,68,68,.1); border-right:1px solid rgba(239,68,68,.1); }
+    .ls4-table tbody tr td:nth-child(6) { background:rgba(239,68,68,.03); border-left:1px solid rgba(239,68,68,.1); border-right:1px solid rgba(239,68,68,.1); }
+    .ls4-dot { font-size:12px; } .ls4-dot-on { color:#E8711A; } .ls4-dot-red { color:#f87171; } .ls4-dot-blue { color:#63b3ed; } .ls4-dot-off { color:rgba(255,255,255,.25); }
+    .ls4-col-orange { color:#E8711A !important; background:rgba(232,113,26,.07); border-left:1px solid rgba(232,113,26,.2); border-right:1px solid rgba(232,113,26,.2); }
+    .ls4-col-red    { color:#f87171 !important; background:rgba(239,68,68,.07);  border-left:1px solid rgba(239,68,68,.2);  border-right:1px solid rgba(239,68,68,.2); }
+    .ls4-col-blue   { color:#63b3ed !important; background:rgba(99,179,237,.07); border-left:1px solid rgba(99,179,237,.2); border-right:1px solid rgba(99,179,237,.2); }
+    .ls4-proc-table tbody tr td:nth-child(2) { background:rgba(232,113,26,.03); border-left:1px solid rgba(232,113,26,.1); border-right:1px solid rgba(232,113,26,.1); }
+    .ls4-proc-table tbody tr td:nth-child(3) { background:rgba(239,68,68,.03);  border-left:1px solid rgba(239,68,68,.1);  border-right:1px solid rgba(239,68,68,.1); }
+    .ls4-proc-table tbody tr td:nth-child(4) { background:rgba(99,179,237,.03); border-left:1px solid rgba(99,179,237,.1); border-right:1px solid rgba(99,179,237,.1); }
+    .ls4-legend { display:flex; gap:20px; padding:5px 0; border-top:1px solid var(--border); flex-shrink:0; }
+    .ls4-leg-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-muted); }
+    .ls4-car-label { padding:8px 12px; font-size:11px; font-weight:600; flex-shrink:0; color:var(--text-muted); text-align:center; letter-spacing:.04em; background:var(--bg-card); }
+    .ls4-proc-grid { display:grid; grid-template-columns:1fr; gap:16px; height:auto; overflow-y:auto; }
+    .ls4-proc-table-wrap { display:flex; flex-direction:column; gap:6px; min-height:0; overflow:hidden; padding-bottom:16px; }
+    .ls4-proc-table { font-size:clamp(8.5px,0.82vw,10px); }
+    .ls4-proc-table th { padding:4px 5px; }
+    .ls4-proc-table tbody tr td { padding:2px 5px; line-height:1.3; }
+    .ls4-proc-cards { display:flex; flex-direction:column; gap:6px; min-height:0; overflow-y:auto; padding-bottom:72px; }
+    .ls4-proc-card { flex:1; min-height:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); background:var(--bg-card); position:relative; cursor:zoom-in; display:flex; align-items:center; justify-content:center; transition:border-color .2s; }
+    .ls4-proc-card:hover { border-color:rgba(232,113,26,.4); }
+    .ls4-proc-card img { width:100%; height:100%; object-fit:contain; display:block; transition:transform .3s; }
+    .ls4-proc-card:hover img { transform:scale(1.04); }
+    .ls4-proc-card-label { position:absolute; bottom:4px; right:8px; font-size:10px; font-weight:600; letter-spacing:.05em; color:rgba(255,255,255,.3); pointer-events:none; text-transform:uppercase; }
+    .ls4-col-label { display:block; }
+    .ls4-col-toggle { opacity:0; width:14px; height:14px; border-radius:3px; padding:0; background:rgba(0,0,0,.5); border:1px solid rgba(255,255,255,.2); color:rgba(255,255,255,.5); font-size:9px; font-weight:900; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:all .2s; font-family:inherit; line-height:1; margin-top:2px; }
+    th:hover .ls4-col-toggle { opacity:1; }
+    .ls4-col-toggle:hover { background:rgba(239,68,68,.4); color:#fff; border-color:rgba(239,68,68,.4); }
+    .ls4-restore-chip { padding:3px 10px; border-radius:20px; cursor:pointer; background:rgba(34,197,94,.12); border:1px solid rgba(34,197,94,.3); color:#4ade80; font-size:10px; font-weight:700; letter-spacing:.04em; font-family:inherit; transition:all .2s; }
+    .ls4-restore-chip:hover { background:rgba(34,197,94,.25); color:#fff; }
+    .ls4-add-row-btn { align-self:flex-start; padding:3px 10px; border-radius:20px; cursor:pointer; background:transparent; border:1px dashed rgba(255,255,255,.15); color:rgba(255,255,255,.25); font-size:10px; font-weight:600; letter-spacing:.04em; font-family:inherit; margin-top:2px; transition:all .2s; }
+    .ls4-add-row-btn:hover { border-color:rgba(232,113,26,.4); color:#E8711A; }
+    .ls4-row-drag { opacity:0; cursor:grab; font-size:11px; color:rgba(255,255,255,.3); margin-right:4px; vertical-align:middle; user-select:none; transition:opacity .2s; }
+    tr:hover .ls4-row-drag { opacity:1; }
+    .ls4-row-dragging { opacity:.4; background:rgba(232,113,26,.08) !important; }
+    .ls4-row-dragover td { border-top:2px solid #E8711A !important; }
+    tr.ls4-row-hidden { display:none; }
+    .ls4-row-hide-btn { opacity:0; width:13px; height:13px; border-radius:3px; padding:0; background:rgba(0,0,0,.5); border:1px solid rgba(255,255,255,.18); color:rgba(255,255,255,.45); font-size:8px; font-weight:900; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:all .2s; font-family:inherit; line-height:1; margin-right:5px; flex-shrink:0; vertical-align:middle; }
+    tr:hover .ls4-row-hide-btn { opacity:1; }
+    .ls4-row-hide-btn:hover { background:rgba(239,68,68,.45); color:#fff; border-color:rgba(239,68,68,.4); }
+    td[contenteditable="true"] { outline:1px solid rgba(232,113,26,.5); border-radius:3px; background:rgba(232,113,26,.05); padding-left:4px; }
+    .ls4-table tbody td:not(:first-child) { cursor:pointer; }
+    .ls4-table tbody td:not(:first-child):hover { background:rgba(255,255,255,.05) !important; }
+    .ls4-card-move { position:absolute; top:5px; left:5px; z-index:3; display:flex; flex-direction:column; gap:2px; opacity:0; transition:opacity .2s; }
+    .ls4-proc-card:hover .ls4-card-move { opacity:1; }
+    .ls4-card-move button { width:16px; height:14px; border-radius:3px; padding:0; background:rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.18); color:rgba(255,255,255,.45); font-size:8px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; font-family:inherit; line-height:1; }
+    .ls4-card-move button:hover { background:rgba(232,113,26,.5); color:#fff; border-color:rgba(232,113,26,.4); }
+    .ls4-proc-card.ls4-collapsed .ls4-card-move { display:none; }
+    .ls4-table-hint { position:absolute; top:6px; left:50%; transform:translateX(-50%); background:rgba(99,179,237,.15); border:1px solid rgba(99,179,237,.3); color:#63b3ed; font-size:9px; font-weight:700; letter-spacing:.06em; padding:3px 8px; border-radius:20px; pointer-events:auto; cursor:pointer; text-transform:uppercase; white-space:nowrap; }
+    .ls4-table-hint:hover { background:rgba(99,179,237,.3); color:#fff; }
+    .ls4-proc-card.ls4-collapsed .ls4-table-hint { display:none; }
+    #ls4-auto-modal { display:none; position:fixed; inset:0; z-index:9995; align-items:center; justify-content:center; background:rgba(0,0,0,.6); backdrop-filter:blur(8px); cursor:pointer; }
+    #ls4-auto-modal.on { display:flex; }
+    .ls4-am-card { background:#111; border:1px solid rgba(255,255,255,.12); border-radius:20px; padding:28px 32px; cursor:default; box-shadow:0 24px 80px rgba(0,0,0,.7); max-width:480px; width:92vw; position:relative; }
+    .ls4-am-close { position:absolute; top:12px; right:14px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12); color:rgba(255,255,255,.5); width:28px; height:28px; border-radius:50%; cursor:pointer; font-size:11px; display:flex; align-items:center; justify-content:center; transition:all .2s; }
+    .ls4-am-close:hover { background:rgba(239,68,68,.3); color:#fff; }
+    .ls4-am-title { font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-muted); margin-bottom:14px; opacity:.6; }
+    .ls4-card-toggle { position:absolute; top:5px; right:5px; z-index:3; width:16px; height:16px; border-radius:50%; padding:0; background:rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.18); color:rgba(255,255,255,.4); font-size:8px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; font-family:inherit; line-height:1; opacity:0; }
+    .ls4-proc-card:hover .ls4-card-toggle { opacity:1; }
+    .ls4-card-toggle:hover { background:rgba(239,68,68,.5); color:#fff; border-color:rgba(239,68,68,.4); }
+    .ls4-proc-card.ls4-collapsed { flex:none; height:26px; cursor:default; }
+    .ls4-proc-card.ls4-collapsed img { display:none; }
+    .ls4-proc-card.ls4-collapsed .ls4-proc-card-label { bottom:auto; top:50%; right:auto; left:10px; transform:translateY(-50%); color:var(--text-muted); opacity:.5; }
+    .ls4-proc-card.ls4-collapsed .ls4-card-toggle { opacity:1; top:50%; transform:translateY(-50%); background:rgba(34,197,94,.15); color:#4ade80; border-color:rgba(34,197,94,.3); font-size:10px; }
+    .ls4-proc-card.ls4-collapsed .ls4-card-toggle:hover { background:rgba(34,197,94,.35); color:#fff; }
+    .ls4-abbr-note { display:flex; gap:20px; padding:4px 0; border-top:1px solid var(--border); flex-shrink:0; }
+    .ls4-abbr-note span { font-size:10px; color:var(--text-muted); opacity:.6; }
+    .ls4-abbr-note strong { color:var(--text); font-weight:700; }
+    .ls4-badge { padding:3px 8px; border-radius:20px; font-size:10px; font-weight:700; letter-spacing:.04em; }
+    .ls4-badge-ls { background:rgba(232,113,26,.15); color:#E8711A; border:1px solid rgba(232,113,26,.3); }
+    .ls4-badge-op { background:rgba(99,179,237,.12); color:#63b3ed; border:1px solid rgba(99,179,237,.25); }
+    /* ── Mobile base ── */
+    .ls4 .slide-body { width:100%; align-items:center; }
+    .ls4 { padding: 52px 16px 80px !important; overflow-y:auto; }
+    /* Tab 1 — Capability Matrix */
+    .ls4-grid { grid-template-columns:1fr; height:auto; display:flex; flex-direction:column; }
+    /* Carousel below the table */
+    .ls4-grid .ls-carousel { order:1; min-height:260px !important; height:260px !important; flex:none; }
+    .ls4-table-wrap { overflow-x:auto; max-height:45vh; order:0; }
+    /* Vertical column headers so table fits on mobile */
+    .ls4-table th.ls4-prod-col .ls-col-label { writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap; padding:4px 2px; display:inline-block; }
+    .ls4-table { font-size:11px; }
+    .ls4-check-col { width:55%; }
+    .ls4-prod-col { width:auto; }
+    .ls4-table tbody tr td:first-child { position:sticky; left:0; z-index:1; background:var(--bg); }
+    .ls4-shaded td:first-child { background:#0d0d0d; }
+    /* Tab 2 — Where in Your Process */
+    .ls4-proc-grid { display:grid !important; grid-template-columns:1fr !important; height:auto !important; }
+    .ls4-proc-table { font-size:10px; }
+    .ls4-proc-table-wrap { overflow-x:auto; max-height:none; }
+    /* Vertical headers on proc table too */
+    .ls4-proc-table th.ls4-prod-col .ls-col-label { writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap; padding:4px 2px; display:inline-block; }
+    .ls4-proc-cards { flex-direction:column; overflow-y:visible; padding-bottom:16px; }
+    .ls4-proc-card { flex:none; height:220px; }
+    /* ── Desktop overrides ── */
+    @media(min-width:769px) {
+      .ls4 { padding: 52px 80px 0 !important; overflow-y:unset; }
+      .ls4-grid { grid-template-columns:1.4fr 1fr; height:100%; display:grid; flex-direction:unset; }
+      .ls4-grid .ls-carousel { order:0; min-height:0 !important; height:auto !important; flex:1; }
+      .ls4-table-wrap { overflow-x:unset; max-height:none; order:0; }
+      .ls4-table { font-size:inherit; }
+      .ls4-check-col { width:38%; }
+      .ls4-prod-col { width:12%; }
+      .ls4-table th.ls4-prod-col .ls-col-label { writing-mode:unset; transform:none; padding:0; }
+      .ls4-proc-table th.ls4-prod-col .ls-col-label { writing-mode:unset; transform:none; padding:0; }
+      .ls4-table tbody tr td:first-child { position:static; z-index:auto; background:transparent; }
+      .ls4-shaded td:first-child { background:transparent; }
+      .ls4-proc-grid { display:grid; grid-template-columns:1.4fr 1fr; height:100%; overflow-y:unset; }
+      .ls4-proc-table { font-size:inherit; }
+      .ls4-proc-table-wrap { overflow-x:unset; overflow-y:auto; max-height:none; }
+      .ls4-proc-table { min-width:unset; }
+      .ls4-proc-cards { flex-direction:column; overflow-y:auto; padding-bottom:72px; }
+      .ls4-proc-card { flex:1; height:auto; }
+    }
+  </style>
+
+  <script>
+  function ls4InitCards(container) { }
+  setTimeout(function() { document.querySelectorAll('.ls4-proc-cards').forEach(ls4InitCards); }, 0);
+  window.ls4OpenAutoModal = function(e) { e.stopPropagation(); var modal = document.getElementById('ls4-auto-modal'); if (modal && modal.parentNode !== document.body) document.body.appendChild(modal); if (modal) modal.classList.add('on'); };
+  window.ls4CloseAutoModal = function(e, force) { if (force || e.target === document.getElementById('ls4-auto-modal')) { document.getElementById('ls4-auto-modal').classList.remove('on'); } };
+  window.ls4MoveCard = function(btn, dir, e) { e.stopPropagation(); var card = btn.closest('.ls4-proc-card'); var list = card.parentElement; var cards = Array.from(list.children); var idx = cards.indexOf(card); var target = cards[idx + dir]; if (!target) return; if (dir === -1) list.insertBefore(card, target); else list.insertBefore(target, card); };
+  window.ls4ToggleCard = function(btn, e) { e.stopPropagation(); var card = btn.closest('.ls4-proc-card'); var collapsed = card.classList.toggle('ls4-collapsed'); btn.textContent = collapsed ? '+' : '✕'; btn.title = collapsed ? 'Show' : 'Hide'; };
+  </script>
+
+  <script>
+  (function () { var s = document.currentScript;
+    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
+  </script>
+</div>
+</div>
+<div class="fp-slide" data-slide-index="3" style="display:none;">
+<div class="slide content t5" data-slide="deck-technology">
+  <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
+
+  <div class="slide-layout">
+  <header class="slide-head">
+    <div class="section-label" data-edit="section-label">The Technology</div>
+    <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;">How LineScanner <span class="blue">sees what others miss</span></h1>
+  </header>
+  <div class="slide-body">
+  <div class="ls-tabs" data-edit="tabs" data-track="t5:tabs" style="flex:1;min-height:0;width:100%;max-width:920px;flex-direction:column-reverse;">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="ls-tab-list">
+  <button class="ls-tab active" data-panel="0" data-edit="tab-howitworks">How It Works</button>
+  <button class="ls-tab" data-panel="1" data-edit="tab-16bit">16-bit Advantage</button>
+  <button class="ls-tab" data-panel="2" data-edit="tab-vs">vs Camera Systems</button>
+<button class="ls-tab" data-panel="3">Extra</button></div>
+<div class="ls-tab-panels">
+<!-- ══ PANEL 0 · How It Works ══ -->
+<div class="ls-tab-panel active" data-panel="0">
+  <div class="t5-hiw">
+    <div class="t5-components anim-in" style="">
+      <div class="t5-comp-card"><span class="t5-num">1</span><span class="t5-comp-text" data-edit="comp-card-1"><strong>Telecentric light</strong> — uniform illumination independent of glass position</span></div>
+      <div class="t5-comp-card"><span class="t5-num">2</span><span class="t5-comp-text" data-edit="comp-card-2"><strong>Linear image sensor</strong> — real scanning line-by-line, not a snapshot camera</span></div>
+      <div class="t5-comp-card"><span class="t5-num">3</span><span class="t5-comp-text" data-edit="comp-card-3"><strong>Glass</strong> — inspected continuously at full production speed</span></div>
+      <div class="t5-comp-card"><span class="t5-num">4</span><span class="t5-comp-text" data-edit="comp-card-4"><strong>Electronic module</strong> — 16-bit processing at extreme speed</span></div>
+    </div>
+    <div class="t5-diagram t5-diagram-full anim-in" style="">
+      <div class="ls-carousel" data-counter="" data-edit="t5-diagram-howitworks" style="width:100%;height:100%;">
+        <div class="ls-carousel-track" style="transform:translateX(0px);">
+          <div class="ls-carousel-slide">
+            <img src="../shared/Image_Explaining_the_technology_1_Telecentric_light_2_linear_image_sensor_3_glass_4_electronic_module.png" alt="Scanner technology diagram" data-zoom="">
+          <div class="ls-carousel-caption">Scanner technology diagram</div></div>
+        </div>
+        
+      <div class="ls-carousel-counter"></div></div>
+    </div>
+  </div>
+</div>
+<!-- ══ PANEL 1 · 16-bit Advantage ══ -->
+<div class="ls-tab-panel" data-panel="1">
+  <div class="t5-hiw">
+    <div class="t5-diagram t5-diagram-full anim-in" style="">
+      <div class="ls-carousel" data-counter="" data-edit="t5-diagram-16bit" style="width:100%;height:100%;">
+        <div class="ls-carousel-track" style="transform:translateX(0px);">
+          <div class="ls-carousel-slide">
+            <img src="../shared/16_bit_tech.jpg" alt="8-bit vs 16-bit technology comparison" data-zoom="">
+          <div class="ls-carousel-caption">8-bit vs 16-bit technology comparison</div></div>
+        </div>
+        
+      <div class="ls-carousel-counter"></div></div>
+    </div>
+    <div class="t5-components anim-in" style="">
+      <div class="t5-comp-card"><span class="t5-fnum">1</span><span class="t5-comp-text" data-edit="feat-card-1"><strong>Low-contrast detection:</strong> Identifies defects 8-bit systems cannot see — subtle inclusions, coating variations, micro-scratches.</span></div>
+      <div class="t5-comp-card"><span class="t5-fnum">2</span><span class="t5-comp-text" data-edit="feat-card-2"><strong>Transmission homogenization:</strong> Glass from 15% to 99% processed with the same setup — identical results across all types.</span></div>
+      <div class="t5-comp-card"><span class="t5-fnum">3</span><span class="t5-comp-text" data-edit="feat-card-3"><strong>Every pixel is equal:</strong> No variation by position — always consistent, eliminating false positives and unnecessary rejections.</span></div>
+      <div class="t5-comp-card"><span class="t5-fnum">4</span><span class="t5-comp-text" data-edit="feat-card-4"><strong>Extreme processing speed:</strong> No compromise on throughput. Compatible with automotive and railway production rates.</span></div>
+    </div>
+  </div>
+</div>
+<!-- ══ PANEL 2 · vs Camera Systems ══ -->
+<div class="ls-tab-panel" data-panel="2">
+  <div class="t5-vc-wrap anim-in" style="">
+    <div class="t5-cmp-col t5-cmp-bad">
+      <div class="t5-cmp-header"><span class="t5-cmp-icon">📷</span><span data-edit="vc-header-bad">Camera-based Systems</span></div>
+      <ul class="t5-cmp-list" id="t5-vc-bad-list" data-edit="t5-vc-bad-list" data-ls-list="">
+<li><strong>Snapshot coverage:</strong> Takes periodic frames — gaps between shots mean defects between frames go undetected</li>
+<li><strong>Motion blur at speed:</strong> Fast production lines cause image blur, reducing detection accuracy</li>
+<li><strong>8-bit depth:</strong> Only 256 grey levels — low-contrast defects are invisible</li>
+<li><strong>Position-dependent illumination:</strong> Uneven lighting across the field of view distorts results</li>
+<li><strong>False positives &amp; rejects:</strong> Pixel variation by position triggers unnecessary alarms</li>
+<li><strong>Recalibration required:</strong> Sensitivity must be re-tuned for every glass type and transmission level</li>
+      </ul>
+      
+      
+    </div>
+    <div class="t5-vc-imgs">
+      <div class="t5-vc-card">
+        <div class="t5-diagram" style="flex:1;min-height:0;">
+          <div class="ls-carousel" data-counter="" data-no-caption="" data-edit="t5-diagram-drillhole" style="width:100%;height:100%;">
+            <div class="ls-carousel-track" style="transform:translateX(0px);">
+              <div class="ls-carousel-slide"><img src="../shared/Comparison_on_image_taken_by_Camera_Above_and_LineScanner_below_of_a_drillhole_.jpg" alt="Drill hole comparison" data-zoom=""></div>
+            </div>
+            
+          <div class="ls-carousel-counter"></div></div>
+        </div>
+        <div class="t5-vc-label" data-edit="vc-label-drillhole">Drill Hole, Camera vs LineScanner</div>
+      </div>
+      <div class="t5-vc-card">
+        <div class="t5-diagram" style="flex:1;min-height:0;">
+          <div class="ls-carousel" data-counter="" data-no-caption="" data-edit="t5-diagram-igunit" style="width:100%;height:100%;">
+            <div class="ls-carousel-track" style="transform:translateX(0px);">
+              <div class="ls-carousel-slide"><img src="../shared/Comparison_on_image_taken_by_Camera_Above_and_LineScanner_below_of_a_Ig_unit_.jpg" alt="IG unit comparison" data-zoom=""></div>
+            </div>
+            
+          <div class="ls-carousel-counter"></div></div>
+        </div>
+        <div class="t5-vc-label" data-edit="vc-label-igunit">IG Unit — Camera vs LineScanner</div>
+      </div>
+    </div>
+    <div class="t5-cmp-col t5-cmp-good">
+      <div class="t5-cmp-header"><span class="t5-cmp-icon">✓</span><span data-edit="vc-header-good">LineScanner</span></div>
+      <ul class="t5-cmp-list" id="t5-vc-good-list" data-edit="t5-vc-good-list" data-ls-list="">
+<li><strong>100% line-by-line scanning:</strong> Every millimetre of glass is inspected — zero gaps, zero blind spots</li>
+<li><strong>No motion blur:</strong> Linear sensor reads one line at a time, perfectly synchronised with production speed</li>
+<li><strong>16-bit depth:</strong> 65,536 grey levels — detects the subtlest inclusions, coating variations and micro-scratches</li>
+<li><strong>Telecentric illumination:</strong> Uniform light field independent of glass position — consistent results everywhere</li>
+<li><strong>Every pixel is equal:</strong> No positional variation — eliminates false positives and unnecessary rejections</li>
+<li><strong>One setup for all glass:</strong> 15% to 99% transmission handled automatically with the same configuration</li>
+      </ul>
+      
+      
+    </div>
+  </div>
+</div>
+<div class="ls-tab-panel" data-panel="3"><div class="ls-carousel" data-counter="" data-zoom-group="" style="flex:1;min-height:0;width:100%;">  <div class="ls-carousel-track" style="transform: translateX(0px);">      <div class="ls-carousel-slide"><img src="../shared/Slide42.jpg" alt="Slide42" data-zoom=""><div class="ls-carousel-caption">Slide42</div></div></div><div class="ls-carousel-counter"></div></div></div></div><!-- ls-tab-panels -->
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  </div>
+  </div><!-- slide-body -->
+  </div><!-- slide-layout -->
+
+  <style>
+    .t5 .slide-body { width: 100%; align-items: center; }
+    .t5 .ls-carousel { min-height: 260px !important; height: 260px !important; }
+    .t5 { padding: 52px 16px 80px !important; }
+    .t5 .ls-tabs { flex-direction: column-reverse; }
+    .t5 .ls-tab-list { margin-bottom: 0; margin-top: 10px; }
+    .t5-hiw { display:flex; flex-direction:column; gap:12px; height:100%; }
+    .t5-components { display:grid; grid-template-columns:1fr; gap:8px; flex-shrink:0; }
+    .t5-comp-card { display:flex; align-items:flex-start; gap:10px; padding:8px 12px; border-radius:10px; background:var(--bg-card); border:1px solid var(--border); }
+    .t5-diagram-full { flex:1; min-height:180px; }
+    .t5-num { width:20px; height:20px; border-radius:50%; flex-shrink:0; background:rgba(232,113,26,.2); border:1px solid rgba(232,113,26,.4); color:#E8711A; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+    .t5-fnum { width:24px; height:24px; border-radius:50%; flex-shrink:0; background:rgba(232,113,26,.2); border:1px solid rgba(232,113,26,.4); color:#E8711A; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+    .t5-comp-text { font-size:clamp(11px,1.1vw,13px); color:var(--text-muted); line-height:1.4; }
+    .t5-comp-text strong { color:var(--text); }
+    .t5-diagram { border:1px solid var(--border); border-radius:14px; overflow:hidden; cursor:zoom-in; background:#000; display:flex; align-items:center; justify-content:center; position:relative; min-height:0; transition:border-color .2s; }
+    .t5-diagram:hover { border-color:rgba(232,113,26,.4); }
+    .t5-diagram img { width:100%; height:100%; object-fit:contain; display:block; transition:transform .3s; }
+    .t5-diagram:hover img { transform:scale(1.03); }
+    .t5-vc-wrap { display:grid; grid-template-columns:1fr; gap:14px; height:auto; overflow-y:auto; }
+    .t5-cmp-col { display:flex; flex-direction:column; border-radius:14px; overflow:hidden; border:1px solid var(--border); }
+    .t5-cmp-header { display:flex; align-items:center; gap:10px; padding:12px 16px; flex-shrink:0; font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+    .t5-cmp-bad .t5-cmp-header { background:rgba(239,68,68,.12); border-bottom:1px solid rgba(239,68,68,.2); color:#f87171; }
+    .t5-cmp-good .t5-cmp-header { background:rgba(34,197,94,.10); border-bottom:1px solid rgba(34,197,94,.2); color:#4ade80; }
+    .t5-cmp-icon { font-size:15px; }
+    .t5-cmp-list { list-style:none; margin:0; padding:10px 16px 12px; display:flex; flex-direction:column; gap:0; overflow-y:auto; flex:1; }
+    .t5-cmp-list li { padding:7px 0 7px 20px; position:relative; font-size:clamp(11px,1.05vw,13px); line-height:1.4; color:var(--text-muted); border-bottom:1px solid rgba(255,255,255,.04); }
+    .t5-cmp-list li:last-child { border-bottom:none; }
+    .t5-cmp-list li strong { color:var(--text); }
+    .t5-cmp-bad .t5-cmp-list li::before { content:"✕"; position:absolute; left:0; top:8px; font-size:10px; font-weight:800; color:#f87171; }
+    .t5-cmp-good .t5-cmp-list li::before { content:"›"; position:absolute; left:2px; top:7px; font-size:14px; font-weight:800; color:#4ade80; }
+    .t5-vc-add-bad[data-ls-add]:hover { border-color:rgba(239,68,68,.4); color:#f87171; }
+    .t5-vc-add-good[data-ls-add]:hover { border-color:rgba(34,197,94,.4); color:#4ade80; }
+    .t5-vc-imgs { display:flex; flex-direction:column; gap:10px; min-height:0; overflow:hidden; }
+    .t5-vc-card { flex:1; min-height:180px; display:flex; flex-direction:column; gap:0; border-radius:12px; border:1px solid var(--border); background:var(--bg-card); overflow:hidden; position:relative; }
+    .t5-vc-label { padding:5px 10px; font-size:10px; font-weight:600; letter-spacing:.04em; color:var(--text-muted); text-align:center; flex-shrink:0; border-top:1px solid var(--border); }
+    @media(min-width:769px) and (max-width:1024px) {
+      .t5 .ls-carousel { min-height: 0 !important; height: 100% !important; }
+      .t5 { padding: 52px 80px 0 !important; }
+      .t5-vc-wrap { grid-template-columns:1fr 1fr; height:100%; overflow-y:unset; }
+    }
+    @media(min-width:1025px) {
+      .t5 .ls-carousel { min-height: 0 !important; height: 100% !important; }
+      .t5 { padding: 52px 80px 0 !important; }
+      .t5-components { grid-template-columns:1fr 1fr; }
+      .t5-vc-wrap { grid-template-columns:1fr 1fr 1fr; height:100%; overflow-y:unset; }
+    }
+  </style>
+
+  <script>
+  setTimeout(function() {
+    window.t5VcHide = function(key) {
+      var card = document.getElementById("t5-vc-" + key);
+      if (card) card.style.display = "none";
+    };
+  }, 0);
+  </script>
+
+  <script>
+  (function () { var s = document.currentScript;
+    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
+  </script>
+</div>
+</div>
+<div class="fp-slide" data-slide-index="4" style="display:none;">
+<div class="slide content s6" data-slide="deck-surface">
+  <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
+
+  <div class="slide-layout">
+  <header class="slide-head">
+    <div class="section-label" data-edit="section-label">Surface Quality</div>
+    <h1 class="slide-title" data-edit="headline" style="margin-bottom:8px;">Defect detection with <span class="blue">Artificial Intelligence</span></h1>
+    <p class="slide-subtitle" data-edit="subtitle" style="margin-bottom:14px;">Neural network trained to automatically classify every defect type.</p>
+  </header>
+  <div class="slide-body">
+
+  <!-- ── Defect type selector (acts as tabs) ── -->
+  <div class="s6-selector anim-in" id="s6-selector"></div>
+
+  <!-- ── Default carousel (shown when no defect is selected) ── -->
+  <div class="ls-carousel s6-car-wrap" id="s6CarWrap" data-counter="" data-edit="s6-default-carousel" data-track="s6:carousel:default" data-autoplay="5000" data-zoom-group="" style="flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+<div class="ls-carousel-track" style="transform: translateX(0px);">
+  <div class="ls-carousel-slide"><img src="../shared/Details_Surface-Quality-Control.jpg" alt="Details_Surface Quality Control" data-zoom=""></div>
+</div>
+  </div>
+
+  <!-- ── Scratches ── -->
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-scratches" data-counter="" data-edit="s6-defect-scratches" data-track="s6:carousel:scratches" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+<div class="ls-carousel-track" style="transform: translateX(0px);">
+  <div class="ls-carousel-slide ls-compare ls-split" data-compare-mode="split"><img src="http://localhost:3000/slides/uploads/Defect%20of%20a%20Coating%20Camera%20image%202.png" alt="Camera" data-zoom="" class="ls-cmp-left"><img src="../shared/Defect-of-a-Coating-image-LineScanner-Raw-Image.png" alt="Defect of a Coating image LineScanner Raw Image" class="ls-cmp-right" data-zoom=""></div>
+  <div class="ls-carousel-slide ls-compare ls-split" data-compare-mode="split"><img class="ls-cmp-left" src="../shared/Defect_of_a_Coating_Camera_image.png" alt="Camera" data-zoom=""><img class="ls-cmp-right" src="../shared/Defect_of_a_Coating_image_LineScanner_Raw_Image.png" alt="LineScanner" data-zoom=""></div>
+</div>
+  </div>
+
+  <!-- ── Inclusions ── -->
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-inclusions" data-counter="" data-edit="s6-defect-inclusions" data-track="s6:carousel:inclusions" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;" data-autoplay="15000">
+<div class="ls-carousel-track" style="transform: translateX(-2880px);">
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Inclusion.bmp" alt="Defect Piece Inclusion" data-zoom=""></div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Inclusion-Screenshot-2.jpg" alt="Defect Piece Inclusion Screenshot 2" data-zoom=""></div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Inclusion-Screenshot-2.png" alt="Defect Piece Inclusion Screenshot 2" data-zoom=""></div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Inclusion-Screenshot.png" alt="Defect Piece Inclusion Screenshot" data-zoom=""></div>
+</div>
+  </div>
+
+  <!-- ── Dirt ── -->
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-dirt" data-counter="" data-edit="s6-defect-dirt" data-track="s6:carousel:dirt" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+<div class="ls-carousel-track" style="transform: translateX(-960px);">
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Dirt-Screenshot.png" alt="Defect Piece Dirt Screenshot" data-zoom=""></div>
+  <div class="ls-carousel-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects" data-zoom=""></div>
+</div>
+  </div>
+
+  <!-- ── Dust ── -->
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-dust" data-counter="" data-edit="s6-defect-dust" data-track="s6:carousel:dust" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+<div class="ls-carousel-track"></div>
+  </div>
+
+  <!-- ── Water ── -->
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-water" data-counter="" data-edit="s6-defect-water" data-track="s6:carousel:water" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+<div class="ls-carousel-track" style="transform: translateX(0px);">
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Water-Drops-Screenshot.png" alt="Defect Piece Water Drops Screenshot" data-zoom=""></div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Water-Drops.png" alt="Defect Piece Water Drops" data-zoom=""></div>
+</div>
+  </div>
+
+  <!-- ── Fingerprints ── -->
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-fingerprints" data-counter="" data-edit="s6-defect-fingerprints" data-track="s6:carousel:fingerprints" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+<div class="ls-carousel-track" style="transform: translateX(0px);">
+  <div class="ls-carousel-slide">
+    <img src="../shared/Defect_of_a_Finger_prints_LineScanner_Raw_Image.png" alt="RAW scan — fingerprint defect" data-zoom="">
+  </div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Finger-Print.bmp" alt="Defect Piece Finger Print" data-zoom=""></div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Finger-Print-2.bmp" alt="Defect Piece Finger Print 2" data-zoom=""></div>
+</div>
+  </div>
+
+  <!-- ── Ignore ── -->
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-ignore" data-counter="" data-edit="s6-defect-ignore" data-track="s6:carousel:ignore" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+<div class="ls-carousel-track"></div>
+  </div>
+
+  <!-- ── Edge defects ── -->
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-edge-defects" data-counter="" data-edit="s6-defect-edge-defects" data-track="s6:carousel:edge-defects" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+<div class="ls-carousel-track" style="transform: translateX(0px);">
+  <div class="ls-carousel-slide">
+    <img src="../shared/Defect_of_micro_edge_chips_on_a_cutout_detction_marks.png" alt="Micro edge chips — cutout detection marks" data-zoom="">
+  </div>
+  <div class="ls-carousel-slide">
+    <img src="../shared/image52.png" alt="Edge defect" data-zoom="">
+  </div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-3.PNG" alt="Defect Piece Edge Chip 3" data-zoom=""></div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-2.PNG" alt="Defect Piece Edge Chip 2" data-zoom=""></div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-4.PNG" alt="Defect Piece Edge Chip 4" data-zoom=""></div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-Screenshot--1-.jpg" alt="Defect Piece Edge Chip Screenshot (1)" data-zoom=""></div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-Screenshot--2-.jpg" alt="Defect Piece Edge Chip Screenshot (2)" data-zoom=""></div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-Screenshot--3-.jpg" alt="Defect Piece Edge Chip Screenshot (3)" data-zoom=""></div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-Screenshot--4-.jpg" alt="Defect Piece Edge Chip Screenshot (4)" data-zoom=""></div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-Screenshot--6-.jpg" alt="Defect Piece Edge Chip Screenshot (6)" data-zoom=""></div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-Screenshot--7-.jpg" alt="Defect Piece Edge Chip Screenshot (7)" data-zoom=""></div>
+</div>
+  </div>
+
+  <!-- ── Frame & bars ── -->
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-frame-bars" data-counter="" data-edit="s6-defect-frame-bars" data-track="s6:carousel:frame-bars" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+<div class="ls-carousel-track" style="transform: translateX(0px);">
+  <div class="ls-carousel-slide">
+    <img src="../shared/Defect_on_an_IGU_Insulated_Glass_Secondary_Seal_inside_the_unit.jpeg" alt="Sightline defect — IGU secondary seal" data-zoom="">
+  </div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-IG-Frame---Bars.jpg" alt="Defect Piece IG Frame &amp; Bars" data-zoom=""></div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-IG-Frame---Bars-2.PNG" alt="Defect Piece IG Frame &amp; Bars 2" data-zoom=""></div>
+</div>
+  </div>
+
+  <!-- ── Undefined ── -->
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-undefined" data-counter="" data-edit="s6-defect-undefined" data-track="s6:carousel:undefined" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+<div class="ls-carousel-track">
+  <div class="ls-carousel-slide">
+    <img src="../shared/Defect_Arcing_on_LineScanner_Raw_Image.png" alt="RAW scan — arcing defect" data-zoom="">
+  </div>
+</div>
+  </div>
+
+  <!-- ── Coating ── -->
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-coating" data-counter="" data-edit="s6-defect-coating" data-track="s6:carousel:coating" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+<div class="ls-carousel-track" style="transform: translateX(0px);">
+  <div class="ls-carousel-slide ls-compare ls-split" data-compare-mode="split">
+    <img class="ls-cmp-left" src="../shared/Defect_of_a_Coating_2_Camera_image.png" alt="Camera" data-zoom="">
+    <img class="ls-cmp-right" src="../shared/Defect_of_a_Coating_2_Camera_image_LineScanner_Raw_Image.png" alt="LineScanner" data-zoom="">
+  </div>
+</div>
+  </div>
+
+  </div><!-- slide-body -->
+  </div><!-- slide-layout -->
+
+  <!-- ── Scoped Styles ── -->
+  <style>
+    .s6 {  }
+
+    /* ── Selector strip ── */
+    .s6-selector {
+      display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+      width: 100%; max-width: 960px; flex-shrink: 0;
+    }
+    .s6-defect-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+      padding: 8px 10px; border-radius: 12px; cursor: pointer;
+      background: var(--bg-card); border: 1px solid var(--border);
+      transition: all .2s; min-width: 76px; font-family: inherit;
+    }
+    .s6-defect-btn:hover { border-color: rgba(232,113,26,.4); background: var(--bg-card-hover); }
+    .s6-defect-btn.active {
+      border-color: #E8711A; background: rgba(232,113,26,.12);
+      box-shadow: 0 0 0 1px rgba(232,113,26,.25);
+    }
+    .s6-defect-btn span {
+      font-size: 10px; font-weight: 600; letter-spacing: .03em;
+      color: var(--text-muted); white-space: nowrap; transition: color .2s;
+    }
+    .s6-defect-btn.active span { color: #E8711A; }
+
+    /* ── Sprite icon ── */
+    .s6-icon {
+      width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
+      background-image: url('/slides/uploads/Defect Icons from top to buttom Scratches-Inclusions-dirt-dust-water-fingerprints-ignore-edge defects-dirt on fram and bars-undefined.png');
+      background-size: 200% 1000%; background-repeat: no-repeat;
+      transition: background-position .15s;
+    }
+    .s6-emoji-icon {
+      width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 900; color: #000;
+      background: #F5D800; border: none; transition: background .15s;
+    }
+    .s6-defect-btn.active .s6-emoji-icon { background: #D42B2B; }
+
+    /* ── Mobile base ── */
+    .s6 .slide-body { width: 100%; align-items: center; }
+    .s6 .ls-carousel { min-height: 260px !important; height: 260px !important; }
+    .s6-defect-btn { min-width:60px; padding:6px; }
+    .s6-defect-btn span { font-size:11px; }
+    .s6 { padding: 52px 16px 80px !important; }
+
+    /* ── Desktop overrides ── */
+    @media(min-width:769px) {
+      .s6 .ls-carousel { min-height: 0 !important; height: 100% !important; }
+      .s6-defect-btn { min-width:76px; padding:8px 10px; }
+      .s6-defect-btn span { font-size:10px; }
+      .s6 { padding: 52px 80px 0 !important; }
+    }
+  </style>
+
+  <!-- ── Scoped Script ── -->
+  <script>
+  (function () {
+
+    var DEFECTS = [
+      { name: 'Scratches',    row: 0, carId: 's6-car-scratches'    },
+      { name: 'Inclusions',   row: 1, carId: 's6-car-inclusions'   },
+      { name: 'Dirt',         row: 2, carId: 's6-car-dirt'         },
+      { name: 'Dust',         row: 3, carId: 's6-car-dust'         },
+      { name: 'Water',        row: 4, carId: 's6-car-water'        },
+      { name: 'Fingerprints', row: 5, carId: 's6-car-fingerprints' },
+      { name: 'Ignore',       row: 6, carId: 's6-car-ignore'       },
+      { name: 'Edge defects', row: 7, carId: 's6-car-edge-defects' },
+      { name: 'Frame & bars', row: 8, carId: 's6-car-frame-bars'   },
+      { name: 'Undefined',    row: 9, carId: 's6-car-undefined'    },
+      { name: 'Coating',   icon: '◈', carId: 's6-car-coating'      }
+    ];
+
+    var currentDefect = -1;
+    var selector = document.getElementById('s6-selector');
+    var carWrap  = document.getElementById('s6CarWrap');
+
+    function setIconPos(icon, row, active) {
+      icon.style.backgroundPosition = (active ? '100%' : '0%') + ' ' + (row / 9 * 100).toFixed(2) + '%';
+    }
+
+    function updateBtns() {
+      selector.querySelectorAll('.s6-defect-btn').forEach(function (btn, i) {
+        var active = i === currentDefect;
+        btn.classList.toggle('active', active);
+        var spriteIcon = btn.querySelector('.s6-icon');
+        if (spriteIcon) setIconPos(spriteIcon, DEFECTS[i].row, active);
+      });
+    }
+
+    function showDefault() {
+      if (currentDefect >= 0) document.getElementById(DEFECTS[currentDefect].carId).style.display = 'none';
+      currentDefect = -1;
+      carWrap.style.display = '';
+      if (window.Carousel) Carousel.init(carWrap);
+      if (window.Lightbox) Lightbox.init(carWrap);
+      updateBtns();
+    }
+
+    function showDefect(idx) {
+      if (currentDefect === idx) { showDefault(); return; }
+      if (currentDefect >= 0) document.getElementById(DEFECTS[currentDefect].carId).style.display = 'none';
+      currentDefect = idx;
+      carWrap.style.display = 'none';
+      var car = document.getElementById(DEFECTS[idx].carId);
+      car.style.display = '';
+      if (car._lsGoTo) car._lsGoTo(0);
+      if (window.Carousel) Carousel.init(car);
+      if (window.Lightbox)  Lightbox.init(car);
+      updateBtns();
+    }
+
+    DEFECTS.forEach(function (d, i) {
+      var btn = document.createElement('button');
+      btn.className = 's6-defect-btn';
+      if (d.icon) {
+        var emojiEl = document.createElement('div');
+        emojiEl.className = 's6-emoji-icon';
+        emojiEl.textContent = d.icon;
+        btn.appendChild(emojiEl);
+      } else {
+        var icon = document.createElement('div');
+        icon.className = 's6-icon';
+        setIconPos(icon, d.row, false);
+        btn.appendChild(icon);
+      }
+      var label = document.createElement('span');
+      label.textContent = d.name;
+      btn.appendChild(label);
+      btn.addEventListener('click', function () { showDefect(i); });
+      selector.appendChild(btn);
+    });
+
+    showDefault();
+
+  })();
+  </script>
+
+  <script>
+  (function () { var s = document.currentScript;
+    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
+  </script>
+</div>
+</div>
+<div class="fp-slide" data-slide-index="5" style="display:none;">
 <div class="slide content ls7" data-slide="deck-dimension">
   <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
 
@@ -824,7 +1843,541 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   </script>
 </div>
 </div>
-<div class="fp-slide" data-slide-index="2" style="display:none;">
+<div class="fp-slide" data-slide-index="6" style="display:none;">
+<div class="slide content ls8" data-slide="deck-screenprint">
+  <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
+
+  <div class="slide-layout">
+  <header class="slide-head">
+    <div class="section-label" data-edit="section-label">Screen Printing.</div>
+    <h1 class="slide-title" data-edit="headline" style="margin-bottom:8px;">Automatic quality control for.&nbsp;<span class="blue">screen-printed glass.</span></h1>
+    <p class="slide-subtitle" data-edit="subtitle" style="margin-bottom:16px;">The quality inspection of logos and screen printing is now standard — fully automated, 100% of the time..</p>
+  </header>
+  <div class="slide-body">
+  <div class="ls8-layout">
+
+    <div class="col-card">
+      <div class="col-label" data-edit="col-label">What LineScanner checks.</div>
+      <div class="col-list">
+        <div class="col-item" data-edit="col-item-1"><strong>Correct position</strong> of screen printing</div>
+        <div class="col-item" data-edit="col-item-2"><strong>Missing parts</strong> within a logo</div>
+        <div class="col-item" data-edit="col-item-3"><strong>Print thickness</strong> consistency</div>
+        <div class="col-item" data-edit="col-item-4"><strong>Detail errors</strong> in graphics.</div>
+        <div class="col-item" data-edit="col-item-5"><strong>Screen printing errors</strong> &amp; defects</div>
+        <div class="col-item" data-edit="col-item-6"><strong>Logo position &amp; rotation</strong></div>
+      </div>
+    </div>
+
+    <div class="ls-carousel anim-in" data-edit="carousel" data-counter="" data-track="ls8:carousel" data-zoom-group="" style="width:100%;flex:1;min-height:0;">
+<div class="ls-carousel-track" style="transform: translateX(0px);">
+    <div class="ls-carousel-slide">
+      <img src="../shared/Slide35.jpg" alt="Slide35" data-zoom="">
+    </div><div class="ls-carousel-slide">
+      <img src="../shared/image82.png" alt="Pinhole detection on printed glass" data-zoom="" data-track="ls8:zoom:pinhole-detection">
+    </div>
+    <div class="ls-carousel-slide">
+      <img src="../shared/image83.png" alt="Logo position check" data-zoom="" data-track="ls8:zoom:logo-position-check">
+    </div>
+  </div>
+    </div>
+
+  </div>
+  </div><!-- slide-body -->
+  </div><!-- slide-layout -->
+
+  <style>
+    .ls8 { }
+    .ls8 .slide-body { width: 100%; align-items: center; }
+
+    /* Mobile: stack vertically, carousel gets a fixed height */
+    .ls8-layout {
+      display: flex; flex-direction: column;
+      gap: 20px;
+      width: 100%; max-width: 960px;
+      margin-top: 4px;
+    }
+    .ls8-layout .col-card { flex-shrink: 0; }
+    .ls8-layout .col-item { white-space: normal; }
+    .ls8 { padding: 52px 16px 80px !important; }
+    .ls8-layout .ls-carousel { min-height: 260px !important; height: 260px !important; }
+
+    /* Desktop: side by side, carousel fills remaining space */
+    @media (min-width: 769px) {
+      .ls8-layout { flex-direction: row; flex: 1; min-height: 0; align-items: stretch; }
+      .ls8-layout .col-item { white-space: nowrap; }
+      .ls8 { padding: 52px 80px 0 !important; }
+      .ls8-layout .ls-carousel { flex: 1 !important; width: auto !important; min-height: 0; height: 100% !important; }
+    }
+  </style>
+
+  <script>
+  (function () { var s = document.currentScript;
+    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
+  </script>
+</div>
+</div>
+<div class="fp-slide" data-slide-index="7" style="display:none;">
+<div class="slide content ls9" data-slide="deck-logo-check">
+  <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
+
+  <div class="slide-layout">
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label">Screen Printing &amp; Logo</div>
+      <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;">Position and <span class="blue">print quality control</span></h1>
+    </header>
+
+    <div class="slide-body">
+      <!-- ── Carousel ── -->
+      <div class="ls-carousel anim-in" id="ls9-carousel" data-edit="carousel" data-counter="" data-track="ls9:carousel" data-zoom-group="" style="flex:1;min-height:0;width:100%;max-width:860px;">
+<div class="ls-carousel-track" style="transform: translateX(0px);">
+    <div class="ls-carousel-slide">
+      <img src="../shared/image89.png" alt="Screen printing overview" data-zoom="" data-track="ls9:zoom:overview">
+    </div>
+    <div class="ls-carousel-slide">
+      <img src="../shared/image90.png" alt="Distortion" data-zoom="" data-track="ls9:zoom:distortion">
+    </div>
+    <div class="ls-carousel-slide">
+      <img src="../shared/image91.png" alt="Rotation" data-zoom="" data-track="ls9:zoom:rotation">
+    </div>
+    <div class="ls-carousel-slide">
+      <img src="../shared/image92.png" alt="Out of position" data-zoom="" data-track="ls9:zoom:out-of-position">
+    </div>
+    <div class="ls-carousel-slide">
+      <img src="../shared/image96.png" alt="Filled items" data-zoom="" data-track="ls9:zoom:filled-items">
+    </div>
+  </div>
+      </div>
+
+      <!-- ── Tags — always above nav ── -->
+      <div class="ls9-info anim-in" style="">
+        <div class="tag-grid" style="justify-content:center;">
+          <span class="tag error" data-edit="tag-1">❌ Missing print</span>
+          <span class="tag error ls9-tag" data-img="1" data-edit="tag-2">📐 Distortion</span>
+          <span class="tag warn" data-edit="tag-3">💡 Shiny ink</span>
+          <span class="tag warn ls9-tag" data-img="2" data-edit="tag-4">🔄 Rotation</span>
+          <span class="tag error ls9-tag" data-img="3" data-edit="tag-5">📍 Out of position</span>
+          <span class="tag ls9-tag" data-img="4" data-edit="tag-6">⬛ "Filled" items</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Scoped Styles ── -->
+  <style>
+    .ls9 { }
+    .ls9 .slide-body { width: 100%; align-items: center; }
+    .ls9 .ls-carousel { min-height: 260px !important; height: 260px !important; }
+    .ls9 { padding: 52px 16px 80px !important; }
+
+    @media (min-width: 769px) {
+      .ls9 .ls-carousel { min-height: 0 !important; height: 100% !important; }
+      .ls9 { padding: 52px 80px 0 !important; }
+    }
+
+    /* ── Tags strip ── */
+    .ls9-info {
+      flex-shrink: 0;
+      width: 100%; max-width: 860px;
+      margin-top: 10px;
+    }
+
+    /* ── Clickable tags ── */
+    .ls9-tag { cursor: pointer; transition: all .2s; }
+    .ls9-tag:hover { outline: 1px solid rgba(232,113,26,.5); }
+    .ls9-tag.active { outline: 2px solid #E8711A; opacity: 1 !important; }
+  </style>
+
+  <!-- ── Scoped Script ── -->
+  <script>
+  // Tag click → navigate carousel to matching image index
+  setTimeout(function () {
+    var carousel = document.getElementById('ls9-carousel');
+    document.querySelectorAll('.ls9-tag').forEach(function (tag) {
+      tag.addEventListener('click', function () {
+        var targetIdx = parseInt(tag.getAttribute('data-img'));
+        if (carousel && !isNaN(targetIdx)) {
+          var track = carousel.querySelector('.ls-carousel-track');
+          var slides = Array.from(carousel.querySelectorAll('.ls-carousel-slide'));
+          if (track && slides.length > targetIdx) {
+            var currentIdx = Math.round(parseFloat(track.style.transform.replace('translateX(','')) / -carousel.offsetWidth) || 0;
+            var delta = targetIdx - currentIdx;
+            var btn = delta > 0 ? carousel.querySelector('.ls-carousel-next') : carousel.querySelector('.ls-carousel-prev');
+            for (var i = 0; i < Math.abs(delta); i++) { if (btn) btn.click(); }
+          }
+        }
+        if (window.Track) Track.click('ls9', tag.textContent.trim().toLowerCase().replace(/\s+/g,'-'));
+      });
+    });
+  }, 100);
+
+  </script>
+
+  <script>
+  (function () { var s = document.currentScript;
+    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
+  </script>
+</div>
+</div>
+<div class="fp-slide" data-slide-index="8" style="display:none;">
+<div class="slide content ls10" data-slide="deck-database">
+  <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
+
+  <div class="slide-layout">
+  <header class="slide-head">
+  <div class="section-label" data-edit="section-label">Traceability &amp; Management</div>
+  <h1 class="slide-title" data-edit="headline" style="margin-bottom:10px;">Decisions based on <span class="blue">real data.</span></h1>
+  </header>
+
+  <div class="slide-body">
+
+  <div class="ls-tabs" data-edit="tabs" data-track="ls10:tabs" style="flex:1;min-height:0;width:100%;max-width:860px;">
+
+
+
+
+
+
+
+    <div class="ls-tab-list">
+      <button class="ls-tab active" data-panel="0" data-edit="tab-archive">Archive</button>
+      <button class="ls-tab" data-panel="1" data-edit="tab-console">Management Console</button>
+    </div>
+    <div class="ls-tab-panels">
+
+      <!-- Panel 0: Archive -->
+      <div class="ls-tab-panel active" data-panel="0">
+        <div class="ls-carousel anim-in" data-counter="" data-edit="archive-carousel" data-track="ls10:carousel:archive" data-zoom-group="" style="flex: 1 1 0%; min-height: 0px; width: 100%;">
+          <div class="ls-carousel-track" style="transform: translateX(0px);">
+            
+          <div class="ls-carousel-slide"><img src="../shared/Slide90.jpg" alt="Slide90" data-zoom=""><div class="ls-carousel-caption">Slide90</div></div><div class="ls-carousel-slide"><img src="../shared/Slide88.jpg" alt="Slide88" data-zoom=""><div class="ls-carousel-caption">Slide88</div></div><div class="ls-carousel-slide"><img src="../shared/Slide87.jpg" alt="Slide87" data-zoom=""><div class="ls-carousel-caption">Slide87</div></div><div class="ls-carousel-slide"><img src="../shared/Slide89.jpg" alt="Slide89" data-zoom=""><div class="ls-carousel-caption">Slide89</div></div></div>
+        <div class="ls-carousel-counter">1 / 4</div></div>
+        <div class="ls10-cards" data-ls-list="archive-cards">
+          <div class="col-card">
+            <div class="col-list">
+              <div class="col-item" data-edit="archive-item-1"><strong>Full history</strong> — every inspected piece stored and searchable</div>
+              <div class="col-item" data-edit="archive-item-2"><strong>Filter by date, line, or defect type</strong> — instant results</div>
+            </div>
+          </div>
+          <div class="col-card">
+            <div class="col-list">
+              <div class="col-item" data-edit="archive-item-3"><strong>Export reports</strong> — PDF or CSV for quality audits</div>
+              <div class="col-item" data-edit="archive-item-4"><strong>Image playback</strong> — review original scan images at any time</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 1: Management Console -->
+      <div class="ls-tab-panel" data-panel="1">
+        <div class="ls-carousel anim-in" data-counter="" data-edit="carousel-console" data-track="ls10:carousel:console" data-zoom-group="" style="flex: 1 1 0%; min-height: 0px; width: 100%;">
+          <div class="ls-carousel-track" style="transform: translateX(0px);">
+            <div class="ls-carousel-slide">
+              <img src="../shared/image108.png" alt="Management Console — production dashboard" data-zoom="" data-track="ls10:zoom:console-dashboard" data-zoom-init="1">
+            <div class="ls-carousel-caption">Management Console — production dashboard</div></div>
+            <div class="ls-carousel-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects" data-zoom=""><div class="ls-carousel-caption">CostOfQualityDefects</div></div>
+          </div>
+        <div class="ls-carousel-counter">1 / 2</div></div>
+        <div class="ls10-cards">
+          <div class="col-card">
+            <div class="col-list">
+              <div class="col-item" data-edit="console-item-1"><strong>Live View</strong> — real-time production monitoring</div>
+              <div class="col-item" data-edit="console-item-2"><strong>Alerts</strong> — by quantity, good/bad ratio, flexible periods</div>
+            </div>
+          </div>
+          <div class="col-card">
+            <div class="col-list">
+              <div class="col-item" data-edit="console-item-3"><strong>Multiple recipients</strong> per alert rule</div>
+              <div class="col-item" data-edit="console-item-4"><strong>Central settings</strong> — manage all LineScanner units from one place</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  
+  
+  
+  
+  
+  
+  
+  </div>
+
+  </div><!-- /.slide-body -->
+  </div><!-- /.slide-layout -->
+
+  <!-- Scoped Styles -->
+  <style>
+    .ls10 { }
+    .ls10 .slide-body { width: 100%; align-items: center; }
+    .ls10 .ls-carousel { min-height: 260px !important; height: 260px !important; }
+
+    /* Feature cards — mobile base (single column) */
+    .ls10 { padding: 52px 16px 80px !important; }
+    .ls10-cards {
+      flex-shrink: 0;
+      display: grid; grid-template-columns: 1fr; gap: 14px;
+      width: 100%; max-width: 860px;
+      margin-top: 12px;
+    }
+
+    /* Desktop overrides */
+    @media (min-width: 769px) {
+      .ls10 .ls-carousel { min-height: 0 !important; height: 100% !important; }
+      .ls10 { padding: 52px 80px 0 !important; }
+      .ls10-cards { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+
+  <script>
+  (function () { var s = document.currentScript;
+    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
+  </script>
+</div>
+</div>
+<div class="fp-slide" data-slide-index="9" style="display:none;">
+<div class="slide content ls11" data-slide="deck-sensitivity">
+  <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
+
+  <div class="slide-layout">
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label">Sensitivity Adjustment</div>
+      <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;">Fully automatic <span class="blue">sensitivity adjustment</span></h1>
+    </header>
+
+    <div class="slide-body">
+      <div class="ls-carousel anim-in" data-edit="carousel" data-counter="" data-track="ls11:carousel" data-zoom-group="" style="flex:1;min-height:0;width:100%;max-width:860px;">
+<div class="ls-carousel-track" style="transform: translateX(-2580px);">
+  <div class="ls-carousel-slide">
+    <img src="../shared/Slide62.jpg" alt="Quality &amp; Sensitivity Selection Options — auto recipe" data-zoom="" data-track="ls11:zoom:auto-recipe">
+  </div>
+  <div class="ls-carousel-slide">
+    <img src="../shared/Slide63.jpg" alt="Sensitivity zones — Border, Outer, Main, Special (DXF)" data-zoom="" data-track="ls11:zoom:sensitivity-zones">
+  </div>
+  <div class="ls-carousel-slide">
+    <img src="../shared/Slide64.jpg" alt="Fully automatic sensitivity adjustment — AI categorization" data-zoom="" data-track="ls11:zoom:ai-categorization">
+  </div>
+  <div class="ls-carousel-slide">
+    <img src="../shared/Slide65.jpg" alt="Sensitivity Control UI — as easy as a smart-phone" data-zoom="" data-track="ls11:zoom:control-ui">
+  </div>
+  
+</div>
+      </div>
+
+      <div class="ls11-steps-wrap anim-in">
+        <div class="ls11-steps-label" data-edit="steps-label">Automatic Quality Recipe Selection</div>
+        <div class="ls11-steps">
+          <div class="ls11-step">
+            <div class="ls11-num">1</div>
+            <div data-edit="step-1">Receives glass info via interface <span class="ls11-muted">(transfer file, PLC…)</span></div>
+          </div>
+          <div class="ls11-step">
+            <div class="ls11-num">2</div>
+            <div data-edit="step-2">Logo detected → selects <strong>Tempered Glass</strong> sensitivity</div>
+          </div>
+          <div class="ls11-step">
+            <div class="ls11-num">3</div>
+            <div data-edit="step-3">GSS sensor detects laminated lite → <strong>Laminated Glass</strong> settings</div>
+          </div>
+          <div class="ls11-step">
+            <div class="ls11-num">4</div>
+            <div data-edit="step-4">Coating detected → <strong>Coated Glass</strong> sensitivity setting</div>
+          </div>
+          <div class="ls11-step">
+            <div class="ls11-num">5</div>
+            <div data-edit="step-5">Any other case → <strong>Default</strong> quality &amp; sensitivity settings</div>
+          </div>
+        </div>
+        <div class="ls11-tagline" data-edit="tagline">LineScanner — as easy as a smart-phone</div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .ls11 { }
+
+    /* ── Steps ── */
+    .ls11-steps-wrap {
+      flex-shrink: 0;
+      width: 100%; max-width: 860px;
+      margin-top: 10px;
+    }
+    .ls11-steps-label {
+      font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      color: var(--text-muted); padding-left: 2px;
+    }
+    .ls11-steps { display: flex; flex-direction: column; gap: 5px; }
+    .ls11-step {
+      display: flex; align-items: center; gap: 10px;
+      padding: 7px 12px; border-radius: 8px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      font-size: 12px; color: var(--text); line-height: 1.4;
+    }
+    .ls11-num {
+      width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+      border: 1px solid rgba(232,113,26,.5); color: #E8711A;
+      font-size: 10px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ls11-muted { color: var(--text-muted); }
+    .ls11-tagline {
+      font-size: 12px; font-style: italic; color: var(--text-muted);
+      letter-spacing: .03em; padding-left: 2px; margin-top: 4px;
+    }
+    /* ── Mobile base ── */
+    .ls11 .slide-body { width: 100%; align-items: center; }
+    .ls11 .ls-carousel { min-height: 260px !important; height: 260px !important; }
+    .ls11 { padding: 52px 16px 80px !important; }
+
+    /* ── Desktop overrides ── */
+    @media(min-width:769px) {
+      .ls11 .ls-carousel { min-height: 0 !important; height: 100% !important; }
+      .ls11 { padding: 52px 80px 0 !important; }
+    }
+  </style>
+
+  <script>
+  (function () { var s = document.currentScript;
+    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
+  </script>
+</div>
+</div>
+<div class="fp-slide" data-slide-index="10" style="display:none;">
+<div class="slide content ls12" data-slide="deck-footprint">
+  <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
+  <div class="slide-layout">
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label">Installation</div>
+      <h1 class="slide-title" data-edit="headline">Modular based — <span class="blue">minimum footprint</span></h1>
+      <p class="slide-subtitle" data-edit="subtitle" style="margin-bottom:12px; margin-top:-6px;">unique · worldwide</p>
+    </header>
+    <div class="slide-body">
+      <div class="ls12-diagram-wrap anim-in">
+        <div class="ls-carousel" data-counter="" data-edit="footprint-diagram" data-track="ls12:carousel:footprint" style="width:100%;flex:1;min-height:0;">
+<div class="ls-carousel-track" style="transform: translateX(0px);">
+    <div class="ls-carousel-slide">
+      <img src="../shared/Slide66.jpg" alt="LineScanner footprint diagram" data-zoom="" data-track="ls12:zoom:footprint-diagram">
+    </div>
+  
+</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    .ls12 { }
+    .ls12 .slide-body { width: 100%; align-items: center; }
+
+    .ls12-diagram-wrap {
+      display: flex; flex-direction: column;
+      width: 100%; max-width: 860px;
+      position: relative;
+      min-height: 300px;
+    }
+    @media (min-width: 769px) {
+      .ls12-diagram-wrap { flex: 1; min-height: 0; }
+      .ls12-diagram-wrap .ls-carousel { flex: 1; width: 100% !important; min-height: 0; height: 100% !important; }
+    }
+
+    /* Spec badges */
+    .ls12-badge {
+      position: absolute;
+      background: #E8711A; color: #fff;
+      border-radius: 20px; padding: 10px 18px;
+      display: flex; flex-direction: column; gap: 2px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.3);
+      pointer-events: none;
+    }
+    .ls12-badge-title { font-size: 13px; font-weight: 800; letter-spacing: .02em; }
+    .ls12-badge-spec  { font-size: 11px; opacity: .9; }
+
+    .ls12-badge-h { top: 12%; right: 4%; }
+    .ls12-badge-v { bottom: 12%; left: 26%; }
+
+    /* ── Mobile base ── */
+    .ls12 { padding: 52px 16px 80px !important; }
+    .ls12-badge-h, .ls12-badge-v { display: none; }
+
+    /* ── Desktop overrides ── */
+    @media(min-width:769px) {
+      .ls12 { padding: 52px 80px 0 !important; }
+      .ls12-badge-h, .ls12-badge-v { display: flex; }
+    }
+  </style>
+  <script>
+  (function () { var s = document.currentScript;
+    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
+  </script>
+</div>
+</div>
+<div class="fp-slide" data-slide-index="11" style="display:none;">
+<div class="slide content ls13" data-slide="deck-integrations">
+  <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
+  <div class="slide-layout">
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label">Integrations</div>
+      <h1 class="slide-title" data-edit="headline">Compatible with<br><span class="blue">your current machinery</span></h1>
+      <div class="divider"></div>
+      <p class="slide-subtitle" data-edit="subtitle" style="margin-bottom:4px;">LineScanner is already integrated with the leading glass machinery manufacturers — if you already run any of these lines, integration is direct.</p>
+    </header>
+    <div class="slide-body">
+  <div class="integration-grid">
+    <div class="int-card anim-in">
+      <div class="int-name" data-edit="int-name-1">LiSEC</div>
+      <div class="int-type" data-edit="int-type-1">Processing lines</div>
+    </div>
+    <div class="int-card anim-in">
+      <div class="int-name" data-edit="int-name-2">FOREL</div>
+      <div class="int-type" data-edit="int-type-2">Architectural glass</div>
+    </div>
+    <div class="int-card anim-in">
+      <div class="int-name" data-edit="int-name-3">Benteler</div>
+      <div class="int-type" data-edit="int-type-3">Automotive glass</div>
+    </div>
+    <div class="int-card anim-in">
+      <div class="int-name" data-edit="int-name-4">CMS Tecglass</div>
+      <div class="int-type" data-edit="int-type-4">Digital printing</div>
+    </div>
+    <div class="int-card anim-in">
+      <div class="int-name" data-edit="int-name-5">Bystronic</div>
+      <div class="int-type" data-edit="int-type-5">Cutting and processing</div>
+    </div>
+    <div class="int-card anim-in">
+      <div class="int-name" data-edit="int-name-6">Hegla</div>
+      <div class="int-type" data-edit="int-type-6">Cutting and storage</div>
+    </div>
+    <div class="int-card anim-in">
+      <div class="int-name" data-edit="int-name-7">Glaston</div>
+      <div class="int-type" data-edit="int-type-7">Tempering and bending</div>
+    </div>
+    <div class="int-card anim-in">
+      <div class="int-name" data-edit="int-name-8">TecoFerrari</div>
+      <div class="int-type" data-edit="int-type-8">Insulating glass</div>
+    </div>
+    <div class="int-card anim-in">
+      <div class="int-name" data-edit="int-name-9">Erdman</div>
+      <div class="int-type" data-edit="int-type-9">Automated lines</div>
+    </div>
+  </div>
+    </div><!-- /.slide-body -->
+  </div><!-- /.slide-layout -->
+  <!-- ── Scoped Styles ── -->
+  <style>
+    /* Mobile base: collapse the inline 80px side padding */
+    .ls13 { padding: 70px 16px 80px !important; }
+
+    /* Desktop: restore intended layout padding */
+    @media (min-width: 769px) {
+      .ls13 { padding: 52px 80px 0 !important; }
+    }
+  </style>
+  <script>
+  (function () { var s = document.currentScript;
+    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
+  </script>
+</div>
+</div>
+<div class="fp-slide" data-slide-index="12" style="display:none;">
 <div class="slide content ls14" data-slide="deck-cta">
   <img src="../shared/image112.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.06;pointer-events:none;z-index:0;">
   <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
@@ -928,9 +2481,211 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   </script>
 </div>
 </div>
+<div class="fp-slide fp-optional" data-optional-index="0" style="display:none;">
+<div class="slide content why3" data-slide="deck-comparison">
+  <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
+
+  <div class="slide-layout">
+  <header class="slide-head">
+    <div class="section-label" data-edit="section-label">Section</div>
+    <h1 class="slide-title" data-edit="headline" style="margin-bottom:18px;">Why inspection automation <span class="blue">makes sense</span></h1>
+  </header>
+  <div class="slide-body">
+  <div class="why3-grid">
+
+    <div class="why3-col prob-col anim-in" style="" draggable="false">
+      <div class="why3-col-header">
+        <span class="why3-col-icon">⚠️</span>
+        <span class="why3-col-label" data-edit="col-header-prob">Without Inspection Automation</span>
+      </div>
+      <ul class="why3-list" id="why3-prob-list" data-edit="prob-list" data-ls-list="">
+
+
+<div class="why3-tier-label" data-edit="tier-label-1">Human Limitations</div>
+<li class="prob-item">Operator fatigue — detection rates drop significantly over long shifts</li>
+<li class="prob-item prob-clickable" title="Click to view chart">As line speed increases, operator effectiveness declines — higher throughput means more defects slip through undetected <span class="prob-img-hint">📈</span></li>
+<li class="prob-item">100% manual inspection is impossible at production speed</li>
+<li class="prob-item" draggable="false">Distortion &amp; anisotropy are <strong>invisible to the naked eye</strong> — no matter how skilled the operator</li>
+<div class="why3-tier-label" data-edit="tier-label-2" style="margin-top:8px;">Business Impact</div>
+<li class="prob-item">Inconsistent quality &amp; frequent customer complaints</li>
+<li class="prob-item prob-clickable" title="Click to view chart">Construction site rejections — glass already delivered &amp; installed means transport, rework &amp; project delays <span class="prob-img-hint">💰</span></li>
+<li class="prob-item" draggable="false">Increased liability risks &amp; reputational damage</li><li class="prob-item prob-clickable" title="Click to view chart">Automotive: one defect triggers a full batch return — shipping &amp; material costs on the entire load <span class="prob-img-hint">💰</span></li>
+
+      
+      
+      </ul>
+      
+      
     </div>
-    <button class="nav-btn" id="fp-prev" disabled>&#8249;</button>
-    <button class="nav-btn" id="fp-next">&#8250;</button>
+
+    <div class="why3-col ben-col anim-in" style="" draggable="false">
+      <div class="why3-col-header">
+        <span class="why3-col-icon">✓</span>
+        <span class="why3-col-label" data-edit="col-header-ben">LineScanner &amp; Osprey</span>
+      </div>
+      <ul class="why3-list" id="why3-ben-list" data-edit="ben-list" data-ls-list="">
+
+
+
+
+
+
+
+<li class="ben-item">100% inspection of every glass, every shift — no fatigue, no blind spots</li>
+<li class="ben-item">Real-time process control &amp; quality feedback</li>
+<li class="ben-item">Prove quality to customers — a documented defense against claims</li>
+<li class="ben-item ls-list-dragging" draggable="true">Mandatory as per industry standards</li><li class="ben-item">Database &amp; archive for shift accountability and CpK analysis</li>
+<li class="ben-item">Acceptance procedures for new machinery (e.g. furnaces)</li>
+<li class="ben-item">Increase throughput &amp; reduce costly downstream rejects</li>
+<li class="ben-item" draggable="false">Detects distortion, anisotropy &amp; surface defects <strong>invisible to the human eye</strong></li>
+
+      
+      
+      
+      
+      
+      
+      
+      </ul>
+      
+      
+    </div>
+
+  </div><!-- why3-grid -->
+  </div><!-- slide-body -->
+  </div><!-- slide-layout -->
+
+  <style>
+    .why3 {  }
+
+    .why3-grid {
+      display:grid; grid-template-columns:1fr 1fr; gap:20px;
+      width:100%; max-width:920px; flex:1; min-height:0;
+      padding-bottom:0;
+    }
+
+    .why3-col {
+      display:flex; flex-direction:column;
+      border-radius:16px; overflow:hidden;
+      border:1px solid var(--border);
+      background:var(--bg-card);
+    }
+
+    /* Column headers */
+    .why3-col-header {
+      display:flex; align-items:center; gap:10px;
+      padding:14px 20px;
+      font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+      flex-shrink:0;
+    }
+    .prob-col .why3-col-header {
+      background:rgba(239,68,68,.12);
+      border-bottom:1px solid rgba(239,68,68,.2);
+      color:#f87171;
+    }
+    .ben-col .why3-col-header {
+      background:rgba(34,197,94,.10);
+      border-bottom:1px solid rgba(34,197,94,.2);
+      color:#4ade80;
+    }
+    .why3-col-icon { font-size:16px; }
+    .why3-col-label { flex:1; }
+
+    /* Tier labels */
+    .why3-tier-label {
+      font-size:clamp(12px,1.2vw,14px); font-weight:700; letter-spacing:.09em;
+      text-transform:uppercase; color:var(--text-muted);
+      opacity:.5; padding:8px 0 4px 22px;
+    }
+
+    /* Lists */
+    .why3-list {
+      list-style:none; margin:0; padding:10px 20px 14px;
+      display:flex; flex-direction:column; gap:0;
+      overflow-y:auto; flex:1;
+    }
+
+    .prob-item, .ben-item {
+      padding:8px 0 8px 22px;
+      position:relative;
+      font-size:clamp(12px,1.2vw,14px); line-height:1.45;
+      border-bottom:1px solid rgba(255,255,255,.04);
+      color:var(--text-muted);
+    }
+    .prob-item:last-child, .ben-item:last-child { border-bottom:none; }
+    .prob-item strong, .ben-item strong { color:var(--text); font-weight:700; }
+
+    .prob-clickable {
+      cursor:pointer;
+      transition:color .2s, background .2s;
+    }
+    .prob-clickable:hover {
+      color:var(--text);
+      background:rgba(239,68,68,.06);
+      border-radius:6px;
+    }
+    .prob-img-hint {
+      font-size:11px; margin-left:6px; opacity:.6;
+      vertical-align:middle;
+    }
+    .prob-clickable:hover .prob-img-hint { opacity:1; }
+
+    .prob-item::before {
+      content:'✕';
+      position:absolute; left:0; top:8px;
+      font-size:11px; font-weight:800;
+      color:#f87171;
+    }
+    .ben-item::before {
+      content:'›';
+      position:absolute; left:2px; top:8px;
+      font-size:14px; font-weight:800;
+      color:#4ade80;
+    }
+
+    /* Add button color overrides (item-controls/states are in list.js) */
+    .why3-add-prob[data-ls-add]:hover { border-color:rgba(239,68,68,.4); color:#f87171; }
+    .why3-add-ben[data-ls-add]:hover  { border-color:rgba(34,197,94,.4);  color:#4ade80; }
+
+    /* ── Mobile base ── */
+    .why3-grid { grid-template-columns:1fr; gap:12px; }
+
+    .why3 { padding: 52px 16px 80px !important; }
+
+    /* ── Desktop overrides ── */
+    @media(min-width:769px) {
+      .why3-grid { grid-template-columns:1fr 1fr; gap:20px; }
+      .why3-col  { max-height:none; }
+      .why3 { padding: 52px 80px 0 !important; }
+    }
+  </style>
+
+  <script>
+  function why3InitList(ul) { return; // migrated to list.js component
+    if (!ul || ul._init) return;
+    ul._init = true;
+
+    var col = ul.closest('.why3-col');
+    var restoreArea = col ? col.querySelector('.why3-restore') : null;
+    var addBtn = col ? col.querySelector('.why3-add-btn') : null;
+    var isProb = ul.id === 'why3-prob-list';
+    var itemClass = isProb ? 'prob-item' : 'ben-item';
+    var dragSrc = null;
+  }
+
+  setTimeout(function() {
+    why3InitList(document.getElementById('why3-prob-list'));
+    why3InitList(document.getElementById('why3-ben-list'));
+  }, 0);
+  </script>
+
+  <script>
+  (function () { var s = document.currentScript;
+    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
+  </script>
+</div>
+</div>
+    </div>
   </div>
   <div id="fp-footer"><div id="fp-slide-name">Cover</div></div>
 </div>
@@ -2708,38 +4463,95 @@ window.LSTable = (function () {
 })();
 
 (function () {
-  var slides = document.querySelectorAll(".fp-slide");
-  var names  = ["Cover","Dimensions","Call to Action"];
-  var total  = slides.length;
-  var idx    = 0;
-  var counter   = document.getElementById("fp-counter");
-  var slideName = document.getElementById("fp-slide-name");
-  var prevBtn   = document.getElementById("fp-prev");
-  var nextBtn   = document.getElementById("fp-next");
-  function goTo(n) {
-    if (n < 0 || n >= total) return;
-    slides[idx].style.display = "none";
-    idx = n;
-    slides[idx].style.display = "";
-    counter.textContent = (idx + 1) + " / " + total;
-    slideName.textContent = names[idx] || "";
-    prevBtn.disabled = idx === 0;
-    nextBtn.disabled = idx === total - 1;
-    var root = slides[idx].querySelector(".slides-container,.slide");
-    if (!root) root = slides[idx];
+  var mainSlides = document.querySelectorAll(".fp-slide:not(.fp-optional)");
+  var optSlides  = document.querySelectorAll(".fp-slide.fp-optional");
+  var mainNames  = ["Cover","Company Intro","LineScanner Overview","Technology","Surface Types","Dimensions","Screen Printing","Logo Check","Traceability","Sensitivity","Installation","Integrations","Call to Action"];
+  var optNames   = ["Why Us"];
+  var total      = mainSlides.length;
+  var idx        = 0;
+  var inOptional = false;
+  var counter    = document.getElementById("fp-counter");
+  var slideName  = document.getElementById("fp-slide-name");
+  var prevBtn    = document.getElementById("fp-prev");
+  var nextBtn    = document.getElementById("fp-next");
+  var extrasBtn  = document.getElementById("fp-extras-btn");
+  var backBtn    = document.getElementById("fp-back-btn");
+  var extrasPanel = document.getElementById("fp-extras-panel");
+
+  function initSlide(el) {
+    var root = el.querySelector(".slides-container,.slide");
+    if (!root) root = el;
     if (window.Carousel) Carousel.init(root);
     if (window.Tabs)     Tabs.init(root);
     if (window.Lightbox) Lightbox.init(root);
     if (window.List)     List.init(root);
     if (window.LSTable)  LSTable.init(root);
   }
-  prevBtn.addEventListener("click", function () { goTo(idx - 1); });
-  nextBtn.addEventListener("click", function () { goTo(idx + 1); });
+
+  function goTo(n) {
+    if (n < 0 || n >= total) return;
+    mainSlides[idx].style.display = "none";
+    idx = n;
+    inOptional = false;
+    mainSlides[idx].style.display = "";
+    counter.textContent = (idx + 1) + " / " + total;
+    slideName.textContent = mainNames[idx] || "";
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === total - 1;
+    if (extrasBtn) extrasBtn.style.display = (idx === total - 1 && optSlides.length > 0) ? "" : "none";
+    if (backBtn)   backBtn.style.display = "none";
+    if (extrasPanel) extrasPanel.style.display = "none";
+    initSlide(mainSlides[idx]);
+  }
+
+  function goToOptional(n) {
+    if (n < 0 || n >= optSlides.length) return;
+    mainSlides[idx].style.display = "none";
+    optSlides.forEach(function (s) { s.style.display = "none"; });
+    inOptional = true;
+    optSlides[n].style.display = "";
+    counter.textContent = "";
+    slideName.textContent = optNames[n] || "";
+    prevBtn.disabled = true;
+    nextBtn.disabled = true;
+    if (extrasBtn) extrasBtn.style.display = "none";
+    if (backBtn)   backBtn.style.display = "";
+    if (extrasPanel) extrasPanel.style.display = "none";
+    initSlide(optSlides[n]);
+  }
+
+  prevBtn.addEventListener("click", function () { if (!inOptional) goTo(idx - 1); });
+  nextBtn.addEventListener("click", function () { if (!inOptional) goTo(idx + 1); });
   document.addEventListener("keydown", function (e) {
+    if (inOptional) return;
     if (e.key === "ArrowRight") goTo(idx + 1);
     if (e.key === "ArrowLeft")  goTo(idx - 1);
   });
-  // Init first slide
+
+  if (extrasBtn) {
+    extrasBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var open = extrasPanel.style.display !== "none";
+      extrasPanel.style.display = open ? "none" : "";
+    });
+  }
+  if (backBtn) {
+    backBtn.addEventListener("click", function () {
+      optSlides.forEach(function (s) { s.style.display = "none"; });
+      goTo(idx);
+    });
+  }
+  document.querySelectorAll(".fp-extras-item").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      goToOptional(parseInt(btn.dataset.opt, 10));
+    });
+  });
+  document.addEventListener("click", function (e) {
+    if (extrasPanel && !extrasPanel.contains(e.target) && e.target !== extrasBtn) {
+      extrasPanel.style.display = "none";
+    }
+  });
+
   document.addEventListener("DOMContentLoaded", function () {
     goTo(0);
     prevBtn.disabled = true;

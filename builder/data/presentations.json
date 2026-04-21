@@ -1,12 +1,12 @@
 {
   "presentations": [
     {
-      "id": "pres-1776710979732",
-      "createdAt": "2026-04-20",
-      "customerName": "SoftSolution",
-      "contactName": "Juan Ochoa",
-      "contactTitle": "Head of Quality",
-      "customerLogoSrc": "/slides/uploads/LOGO_StrainOptics.png",
+      "id": "pres-strainoptics-1776786878003",
+      "createdAt": "2026-04-21",
+      "customerName": "Strainoptics",
+      "contactName": "John S",
+      "contactTitle": "Head of Presentations",
+      "customerLogoSrc": "/slides/uploads/LOGO_SoftSolution_grays.png",
       "slideCount": 14,
       "slides": [
         {
@@ -19,31 +19,31 @@
           "id": "deck-company",
           "librarySlideId": "lib-company",
           "name": "Company Intro",
-          "visible": false
+          "visible": true
         },
         {
           "id": "deck-comparison",
           "librarySlideId": "lib-comparison",
           "name": "Why Us",
-          "visible": false
+          "visible": true
         },
         {
           "id": "deck-capability",
           "librarySlideId": "lib-capability",
           "name": "LineScanner Overview",
-          "visible": false
+          "visible": true
         },
         {
           "id": "deck-technology",
           "librarySlideId": "lib-technology",
           "name": "Technology",
-          "visible": false
+          "visible": true
         },
         {
           "id": "deck-surface",
           "librarySlideId": "lib-surface",
           "name": "Surface Types",
-          "visible": false
+          "visible": true
         },
         {
           "id": "deck-dimension",
@@ -55,37 +55,227 @@
           "id": "deck-screenprint",
           "librarySlideId": "lib-screenprint",
           "name": "Screen Printing",
-          "visible": false
+          "visible": true
         },
         {
           "id": "deck-logo-check",
           "librarySlideId": "lib-logo-check",
           "name": "Logo Check",
-          "visible": false
+          "visible": true
         },
         {
           "id": "deck-database",
           "librarySlideId": "lib-database",
           "name": "Traceability",
-          "visible": false
+          "visible": true
         },
         {
           "id": "deck-sensitivity",
           "librarySlideId": "lib-sensitivity",
           "name": "Sensitivity",
-          "visible": false
+          "visible": true
         },
         {
           "id": "deck-footprint",
           "librarySlideId": "lib-footprint",
           "name": "Installation",
-          "visible": false
+          "visible": true
         },
         {
           "id": "deck-integrations",
           "librarySlideId": "lib-integrations",
           "name": "Integrations",
+          "visible": true
+        },
+        {
+          "id": "deck-cta",
+          "librarySlideId": "lib-cta",
+          "name": "Call to Action",
+          "visible": true
+        }
+      ]
+    },
+    {
+      "id": "pres-litesentry-osprey-1776786634980",
+      "createdAt": "2026-04-21",
+      "customerName": "LiteSentry-Osprey",
+      "contactName": "Juan Ochoa",
+      "contactTitle": "Head of Quality",
+      "customerLogoSrc": "/slides/uploads/LOGO_LiteSentry_Greys.png",
+      "slideCount": 13,
+      "slides": [
+        {
+          "id": "deck-lib-cover-1775977704536",
+          "librarySlideId": "lib-cover",
+          "name": "Cover",
+          "visible": true
+        },
+        {
+          "id": "deck-company",
+          "librarySlideId": "lib-company",
+          "name": "Company Intro",
+          "visible": true
+        },
+        {
+          "id": "deck-comparison",
+          "librarySlideId": "lib-comparison",
+          "name": "Why Us",
           "visible": false
+        },
+        {
+          "id": "deck-capability",
+          "librarySlideId": "lib-capability",
+          "name": "LineScanner Overview",
+          "visible": true
+        },
+        {
+          "id": "deck-technology",
+          "librarySlideId": "lib-technology",
+          "name": "Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-surface",
+          "librarySlideId": "lib-surface",
+          "name": "Surface Types",
+          "visible": true
+        },
+        {
+          "id": "deck-dimension",
+          "librarySlideId": "lib-dimension",
+          "name": "Dimensions",
+          "visible": true
+        },
+        {
+          "id": "deck-screenprint",
+          "librarySlideId": "lib-screenprint",
+          "name": "Screen Printing",
+          "visible": true
+        },
+        {
+          "id": "deck-logo-check",
+          "librarySlideId": "lib-logo-check",
+          "name": "Logo Check",
+          "visible": true
+        },
+        {
+          "id": "deck-database",
+          "librarySlideId": "lib-database",
+          "name": "Traceability",
+          "visible": true
+        },
+        {
+          "id": "deck-sensitivity",
+          "librarySlideId": "lib-sensitivity",
+          "name": "Sensitivity",
+          "visible": true
+        },
+        {
+          "id": "deck-footprint",
+          "librarySlideId": "lib-footprint",
+          "name": "Installation",
+          "visible": true
+        },
+        {
+          "id": "deck-integrations",
+          "librarySlideId": "lib-integrations",
+          "name": "Integrations",
+          "visible": true
+        },
+        {
+          "id": "deck-cta",
+          "librarySlideId": "lib-cta",
+          "name": "Call to Action",
+          "visible": true
+        }
+      ]
+    },
+    {
+      "id": "pres-linescanner-softsolution-1-1776779027820",
+      "createdAt": "2026-04-21",
+      "customerName": "LineScanner - SoftSolution.1",
+      "contactName": "John Smith",
+      "contactTitle": "Quality Leader",
+      "customerLogoSrc": "/slides/uploads/LOGO_Softsolution_Black.jpg",
+      "slideCount": 14,
+      "slides": [
+        {
+          "id": "deck-lib-cover-1775977704536",
+          "librarySlideId": "lib-cover",
+          "name": "Cover",
+          "visible": true
+        },
+        {
+          "id": "deck-company",
+          "librarySlideId": "lib-company",
+          "name": "Company Intro",
+          "visible": true
+        },
+        {
+          "id": "deck-comparison",
+          "librarySlideId": "lib-comparison",
+          "name": "Why Us",
+          "visible": true
+        },
+        {
+          "id": "deck-capability",
+          "librarySlideId": "lib-capability",
+          "name": "LineScanner Overview",
+          "visible": true
+        },
+        {
+          "id": "deck-technology",
+          "librarySlideId": "lib-technology",
+          "name": "Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-surface",
+          "librarySlideId": "lib-surface",
+          "name": "Surface Types",
+          "visible": true
+        },
+        {
+          "id": "deck-dimension",
+          "librarySlideId": "lib-dimension",
+          "name": "Dimensions",
+          "visible": true
+        },
+        {
+          "id": "deck-screenprint",
+          "librarySlideId": "lib-screenprint",
+          "name": "Screen Printing",
+          "visible": true
+        },
+        {
+          "id": "deck-logo-check",
+          "librarySlideId": "lib-logo-check",
+          "name": "Logo Check",
+          "visible": true
+        },
+        {
+          "id": "deck-database",
+          "librarySlideId": "lib-database",
+          "name": "Traceability",
+          "visible": true
+        },
+        {
+          "id": "deck-sensitivity",
+          "librarySlideId": "lib-sensitivity",
+          "name": "Sensitivity",
+          "visible": true
+        },
+        {
+          "id": "deck-footprint",
+          "librarySlideId": "lib-footprint",
+          "name": "Installation",
+          "visible": true
+        },
+        {
+          "id": "deck-integrations",
+          "librarySlideId": "lib-integrations",
+          "name": "Integrations",
+          "visible": true
         },
         {
           "id": "deck-cta",

@@ -8,27 +8,27 @@
     },
     {
       "id": "deck-company",
-      "visible": false,
+      "visible": true,
       "librarySlideId": "lib-company"
     },
     {
       "id": "deck-comparison",
-      "visible": false,
+      "visible": true,
       "librarySlideId": "lib-comparison"
     },
     {
       "id": "deck-capability",
-      "visible": false,
+      "visible": true,
       "librarySlideId": "lib-capability"
     },
     {
       "id": "deck-technology",
-      "visible": false,
+      "visible": true,
       "librarySlideId": "lib-technology"
     },
     {
       "id": "deck-surface",
-      "visible": false,
+      "visible": true,
       "librarySlideId": "lib-surface"
     },
     {
@@ -38,32 +38,32 @@
     },
     {
       "id": "deck-screenprint",
-      "visible": false,
+      "visible": true,
       "librarySlideId": "lib-screenprint"
     },
     {
       "id": "deck-logo-check",
-      "visible": false,
+      "visible": true,
       "librarySlideId": "lib-logo-check"
     },
     {
       "id": "deck-database",
-      "visible": false,
+      "visible": true,
       "librarySlideId": "lib-database"
     },
     {
       "id": "deck-sensitivity",
-      "visible": false,
+      "visible": true,
       "librarySlideId": "lib-sensitivity"
     },
     {
       "id": "deck-footprint",
-      "visible": false,
+      "visible": true,
       "librarySlideId": "lib-footprint"
     },
     {
       "id": "deck-integrations",
-      "visible": false,
+      "visible": true,
       "librarySlideId": "lib-integrations"
     },
     {
