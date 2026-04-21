@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-04-20 (session 4)
+Last updated: 2026-04-21 (session 5)
 
 ---
 
@@ -25,10 +25,11 @@ App-presentation-builder/
 ├── scripts/
 │   ├── build.js                    ← NEW (2026-04-20): CLI to rebuild frozen presentations (no server needed)
 │   └── deploy.js                   ← PLANNED: GitHub Pages deploy script
+├── frontend/                       ← NEW (2026-04-21): React/Vite/shadcn scaffolding (early stage)
 ├── finished-presentations/         ← NEW (2026-04-20): Self-contained frozen presentation outputs
 │   ├── [presId]/
 │   │   └── index.html              ← Frozen output (CSS+JS inlined, images via ../shared/)
-│   └── shared/                     ← Deduplicated image pool shared across all presentations
+│   └── shared/                     ← Deduplicated image pool (~70 images across all presentations)
 │
 └── builder/                        ← The runnable web app
     ├── server.js                   ← Express server — all API endpoints + slide render functions ⚠️ SOLE SOURCE OF TRUTH FOR SLIDES
@@ -114,6 +115,7 @@ Browser → Express (server.js)
               ├── GET  /api/presentations/:id  ← returns single presentation
               ├── PUT  /api/presentations/:id  ← edit name/contact/title
               ├── DELETE /api/presentations/:id ← delete presentation + frozen folder (fs.rmSync)
+              ├── POST /api/presentations/:id/duplicate ← NEW (2026-04-21): clone presentation with reconfigured customer settings
               ├── Static: /finished           → finished-presentations/ (frozen outputs)
               ├── GET  /view/:id              ← redirects to /finished/:presId/ if frozen file exists; else live viewer
               ├── POST /api/presentations/:id/publish ← PLANNED: GitHub Pages publish
@@ -346,6 +348,16 @@ Additional per-slide fixes:
 
 ---
 
+## Session 5 — Completed (2026-04-21)
+
+- **Duplicate presentation** — `POST /api/presentations/:id/duplicate` clones a presentation with reconfigured customer settings
+- **Hidden slides fix** — hidden slides now correctly excluded from frozen output and UI slide counts
+- **3 real customer presentations built** — linescanner-softsolution-1, litesentry-osprey, strainoptics
+- **frontend/ scaffolded** — React/Vite/shadcn project added (early stage, not yet integrated)
+- **~70 images** now in `finished-presentations/shared/` (populated from real customer builds)
+
+---
+
 ## Session 4 — Completed (2026-04-20)
 
 - **Dashboard list/grid view toggle** — ☰/▪▪ buttons in Finished Presentations panel header; `localStorage` key `pb-pres-view`
@@ -382,7 +394,7 @@ Additional per-slide fixes:
 
 ---
 
-## What's Next (updated 2026-04-20, session 4)
+## What's Next (updated 2026-04-21, session 5)
 
 1. **`POST /api/presentations/:id/publish`** — GitHub Pages publish + Publish button on Dashboard ← **main Phase 1 milestone**
 2. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
