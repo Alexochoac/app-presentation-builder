@@ -348,53 +348,7 @@ Additional per-slide fixes:
 
 ---
 
-## Session 5 — Completed (2026-04-21)
-
-- **Duplicate presentation** — `POST /api/presentations/:id/duplicate` clones a presentation with reconfigured customer settings
-- **Hidden slides fix** — hidden slides now correctly excluded from frozen output and UI slide counts
-- **3 real customer presentations built** — linescanner-softsolution-1, litesentry-osprey, strainoptics
-- **frontend/ scaffolded** — React/Vite/shadcn project added (early stage, not yet integrated)
-- **~70 images** now in `finished-presentations/shared/` (populated from real customer builds)
-
----
-
-## Session 4 — Completed (2026-04-20)
-
-- **Dashboard list/grid view toggle** — ☰/▪▪ buttons in Finished Presentations panel header; `localStorage` key `pb-pres-view`
-- **Grid cards** — customer logo full-bleed (`object-fit:cover`), initials fallback, card border-radius, overflow hidden
-- **`customerLogoSrc`** — captured from `coverSlide.edits['customer-logo-src']` at save time and stored on presentation record in `presentations.json`
-- **`slideCount` fix** — now counts only visible slides (was counting all including hidden)
-- Slide count badge removed from card thumb — shown only in text metadata
-
----
-
-## Session 3 — Completed (2026-04-20)
-
-- `buildFrozenPresentation()` — auto-runs on every `POST /api/presentations`; renders all visible slides, strips builder-only elements, inlines CSS+JS
-- `finished-presentations/[presId]/index.html` — self-contained frozen output per presentation
-- `finished-presentations/shared/` — deduplicated image pool; files only copied once (checked before copy)
-- DELETE endpoint — now also removes frozen folder with `fs.rmSync`
-- `/finished/` static route — serves frozen presentations; `/view/:id` redirects to it
-- `scripts/build.js` — CLI to rebuild any/all presentations without the server running
-- Stale folders cleaned up (presentations deleted before fix was in place)
-
-## Session 2 — Completed (2026-04-20)
-
-- Add Slide modal — real template picker replacing stub
-- Builder preview nav bar — proper header (title, badge, counter, history.back)
-- Builder slide preview default — cover slide shown on load
-- Customer Settings — wired to deck personalization
-- Edit panel text truncation — fixed
-- Slide-06 defect gallery — fixed JS selectors, gallery button, add/delete image, clipping
-- Cover slide gallery — fixed overlay clipping (moved to body), prefix normalization, dynamic delete/move buttons
-- Edit presentation metadata — inline edit Name/Contact/Position via `PUT /api/presentations/:id`
-- Delete presentation — `DELETE /api/presentations/:id` + confirmation
-- Viewer cover slide gallery button — exposed in readonly mode
-- Viewer carousel autoplay — fixed timing bug in iframe readonly context
-
----
-
-## What's Next (updated 2026-04-21, session 5)
+## What's Next
 
 1. **`POST /api/presentations/:id/publish`** — GitHub Pages publish + Publish button on Dashboard ← **main Phase 1 milestone**
 2. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
