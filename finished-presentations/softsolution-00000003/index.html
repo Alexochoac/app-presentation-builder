@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SoftSolution-StrainOptics</title>
+  <title>SoftSolution</title>
   <style>
 /*
   Presentation Builder — Softsolution
@@ -427,7 +427,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   <div id="fp-header">
     <a href="/" id="fp-dash-btn">&#8592; Dashboard</a>
     <div style="width:1px;height:20px;background:#333;flex-shrink:0;"></div>
-    <div id="fp-title">SoftSolution-StrainOptics</div>
+    <div id="fp-title">SoftSolution</div>
     <button class="fp-nav-btn" id="fp-prev" disabled>&#8249;</button>
     <div id="fp-counter">1 / 14</div>
     <button class="fp-nav-btn" id="fp-next">&#8250;</button>
@@ -449,7 +449,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   <span class="softsolution-credit" data-edit="credit">by GlassQuality.com</span>
   <!-- Customer logo -->
   <div class="h77704536-customer-logo" data-edit="customer-logo">
-    <img class="h77704536-cust-img" src="../shared/LOGO_Softsolution_Black.jpg" alt="Customer Logo">
+    <img class="h77704536-cust-img" src="../shared/LOGO_LineScanner_Black_and_White.png" alt="Customer Logo">
     <label class="h77704536-cust-placeholder" for="h77704536-logo-file" title="Click to upload logo">
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="3"></rect>
@@ -467,7 +467,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   <div class="hero-content">
     <div class="brand-badge" data-edit="badge">GlassQuality.com · LineScanner · Osprey</div>
     <h1 data-edit="headline">Quality Inspection<br>for <span class="blue">Flat Glass</span></h1>
-    <h2 data-edit="subheadline">Proposal for SoftSolution-StrainOptics · Juan Ochoa, Head of Quality</h2>
+    <h2 data-edit="subheadline">Proposal for SoftSolution · Juan Ochoa, Head of Quality</h2>
     
   </div>
   <!-- Gallery button -->
@@ -491,9 +491,15 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
 
 
+
+
+
           
           
-        <div class="h77704536-car-slide"><img src="../shared/CostOfQualityDefects.png" alt="Gallery image"><div class="h77704536-car-caption">New image</div><div class="h77704536-car-img-overlay" onclick="h77704536ChangeCarImage(this)">Change Image</div><button class="h77704536-car-move h77704536-car-move--l" onclick="h77704536MoveCarSlide(this,-1)">‹</button><button class="h77704536-car-move h77704536-car-move--r" onclick="h77704536MoveCarSlide(this,1)">›</button></div><div class="h77704536-car-slide h77704536-car-slide--text"><div class="h77704536-stat-block"><div class="section-label">Stoping exponential cost</div><span class="stat-number">Rule 1+10+100</span><div class="stat-label">Catch a spec error at entry for $1, or pay $10 to catch a defect on the factory floor. If that glass hits the job site, you’re facing a $100 catastrophe in replacements and lost trust. Architect for precision today, or pay the price of failure tomorrow.</div></div><button class="h77704536-car-move h77704536-car-move--l" onclick="h77704536MoveCarSlide(this,-1)">‹</button><button class="h77704536-car-move h77704536-car-move--r" onclick="h77704536MoveCarSlide(this,1)">›</button></div>
+        <div class="h77704536-car-slide h77704536-car-slide--text"><div class="h77704536-stat-block"><div class="section-label">Label</div><span class="stat-number">Rule1+10+100</span><div class="stat-label">Description</div></div><button class="h77704536-car-move h77704536-car-move--l" onclick="h77704536MoveCarSlide(this,-1)">‹</button><button class="h77704536-car-move h77704536-car-move--r" onclick="h77704536MoveCarSlide(this,1)">›</button></div><div class="h77704536-car-slide"><img src="../shared/CostOfQualityDefects.png" alt="Gallery image"><div class="h77704536-car-caption">New image</div><button class="h77704536-car-move h77704536-car-move--l" onclick="h77704536MoveCarSlide(this,-1)">‹</button><button class="h77704536-car-move h77704536-car-move--r" onclick="h77704536MoveCarSlide(this,1)">›</button></div>
+        
+        
+        
         
         
         
@@ -628,7 +634,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
         }
       });
     }
-    window[P + "OpenGallery"]  = function () { var o = document.getElementById(P + "GalleryOverlay"); document.body.appendChild(o); o.style.display = "flex"; goTo(0); buildThumbs(); injectBuilderControls(); startAutoplay(); };
+    window[P + "OpenGallery"]  = function () { var o = document.getElementById(P + "GalleryOverlay"); document.body.appendChild(o); o.style.display = "flex"; goTo(0); buildThumbs(); if (!window.PB_READONLY) injectBuilderControls(); startAutoplay(); };
     window[P + "CloseGallery"] = function () { document.getElementById(P + "GalleryOverlay").style.display = "none"; stopAutoplay(); };
     window[P + "CarMove"]      = function (dir) { goTo(idx + dir); };
     window[P + "MoveCarSlide"] = function (btn, dir) {
@@ -651,7 +657,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
       var n = getSlides().length + 1;
       var slide = document.createElement("div");
       slide.className = P + "-car-slide";
-      slide.innerHTML = '<img src="" alt="Gallery image"><div class="' + P + '-car-caption" contenteditable="" spellcheck="false">New image</div><div class="' + P + '-car-img-overlay" onclick="' + P + 'ChangeCarImage(this)">Change Image</div><button class="' + P + '-car-move ' + P + '-car-move--l" onclick="' + P + 'MoveCarSlide(this,-1)">‹</button><button class="' + P + '-car-move ' + P + '-car-move--r" onclick="' + P + 'MoveCarSlide(this,1)">›</button><button class="' + P + '-car-delete" data-builder-only="" onclick="' + P + 'DeleteCarSlide(this)">✕</button>';
+      slide.innerHTML = '<img src="" alt="Gallery image"><div class="' + P + '-car-caption" contenteditable="" spellcheck="false">New image</div><div class="' + P + '-car-img-overlay" data-builder-only="" onclick="' + P + 'ChangeCarImage(this)">Change Image</div><button class="' + P + '-car-move ' + P + '-car-move--l" onclick="' + P + 'MoveCarSlide(this,-1)">‹</button><button class="' + P + '-car-move ' + P + '-car-move--r" onclick="' + P + 'MoveCarSlide(this,1)">›</button><button class="' + P + '-car-delete" data-builder-only="" onclick="' + P + 'DeleteCarSlide(this)">✕</button>';
       track.appendChild(slide);
       goTo(getSlides().length - 1);
       buildThumbs();
@@ -777,19 +783,20 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
 
 
+
 <div class="ls-tab-list">
-  <button class="ls-tab" data-panel="1" data-edit="tab-about">About Us</button>
+  <button class="ls-tab active" data-panel="1" data-edit="tab-about">About Us</button>
   <button class="ls-tab" data-panel="2" data-edit="tab-technologies">Technologies</button>
   <button class="ls-tab" data-panel="3" data-edit="tab-network">Global Network</button>
   <button class="ls-tab" data-panel="4" data-edit="tab-iqc">IQC Group</button>
 <button class="ls-tab" data-panel="5">Extras</button></div>
 <div class="ls-tab-panels">
-<div class="ls-tab-panel active" data-panel="0" style="padding-top:12px;">
+<div class="ls-tab-panel" data-panel="0" style="padding-top:12px;">
   <div class="ls-carousel" data-counter="" data-edit="company-carousel" data-track="ls2:carousel:company" style="flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform:translateX(0px);">
     <div class="ls-carousel-slide"><img src="../shared/Group-Picture-of-the-Team-members-.png" alt="Group Picture of the Team members">
       <div class="ls-carousel-caption" data-edit="company-caption">Group Picture of the Team members</div></div></div><div class="ls-carousel-counter"></div></div>
 </div>
-<div class="ls-tab-panel" data-panel="1">
+<div class="ls-tab-panel active" data-panel="1">
   <div class="ls2-pillars">
     <div class="ls2-pillar anim-in" style="">
       <div class="ls2-pillar-num">01</div>
@@ -850,6 +857,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   </div>
 </div>
 <div class="ls-tab-panel" data-panel="5"><div class="ls-carousel" data-counter="" data-zoom-group="" style="flex:1;min-height:0;width:100%;">  <div class="ls-carousel-track" style="transform: translateX(0px);">      <div class="ls-carousel-slide"><img src="../shared/Slide4.jpg" alt="Slide4" data-zoom=""><div class="ls-carousel-caption">Slide4</div></div></div><div class="ls-carousel-counter"></div></div></div></div><!-- /.ls-tab-panels -->
+  
   
   
   
@@ -2701,20 +2709,21 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     </div>
   </div>
 <script>
+window.PB_READONLY = true;
 /**
  * tracker.js — Presentation Builder Analytics
  *
  * Event format follows umami-guidelines:
  *   event name  = 'slide-[slide-id]'   e.g. 'slide-ls4'
- *   properties  = { component, label, action? }
+ *   properties  = { label: 'component-label-action' }
  *
  * Usage:
- *   Track.tab('ls4', 'Archive')                   → slide-ls4, { component:'tab',      label:'Archive' }
- *   Track.zoom('ls6', 'Camera Detail')             → slide-ls6, { component:'image',    label:'Camera Detail' }
- *   Track.carousel('ls4', 'next', 'Belt Detail')  → slide-ls4, { component:'carousel', label:'Belt Detail', action:'next' }
- *   Track.expand('ls10', 'Archive')               → slide-ls10,{ component:'toggle',   label:'Archive' }
- *   Track.click('ls14', 'whatsapp')               → slide-ls14,{ component:'button',   label:'whatsapp' }
- *   Track.event('slide-ls5', { component:'custom', label:'foo' }) → raw call
+ *   Track.tab('ls4', 'Archive')                   → slide-ls4, { label:'tab-Archive-click' }
+ *   Track.zoom('ls6', 'Camera Detail')             → slide-ls6, { label:'image-Camera Detail-open' }
+ *   Track.carousel('ls4', 'next', 'Belt Detail')  → slide-ls4, { label:'carousel-Belt Detail-next' }
+ *   Track.expand('ls10', 'Archive')               → slide-ls10,{ label:'toggle-Archive-expand' }
+ *   Track.click('ls14', 'whatsapp')               → slide-ls14,{ label:'button-whatsapp-click' }
+ *   Track.event('slide-ls5', { label:'custom-foo' }) → raw call
  *
  * Silently does nothing if window.umami is not available.
  */
@@ -2747,28 +2756,27 @@ window.Track = (function () {
 
     /** Tab click */
     tab: function (slide, label) {
-      fire(slideName(slide), { component: 'tab', label: String(label) });
+      fire(slideName(slide), { label: 'tab-' + String(label) + '-click' });
     },
 
     /** Image zoom / lightbox open */
     zoom: function (slide, label) {
-      fire(slideName(slide), { component: 'image', label: String(label) });
+      fire(slideName(slide), { label: 'image-' + String(label) + '-open' });
     },
 
     /** Carousel navigation — label is the caption/alt of the image navigated to */
     carousel: function (slide, action, label) {
-      var props = { component: 'carousel', action: String(action), label: String(label || '') };
-      fire(slideName(slide), props);
+      fire(slideName(slide), { label: 'carousel-' + String(label || '') + '-' + String(action) });
     },
 
     /** Accordion / expand section */
     expand: function (slide, label) {
-      fire(slideName(slide), { component: 'toggle', label: String(label) });
+      fire(slideName(slide), { label: 'toggle-' + String(label) + '-expand' });
     },
 
     /** Button / link click */
     click: function (slide, label) {
-      fire(slideName(slide), { component: 'button', label: String(label) });
+      fire(slideName(slide), { label: 'button-' + String(label) + '-click' });
     },
 
     /** Generic event with full props control */

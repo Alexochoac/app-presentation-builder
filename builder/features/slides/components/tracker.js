@@ -3,15 +3,15 @@
  *
  * Event format follows umami-guidelines:
  *   event name  = 'slide-[slide-id]'   e.g. 'slide-ls4'
- *   properties  = { component, label, action? }
+ *   properties  = { label: 'component-label-action' }
  *
  * Usage:
- *   Track.tab('ls4', 'Archive')                   → slide-ls4, { component:'tab',      label:'Archive' }
- *   Track.zoom('ls6', 'Camera Detail')             → slide-ls6, { component:'image',    label:'Camera Detail' }
- *   Track.carousel('ls4', 'next', 'Belt Detail')  → slide-ls4, { component:'carousel', label:'Belt Detail', action:'next' }
- *   Track.expand('ls10', 'Archive')               → slide-ls10,{ component:'toggle',   label:'Archive' }
- *   Track.click('ls14', 'whatsapp')               → slide-ls14,{ component:'button',   label:'whatsapp' }
- *   Track.event('slide-ls5', { component:'custom', label:'foo' }) → raw call
+ *   Track.tab('ls4', 'Archive')                   → slide-ls4, { label:'tab-Archive-click' }
+ *   Track.zoom('ls6', 'Camera Detail')             → slide-ls6, { label:'image-Camera Detail-open' }
+ *   Track.carousel('ls4', 'next', 'Belt Detail')  → slide-ls4, { label:'carousel-Belt Detail-next' }
+ *   Track.expand('ls10', 'Archive')               → slide-ls10,{ label:'toggle-Archive-expand' }
+ *   Track.click('ls14', 'whatsapp')               → slide-ls14,{ label:'button-whatsapp-click' }
+ *   Track.event('slide-ls5', { label:'custom-foo' }) → raw call
  *
  * Silently does nothing if window.umami is not available.
  */
@@ -44,28 +44,27 @@ window.Track = (function () {
 
     /** Tab click */
     tab: function (slide, label) {
-      fire(slideName(slide), { component: 'tab', label: String(label) });
+      fire(slideName(slide), { label: 'tab-' + String(label) + '-click' });
     },
 
     /** Image zoom / lightbox open */
     zoom: function (slide, label) {
-      fire(slideName(slide), { component: 'image', label: String(label) });
+      fire(slideName(slide), { label: 'image-' + String(label) + '-open' });
     },
 
     /** Carousel navigation — label is the caption/alt of the image navigated to */
     carousel: function (slide, action, label) {
-      var props = { component: 'carousel', action: String(action), label: String(label || '') };
-      fire(slideName(slide), props);
+      fire(slideName(slide), { label: 'carousel-' + String(label || '') + '-' + String(action) });
     },
 
     /** Accordion / expand section */
     expand: function (slide, label) {
-      fire(slideName(slide), { component: 'toggle', label: String(label) });
+      fire(slideName(slide), { label: 'toggle-' + String(label) + '-expand' });
     },
 
     /** Button / link click */
     click: function (slide, label) {
-      fire(slideName(slide), { component: 'button', label: String(label) });
+      fire(slideName(slide), { label: 'button-' + String(label) + '-click' });
     },
 
     /** Generic event with full props control */
