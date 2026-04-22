@@ -112,6 +112,7 @@ All content slides now use this structure:
 - [x] **slideCount fix** — only counts visible slides (2026-04-20)
 - [x] **Duplicate presentation** — clone with reconfigured customer settings (2026-04-21)
 - [x] **Hidden slides visual + output behavior** — hidden slides excluded from counts and frozen output (2026-04-21)
+- [x] **Duplicate published link** — fixed `umamiId` scope bug (ReferenceError in `.catch`) + added published link to duplicate card immediately on success (2026-04-22)
 - [ ] **GitHub Pages publish** — `POST /api/presentations/:id/publish` + Publish button on Dashboard
 - [ ] **Design system refactor** (carried) — eliminate 3-layer CSS conflict; one source of truth in style.css
 - [ ] Delete old `dashboard.css`
@@ -123,4 +124,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-04-21 (session 5)
+Last updated: 2026-04-22 (session 6)
