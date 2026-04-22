@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-04-22 (session 6)
+Last updated: 2026-04-22 (session 7)
 
 ---
 
@@ -76,6 +76,8 @@ App-presentation-builder/
     │   │       ├── list.js         ← ul[data-ls-list]: add/hide/delete/reorder/edit
     │   │       ├── table.js        ← table[data-ls-table]: row+col edit, dot cycling, resizable col
     │   │       │                     saveTable saves parent .ls-tabs container when inside tabs
+    │   │       ├── button.js       ← NEW: auto-attaches Track.click() to .slide-btn on load
+    │   │       ├── tags.js         ← NEW: auto-attaches Track.click() to .slide-tag on load
     │   │       └── tracker.js      ← Umami analytics tracker
     │   ├── presentation-view/      ← PLANNED: Read-only viewer page for finished presentations
     │   └── builder-ui/
@@ -153,6 +155,8 @@ Browser → Express (server.js)
 **Note:** When a presentation is created, `buildFrozenPresentation()` auto-runs and writes a fully self-contained `finished-presentations/[presId]/index.html` (CSS+JS inlined, images in `../shared/`). That frozen file is immutable — future builder edits only affect new builds. Deleting a presentation also removes its frozen folder.
 
 **`customerLogoSrc`** (added 2026-04-20): captured from `coverSlide.edits['customer-logo-src']` at save time and stored on the presentation record. Older records without this field show initials fallback in grid view.
+
+**Dashboard filter bar** (added session 7): pill-style controls above the finished presentations list — real-time search (company + contact name), Flatpickr date range (dark-themed, local-time `YYYY-MM-DD`), custom sort dropdown (Newest/Oldest). All presentation mutations (edit, duplicate, delete) update `allItems` and call `applyFilters()` to re-render without a page reload.
 
 ---
 
@@ -263,6 +267,8 @@ function renderXxxLayout(slideId, savedEdits) {
 | tabs.js | `.ls-tabs` wrapper | Tab switcher, add/delete/rename; **calls LSTable.init on tab switch** |
 | list.js | `ul[data-ls-list]` | Add/hide/delete/reorder items, dblclick to edit |
 | table.js | `table[data-ls-table]` | Row+col add/hide/delete, dot cycling, resizable col; **saveTable saves parent .ls-tabs container** |
+| button.js | `.slide-btn` | Auto-attaches `Track.click()` on page load; exposes `Button.init(slideEl)` |
+| tags.js | `.slide-tag` | Auto-attaches `Track.click()` on page load; exposes `Tags.init(slideEl)` |
 
 **Save pattern (library slides):** Components dispatch `slide-carousel-save` → preview.html catches → `POST /api/deck/slides/:id/edits` → writes to library slide's edits in slide-library.json
 
@@ -346,14 +352,16 @@ Additional per-slide fixes:
 - **Image caption editing** — no UI to edit `img.alt`
 - **Builder header reposition** — `.builder-header` may need to move into slide container (task: builder-preview-header-move-to-slide-container)
 - **`umamiId` scope** — fixed: was declared inside `.then()` callback; hoisted to IIFE scope so duplicate handler can access it
+- **`slide-library.json` relative paths** — `../shared/` paths saved from iframe context 404 in builder. Fixed for `CostOfQualityDefects.png`. Watch for similar issues in other carousel edits
 
 ---
 
 ## What's Next
 
 1. **`POST /api/presentations/:id/publish`** — GitHub Pages publish + Publish button on Dashboard ← **main Phase 1 milestone**
-2. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
-3. **`scripts/deploy.js`** — push to GitHub Pages
-4. Delete old `dashboard.css`
-5. Builder header reposition (move to slide container)
+2. **Dashboard logo smart display** — show customer logo in list view rows intelligently (`task-2026-04-22-dashboard-finished-presentations-logo-smart-display.md`)
+3. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
+4. **`scripts/deploy.js`** — push to GitHub Pages
+5. Delete old `dashboard.css`
+6. Builder header reposition (move to slide container)
 

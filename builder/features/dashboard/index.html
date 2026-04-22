@@ -527,11 +527,39 @@
         return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
       }
 
+      function detectLogoBg(img, thumbEl) {
+        try {
+          var w = img.naturalWidth  || 100;
+          var h = img.naturalHeight || 100;
+          var canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          var ctx = canvas.getContext('2d', { willReadFrequently: true });
+          ctx.drawImage(img, 0, 0, w, h);
+          // Sample a small ring of border pixels to capture the background color
+          var size = Math.max(1, Math.round(Math.min(w, h) * 0.05));
+          var top    = ctx.getImageData(0, 0, w, size).data;
+          var bottom = ctx.getImageData(0, h - size, w, size).data;
+          var left   = ctx.getImageData(0, 0, size, h).data;
+          var right  = ctx.getImageData(w - size, 0, size, h).data;
+          var r = 0, g = 0, b = 0, a = 0, count = 0;
+          [top, bottom, left, right].forEach(function (d) {
+            for (var i = 0; i < d.length; i += 4) {
+              r += d[i]; g += d[i+1]; b += d[i+2]; a += d[i+3]; count++;
+            }
+          });
+          if (count === 0) return;
+          r = Math.round(r / count);
+          g = Math.round(g / count);
+          b = Math.round(b / count);
+          a = Math.round(a / count);
+          // If border is mostly transparent, fall back to white
+          if (a < 30) { thumbEl.style.background = '#fff'; return; }
+          thumbEl.style.background = 'rgb(' + r + ',' + g + ',' + b + ')';
+        } catch (e) { /* cross-origin or tainted canvas — leave default */ }
+      }
+
       function buildItem(p) {
         var initials = (p.customerName || '?').trim().split(/\s+/).map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase();
-        var thumbInner = p.customerLogoSrc
-          ? '<img src="' + p.customerLogoSrc + '" alt="" style="width:100%;height:100%;object-fit:cover;">'
-          : '<span>' + initials + '</span>';
         var presUrl = 'https://app-presentation-builder.pages.dev/finished-presentations/' + p.id;
         var trackingHtml = umamiId
           ? '<div class="pres-tracking" style="font-size:11px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:4px;">' +
@@ -544,10 +572,28 @@
         var li = document.createElement('li');
         li.className = 'pres-item';
         li.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);';
-        li.innerHTML =
-          '<div class="pres-thumb" style="display:none;position:relative;align-items:center;justify-content:center;background:var(--surface-alt,var(--border));height:130px;overflow:hidden;">' +
-            thumbInner +
-          '</div>' +
+
+        var thumb = document.createElement('div');
+        thumb.className = 'pres-thumb';
+        thumb.style.cssText = 'display:none;position:relative;align-items:center;justify-content:center;background:var(--surface-alt,var(--border));height:130px;overflow:hidden;';
+        if (p.customerLogoSrc) {
+          var img = document.createElement('img');
+          img.alt = '';
+          img.style.cssText = 'width:100%;height:100%;object-fit:contain;display:block;';
+          img.crossOrigin = 'anonymous';
+          img.addEventListener('load', function () { detectLogoBg(img, thumb); });
+          img.src = p.customerLogoSrc;
+          thumb.appendChild(img);
+        } else {
+          var span = document.createElement('span');
+          span.textContent = initials;
+          thumb.appendChild(span);
+        }
+
+        li.appendChild(thumb);
+        var rest = document.createElement('div');
+        rest.style.cssText = 'display:contents;';
+        rest.innerHTML =
           '<div class="pres-body" style="flex:1;min-width:0;">' +
             '<div class="pres-name" style="font-size:14px;font-weight:600;color:var(--text);">' + escDash(p.customerName) + '</div>' +
             '<div class="pres-meta" style="font-size:12px;color:var(--muted);margin-top:2px;">' +
@@ -562,6 +608,7 @@
             '<button class="btn-duplicate" data-id="' + p.id + '" style="border:1px solid var(--border);color:var(--text);background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;cursor:pointer;white-space:nowrap;">Duplicate</button>' +
             '<button class="btn-delete" data-id="' + p.id + '" style="border:1px solid #e55;color:#e55;background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;cursor:pointer;white-space:nowrap;">Delete</button>' +
           '</div>';
+        li.appendChild(rest);
 
         li.querySelector('.btn-edit').addEventListener('click', function () {
           openEditModal(p, li);
