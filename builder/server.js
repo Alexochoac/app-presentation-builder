@@ -3087,6 +3087,8 @@ function buildFrozenPresentation(presentation) {
 
   var library   = JSON.parse(fs.readFileSync(LIBRARY_PATH,  'utf8'));
   var templates = JSON.parse(fs.readFileSync(TEMPLATES_PATH, 'utf8'));
+  var appSettings = readSettings();
+  var umamiWebsiteId = appSettings.umamiWebsiteId || '';
 
   // Image path mappings: URL prefix → filesystem dir
   var imgRoots = [
@@ -3242,6 +3244,7 @@ function buildFrozenPresentation(presentation) {
     '    .fp-extras-item { display: block; width: 100%; text-align: left; background: none; border: none; color: #ccc; font-size: 13px; font-family: system-ui, sans-serif; padding: 8px 16px; cursor: pointer; }',
     '    .fp-extras-item:hover { background: rgba(255,255,255,0.08); color: #fff; }',
     '  </style>',
+    (umamiWebsiteId ? '  <script defer src="https://umami.wbtm.io/script.js" data-website-id="' + umamiWebsiteId + '"></script>' : ''),
     '</head>',
     '<body>',
     '<div id="fp-shell">',
@@ -3385,7 +3388,10 @@ function makePresId(customerName) {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, 40) || 'untitled';
-  return 'pres-' + slug + '-' + Date.now();
+  var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+  var count = (data.presentations || []).length + 1;
+  var seq = String(count).padStart(8, '0');
+  return slug + '-' + seq;
 }
 
 // POST /api/presentations/rebuild-all — regenerate all frozen HTML files

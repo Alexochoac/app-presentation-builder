@@ -165,11 +165,13 @@ window.Lightbox = (function () {
         if (lbEl) lbEl.classList.toggle('has-carousel', !!activeCarousel);
 
         // Fire tracking
-        var track = el.getAttribute('data-track');
-        if (track && window.Track) {
-          var parts = track.split(':');
-          if (parts.length >= 3) Track.zoom(parts[0], parts.slice(2).join('-'));
-          else Track.event(track);
+        if (window.Track) {
+          var track = el.getAttribute('data-track');
+          var sid = track ? track.split(':')[0] : Track.slideId(el);
+          if (sid) {
+            var label = el.alt || el.getAttribute('data-alt') || (track ? track.split(':').slice(2).join('-') : '');
+            Track.zoom(sid, label);
+          }
         }
       });
     });

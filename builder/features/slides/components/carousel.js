@@ -592,14 +592,26 @@ window.Carousel = (function () {
       var slides = getSlides();
       goTo(idx > 0 ? idx - 1 : slides.length - 1);
       resetTimer();
-      if (trackId && window.Track) Track.carousel(trackId.split(':')[0], 'prev');
+      if (window.Track) {
+        var sid = trackId ? trackId.split(':')[0] : Track.slideId(el);
+        if (sid) {
+          var img = getSlides()[idx] && getSlides()[idx].querySelector('img');
+          Track.carousel(sid, 'prev', img ? (img.alt || '') : '');
+        }
+      }
     });
 
     nextBtn.addEventListener('click', function () {
       var slides = getSlides();
       goTo(idx < slides.length - 1 ? idx + 1 : 0);
       resetTimer();
-      if (trackId && window.Track) Track.carousel(trackId.split(':')[0], 'next');
+      if (window.Track) {
+        var sid = trackId ? trackId.split(':')[0] : Track.slideId(el);
+        if (sid) {
+          var img = getSlides()[idx] && getSlides()[idx].querySelector('img');
+          Track.carousel(sid, 'next', img ? (img.alt || '') : '');
+        }
+      }
     });
 
     // ── Pause autoplay on hover ─────────────────────────────────────────────

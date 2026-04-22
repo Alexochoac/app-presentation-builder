@@ -31,7 +31,7 @@ var __dirname = BUILDER_DIR; // override so path.join(__dirname, ...) resolves c
 eval(
   extractFn('function readSettings()', 'function writeSettings') + '\n' +
   serverLines.slice(171, 2791).join('\n') + '\n' +
-  extractFn('function buildFrozenPresentation(', '\n// GET /api/presentations')
+  extractFn('function buildFrozenPresentation(', '\nfunction makePresId(')
 );
 
 // ── CLI entry point ────────────────────────────────────────────────────────────

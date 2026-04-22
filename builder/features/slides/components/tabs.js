@@ -91,7 +91,14 @@ window.Tabs = (function () {
       var activePanel = panelsEl.querySelector('.ls-tab-panel.active');
       if (activePanel && window.Carousel) Carousel.init(activePanel);
       if (activePanel && window.LSTable)  LSTable.init(activePanel);
-      if (trackId && window.Track) Track.click(trackId.split(':')[0], 'tab-' + panelId);
+      if (window.Track) {
+        var sid = trackId ? trackId.split(':')[0] : Track.slideId(el);
+        if (sid) {
+          var activeTab = getTabs().filter(function (t) { return t.dataset.panel === panelId; })[0];
+          var label = activeTab ? (activeTab.textContent || '').trim() : panelId;
+          Track.tab(sid, label);
+        }
+      }
     }
 
     function saveTabs() {
