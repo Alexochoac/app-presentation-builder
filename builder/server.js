@@ -3129,7 +3129,7 @@ function buildFrozenPresentation(presentation) {
 
   // Read and inline CSS + JS
   var slidesCss = fs.readFileSync(path.join(__dirname, 'features', 'slides', 'style.css'), 'utf8');
-  var components = ['lightbox', 'carousel', 'tabs', 'list', 'table'];
+  var components = ['tracker', 'lightbox', 'carousel', 'tabs', 'list', 'table'];
   var inlineJs = components.map(function (c) {
     return fs.readFileSync(path.join(__dirname, 'features', 'slides', 'components', c + '.js'), 'utf8');
   }).join('\n');
