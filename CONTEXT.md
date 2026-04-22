@@ -113,6 +113,10 @@ All content slides now use this structure:
 - [x] **Duplicate presentation** — clone with reconfigured customer settings (2026-04-21)
 - [x] **Hidden slides visual + output behavior** — hidden slides excluded from counts and frozen output (2026-04-21)
 - [x] **Duplicate published link** — fixed `umamiId` scope bug (ReferenceError in `.catch`) + added published link to duplicate card immediately on success (2026-04-22)
+- [x] **Dashboard filter bar** — real-time search + date range (Flatpickr) + custom sort dropdown; `allItems` array + `applyFilters()` pattern (2026-04-22)
+- [x] **Auto-scan components folder** — `buildFrozenPresentation()` uses `fs.readdirSync` instead of hardcoded array (2026-04-22)
+- [x] **button.js + tags.js** — shared components auto-attach `Track.click()` to `.slide-btn` / `.slide-tag` on load (2026-04-22)
+- [x] **slide-library.json path fix** — `../shared/CostOfQualityDefects.png` → `/slides/uploads/CostOfQualityDefects.png` (2026-04-22)
 - [ ] **GitHub Pages publish** — `POST /api/presentations/:id/publish` + Publish button on Dashboard
 - [ ] **Design system refactor** (carried) — eliminate 3-layer CSS conflict; one source of truth in style.css
 - [ ] Delete old `dashboard.css`
@@ -124,4 +128,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-04-22 (session 6)
+Last updated: 2026-04-22 (session 7)

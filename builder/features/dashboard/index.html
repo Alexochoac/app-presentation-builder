@@ -5,6 +5,136 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard — Presentation Builder</title>
   <link rel="stylesheet" href="/shared/app-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    /* ── Flatpickr dark-mode overrides ── */
+    .flatpickr-calendar {
+      background: #111 !important;
+      border: 1px solid rgba(255,255,255,0.12) !important;
+      border-radius: 12px !important;
+      box-shadow: 0 12px 40px rgba(0,0,0,.7) !important;
+      font-family: inherit !important;
+      color: #fff !important;
+      z-index: 99999 !important;
+    }
+    .flatpickr-months .flatpickr-month,
+    .flatpickr-weekdays,
+    span.flatpickr-weekday {
+      background: #111 !important;
+      color: rgba(255,255,255,.5) !important;
+      fill: rgba(255,255,255,.5) !important;
+      border-radius: 12px 12px 0 0 !important;
+    }
+    .flatpickr-current-month .flatpickr-monthDropdown-months,
+    .flatpickr-current-month input.cur-year {
+      color: #fff !important;
+      background: transparent !important;
+    }
+    .flatpickr-innerContainer { background: #111 !important; border-radius: 0 0 12px 12px !important; }
+    .flatpickr-rContainer, .flatpickr-days { background: #111 !important; }
+    .dayContainer { background: #111 !important; }
+    .flatpickr-day {
+      color: #fff !important;
+      border-radius: 8px !important;
+    }
+    .flatpickr-day:hover { background: rgba(255,255,255,0.1) !important; border-color: transparent !important; }
+    .flatpickr-day.selected,
+    .flatpickr-day.startRange,
+    .flatpickr-day.endRange {
+      background: #F5A623 !important;
+      border-color: #F5A623 !important;
+      color: #000 !important;
+    }
+    .flatpickr-day.inRange {
+      background: rgba(245,166,35,0.2) !important;
+      border-color: transparent !important;
+      box-shadow: none !important;
+    }
+    .flatpickr-day.flatpickr-disabled,
+    .flatpickr-day.prevMonthDay,
+    .flatpickr-day.nextMonthDay { color: rgba(255,255,255,.25) !important; }
+    .flatpickr-months .flatpickr-prev-month,
+    .flatpickr-months .flatpickr-next-month { color: #fff !important; fill: #fff !important; }
+    .flatpickr-months .flatpickr-prev-month svg,
+    .flatpickr-months .flatpickr-next-month svg { fill: #fff !important; }
+
+    /* ── Filter bar ── */
+    #filterBar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .filter-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 12px;
+      height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: border-color .15s, background .15s;
+    }
+    .filter-pill:focus-within,
+    .filter-pill.active { border-color: var(--accent); }
+    .filter-pill input,
+    .filter-pill select {
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+      min-width: 0;
+    }
+    .filter-pill input[type="search"] { width: 200px; }
+    #filterDateBtn { border: 1px solid var(--border); border-radius: 999px; }
+    #filterDateBtn.active { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--bg)); }
+    #filterDateClear {
+      display: none;
+      font-size: 15px;
+      line-height: 1;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0 2px;
+    }
+    #filterDateClear:hover { color: var(--text); }
+
+    /* ── Custom sort dropdown ── */
+    #sortDropdown { position: relative; }
+    #sortTrigger { cursor: pointer; user-select: none; }
+    #sortTrigger .chevron { font-size: 10px; opacity: .5; transition: transform .15s; }
+    #sortTrigger.open .chevron { transform: rotate(180deg); }
+    #sortMenu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      min-width: 150px;
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 4px;
+      box-shadow: 0 10px 36px rgba(0,0,0,.7);
+      z-index: 9999;
+    }
+    #sortMenu.open { display: block; }
+    .sort-option {
+      padding: 8px 12px;
+      border-radius: 7px;
+      font-size: 13px;
+      color: rgba(255,255,255,.8);
+      cursor: pointer;
+      transition: background .1s;
+    }
+    .sort-option:hover { background: rgba(255,255,255,.08); color: #fff; }
+    .sort-option.selected { color: #F5A623; font-weight: 600; }
+  </style>
 </head>
 <body>
 
@@ -80,7 +210,42 @@
         </div>
       </div>
 
+      <!-- Filter bar -->
+      <div id="filterBar">
+        <!-- Search pill -->
+        <label class="filter-pill" style="flex:1;min-width:180px;max-width:320px;">
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5;flex-shrink:0;"><circle cx="9" cy="9" r="6"/><line x1="14" y1="14" x2="19" y2="19"/></svg>
+          <input id="filterSearch" type="search" placeholder="Search by company or contact…">
+        </label>
+
+        <!-- Date range pill (Flatpickr) -->
+        <div style="position:relative;">
+          <button id="filterDateBtn" class="filter-pill" type="button">
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5;flex-shrink:0;"><rect x="2" y="4" width="16" height="14" rx="2"/><line x1="2" y1="8" x2="18" y2="8"/><line x1="6" y1="2" x2="6" y2="6"/><line x1="14" y1="2" x2="14" y2="6"/></svg>
+            <span id="filterDateLabel">All dates</span>
+            <span id="filterDateClear" title="Clear date filter">×</span>
+          </button>
+          <input id="filterDateInput" type="text" readonly style="position:absolute;bottom:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none;">
+        </div>
+
+        <!-- Sort pill (custom dropdown) -->
+        <div id="sortDropdown">
+          <button id="sortTrigger" class="filter-pill" type="button">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5;flex-shrink:0;"><line x1="2" y1="4" x2="14" y2="4"/><line x1="4" y1="8" x2="12" y2="8"/><line x1="6" y1="12" x2="10" y2="12"/></svg>
+            <span id="sortLabel">Newest first</span>
+            <span class="chevron">▼</span>
+          </button>
+          <div id="sortMenu">
+            <div class="sort-option selected" data-value="newest">Newest first</div>
+            <div class="sort-option" data-value="oldest">Oldest first</div>
+            <div class="sort-option" data-value="az">A → Z</div>
+            <div class="sort-option" data-value="za">Z → A</div>
+          </div>
+        </div>
+      </div>
+
       <p class="deck-empty hidden" id="finishedEmpty">No finished presentations yet.</p>
+      <p class="deck-empty hidden" id="finishedNoMatch">No presentations match your search.</p>
       <ul class="finished-list" id="finishedList" style="list-style:none;padding:0;margin:0;"></ul>
     </section>
 
@@ -143,6 +308,7 @@
   </div>
 </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <style>
     #finishedList.grid-view {
       display: grid;
@@ -219,6 +385,8 @@
     // ── Load Finished Presentations ──────────────────────────────────
     (function () {
       var umamiId = '';
+      var allItems = [];
+
       Promise.all([
         fetch('/api/presentations').then(function (r) { return r.json(); }),
         fetch('/api/settings').then(function (r) { return r.json(); })
@@ -227,78 +395,196 @@
           var res      = results[0];
           var settings = results[1].data || {};
           umamiId  = settings.umamiWebsiteId || '';
+          allItems = res.data || [];
 
-          var list    = document.getElementById('finishedList');
-          var empty   = document.getElementById('finishedEmpty');
-          var items   = (res.data || []);
-
-          if (items.length === 0) {
-            empty.classList.remove('hidden');
+          if (allItems.length === 0) {
+            document.getElementById('finishedEmpty').classList.remove('hidden');
             return;
           }
 
-          empty.classList.add('hidden');
-          items.forEach(function (p) {
-            var initials = (p.customerName || '?').trim().split(/\s+/).map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase();
-            var thumbInner = p.customerLogoSrc
-              ? '<img src="' + p.customerLogoSrc + '" alt="" style="width:100%;height:100%;object-fit:cover;">'
-              : '<span>' + initials + '</span>';
-            var presUrl = 'https://app-presentation-builder.pages.dev/finished-presentations/' + p.id;
-            var trackingHtml = umamiId
-              ? '<div class="pres-tracking" style="font-size:11px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:4px;">' +
-                  '<span style="opacity:0.5;">Published:</span>' +
-                  '<a href="' + presUrl + '" target="_blank" rel="noopener" style="color:var(--accent,#7c8cf8);text-decoration:none;font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + presUrl + '">' +
-                    presUrl +
-                  '</a>' +
-                '</div>'
-              : '';
-            var li = document.createElement('li');
-            li.className = 'pres-item';
-            li.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);';
-            li.innerHTML =
-              '<div class="pres-thumb" style="display:none;position:relative;align-items:center;justify-content:center;background:var(--surface-alt,var(--border));height:130px;overflow:hidden;">' +
-                thumbInner +
-              '</div>' +
-              '<div class="pres-body" style="flex:1;min-width:0;">' +
-                '<div class="pres-name" style="font-size:14px;font-weight:600;color:var(--text);">' + escDash(p.customerName) + '</div>' +
-                '<div class="pres-meta" style="font-size:12px;color:var(--muted);margin-top:2px;">' +
-                  (p.contactName ? escDash(p.contactName) + (p.contactTitle ? ' · ' + escDash(p.contactTitle) : '') + ' · ' : '') +
-                  p.slideCount + ' slides · ' + p.createdAt +
-                '</div>' +
-                trackingHtml +
-              '</div>' +
-              '<div class="pres-actions" style="display:flex;gap:6px;flex-shrink:0;">' +
-                '<a href="/view/' + p.id + '" style="border:1px solid var(--accent);color:var(--accent);background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;text-decoration:none;white-space:nowrap;">View</a>' +
-                '<button class="btn-edit" data-id="' + p.id + '" style="border:1px solid var(--border);color:var(--text);background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;cursor:pointer;white-space:nowrap;">Edit</button>' +
-                '<button class="btn-duplicate" data-id="' + p.id + '" style="border:1px solid var(--border);color:var(--text);background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;cursor:pointer;white-space:nowrap;">Duplicate</button>' +
-                '<button class="btn-delete" data-id="' + p.id + '" style="border:1px solid #e55;color:#e55;background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;cursor:pointer;white-space:nowrap;">Delete</button>' +
-              '</div>';
-
-            li.querySelector('.btn-edit').addEventListener('click', function () {
-              openEditModal(p, li);
-            });
-            li.querySelector('.btn-duplicate').addEventListener('click', function () {
-              openDupModal(p);
-            });
-            li.querySelector('.btn-delete').addEventListener('click', function () {
-              var id = this.getAttribute('data-id');
-              var name = li.querySelector('.pres-name').textContent;
-              if (!confirm('Delete presentation for "' + name + '"? This cannot be undone.')) return;
-              var btn = this;
-              fetch('/api/presentations/' + id, { method: 'DELETE' })
-                .then(function (r) { return r.json(); })
-                .then(function (res) {
-                  if (res.success) { btn.closest('li').remove(); }
-                  else { alert('Delete failed: ' + res.error); }
-                })
-                .catch(function () { alert('Delete failed.'); });
-            });
-            list.appendChild(li);
-          });
+          applyFilters();
+          bindFilterControls();
         })
         .catch(function () {
           document.getElementById('finishedEmpty').classList.remove('hidden');
         });
+
+      function applyFilters() {
+        var q        = document.getElementById('filterSearch').value.trim().toLowerCase();
+        var dateFrom = window._fpDates ? window._fpDates[0] : '';
+        var dateTo   = window._fpDates ? (window._fpDates[1] || window._fpDates[0]) : '';
+        var sort     = window._sortValue || 'newest';
+        var list    = document.getElementById('finishedList');
+        var empty   = document.getElementById('finishedEmpty');
+        var noMatch = document.getElementById('finishedNoMatch');
+
+        var filtered = allItems.filter(function (p) {
+          if (q && !(
+            (p.customerName || '').toLowerCase().includes(q) ||
+            (p.contactName  || '').toLowerCase().includes(q)
+          )) return false;
+          var d = (p.createdAt || '');
+          if (dateFrom && d < dateFrom) return false;
+          if (dateTo   && d > dateTo)   return false;
+          return true;
+        });
+
+        filtered = filtered.slice().sort(function (a, b) {
+          var da = a.createdAt || '', db = b.createdAt || '';
+          var na = (a.customerName || ''), nb = (b.customerName || '');
+          if (sort === 'oldest') return da < db ? -1 : da > db ? 1 : a.id < b.id ? -1 : 1;
+          if (sort === 'az')     return na.localeCompare(nb) || (da > db ? -1 : 1);
+          if (sort === 'za')     return nb.localeCompare(na) || (da > db ? -1 : 1);
+          return da > db ? -1 : da < db ? 1 : a.id > b.id ? -1 : 1; // newest
+        });
+
+        list.innerHTML = '';
+        empty.classList.add('hidden');
+        noMatch.classList.add('hidden');
+
+        if (filtered.length === 0) {
+          if (allItems.length > 0) noMatch.classList.remove('hidden');
+          else empty.classList.remove('hidden');
+          return;
+        }
+
+        filtered.forEach(function (p) { list.appendChild(buildItem(p)); });
+      }
+
+      function bindFilterControls() {
+        document.getElementById('filterSearch').addEventListener('input', applyFilters);
+        window._sortValue = 'newest';
+
+        // Custom sort dropdown
+        var sortTrigger = document.getElementById('sortTrigger');
+        var sortMenu    = document.getElementById('sortMenu');
+        sortTrigger.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var open = sortMenu.classList.toggle('open');
+          sortTrigger.classList.toggle('open', open);
+        });
+        sortMenu.querySelectorAll('.sort-option').forEach(function (opt) {
+          opt.addEventListener('click', function () {
+            window._sortValue = this.dataset.value;
+            document.getElementById('sortLabel').textContent = this.textContent;
+            sortMenu.querySelectorAll('.sort-option').forEach(function (o) { o.classList.remove('selected'); });
+            this.classList.add('selected');
+            sortMenu.classList.remove('open');
+            sortTrigger.classList.remove('open');
+            applyFilters();
+          });
+        });
+        document.addEventListener('click', function () {
+          sortMenu.classList.remove('open');
+          sortTrigger.classList.remove('open');
+        });
+
+        // Flatpickr date range
+        var fp = flatpickr('#filterDateInput', {
+          mode: 'range',
+          dateFormat: 'Y-m-d',
+          disableMobile: true,
+          onChange: function (selectedDates, dateStr) {
+            window._fpDates = selectedDates.map(function (d) {
+              var y  = d.getFullYear();
+              var m  = String(d.getMonth() + 1).padStart(2, '0');
+              var dy = String(d.getDate()).padStart(2, '0');
+              return y + '-' + m + '-' + dy;
+            });
+            var btn   = document.getElementById('filterDateBtn');
+            var label = document.getElementById('filterDateLabel');
+            var clear = document.getElementById('filterDateClear');
+            if (selectedDates.length === 0) {
+              window._fpDates = null;
+              label.textContent = 'All dates';
+              btn.classList.remove('active');
+              clear.style.display = 'none';
+            } else if (selectedDates.length === 1) {
+              label.textContent = fmtDate(selectedDates[0]);
+              btn.classList.add('active');
+              clear.style.display = 'inline';
+            } else {
+              label.textContent = fmtDate(selectedDates[0]) + ' → ' + fmtDate(selectedDates[1]);
+              btn.classList.add('active');
+              clear.style.display = 'inline';
+            }
+            applyFilters();
+          }
+        });
+
+        document.getElementById('filterDateBtn').addEventListener('click', function (e) {
+          if (e.target.id === 'filterDateClear') return;
+          fp.open();
+        });
+
+        document.getElementById('filterDateClear').addEventListener('click', function (e) {
+          e.stopPropagation();
+          fp.clear();
+        });
+      }
+
+      function fmtDate(d) {
+        return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+      }
+
+      function buildItem(p) {
+        var initials = (p.customerName || '?').trim().split(/\s+/).map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase();
+        var thumbInner = p.customerLogoSrc
+          ? '<img src="' + p.customerLogoSrc + '" alt="" style="width:100%;height:100%;object-fit:cover;">'
+          : '<span>' + initials + '</span>';
+        var presUrl = 'https://app-presentation-builder.pages.dev/finished-presentations/' + p.id;
+        var trackingHtml = umamiId
+          ? '<div class="pres-tracking" style="font-size:11px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:4px;">' +
+              '<span style="opacity:0.5;">Published:</span>' +
+              '<a href="' + presUrl + '" target="_blank" rel="noopener" style="color:var(--accent,#7c8cf8);text-decoration:none;font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + presUrl + '">' +
+                presUrl +
+              '</a>' +
+            '</div>'
+          : '';
+        var li = document.createElement('li');
+        li.className = 'pres-item';
+        li.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);';
+        li.innerHTML =
+          '<div class="pres-thumb" style="display:none;position:relative;align-items:center;justify-content:center;background:var(--surface-alt,var(--border));height:130px;overflow:hidden;">' +
+            thumbInner +
+          '</div>' +
+          '<div class="pres-body" style="flex:1;min-width:0;">' +
+            '<div class="pres-name" style="font-size:14px;font-weight:600;color:var(--text);">' + escDash(p.customerName) + '</div>' +
+            '<div class="pres-meta" style="font-size:12px;color:var(--muted);margin-top:2px;">' +
+              (p.contactName ? escDash(p.contactName) + (p.contactTitle ? ' · ' + escDash(p.contactTitle) : '') + ' · ' : '') +
+              p.slideCount + ' slides · ' + p.createdAt +
+            '</div>' +
+            trackingHtml +
+          '</div>' +
+          '<div class="pres-actions" style="display:flex;gap:6px;flex-shrink:0;">' +
+            '<a href="/view/' + p.id + '" style="border:1px solid var(--accent);color:var(--accent);background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;text-decoration:none;white-space:nowrap;">View</a>' +
+            '<button class="btn-edit" data-id="' + p.id + '" style="border:1px solid var(--border);color:var(--text);background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;cursor:pointer;white-space:nowrap;">Edit</button>' +
+            '<button class="btn-duplicate" data-id="' + p.id + '" style="border:1px solid var(--border);color:var(--text);background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;cursor:pointer;white-space:nowrap;">Duplicate</button>' +
+            '<button class="btn-delete" data-id="' + p.id + '" style="border:1px solid #e55;color:#e55;background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;cursor:pointer;white-space:nowrap;">Delete</button>' +
+          '</div>';
+
+        li.querySelector('.btn-edit').addEventListener('click', function () {
+          openEditModal(p, li);
+        });
+        li.querySelector('.btn-duplicate').addEventListener('click', function () {
+          openDupModal(p);
+        });
+        li.querySelector('.btn-delete').addEventListener('click', function () {
+          var name = li.querySelector('.pres-name').textContent;
+          if (!confirm('Delete presentation for "' + name + '"? This cannot be undone.')) return;
+          var btn = this;
+          fetch('/api/presentations/' + p.id, { method: 'DELETE' })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+              if (res.success) {
+                allItems = allItems.filter(function (x) { return x.id !== p.id; });
+                applyFilters();
+              } else { alert('Delete failed: ' + res.error); }
+            })
+            .catch(function () { alert('Delete failed.'); });
+        });
+        return li;
+      }
 
       function escDash(str) {
         var d = document.createElement('div');
@@ -346,19 +632,12 @@
               btn.disabled = false;
               btn.textContent = 'Save';
               if (!res.success) { alert('Save failed: ' + res.error); return; }
-              var p  = res.data;
-              var li = _editTarget.li;
-              li.querySelector('[style*="font-weight:600"]').textContent = p.customerName;
-              var sub = li.querySelectorAll('div > div')[1];
-              sub.textContent =
-                (p.contactName ? p.contactName + (p.contactTitle ? ' · ' + p.contactTitle : '') + ' · ' : '') +
-                p.slideCount + ' slides · ' + p.createdAt;
-              if (p.customerLogoSrc) {
-                var thumb = li.querySelector('.pres-thumb');
-                if (thumb) thumb.innerHTML = '<img src="' + p.customerLogoSrc + '" alt="" style="width:100%;height:100%;object-fit:cover;">';
-              }
+              var p = res.data;
+              var idx = allItems.findIndex(function (x) { return x.id === p.id; });
+              if (idx !== -1) allItems[idx] = p;
               document.getElementById('editModal').style.display = 'none';
               _editTarget = null;
+              applyFilters();
             })
             .catch(function () { btn.disabled = false; btn.textContent = 'Save'; alert('Save failed.'); });
         }
@@ -425,54 +704,8 @@
               btn.textContent = 'Duplicate';
               if (!res.success) { alert('Duplicate failed: ' + res.error); return; }
               document.getElementById('dupModal').style.display = 'none';
-              var p = res.data;
-              var initials = (p.customerName || '?').trim().split(/\s+/).map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase();
-              var thumbInner = p.customerLogoSrc
-                ? '<img src="' + p.customerLogoSrc + '" alt="" style="width:100%;height:100%;object-fit:cover;">'
-                : '<span>' + initials + '</span>';
-              var dupPresUrl = 'https://app-presentation-builder.pages.dev/finished-presentations/' + p.id;
-              var dupTrackingHtml = umamiId
-                ? '<div class="pres-tracking" style="font-size:11px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:4px;">' +
-                    '<span style="opacity:0.5;">Published:</span>' +
-                    '<a href="' + dupPresUrl + '" target="_blank" rel="noopener" style="color:var(--accent,#7c8cf8);text-decoration:none;font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + dupPresUrl + '">' +
-                      dupPresUrl +
-                    '</a>' +
-                  '</div>'
-                : '';
-              var li = document.createElement('li');
-              li.className = 'pres-item';
-              li.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);';
-              li.innerHTML =
-                '<div class="pres-thumb" style="display:none;position:relative;align-items:center;justify-content:center;background:var(--surface-alt,var(--border));height:130px;overflow:hidden;">' +
-                  thumbInner +
-                '</div>' +
-                '<div class="pres-body" style="flex:1;min-width:0;">' +
-                  '<div class="pres-name" style="font-size:14px;font-weight:600;color:var(--text);">' + escDash(p.customerName) + '</div>' +
-                  '<div class="pres-meta" style="font-size:12px;color:var(--muted);margin-top:2px;">' +
-                    (p.contactName ? escDash(p.contactName) + (p.contactTitle ? ' · ' + escDash(p.contactTitle) : '') + ' · ' : '') +
-                    p.slideCount + ' slides · ' + p.createdAt +
-                  '</div>' +
-                  dupTrackingHtml +
-                '</div>' +
-                '<div class="pres-actions" style="display:flex;gap:6px;flex-shrink:0;">' +
-                  '<a href="/view/' + p.id + '" style="border:1px solid var(--accent);color:var(--accent);background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;text-decoration:none;white-space:nowrap;">View</a>' +
-                  '<button class="btn-edit" data-id="' + p.id + '" style="border:1px solid var(--border);color:var(--text);background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;cursor:pointer;white-space:nowrap;">Edit</button>' +
-                  '<button class="btn-duplicate" data-id="' + p.id + '" style="border:1px solid var(--border);color:var(--text);background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;cursor:pointer;white-space:nowrap;">Duplicate</button>' +
-                  '<button class="btn-delete" data-id="' + p.id + '" style="border:1px solid #e55;color:#e55;background:transparent;border-radius:20px;padding:4px 12px;font-size:12px;cursor:pointer;white-space:nowrap;">Delete</button>' +
-                '</div>';
-              li.querySelector('.btn-edit').addEventListener('click', function () { openEditModal(p, li); });
-              li.querySelector('.btn-duplicate').addEventListener('click', function () { openDupModal(p); });
-              li.querySelector('.btn-delete').addEventListener('click', function () {
-                var id = p.id;
-                if (!confirm('Delete presentation for "' + p.customerName + '"? This cannot be undone.')) return;
-                fetch('/api/presentations/' + id, { method: 'DELETE' })
-                  .then(function (r) { return r.json(); })
-                  .then(function (dr) { if (dr.success) li.remove(); else alert('Delete failed: ' + dr.error); })
-                  .catch(function () { alert('Delete failed.'); });
-              });
-              var list = document.getElementById('finishedList');
-              list.insertBefore(li, list.firstChild);
-              document.getElementById('finishedEmpty').classList.add('hidden');
+              allItems.unshift(res.data);
+              applyFilters();
             })
             .catch(function () {
               btn.disabled = false;
