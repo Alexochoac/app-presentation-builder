@@ -92,7 +92,7 @@ window.Tabs = (function () {
       if (activePanel && window.Carousel) Carousel.init(activePanel);
       if (activePanel && window.LSTable)  LSTable.init(activePanel);
       if (window.Track) {
-        var sid = trackId ? trackId.split(':')[0] : Track.slideId(el);
+        var sid = Track.slideId(el);
         if (sid) {
           var activeTab = getTabs().filter(function (t) { return t.dataset.panel === panelId; })[0];
           var label = activeTab ? (activeTab.textContent || '').trim() : panelId;

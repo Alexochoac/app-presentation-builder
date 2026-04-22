@@ -593,7 +593,7 @@ window.Carousel = (function () {
       goTo(idx > 0 ? idx - 1 : slides.length - 1);
       resetTimer();
       if (window.Track) {
-        var sid = trackId ? trackId.split(':')[0] : Track.slideId(el);
+        var sid = Track.slideId(el);
         if (sid) {
           var img = getSlides()[idx] && getSlides()[idx].querySelector('img');
           Track.carousel(sid, 'prev', img ? (img.alt || '') : '');
@@ -606,7 +606,7 @@ window.Carousel = (function () {
       goTo(idx < slides.length - 1 ? idx + 1 : 0);
       resetTimer();
       if (window.Track) {
-        var sid = trackId ? trackId.split(':')[0] : Track.slideId(el);
+        var sid = Track.slideId(el);
         if (sid) {
           var img = getSlides()[idx] && getSlides()[idx].querySelector('img');
           Track.carousel(sid, 'next', img ? (img.alt || '') : '');

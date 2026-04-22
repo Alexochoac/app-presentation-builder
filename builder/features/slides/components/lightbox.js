@@ -166,9 +166,9 @@ window.Lightbox = (function () {
 
         // Fire tracking
         if (window.Track) {
-          var track = el.getAttribute('data-track');
-          var sid = track ? track.split(':')[0] : Track.slideId(el);
+          var sid = Track.slideId(el);
           if (sid) {
+            var track = el.getAttribute('data-track');
             var label = el.alt || el.getAttribute('data-alt') || (track ? track.split(':').slice(2).join('-') : '');
             Track.zoom(sid, label);
           }

@@ -3168,6 +3168,9 @@ function buildFrozenPresentation(presentation) {
     $('[spellcheck]').removeAttr('spellcheck');
     $('[data-edit="customer-logo"]').removeAttr('onclick').removeAttr('title');
     $('input[type="file"]').remove();
+    // Set data-slide to human-readable slug so Track events use consistent names
+    var slideSlug = (s.name || s.id).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    $('[data-slide]').first().attr('data-slide', slideSlug);
     fragment = $.html('body > *') || $.html();
 
     // Rewrite image paths
@@ -3197,6 +3200,8 @@ function buildFrozenPresentation(presentation) {
     $('[spellcheck]').removeAttr('spellcheck');
     $('[data-edit="customer-logo"]').removeAttr('onclick').removeAttr('title');
     $('input[type="file"]').remove();
+    var slideSlug = (s.name || s.id).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    $('[data-slide]').first().attr('data-slide', slideSlug);
     fragment = $.html('body > *') || $.html();
     fragment = rewriteImagePaths(fragment);
 
@@ -3319,6 +3324,8 @@ function buildFrozenPresentation(presentation) {
     '    if (backBtn)   backBtn.style.display = "none";',
     '    if (extrasPanel) extrasPanel.style.display = "none";',
     '    initSlide(mainSlides[idx]);',
+    '    var dsEl = mainSlides[idx].querySelector("[data-slide]");',
+    '    if (window.Track && dsEl) Track.event("slide-" + dsEl.getAttribute("data-slide"), { label: mainNames[idx] + "-view" });',
     '  }',
     '',
     '  function goToOptional(n) {',
@@ -3335,6 +3342,8 @@ function buildFrozenPresentation(presentation) {
     '    if (backBtn)   backBtn.style.display = "";',
     '    if (extrasPanel) extrasPanel.style.display = "none";',
     '    initSlide(optSlides[n]);',
+    '    var dsEl = optSlides[n].querySelector("[data-slide]");',
+    '    if (window.Track && dsEl) Track.event("slide-" + dsEl.getAttribute("data-slide"), { label: optNames[n] + "-view" });',
     '  }',
     '',
     '  prevBtn.addEventListener("click", function () { if (!inOptional) goTo(idx - 1); });',
