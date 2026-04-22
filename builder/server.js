@@ -3101,12 +3101,14 @@ function buildFrozenPresentation(presentation) {
   var copiedAssets = {}; // src url → relative path used in output
 
   function resolveAndCopyAsset(src) {
-    if (!src || src.startsWith('data:') || src.startsWith('http')) return src;
+    if (!src || src.startsWith('data:')) return src;
+    // Strip localhost origin so saved builder URLs are treated as local paths
+    src = src.replace(/^https?:\/\/localhost(:\d+)?/, '');
     if (copiedAssets[src]) return copiedAssets[src];
     for (var i = 0; i < imgRoots.length; i++) {
       var root = imgRoots[i];
       if (src.startsWith(root.prefix)) {
-        var filename = src.slice(root.prefix.length);
+        var filename = decodeURIComponent(src.slice(root.prefix.length));
         var srcPath  = path.join(root.dir, filename);
         if (fs.existsSync(srcPath)) {
           var safeName = filename.replace(/[^a-zA-Z0-9._-]/g, '_');
@@ -3121,10 +3123,13 @@ function buildFrozenPresentation(presentation) {
   }
 
   function rewriteImagePaths(html) {
-    // Rewrite src="..." and src='...' attributes
     return html
       .replace(/\bsrc="([^"]+)"/g, function (_, s) { return 'src="' + resolveAndCopyAsset(s) + '"'; })
-      .replace(/\bsrc='([^']+)'/g, function (_, s) { return "src='" + resolveAndCopyAsset(s) + "'"; });
+      .replace(/\bsrc='([^']+)'/g, function (_, s) { return "src='" + resolveAndCopyAsset(s) + "'"; })
+      .replace(/url\((['"]?)([^'")]+)\1\)/g, function (_, q, s) {
+        var rewritten = resolveAndCopyAsset(s);
+        return 'url(' + q + rewritten + q + ')';
+      });
   }
 
   // Read and inline CSS + JS
