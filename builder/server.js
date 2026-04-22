@@ -3134,10 +3134,11 @@ function buildFrozenPresentation(presentation) {
 
   // Read and inline CSS + JS
   var slidesCss = fs.readFileSync(path.join(__dirname, 'features', 'slides', 'style.css'), 'utf8');
-  var components = ['tracker', 'lightbox', 'carousel', 'tabs', 'list', 'table'];
-  var inlineJs = components.map(function (c) {
-    return fs.readFileSync(path.join(__dirname, 'features', 'slides', 'components', c + '.js'), 'utf8');
-  }).join('\n');
+  var componentsDir = path.join(__dirname, 'features', 'slides', 'components');
+  var inlineJs = fs.readdirSync(componentsDir)
+    .filter(function (f) { return f.endsWith('.js'); })
+    .map(function (f) { return fs.readFileSync(path.join(componentsDir, f), 'utf8'); })
+    .join('\n');
 
   // Per-presentation cover overrides (never written back to library)
   var coverEdits = {};

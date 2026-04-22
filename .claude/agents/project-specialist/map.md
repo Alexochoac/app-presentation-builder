@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-04-21 (session 5)
+Last updated: 2026-04-22 (session 6)
 
 ---
 
@@ -115,7 +115,7 @@ Browser → Express (server.js)
               ├── GET  /api/presentations/:id  ← returns single presentation
               ├── PUT  /api/presentations/:id  ← edit name/contact/title
               ├── DELETE /api/presentations/:id ← delete presentation + frozen folder (fs.rmSync)
-              ├── POST /api/presentations/:id/duplicate ← NEW (2026-04-21): clone presentation with reconfigured customer settings
+              ├── POST /api/presentations/:id/duplicate ← clone presentation with reconfigured customer settings; duplicate card renders immediately with published link
               ├── Static: /finished           → finished-presentations/ (frozen outputs)
               ├── GET  /view/:id              ← redirects to /finished/:presId/ if frozen file exists; else live viewer
               ├── POST /api/presentations/:id/publish ← PLANNED: GitHub Pages publish
@@ -345,6 +345,7 @@ Additional per-slide fixes:
 - **dashboard.css** — legacy file, should be deleted
 - **Image caption editing** — no UI to edit `img.alt`
 - **Builder header reposition** — `.builder-header` may need to move into slide container (task: builder-preview-header-move-to-slide-container)
+- **`umamiId` scope** — fixed: was declared inside `.then()` callback; hoisted to IIFE scope so duplicate handler can access it
 
 ---
 
