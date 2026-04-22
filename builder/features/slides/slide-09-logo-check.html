@@ -90,7 +90,7 @@
             for (var i = 0; i < Math.abs(delta); i++) { if (btn) btn.click(); }
           }
         }
-        if (window.Track) Track.click('ls9', tag.textContent.trim().toLowerCase().replace(/\s+/g,'-'));
+        if (window.Track) Track.click(Track.slideId(tag), tag.textContent.trim().toLowerCase().replace(/\s+/g,'-'));
       });
     });
   }, 100);
