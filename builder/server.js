@@ -1872,7 +1872,7 @@ function renderDefectGalleryLayout(slideId, savedEdits) {
     '      var label = document.createElement(\'span\');',
     '      label.textContent = d.name;',
     '      btn.appendChild(label);',
-    '      btn.addEventListener(\'click\', function () { showDefect(i); });',
+    '      btn.addEventListener(\'click\', function () { showDefect(i); if (window.Track) Track.click(Track.slideId(btn), d.name); });',
     '      selector.appendChild(btn);',
     '    });',
     '',

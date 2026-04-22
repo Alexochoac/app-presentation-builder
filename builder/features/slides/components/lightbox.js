@@ -46,6 +46,14 @@ window.Lightbox = (function () {
   function lbNext() { return document.getElementById('lb-next'); }
   function lbThumbs(){ return document.getElementById('lb-thumbs'); }
 
+  // ── Fire tracking for current gallery image ──────────────────────────────
+  function trackCurrent() {
+    if (!window.Track || !gallery.length) return;
+    var item = gallery[galIdx] || {};
+    var label = item.track ? item.track.split(':').slice(2).join('-') : (item.caption || '');
+    if (item.slideId) Track.zoom(item.slideId, label);
+  }
+
   // ── Render current gallery index ─────────────────────────────────────────
   function render() {
     var item = gallery[galIdx] || {};
@@ -73,7 +81,7 @@ window.Lightbox = (function () {
           var ti = document.createElement('img');
           ti.src = item.src; ti.alt = item.caption || '';
           t.appendChild(ti);
-          t.addEventListener('click', function () { galIdx = i; render(); });
+          t.addEventListener('click', function () { galIdx = i; render(); trackCurrent(); });
           thumbsEl.appendChild(t);
         });
       }
@@ -114,8 +122,8 @@ window.Lightbox = (function () {
   document.addEventListener('keydown', function (e) {
     var l = lb(); if (!l || !l.classList.contains('on')) return;
     if (e.key === 'Escape')      close();
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown')  { if (galIdx < gallery.length - 1) { galIdx++; render(); } }
-    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    { if (galIdx > 0) { galIdx--; render(); } }
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown')  { if (galIdx < gallery.length - 1) { galIdx++; render(); trackCurrent(); } }
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    { if (galIdx > 0) { galIdx--; render(); trackCurrent(); } }
   });
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -127,8 +135,8 @@ window.Lightbox = (function () {
     if (closeB) closeB.addEventListener('click', close);
     if (l) l.addEventListener('click', function (e) { if (e.target === l || e.target.id === 'lb-inner' || e.target === lbImg()) { if (e.target !== lbImg()) close(); } });
 
-    if (prev) prev.addEventListener('click', function () { if (galIdx > 0) { galIdx--; render(); } });
-    if (next) next.addEventListener('click', function () { if (galIdx < gallery.length - 1) { galIdx++; render(); } });
+    if (prev) prev.addEventListener('click', function () { if (galIdx > 0) { galIdx--; render(); trackCurrent(); } });
+    if (next) next.addEventListener('click', function () { if (galIdx < gallery.length - 1) { galIdx++; render(); trackCurrent(); } });
   });
 
   // ── init(root) — wire [data-zoom] elements ────────────────────────────────
@@ -145,16 +153,17 @@ window.Lightbox = (function () {
         var group = el.closest('[data-zoom-group]');
         var items, startIdx;
 
+        var sid = window.Track ? Track.slideId(el) : '';
         if (group) {
           var siblings = Array.from(group.querySelectorAll('[data-zoom]'));
           items    = siblings.map(function (s) {
-            return { src: s.src || s.getAttribute('data-src') || '', caption: s.alt || s.getAttribute('data-alt') || '' };
+            return { src: s.src || s.getAttribute('data-src') || '', caption: s.alt || s.getAttribute('data-alt') || '', track: s.getAttribute('data-track') || '', slideId: sid };
           });
           startIdx = siblings.indexOf(el);
           // Track which carousel triggered this open for sync-back on close
           activeCarousel = group.classList.contains('ls-carousel') ? group : null;
         } else {
-          items    = [{ src: el.src || el.getAttribute('data-src') || '', caption: el.alt || el.getAttribute('data-alt') || '' }];
+          items    = [{ src: el.src || el.getAttribute('data-src') || '', caption: el.alt || el.getAttribute('data-alt') || '', track: el.getAttribute('data-track') || '', slideId: sid }];
           startIdx = 0;
           activeCarousel = null;
         }
@@ -164,15 +173,7 @@ window.Lightbox = (function () {
         var lbEl = lb();
         if (lbEl) lbEl.classList.toggle('has-carousel', !!activeCarousel);
 
-        // Fire tracking
-        if (window.Track) {
-          var sid = Track.slideId(el);
-          if (sid) {
-            var track = el.getAttribute('data-track');
-            var label = el.alt || el.getAttribute('data-alt') || (track ? track.split(':').slice(2).join('-') : '');
-            Track.zoom(sid, label);
-          }
-        }
+        trackCurrent();
       });
     });
   }
