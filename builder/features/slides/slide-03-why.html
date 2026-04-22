@@ -195,6 +195,7 @@
       hideBtn.title = isNew ? 'Delete' : 'Hide';
       hideBtn.onclick = function(e) {
         e.stopPropagation();
+        if (window.Track) Track.click(Track.slideId(hideBtn), { component: 'why-list', action: 'hide' });
         if (isNew) {
           li.remove();
         } else {
@@ -204,7 +205,7 @@
             var chip = document.createElement('button');
             chip.className = 'why3-restore-chip';
             chip.textContent = '+ ' + text;
-            chip.onclick = function(ev) { ev.stopPropagation(); li.classList.remove('why3-hidden'); chip.remove(); };
+            chip.onclick = function(ev) { ev.stopPropagation(); if (window.Track) Track.click(Track.slideId(chip), { component: 'why-list', action: 'restore' }); li.classList.remove('why3-hidden'); chip.remove(); };
             restoreArea.appendChild(chip);
           }
         }
@@ -272,7 +273,7 @@
         var chip = document.createElement('button');
         chip.className = 'why3-restore-chip';
         chip.textContent = '+ ' + text;
-        chip.onclick = function(ev) { ev.stopPropagation(); li.classList.remove('why3-hidden'); chip.remove(); };
+        chip.onclick = function(ev) { ev.stopPropagation(); if (window.Track) Track.click(Track.slideId(chip), { component: 'why-list', action: 'restore' }); li.classList.remove('why3-hidden'); chip.remove(); };
         restoreArea.appendChild(chip);
       });
     }
@@ -280,6 +281,7 @@
     if (addBtn) {
       addBtn.onclick = function(e) {
         e.stopPropagation();
+        if (window.Track) Track.click(Track.slideId(addBtn), { component: 'why-list', action: 'add' });
         var li = document.createElement('li');
         li.className = itemClass;
         li.textContent = 'New item';

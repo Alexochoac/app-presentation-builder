@@ -697,6 +697,7 @@
 
   window.ls4OpenAutoModal = function(e) {
     e.stopPropagation();
+    if (window.Track) Track.click(Track.slideId(e.target), { component: 'auto-modal', action: 'open' });
     var modal = document.getElementById('ls4-auto-modal');
     if (modal.parentNode !== document.body) document.body.appendChild(modal);
     modal.classList.add('on');
@@ -704,11 +705,13 @@
   window.ls4CloseAutoModal = function(e, force) {
     if (force || e.target === document.getElementById('ls4-auto-modal')) {
       document.getElementById('ls4-auto-modal').classList.remove('on');
+      if (window.Track) Track.event('ls4:auto-modal:close', { component: 'auto-modal', action: 'close' });
     }
   };
 
   window.ls4MoveCard = function(btn, dir, e) {
     e.stopPropagation();
+    if (window.Track) Track.click(Track.slideId(btn), { component: 'process-card', action: 'move', label: dir === -1 ? 'up' : 'down' });
     var card = btn.closest('.ls4-proc-card');
     var list = card.parentElement;
     var cards = Array.from(list.children);
@@ -722,7 +725,9 @@
   window.ls4ToggleCard = function(btn, e) {
     e.stopPropagation();
     var card = btn.closest('.ls4-proc-card');
+    var label = (card.querySelector('.ls4-proc-card-label') || {}).textContent || '';
     var collapsed = card.classList.toggle('ls4-collapsed');
+    if (window.Track) Track.click(Track.slideId(btn), { component: 'process-card', action: 'toggle', label: label.trim() });
     btn.textContent = collapsed ? '+' : '✕';
     btn.title = collapsed ? 'Show' : 'Hide';
   };

@@ -96,6 +96,7 @@
     Lightbox.openGallery([
       { src: '/slides/uploads/Slide30.jpg', caption: 'Individual tolerances per measurement' }
     ], 0);
+    if (window.Track) Track.event('ls7:expand:tolerances');
   };
   window.ls7OpenConveyor = function () {
     Lightbox.openGallery([

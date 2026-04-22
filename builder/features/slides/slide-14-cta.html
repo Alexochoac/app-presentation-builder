@@ -95,6 +95,15 @@
     document.addEventListener('DOMContentLoaded', syncLinks);
     var emailEl = document.querySelector('[data-edit="contact-email"]');
     if (emailEl) emailEl.addEventListener('input', syncLinks);
+
+    var waBtn = document.querySelector('.cta-btn-wa');
+    if (waBtn) waBtn.addEventListener('click', function() {
+      if (window.Track) Track.click(Track.slideId(waBtn), { component: 'cta', label: 'whatsapp', action: 'click' });
+    });
+    var emailBtn2 = document.querySelector('.cta-btn-email');
+    if (emailBtn2) emailBtn2.addEventListener('click', function() {
+      if (window.Track) Track.click(Track.slideId(emailBtn2), { component: 'cta', label: 'email', action: 'click' });
+    });
   })();
   </script>
 </div>
