@@ -1,12 +1,12 @@
 {
   "presentations": [
     {
-      "id": "test-00000004",
+      "id": "softsolution-00000003",
       "createdAt": "2026-04-22",
-      "customerName": "Test",
-      "contactName": "Test",
-      "contactTitle": "Test",
-      "customerLogoSrc": "/slides/uploads/Customers_Thumbs_Up__2_.jpg",
+      "customerName": "SoftSolution",
+      "contactName": "Juan Ochoa",
+      "contactTitle": "Head of Quality",
+      "customerLogoSrc": "/slides/uploads/LOGO_LineScanner_Black_and_White.png",
       "slideCount": 14,
       "slides": [
         {

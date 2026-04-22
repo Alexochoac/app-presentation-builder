@@ -88,3 +88,10 @@ Then open: http://localhost:3000/preview.html
 - Uploaded images served via `/slides/uploads/` (builder local only)
 - Customer configs live in `customers/[name]/config.json`
 - Secrets (passwords, GitHub token) go in `.env` — never hardcoded
+
+## Analytics Conventions
+- **Every new component must include umami.track() calls** for all user interactions (clicks, opens, navigations, etc.)
+- Tracking calls live inside the component JS file (tabs.js, carousel.js, etc.) — written once, fires in every presentation that uses that component
+- Read the slide identifier at runtime: `el.closest('[data-slide]')?.dataset.slide`
+- Follow the naming convention in the softsolution project's `docs/umami-guidelines.md`: event name = slide id, properties = component + label + action
+- Example: `umami.track(slideId, { component: 'carousel', label: itemTitle, action: 'next' })`
