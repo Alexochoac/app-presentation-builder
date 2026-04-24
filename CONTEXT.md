@@ -117,6 +117,9 @@ All content slides now use this structure:
 - [x] **Auto-scan components folder** — `buildFrozenPresentation()` uses `fs.readdirSync` instead of hardcoded array (2026-04-22)
 - [x] **button.js + tags.js** — shared components auto-attach `Track.click()` to `.slide-btn` / `.slide-tag` on load (2026-04-22)
 - [x] **slide-library.json path fix** — `../shared/CostOfQualityDefects.png` → `/slides/uploads/CostOfQualityDefects.png` (2026-04-22)
+- [x] **JS crash fix** — `carousel-file` and `logo-file` listeners guarded with `if (!window.PB_READONLY)` so finished presentations don't crash on load (2026-04-24)
+- [x] **Benteler presentation** — new `benteler-00000001` deck created with customer logo and slides (2026-04-24)
+- [x] **Cover slide + carousel updates** — slide-01-cover.html and carousel.js improved (2026-04-24)
 - [ ] **GitHub Pages publish** — `POST /api/presentations/:id/publish` + Publish button on Dashboard
 - [ ] **Design system refactor** (carried) — eliminate 3-layer CSS conflict; one source of truth in style.css
 - [ ] Delete old `dashboard.css`
@@ -128,4 +131,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-04-22 (session 7)
+Last updated: 2026-04-24 (session 8)
