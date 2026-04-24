@@ -97,6 +97,25 @@
     }
     #lb-add-image:hover { background:rgba(245,166,35,.25); }
     #lightbox.has-carousel #lb-add-image { display:block; }
+    #unsavedModal {
+      display:none; position:fixed; inset:0; z-index:99999;
+      background:rgba(0,0,0,.6); align-items:center; justify-content:center;
+    }
+    #unsavedModal.open { display:flex; }
+    #unsavedModal .modal-box {
+      background:#1a1a1a; border:1px solid rgba(255,255,255,.12); border-radius:12px;
+      padding:28px 32px; max-width:360px; width:90%; text-align:center;
+    }
+    #unsavedModal h3 { margin:0 0 8px; font-size:15px; color:#fff; font-weight:700; }
+    #unsavedModal p  { margin:0 0 24px; font-size:13px; color:rgba(255,255,255,.5); line-height:1.5; }
+    #unsavedModal .modal-actions { display:flex; gap:10px; justify-content:center; }
+    #unsavedModal button {
+      padding:8px 20px; border-radius:8px; border:none; font-size:13px;
+      font-weight:700; cursor:pointer; font-family:inherit;
+    }
+    #unsavedModal #modalSave    { background:#F5A623; color:#111; }
+    #unsavedModal #modalDiscard { background:rgba(255,255,255,.1); color:rgba(255,255,255,.7); }
+    #unsavedModal #modalCancel  { background:transparent; color:rgba(255,255,255,.4); border:1px solid rgba(255,255,255,.15); }
     body { padding-top: 48px; }
     #slidesContainer { height: calc(100dvh - 48px); }
   </style>
@@ -108,7 +127,7 @@
 
   <div id="header">
     <div id="header-left">
-      <a id="backBtn" href="#" onclick="history.back(); return false;">&#8592; Back</a>
+      <a id="backBtn" href="#" onclick="handleBack(); return false;">&#8592; Back</a>
       <div id="presTitle">Builder Preview</div>
     </div>
     <div id="header-center">
@@ -137,6 +156,18 @@
       <button id="lb-next" class="lb-nav-btn">&#8250;</button>
       <div id="lb-thumbs"></div>
       <button id="lb-add-image" title="Add image to this carousel">+ Add Image</button>
+    </div>
+  </div>
+
+  <div id="unsavedModal">
+    <div class="modal-box">
+      <h3>Unsaved Changes</h3>
+      <p>Your last edit may not have saved yet.<br>Save before leaving?</p>
+      <div class="modal-actions">
+        <button id="modalSave">Save &amp; Back</button>
+        <button id="modalDiscard">Discard</button>
+        <button id="modalCancel">Cancel</button>
+      </div>
     </div>
   </div>
 
@@ -319,10 +350,13 @@
     var editKey  = e.detail.editKey || 'carousel-track';
     var body     = { slide: slideDef.file.replace('/slides/', '').replace('.html', ''), edits: {} };
     if (e.detail.html != null) body.edits[editKey] = e.detail.html;
-    if (e.detail.autoplay) {
+    if (e.detail.autoplay != null) {
       body.attrs = {};
       body.attrs[editKey] = { 'data-autoplay': e.detail.autoplay };
+      body.edits['__attr:' + editKey + ':data-autoplay'] = String(e.detail.autoplay);
     }
+    console.log('[carousel-save] slideDef:', JSON.stringify({ id: slideDef.id, librarySlideId: slideDef.librarySlideId }));
+    console.log('[carousel-save] body.edits:', JSON.stringify(body.edits));
     showSaveStatus('saving');
     var carFetch;
     if (slideDef.librarySlideId) {
@@ -340,8 +374,15 @@
     }
     carFetch
       .then(function (r) { return r.json(); })
-      .then(function (d) { showSaveStatus(d.ok ? 'saved' : 'error'); })
-      .catch(function ()  { showSaveStatus('error'); });
+      .then(function (d) {
+        console.log('[carousel-save] API response:', JSON.stringify(d));
+        showSaveStatus(d.ok ? 'saved' : 'error');
+        if (d.ok) delete loaded[current];
+      })
+      .catch(function (err) {
+        console.error('[carousel-save] fetch error:', err);
+        showSaveStatus('error');
+      });
   });
 
   // ── Image change (dispatched by slides after upload) ─────────────────────
@@ -386,7 +427,7 @@
   function doSave() {
     var slideEl  = slideEls[current];
     var slideDef = SLIDES[current];
-    if (!slideEl || !slideDef) return;
+    if (!slideEl || !slideDef) return Promise.resolve();
 
     var edits = {};
     slideEl.querySelectorAll('[data-edit][contenteditable]').forEach(function (el) {
@@ -404,7 +445,7 @@
     });
     dirtyEditKeys.clear();
 
-    if (Object.keys(edits).length === 0) return;
+    if (Object.keys(edits).length === 0) return Promise.resolve();
 
     showSaveStatus('saving');
 
@@ -426,7 +467,7 @@
       });
     }
 
-    fetchPromise
+    return fetchPromise
     .then(function (r) { return r.json(); })
     .then(function (data) {
       showSaveStatus(data.ok ? 'saved' : 'error');
@@ -472,6 +513,37 @@
   }).catch(function (err) {
     document.getElementById('slidesContainer').innerHTML =
       '<div style="color:#f87171;padding:40px;font-family:monospace">Failed to load deck: ' + err.message + '</div>';
+  });
+  // ── Back with unsaved-changes guard ──────────────────────────────────────────
+  var lastSaveState = '';
+  var origShowSaveStatus = showSaveStatus;
+  showSaveStatus = function(state) {
+    lastSaveState = state;
+    origShowSaveStatus(state);
+  };
+
+  function handleBack() {
+    var hasPending = saveTimer !== null;
+    var hasError   = lastSaveState === 'error';
+    if (!hasPending && !hasError) { history.back(); return; }
+    document.getElementById('unsavedModal').classList.add('open');
+  }
+
+  document.getElementById('modalCancel').addEventListener('click', function () {
+    document.getElementById('unsavedModal').classList.remove('open');
+  });
+
+  document.getElementById('modalDiscard').addEventListener('click', function () {
+    clearTimeout(saveTimer);
+    saveTimer = null;
+    history.back();
+  });
+
+  document.getElementById('modalSave').addEventListener('click', function () {
+    document.getElementById('unsavedModal').classList.remove('open');
+    clearTimeout(saveTimer);
+    saveTimer = null;
+    doSave().then(function () { history.back(); }).catch(function () { history.back(); });
   });
   </script>
 

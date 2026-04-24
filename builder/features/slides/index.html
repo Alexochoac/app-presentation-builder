@@ -2055,6 +2055,8 @@
 
     // ── New Slide Modal ──────────────────────────────────────────────
 
+    var _cpPreloadedLogoSrc = '';
+
     function openCreatePresentationModal() {
       document.getElementById('cpCustomerName').value = '';
       document.getElementById('cpContactName').value  = '';
@@ -2063,8 +2065,25 @@
       document.getElementById('cpLogoPreview').style.display = 'none';
       document.getElementById('cpError').classList.add('hidden');
       document.getElementById('cpError').textContent = '';
+      _cpPreloadedLogoSrc = '';
       document.getElementById('createPresentationModal').classList.remove('hidden');
       setTimeout(function () { document.getElementById('cpCustomerName').focus(); }, 50);
+
+      // Pre-populate logo from the cover slide if one exists
+      fetch('/api/slide-library')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          var coverSlide = (res.data || []).find(function (s) { return s.id === 'lib-cover'; });
+          var logoSrc = coverSlide && coverSlide.edits && coverSlide.edits['customer-logo-src'];
+          if (logoSrc && !document.getElementById('cpLogo').files[0]) {
+            _cpPreloadedLogoSrc = logoSrc;
+            var preview = document.getElementById('cpLogoPreview');
+            var img     = document.getElementById('cpLogoPreviewImg');
+            img.src = logoSrc;
+            preview.style.display = 'block';
+          }
+        })
+        .catch(function () {});
     }
 
     document.getElementById('cpLogo').addEventListener('change', function () {
@@ -2072,6 +2091,7 @@
       var preview = document.getElementById('cpLogoPreview');
       var img     = document.getElementById('cpLogoPreviewImg');
       if (file) {
+        _cpPreloadedLogoSrc = ''; // user chose a new file, discard preloaded
         var reader = new FileReader();
         reader.onload = function (e) { img.src = e.target.result; preview.style.display = 'block'; };
         reader.readAsDataURL(file);
@@ -2104,6 +2124,7 @@
       function doSubmit(logoFilename, logoData) {
         var payload = { customerName: customerName, contactName: contactName, contactTitle: contactTitle };
         if (logoFilename) { payload.logoFilename = logoFilename; payload.logoData = logoData; }
+        else if (_cpPreloadedLogoSrc) { payload.existingLogoSrc = _cpPreloadedLogoSrc; }
         fetch('/api/presentations', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

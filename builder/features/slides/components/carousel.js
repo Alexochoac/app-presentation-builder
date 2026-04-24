@@ -187,11 +187,34 @@ window.Carousel = (function () {
         autoplayIdx = (autoplayIdx + 1) % autoplaySteps.length;
         autoplayMs  = autoplaySteps[autoplayIdx];
         updateAutoLabel();
+        el.setAttribute('data-autoplay', autoplayMs ? String(autoplayMs) : '');
         clearInterval(timer);
         resetTimer();
-        document.dispatchEvent(new CustomEvent('slide-carousel-save', {
-          detail: { editKey: editKey, html: null, autoplay: autoplayMs }
-        }));
+
+        if (el.hasAttribute('data-edit')) {
+          // Carousel has its own data-edit — save via __attr: approach
+          document.dispatchEvent(new CustomEvent('slide-carousel-save', {
+            detail: { editKey: editKey, html: null, autoplay: autoplayMs }
+          }));
+        } else {
+          // No data-edit on carousel — save the nearest ancestor editable so
+          // data-autoplay is embedded in its HTML (e.g. tabs containing this carousel)
+          var parent = el.parentElement && el.parentElement.closest('[data-edit]:not(.slide)');
+          if (parent) {
+            var clone = parent.cloneNode(true);
+            clone.querySelectorAll('[data-builder-only]').forEach(function (n) { n.remove(); });
+            clone.querySelectorAll('[data-zoom-init]').forEach(function (n) { n.removeAttribute('data-zoom-init'); });
+            clone.querySelectorAll('.ls-carousel-counter').forEach(function (n) { n.remove(); });
+            document.dispatchEvent(new CustomEvent('slide-carousel-save', {
+              detail: { editKey: parent.getAttribute('data-edit'), html: clone.innerHTML }
+            }));
+          } else {
+            // Fallback: attr save with default editKey
+            document.dispatchEvent(new CustomEvent('slide-carousel-save', {
+              detail: { editKey: editKey, html: null, autoplay: autoplayMs }
+            }));
+          }
+        }
       });
 
       el.appendChild(addBtn);
@@ -614,9 +637,11 @@ window.Carousel = (function () {
       }
     });
 
-    // ── Pause autoplay on hover ─────────────────────────────────────────────
-    el.addEventListener('mouseenter', function () { clearInterval(timer); });
-    el.addEventListener('mouseleave', resetTimer);
+    // ── Pause autoplay on hover (builder only — not in readonly/viewer) ────
+    if (!window.PB_READONLY) {
+      el.addEventListener('mouseenter', function () { clearInterval(timer); });
+      el.addEventListener('mouseleave', resetTimer);
+    }
 
     // ── Touch swipe ─────────────────────────────────────────────────────────
     var touchX = 0;
@@ -653,8 +678,9 @@ window.Carousel = (function () {
       });
     }
 
-    // ── Start autoplay ──────────────────────────────────────────────────────
-    resetTimer();
+    // ── Start autoplay ─────────────────────────────────────────────────────
+    // Defer to next frame so layout is computed even if loaded inside display:none iframe
+    requestAnimationFrame(function () { goTo(0); resetTimer(); });
     updateNav();
   }
 

@@ -141,7 +141,7 @@
       margin: 16px auto 0;
       z-index: 10;
       display: flex; align-items: center; justify-content: center;
-      background: #ffffff;
+      background: #ffffff; /* overridden by detectLogoBg at runtime */
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border: 1px solid rgba(255,255,255,.18);
       border-radius: 24px; padding: 18px;
@@ -589,6 +589,43 @@
 
   })();
 
+  // ── Smart background detection for customer logo ─────────────────────────
+  function ls1DetectLogoBg(img) {
+    try {
+      var container = img.closest('.ls1-customer-logo');
+      if (!container) return;
+      var w = img.naturalWidth  || 100;
+      var h = img.naturalHeight || 100;
+      var canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      var ctx = canvas.getContext('2d', { willReadFrequently: true });
+      ctx.drawImage(img, 0, 0, w, h);
+      var size = Math.max(1, Math.round(Math.min(w, h) * 0.05));
+      var top    = ctx.getImageData(0, 0, w, size).data;
+      var bottom = ctx.getImageData(0, h - size, w, size).data;
+      var left   = ctx.getImageData(0, 0, size, h).data;
+      var right  = ctx.getImageData(w - size, 0, size, h).data;
+      var r = 0, g = 0, b = 0, a = 0, count = 0;
+      [top, bottom, left, right].forEach(function (d) {
+        for (var i = 0; i < d.length; i += 4) {
+          r += d[i]; g += d[i+1]; b += d[i+2]; a += d[i+3]; count++;
+        }
+      });
+      if (count === 0) return;
+      r = Math.round(r / count); g = Math.round(g / count);
+      b = Math.round(b / count); a = Math.round(a / count);
+      container.style.background = (a < 30) ? '#fff' : 'rgb(' + r + ',' + g + ',' + b + ')';
+    } catch (e) { /* cross-origin or tainted canvas — leave default */ }
+  }
+
+  // Apply on initial page load
+  (function () {
+    var img = document.querySelector('.ls1-cust-img');
+    if (!img) return;
+    if (img.complete && img.naturalWidth) { ls1DetectLogoBg(img); }
+    else { img.addEventListener('load', function () { ls1DetectLogoBg(img); }); }
+  })();
+
   // ── Customer logo upload ──────────────────────────────────────────────────
   (function () {
     var input = document.getElementById('ls1-logo-file');
@@ -599,6 +636,10 @@
       var img = document.querySelector('.ls1-cust-img');
       img.src = URL.createObjectURL(file);
       img.classList.remove('ls1-cust-img--missing');
+      img.addEventListener('load', function onNewLoad() {
+        ls1DetectLogoBg(img);
+        img.removeEventListener('load', onNewLoad);
+      });
       var reader = new FileReader();
       reader.onload = function (ev) {
         fetch('/api/upload-image', {

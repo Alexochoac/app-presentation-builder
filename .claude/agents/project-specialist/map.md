@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-04-22 (session 7)
+Last updated: 2026-04-24 (session 9)
 
 ---
 
@@ -286,6 +286,9 @@ function renderXxxLayout(slideId, savedEdits) {
 **⚠️ IMPORTANT — server.js is the sole source of truth for slides:**
 The `.html` files in `builder/features/slides/` and `builder/data/renderers/` are NOT served. Edits to those files have no effect. All slide CSS, HTML structure, and content must be changed inside the render functions in `server.js`. Restart the server after any change.
 
+**Cover slide — smart logo background detection (added session 8):**
+`renderHeroLayout` in `server.js` now includes a `detectLogoBg(img)` function injected into the rendered slide. On page load and after each logo upload, it samples the outer 5% border pixels of the customer logo image via canvas, averages RGBA values, and sets `.{P}-customer-logo { background }` inline — falls back to `#fff` for transparent logos (avg alpha < 30).
+
 **Mobile carousel root cause & fix pattern (session 2, 2026-04-11):**
 On mobile, `.slide-body` is `height:auto` so carousels with `flex:1` or `height:100%` collapse to 0px (invisible). Fix applied to all slides in `server.js`:
 ```css
@@ -353,15 +356,16 @@ Additional per-slide fixes:
 - **Builder header reposition** — `.builder-header` may need to move into slide container (task: builder-preview-header-move-to-slide-container)
 - **`umamiId` scope** — fixed: was declared inside `.then()` callback; hoisted to IIFE scope so duplicate handler can access it
 - **`slide-library.json` relative paths** — `../shared/` paths saved from iframe context 404 in builder. Fixed for `CostOfQualityDefects.png`. Watch for similar issues in other carousel edits
+- **File-input listeners in frozen outputs** — fixed: `carousel-file` and `logo-file` `addEventListener` calls in server.js are now guarded with `if (!window.PB_READONLY)` so finished presentations don't crash on load (was: `Cannot read properties of null (reading 'addEventListener')` at boot)
 
 ---
 
 ## What's Next
 
 1. **`POST /api/presentations/:id/publish`** — GitHub Pages publish + Publish button on Dashboard ← **main Phase 1 milestone**
-2. **Dashboard logo smart display** — show customer logo in list view rows intelligently (`task-2026-04-22-dashboard-finished-presentations-logo-smart-display.md`)
-3. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
-4. **`scripts/deploy.js`** — push to GitHub Pages
-5. Delete old `dashboard.css`
-6. Builder header reposition (move to slide container)
+2. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
+3. **`scripts/deploy.js`** — push to GitHub Pages
+4. Delete old `dashboard.css`
+5. Builder header reposition (move to slide container)
+6. **Builder Back navigation** — idea: force-save on Back instead of unsaved-changes modal (`tasks/Idea-L-2026-04-24-builder-navigation-back-force-save-no-modal.md`)
 

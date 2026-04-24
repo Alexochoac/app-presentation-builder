@@ -134,6 +134,16 @@
     }
     .sort-option:hover { background: rgba(255,255,255,.08); color: #fff; }
     .sort-option.selected { color: #F5A623; font-weight: 600; }
+
+    /* ── Modal solid backgrounds ── */
+    #editModal > div,
+    #dupModal  > div {
+      background: #1c1c1e;
+    }
+    [data-theme="light"] #editModal > div,
+    [data-theme="light"] #dupModal  > div {
+      background: #ffffff;
+    }
   </style>
 </head>
 <body>
@@ -215,7 +225,7 @@
         <!-- Search pill -->
         <label class="filter-pill" style="flex:1;min-width:180px;max-width:320px;">
           <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5;flex-shrink:0;"><circle cx="9" cy="9" r="6"/><line x1="14" y1="14" x2="19" y2="19"/></svg>
-          <input id="filterSearch" type="search" placeholder="Search by company or contact…">
+          <input id="filterSearch" type="search" placeholder="Search by name, company or contact…">
         </label>
 
         <!-- Date range pill (Flatpickr) -->
@@ -255,10 +265,14 @@
 
 <!-- Edit Presentation Modal -->
 <div id="editModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center;">
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;width:100%;max-width:400px;margin:16px;">
+  <div style="border:1px solid var(--border);border-radius:12px;padding:24px;width:100%;max-width:400px;margin:16px;">
     <h3 style="margin:0 0 16px;font-size:16px;color:var(--text);">Edit Presentation</h3>
     <label style="display:block;margin-bottom:12px;">
-      <span style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Customer Name</span>
+      <span style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Presentation Name</span>
+      <input id="editPresentationName" type="text" placeholder="e.g. Q2 Demo, Security Overview…" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:14px;">
+    </label>
+    <label style="display:block;margin-bottom:12px;">
+      <span style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Company Name</span>
       <input id="editCustomerName" type="text" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:14px;">
     </label>
     <label style="display:block;margin-bottom:12px;">
@@ -284,9 +298,13 @@
 <div id="dupModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center;">
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;width:100%;max-width:420px;margin:16px;">
     <h3 style="margin:0 0 4px;font-size:16px;color:var(--text);">Duplicate Presentation</h3>
-    <p style="margin:0 0 16px;font-size:12px;color:var(--muted);">Set new customer details for the copy.</p>
+    <p style="margin:0 0 16px;font-size:12px;color:var(--muted);">Set new details for the copy.</p>
     <label style="display:block;margin-bottom:12px;">
-      <span style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Customer Name <span style="color:#e55;">*</span></span>
+      <span style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Presentation Name</span>
+      <input id="dupPresentationName" type="text" placeholder="e.g. Q2 Demo, Security Overview…" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:14px;">
+    </label>
+    <label style="display:block;margin-bottom:12px;">
+      <span style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Company Name <span style="color:#e55;">*</span></span>
       <input id="dupCustomerName" type="text" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:14px;">
     </label>
     <label style="display:block;margin-bottom:12px;">
@@ -420,6 +438,7 @@
 
         var filtered = allItems.filter(function (p) {
           if (q && !(
+            (p.presentationName || '').toLowerCase().includes(q) ||
             (p.customerName || '').toLowerCase().includes(q) ||
             (p.contactName  || '').toLowerCase().includes(q)
           )) return false;
@@ -431,7 +450,7 @@
 
         filtered = filtered.slice().sort(function (a, b) {
           var da = a.createdAt || '', db = b.createdAt || '';
-          var na = (a.customerName || ''), nb = (b.customerName || '');
+          var na = (a.presentationName || a.customerName || ''), nb = (b.presentationName || b.customerName || '');
           if (sort === 'oldest') return da < db ? -1 : da > db ? 1 : a.id < b.id ? -1 : 1;
           if (sort === 'az')     return na.localeCompare(nb) || (da > db ? -1 : 1);
           if (sort === 'za')     return nb.localeCompare(na) || (da > db ? -1 : 1);
@@ -559,7 +578,8 @@
       }
 
       function buildItem(p) {
-        var initials = (p.customerName || '?').trim().split(/\s+/).map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase();
+        var displayName = p.presentationName || p.customerName || '?';
+        var initials = displayName.trim().split(/\s+/).map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase();
         var presUrl = 'https://app-presentation-builder.pages.dev/finished-presentations/' + p.id;
         var trackingHtml = umamiId
           ? '<div class="pres-tracking" style="font-size:11px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:4px;">' +
@@ -595,7 +615,10 @@
         rest.style.cssText = 'display:contents;';
         rest.innerHTML =
           '<div class="pres-body" style="flex:1;min-width:0;">' +
-            '<div class="pres-name" style="font-size:14px;font-weight:600;color:var(--text);">' + escDash(p.customerName) + '</div>' +
+            '<div class="pres-name" style="font-size:14px;font-weight:600;color:var(--text);">' +
+              escDash(p.customerName || '?') +
+              (p.presentationName ? '<span style="font-weight:400;color:var(--muted);"> — ' + escDash(p.presentationName) + '</span>' : '') +
+            '</div>' +
             '<div class="pres-meta" style="font-size:12px;color:var(--muted);margin-top:2px;">' +
               (p.contactName ? escDash(p.contactName) + (p.contactTitle ? ' · ' + escDash(p.contactTitle) : '') + ' · ' : '') +
               p.slideCount + ' slides · ' + p.createdAt +
@@ -642,6 +665,7 @@
       var _editTarget = null;
       function openEditModal(pres, liEl) {
         _editTarget = { pres: pres, li: liEl };
+        document.getElementById('editPresentationName').value = pres.presentationName || '';
         document.getElementById('editCustomerName').value = pres.customerName || '';
         document.getElementById('editContactName').value  = pres.contactName  || '';
         document.getElementById('editContactTitle').value = pres.contactTitle || '';
@@ -667,6 +691,7 @@
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+              presentationName: document.getElementById('editPresentationName').value.trim(),
               customerName:  document.getElementById('editCustomerName').value.trim(),
               contactName:   document.getElementById('editContactName').value.trim(),
               contactTitle:  document.getElementById('editContactTitle').value.trim(),
@@ -707,6 +732,7 @@
 
       function openDupModal(pres) {
         _dupSourceId = pres.id;
+        document.getElementById('dupPresentationName').value = pres.presentationName || '';
         document.getElementById('dupCustomerName').value = pres.customerName || '';
         document.getElementById('dupContactName').value  = pres.contactName  || '';
         document.getElementById('dupContactTitle').value = pres.contactTitle || '';
@@ -738,6 +764,7 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+              presentationName: document.getElementById('dupPresentationName').value.trim(),
               customerName:  name,
               contactName:   document.getElementById('dupContactName').value.trim(),
               contactTitle:  document.getElementById('dupContactTitle').value.trim(),
