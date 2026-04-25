@@ -120,10 +120,12 @@ All content slides now use this structure:
 - [x] **JS crash fix** — `carousel-file` and `logo-file` listeners guarded with `if (!window.PB_READONLY)` so finished presentations don't crash on load (2026-04-24)
 - [x] **Benteler presentation** — new `benteler-00000001` deck created with customer logo and slides (2026-04-24)
 - [x] **Cover slide + carousel updates** — slide-01-cover.html and carousel.js improved (2026-04-24)
+- [x] **Dashboard — Views Overview** — bar chart (Chart.js 4) with date filter dropdown, presentations multi-select dropdown with search, Overview tab, logo-click-to-filter; "Coming Soon" badge; mock data only (2026-04-25)
 - [ ] **GitHub Pages publish** — `POST /api/presentations/:id/publish` + Publish button on Dashboard
 - [ ] **Design system refactor** (carried) — eliminate 3-layer CSS conflict; one source of truth in style.css
 - [ ] Delete old `dashboard.css`
 - [ ] `scripts/deploy.js` — push to GitHub Pages
+- [ ] **Views Overview — live data** — wire chart to real Umami analytics API when tracking is active
 
 ## Phase Roadmap
 - **Phase 1** (current) — Local app, single user, build + publish
@@ -131,4 +133,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-04-24 (session 8)
+Last updated: 2026-04-25 (session 9)
