@@ -179,8 +179,23 @@ window.Tabs = (function () {
         saveTabs();
       });
       tabBtn.addEventListener('keydown', function (e) {
+        if (!tabBtn.isContentEditable) return;
+        e.stopPropagation(); // prevent slide navigation from stealing keys
         if (e.key === 'Enter') { e.preventDefault(); tabBtn.blur(); }
         if (e.key === 'Escape') { e.preventDefault(); tabBtn.blur(); }
+        if (e.key === ' ') {
+          // buttons swallow space (activation key); insert manually
+          e.preventDefault();
+          var sel = window.getSelection();
+          if (sel && sel.rangeCount) {
+            var range = sel.getRangeAt(0);
+            range.deleteContents();
+            range.insertNode(document.createTextNode(' '));
+            range.collapse(false);
+            sel.removeAllRanges();
+            sel.addRange(range);
+          }
+        }
       });
     }
 

@@ -2265,9 +2265,21 @@
           var created = (res && res.data) ? res.data : res;
           librarySlides.push(created);
           closeNewSlideModal();
-          switchTab('library');
-          renderLibraryGrid();
-          showToast('Slide added to My Library');
+
+          return fetch('/api/deck/slides', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ librarySlideId: created.id })
+          })
+            .then(function (r) { return r.json(); })
+            .then(function (deckRes) {
+              var deckSlide = (deckRes && deckRes.data) ? deckRes.data : deckRes;
+              deckSlide.name = created.name;
+              deckSlides.push(deckSlide);
+              renderDeckList();
+              renderLibraryGrid();
+              showToast('Slide added to library and deck');
+            });
         })
         .catch(function () {
           showToast('Could not create slide. Try again.');
@@ -2401,13 +2413,18 @@
         });
       })(slide);
 
-      // Delete button
+      // Delete button — disabled while slide is in the deck
       var delBtn = document.createElement('button');
       delBtn.className = 'btn-delete';
       delBtn.textContent = 'Delete';
-      (function (s) {
-        delBtn.addEventListener('click', function () { deleteLibrarySlide(s.id); });
-      })(slide);
+      if (inDeck) {
+        delBtn.disabled = true;
+        delBtn.title = 'Remove from deck before deleting';
+      } else {
+        (function (s) {
+          delBtn.addEventListener('click', function () { deleteLibrarySlide(s.id); });
+        })(slide);
+      }
 
       actions.appendChild(deckBtn);
       actions.appendChild(editBtn);
@@ -2426,6 +2443,7 @@
         btn.classList.remove('active');
         btn.textContent = '+ Add to Deck';
         deckSlides = deckSlides.filter(function (s) { return s.id !== existingDeckSlide.id; });
+        renderDeckList();
 
         fetch('/api/deck/slides/' + existingDeckSlide.id, { method: 'DELETE' })
           .catch(function () {
@@ -2447,7 +2465,10 @@
           .then(function (r) { return r.json(); })
           .then(function (res) {
             var newDeckSlide = (res && res.data) ? res.data : res;
-            if (newDeckSlide && newDeckSlide.id) {
+            var libSlide = librarySlides.find(function (s) { return s.id === librarySlideId; });
+            if (libSlide && libSlide.name) newDeckSlide.name = libSlide.name;
+            var alreadyInMemory = deckSlides.some(function (s) { return s.id === newDeckSlide.id; });
+            if (newDeckSlide && newDeckSlide.id && !alreadyInMemory) {
               insertDeckSlideInOrder(newDeckSlide);
               renderDeckList();
             }

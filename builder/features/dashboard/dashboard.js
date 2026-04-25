@@ -192,7 +192,7 @@ function buildLibCard(item) {
 
   card.querySelector('.btn-add').addEventListener('click', function (e) {
     e.stopPropagation();
-    addSlide(item);
+    addSlide(item, e.currentTarget);
   });
 
   if (item.category === 'custom') {
@@ -247,12 +247,24 @@ function removeSlide(id) {
   renderLibrary();
 }
 
-function addSlide(item) {
-  if (getDeckIds().has(item.id)) return;
-  deck.slides.push({ id: item.id, visible: true });
-  putDeck().catch(console.error);
-  renderDeck();
-  renderLibrary();
+async function addSlide(item, btn) {
+  if (btn) { btn.disabled = true; btn.textContent = 'Adding…'; }
+  try {
+    const res = await fetch('/api/deck/slides', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ librarySlideId: item.id })
+    });
+    if (!res.ok) throw new Error('POST /api/deck/slides failed');
+    const json = await res.json();
+    deck.slides.push(json.data);
+    renderDeck();
+    renderLibrary();
+    if (btn) { btn.textContent = 'Added ✓'; setTimeout(function () { btn.textContent = 'Add'; btn.disabled = false; }, 1500); }
+  } catch (e) {
+    console.error('Failed to add slide:', e);
+    if (btn) { btn.textContent = 'Add'; btn.disabled = false; }
+  }
 }
 
 // ── Clone Slide ────────────────────────────────────────────────────────────

@@ -323,7 +323,8 @@
 
   // ── Keyboard ─────────────────────────────────────────────────────────────────
   document.addEventListener('keydown', function (e) {
-    if (e.target.getAttribute('contenteditable')) return; // don't hijack while editing
+    if (e.target.isContentEditable) return;
+    if (['BUTTON', 'A', 'INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.tagName)) return;
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ')     { e.preventDefault(); goTo(current + 1,  1); }
     if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp'   || e.key === 'Backspace') { e.preventDefault(); goTo(current - 1, -1); }
   });
