@@ -135,6 +135,120 @@
     .sort-option:hover { background: rgba(255,255,255,.08); color: #fff; }
     .sort-option.selected { color: #F5A623; font-weight: 600; }
 
+    /* ── Views Overview ── */
+    .coming-soon-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(245,166,35,0.15);
+      border: 1px solid rgba(245,166,35,0.4);
+      color: #F5A623;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      vertical-align: middle;
+      margin-left: 8px;
+      position: relative;
+      top: -1px;
+    }
+    #viewsDateDropdown { position: relative; }
+    #viewsDateTrigger { cursor: pointer; user-select: none; }
+    #viewsDateTrigger .chevron { font-size: 10px; opacity: .5; transition: transform .15s; }
+    #viewsDateTrigger.open .chevron { transform: rotate(180deg); }
+    .views-floating-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      min-width: 160px;
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 4px;
+      box-shadow: 0 10px 36px rgba(0,0,0,.7);
+      z-index: 9999;
+    }
+    .views-floating-menu.open { display: block; }
+    [data-theme="light"] .views-floating-menu { background: #fff; border-color: rgba(0,0,0,0.1); box-shadow: 0 10px 36px rgba(0,0,0,.15); }
+    [data-theme="light"] .views-floating-menu .sort-option { color: rgba(0,0,0,.75); }
+    [data-theme="light"] .views-floating-menu .sort-option:hover { background: rgba(0,0,0,.05); color: #000; }
+    .views-tab {
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 12px;
+      cursor: pointer;
+      transition: border-color .15s, color .15s, background .15s;
+      white-space: nowrap;
+    }
+    .views-tab:hover { color: var(--text); border-color: rgba(255,255,255,0.3); }
+    [data-theme="light"] .views-tab:hover { border-color: rgba(0,0,0,0.3); }
+    .views-tab.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 10%, var(--bg));
+    }
+    #viewsPresDropdown { position: relative; }
+    #viewsPresTrigger { cursor: pointer; user-select: none; }
+    #viewsPresTrigger .chevron { font-size: 10px; opacity: .5; transition: transform .15s; }
+    #viewsPresTrigger.open .chevron { transform: rotate(180deg); }
+    #viewsPresMenu {
+      min-width: 220px;
+      left: 0;
+      right: auto;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+    .views-pres-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 7px;
+      font-size: 13px;
+      color: rgba(255,255,255,.8);
+      cursor: pointer;
+      transition: background .1s;
+    }
+    .views-pres-row:hover { background: rgba(255,255,255,.08); }
+    [data-theme="light"] .views-pres-row { color: rgba(0,0,0,.75); }
+    [data-theme="light"] .views-pres-row:hover { background: rgba(0,0,0,.05); }
+    .views-pres-row input[type="checkbox"] { accent-color: #F5A623; width: 14px; height: 14px; cursor: pointer; flex-shrink: 0; }
+    #viewsCustomDateBtn {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      margin-left: 4px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--accent);
+      background: color-mix(in srgb, var(--accent) 10%, var(--bg));
+      color: var(--accent);
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .pres-thumb-clickable { cursor: pointer; }
+    .pres-thumb-clickable:hover { opacity: .85; }
+    .pres-thumb-clickable::after {
+      content: 'Filter chart';
+      position: absolute;
+      bottom: 6px;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: 10px;
+      color: #fff;
+      background: rgba(0,0,0,.55);
+      padding: 3px 0;
+      opacity: 0;
+      transition: opacity .15s;
+    }
+    .pres-thumb-clickable:hover::after { opacity: 1; }
+
     /* ── Modal solid backgrounds ── */
     #editModal > div,
     #dupModal  > div {
@@ -206,6 +320,49 @@
 
   <!-- Main Content -->
   <main class="main">
+
+    <!-- Views Overview -->
+    <section class="panel" style="overflow:visible;position:relative;z-index:10;">
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">Views Overview <span class="coming-soon-badge">Coming Soon</span></h2>
+          <p class="panel-subtitle">Presentation views over time</p>
+        </div>
+        <div id="viewsDateDropdown">
+          <button id="viewsDateTrigger" class="filter-pill" type="button">
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5;flex-shrink:0;"><rect x="2" y="4" width="16" height="14" rx="2"/><line x1="2" y1="8" x2="18" y2="8"/><line x1="6" y1="2" x2="6" y2="6"/><line x1="14" y1="2" x2="14" y2="6"/></svg>
+            <span id="viewsDateLabel">Last 7 days</span>
+            <span class="chevron">&#9660;</span>
+          </button>
+          <div id="viewsDateMenu" class="views-floating-menu">
+            <div class="sort-option selected" data-value="7d">Last 7 days</div>
+            <div class="sort-option" data-value="24h">Last 24 hours</div>
+            <div class="sort-option" data-value="30d">Last 30 days</div>
+            <div class="sort-option" data-value="custom">Custom…</div>
+          </div>
+          <input id="viewsDateInput" type="text" readonly style="position:absolute;bottom:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none;">
+        </div>
+      </div>
+      <div style="position:relative;height:240px;margin-top:8px;">
+        <canvas id="viewsChart"></canvas>
+      </div>
+      <div id="viewsTabs" style="display:flex;gap:6px;margin-top:16px;flex-wrap:wrap;align-items:center;">
+        <button class="views-tab active" data-id="all">Overview</button>
+        <!-- Presentations dropdown -->
+        <div id="viewsPresDropdown">
+          <button id="viewsPresTrigger" class="views-tab" type="button">
+            <span id="viewsPresLabel">All presentations</span>
+            <span class="chevron" style="margin-left:4px;">&#9660;</span>
+          </button>
+          <div id="viewsPresMenu" class="views-floating-menu"></div>
+        </div>
+        <button id="viewsCustomDateBtn" type="button">
+          <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.7;flex-shrink:0;"><rect x="2" y="4" width="16" height="14" rx="2"/><line x1="2" y1="8" x2="18" y2="8"/><line x1="6" y1="2" x2="6" y2="6"/><line x1="14" y1="2" x2="14" y2="6"/></svg>
+          <span id="viewsCustomDateLabel">Pick dates</span>
+          <span style="opacity:.5;cursor:pointer;" id="viewsCustomDateClear" title="Clear">×</span>
+        </button>
+      </div>
+    </section>
 
     <!-- Finished Presentations -->
     <section class="panel">
@@ -326,6 +483,7 @@
   </div>
 </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <style>
     #finishedList.grid-view {
@@ -414,6 +572,8 @@
           var settings = results[1].data || {};
           umamiId  = settings.umamiWebsiteId || '';
           allItems = res.data || [];
+          window._viewsPresentations = allItems;
+          document.dispatchEvent(new CustomEvent('viewsPresentationsLoaded', { detail: allItems }));
 
           if (allItems.length === 0) {
             document.getElementById('finishedEmpty').classList.remove('hidden');
@@ -594,8 +754,12 @@
         li.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);';
 
         var thumb = document.createElement('div');
-        thumb.className = 'pres-thumb';
+        thumb.className = 'pres-thumb pres-thumb-clickable';
+        thumb.title = 'Filter chart to this presentation';
         thumb.style.cssText = 'display:none;position:relative;align-items:center;justify-content:center;background:var(--surface-alt,var(--border));height:130px;overflow:hidden;';
+        thumb.addEventListener('click', function () {
+          document.dispatchEvent(new CustomEvent('viewsFilterByPres', { detail: p.id }));
+        });
         if (p.customerLogoSrc) {
           var img = document.createElement('img');
           img.alt = '';
@@ -832,6 +996,294 @@
         overlay.classList.remove('open');
         document.body.style.overflow = '';
       });
+    })();
+  </script>
+
+  <script>
+    // ── Views Overview Chart ────────────────────────────────────────
+    (function () {
+      var presentations = [];   // populated from API via event
+      var checkedIds = [];      // which presentation IDs are selected; empty = all
+      var isOverview = true;    // true when "Overview" tab is active (all selected)
+      var currentRange = '7d';
+      var customDates = null;
+      var chartInstance = null;
+
+      // ── Mock data generator ──────────────────────────────────────
+      function mockViewsForRange(days, presIds) {
+        var seed = presIds.join('') + days;
+        function rand(s, n) { var x = Math.sin(s + n) * 10000; return Math.floor((x - Math.floor(x)) * 80); }
+        var labels = [], data = [];
+        var now = new Date();
+        for (var i = days - 1; i >= 0; i--) {
+          var d = new Date(now); d.setDate(d.getDate() - i);
+          labels.push(days <= 1
+            ? d.getHours() + ':00'
+            : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }));
+          var total = 0;
+          presIds.forEach(function (id, pi) {
+            total += rand((seed.charCodeAt(pi % seed.length) || 65), i + pi * 7 + days);
+          });
+          data.push(total);
+        }
+        return { labels: labels, data: data };
+      }
+
+      function getDays() {
+        if (currentRange === '24h') return 1;
+        if (currentRange === '30d') return 30;
+        if (currentRange === 'custom' && customDates && customDates.length === 2) {
+          return Math.max(1, Math.round((customDates[1] - customDates[0]) / 86400000) + 1);
+        }
+        return 7;
+      }
+
+      function getActiveIds() {
+        if (isOverview || checkedIds.length === 0) return presentations.map(function (p) { return p.id; });
+        return checkedIds.slice();
+      }
+
+      function isDark() { return document.documentElement.getAttribute('data-theme') !== 'light'; }
+
+      // ── Chart rendering ──────────────────────────────────────────
+      function buildChart() {
+        var canvas = document.getElementById('viewsChart');
+        var ids = getActiveIds();
+        var d = mockViewsForRange(getDays(), ids.length ? ids : ['__empty__']);
+        var dark = isDark();
+        if (chartInstance) chartInstance.destroy();
+        chartInstance = new Chart(canvas, {
+          type: 'bar',
+          data: {
+            labels: d.labels,
+            datasets: [{ label: 'Views', data: d.data,
+              backgroundColor: 'rgba(245,166,35,0.75)', borderColor: '#F5A623',
+              borderWidth: 0, borderRadius: 4, borderSkipped: false }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: dark ? '#1c1c1e' : '#fff',
+                titleColor: dark ? '#fff' : '#000',
+                bodyColor: dark ? 'rgba(255,255,255,.6)' : 'rgba(0,0,0,.6)',
+                borderColor: dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)',
+                borderWidth: 1, padding: 10, cornerRadius: 8,
+                callbacks: { label: function (ctx) { return ' ' + ctx.parsed.y + ' views'; } }
+              }
+            },
+            scales: {
+              x: { grid: { color: dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)', drawBorder: false },
+                   ticks: { color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 }, maxRotation: 0 },
+                   border: { display: false } },
+              y: { beginAtZero: true,
+                   grid: { color: dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)', drawBorder: false },
+                   ticks: { color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 }, stepSize: 20 },
+                   border: { display: false } }
+            }
+          }
+        });
+      }
+
+      // ── Presentations dropdown ───────────────────────────────────
+      function syncPresLabel() {
+        var label = document.getElementById('viewsPresLabel');
+        if (isOverview || checkedIds.length === presentations.length || checkedIds.length === 0) {
+          label.textContent = 'All presentations';
+        } else if (checkedIds.length === 1) {
+          var match = presentations.filter(function (p) { return p.id === checkedIds[0]; })[0];
+          label.textContent = match ? (match.presentationName || match.customerName) : '1 selected';
+        } else {
+          label.textContent = checkedIds.length + ' presentations';
+        }
+      }
+
+      function buildPresMenu() {
+        var menu = document.getElementById('viewsPresMenu');
+        menu.innerHTML = '';
+
+        // Search input
+        var searchWrap = document.createElement('div');
+        searchWrap.style.cssText = 'padding:6px 8px 4px;';
+        var searchInput = document.createElement('input');
+        searchInput.type = 'search';
+        searchInput.placeholder = 'Search presentations…';
+        searchInput.style.cssText = 'width:100%;box-sizing:border-box;padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:12px;outline:none;';
+        searchWrap.appendChild(searchInput);
+        menu.appendChild(searchWrap);
+
+        // Scrollable list container
+        var listWrap = document.createElement('div');
+        listWrap.style.cssText = 'max-height:200px;overflow-y:auto;';
+        menu.appendChild(listWrap);
+
+        function renderRows(filter) {
+          listWrap.innerHTML = '';
+          var q = (filter || '').toLowerCase();
+          var any = false;
+          presentations.forEach(function (p) {
+            var name = (p.presentationName ? p.customerName + ' — ' + p.presentationName : p.customerName) || p.id;
+            if (q && name.toLowerCase().indexOf(q) === -1) return;
+            any = true;
+            var row = document.createElement('label');
+            row.className = 'views-pres-row';
+            var cb = document.createElement('input');
+            cb.type = 'checkbox';
+            cb.value = p.id;
+            cb.checked = checkedIds.indexOf(p.id) !== -1;
+            cb.addEventListener('change', function () {
+              if (!cb.checked) {
+                checkedIds = checkedIds.filter(function (x) { return x !== p.id; });
+                if (checkedIds.length === 0) {
+                  isOverview = true;
+                  document.querySelector('.views-tab[data-id="all"]').classList.add('active');
+                } else {
+                  isOverview = false;
+                  document.querySelector('.views-tab[data-id="all"]').classList.remove('active');
+                }
+              } else {
+                if (checkedIds.indexOf(p.id) === -1) checkedIds.push(p.id);
+                if (checkedIds.length === presentations.length) isOverview = true;
+              }
+              syncPresLabel();
+              buildChart();
+            });
+            var span = document.createElement('span');
+            span.textContent = name;
+            row.appendChild(cb);
+            row.appendChild(span);
+            listWrap.appendChild(row);
+          });
+          if (!any) {
+            var empty = document.createElement('div');
+            empty.style.cssText = 'padding:10px 12px;font-size:12px;color:var(--muted);';
+            empty.textContent = 'No results';
+            listWrap.appendChild(empty);
+          }
+        }
+
+        searchInput.addEventListener('input', function () { renderRows(this.value); });
+        searchInput.addEventListener('click', function (e) { e.stopPropagation(); });
+
+        checkedIds = presentations.map(function (p) { return p.id; });
+        renderRows('');
+        syncPresLabel();
+        window._viewsRenderRows = renderRows;
+      }
+
+      var presTrigger = document.getElementById('viewsPresTrigger');
+      var presMenu    = document.getElementById('viewsPresMenu');
+
+      presTrigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var open = presMenu.classList.toggle('open');
+        presTrigger.classList.toggle('open', open);
+      });
+
+      // ── Overview tab ─────────────────────────────────────────────
+      document.querySelector('.views-tab[data-id="all"]').addEventListener('click', function () {
+        isOverview = true;
+        checkedIds = presentations.map(function (p) { return p.id; });
+        if (window._viewsRenderRows) window._viewsRenderRows('');
+        this.classList.add('active');
+        syncPresLabel();
+        buildChart();
+      });
+
+      // ── Filter from logo click in finished presentations ──────────
+      document.addEventListener('viewsFilterByPres', function (e) {
+        var id = e.detail;
+        isOverview = false;
+        checkedIds = [id];
+        if (window._viewsRenderRows) window._viewsRenderRows('');
+        document.querySelector('.views-tab[data-id="all"]').classList.remove('active');
+        syncPresLabel();
+        buildChart();
+        document.getElementById('viewsChart').closest('.panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+
+      // ── Date range dropdown ──────────────────────────────────────
+      var dateTrigger = document.getElementById('viewsDateTrigger');
+      var dateMenu    = document.getElementById('viewsDateMenu');
+
+      dateTrigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var open = dateMenu.classList.toggle('open');
+        dateTrigger.classList.toggle('open', open);
+      });
+
+      dateMenu.querySelectorAll('.sort-option').forEach(function (opt) {
+        opt.addEventListener('click', function () {
+          var val = this.dataset.value;
+          dateMenu.querySelectorAll('.sort-option').forEach(function (o) { o.classList.remove('selected'); });
+          this.classList.add('selected');
+          dateMenu.classList.remove('open');
+          dateTrigger.classList.remove('open');
+          if (val === 'custom') { fpViews.open(); return; }
+          currentRange = val;
+          customDates = null;
+          document.getElementById('viewsCustomDateBtn').style.display = 'none';
+          document.getElementById('viewsDateLabel').textContent =
+            { '7d': 'Last 7 days', '24h': 'Last 24 hours', '30d': 'Last 30 days' }[val];
+          buildChart();
+        });
+      });
+
+      document.addEventListener('click', function () {
+        dateMenu.classList.remove('open');
+        dateTrigger.classList.remove('open');
+        presMenu.classList.remove('open');
+        presTrigger.classList.remove('open');
+      });
+
+      presMenu.addEventListener('click', function (e) { e.stopPropagation(); });
+
+      // ── Flatpickr custom range ───────────────────────────────────
+      var fpViews = flatpickr('#viewsDateInput', {
+        mode: 'range', dateFormat: 'Y-m-d', disableMobile: true,
+        onChange: function (selectedDates) {
+          if (selectedDates.length < 2) return;
+          customDates = selectedDates;
+          currentRange = 'custom';
+          var btn = document.getElementById('viewsCustomDateBtn');
+          btn.style.display = 'flex';
+          function fmt(d) { return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); }
+          document.getElementById('viewsCustomDateLabel').textContent = fmt(selectedDates[0]) + ' → ' + fmt(selectedDates[1]);
+          document.getElementById('viewsDateLabel').textContent = 'Custom';
+          dateMenu.querySelectorAll('.sort-option').forEach(function (o) {
+            o.classList.toggle('selected', o.dataset.value === 'custom');
+          });
+          buildChart();
+        }
+      });
+
+      document.getElementById('viewsCustomDateClear').addEventListener('click', function (e) {
+        e.stopPropagation();
+        fpViews.clear();
+        customDates = null; currentRange = '7d';
+        document.getElementById('viewsCustomDateBtn').style.display = 'none';
+        document.getElementById('viewsDateLabel').textContent = 'Last 7 days';
+        dateMenu.querySelectorAll('.sort-option').forEach(function (o) {
+          o.classList.toggle('selected', o.dataset.value === '7d');
+        });
+        buildChart();
+      });
+
+      // ── Bootstrap: wait for presentations to load ────────────────
+      function init(items) {
+        presentations = items;
+        checkedIds = items.map(function (p) { return p.id; });
+        buildPresMenu();
+        buildChart();
+      }
+
+      if (window._viewsPresentations) {
+        init(window._viewsPresentations);
+      } else {
+        document.addEventListener('viewsPresentationsLoaded', function (e) { init(e.detail); });
+        buildChart(); // draw empty chart immediately while waiting
+      }
     })();
   </script>
 

@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-04-24 (session 9)
+Last updated: 2026-04-25 (session 9)
 
 ---
 
@@ -58,7 +58,7 @@ App-presentation-builder/
     │   │   ├── auth.js             ← Session auth middleware + login/logout routes
     │   │   └── login.html          ← Login page (dark theme)
     │   ├── dashboard/
-    │   │   ├── index.html          ← Dashboard (served at /) — overview + Finished Presentations list/grid toggle
+    │   │   ├── index.html          ← Dashboard (served at /) — Views Overview chart (Coming Soon) + Finished Presentations list/grid toggle
     │   │   ├── dashboard.css       ← Legacy styles (to be deleted)
     │   │   └── dashboard.js        ← Legacy deck manager (no longer loaded by dashboard)
     │   ├── settings/
@@ -157,6 +157,15 @@ Browser → Express (server.js)
 **`customerLogoSrc`** (added 2026-04-20): captured from `coverSlide.edits['customer-logo-src']` at save time and stored on the presentation record. Older records without this field show initials fallback in grid view.
 
 **Dashboard filter bar** (added session 7): pill-style controls above the finished presentations list — real-time search (company + contact name), Flatpickr date range (dark-themed, local-time `YYYY-MM-DD`), custom sort dropdown (Newest/Oldest). All presentation mutations (edit, duplicate, delete) update `allItems` and call `applyFilters()` to re-render without a page reload.
+
+**Dashboard — Views Overview panel** (added 2026-04-25): bar chart section above Finished Presentations. Uses Chart.js 4 (CDN). Mock data only — no live Umami wiring yet. Features:
+- "Coming Soon" amber badge in panel title
+- Date range dropdown (Last 7 days default / Last 24 hours / Last 30 days / Custom via Flatpickr)
+- Custom date range shown as a pill below the chart with a clear button
+- Presentations multi-select dropdown: populated from `/api/presentations` via `viewsPresentationsLoaded` CustomEvent; search input filters the list; all checked by default; label updates dynamically
+- "Overview" tab resets all checkboxes to all-selected
+- Clicking the thumbnail area (`.pres-thumb`) of any finished presentation card dispatches `viewsFilterByPres` event → chart filters to that single presentation and scrolls into view
+- **CSS gotcha:** `.panel` has `overflow: hidden` in `app-style.css` — Views Overview section has `overflow:visible; position:relative; z-index:10` inline to let dropdowns escape and stack above the next panel
 
 ---
 
@@ -363,9 +372,10 @@ Additional per-slide fixes:
 ## What's Next
 
 1. **`POST /api/presentations/:id/publish`** — GitHub Pages publish + Publish button on Dashboard ← **main Phase 1 milestone**
-2. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
-3. **`scripts/deploy.js`** — push to GitHub Pages
-4. Delete old `dashboard.css`
-5. Builder header reposition (move to slide container)
-6. **Builder Back navigation** — idea: force-save on Back instead of unsaved-changes modal (`tasks/Idea-L-2026-04-24-builder-navigation-back-force-save-no-modal.md`)
+2. **Views Overview — live data** — wire chart to real Umami analytics API (needs `umamiWebsiteId` from settings)
+3. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
+4. **`scripts/deploy.js`** — push to GitHub Pages
+5. Delete old `dashboard.css`
+6. Builder header reposition (move to slide container)
+7. **Builder Back navigation** — idea: force-save on Back instead of unsaved-changes modal (`tasks/Idea-L-2026-04-24-builder-navigation-back-force-save-no-modal.md`)
 
