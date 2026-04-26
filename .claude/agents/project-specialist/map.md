@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-04-25 (session 9)
+Last updated: 2026-04-26 (session 10)
 
 ---
 
@@ -24,7 +24,7 @@ App-presentation-builder/
 ├── memory/sessions.md              ← Session history
 ├── scripts/
 │   ├── build.js                    ← NEW (2026-04-20): CLI to rebuild frozen presentations (no server needed)
-│   └── deploy.js                   ← PLANNED: GitHub Pages deploy script
+│   └── deploy.js                   ← NEW (2026-04-26): git add→commit→push for one or all presentations; node scripts/deploy.js --id=<id> | --all
 ├── frontend/                       ← NEW (2026-04-21): React/Vite/shadcn scaffolding (early stage)
 ├── finished-presentations/         ← NEW (2026-04-20): Self-contained frozen presentation outputs
 │   ├── [presId]/
@@ -120,7 +120,7 @@ Browser → Express (server.js)
               ├── POST /api/presentations/:id/duplicate ← clone presentation with reconfigured customer settings; duplicate card renders immediately with published link
               ├── Static: /finished           → finished-presentations/ (frozen outputs)
               ├── GET  /view/:id              ← redirects to /finished/:presId/ if frozen file exists; else live viewer
-              ├── POST /api/presentations/:id/publish ← PLANNED: GitHub Pages publish
+              ├── POST /api/presentations/:id/publish ← NEW (2026-04-26): git add→commit→push for that presentation folder; returns { success, url, alreadyPublished }
               ├── POST /api/save               → edits slide HTML via Cheerio (old slides)
               ├── POST /api/upload-image        → saves base64 image to uploads/
               ├── POST /api/save-image-src      → updates img src in slide file
@@ -165,7 +165,15 @@ Browser → Express (server.js)
 - Presentations multi-select dropdown: populated from `/api/presentations` via `viewsPresentationsLoaded` CustomEvent; search input filters the list; all checked by default; label updates dynamically
 - "Overview" tab resets all checkboxes to all-selected
 - Clicking the thumbnail area (`.pres-thumb`) of any finished presentation card dispatches `viewsFilterByPres` event → chart filters to that single presentation and scrolls into view
-- **CSS gotcha:** `.panel` has `overflow: hidden` in `app-style.css` — Views Overview section has `overflow:visible; position:relative; z-index:10` inline to let dropdowns escape and stack above the next panel
+- **CSS gotcha:** `.panel` has `overflow: hidden` in `app-style.css` — Views Overview section and Finished Presentations section both have `overflow:visible` inline to let dropdowns escape and stack above siblings.
+
+**Dashboard card actions menu (added 2026-04-26):**
+- Each finished presentation card now has a `⋯` button (`.btn-menu`) instead of inline View/Edit/Duplicate/Delete buttons
+- Clicking `⋯` opens `.pres-dropdown` — a floating menu with: Edit, Duplicate, Publish, (divider), Delete
+- View is removed as a button — double-click the company name to open in new tab
+- Menu positioning: dropdown uses `position:absolute; bottom:calc(100%+6px); right:0` (appears above the button)
+- Overflow fix: on open, the `li` gets `position:relative; z-index:10; overflow:visible` so the dropdown clears sibling cards in both list and grid view; all three properties are reset on close
+- Publish action calls `POST /api/presentations/:id/publish`, shows loading state, then a confirm dialog with the live URL
 
 ---
 
@@ -359,7 +367,7 @@ Additional per-slide fixes:
 - **3-layer CSS conflict** — style.css, per-slide `<style>` blocks, and inline styles conflict. Planned fix: style.css as single source of truth
 - **Slide-06 defect names** — selector button labels are JS-generated; needs testing through render path
 - **Slide-12 headline split** — agent split `headline` into `headline` + `headline-emphasis` keys; may need consolidation
-- **No publish yet** — `POST /api/presentations/:id/publish` not built (needs GITHUB_TOKEN + GITHUB_REPO in .env)
+- **Publish built** — `POST /api/presentations/:id/publish` runs git add→commit→push via `execFile`. No auth token needed — relies on local git credentials.
 - **dashboard.css** — legacy file, should be deleted
 - **Image caption editing** — no UI to edit `img.alt`
 - **Builder header reposition** — `.builder-header` may need to move into slide container (task: builder-preview-header-move-to-slide-container)
@@ -371,11 +379,10 @@ Additional per-slide fixes:
 
 ## What's Next
 
-1. **`POST /api/presentations/:id/publish`** — GitHub Pages publish + Publish button on Dashboard ← **main Phase 1 milestone**
+1. **Published presentation state + archive flow** — `publishedAt`/`archivedAt` fields on presentation records, Published badge on cards, Archive replaces Delete after publish, hard-delete modal warning, builder "replace existing presentation" option at create time (`tasks/Feature-M-2026-04-26-dashboard-published-presentation-state-archive-flow-safe-delete.md`)
 2. **Views Overview — live data** — wire chart to real Umami analytics API (needs `umamiWebsiteId` from settings)
 3. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
-4. **`scripts/deploy.js`** — push to GitHub Pages
-5. Delete old `dashboard.css`
-6. Builder header reposition (move to slide container)
-7. **Builder Back navigation** — idea: force-save on Back instead of unsaved-changes modal (`tasks/Idea-L-2026-04-24-builder-navigation-back-force-save-no-modal.md`)
+4. Delete old `dashboard.css`
+5. Builder header reposition (move to slide container)
+6. **Builder Back navigation** — idea: force-save on Back instead of unsaved-changes modal (`tasks/Idea-L-2026-04-24-builder-navigation-back-force-save-no-modal.md`)
 

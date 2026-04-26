@@ -6,6 +6,7 @@ const fs       = require('fs');
 const cheerio  = require('cheerio');
 const session  = require('express-session');
 const { requireAuth, registerAuthRoutes } = require('./features/auth/auth');
+const { execFile } = require('child_process');
 
 const app  = express();
 const PORT = 3000;
@@ -609,7 +610,7 @@ function renderHeroLayout(slideId, savedEdits) {
     '      buildThumbs();',
     '      saveCarouselTrack();',
     '    };',
-    '    if (!window.PB_READONLY) document.getElementById(P + "-carousel-file").addEventListener("change", function (e) {',
+    '    if (!window.PB_READONLY) { var _cf = document.getElementById(P + "-carousel-file"); if (_cf) _cf.addEventListener("change", function (e) {',
     '      var file = e.target.files[0];',
     '      if (!file || !targetSlide) return;',
     '      var img = targetSlide.querySelector("img");',
@@ -627,7 +628,7 @@ function renderHeroLayout(slideId, savedEdits) {
     '      };',
     '      reader.readAsDataURL(file);',
     '      e.target.value = "";',
-    '    });',
+    '    }); }',
     '    if (!window.PB_READONLY) document.getElementById(P + "-logo-file").addEventListener("change", function (e) {',
     '      var file = e.target.files[0]; if (!file) return;',
     '      var img = document.querySelector("." + P + "-cust-img");',
@@ -3244,7 +3245,7 @@ function buildFrozenPresentation(presentation) {
     '    .fp-nav-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: #e5e5e5; font-size: 18px; font-family: system-ui, sans-serif; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }',
     '    .fp-nav-btn:hover { background: rgba(255,255,255,0.18); }',
     '    .fp-nav-btn:disabled { opacity: 0.25; cursor: default; }',
-    '    #fp-footer { height: 32px; min-height: 32px; background: #0a0a0a; border-top: 1px solid #2a2a2a; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 12px; }',
+    '    #fp-footer { height: 32px; min-height: 32px; background: #0a0a0a; border-top: 1px solid #2a2a2a; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 12px; position: relative; z-index: 10; }',
     '    #fp-slide-name { font-size: 11px; color: #888; font-family: system-ui, sans-serif; }',
     '    /* Share button */',
     '    .fp-share-btn { background: none; border: none; color: #666; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; border-radius: 4px; flex-shrink: 0; }',
@@ -3279,15 +3280,18 @@ function buildFrozenPresentation(presentation) {
     '    #fp-share-send { background: #e5e5e5; border: none; border-radius: 6px; color: #111; font-size: 13px; font-weight: 600; font-family: system-ui, sans-serif; padding: 8px 18px; cursor: pointer; }',
     '    #fp-share-send:hover { background: #fff; }',
     '    #fp-share-send:disabled { opacity: 0.4; cursor: default; }',
-    '    /* Optional extras */',
-    '    #fp-extras-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #e5e5e5; font-size: 12px; font-family: system-ui, sans-serif; padding: 5px 12px; border-radius: 4px; cursor: pointer; white-space: nowrap; display: none; }',
-    '    #fp-extras-btn:hover { background: rgba(255,255,255,0.18); }',
-    '    #fp-back-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #e5e5e5; font-size: 12px; font-family: system-ui, sans-serif; padding: 5px 12px; border-radius: 4px; cursor: pointer; white-space: nowrap; display: none; }',
-    '    #fp-back-btn:hover { background: rgba(255,255,255,0.18); }',
-    '    #fp-extras-panel { position: absolute; top: 44px; right: 16px; background: #1a1a1a; border: 1px solid #333; border-radius: 6px; padding: 8px 0; min-width: 220px; z-index: 100; box-shadow: 0 8px 24px rgba(0,0,0,0.6); display: none; }',
-    '    .fp-extras-title { font-size: 11px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.06em; padding: 4px 16px 8px; }',
-    '    .fp-extras-item { display: block; width: 100%; text-align: left; background: none; border: none; color: #ccc; font-size: 13px; font-family: system-ui, sans-serif; padding: 8px 16px; cursor: pointer; }',
-    '    .fp-extras-item:hover { background: rgba(255,255,255,0.08); color: #fff; }',
+    '    /* Footer nav menu */',
+    '    #fp-nav-menu-btn { background: none; border: none; color: #666; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; border-radius: 4px; flex-shrink: 0; }',
+    '    #fp-nav-menu-btn:hover { color: #ccc; background: rgba(255,255,255,0.08); }',
+    '    #fp-nav-menu-wrap { position: relative; display: flex; align-items: center; }',
+    '    #fp-nav-menu { position: absolute; bottom: calc(100% + 6px); left: 0; background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 8px 0; min-width: 220px; z-index: 100; box-shadow: 0 -8px 24px rgba(0,0,0,0.6); display: none; }',
+    '    .fp-nm-section { font-size: 10px; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 0.07em; padding: 8px 16px 4px; }',
+    '    .fp-nm-section:first-child { padding-top: 4px; }',
+    '    .fp-nm-divider { height: 1px; background: #2a2a2a; margin: 6px 0; }',
+    '    .fp-nm-item { display: block; width: 100%; text-align: left; background: none; border: none; color: #ccc; font-size: 13px; font-family: system-ui, sans-serif; padding: 7px 16px; cursor: pointer; }',
+    '    .fp-nm-item:hover { background: rgba(255,255,255,0.08); color: #fff; }',
+    '    .fp-nm-item.fp-nm-active { color: #fff; font-weight: 600; }',
+    '    .fp-nm-item.fp-nm-active::before { content: "›"; margin-right: 6px; color: #888; }',
     '  </style>',
     (umamiWebsiteId ? '  <script defer src="https://umami.wbtm.io/script.js" data-website-id="' + umamiWebsiteId + '"></script>' : ''),
     '</head>',
@@ -3302,17 +3306,25 @@ function buildFrozenPresentation(presentation) {
     '    <div id="fp-header-spacer"></div>',
     '    <div id="fp-title">' + (presentation.customerName || '') + '</div>',
     '    <button class="fp-share-btn" id="fp-share-btn-hdr" title="Share presentation"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>',
-    (hasExtras ? '    <button id="fp-extras-btn">More &#9662;</button>' : ''),
-    (hasExtras ? '    <button id="fp-back-btn">&#8592; Back to Presentation</button>' : ''),
     '  </div>',
-    (hasExtras ? '  <div id="fp-extras-panel"><div class="fp-extras-title">Optional Slides</div>' + hiddenNames.map(function (n, i) { return '    <button class="fp-extras-item" data-opt="' + i + '">' + n + '</button>'; }).join('\n') + '</div>' : ''),
     '  <div id="fp-viewer">',
     '    <div class="slides-container">',
     slideFragments.join('\n'),
     hiddenFragments.join('\n'),
     '    </div>',
     '  </div>',
-    '  <div id="fp-footer"><div id="fp-slide-name">' + (slideNames[0] || '') + '</div><button class="fp-share-btn" id="fp-share-btn-ftr" title="Share presentation"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button></div>',
+    '  <div id="fp-footer">',
+    '    <div id="fp-nav-menu-wrap">',
+    '      <div id="fp-nav-menu">',
+    '        <div class="fp-nm-section">Slides</div>',
+    slideNames.map(function (n, i) { return '        <button class="fp-nm-item' + (i === 0 ? ' fp-nm-active' : '') + '" data-main="' + i + '">' + n + '</button>'; }).join('\n'),
+    hasExtras ? ('        <div class="fp-nm-divider"></div><div class="fp-nm-section fp-nm-hidden-section">Hidden Slides</div>' + hiddenNames.map(function (n, i) { return '        <button class="fp-nm-item" data-opt="' + i + '">' + n + '</button>'; }).join('\n')) : '',
+    '      </div>',
+    '      <button id="fp-nav-menu-btn" title="Slide navigation"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>',
+    '    </div>',
+    '    <div id="fp-slide-name">' + (slideNames[0] || '') + '</div>',
+    '    <button class="fp-share-btn" id="fp-share-btn-ftr" title="Share presentation"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>',
+    '  </div>',
     '</div>',
     '<button class="fp-side-arrow" id="fp-arrow-prev" disabled>&#8249;</button>',
     '<button class="fp-side-arrow" id="fp-arrow-next"' + (totalSlides <= 1 ? ' disabled' : '') + '>&#8250;</button>',
@@ -3358,11 +3370,11 @@ function buildFrozenPresentation(presentation) {
     '  var slideName  = document.getElementById("fp-slide-name");',
     '  var prevBtn    = document.getElementById("fp-prev");',
     '  var nextBtn    = document.getElementById("fp-next");',
-    '  var extrasBtn  = document.getElementById("fp-extras-btn");',
-    '  var backBtn    = document.getElementById("fp-back-btn");',
-    '  var extrasPanel = document.getElementById("fp-extras-panel");',
     '  var arrowPrev  = document.getElementById("fp-arrow-prev");',
     '  var arrowNext  = document.getElementById("fp-arrow-next");',
+    '  var navMenuBtn = document.getElementById("fp-nav-menu-btn");',
+    '  var navMenu    = document.getElementById("fp-nav-menu");',
+    '  var hiddenSection = navMenu ? navMenu.querySelector(".fp-nm-hidden-section") : null;',
     '',
     '  function initSlide(el) {',
     '    var root = el.querySelector(".slides-container,.slide");',
@@ -3374,9 +3386,29 @@ function buildFrozenPresentation(presentation) {
     '    if (window.LSTable)  LSTable.init(root);',
     '  }',
     '',
+    '  var optIdx = 0;',
+    '',
+    '  function updateNavMenu() {',
+    '    if (!navMenu) return;',
+    '    navMenu.querySelectorAll(".fp-nm-item[data-main]").forEach(function (btn) {',
+    '      btn.classList.toggle("fp-nm-active", !inOptional && parseInt(btn.dataset.main, 10) === idx);',
+    '    });',
+    '    navMenu.querySelectorAll(".fp-nm-item[data-opt]").forEach(function (btn) {',
+    '      btn.classList.toggle("fp-nm-active", inOptional && parseInt(btn.dataset.opt, 10) === optIdx);',
+    '    });',
+    '    if (hiddenSection) {',
+    '      var showHidden = (inOptional || idx === total - 1) && optSlides.length > 0;',
+    '      var divider = hiddenSection.previousElementSibling;',
+    '      hiddenSection.style.display = showHidden ? "" : "none";',
+    '      if (divider && divider.classList.contains("fp-nm-divider")) divider.style.display = showHidden ? "" : "none";',
+    '      navMenu.querySelectorAll(".fp-nm-item[data-opt]").forEach(function (btn) { btn.style.display = showHidden ? "" : "none"; });',
+    '    }',
+    '  }',
+    '',
     '  function goTo(n) {',
     '    if (n < 0 || n >= total) return;',
-    '    mainSlides[idx].style.display = "none";',
+    '    if (inOptional) optSlides.forEach(function (s) { s.style.display = "none"; });',
+    '    else mainSlides[idx].style.display = "none";',
     '    idx = n;',
     '    inOptional = false;',
     '    mainSlides[idx].style.display = "";',
@@ -3386,9 +3418,8 @@ function buildFrozenPresentation(presentation) {
     '    nextBtn.disabled = idx === total - 1;',
     '    arrowPrev.disabled = idx === 0;',
     '    arrowNext.disabled = idx === total - 1;',
-    '    if (extrasBtn) extrasBtn.style.display = (idx === total - 1 && optSlides.length > 0) ? "" : "none";',
-    '    if (backBtn)   backBtn.style.display = "none";',
-    '    if (extrasPanel) extrasPanel.style.display = "none";',
+    '    if (navMenu) navMenu.style.display = "none";',
+    '    updateNavMenu();',
     '    initSlide(mainSlides[idx]);',
     '    var dsEl = mainSlides[idx].querySelector("[data-slide]");',
     '    if (window.Track && dsEl) Track.event("slide-" + dsEl.getAttribute("data-slide"), { label: mainNames[idx] + "-view" });',
@@ -3396,58 +3427,55 @@ function buildFrozenPresentation(presentation) {
     '',
     '  function goToOptional(n) {',
     '    if (n < 0 || n >= optSlides.length) return;',
-    '    mainSlides[idx].style.display = "none";',
-    '    optSlides.forEach(function (s) { s.style.display = "none"; });',
+    '    if (inOptional) optSlides[optIdx].style.display = "none";',
+    '    else mainSlides[idx].style.display = "none";',
+    '    optIdx = n;',
     '    inOptional = true;',
-    '    optSlides[n].style.display = "";',
-    '    counter.textContent = "";',
-    '    slideName.textContent = optNames[n] || "";',
-    '    prevBtn.disabled = true;',
-    '    nextBtn.disabled = true;',
-    '    arrowPrev.disabled = true;',
-    '    arrowNext.disabled = true;',
-    '    if (extrasBtn) extrasBtn.style.display = "none";',
-    '    if (backBtn)   backBtn.style.display = "";',
-    '    if (extrasPanel) extrasPanel.style.display = "none";',
-    '    initSlide(optSlides[n]);',
-    '    var dsEl = optSlides[n].querySelector("[data-slide]");',
-    '    if (window.Track && dsEl) Track.event("slide-" + dsEl.getAttribute("data-slide"), { label: optNames[n] + "-view" });',
+    '    optSlides[optIdx].style.display = "";',
+    '    counter.textContent = (optIdx + 1) + " / " + optSlides.length;',
+    '    slideName.textContent = optNames[optIdx] || "";',
+    '    prevBtn.disabled = optIdx === 0;',
+    '    nextBtn.disabled = optIdx === optSlides.length - 1;',
+    '    arrowPrev.disabled = optIdx === 0;',
+    '    arrowNext.disabled = optIdx === optSlides.length - 1;',
+    '    if (navMenu) navMenu.style.display = "none";',
+    '    updateNavMenu();',
+    '    initSlide(optSlides[optIdx]);',
+    '    var dsEl = optSlides[optIdx].querySelector("[data-slide]");',
+    '    if (window.Track && dsEl) Track.event("slide-" + dsEl.getAttribute("data-slide"), { label: optNames[optIdx] + "-view" });',
     '  }',
     '',
-    '  prevBtn.addEventListener("click", function () { if (!inOptional) goTo(idx - 1); });',
-    '  nextBtn.addEventListener("click", function () { if (!inOptional) goTo(idx + 1); });',
+    '  prevBtn.addEventListener("click", function () {',
+    '    if (inOptional) goToOptional(optIdx - 1); else goTo(idx - 1);',
+    '  });',
+    '  nextBtn.addEventListener("click", function () {',
+    '    if (inOptional) goToOptional(optIdx + 1); else goTo(idx + 1);',
+    '  });',
     '  document.addEventListener("keydown", function (e) {',
-    '    if (inOptional) return;',
-    '    if (e.key === "ArrowRight") goTo(idx + 1);',
-    '    if (e.key === "ArrowLeft")  goTo(idx - 1);',
+    '    if (e.key === "ArrowRight") { if (inOptional) goToOptional(optIdx + 1); else goTo(idx + 1); }',
+    '    if (e.key === "ArrowLeft")  { if (inOptional) goToOptional(optIdx - 1); else goTo(idx - 1); }',
     '  });',
     '',
-    '  if (extrasBtn) {',
-    '    extrasBtn.addEventListener("click", function (e) {',
+    '  if (navMenuBtn && navMenu) {',
+    '    navMenuBtn.addEventListener("click", function (e) {',
     '      e.stopPropagation();',
-    '      var open = extrasPanel.style.display !== "none";',
-    '      extrasPanel.style.display = open ? "none" : "";',
+    '      navMenu.style.display = navMenu.style.display === "none" ? "block" : "none";',
     '    });',
     '  }',
-    '  if (backBtn) {',
-    '    backBtn.addEventListener("click", function () {',
-    '      optSlides.forEach(function (s) { s.style.display = "none"; });',
-    '      goTo(idx);',
-    '    });',
-    '  }',
-    '  document.querySelectorAll(".fp-extras-item").forEach(function (btn) {',
-    '    btn.addEventListener("click", function () {',
-    '      goToOptional(parseInt(btn.dataset.opt, 10));',
-    '    });',
+    '  document.querySelectorAll(".fp-nm-item[data-main]").forEach(function (btn) {',
+    '    btn.addEventListener("click", function () { goTo(parseInt(btn.dataset.main, 10)); });',
+    '  });',
+    '  document.querySelectorAll(".fp-nm-item[data-opt]").forEach(function (btn) {',
+    '    btn.addEventListener("click", function () { goToOptional(parseInt(btn.dataset.opt, 10)); });',
     '  });',
     '  document.addEventListener("click", function (e) {',
-    '    if (extrasPanel && !extrasPanel.contains(e.target) && e.target !== extrasBtn) {',
-    '      extrasPanel.style.display = "none";',
+    '    if (navMenu && !navMenu.contains(e.target) && e.target !== navMenuBtn) {',
+    '      navMenu.style.display = "none";',
     '    }',
     '  });',
     '',
-    '  arrowPrev.addEventListener("click", function () { if (!inOptional) goTo(idx - 1); });',
-    '  arrowNext.addEventListener("click", function () { if (!inOptional) goTo(idx + 1); });',
+    '  arrowPrev.addEventListener("click", function () { if (inOptional) goToOptional(optIdx - 1); else goTo(idx - 1); });',
+    '  arrowNext.addEventListener("click", function () { if (inOptional) goToOptional(optIdx + 1); else goTo(idx + 1); });',
     '',
     '  /* ── Share modal ── */',
     '  var presId    = ' + JSON.stringify(presentation.id) + ';',
@@ -3516,6 +3544,7 @@ function buildFrozenPresentation(presentation) {
     '  });',
     '',
     '  document.addEventListener("DOMContentLoaded", function () {',
+    '    if (navMenu) navMenu.style.display = "none";',
     '    goTo(0);',
     '    prevBtn.disabled = true;',
     '    arrowPrev.disabled = true;',
@@ -3584,6 +3613,7 @@ app.post('/api/presentations', function (req, res) {
     var deck    = JSON.parse(fs.readFileSync(DECK_PATH, 'utf8'));
     var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
 
+    var presentationName = (body.presentationName || '').trim();
     var contactName  = (body.contactName  || '').trim();
     var contactTitle = (body.contactTitle || '').trim();
 
@@ -3616,6 +3646,7 @@ app.post('/api/presentations', function (req, res) {
     var presentation = {
       id:              makePresId(customerName),
       createdAt:       new Date().toISOString().slice(0, 10),
+      presentationName: presentationName,
       customerName:    customerName,
       contactName:     contactName,
       contactTitle:    contactTitle,
@@ -3660,6 +3691,7 @@ app.put('/api/presentations/:id', function (req, res) {
     var pres = (data.presentations || []).find(function (p) { return p.id === req.params.id; });
     if (!pres) return res.status(404).json({ success: false, error: 'Not found' });
 
+    if (body.presentationName !== undefined) pres.presentationName = (body.presentationName || '').trim();
     if (body.customerName !== undefined) pres.customerName = (body.customerName || '').trim();
     if (body.contactName  !== undefined) pres.contactName  = (body.contactName  || '').trim();
     if (body.contactTitle !== undefined) pres.contactTitle = (body.contactTitle || '').trim();
@@ -3767,6 +3799,40 @@ app.post('/api/presentations/:id/duplicate', function (req, res) {
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
+});
+
+app.post('/api/presentations/:id/publish', function (req, res) {
+  var id = req.params.id;
+  if (!/^[a-z0-9-]+$/i.test(id)) {
+    return res.status(400).json({ success: false, error: 'Invalid presentation id' });
+  }
+
+  var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+  var pres = (data.presentations || []).find(function (p) { return p.id === id; });
+  if (!pres) return res.status(404).json({ success: false, error: 'Presentation not found' });
+
+  var repoRoot = path.join(__dirname, '..');
+  var folderArg = 'finished-presentations/' + id;
+  var commitMsg = 'publish: ' + (pres.customerName || id) + (pres.presentationName ? ' — ' + pres.presentationName : '') + ' (' + id + ')';
+  var publicUrl = 'https://app-presentation-builder.pages.dev/finished-presentations/' + id;
+
+  function run(cmd, args, cwd, cb) {
+    execFile(cmd, args, { cwd: cwd }, function (err, stdout, stderr) {
+      cb(err, stdout, stderr);
+    });
+  }
+
+  run('git', ['add', folderArg], repoRoot, function (err) {
+    if (err) return res.status(500).json({ success: false, error: 'git add failed: ' + err.message });
+    run('git', ['commit', '-m', commitMsg], repoRoot, function (err, stdout) {
+      var nothingToCommit = stdout && stdout.includes('nothing to commit');
+      if (err && !nothingToCommit) return res.status(500).json({ success: false, error: 'git commit failed: ' + err.message });
+      run('git', ['push'], repoRoot, function (err) {
+        if (err) return res.status(500).json({ success: false, error: 'git push failed: ' + err.message });
+        res.json({ success: true, url: publicUrl, alreadyPublished: !!nothingToCommit });
+      });
+    });
+  });
 });
 
 // Static: serve frozen finished presentations (index.html + assets/)

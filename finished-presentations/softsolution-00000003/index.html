@@ -409,7 +409,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     .fp-nav-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: #e5e5e5; font-size: 18px; font-family: system-ui, sans-serif; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .fp-nav-btn:hover { background: rgba(255,255,255,0.18); }
     .fp-nav-btn:disabled { opacity: 0.25; cursor: default; }
-    #fp-footer { height: 32px; min-height: 32px; background: #0a0a0a; border-top: 1px solid #2a2a2a; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 12px; }
+    #fp-footer { height: 32px; min-height: 32px; background: #0a0a0a; border-top: 1px solid #2a2a2a; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 12px; position: relative; z-index: 10; }
     #fp-slide-name { font-size: 11px; color: #888; font-family: system-ui, sans-serif; }
     /* Share button */
     .fp-share-btn { background: none; border: none; color: #666; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; border-radius: 4px; flex-shrink: 0; }
@@ -444,15 +444,18 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     #fp-share-send { background: #e5e5e5; border: none; border-radius: 6px; color: #111; font-size: 13px; font-weight: 600; font-family: system-ui, sans-serif; padding: 8px 18px; cursor: pointer; }
     #fp-share-send:hover { background: #fff; }
     #fp-share-send:disabled { opacity: 0.4; cursor: default; }
-    /* Optional extras */
-    #fp-extras-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #e5e5e5; font-size: 12px; font-family: system-ui, sans-serif; padding: 5px 12px; border-radius: 4px; cursor: pointer; white-space: nowrap; display: none; }
-    #fp-extras-btn:hover { background: rgba(255,255,255,0.18); }
-    #fp-back-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #e5e5e5; font-size: 12px; font-family: system-ui, sans-serif; padding: 5px 12px; border-radius: 4px; cursor: pointer; white-space: nowrap; display: none; }
-    #fp-back-btn:hover { background: rgba(255,255,255,0.18); }
-    #fp-extras-panel { position: absolute; top: 44px; right: 16px; background: #1a1a1a; border: 1px solid #333; border-radius: 6px; padding: 8px 0; min-width: 220px; z-index: 100; box-shadow: 0 8px 24px rgba(0,0,0,0.6); display: none; }
-    .fp-extras-title { font-size: 11px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.06em; padding: 4px 16px 8px; }
-    .fp-extras-item { display: block; width: 100%; text-align: left; background: none; border: none; color: #ccc; font-size: 13px; font-family: system-ui, sans-serif; padding: 8px 16px; cursor: pointer; }
-    .fp-extras-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    /* Footer nav menu */
+    #fp-nav-menu-btn { background: none; border: none; color: #666; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; border-radius: 4px; flex-shrink: 0; }
+    #fp-nav-menu-btn:hover { color: #ccc; background: rgba(255,255,255,0.08); }
+    #fp-nav-menu-wrap { position: relative; display: flex; align-items: center; }
+    #fp-nav-menu { position: absolute; bottom: calc(100% + 6px); left: 0; background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 8px 0; min-width: 220px; z-index: 100; box-shadow: 0 -8px 24px rgba(0,0,0,0.6); display: none; }
+    .fp-nm-section { font-size: 10px; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 0.07em; padding: 8px 16px 4px; }
+    .fp-nm-section:first-child { padding-top: 4px; }
+    .fp-nm-divider { height: 1px; background: #2a2a2a; margin: 6px 0; }
+    .fp-nm-item { display: block; width: 100%; text-align: left; background: none; border: none; color: #ccc; font-size: 13px; font-family: system-ui, sans-serif; padding: 7px 16px; cursor: pointer; }
+    .fp-nm-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    .fp-nm-item.fp-nm-active { color: #fff; font-weight: 600; }
+    .fp-nm-item.fp-nm-active::before { content: "›"; margin-right: 6px; color: #888; }
   </style>
   <script defer src="https://umami.wbtm.io/script.js" data-website-id="306f3c58-2e8f-487c-b68f-e53f3b2a0b5d"></script>
 </head>
@@ -462,15 +465,12 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     <a href="/" id="fp-dash-btn">&#8592; Dashboard</a>
     <div style="width:1px;height:20px;background:#333;flex-shrink:0;"></div>
     <button class="fp-nav-btn" id="fp-prev" disabled>&#8249;</button>
-    <div id="fp-counter">1 / 15</div>
+    <div id="fp-counter">1 / 14</div>
     <button class="fp-nav-btn" id="fp-next">&#8250;</button>
     <div id="fp-header-spacer"></div>
     <div id="fp-title">SoftSolution</div>
     <button class="fp-share-btn" id="fp-share-btn-hdr" title="Share presentation"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
-
-
   </div>
-
   <div id="fp-viewer">
     <div class="slides-container">
 <div class="fp-slide" data-slide-index="0" style="">
@@ -485,7 +485,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   <span class="softsolution-credit" data-edit="credit">by GlassQuality.com</span>
   <!-- Customer logo -->
   <div class="h77704536-customer-logo" data-edit="customer-logo">
-    <img class="h77704536-cust-img" src="../shared/CostOfQualityDefects.png" alt="Customer Logo">
+    <img class="h77704536-cust-img" src="../shared/LOGO_CulletScanner_Black_and_White.png" alt="Customer Logo">
     <label class="h77704536-cust-placeholder" for="h77704536-logo-file" title="Click to upload logo">
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="3"></rect>
@@ -503,7 +503,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   <div class="hero-content">
     <div class="brand-badge" data-edit="badge">GlassQuality.com · LineScanner · Osprey</div>
     <h1 data-edit="headline">Quality Inspection<br>for <span class="blue">Flat Glass</span></h1>
-    <h2 data-edit="subheadline">Proposal for SoftSolution</h2>
+    <h2 data-edit="subheadline">Proposal for SoftSolution · John Smith, Head of Quality</h2>
     
   </div>
   <!-- Gallery button -->
@@ -723,7 +723,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
       buildThumbs();
       saveCarouselTrack();
     };
-    if (!window.PB_READONLY) document.getElementById(P + "-carousel-file").addEventListener("change", function (e) {
+    if (!window.PB_READONLY) { var _cf = document.getElementById(P + "-carousel-file"); if (_cf) _cf.addEventListener("change", function (e) {
       var file = e.target.files[0];
       if (!file || !targetSlide) return;
       var img = targetSlide.querySelector("img");
@@ -741,7 +741,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
       };
       reader.readAsDataURL(file);
       e.target.value = "";
-    });
+    }); }
     if (!window.PB_READONLY) document.getElementById(P + "-logo-file").addEventListener("change", function (e) {
       var file = e.target.files[0]; if (!file) return;
       var img = document.querySelector("." + P + "-cust-img");
@@ -2803,73 +2803,6 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 </div>
 </div>
 <div class="fp-slide" data-slide-index="13" style="display:none;">
-<div class="slide content ls13" data-slide="integrations">
-  <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
-  <div class="slide-layout">
-    <header class="slide-head">
-      <div class="section-label" data-edit="section-label">Integrations</div>
-      <h1 class="slide-title" data-edit="headline">Compatible with<br><span class="blue">your current machinery</span></h1>
-      <div class="divider"></div>
-      <p class="slide-subtitle" data-edit="subtitle" style="margin-bottom:4px;">LineScanner is already integrated with the leading glass machinery manufacturers — if you already run any of these lines, integration is direct.</p>
-    </header>
-    <div class="slide-body">
-  <div class="integration-grid">
-    <div class="int-card anim-in">
-      <div class="int-name" data-edit="int-name-1">LiSEC</div>
-      <div class="int-type" data-edit="int-type-1">Processing lines</div>
-    </div>
-    <div class="int-card anim-in">
-      <div class="int-name" data-edit="int-name-2">FOREL</div>
-      <div class="int-type" data-edit="int-type-2">Architectural glass</div>
-    </div>
-    <div class="int-card anim-in">
-      <div class="int-name" data-edit="int-name-3">Benteler</div>
-      <div class="int-type" data-edit="int-type-3">Automotive glass</div>
-    </div>
-    <div class="int-card anim-in">
-      <div class="int-name" data-edit="int-name-4">CMS Tecglass</div>
-      <div class="int-type" data-edit="int-type-4">Digital printing</div>
-    </div>
-    <div class="int-card anim-in">
-      <div class="int-name" data-edit="int-name-5">Bystronic</div>
-      <div class="int-type" data-edit="int-type-5">Cutting and processing</div>
-    </div>
-    <div class="int-card anim-in">
-      <div class="int-name" data-edit="int-name-6">Hegla</div>
-      <div class="int-type" data-edit="int-type-6">Cutting and storage</div>
-    </div>
-    <div class="int-card anim-in">
-      <div class="int-name" data-edit="int-name-7">Glaston</div>
-      <div class="int-type" data-edit="int-type-7">Tempering and bending</div>
-    </div>
-    <div class="int-card anim-in">
-      <div class="int-name" data-edit="int-name-8">TecoFerrari</div>
-      <div class="int-type" data-edit="int-type-8">Insulating glass</div>
-    </div>
-    <div class="int-card anim-in">
-      <div class="int-name" data-edit="int-name-9">Erdman</div>
-      <div class="int-type" data-edit="int-type-9">Automated lines</div>
-    </div>
-  </div>
-    </div><!-- /.slide-body -->
-  </div><!-- /.slide-layout -->
-  <!-- ── Scoped Styles ── -->
-  <style>
-    /* Mobile base: collapse the inline 80px side padding */
-    .ls13 { padding: 70px 16px 80px !important; }
-
-    /* Desktop: restore intended layout padding */
-    @media (min-width: 769px) {
-      .ls13 { padding: 52px 80px 0 !important; }
-    }
-  </style>
-  <script>
-  (function () { var s = document.currentScript;
-    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
-  </script>
-</div>
-</div>
-<div class="fp-slide" data-slide-index="14" style="display:none;">
 <div class="slide content ls14" data-slide="call-to-action">
   <img src="../shared/image112.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.06;pointer-events:none;z-index:0;">
   <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
@@ -2973,10 +2906,100 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   </script>
 </div>
 </div>
-
+<div class="fp-slide fp-optional" data-optional-index="0" style="display:none;">
+<div class="slide content ls13" data-slide="integrations">
+  <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
+  <div class="slide-layout">
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label">Integrations</div>
+      <h1 class="slide-title" data-edit="headline">Compatible with<br><span class="blue">your current machinery</span></h1>
+      <div class="divider"></div>
+      <p class="slide-subtitle" data-edit="subtitle" style="margin-bottom:4px;">LineScanner is already integrated with the leading glass machinery manufacturers — if you already run any of these lines, integration is direct.</p>
+    </header>
+    <div class="slide-body">
+  <div class="integration-grid">
+    <div class="int-card anim-in">
+      <div class="int-name" data-edit="int-name-1">LiSEC</div>
+      <div class="int-type" data-edit="int-type-1">Processing lines</div>
+    </div>
+    <div class="int-card anim-in">
+      <div class="int-name" data-edit="int-name-2">FOREL</div>
+      <div class="int-type" data-edit="int-type-2">Architectural glass</div>
+    </div>
+    <div class="int-card anim-in">
+      <div class="int-name" data-edit="int-name-3">Benteler</div>
+      <div class="int-type" data-edit="int-type-3">Automotive glass</div>
+    </div>
+    <div class="int-card anim-in">
+      <div class="int-name" data-edit="int-name-4">CMS Tecglass</div>
+      <div class="int-type" data-edit="int-type-4">Digital printing</div>
+    </div>
+    <div class="int-card anim-in">
+      <div class="int-name" data-edit="int-name-5">Bystronic</div>
+      <div class="int-type" data-edit="int-type-5">Cutting and processing</div>
+    </div>
+    <div class="int-card anim-in">
+      <div class="int-name" data-edit="int-name-6">Hegla</div>
+      <div class="int-type" data-edit="int-type-6">Cutting and storage</div>
+    </div>
+    <div class="int-card anim-in">
+      <div class="int-name" data-edit="int-name-7">Glaston</div>
+      <div class="int-type" data-edit="int-type-7">Tempering and bending</div>
+    </div>
+    <div class="int-card anim-in">
+      <div class="int-name" data-edit="int-name-8">TecoFerrari</div>
+      <div class="int-type" data-edit="int-type-8">Insulating glass</div>
+    </div>
+    <div class="int-card anim-in">
+      <div class="int-name" data-edit="int-name-9">Erdman</div>
+      <div class="int-type" data-edit="int-type-9">Automated lines</div>
     </div>
   </div>
-  <div id="fp-footer"><div id="fp-slide-name">Cover</div><button class="fp-share-btn" id="fp-share-btn-ftr" title="Share presentation"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button></div>
+    </div><!-- /.slide-body -->
+  </div><!-- /.slide-layout -->
+  <!-- ── Scoped Styles ── -->
+  <style>
+    /* Mobile base: collapse the inline 80px side padding */
+    .ls13 { padding: 70px 16px 80px !important; }
+
+    /* Desktop: restore intended layout padding */
+    @media (min-width: 769px) {
+      .ls13 { padding: 52px 80px 0 !important; }
+    }
+  </style>
+  <script>
+  (function () { var s = document.currentScript;
+    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
+  </script>
+</div>
+</div>
+    </div>
+  </div>
+  <div id="fp-footer">
+    <div id="fp-nav-menu-wrap">
+      <div id="fp-nav-menu">
+        <div class="fp-nm-section">Slides</div>
+        <button class="fp-nm-item fp-nm-active" data-main="0">Cover</button>
+        <button class="fp-nm-item" data-main="1">Company Intro</button>
+        <button class="fp-nm-item" data-main="2">Why Us</button>
+        <button class="fp-nm-item" data-main="3">LineScanner Overview</button>
+        <button class="fp-nm-item" data-main="4">Technology</button>
+        <button class="fp-nm-item" data-main="5">Osprey</button>
+        <button class="fp-nm-item" data-main="6">Surface Types</button>
+        <button class="fp-nm-item" data-main="7">Dimensions</button>
+        <button class="fp-nm-item" data-main="8">Screen Printing</button>
+        <button class="fp-nm-item" data-main="9">Logo Check</button>
+        <button class="fp-nm-item" data-main="10">Traceability</button>
+        <button class="fp-nm-item" data-main="11">Sensitivity</button>
+        <button class="fp-nm-item" data-main="12">Installation</button>
+        <button class="fp-nm-item" data-main="13">Call to Action</button>
+        <div class="fp-nm-divider"></div><div class="fp-nm-section fp-nm-hidden-section">Hidden Slides</div>        <button class="fp-nm-item" data-opt="0">Integrations</button>
+      </div>
+      <button id="fp-nav-menu-btn" title="Slide navigation"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
+    </div>
+    <div id="fp-slide-name">Cover</div>
+    <button class="fp-share-btn" id="fp-share-btn-ftr" title="Share presentation"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+  </div>
 </div>
 <button class="fp-side-arrow" id="fp-arrow-prev" disabled>&#8249;</button>
 <button class="fp-side-arrow" id="fp-arrow-next">&#8250;</button>
@@ -4985,8 +5008,8 @@ window.Track = (function () {
 (function () {
   var mainSlides = document.querySelectorAll(".fp-slide:not(.fp-optional)");
   var optSlides  = document.querySelectorAll(".fp-slide.fp-optional");
-  var mainNames  = ["Cover","Company Intro","Why Us","LineScanner Overview","Technology","Osprey","Surface Types","Dimensions","Screen Printing","Logo Check","Traceability","Sensitivity","Installation","Integrations","Call to Action"];
-  var optNames   = [];
+  var mainNames  = ["Cover","Company Intro","Why Us","LineScanner Overview","Technology","Osprey","Surface Types","Dimensions","Screen Printing","Logo Check","Traceability","Sensitivity","Installation","Call to Action"];
+  var optNames   = ["Integrations"];
   var total      = mainSlides.length;
   var idx        = 0;
   var inOptional = false;
@@ -4994,11 +5017,11 @@ window.Track = (function () {
   var slideName  = document.getElementById("fp-slide-name");
   var prevBtn    = document.getElementById("fp-prev");
   var nextBtn    = document.getElementById("fp-next");
-  var extrasBtn  = document.getElementById("fp-extras-btn");
-  var backBtn    = document.getElementById("fp-back-btn");
-  var extrasPanel = document.getElementById("fp-extras-panel");
   var arrowPrev  = document.getElementById("fp-arrow-prev");
   var arrowNext  = document.getElementById("fp-arrow-next");
+  var navMenuBtn = document.getElementById("fp-nav-menu-btn");
+  var navMenu    = document.getElementById("fp-nav-menu");
+  var hiddenSection = navMenu ? navMenu.querySelector(".fp-nm-hidden-section") : null;
 
   function initSlide(el) {
     var root = el.querySelector(".slides-container,.slide");
@@ -5010,9 +5033,29 @@ window.Track = (function () {
     if (window.LSTable)  LSTable.init(root);
   }
 
+  var optIdx = 0;
+
+  function updateNavMenu() {
+    if (!navMenu) return;
+    navMenu.querySelectorAll(".fp-nm-item[data-main]").forEach(function (btn) {
+      btn.classList.toggle("fp-nm-active", !inOptional && parseInt(btn.dataset.main, 10) === idx);
+    });
+    navMenu.querySelectorAll(".fp-nm-item[data-opt]").forEach(function (btn) {
+      btn.classList.toggle("fp-nm-active", inOptional && parseInt(btn.dataset.opt, 10) === optIdx);
+    });
+    if (hiddenSection) {
+      var showHidden = (inOptional || idx === total - 1) && optSlides.length > 0;
+      var divider = hiddenSection.previousElementSibling;
+      hiddenSection.style.display = showHidden ? "" : "none";
+      if (divider && divider.classList.contains("fp-nm-divider")) divider.style.display = showHidden ? "" : "none";
+      navMenu.querySelectorAll(".fp-nm-item[data-opt]").forEach(function (btn) { btn.style.display = showHidden ? "" : "none"; });
+    }
+  }
+
   function goTo(n) {
     if (n < 0 || n >= total) return;
-    mainSlides[idx].style.display = "none";
+    if (inOptional) optSlides.forEach(function (s) { s.style.display = "none"; });
+    else mainSlides[idx].style.display = "none";
     idx = n;
     inOptional = false;
     mainSlides[idx].style.display = "";
@@ -5022,9 +5065,8 @@ window.Track = (function () {
     nextBtn.disabled = idx === total - 1;
     arrowPrev.disabled = idx === 0;
     arrowNext.disabled = idx === total - 1;
-    if (extrasBtn) extrasBtn.style.display = (idx === total - 1 && optSlides.length > 0) ? "" : "none";
-    if (backBtn)   backBtn.style.display = "none";
-    if (extrasPanel) extrasPanel.style.display = "none";
+    if (navMenu) navMenu.style.display = "none";
+    updateNavMenu();
     initSlide(mainSlides[idx]);
     var dsEl = mainSlides[idx].querySelector("[data-slide]");
     if (window.Track && dsEl) Track.event("slide-" + dsEl.getAttribute("data-slide"), { label: mainNames[idx] + "-view" });
@@ -5032,61 +5074,58 @@ window.Track = (function () {
 
   function goToOptional(n) {
     if (n < 0 || n >= optSlides.length) return;
-    mainSlides[idx].style.display = "none";
-    optSlides.forEach(function (s) { s.style.display = "none"; });
+    if (inOptional) optSlides[optIdx].style.display = "none";
+    else mainSlides[idx].style.display = "none";
+    optIdx = n;
     inOptional = true;
-    optSlides[n].style.display = "";
-    counter.textContent = "";
-    slideName.textContent = optNames[n] || "";
-    prevBtn.disabled = true;
-    nextBtn.disabled = true;
-    arrowPrev.disabled = true;
-    arrowNext.disabled = true;
-    if (extrasBtn) extrasBtn.style.display = "none";
-    if (backBtn)   backBtn.style.display = "";
-    if (extrasPanel) extrasPanel.style.display = "none";
-    initSlide(optSlides[n]);
-    var dsEl = optSlides[n].querySelector("[data-slide]");
-    if (window.Track && dsEl) Track.event("slide-" + dsEl.getAttribute("data-slide"), { label: optNames[n] + "-view" });
+    optSlides[optIdx].style.display = "";
+    counter.textContent = (optIdx + 1) + " / " + optSlides.length;
+    slideName.textContent = optNames[optIdx] || "";
+    prevBtn.disabled = optIdx === 0;
+    nextBtn.disabled = optIdx === optSlides.length - 1;
+    arrowPrev.disabled = optIdx === 0;
+    arrowNext.disabled = optIdx === optSlides.length - 1;
+    if (navMenu) navMenu.style.display = "none";
+    updateNavMenu();
+    initSlide(optSlides[optIdx]);
+    var dsEl = optSlides[optIdx].querySelector("[data-slide]");
+    if (window.Track && dsEl) Track.event("slide-" + dsEl.getAttribute("data-slide"), { label: optNames[optIdx] + "-view" });
   }
 
-  prevBtn.addEventListener("click", function () { if (!inOptional) goTo(idx - 1); });
-  nextBtn.addEventListener("click", function () { if (!inOptional) goTo(idx + 1); });
+  prevBtn.addEventListener("click", function () {
+    if (inOptional) goToOptional(optIdx - 1); else goTo(idx - 1);
+  });
+  nextBtn.addEventListener("click", function () {
+    if (inOptional) goToOptional(optIdx + 1); else goTo(idx + 1);
+  });
   document.addEventListener("keydown", function (e) {
-    if (inOptional) return;
-    if (e.key === "ArrowRight") goTo(idx + 1);
-    if (e.key === "ArrowLeft")  goTo(idx - 1);
+    if (e.key === "ArrowRight") { if (inOptional) goToOptional(optIdx + 1); else goTo(idx + 1); }
+    if (e.key === "ArrowLeft")  { if (inOptional) goToOptional(optIdx - 1); else goTo(idx - 1); }
   });
 
-  if (extrasBtn) {
-    extrasBtn.addEventListener("click", function (e) {
+  if (navMenuBtn && navMenu) {
+    navMenuBtn.addEventListener("click", function (e) {
       e.stopPropagation();
-      var open = extrasPanel.style.display !== "none";
-      extrasPanel.style.display = open ? "none" : "";
+      navMenu.style.display = navMenu.style.display === "none" ? "block" : "none";
     });
   }
-  if (backBtn) {
-    backBtn.addEventListener("click", function () {
-      optSlides.forEach(function (s) { s.style.display = "none"; });
-      goTo(idx);
-    });
-  }
-  document.querySelectorAll(".fp-extras-item").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      goToOptional(parseInt(btn.dataset.opt, 10));
-    });
+  document.querySelectorAll(".fp-nm-item[data-main]").forEach(function (btn) {
+    btn.addEventListener("click", function () { goTo(parseInt(btn.dataset.main, 10)); });
+  });
+  document.querySelectorAll(".fp-nm-item[data-opt]").forEach(function (btn) {
+    btn.addEventListener("click", function () { goToOptional(parseInt(btn.dataset.opt, 10)); });
   });
   document.addEventListener("click", function (e) {
-    if (extrasPanel && !extrasPanel.contains(e.target) && e.target !== extrasBtn) {
-      extrasPanel.style.display = "none";
+    if (navMenu && !navMenu.contains(e.target) && e.target !== navMenuBtn) {
+      navMenu.style.display = "none";
     }
   });
 
-  arrowPrev.addEventListener("click", function () { if (!inOptional) goTo(idx - 1); });
-  arrowNext.addEventListener("click", function () { if (!inOptional) goTo(idx + 1); });
+  arrowPrev.addEventListener("click", function () { if (inOptional) goToOptional(optIdx - 1); else goTo(idx - 1); });
+  arrowNext.addEventListener("click", function () { if (inOptional) goToOptional(optIdx + 1); else goTo(idx + 1); });
 
   /* ── Share modal ── */
-  var presId    = "new-presentation-see-if-it-woks-the-cahr-00000003";
+  var presId    = "softsolution-00000003";
   var baseUrl   = "https://app-presentation-builder.pages.dev/finished-presentations/" + presId + "/";
   var overlay   = document.getElementById("fp-share-overlay");
   var shareBtns = [document.getElementById("fp-share-btn-hdr"), document.getElementById("fp-share-btn-ftr")];
@@ -5152,6 +5191,7 @@ window.Track = (function () {
   });
 
   document.addEventListener("DOMContentLoaded", function () {
+    if (navMenu) navMenu.style.display = "none";
     goTo(0);
     prevBtn.disabled = true;
     arrowPrev.disabled = true;

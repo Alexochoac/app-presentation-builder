@@ -1,12 +1,115 @@
 {
   "presentations": [
     {
-      "id": "starglass-00000004",
-      "createdAt": "2026-04-25",
-      "customerName": "CULLET",
-      "contactName": "",
-      "contactTitle": "",
-      "customerLogoSrc": "/slides/uploads/Cullet_Scanner_Picture.png",
+      "id": "softsolution-00000004",
+      "createdAt": "2026-04-26",
+      "customerName": "SoftSolution",
+      "contactName": "John Smith",
+      "contactTitle": "Head of Quality",
+      "customerLogoSrc": "/slides/uploads/LOGO-LineScanner-Black-and-White.png",
+      "slideCount": 14,
+      "slides": [
+        {
+          "id": "deck-lib-cover-1775977704536",
+          "librarySlideId": "lib-cover",
+          "name": "Cover",
+          "visible": true
+        },
+        {
+          "id": "deck-company",
+          "librarySlideId": "lib-company",
+          "name": "Company Intro",
+          "visible": true
+        },
+        {
+          "id": "deck-comparison",
+          "librarySlideId": "lib-comparison",
+          "name": "Why Us",
+          "visible": true
+        },
+        {
+          "id": "deck-capability",
+          "librarySlideId": "lib-capability",
+          "name": "LineScanner Overview",
+          "visible": true
+        },
+        {
+          "id": "deck-technology",
+          "librarySlideId": "lib-technology",
+          "name": "Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1777096783950-1777096961176",
+          "librarySlideId": "lib-1777096783950",
+          "name": "Osprey",
+          "visible": true
+        },
+        {
+          "id": "deck-surface",
+          "librarySlideId": "lib-surface",
+          "name": "Surface Types",
+          "visible": true
+        },
+        {
+          "id": "deck-dimension",
+          "librarySlideId": "lib-dimension",
+          "name": "Dimensions",
+          "visible": true
+        },
+        {
+          "id": "deck-screenprint",
+          "librarySlideId": "lib-screenprint",
+          "name": "Screen Printing",
+          "visible": true
+        },
+        {
+          "id": "deck-logo-check",
+          "librarySlideId": "lib-logo-check",
+          "name": "Logo Check",
+          "visible": true
+        },
+        {
+          "id": "deck-database",
+          "librarySlideId": "lib-database",
+          "name": "Traceability",
+          "visible": true
+        },
+        {
+          "id": "deck-sensitivity",
+          "librarySlideId": "lib-sensitivity",
+          "name": "Sensitivity",
+          "visible": true
+        },
+        {
+          "id": "deck-footprint",
+          "librarySlideId": "lib-footprint",
+          "name": "Installation",
+          "visible": true
+        },
+        {
+          "id": "deck-integrations",
+          "librarySlideId": "lib-integrations",
+          "name": "Integrations",
+          "visible": false
+        },
+        {
+          "id": "deck-cta",
+          "librarySlideId": "lib-cta",
+          "name": "Call to Action",
+          "visible": true
+        }
+      ],
+      "presentationName": ""
+    },
+    {
+      "id": "softsolution-00000003",
+      "createdAt": "2026-04-26",
+      "presentationName": "LineScanner",
+      "customerName": "SoftSolution",
+      "contactName": "John Smith",
+      "contactTitle": "Head of Quality",
+      "customerLogoSrc": "/slides/uploads/LOGO_CulletScanner_Black_and_White.png",
       "slideCount": 14,
       "slides": [
         {
@@ -102,215 +205,13 @@
       ]
     },
     {
-      "id": "new-presentation-see-if-it-woks-the-cahr-00000003",
-      "createdAt": "2026-04-25",
-      "customerName": "SoftSolution",
-      "contactName": "",
-      "contactTitle": "",
-      "customerLogoSrc": "/slides/uploads/CostOfQualityDefects.png",
-      "slideCount": 15,
-      "slides": [
-        {
-          "id": "deck-lib-cover-1775977704536",
-          "librarySlideId": "lib-cover",
-          "name": "Cover",
-          "visible": true
-        },
-        {
-          "id": "deck-company",
-          "librarySlideId": "lib-company",
-          "name": "Company Intro",
-          "visible": true
-        },
-        {
-          "id": "deck-comparison",
-          "librarySlideId": "lib-comparison",
-          "name": "Why Us",
-          "visible": true
-        },
-        {
-          "id": "deck-capability",
-          "librarySlideId": "lib-capability",
-          "name": "LineScanner Overview",
-          "visible": true
-        },
-        {
-          "id": "deck-technology",
-          "librarySlideId": "lib-technology",
-          "name": "Technology",
-          "visible": true
-        },
-        {
-          "id": "deck-lib-1777096783950-1777096961176",
-          "librarySlideId": "lib-1777096783950",
-          "name": "Osprey",
-          "visible": true
-        },
-        {
-          "id": "deck-surface",
-          "librarySlideId": "lib-surface",
-          "name": "Surface Types",
-          "visible": true
-        },
-        {
-          "id": "deck-dimension",
-          "librarySlideId": "lib-dimension",
-          "name": "Dimensions",
-          "visible": true
-        },
-        {
-          "id": "deck-screenprint",
-          "librarySlideId": "lib-screenprint",
-          "name": "Screen Printing",
-          "visible": true
-        },
-        {
-          "id": "deck-logo-check",
-          "librarySlideId": "lib-logo-check",
-          "name": "Logo Check",
-          "visible": true
-        },
-        {
-          "id": "deck-database",
-          "librarySlideId": "lib-database",
-          "name": "Traceability",
-          "visible": true
-        },
-        {
-          "id": "deck-sensitivity",
-          "librarySlideId": "lib-sensitivity",
-          "name": "Sensitivity",
-          "visible": true
-        },
-        {
-          "id": "deck-footprint",
-          "librarySlideId": "lib-footprint",
-          "name": "Installation",
-          "visible": true
-        },
-        {
-          "id": "deck-integrations",
-          "librarySlideId": "lib-integrations",
-          "name": "Integrations",
-          "visible": true
-        },
-        {
-          "id": "deck-cta",
-          "librarySlideId": "lib-cta",
-          "name": "Call to Action",
-          "visible": true
-        }
-      ]
-    },
-    {
-      "id": "osprey-00000002",
-      "createdAt": "2026-04-25",
-      "customerName": "Vidreira Algarvia",
-      "contactName": "",
-      "contactTitle": "",
-      "customerLogoSrc": "/slides/uploads/LOGO-Vidreira-Algarvia-Portugal.png",
-      "slideCount": 15,
-      "slides": [
-        {
-          "id": "deck-lib-cover-1775977704536",
-          "librarySlideId": "lib-cover",
-          "name": "Cover",
-          "visible": true
-        },
-        {
-          "id": "deck-company",
-          "librarySlideId": "lib-company",
-          "name": "Company Intro",
-          "visible": true
-        },
-        {
-          "id": "deck-comparison",
-          "librarySlideId": "lib-comparison",
-          "name": "Why Us",
-          "visible": true
-        },
-        {
-          "id": "deck-capability",
-          "librarySlideId": "lib-capability",
-          "name": "LineScanner Overview",
-          "visible": true
-        },
-        {
-          "id": "deck-technology",
-          "librarySlideId": "lib-technology",
-          "name": "Technology",
-          "visible": true
-        },
-        {
-          "id": "deck-lib-1777096783950-1777096961176",
-          "librarySlideId": "lib-1777096783950",
-          "name": "Osprey",
-          "visible": true
-        },
-        {
-          "id": "deck-surface",
-          "librarySlideId": "lib-surface",
-          "name": "Surface Types",
-          "visible": true
-        },
-        {
-          "id": "deck-dimension",
-          "librarySlideId": "lib-dimension",
-          "name": "Dimensions",
-          "visible": true
-        },
-        {
-          "id": "deck-screenprint",
-          "librarySlideId": "lib-screenprint",
-          "name": "Screen Printing",
-          "visible": true
-        },
-        {
-          "id": "deck-logo-check",
-          "librarySlideId": "lib-logo-check",
-          "name": "Logo Check",
-          "visible": true
-        },
-        {
-          "id": "deck-database",
-          "librarySlideId": "lib-database",
-          "name": "Traceability",
-          "visible": true
-        },
-        {
-          "id": "deck-sensitivity",
-          "librarySlideId": "lib-sensitivity",
-          "name": "Sensitivity",
-          "visible": true
-        },
-        {
-          "id": "deck-footprint",
-          "librarySlideId": "lib-footprint",
-          "name": "Installation",
-          "visible": true
-        },
-        {
-          "id": "deck-integrations",
-          "librarySlideId": "lib-integrations",
-          "name": "Integrations",
-          "visible": true
-        },
-        {
-          "id": "deck-cta",
-          "librarySlideId": "lib-cta",
-          "name": "Call to Action",
-          "visible": true
-        }
-      ]
-    },
-    {
-      "id": "hidden-and-center-name-00000001",
-      "createdAt": "2026-04-25",
-      "customerName": "Starglass",
+      "id": "testtestest-copy-00000004",
+      "createdAt": "2026-04-26",
+      "customerName": "TESTTESTEST Copy",
       "contactName": "",
       "contactTitle": "",
       "customerLogoSrc": "/slides/uploads/logo-starglass.jpg",
-      "slideCount": 14,
+      "slideCount": 12,
       "slides": [
         {
           "id": "deck-lib-cover-1775977704536",
@@ -382,13 +283,116 @@
           "id": "deck-sensitivity",
           "librarySlideId": "lib-sensitivity",
           "name": "Sensitivity",
-          "visible": true
+          "visible": false
         },
         {
           "id": "deck-footprint",
           "librarySlideId": "lib-footprint",
           "name": "Installation",
+          "visible": false
+        },
+        {
+          "id": "deck-integrations",
+          "librarySlideId": "lib-integrations",
+          "name": "Integrations",
+          "visible": false
+        },
+        {
+          "id": "deck-cta",
+          "librarySlideId": "lib-cta",
+          "name": "Call to Action",
           "visible": true
+        }
+      ],
+      "presentationName": ""
+    },
+    {
+      "id": "testtestest-00000003",
+      "createdAt": "2026-04-26",
+      "presentationName": "OSPREY",
+      "customerName": "BENTELER",
+      "contactName": "John Smith",
+      "contactTitle": "Head of Quality",
+      "customerLogoSrc": "/slides/uploads/LOGO_Benteler.jpg",
+      "slideCount": 12,
+      "slides": [
+        {
+          "id": "deck-lib-cover-1775977704536",
+          "librarySlideId": "lib-cover",
+          "name": "Cover",
+          "visible": true
+        },
+        {
+          "id": "deck-company",
+          "librarySlideId": "lib-company",
+          "name": "Company Intro",
+          "visible": true
+        },
+        {
+          "id": "deck-comparison",
+          "librarySlideId": "lib-comparison",
+          "name": "Why Us",
+          "visible": true
+        },
+        {
+          "id": "deck-capability",
+          "librarySlideId": "lib-capability",
+          "name": "LineScanner Overview",
+          "visible": true
+        },
+        {
+          "id": "deck-technology",
+          "librarySlideId": "lib-technology",
+          "name": "Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1777096783950-1777096961176",
+          "librarySlideId": "lib-1777096783950",
+          "name": "Osprey",
+          "visible": true
+        },
+        {
+          "id": "deck-surface",
+          "librarySlideId": "lib-surface",
+          "name": "Surface Types",
+          "visible": true
+        },
+        {
+          "id": "deck-dimension",
+          "librarySlideId": "lib-dimension",
+          "name": "Dimensions",
+          "visible": true
+        },
+        {
+          "id": "deck-screenprint",
+          "librarySlideId": "lib-screenprint",
+          "name": "Screen Printing",
+          "visible": true
+        },
+        {
+          "id": "deck-logo-check",
+          "librarySlideId": "lib-logo-check",
+          "name": "Logo Check",
+          "visible": true
+        },
+        {
+          "id": "deck-database",
+          "librarySlideId": "lib-database",
+          "name": "Traceability",
+          "visible": true
+        },
+        {
+          "id": "deck-sensitivity",
+          "librarySlideId": "lib-sensitivity",
+          "name": "Sensitivity",
+          "visible": false
+        },
+        {
+          "id": "deck-footprint",
+          "librarySlideId": "lib-footprint",
+          "name": "Installation",
+          "visible": false
         },
         {
           "id": "deck-integrations",

@@ -68,7 +68,7 @@
     },
     {
       "id": "deck-integrations",
-      "visible": true,
+      "visible": false,
       "librarySlideId": "lib-integrations"
     },
     {

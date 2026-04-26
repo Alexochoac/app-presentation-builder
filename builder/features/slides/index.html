@@ -1646,6 +1646,10 @@
           <input type="text" id="cpCustomerName" placeholder="e.g. Acme Glass Co." autocomplete="off">
         </div>
         <div class="field">
+          <label for="cpPresentationName">Presentation Name</label>
+          <input type="text" id="cpPresentationName" placeholder="e.g. Q2 Demo, Security Overview…" autocomplete="off">
+        </div>
+        <div class="field">
           <label for="cpContactName">Contact Person</label>
           <input type="text" id="cpContactName" placeholder="e.g. John Smith">
         </div>
@@ -2058,9 +2062,10 @@
     var _cpPreloadedLogoSrc = '';
 
     function openCreatePresentationModal() {
-      document.getElementById('cpCustomerName').value = '';
-      document.getElementById('cpContactName').value  = '';
-      document.getElementById('cpContactTitle').value = '';
+      document.getElementById('cpCustomerName').value     = '';
+      document.getElementById('cpPresentationName').value = '';
+      document.getElementById('cpContactName').value      = '';
+      document.getElementById('cpContactTitle').value     = '';
       document.getElementById('cpLogo').value         = '';
       document.getElementById('cpLogoPreview').style.display = 'none';
       document.getElementById('cpError').classList.add('hidden');
@@ -2105,7 +2110,8 @@
     }
 
     function submitCreatePresentation() {
-      var customerName = document.getElementById('cpCustomerName').value.trim();
+      var customerName     = document.getElementById('cpCustomerName').value.trim();
+      var presentationName = document.getElementById('cpPresentationName').value.trim();
       var contactName  = document.getElementById('cpContactName').value.trim();
       var contactTitle = document.getElementById('cpContactTitle').value.trim();
       var logoFile     = document.getElementById('cpLogo').files[0];
@@ -2122,7 +2128,7 @@
       submitBtn.textContent = 'Saving…';
 
       function doSubmit(logoFilename, logoData) {
-        var payload = { customerName: customerName, contactName: contactName, contactTitle: contactTitle };
+        var payload = { presentationName: presentationName, customerName: customerName, contactName: contactName, contactTitle: contactTitle };
         if (logoFilename) { payload.logoFilename = logoFilename; payload.logoData = logoData; }
         else if (_cpPreloadedLogoSrc) { payload.existingLogoSrc = _cpPreloadedLogoSrc; }
         fetch('/api/presentations', {
