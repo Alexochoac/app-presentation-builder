@@ -121,10 +121,11 @@ All content slides now use this structure:
 - [x] **Benteler presentation** — new `benteler-00000001` deck created with customer logo and slides (2026-04-24)
 - [x] **Cover slide + carousel updates** — slide-01-cover.html and carousel.js improved (2026-04-24)
 - [x] **Dashboard — Views Overview** — bar chart (Chart.js 4) with date filter dropdown, presentations multi-select dropdown with search, Overview tab, logo-click-to-filter; "Coming Soon" badge; mock data only (2026-04-25)
-- [ ] **GitHub Pages publish** — `POST /api/presentations/:id/publish` + Publish button on Dashboard
+- [x] **GitHub Pages publish** — `POST /api/presentations/:id/publish` + `scripts/deploy.js` + Publish button on Dashboard card `⋯` menu (2026-04-26)
+- [x] **Dashboard card actions menu** — replaced View/Edit/Duplicate/Delete buttons with `⋯` icon dropdown; View becomes double-click on company name (2026-04-26)
+- [ ] **Published presentation state + archive flow** — `publishedAt`/`archivedAt` fields, Published badge, Archive replaces Delete after publish, hard-delete modal warning, builder "replace existing" option
 - [ ] **Design system refactor** (carried) — eliminate 3-layer CSS conflict; one source of truth in style.css
 - [ ] Delete old `dashboard.css`
-- [ ] `scripts/deploy.js` — push to GitHub Pages
 - [ ] **Views Overview — live data** — wire chart to real Umami analytics API when tracking is active
 
 ## Phase Roadmap
@@ -133,4 +134,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-04-25 (session 9)
+Last updated: 2026-04-26 (session 10)
