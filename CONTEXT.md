@@ -123,6 +123,7 @@ All content slides now use this structure:
 - [x] **Dashboard — Views Overview** — bar chart (Chart.js 4) with date filter dropdown, presentations multi-select dropdown with search, Overview tab, logo-click-to-filter; "Coming Soon" badge; mock data only (2026-04-25)
 - [x] **GitHub Pages publish** — `POST /api/presentations/:id/publish` + `scripts/deploy.js` + Publish button on Dashboard card `⋯` menu (2026-04-26)
 - [x] **Dashboard card actions menu** — replaced View/Edit/Duplicate/Delete buttons with `⋯` icon dropdown; View becomes double-click on company name (2026-04-26)
+- [x] **Presentation ID format** — changed from `slug-00000001` to `00000001` (number only) in `makePresId()` (2026-04-26)
 - [ ] **Published presentation state + archive flow** — `publishedAt`/`archivedAt` fields, Published badge, Archive replaces Delete after publish, hard-delete modal warning, builder "replace existing" option
 - [ ] **Design system refactor** (carried) — eliminate 3-layer CSS conflict; one source of truth in style.css
 - [ ] Delete old `dashboard.css`
@@ -134,4 +135,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-04-26 (session 10)
+Last updated: 2026-04-26 (session 11)

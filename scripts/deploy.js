@@ -3,7 +3,7 @@
  * Deploy finished presentations to GitHub (Cloudflare Pages auto-deploys from master).
  *
  * Usage:
- *   node scripts/deploy.js --id=acme-glass-00000001
+ *   node scripts/deploy.js --id=00000001
  *   node scripts/deploy.js --all
  */
 

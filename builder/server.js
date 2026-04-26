@@ -3559,16 +3559,10 @@ function buildFrozenPresentation(presentation) {
   return outDir;
 }
 
-function makePresId(customerName) {
-  var slug = (customerName || 'untitled')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 40) || 'untitled';
+function makePresId() {
   var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
   var count = (data.presentations || []).length + 1;
-  var seq = String(count).padStart(8, '0');
-  return slug + '-' + seq;
+  return String(count).padStart(8, '0');
 }
 
 // POST /api/presentations/rebuild-all — regenerate all frozen HTML files
@@ -3644,7 +3638,7 @@ app.post('/api/presentations', function (req, res) {
     });
 
     var presentation = {
-      id:              makePresId(customerName),
+      id:              makePresId(),
       createdAt:       new Date().toISOString().slice(0, 10),
       presentationName: presentationName,
       customerName:    customerName,
@@ -3775,7 +3769,7 @@ app.post('/api/presentations/:id/duplicate', function (req, res) {
     });
 
     var presentation = {
-      id:              makePresId(customerName),
+      id:              makePresId(),
       createdAt:       new Date().toISOString().slice(0, 10),
       customerName:    customerName,
       contactName:     contactName,
