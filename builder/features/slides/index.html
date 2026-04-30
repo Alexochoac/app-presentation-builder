@@ -1744,6 +1744,27 @@
         </div>
       </div>
 
+      <!-- Language section -->
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+        <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Languages</div>
+        <div class="field" style="margin-bottom:10px;">
+          <label for="cpDefaultLang">Default Language</label>
+          <select id="cpDefaultLang" style="width:100%;padding:8px 10px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;">
+            <option value="en">English</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Additional Languages</label>
+          <div id="cpLangSearch" style="position:relative;">
+            <input type="text" id="cpLangInput" placeholder="Search languages…" autocomplete="off"
+              style="width:100%;padding:8px 10px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;box-sizing:border-box;"
+              oninput="filterCpLangs(this.value)" onfocus="showCpLangDropdown()" onblur="setTimeout(hideCpLangDropdown,150)">
+            <div id="cpLangDropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-btn);max-height:160px;overflow-y:auto;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.6);"></div>
+          </div>
+          <div id="cpSelectedLangs" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;min-height:10px;"></div>
+        </div>
+      </div>
+
       <p class="coming-soon-msg hidden" id="cpError" style="color:#f87171;margin-top:12px;"></p>
 
       <div style="display:flex;gap:8px;margin-top:20px;">
@@ -2272,6 +2293,7 @@
       _cpPreloadedLogoSrc = '';
       document.getElementById('createPresentationModal').classList.remove('hidden');
       setTimeout(function () { document.getElementById('cpCustomerName').focus(); }, 50);
+      loadLangsForModal();
 
       // Pre-populate logo from the cover slide if one exists
       fetch('/api/slide-library')
@@ -2308,6 +2330,102 @@
       document.getElementById('createPresentationModal').classList.add('hidden');
     }
 
+    // ── Language picker for Create modal ──────────────────────────────────────
+    var _cpAllLangs = [];
+    var _cpSelectedLangs = [];
+
+    function loadLangsForModal() {
+      if (_cpAllLangs.length > 0) { populateCpDefaultLang(); return; }
+      fetch('/api/languages')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (res.success) { _cpAllLangs = res.data; }
+          // Also load favorites from translations
+          return fetch('/api/translations');
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (res.success && res.data.favorites) {
+            _cpSelectedLangs = res.data.favorites.slice();
+          }
+          _cpSelectedLangs = [];
+          populateCpDefaultLang();
+          renderCpSelectedLangs();
+        })
+        .catch(function () {});
+    }
+
+    function populateCpDefaultLang() {
+      var sel = document.getElementById('cpDefaultLang');
+      var current = sel.value;
+      sel.innerHTML = '';
+      _cpAllLangs.forEach(function (l) {
+        var opt = document.createElement('option');
+        opt.value = l.code; opt.textContent = l.name;
+        sel.appendChild(opt);
+      });
+      if (current) sel.value = current;
+    }
+
+    function filterCpLangs(query) {
+      showCpLangDropdown(query);
+    }
+
+    function showCpLangDropdown(query) {
+      var dd = document.getElementById('cpLangDropdown');
+      var q = (query || document.getElementById('cpLangInput').value || '').toLowerCase();
+      var filtered = _cpAllLangs.filter(function (l) {
+        return !_cpSelectedLangs.includes(l.code) && (l.name.toLowerCase().includes(q) || l.code.includes(q));
+      }).slice(0, 30);
+      dd.innerHTML = '';
+      filtered.forEach(function (l) {
+        var item = document.createElement('div');
+        item.textContent = l.name + ' (' + l.code + ')';
+        item.style.cssText = 'padding:8px 12px;font-size:13px;cursor:pointer;color:var(--text);';
+        item.onmouseenter = function () { this.style.background = 'rgba(255,255,255,.08)'; };
+        item.onmouseleave = function () { this.style.background = ''; };
+        item.onmousedown = function (e) { e.preventDefault(); addCpLang(l.code); };
+        dd.appendChild(item);
+      });
+      dd.style.display = filtered.length > 0 ? 'block' : 'none';
+    }
+
+    function hideCpLangDropdown() {
+      var dd = document.getElementById('cpLangDropdown');
+      if (dd) dd.style.display = 'none';
+    }
+
+    function addCpLang(code) {
+      if (!_cpSelectedLangs.includes(code)) {
+        _cpSelectedLangs.push(code);
+        renderCpSelectedLangs();
+      }
+      document.getElementById('cpLangInput').value = '';
+      hideCpLangDropdown();
+    }
+
+    function removeCpLang(code) {
+      _cpSelectedLangs = _cpSelectedLangs.filter(function (c) { return c !== code; });
+      renderCpSelectedLangs();
+    }
+
+    function renderCpSelectedLangs() {
+      var container = document.getElementById('cpSelectedLangs');
+      container.innerHTML = '';
+      _cpSelectedLangs.forEach(function (code) {
+        var lang = _cpAllLangs.find(function (l) { return l.code === code; });
+        var tag = document.createElement('span');
+        tag.style.cssText = 'display:inline-flex;align-items:center;gap:4px;background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.3);color:#F5A623;font-size:12px;font-weight:600;padding:3px 10px;border-radius:100px;';
+        tag.textContent = (lang ? lang.name : code);
+        var rm = document.createElement('button');
+        rm.textContent = '×';
+        rm.style.cssText = 'background:none;border:none;color:#F5A623;cursor:pointer;padding:0;font-size:14px;line-height:1;';
+        rm.onclick = function () { removeCpLang(code); };
+        tag.appendChild(rm);
+        container.appendChild(tag);
+      });
+    }
+
     function submitCreatePresentation() {
       var isReplace    = _cpOption === 'replace';
       var customerName     = document.getElementById('cpCustomerName').value.trim();
@@ -2340,7 +2458,8 @@
       submitBtn.textContent = 'Saving…';
 
       function doSubmit(logoFilename, logoData) {
-        var payload = { presentationName: presentationName, customerName: customerName, contactName: contactName, contactTitle: contactTitle };
+        var defaultLang = document.getElementById('cpDefaultLang').value || 'en';
+        var payload = { presentationName: presentationName, customerName: customerName, contactName: contactName, contactTitle: contactTitle, defaultLanguage: defaultLang, languages: _cpSelectedLangs };
         if (logoFilename) { payload.logoFilename = logoFilename; payload.logoData = logoData; }
         else if (_cpPreloadedLogoSrc) { payload.existingLogoSrc = _cpPreloadedLogoSrc; }
         if (isReplace) { payload.replaceId = document.getElementById('cpReplaceSelect').value; }

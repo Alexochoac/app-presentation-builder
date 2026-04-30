@@ -127,6 +127,11 @@ All content slides now use this structure:
 - [x] **Published presentation state + archive flow** — `publishedAt`/`archivedAt` fields, Published badge, Archive replaces Delete after publish, hard-delete modal warning (2026-04-26)
 - [x] **Builder — Save as finished: Replace existing** — two-option modal (New / Replace), replaceId on server, replacedAt timestamp, published warning, read-only identity fields (2026-04-30)
 - [x] **Builder — Create Presentation button moved to end of flow** — removed from Slide Preview, added to preview.html header + slides ⋯ menu; dashboard entry point removed (2026-04-30)
+- [x] **Translation feature (Phase 1)** — `languages.json`, `translations.json`, `translator.js` (OpenRouter API), 5 backend endpoints, dirty-flag hook on save, Translate toolbar button + badge, per-field translation popover, Translation Settings modal (add/remove languages), builder preview language switcher (EN/ES/IT/PT/FR) with read-only mode (2026-04-30)
+- [ ] **Translation — Finished presentation** — bake `[data-lang]` spans + inject `language-switcher.js` into output HTML at Create time
+- [ ] **Translation — Badge overcount fix** — skip non-text (image) fields from badge count
+- [ ] **Translation — Dirty flag for library slides** — hook into `POST /api/deck/slides/:id/edits`
+- [ ] **Translation — Preview navigate fix** — replace fragile `setTimeout(50)` with reliable slide-ready signal
 - [ ] **Design system refactor** (carried) — eliminate 3-layer CSS conflict; one source of truth in style.css
 - [ ] Delete old `dashboard.css`
 - [ ] **Views Overview — live data** — wire chart to real Umami analytics API when tracking is active
@@ -137,4 +142,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-04-30 (session 12)
+Last updated: 2026-04-30 (session 13)

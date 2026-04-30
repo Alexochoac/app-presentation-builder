@@ -7,6 +7,7 @@ const cheerio  = require('cheerio');
 const session  = require('express-session');
 const { requireAuth, registerAuthRoutes } = require('./features/auth/auth');
 const { execFile } = require('child_process');
+const { translate } = require('./lib/translator');
 
 const app  = express();
 const PORT = 3000;
@@ -1920,8 +1921,8 @@ function renderCarouselCardsLayout(slideId, savedEdits) {
     '',
     '  <div class="slide-layout">',
     '    <header class="slide-head">',
-    '      <div class="section-label" data-edit="section-label">' + applyEdit('section-label', 'Dimensional Control', savedEdits) + '</div>',
-    '      <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;">' + applyEdit('headline', 'Precise measurement of <span class="blue">dimensions and cutouts</span>', savedEdits) + '</h1>',
+    '      <div class="section-label" data-edit="section-label" contenteditable="" spellcheck="false">' + applyEdit('section-label', 'Dimensional Control', savedEdits) + '</div>',
+    '      <h1 class="slide-title" data-edit="headline" contenteditable="" spellcheck="false" style="margin-bottom:14px;">' + applyEdit('headline', 'Precise measurement of <span class="blue">dimensions and cutouts</span>', savedEdits) + '</h1>',
     '    </header>',
     '',
     '    <div class="slide-body">',
@@ -1931,23 +1932,23 @@ function renderCarouselCardsLayout(slideId, savedEdits) {
     '',
     '      <div class="ls7-cards anim-in">',
     '        <div class="col-card">',
-    '          <div class="col-label" data-edit="card-header-1">' + applyEdit('card-header-1', 'What is measured?', savedEdits) + '</div>',
+    '          <div class="col-label" data-edit="card-header-1" contenteditable="" spellcheck="false">' + applyEdit('card-header-1', 'What is measured?', savedEdits) + '</div>',
     '          <div class="col-list">',
-    '            <div class="col-item" data-edit="dim-item-1">' + applyEdit('dim-item-1', '<strong>Overall dimensions</strong> of the glass', savedEdits) + '</div>',
-    '            <div class="col-item" data-edit="dim-item-2">' + applyEdit('dim-item-2', '<strong>Position and size</strong> of drill holes', savedEdits) + '</div>',
-    '            <div class="col-item" data-edit="dim-item-3">' + applyEdit('dim-item-3', '<strong>Cutouts and notches</strong>', savedEdits) + '</div>',
-    '            <div class="col-item" data-edit="dim-item-4">' + applyEdit('dim-item-4', '<strong>Angles and parallelism</strong> of edges', savedEdits) + '</div>',
-    '            <div class="col-item" data-edit="dim-item-5">' + applyEdit('dim-item-5', '<strong>Rotation and position</strong> on line', savedEdits) + '</div>',
+    '            <div class="col-item" data-edit="dim-item-1" contenteditable="" spellcheck="false">' + applyEdit('dim-item-1', '<strong>Overall dimensions</strong> of the glass', savedEdits) + '</div>',
+    '            <div class="col-item" data-edit="dim-item-2" contenteditable="" spellcheck="false">' + applyEdit('dim-item-2', '<strong>Position and size</strong> of drill holes', savedEdits) + '</div>',
+    '            <div class="col-item" data-edit="dim-item-3" contenteditable="" spellcheck="false">' + applyEdit('dim-item-3', '<strong>Cutouts and notches</strong>', savedEdits) + '</div>',
+    '            <div class="col-item" data-edit="dim-item-4" contenteditable="" spellcheck="false">' + applyEdit('dim-item-4', '<strong>Angles and parallelism</strong> of edges', savedEdits) + '</div>',
+    '            <div class="col-item" data-edit="dim-item-5" contenteditable="" spellcheck="false">' + applyEdit('dim-item-5', '<strong>Rotation and position</strong> on line', savedEdits) + '</div>',
     '          </div>',
     '        </div>',
     '        <div class="col-card">',
-    '          <div class="col-label" data-edit="card-header-2">' + applyEdit('card-header-2', 'Setup &amp; tolerances', savedEdits) + '</div>',
+    '          <div class="col-label" data-edit="card-header-2" contenteditable="" spellcheck="false">' + applyEdit('card-header-2', 'Setup &amp; tolerances', savedEdits) + '</div>',
     '          <div class="col-list">',
-    '            <div class="col-item" data-edit="dim-item-6">' + applyEdit('dim-item-6', 'Compatible with <strong class="ls7-trigger" onclick="ls7OpenTolerances()" data-edit="trigger-tolerances">individual tolerances per measurement \u2197</strong>', savedEdits) + '</div>',
-    '            <div class="col-item" data-edit="dim-item-7">' + applyEdit('dim-item-7', '<strong>DXF</strong> model import', savedEdits) + '</div>',
-    '            <div class="col-item" data-edit="dim-item-8">' + applyEdit('dim-item-8', '<strong>2-step</strong> verification: global + detail', savedEdits) + '</div>',
-    '            <div class="col-item" data-edit="dim-item-9">' + applyEdit('dim-item-9', 'Compatible with <strong class="ls7-trigger" onclick="ls7OpenConveyor()" data-umami-event="conveyor-gallery-open">belt conveyors \u2197</strong>', savedEdits) + '</div>',
-    '            <div class="col-item" data-edit="dim-item-10">' + applyEdit('dim-item-10', 'Parallel light for <strong>maximum precision</strong>', savedEdits) + '</div>',
+    '            <div class="col-item" data-edit="dim-item-6" contenteditable="" spellcheck="false">' + applyEdit('dim-item-6', 'Compatible with <strong class="ls7-trigger" onclick="ls7OpenTolerances()">individual tolerances per measurement \u2197</strong>', savedEdits) + '</div>',
+    '            <div class="col-item" data-edit="dim-item-7" contenteditable="" spellcheck="false">' + applyEdit('dim-item-7', '<strong>DXF</strong> model import', savedEdits) + '</div>',
+    '            <div class="col-item" data-edit="dim-item-8" contenteditable="" spellcheck="false">' + applyEdit('dim-item-8', '<strong>2-step</strong> verification: global + detail', savedEdits) + '</div>',
+    '            <div class="col-item" data-edit="dim-item-9" contenteditable="" spellcheck="false">' + applyEdit('dim-item-9', 'Compatible with <strong class="ls7-trigger" onclick="ls7OpenConveyor()" data-umami-event="conveyor-gallery-open">belt conveyors \u2197</strong>', savedEdits) + '</div>',
+    '            <div class="col-item" data-edit="dim-item-10" contenteditable="" spellcheck="false">' + applyEdit('dim-item-10', 'Parallel light for <strong>maximum precision</strong>', savedEdits) + '</div>',
     '          </div>',
     '        </div>',
     '      </div>',
@@ -2918,6 +2919,8 @@ var PRESENTATIONS_PATH = path.join(__dirname, 'data', 'presentations.json');
 var LAYOUTS_PATH   = path.join(__dirname, 'data', 'layouts.json');
 var TEMPLATES_PATH = path.join(__dirname, 'data', 'slide-templates.json');
 var SETTINGS_PATH  = path.join(__dirname, 'data', 'settings.json');
+var LANGUAGES_PATH     = path.join(__dirname, 'data', 'languages.json');
+var TRANSLATIONS_PATH  = path.join(__dirname, 'data', 'translations.json');
 
 function readSettings() {
   try { return JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')); }
@@ -3978,6 +3981,133 @@ app.get('/slides', function (_req, res) {
   res.sendFile(path.join(__dirname, 'features/slides/index.html'));
 });
 
+// ── API: languages ────────────────────────────────────────────────────────────
+app.get('/api/languages', function (_req, res) {
+  try {
+    var data = JSON.parse(fs.readFileSync(LANGUAGES_PATH, 'utf8'));
+    res.json({ success: true, data: data.languages });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ── API: translations ─────────────────────────────────────────────────────────
+function readTranslations() {
+  try { return JSON.parse(fs.readFileSync(TRANSLATIONS_PATH, 'utf8')); }
+  catch (e) { return { languages: [], favorites: [], defaultLanguage: 'en', fields: {} }; }
+}
+
+function writeTranslations(data) {
+  fs.writeFileSync(TRANSLATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+}
+
+app.get('/api/translations', function (_req, res) {
+  res.json({ success: true, data: readTranslations() });
+});
+
+const TRANSLATE_CHUNK_SIZE = 20;
+
+app.post('/api/translations/translate', async function (req, res) {
+  try {
+    const t = readTranslations();
+    const targetLanguages = (req.body && req.body.languages) || t.languages.filter(l => l !== 'en');
+    const langList = JSON.parse(fs.readFileSync(LANGUAGES_PATH, 'utf8')).languages;
+
+    for (const lang of targetLanguages) {
+      const dirty = {};
+      for (const [key, val] of Object.entries(t.fields)) {
+        if (!val.en) continue;
+        const langData = val[lang];
+        if (!langData || !langData.current || langData.dirty) {
+          dirty[key] = val.en;
+        }
+      }
+      if (Object.keys(dirty).length === 0) continue;
+
+      const langName = (langList.find(l => l.code === lang) || {}).name || lang;
+
+      // Split into chunks to stay within token limits
+      const entries = Object.entries(dirty);
+      for (let i = 0; i < entries.length; i += TRANSLATE_CHUNK_SIZE) {
+        const chunk = Object.fromEntries(entries.slice(i, i + TRANSLATE_CHUNK_SIZE));
+        const result = await translate(chunk, langName);
+        if (!result.ok) continue;
+
+        for (const [key, translated] of Object.entries(result.fields)) {
+          if (!t.fields[key]) continue;
+          const prev = t.fields[key][lang];
+          t.fields[key][lang] = {
+            current: translated,
+            previous: prev && prev.current ? prev.current : null,
+            dirty: false
+          };
+        }
+        // Save after each chunk so progress is never lost
+        writeTranslations(t);
+      }
+    }
+
+    res.json({ success: true, data: t });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.patch('/api/translations/field', function (req, res) {
+  try {
+    const { fieldKey, language, value } = req.body || {};
+    if (!fieldKey || !language || value === undefined) {
+      return res.status(400).json({ success: false, error: 'fieldKey, language, value required' });
+    }
+    const t = readTranslations();
+    if (!t.fields[fieldKey]) t.fields[fieldKey] = {};
+    if (!t.fields[fieldKey][language]) {
+      t.fields[fieldKey][language] = { current: value, previous: null, dirty: false };
+    } else {
+      t.fields[fieldKey][language].current = value;
+    }
+    writeTranslations(t);
+    res.json({ success: true, data: t.fields[fieldKey][language] });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/translations/restore', function (req, res) {
+  try {
+    const { fieldKey, language } = req.body || {};
+    if (!fieldKey || !language) {
+      return res.status(400).json({ success: false, error: 'fieldKey and language required' });
+    }
+    const t = readTranslations();
+    const entry = t.fields[fieldKey] && t.fields[fieldKey][language];
+    if (!entry || !entry.previous) {
+      return res.status(400).json({ success: false, error: 'No previous version to restore' });
+    }
+    entry.current = entry.previous;
+    entry.previous = null;
+    entry.dirty = false;
+    writeTranslations(t);
+    res.json({ success: true, data: entry });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.put('/api/translations/settings', function (req, res) {
+  try {
+    const { languages, favorites, defaultLanguage } = req.body || {};
+    const t = readTranslations();
+    if (Array.isArray(languages)) t.languages = languages;
+    if (Array.isArray(favorites)) t.favorites = favorites;
+    if (defaultLanguage) t.defaultLanguage = defaultLanguage;
+    writeTranslations(t);
+    res.json({ success: true, data: t });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // ── API: layouts ──────────────────────────────────────────────────────────────
 app.get('/api/layouts', function (_req, res) {
   try {
@@ -4110,6 +4240,33 @@ app.post('/api/save', function (req, res) {
     });
 
     fs.writeFileSync(filePath, $.html(), 'utf8');
+
+    // Mark translation dirty flags for any changed fields
+    try {
+      var t = readTranslations();
+      var changed = false;
+      Object.entries(edits).forEach(function (entry) {
+        var key = entry[0];
+        var newVal = entry[1];
+        if (!t.fields[key]) {
+          t.fields[key] = { en: newVal };
+          changed = true;
+        } else if (t.fields[key].en !== newVal) {
+          t.fields[key].en = newVal;
+          // Mark dirty for all languages that already have a translation
+          Object.keys(t.fields[key]).forEach(function (lang) {
+            if (lang !== 'en' && t.fields[key][lang] && t.fields[key][lang].current) {
+              t.fields[key][lang].dirty = true;
+            }
+          });
+          changed = true;
+        }
+      });
+      if (changed) writeTranslations(t);
+    } catch (tErr) {
+      console.warn('Translation dirty-flag update failed:', tErr.message);
+    }
+
     res.json({ ok: true });
   } catch (err) {
     console.error('Save error:', err.message);

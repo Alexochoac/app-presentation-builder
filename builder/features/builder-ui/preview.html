@@ -118,15 +118,6 @@
     #unsavedModal #modalCancel  { background:transparent; color:rgba(255,255,255,.4); border:1px solid rgba(255,255,255,.15); }
     body { padding-top: 48px; }
     #slidesContainer { height: calc(100dvh - 48px); }
-    #btnCreatePres {
-      display: flex; align-items: center; gap: 6px;
-      background: #F5A623; color: #111;
-      border: none; border-radius: 8px;
-      padding: 0 16px; height: 34px;
-      font-size: 13px; font-weight: 700;
-      font-family: inherit; cursor: pointer; white-space: nowrap;
-    }
-    #btnCreatePres:hover { opacity: .88; }
     #presActionsWrap { position: relative; }
     #btnPresActions {
       display: flex; align-items: center; justify-content: center;
@@ -138,7 +129,7 @@
     #btnPresActions:hover { background: rgba(255,255,255,.06); }
     #presActionsMenu {
       display: none;
-      position: absolute; top: calc(100% + 6px); right: 0;
+      position: absolute; top: calc(100% + 6px); left: 0;
       min-width: 200px;
       background: #111; border: 1px solid rgba(255,255,255,0.12);
       border-radius: 10px; padding: 4px;
@@ -155,6 +146,103 @@
       text-decoration: none; box-sizing: border-box;
     }
     .footer-menu-item:hover { background: rgba(255,255,255,.08); color: #fff; }
+    /* ── Translate badge (inside menu item) ── */
+    #translateBadge {
+      display: none;
+      background: #F5A623; color: #111;
+      font-size: 10px; font-weight: 800;
+      border-radius: 100px; padding: 2px 7px;
+      min-width: 18px; text-align: center;
+    }
+    #translateBadge.visible { display: inline-block; }
+    #btnTranslate { display: flex; align-items: center; gap: 6px; }
+    #btnTranslate:disabled { opacity: .5; cursor: default; }
+    /* ── Preview language switcher ── */
+    #previewLangWrap { position: relative; }
+    #previewLangBtn {
+      display: flex; align-items: center; gap: 5px;
+      background: transparent; border: 1px solid var(--border, #2a2a2a);
+      color: var(--text, #e5e5e5); border-radius: 8px;
+      padding: 0 12px; height: 34px;
+      font-size: 13px; font-weight: 600; font-family: inherit;
+      cursor: pointer; white-space: nowrap;
+    }
+    #previewLangBtn:hover { background: rgba(255,255,255,.06); }
+    #previewLangBtn.active {
+      border-color: rgba(245,166,35,.5);
+      color: #F5A623;
+      background: rgba(245,166,35,.08);
+    }
+    #previewLangMenu {
+      display: none; position: absolute; top: calc(100% + 6px); left: 0;
+      min-width: 180px;
+      background: #111; border: 1px solid rgba(255,255,255,.12);
+      border-radius: 10px; padding: 4px;
+      box-shadow: 0 10px 36px rgba(0,0,0,.7);
+      z-index: 99999;
+    }
+    #previewLangMenu.open { display: block; }
+    .lang-menu-item {
+      display: block; width: 100%; padding: 8px 12px;
+      border: none; background: transparent;
+      color: rgba(255,255,255,.85); font-size: 13px; text-align: left;
+      border-radius: 7px; cursor: pointer; font-family: inherit;
+    }
+    .lang-menu-item:hover { background: rgba(255,255,255,.08); }
+    .lang-menu-item.active { color: #F5A623; font-weight: 700; }
+    #previewLangBanner {
+      display: none; position: fixed; top: 48px; left: 0; right: 0;
+      background: rgba(245,166,35,.12); border-bottom: 1px solid rgba(245,166,35,.3);
+      color: #F5A623; font-size: 12px; font-weight: 600; text-align: center;
+      padding: 6px; z-index: 9998; letter-spacing: .02em;
+    }
+    #previewLangBanner.visible { display: block; }
+    /* ── Translation popover ── */
+    #translationPanel {
+      display: none; position: fixed;
+      top: 56px; right: 16px; width: 320px;
+      background: #1a1a1a; border: 1px solid rgba(255,255,255,.12);
+      border-radius: 12px; padding: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.7);
+      z-index: 99998; max-height: calc(100dvh - 80px);
+      overflow-y: auto;
+    }
+    #translationPanel.open { display: block; }
+    #translationPanel h4 {
+      margin: 0 0 12px; font-size: 13px; font-weight: 700;
+      color: #e5e5e5; display: flex; align-items: center; justify-content: space-between;
+    }
+    #translationPanel h4 button {
+      background: none; border: none; color: rgba(255,255,255,.4);
+      font-size: 16px; cursor: pointer; padding: 0; line-height: 1;
+    }
+    .trans-lang-row {
+      margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,.06); padding-bottom: 12px;
+    }
+    .trans-lang-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .trans-lang-label {
+      font-size: 11px; font-weight: 700; color: rgba(255,255,255,.4);
+      text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .trans-dirty-dot {
+      display: inline-block; width: 6px; height: 6px;
+      background: #F5A623; border-radius: 50;
+    }
+    .trans-current {
+      width: 100%; background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1); border-radius: 6px;
+      color: #e5e5e5; font-size: 12px; padding: 7px 10px;
+      font-family: inherit; resize: vertical; min-height: 48px;
+      box-sizing: border-box;
+    }
+    .trans-current:focus { outline: none; border-color: rgba(245,166,35,.5); }
+    .trans-restore-btn {
+      background: none; border: none; color: rgba(245,166,35,.7);
+      font-size: 11px; cursor: pointer; padding: 4px 0; font-family: inherit;
+    }
+    .trans-restore-btn:hover { color: #F5A623; }
+    .trans-placeholder { font-size: 12px; color: rgba(255,255,255,.25); font-style: italic; }
   </style>
 </head>
 <body>
@@ -166,6 +254,24 @@
     <div id="header-left">
       <a id="backBtn" href="#" onclick="handleBack(); return false;">&#8592; Back</a>
       <div id="presTitle">Builder Preview</div>
+      <div id="presActionsWrap">
+        <button id="btnPresActions" onclick="document.getElementById('presActionsMenu').classList.toggle('open')" title="Menu">&#9776;</button>
+        <div id="presActionsMenu">
+          <button class="footer-menu-item" onclick="window.location.href='/slides?create'">&#128196; Create Presentation</button>
+          <button class="footer-menu-item" onclick="window.location.href='/slides?replace'">&#8635; Replace Presentation</button>
+          <hr style="border:none;border-top:1px solid rgba(255,255,255,.08);margin:4px 0;">
+          <button class="footer-menu-item" id="btnTranslate" onclick="document.getElementById('presActionsMenu').classList.remove('open');handleTranslateClick()">
+            &#127760; Translate <span id="translateBadge"></span>
+          </button>
+          <button class="footer-menu-item" onclick="document.getElementById('presActionsMenu').classList.remove('open');openTranslationSettings()">&#9881; Translation Settings</button>
+        </div>
+      </div>
+      <div id="previewLangWrap">
+        <button id="previewLangBtn" onclick="document.getElementById('previewLangMenu').classList.toggle('open')" title="Preview language">
+          <span id="previewLangFlag">&#127760;</span> <span id="previewLangLabel">EN</span> &#9662;
+        </button>
+        <div id="previewLangMenu"></div>
+      </div>
     </div>
     <div id="header-center">
       <button class="nav-arrow prev hidden" id="btnPrev">&#8249;</button>
@@ -175,18 +281,55 @@
     <div id="header-right">
       <div id="previewBadge">Preview</div>
       <div id="counter"></div>
-      <button id="btnCreatePres" onclick="window.location.href='/slides?create'">&#128196; Create Presentation</button>
-      <div id="presActionsWrap">
-        <button id="btnPresActions" onclick="document.getElementById('presActionsMenu').classList.toggle('open')" title="More">&#8943;</button>
-        <div id="presActionsMenu">
-          <button class="footer-menu-item" onclick="window.location.href='/slides?replace'">&#8635; Replace Presentation</button>
-        </div>
-      </div>
     </div>
   </div>
 
   <div class="slides-container" id="slidesContainer"></div>
   <div id="saveStatus"></div>
+  <div id="previewLangBanner">Previewing in <span id="previewLangBannerName"></span> — editing disabled</div>
+
+  <!-- Translation settings modal -->
+  <div id="translationSettingsModal" style="
+    display:none; position:fixed; inset:0; z-index:99999;
+    background:rgba(0,0,0,.6); align-items:center; justify-content:center;">
+    <div style="
+      background:#1a1a1a; border:1px solid rgba(255,255,255,.12); border-radius:14px;
+      padding:28px 28px 24px; width:400px; max-width:92vw; max-height:90vh; overflow-y:auto;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div style="font-size:15px;font-weight:700;color:#e5e5e5;">&#127760; Translation Settings</div>
+        <button onclick="closeTranslationSettings()" style="background:none;border:none;color:rgba(255,255,255,.4);font-size:18px;cursor:pointer;padding:0;">&#10005;</button>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Default Language</div>
+        <select id="tsDefaultLang" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:#111;color:#e5e5e5;font-size:13px;font-family:inherit;"></select>
+      </div>
+
+      <div style="margin-bottom:8px;">
+        <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Active Languages</div>
+        <div style="display:flex;gap:6px;margin-bottom:8px;">
+          <input id="tsLangInput" type="text" placeholder="Search and add a language…"
+            style="flex:1;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:#111;color:#e5e5e5;font-size:13px;font-family:inherit;"
+            oninput="filterTsLangs(this.value)" onfocus="showTsDropdown()" onblur="setTimeout(hideTsDropdown,150)">
+        </div>
+        <div id="tsLangDropdown" style="display:none;background:#111;border:1px solid rgba(255,255,255,.12);border-radius:8px;max-height:150px;overflow-y:auto;margin-bottom:8px;"></div>
+        <div id="tsActiveLangs" style="display:flex;flex-wrap:wrap;gap:6px;min-height:10px;"></div>
+      </div>
+
+      <p id="tsError" style="display:none;color:#f87171;font-size:12px;margin:8px 0 0;"></p>
+
+      <div style="display:flex;gap:8px;margin-top:20px;">
+        <button onclick="closeTranslationSettings()" style="flex:0 0 auto;padding:8px 18px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.6);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Cancel</button>
+        <button onclick="saveTranslationSettings()" id="tsSaveBtn" style="flex:1;padding:8px 18px;border-radius:8px;border:none;background:#F5A623;color:#111;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Translation panel (per-field) -->
+  <div id="translationPanel">
+    <h4>Translations <button onclick="closeTranslationPanel()">&#10005;</button></h4>
+    <div id="translationPanelBody"></div>
+  </div>
 
   <!-- Lightbox -->
   <div id="lightbox">
@@ -278,6 +421,9 @@
     if (window.Tabs)    Tabs.init(el);
     if (window.List)    List.init(el);
     if (window.LSTable) LSTable.init(el);
+    if (typeof previewLang !== 'undefined' && previewLang !== 'en') {
+      setTimeout(function () { applyPreviewLang(previewLang); }, 50);
+    }
     return el;
   }
 
@@ -596,6 +742,388 @@
     if (wrap && !wrap.contains(e.target)) {
       document.getElementById('presActionsMenu').classList.remove('open');
     }
+    var langWrap = document.getElementById('previewLangWrap');
+    if (langWrap && !langWrap.contains(e.target)) {
+      document.getElementById('previewLangMenu').classList.remove('open');
+    }
+    // Close translation panel when clicking outside
+    var panel = document.getElementById('translationPanel');
+    if (panel && panel.classList.contains('open') && !panel.contains(e.target)) {
+      panel.classList.remove('open');
+    }
+  });
+
+  // ── Translation UI ────────────────────────────────────────────────────────────
+  var translationsData = null;
+
+  function loadTranslations() {
+    return fetch('/api/translations')
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res.success) {
+          translationsData = res.data;
+          updateTranslateBadge();
+          buildLangMenu();
+        }
+      })
+      .catch(function () {});
+  }
+
+  function updateTranslateBadge() {
+    var badge = document.getElementById('translateBadge');
+    if (!translationsData) { badge.className = ''; return; }
+    var count = 0;
+    var langs = (translationsData.languages || []).filter(function (l) { return l !== 'en'; });
+    Object.values(translationsData.fields || {}).forEach(function (field) {
+      langs.forEach(function (lang) {
+        if (!field[lang] || !field[lang].current || field[lang].dirty) count++;
+      });
+    });
+    badge.textContent = count;
+    badge.className = count > 0 ? 'visible' : '';
+  }
+
+  function handleTranslateClick() {
+    var btn = document.getElementById('btnTranslate');
+    btn.disabled = true;
+    btn.innerHTML = '&#127760; Translating…';
+    fetch('/api/translations/translate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({})
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (res) {
+      btn.disabled = false;
+      btn.innerHTML = '&#127760; Translate <span id="translateBadge"></span>';
+      if (res.success) {
+        translationsData = res.data;
+        updateTranslateBadge();
+      } else {
+        document.getElementById('translateBadge').textContent = '!';
+        document.getElementById('translateBadge').className = 'visible';
+      }
+    })
+    .catch(function () {
+      btn.disabled = false;
+      btn.innerHTML = '&#127760; Translate <span id="translateBadge">!</span>';
+      document.getElementById('translateBadge').className = 'visible';
+    });
+  }
+
+  function openTranslationPanel(fieldKey) {
+    if (!translationsData) { loadTranslations().then(function () { openTranslationPanel(fieldKey); }); return; }
+    var langs = (translationsData.languages || []).filter(function (l) { return l !== 'en'; });
+    var fields = translationsData.fields || {};
+    var body = document.getElementById('translationPanelBody');
+
+    if (langs.length === 0) {
+      body.innerHTML = '<p style="font-size:12px;color:rgba(255,255,255,.35);">No languages configured. Add languages in deck translation settings.</p>';
+      document.getElementById('translationPanel').classList.add('open');
+      return;
+    }
+
+    var html = '';
+    langs.forEach(function (lang) {
+      var entry = fields[fieldKey] && fields[fieldKey][lang];
+      var current = entry && entry.current ? entry.current : '';
+      var previous = entry && entry.previous ? entry.previous : null;
+      var dirty = entry && entry.dirty;
+      html += '<div class="trans-lang-row" data-lang="' + lang + '">';
+      html += '<div class="trans-lang-label">' + lang.toUpperCase();
+      if (dirty) html += ' <span class="trans-dirty-dot" title="Outdated"></span>';
+      html += '</div>';
+      if (current) {
+        html += '<textarea class="trans-current" data-field="' + fieldKey + '" data-lang="' + lang + '" rows="2">' + current + '</textarea>';
+      } else {
+        html += '<div class="trans-placeholder">Not yet translated</div>';
+        html += '<textarea class="trans-current" data-field="' + fieldKey + '" data-lang="' + lang + '" rows="2" placeholder="Type correction…"></textarea>';
+      }
+      if (previous) {
+        html += '<button class="trans-restore-btn" data-field="' + fieldKey + '" data-lang="' + lang + '" onclick="restoreTranslation(this)" title="' + previous + '">&#8635; Restore: ' + previous.substring(0, 40) + (previous.length > 40 ? '…' : '') + '</button>';
+      }
+      html += '</div>';
+    });
+
+    body.innerHTML = html;
+
+    // Save on blur
+    body.querySelectorAll('.trans-current').forEach(function (ta) {
+      ta.addEventListener('blur', function () {
+        var fk = ta.getAttribute('data-field');
+        var lg = ta.getAttribute('data-lang');
+        fetch('/api/translations/field', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fieldKey: fk, language: lg, value: ta.value })
+        }).then(function (r) { return r.json(); })
+          .then(function (res) { if (res.success) loadTranslations(); });
+      });
+    });
+
+    document.getElementById('translationPanel').classList.add('open');
+  }
+
+  function restoreTranslation(btn) {
+    var fk = btn.getAttribute('data-field');
+    var lg = btn.getAttribute('data-lang');
+    fetch('/api/translations/restore', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fieldKey: fk, language: lg })
+    }).then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res.success) { loadTranslations().then(function () { openTranslationPanel(fk); }); }
+      });
+  }
+
+  function closeTranslationPanel() {
+    document.getElementById('translationPanel').classList.remove('open');
+  }
+
+  // Hook: clicking a [data-edit] field shows translation panel
+  document.getElementById('slidesContainer').addEventListener('click', function (e) {
+    var el = e.target;
+    while (el && el !== this) {
+      if (el.hasAttribute('data-edit') && el.hasAttribute('contenteditable')) {
+        openTranslationPanel(el.getAttribute('data-edit'));
+        return;
+      }
+      el = el.parentElement;
+    }
+  });
+
+  // ── Preview language switcher ─────────────────────────────────────────────
+  var previewLang = 'en';
+  var enSnapshot = {};
+
+  var LANG_FLAGS = {
+    en: '🇬🇧', es: '🇪🇸', fr: '🇫🇷', de: '🇩🇪', it: '🇮🇹',
+    pt: '🇵🇹', nl: '🇳🇱', ja: '🇯🇵', zh: '🇨🇳', ko: '🇰🇷',
+    ar: '🇸🇦', ru: '🇷🇺', pl: '🇵🇱', sv: '🇸🇪', da: '🇩🇰',
+    fi: '🇫🇮', nb: '🇳🇴', tr: '🇹🇷', cs: '🇨🇿', hu: '🇭🇺',
+    ro: '🇷🇴', el: '🇬🇷', he: '🇮🇱', hi: '🇮🇳', th: '🇹🇭'
+  };
+  function langFlag(code) { return LANG_FLAGS[code] || '🌐'; }
+
+  function snapshotEnglish() {
+    document.querySelectorAll('[data-edit][contenteditable]').forEach(function (el) {
+      var key = el.getAttribute('data-edit');
+      if (!enSnapshot[key]) enSnapshot[key] = el.innerHTML;
+    });
+  }
+
+  function buildLangMenu() {
+    if (!translationsData) return;
+    var langs = translationsData.languages || ['en'];
+    var menu = document.getElementById('previewLangMenu');
+    menu.innerHTML = '';
+    langs.forEach(function (code) {
+      var btn = document.createElement('button');
+      btn.className = 'lang-menu-item' + (code === previewLang ? ' active' : '');
+      btn.textContent = langFlag(code) + ' ' + code.toUpperCase();
+      btn.onclick = function () {
+        document.getElementById('previewLangMenu').classList.remove('open');
+        setPreviewLang(code);
+      };
+      menu.appendChild(btn);
+    });
+  }
+
+  function setPreviewLang(lang) {
+    if (previewLang === 'en' && lang !== 'en') snapshotEnglish();
+    previewLang = lang;
+    var isEn = lang === 'en';
+
+    // Update button label + flag + style
+    document.getElementById('previewLangFlag').textContent = langFlag(lang);
+    document.getElementById('previewLangLabel').textContent = lang.toUpperCase();
+    document.getElementById('previewLangBtn').classList.toggle('active', !isEn);
+
+    // Show/hide banner
+    var banner = document.getElementById('previewLangBanner');
+    if (!isEn) {
+      var langObj = (_tsAllLangs || []).find(function (l) { return l.code === lang; });
+      document.getElementById('previewLangBannerName').textContent = langObj ? langObj.name : lang.toUpperCase();
+      banner.classList.add('visible');
+    } else {
+      banner.classList.remove('visible');
+    }
+
+    // Update all visible [data-edit] fields
+    applyPreviewLang(lang);
+    buildLangMenu();
+  }
+
+  function applyPreviewLang(lang) {
+    var fields = translationsData && translationsData.fields ? translationsData.fields : {};
+    document.querySelectorAll('[data-edit]').forEach(function (el) {
+      var key = el.getAttribute('data-edit');
+      var isEditable = el.hasAttribute('contenteditable');
+      if (!isEditable) return; // skip image/non-text fields
+      if (lang === 'en') {
+        if (enSnapshot[key] !== undefined) el.innerHTML = enSnapshot[key];
+        el.contentEditable = 'true';
+      } else {
+        var entry = fields[key] && fields[key][lang];
+        if (entry && entry.current) el.innerHTML = entry.current;
+        el.contentEditable = 'false';
+      }
+    });
+  }
+
+  // Block autosave when previewing a non-English language
+  var _origScheduleSave = scheduleSave;
+  scheduleSave = function () {
+    if (previewLang !== 'en') return;
+    _origScheduleSave();
+  };
+
+  // Close lang menu on outside click
+  document.addEventListener('click', function (e) {
+    var wrap = document.getElementById('previewLangWrap');
+    if (wrap && !wrap.contains(e.target)) {
+      document.getElementById('previewLangMenu').classList.remove('open');
+    }
+  });
+
+  // Load translations on init
+  loadTranslations();
+
+  // ── Translation Settings modal ────────────────────────────────────────────
+  var _tsAllLangs = [];
+  var _tsActiveLangs = [];
+
+  function openTranslationSettings() {
+    var modal = document.getElementById('translationSettingsModal');
+    modal.style.display = 'flex';
+
+    // Load all languages + current settings in parallel
+    Promise.all([
+      fetch('/api/languages').then(function (r) { return r.json(); }),
+      fetch('/api/translations').then(function (r) { return r.json(); })
+    ]).then(function (results) {
+      var langsRes = results[0];
+      var transRes = results[1];
+      if (langsRes.success) _tsAllLangs = langsRes.data;
+      var current = transRes.success ? transRes.data : { languages: ['en'], defaultLanguage: 'en' };
+      _tsActiveLangs = (current.languages || ['en']).slice();
+
+      // Populate default language select
+      var sel = document.getElementById('tsDefaultLang');
+      sel.innerHTML = '';
+      _tsAllLangs.forEach(function (l) {
+        var opt = document.createElement('option');
+        opt.value = l.code; opt.textContent = l.name;
+        if (l.code === current.defaultLanguage) opt.selected = true;
+        sel.appendChild(opt);
+      });
+
+      renderTsActiveLangs();
+    }).catch(function () {
+      document.getElementById('tsError').textContent = 'Failed to load settings.';
+      document.getElementById('tsError').style.display = 'block';
+    });
+  }
+
+  function closeTranslationSettings() {
+    document.getElementById('translationSettingsModal').style.display = 'none';
+    document.getElementById('tsLangInput').value = '';
+    hideTsDropdown();
+  }
+
+  function renderTsActiveLangs() {
+    var container = document.getElementById('tsActiveLangs');
+    container.innerHTML = '';
+    _tsActiveLangs.forEach(function (code) {
+      var lang = _tsAllLangs.find(function (l) { return l.code === code; });
+      var tag = document.createElement('span');
+      tag.style.cssText = 'display:inline-flex;align-items:center;gap:4px;background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.3);color:#F5A623;font-size:12px;font-weight:600;padding:3px 10px;border-radius:100px;';
+      tag.textContent = lang ? lang.name : code;
+      if (code !== 'en') {
+        var rm = document.createElement('button');
+        rm.textContent = '×';
+        rm.style.cssText = 'background:none;border:none;color:#F5A623;cursor:pointer;padding:0;font-size:14px;line-height:1;';
+        rm.onclick = function () {
+          _tsActiveLangs = _tsActiveLangs.filter(function (c) { return c !== code; });
+          renderTsActiveLangs();
+        };
+        tag.appendChild(rm);
+      }
+      container.appendChild(tag);
+    });
+  }
+
+  function filterTsLangs(query) { showTsDropdown(query); }
+
+  function showTsDropdown(query) {
+    var dd = document.getElementById('tsLangDropdown');
+    var q = (query || document.getElementById('tsLangInput').value || '').toLowerCase();
+    var filtered = _tsAllLangs.filter(function (l) {
+      return !_tsActiveLangs.includes(l.code) && (l.name.toLowerCase().includes(q) || l.code.includes(q));
+    }).slice(0, 30);
+    dd.innerHTML = '';
+    filtered.forEach(function (l) {
+      var item = document.createElement('div');
+      item.textContent = l.name + ' (' + l.code + ')';
+      item.style.cssText = 'padding:8px 12px;font-size:13px;cursor:pointer;color:#e5e5e5;';
+      item.onmouseenter = function () { this.style.background = 'rgba(255,255,255,.08)'; };
+      item.onmouseleave = function () { this.style.background = ''; };
+      item.onmousedown = function (e) {
+        e.preventDefault();
+        _tsActiveLangs.push(l.code);
+        renderTsActiveLangs();
+        document.getElementById('tsLangInput').value = '';
+        hideTsDropdown();
+      };
+      dd.appendChild(item);
+    });
+    dd.style.display = filtered.length > 0 ? 'block' : 'none';
+  }
+
+  function hideTsDropdown() {
+    var dd = document.getElementById('tsLangDropdown');
+    if (dd) dd.style.display = 'none';
+  }
+
+  function saveTranslationSettings() {
+    var btn = document.getElementById('tsSaveBtn');
+    var errEl = document.getElementById('tsError');
+    var defaultLang = document.getElementById('tsDefaultLang').value;
+    errEl.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+
+    // Make sure default lang is in the active list
+    if (!_tsActiveLangs.includes(defaultLang)) _tsActiveLangs.unshift(defaultLang);
+    // Always include English
+    if (!_tsActiveLangs.includes('en')) _tsActiveLangs.unshift('en');
+
+    fetch('/api/translations/settings', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ languages: _tsActiveLangs, defaultLanguage: defaultLang, favorites: _tsActiveLangs.filter(function (c) { return c !== 'en'; }) })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (res) {
+      if (!res.success) throw new Error(res.error || 'Failed to save');
+      translationsData = res.data;
+      updateTranslateBadge();
+      closeTranslationSettings();
+    })
+    .catch(function (err) {
+      errEl.textContent = err.message;
+      errEl.style.display = 'block';
+    })
+    .finally(function () {
+      btn.disabled = false;
+      btn.textContent = 'Save';
+    });
+  }
+
+  // Close settings modal on backdrop click
+  document.getElementById('translationSettingsModal').addEventListener('click', function (e) {
+    if (e.target === this) closeTranslationSettings();
   });
   </script>
 
