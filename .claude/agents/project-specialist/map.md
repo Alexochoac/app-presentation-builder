@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-04-30 (session 12)
+Last updated: 2026-04-30 (session 13)
 
 ---
 
@@ -34,7 +34,9 @@ App-presentation-builder/
 └── builder/                        ← The runnable web app
     ├── server.js                   ← Express server — all API endpoints + slide render functions ⚠️ SOLE SOURCE OF TRUTH FOR SLIDES
     ├── package.json                ← Dependencies: express, cheerio, dotenv, express-session
-    ├── .env                        ← SESSION_SECRET, BUILDER_USER, BUILDER_PASS (not in git)
+    ├── lib/
+    │   └── translator.js           ← NEW (2026-04-30): OpenRouter API translation module; translate(fields, targetLanguage) → { ok, fields, error }
+    ├── .env                        ← SESSION_SECRET, BUILDER_USER, BUILDER_PASS, OPENROUTER_API_KEY (not in git)
     ├── .env.example                ← Template for env vars
     ├── data/
     │   ├── deck.json               ← Slide order + visibility (librarySlideId refs)
@@ -42,7 +44,9 @@ App-presentation-builder/
     │   ├── slide-templates.json    ← Template definitions (id, defaultContent)
     │   ├── layouts.json            ← User-created layouts (legacy new-slide system)
     │   ├── settings.json           ← App settings (heroBg, heroBgFocal, etc.)
-    │   ├── presentations.json      ← NEW (2026-04-12): Finished presentations snapshot history
+    │   ├── presentations.json      ← Finished presentations snapshot history
+    │   ├── languages.json          ← Static list of 103 world languages (ISO 639-1 codes + names)
+    │   ├── translations.json       ← Per-deck translation store (fields + per-language current/previous/dirty)
     │   └── renderers/              ← Source files for per-slide render functions (agents write here)
     │       ├── slide-06-surface.js     ← renderDefectGalleryLayout
     │       ├── slide-07-dimension.js   ← renderCarouselCardsLayout
@@ -76,8 +80,9 @@ App-presentation-builder/
     │   │       ├── list.js         ← ul[data-ls-list]: add/hide/delete/reorder/edit
     │   │       ├── table.js        ← table[data-ls-table]: row+col edit, dot cycling, resizable col
     │   │       │                     saveTable saves parent .ls-tabs container when inside tabs
-    │   │       ├── button.js       ← NEW: auto-attaches Track.click() to .slide-btn on load
-    │   │       ├── tags.js         ← NEW: auto-attaches Track.click() to .slide-tag on load
+    │   │       ├── button.js       ← auto-attaches Track.click() to .slide-btn on load
+    │   │       ├── tags.js         ← auto-attaches Track.click() to .slide-tag on load
+    │   │       ├── language-switcher.js ← NEW (2026-04-30): client-side lang switcher for finished presentations; reads ?lang= / localStorage / data-default-lang; window.switchLang(code)
     │   │       └── tracker.js      ← Umami analytics tracker
     │   ├── presentation-view/      ← PLANNED: Read-only viewer page for finished presentations
     │   └── builder-ui/
@@ -123,7 +128,13 @@ Browser → Express (server.js)
               ├── POST /api/presentations/:id/publish   ← git add→commit→push; returns { success, url, alreadyPublished }
               ├── Static: /finished           → finished-presentations/ (frozen outputs)
               ├── GET  /view/:id              ← redirects to /finished/:presId/ if frozen file exists; else live viewer
-              ├── POST /api/save               → edits slide HTML via Cheerio (old slides)
+              ├── GET  /api/languages              ← returns full language list from languages.json
+              ├── GET  /api/translations           ← returns translations.json for the deck
+              ├── POST /api/translations/translate ← translate all dirty/missing fields via OpenRouter (chunked 20 fields/call)
+              ├── PATCH /api/translations/field    ← save manual correction to a field translation
+              ├── POST /api/translations/restore   ← restore previous version for a field+language
+              ├── PUT  /api/translations/settings  ← update deck languages, favorites, defaultLanguage
+              ├── POST /api/save               → edits slide HTML via Cheerio (old slides); also updates translations.json dirty flags
               ├── POST /api/upload-image        → saves base64 image to uploads/
               ├── POST /api/save-image-src      → updates img src in slide file
               └── POST /api/clone-slide         → copies slide HTML, adds to library+deck
@@ -371,6 +382,51 @@ Additional per-slide fixes:
 
 ---
 
+## Translation System (added 2026-04-30)
+
+**Data store:** `builder/data/translations.json`
+```json
+{
+  "languages": ["en", "es", "it", "pt", "fr"],
+  "favorites": ["es", "it", "pt", "fr"],
+  "defaultLanguage": "en",
+  "fields": {
+    "headline": {
+      "en": "Quality Inspection for Flat Glass",
+      "es": { "current": "...", "previous": null, "dirty": false }
+    }
+  }
+}
+```
+- `en` is always the canonical source (plain string)
+- Each other language has `current`, `previous` (last version for rollback), and `dirty` (set when English changes after a translation exists)
+- When multi-deck support lands, moves to `decks/[deck-id]/translations.json`
+
+**Translator module:** `builder/lib/translator.js`
+- `translate(fields, targetLanguage)` → `{ ok, fields, error }`
+- Uses OpenRouter API (`fetch`, no SDK) — `OPENROUTER_API_KEY` in `.env`
+- Default model: `anthropic/claude-haiku-4-5` (overridable via `OPENROUTER_MODEL`)
+- Batched: one API call per language per chunk; server splits into chunks of 20 fields
+
+**Builder UI additions in `preview.html`:**
+- **🌐 EN ▾ language switcher** — dropdown in toolbar; switches all `[data-edit][contenteditable]` fields to the selected language; shows orange banner + disables editing when non-EN
+- **Translate button + badge** — badge counts dirty/missing fields; calls `POST /api/translations/translate`
+- **Per-field translation popover** — clicking any `[data-edit]` field opens panel showing current translation per language, dirty indicator, restore button, inline edit (saves on blur)
+- **Translation Settings modal** — in `⋯` menu; add/remove languages, set default language; calls `PUT /api/translations/settings`
+
+**Language picker in Create modal** (`/slides` → Save Presentation):
+- Default Language dropdown + Additional Languages multi-select with search
+- Selected languages sent in `POST /api/presentations` payload
+- HTML baking (`[data-lang]` spans + switcher injection) not yet implemented — see task `Feature-H-...-bake-language-spans`
+
+**Known gaps:**
+- Finished presentation has no language switcher yet (baking deferred)
+- Badge overcounts image/non-text fields
+- Dirty flag not hooked into `POST /api/deck/slides/:id/edits` (library slides)
+- Language re-apply on slide navigate uses fragile `setTimeout(50)`
+
+---
+
 ## Known Issues / Open Items
 
 - **3-layer CSS conflict** — style.css, per-slide `<style>` blocks, and inline styles conflict. Planned fix: style.css as single source of truth
@@ -388,10 +444,13 @@ Additional per-slide fixes:
 
 ## What's Next
 
-1. **Views Overview — live data** — wire chart to real Umami analytics API (needs `umamiWebsiteId` from settings)
-2. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
-3. Delete old `dashboard.css`
-4. **App UI icons — standardise minimalist** (`tasks/Feature-M-2026-04-30-app-ui-icons-standardise-minimalist.md`)
-5. **Builder slide sequence — hide/unhide slides** (`tasks/Feature-M-2026-04-30-builder-slide-sequence-hide-unhide-slides.md`)
-6. **Builder Back navigation** — force-save on Back instead of unsaved-changes modal (`tasks/Idea-L-2026-04-24-builder-navigation-back-force-save-no-modal.md`)
+1. **Translation — Finished presentation baking** — wrap `[data-lang]` spans + inject `language-switcher.js` into output HTML at Create time (`tasks/Feature-H-2026-04-30-...-bake-language-spans.md`)
+2. **Translation — Badge overcount fix** — skip non-text (image) fields (`tasks/Issue-M-2026-04-30-...-badge-overcounts.md`)
+3. **Translation — Dirty flag for library slides** — hook into `POST /api/deck/slides/:id/edits` (`tasks/Issue-M-2026-04-30-...-dirty-flag-missing.md`)
+4. **Translation — Preview navigate fix** — replace `setTimeout(50)` with reliable slide-ready signal (`tasks/Feature-M-2026-04-30-...-preview-re-apply.md`)
+5. **Views Overview — live data** — wire chart to real Umami analytics API
+6. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
+7. Delete old `dashboard.css`
+8. **App UI icons — standardise minimalist** (`tasks/Feature-M-2026-04-30-app-ui-icons-standardise-minimalist.md`)
+9. **Builder slide sequence — hide/unhide slides** (`tasks/Feature-M-2026-04-30-builder-slide-sequence-hide-unhide-slides.md`)
 
