@@ -3599,6 +3599,12 @@ app.get('/api/presentations', function (req, res) {
 // POST /api/presentations — save a new finished presentation (snapshot of current deck + customer info)
 app.post('/api/presentations', function (req, res) {
   var body = req.body || {};
+  var replaceId = (body.replaceId || '').trim();
+
+  if (replaceId && !/^[a-zA-Z0-9-]+$/.test(replaceId)) {
+    return res.status(400).json({ success: false, error: 'Invalid replaceId' });
+  }
+
   var customerName = (body.customerName || '').trim();
   if (!customerName) {
     return res.status(400).json({ success: false, error: 'customerName is required' });
@@ -3637,6 +3643,33 @@ app.post('/api/presentations', function (req, res) {
       };
     });
 
+    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+
+    if (replaceId) {
+      var idx = data.presentations.findIndex(function (p) { return p.id === replaceId; });
+      if (idx === -1) {
+        return res.status(404).json({ success: false, error: 'Presentation not found' });
+      }
+      if (data.presentations[idx].archivedAt) {
+        return res.status(400).json({ success: false, error: 'Cannot replace an archived presentation' });
+      }
+      var existing = data.presentations[idx];
+      existing.presentationName = presentationName;
+      existing.contactName      = contactName;
+      existing.contactTitle     = contactTitle;
+      if (customerLogoSrc) existing.customerLogoSrc = customerLogoSrc;
+      existing.slideCount  = slides.filter(function (s) { return s.visible; }).length;
+      existing.slides      = slides;
+      existing.replacedAt  = new Date().toISOString();
+      fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+      try {
+        buildFrozenPresentation(existing);
+      } catch (buildErr) {
+        console.error('Frozen build failed:', buildErr.message);
+      }
+      return res.json({ success: true, data: existing });
+    }
+
     var presentation = {
       id:              makePresId(),
       createdAt:       new Date().toISOString().slice(0, 10),
@@ -3649,7 +3682,6 @@ app.post('/api/presentations', function (req, res) {
       slides:          slides
     };
 
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
     data.presentations.unshift(presentation);
     fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
 
@@ -3714,21 +3746,51 @@ app.put('/api/presentations/:id', function (req, res) {
   }
 });
 
-// DELETE /api/presentations/:id — remove a finished presentation + its frozen folder
+// DELETE /api/presentations/:id — hard delete (only permitted on archived presentations)
 app.delete('/api/presentations/:id', function (req, res) {
   try {
     var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
-    var before = (data.presentations || []).length;
-    data.presentations = (data.presentations || []).filter(function (p) { return p.id !== req.params.id; });
-    if (data.presentations.length === before) {
-      return res.status(404).json({ success: false, error: 'Not found' });
+    var idx  = (data.presentations || []).findIndex(function (p) { return p.id === req.params.id; });
+    if (idx === -1) return res.status(404).json({ success: false, error: 'Not found' });
+    var pres = data.presentations[idx];
+    if (!pres.archivedAt) {
+      return res.status(400).json({ success: false, error: 'Presentation must be archived before it can be deleted.' });
     }
+    data.presentations.splice(idx, 1);
     fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2));
     var frozenDir = path.join(__dirname, '..', 'finished-presentations', req.params.id);
     if (fs.existsSync(frozenDir)) {
       fs.rmSync(frozenDir, { recursive: true, force: true });
     }
     res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/presentations/:id/archive — soft-delete (sets archivedAt, hides from main list)
+app.post('/api/presentations/:id/archive', function (req, res) {
+  try {
+    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pres = (data.presentations || []).find(function (p) { return p.id === req.params.id; });
+    if (!pres) return res.status(404).json({ success: false, error: 'Not found' });
+    pres.archivedAt = new Date().toISOString();
+    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+    res.json({ success: true, data: pres });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/presentations/:id/unarchive — restore from archive
+app.post('/api/presentations/:id/unarchive', function (req, res) {
+  try {
+    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pres = (data.presentations || []).find(function (p) { return p.id === req.params.id; });
+    if (!pres) return res.status(404).json({ success: false, error: 'Not found' });
+    delete pres.archivedAt;
+    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+    res.json({ success: true, data: pres });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -3818,11 +3880,21 @@ app.post('/api/presentations/:id/publish', function (req, res) {
 
   run('git', ['add', folderArg], repoRoot, function (err) {
     if (err) return res.status(500).json({ success: false, error: 'git add failed: ' + err.message });
-    run('git', ['commit', '-m', commitMsg], repoRoot, function (err, stdout) {
-      var nothingToCommit = stdout && stdout.includes('nothing to commit');
+    run('git', ['commit', '-m', commitMsg], repoRoot, function (err, stdout, stderr) {
+      var combined = (stdout || '') + (stderr || '');
+      var nothingToCommit = combined.includes('nothing to commit') || combined.includes('nothing added to commit');
       if (err && !nothingToCommit) return res.status(500).json({ success: false, error: 'git commit failed: ' + err.message });
       run('git', ['push'], repoRoot, function (err) {
         if (err) return res.status(500).json({ success: false, error: 'git push failed: ' + err.message });
+        // Record publishedAt on first publish (keep existing value on republish)
+        try {
+          var pdata = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+          var prec  = (pdata.presentations || []).find(function (p) { return p.id === id; });
+          if (prec && !prec.publishedAt) {
+            prec.publishedAt = new Date().toISOString();
+            fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(pdata, null, 2), 'utf8');
+          }
+        } catch (e) { /* non-fatal */ }
         res.json({ success: true, url: publicUrl, alreadyPublished: !!nothingToCommit });
       });
     });

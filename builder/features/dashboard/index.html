@@ -251,11 +251,13 @@
 
     /* ── Modal solid backgrounds ── */
     #editModal > div,
-    #dupModal  > div {
+    #dupModal  > div,
+    #hardDeleteModal > div {
       background: #1c1c1e;
     }
     [data-theme="light"] #editModal > div,
-    [data-theme="light"] #dupModal  > div {
+    [data-theme="light"] #dupModal  > div,
+    [data-theme="light"] #hardDeleteModal > div {
       background: #ffffff;
     }
   </style>
@@ -409,6 +411,12 @@
             <div class="sort-option" data-value="za">Z → A</div>
           </div>
         </div>
+
+        <!-- Show archived toggle -->
+        <button id="filterArchived" class="filter-pill" type="button" title="Show archived presentations" style="white-space:nowrap;">
+          <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5;flex-shrink:0;"><rect x="2" y="6" width="16" height="12" rx="2"/><path d="M2 6l2-4h12l2 4"/><line x1="8" y1="11" x2="12" y2="11"/></svg>
+          <span id="filterArchivedLabel">Show archived</span>
+        </button>
       </div>
 
       <p class="deck-empty hidden" id="finishedEmpty">No finished presentations yet.</p>
@@ -479,6 +487,18 @@
     <div style="display:flex;gap:8px;justify-content:flex-end;">
       <button id="dupCancel" style="border:1px solid var(--border);background:transparent;color:var(--text);border-radius:20px;padding:6px 16px;font-size:13px;cursor:pointer;">Cancel</button>
       <button id="dupSave" style="border:none;background:var(--accent);color:#fff;border-radius:20px;padding:6px 16px;font-size:13px;cursor:pointer;">Duplicate</button>
+    </div>
+  </div>
+</div>
+
+<!-- Hard Delete Modal -->
+<div id="hardDeleteModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center;">
+  <div style="border:1px solid var(--border);border-radius:12px;padding:24px;width:100%;max-width:420px;margin:16px;">
+    <h3 style="margin:0 0 12px;font-size:16px;color:var(--text);">Delete permanently?</h3>
+    <p id="hardDeleteMsg" style="margin:0 0 20px;font-size:13px;color:var(--muted);line-height:1.5;"></p>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button id="hardDeleteCancel" style="border:1px solid var(--border);background:transparent;color:var(--text);border-radius:20px;padding:6px 16px;font-size:13px;cursor:pointer;">Cancel</button>
+      <button id="hardDeleteConfirm" style="border:none;background:#c0392b;color:#fff;border-radius:20px;padding:6px 16px;font-size:13px;cursor:pointer;">Delete permanently</button>
     </div>
   </div>
 </div>
@@ -658,6 +678,8 @@
           document.getElementById('finishedEmpty').classList.remove('hidden');
         });
 
+      var _showArchived = false;
+
       function applyFilters() {
         var q        = document.getElementById('filterSearch').value.trim().toLowerCase();
         var dateFrom = window._fpDates ? window._fpDates[0] : '';
@@ -668,6 +690,9 @@
         var noMatch = document.getElementById('finishedNoMatch');
 
         var filtered = allItems.filter(function (p) {
+          // Archived filter — hide archived unless toggle is on
+          if (!_showArchived && p.archivedAt) return false;
+          if (_showArchived && !p.archivedAt) return false;
           if (q && !(
             (p.presentationName || '').toLowerCase().includes(q) ||
             (p.customerName || '').toLowerCase().includes(q) ||
@@ -704,6 +729,14 @@
       function bindFilterControls() {
         document.getElementById('filterSearch').addEventListener('input', applyFilters);
         window._sortValue = 'newest';
+
+        // Show archived toggle
+        document.getElementById('filterArchived').addEventListener('click', function () {
+          _showArchived = !_showArchived;
+          this.classList.toggle('active', _showArchived);
+          document.getElementById('filterArchivedLabel').textContent = _showArchived ? 'Hide archived' : 'Show archived';
+          applyFilters();
+        });
 
         // Custom sort dropdown
         var sortTrigger = document.getElementById('sortTrigger');
@@ -814,20 +847,54 @@
       }
 
       function buildItem(p) {
+        var isPublished = !!p.publishedAt;
+        var isArchived  = !!p.archivedAt;
+        var presUrl = 'https://app-presentation-builder.pages.dev/finished-presentations/' + p.id;
+
         var displayName = p.presentationName || p.customerName || '?';
         var initials = displayName.trim().split(/\s+/).map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase();
-        var presUrl = 'https://app-presentation-builder.pages.dev/finished-presentations/' + p.id;
-        var trackingHtml = umamiId
+
+        // Published URL row — shown when published (replaces old umamiId-gated row)
+        var publishedRowHtml = isPublished
           ? '<div class="pres-tracking" style="font-size:11px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:4px;">' +
-              '<span style="opacity:0.5;">Published:</span>' +
+              '<span style="opacity:0.5;">Live:</span>' +
               '<a href="' + presUrl + '" target="_blank" rel="noopener" style="color:var(--accent,#7c8cf8);text-decoration:none;font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + presUrl + '">' +
                 presUrl +
               '</a>' +
             '</div>'
-          : '';
+          : (umamiId
+              ? '<div class="pres-tracking" style="font-size:11px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:4px;">' +
+                  '<span style="opacity:0.5;">Analytics:</span>' +
+                  '<a href="' + presUrl + '" target="_blank" rel="noopener" style="color:var(--accent,#7c8cf8);text-decoration:none;font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + presUrl + '">' +
+                    presUrl +
+                  '</a>' +
+                '</div>'
+              : '');
+
+        // Status badges
+        var badgesHtml = '';
+        if (isArchived) {
+          badgesHtml += '<span style="display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;background:rgba(255,255,255,0.08);color:var(--muted);margin-right:4px;">Archived</span>';
+        }
+        if (isPublished) {
+          badgesHtml += '<span style="display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;background:rgba(80,200,120,0.15);color:#50c878;margin-right:4px;">Published</span>';
+        }
+
+        // Action menu — Publish only available before first publish
+        var publishBtn = isPublished
+          ? ''
+          : '<button class="pres-dropdown-item btn-publish">&#8599; Publish</button>';
+
+        var bottomActions = isArchived
+          ? '<button class="pres-dropdown-item btn-unarchive">&#8617; Unarchive</button>' +
+            '<div class="pres-dropdown-divider"></div>' +
+            '<button class="pres-dropdown-item danger btn-delete">&#128465; Delete permanently</button>'
+          : '<div class="pres-dropdown-divider"></div>' +
+            '<button class="pres-dropdown-item btn-archive">&#128193; Archive</button>';
+
         var li = document.createElement('li');
-        li.className = 'pres-item';
-        li.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);';
+        li.className = 'pres-item' + (isArchived ? ' pres-item-archived' : '');
+        li.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);' + (isArchived ? 'opacity:0.6;' : '');
 
         var thumb = document.createElement('div');
         thumb.className = 'pres-thumb pres-thumb-clickable';
@@ -856,22 +923,24 @@
         rest.style.cssText = 'display:contents;';
         rest.innerHTML =
           '<div class="pres-body" style="flex:1;min-width:0;">' +
-            '<div class="pres-name pres-name-clickable" title="Double-click to view" style="font-size:14px;font-weight:700;color:var(--text);line-height:1.3;">' + escDash(p.customerName || '?') + '</div>' +
+            '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
+              '<div class="pres-name pres-name-clickable" title="Double-click to view" style="font-size:14px;font-weight:700;color:var(--text);line-height:1.3;">' + escDash(p.customerName || '?') + '</div>' +
+              badgesHtml +
+            '</div>' +
             (p.presentationName ? '<div class="pres-pname" style="font-size:12px;color:var(--muted);margin-top:1px;line-height:1.3;">' + escDash(p.presentationName) + '</div>' : '') +
             '<div class="pres-meta" style="font-size:12px;color:var(--muted);margin-top:2px;">' +
               (p.contactName ? escDash(p.contactName) + (p.contactTitle ? ' · ' + escDash(p.contactTitle) : '') + ' · ' : '') +
               p.slideCount + ' slides · ' + p.createdAt +
             '</div>' +
-            trackingHtml +
+            publishedRowHtml +
           '</div>' +
           '<div class="pres-menu-wrap">' +
             '<button class="btn-menu" title="Actions">&#8943;</button>' +
             '<div class="pres-dropdown">' +
               '<button class="pres-dropdown-item btn-edit">&#9998;&#xFE0E; Edit</button>' +
               '<button class="pres-dropdown-item btn-duplicate">&#10697; Duplicate</button>' +
-              '<button class="pres-dropdown-item btn-publish">&#8599; Publish</button>' +
-              '<div class="pres-dropdown-divider"></div>' +
-              '<button class="pres-dropdown-item danger btn-delete">&#128465; Delete</button>' +
+              publishBtn +
+              bottomActions +
             '</div>' +
           '</div>';
         li.appendChild(rest);
@@ -887,7 +956,6 @@
         menuBtn.addEventListener('click', function (e) {
           e.stopPropagation();
           var isOpen = dropdown.classList.contains('open');
-          // Close all other open dropdowns and reset their li z-index
           document.querySelectorAll('.pres-dropdown.open').forEach(function (d) {
             d.classList.remove('open');
             var parentLi = d.closest('li');
@@ -916,44 +984,115 @@
           closeMenu();
           openDupModal(p);
         });
-        li.querySelector('.btn-publish').addEventListener('click', function () {
-          closeMenu();
-          var btn = this;
-          btn.textContent = '↻ Publishing…';
-          btn.disabled = true;
-          fetch('/api/presentations/' + p.id + '/publish', { method: 'POST' })
-            .then(function (r) { return r.json(); })
-            .then(function (res) {
-              btn.disabled = false;
-              btn.innerHTML = '&#8599; Publish';
-              if (!res.success) { alert('Publish failed: ' + res.error); return; }
-              var msg = res.alreadyPublished
-                ? 'Already published — no changes since last push.\n\n' + res.url
-                : 'Published!\n\n' + res.url;
-              if (confirm(msg + '\n\nOpen link?')) window.open(res.url, '_blank');
-            })
-            .catch(function () {
-              btn.disabled = false;
-              btn.innerHTML = '&#8599; Publish';
-              alert('Publish failed — check that git and GitHub are configured.');
-            });
-        });
-        li.querySelector('.btn-delete').addEventListener('click', function () {
-          closeMenu();
-          var name = li.querySelector('.pres-name').textContent;
-          if (!confirm('Delete presentation for "' + name + '"? This cannot be undone.')) return;
-          fetch('/api/presentations/' + p.id, { method: 'DELETE' })
-            .then(function (r) { return r.json(); })
-            .then(function (res) {
-              if (res.success) {
-                allItems = allItems.filter(function (x) { return x.id !== p.id; });
+        if (li.querySelector('.btn-publish')) {
+          li.querySelector('.btn-publish').addEventListener('click', function () {
+            closeMenu();
+            var btn = this;
+            btn.textContent = '↻ Publishing…';
+            btn.disabled = true;
+            fetch('/api/presentations/' + p.id + '/publish', { method: 'POST' })
+              .then(function (r) { return r.json(); })
+              .then(function (res) {
+                btn.disabled = false;
+                btn.innerHTML = '&#8599; Publish';
+                if (!res.success) { alert('Publish failed: ' + res.error); return; }
+                p.publishedAt = new Date().toISOString();
+                var idx = allItems.findIndex(function (x) { return x.id === p.id; });
+                if (idx !== -1) allItems[idx] = p;
                 applyFilters();
-              } else { alert('Delete failed: ' + res.error); }
-            })
-            .catch(function () { alert('Delete failed.'); });
-        });
+                if (confirm('Published!\n\n' + res.url + '\n\nOpen link?')) window.open(res.url, '_blank');
+              })
+              .catch(function () {
+                btn.disabled = false;
+                btn.innerHTML = '&#8599; Publish';
+                alert('Publish failed — check that git and GitHub are configured.');
+              });
+          });
+        }
+
+        if (li.querySelector('.btn-archive')) {
+          li.querySelector('.btn-archive').addEventListener('click', function () {
+            closeMenu();
+            fetch('/api/presentations/' + p.id + '/archive', { method: 'POST' })
+              .then(function (r) { return r.json(); })
+              .then(function (res) {
+                if (!res.success) { alert('Archive failed: ' + res.error); return; }
+                var idx = allItems.findIndex(function (x) { return x.id === p.id; });
+                if (idx !== -1) allItems[idx] = res.data;
+                applyFilters();
+              })
+              .catch(function () { alert('Archive failed.'); });
+          });
+        }
+
+        if (li.querySelector('.btn-unarchive')) {
+          li.querySelector('.btn-unarchive').addEventListener('click', function () {
+            closeMenu();
+            fetch('/api/presentations/' + p.id + '/unarchive', { method: 'POST' })
+              .then(function (r) { return r.json(); })
+              .then(function (res) {
+                if (!res.success) { alert('Unarchive failed: ' + res.error); return; }
+                var idx = allItems.findIndex(function (x) { return x.id === p.id; });
+                if (idx !== -1) allItems[idx] = res.data;
+                applyFilters();
+              })
+              .catch(function () { alert('Unarchive failed.'); });
+          });
+        }
+
+        if (li.querySelector('.btn-delete')) {
+          li.querySelector('.btn-delete').addEventListener('click', function () {
+            closeMenu();
+            openHardDeleteModal(p);
+          });
+        }
+
         return li;
       }
+
+      var _hardDeleteTarget = null;
+
+      function openHardDeleteModal(pres) {
+        _hardDeleteTarget = pres;
+        var msg = pres.publishedAt
+          ? 'This presentation is published and may already be shared with the customer. Deleting it will break their link.\n\nConsider republishing with updated content instead — that updates the page without changing the URL.'
+          : 'This will permanently remove "' + (pres.customerName || pres.id) + '" and cannot be undone.';
+        document.getElementById('hardDeleteMsg').textContent = msg;
+        document.getElementById('hardDeleteModal').style.display = 'flex';
+      }
+
+      document.getElementById('hardDeleteCancel').addEventListener('click', function () {
+        document.getElementById('hardDeleteModal').style.display = 'none';
+        _hardDeleteTarget = null;
+      });
+
+      document.getElementById('hardDeleteModal').addEventListener('click', function (e) {
+        if (e.target === this) { this.style.display = 'none'; _hardDeleteTarget = null; }
+      });
+
+      document.getElementById('hardDeleteConfirm').addEventListener('click', function () {
+        if (!_hardDeleteTarget) return;
+        var pres = _hardDeleteTarget;
+        var btn = this;
+        btn.disabled = true;
+        btn.textContent = 'Deleting…';
+        fetch('/api/presentations/' + pres.id, { method: 'DELETE' })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            btn.disabled = false;
+            btn.textContent = 'Delete permanently';
+            if (!res.success) { alert('Delete failed: ' + res.error); return; }
+            allItems = allItems.filter(function (x) { return x.id !== pres.id; });
+            document.getElementById('hardDeleteModal').style.display = 'none';
+            _hardDeleteTarget = null;
+            applyFilters();
+          })
+          .catch(function () {
+            btn.disabled = false;
+            btn.textContent = 'Delete permanently';
+            alert('Delete failed.');
+          });
+      });
 
       function escDash(str) {
         var d = document.createElement('div');
@@ -1421,6 +1560,7 @@
       }
     })();
   </script>
+
 
 </body>
 </html>

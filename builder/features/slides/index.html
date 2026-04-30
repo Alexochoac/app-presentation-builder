@@ -1436,6 +1436,61 @@
       border-color: var(--border-hov);
       background: var(--surface-hov);
     }
+    .btn-menu {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .12s, border-color .12s;
+    }
+    .btn-menu:hover { background: var(--surface); border-color: rgba(255,255,255,0.25); }
+    [data-theme="light"] .btn-menu:hover { border-color: rgba(0,0,0,0.25); }
+    .pres-menu-wrap { position: relative; flex-shrink: 0; }
+    .pres-dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      min-width: 200px;
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 4px;
+      box-shadow: 0 10px 36px rgba(0,0,0,.7);
+      z-index: 9999;
+    }
+    [data-theme="light"] .pres-dropdown { background: #fff; border-color: rgba(0,0,0,0.1); box-shadow: 0 10px 36px rgba(0,0,0,.15); }
+    .pres-dropdown.open { display: block; }
+    .pres-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 8px 12px;
+      border: none;
+      background: transparent;
+      color: rgba(255,255,255,.85);
+      font-size: 13px;
+      text-align: left;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: background .1s;
+      white-space: nowrap;
+      font-family: var(--font);
+      box-sizing: border-box;
+    }
+    [data-theme="light"] .pres-dropdown-item { color: rgba(0,0,0,.75); }
+    .pres-dropdown-item:hover { background: rgba(255,255,255,.08); color: #fff; }
+    [data-theme="light"] .pres-dropdown-item:hover { background: rgba(0,0,0,.05); color: #000; }
+    .pres-dropdown-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 4px 0; }
+    [data-theme="light"] .pres-dropdown-divider { background: rgba(0,0,0,0.08); }
   </style>
 </head>
 <body>
@@ -1518,15 +1573,23 @@
       <div class="builder-workspace">
 
         <!-- Left: Your Presentation -->
-        <section class="panel workspace-deck">
+        <section class="panel workspace-deck" style="overflow:visible;">
           <div class="panel-header">
             <div>
               <h2 class="panel-title">Your Presentation</h2>
               <p class="panel-subtitle"><span id="deckCount">0</span> slides in your deck</p>
             </div>
             <div style="display:flex;gap:8px;align-items:center;">
-              <button class="btn-primary" onclick="openAddSlideModal()">+ Add Slide</button>
               <a href="/builder/preview.html" class="btn-secondary">Open Builder &rarr;</a>
+              <div class="pres-menu-wrap" id="actionsMenuWrap">
+                <button class="btn-menu" id="actionsMenuBtn" onclick="toggleActionsMenu()" title="More actions">&#8943;</button>
+                <div class="pres-dropdown" id="actionsMenu" style="bottom:auto;top:calc(100% + 6px);">
+                  <button class="pres-dropdown-item" onclick="closeActionsMenu();openAddSlideModal();">+ Add Slide</button>
+                  <div class="pres-dropdown-divider"></div>
+                  <button class="pres-dropdown-item" onclick="closeActionsMenu();openCreatePresentationModal('new');">&#128196; Create Presentation</button>
+                  <button class="pres-dropdown-item" onclick="closeActionsMenu();openCreatePresentationModal('replace');">&#8635; Replace Presentation</button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1557,7 +1620,6 @@
                 <span class="preview-nav-count" id="previewCount"></span>
                 <button class="preview-nav-btn" id="previewNext" title="Next slide">&#8594;</button>
               </div>
-              <button class="btn-primary" onclick="openCreatePresentationModal()" style="white-space:nowrap;">Create Presentation</button>
             </div>
           </div>
           <div class="preview-pane" id="slidePreviewPane">
@@ -1635,10 +1697,26 @@
   </div><!-- /.app-body -->
 
   <!-- ── Create Presentation Modal ───────────────────────────────── -->
-  <div class="picker-overlay hidden" id="createPresentationModal">
-    <div class="picker-panel" style="max-width:480px;width:100%;">
-      <div class="picker-title" style="margin-bottom:4px;">Create Presentation for Customer</div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:20px;">Fill in the customer details. This will save a finished copy of the current deck.</p>
+  <div class="picker-overlay hidden" id="createPresentationModal" style="align-items:flex-start;overflow-y:auto;padding:16px;">
+    <div class="picker-panel" style="max-width:480px;width:100%;margin:auto;flex-shrink:0;">
+      <div class="picker-title" style="margin-bottom:4px;">Save Presentation</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Save a finished copy of the current deck for a customer.</p>
+
+      <div style="display:flex;gap:6px;margin-bottom:20px;">
+        <button id="cpOptNew" onclick="_cpSetOption('new')" style="flex:1;padding:8px 0;border-radius:var(--radius-btn);border:1px solid var(--accent);background:var(--accent);color:#fff;font-size:13px;font-weight:600;cursor:pointer;">New Presentation</button>
+        <button id="cpOptReplace" onclick="_cpSetOption('replace')" style="flex:1;padding:8px 0;border-radius:var(--radius-btn);border:1px solid var(--border);background:transparent;color:var(--text);font-size:13px;font-weight:500;cursor:pointer;">Replace Existing</button>
+      </div>
+
+      <div id="cpReplaceSection" style="display:none;margin-bottom:14px;">
+        <div class="field">
+          <label for="cpReplaceSelect">Select Presentation</label>
+          <select id="cpReplaceSelect" style="width:100%;padding:8px 10px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;">
+            <option value="">— Select a presentation —</option>
+          </select>
+        </div>
+        <div id="cpPublishedWarning" style="display:none;margin-top:10px;padding:10px 12px;border-radius:var(--radius-btn);border:1px solid #f59e0b;background:rgba(245,158,11,0.08);color:#f59e0b;font-size:12px;">This will overwrite the live version. The customer's link will continue to work but will show the updated content.</div>
+        <p class="coming-soon-msg hidden" id="cpReplaceError" style="color:#f87171;margin-top:8px;margin-bottom:0;"></p>
+      </div>
 
       <div style="display:flex;flex-direction:column;gap:14px;">
         <div class="field">
@@ -2061,7 +2139,128 @@
 
     var _cpPreloadedLogoSrc = '';
 
-    function openCreatePresentationModal() {
+    var _cpOption = 'new';
+    var _cpPresentationsMap = {};
+
+    function _cpSetOption(opt) {
+      _cpOption = opt;
+      var btnNew     = document.getElementById('cpOptNew');
+      var btnReplace = document.getElementById('cpOptReplace');
+      var replSec    = document.getElementById('cpReplaceSection');
+      if (opt === 'new') {
+        btnNew.style.background = 'var(--accent)';
+        btnNew.style.borderColor = 'var(--accent)';
+        btnNew.style.color = '#fff';
+        btnNew.style.fontWeight = '600';
+        btnReplace.style.background = 'transparent';
+        btnReplace.style.borderColor = 'var(--border)';
+        btnReplace.style.color = 'var(--text)';
+        btnReplace.style.fontWeight = '500';
+        replSec.style.display = 'none';
+        _cpRestoreFields();
+      } else {
+        btnReplace.style.background = 'var(--accent)';
+        btnReplace.style.borderColor = 'var(--accent)';
+        btnReplace.style.color = '#fff';
+        btnReplace.style.fontWeight = '600';
+        btnNew.style.background = 'transparent';
+        btnNew.style.borderColor = 'var(--border)';
+        btnNew.style.color = 'var(--text)';
+        btnNew.style.fontWeight = '500';
+        replSec.style.display = 'block';
+        _cpLoadPresentations();
+      }
+    }
+
+    function _cpRestoreFields() {
+      ['cpCustomerName', 'cpContactName', 'cpContactTitle'].forEach(function (id) {
+        var el = document.getElementById(id);
+        el.removeAttribute('readonly');
+        el.style.background = '';
+        el.style.color = '';
+      });
+    }
+
+    function _cpLoadPresentations() {
+      var sel = document.getElementById('cpReplaceSelect');
+      sel.innerHTML = '<option value="">— Select a presentation —</option>';
+      _cpPresentationsMap = {};
+      fetch('/api/presentations')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          var list = (res.data || []).filter(function (p) { return !p.archivedAt; });
+          list.sort(function (a, b) {
+            var ap = a.publishedAt ? 0 : 1;
+            var bp = b.publishedAt ? 0 : 1;
+            return ap - bp;
+          });
+          list.forEach(function (p) {
+            _cpPresentationsMap[p.id] = p;
+            var label = (p.customerName || '') + ' — ' + (p.presentationName || p.name || '') + (p.publishedAt ? ' (Published)' : ' (Draft)');
+            var opt = document.createElement('option');
+            opt.value = p.id;
+            opt.textContent = label;
+            sel.appendChild(opt);
+          });
+        })
+        .catch(function () {});
+    }
+
+    document.getElementById('cpReplaceSelect').addEventListener('change', function () {
+        var id = this.value;
+        var pub = document.getElementById('cpPublishedWarning');
+        var replErr = document.getElementById('cpReplaceError');
+        replErr.classList.add('hidden');
+        replErr.textContent = '';
+        if (!id) {
+          pub.style.display = 'none';
+          _cpRestoreFields();
+          document.getElementById('cpCustomerName').value = '';
+          document.getElementById('cpPresentationName').value = '';
+          document.getElementById('cpContactName').value = '';
+          document.getElementById('cpContactTitle').value = '';
+          return;
+        }
+        var p = _cpPresentationsMap[id];
+        if (!p) return;
+        document.getElementById('cpCustomerName').value = p.customerName || '';
+        document.getElementById('cpPresentationName').value = p.presentationName || p.name || '';
+        document.getElementById('cpContactName').value = p.contactName || '';
+        document.getElementById('cpContactTitle').value = p.contactTitle || '';
+        ['cpCustomerName', 'cpContactName', 'cpContactTitle'].forEach(function (fid) {
+          var el = document.getElementById(fid);
+          el.setAttribute('readonly', true);
+          el.style.background = 'var(--bg)';
+          el.style.color = 'var(--muted)';
+        });
+        if (p.publishedAt) {
+          pub.style.display = 'block';
+        } else {
+          pub.style.display = 'none';
+        }
+    });
+
+    function toggleActionsMenu() {
+      document.getElementById('actionsMenu').classList.toggle('open');
+    }
+
+    function closeActionsMenu() {
+      document.getElementById('actionsMenu').classList.remove('open');
+    }
+
+    document.addEventListener('click', function (e) {
+      var wrap = document.getElementById('actionsMenuWrap');
+      if (wrap && !wrap.contains(e.target)) closeActionsMenu();
+    });
+
+    function openCreatePresentationModal(mode) {
+      _cpOption = 'new';
+      _cpPresentationsMap = {};
+      _cpSetOption(mode === 'replace' ? 'replace' : 'new');
+      document.getElementById('cpReplaceSelect').innerHTML = '<option value="">— Select a presentation —</option>';
+      document.getElementById('cpPublishedWarning').style.display = 'none';
+      document.getElementById('cpReplaceError').classList.add('hidden');
+      document.getElementById('cpReplaceError').textContent = '';
       document.getElementById('cpCustomerName').value     = '';
       document.getElementById('cpPresentationName').value = '';
       document.getElementById('cpContactName').value      = '';
@@ -2110,6 +2309,7 @@
     }
 
     function submitCreatePresentation() {
+      var isReplace    = _cpOption === 'replace';
       var customerName     = document.getElementById('cpCustomerName').value.trim();
       var presentationName = document.getElementById('cpPresentationName').value.trim();
       var contactName  = document.getElementById('cpContactName').value.trim();
@@ -2118,10 +2318,22 @@
       var errEl        = document.getElementById('cpError');
       var submitBtn    = document.getElementById('cpSubmitBtn');
 
-      if (!customerName) {
-        errEl.textContent = 'Customer company name is required.';
-        errEl.classList.remove('hidden');
-        return;
+      if (isReplace) {
+        var replaceId = document.getElementById('cpReplaceSelect').value;
+        var replErr   = document.getElementById('cpReplaceError');
+        if (!replaceId) {
+          replErr.textContent = 'Please select a presentation to replace.';
+          replErr.classList.remove('hidden');
+          return;
+        }
+        replErr.classList.add('hidden');
+        replErr.textContent = '';
+      } else {
+        if (!customerName) {
+          errEl.textContent = 'Customer company name is required.';
+          errEl.classList.remove('hidden');
+          return;
+        }
       }
 
       submitBtn.disabled = true;
@@ -2131,6 +2343,7 @@
         var payload = { presentationName: presentationName, customerName: customerName, contactName: contactName, contactTitle: contactTitle };
         if (logoFilename) { payload.logoFilename = logoFilename; payload.logoData = logoData; }
         else if (_cpPreloadedLogoSrc) { payload.existingLogoSrc = _cpPreloadedLogoSrc; }
+        if (isReplace) { payload.replaceId = document.getElementById('cpReplaceSelect').value; }
         fetch('/api/presentations', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -2140,7 +2353,13 @@
         .then(function (res) {
           if (!res.success) throw new Error(res.error || 'Failed to save');
           closeCreatePresentationModal();
-          showToast('Presentation saved for ' + customerName);
+          if (isReplace) {
+            showToast('Presentation updated for ' + customerName);
+            window.location.href = '/?highlight=' + (res.data && res.data.id ? res.data.id : '');
+          } else {
+            showToast('Presentation saved for ' + customerName);
+            window.location.href = '/?highlight=' + (res.data && res.data.id ? res.data.id : '');
+          }
         })
         .catch(function (err) {
           errEl.textContent = err.message || 'Something went wrong.';
@@ -3518,6 +3737,12 @@
     // Active tab is "library" by default — templates loaded for modal use
     loadTemplates();
     loadLibrary();
+
+    (function () {
+      var p = new URLSearchParams(window.location.search);
+      if (p.has('create')) openCreatePresentationModal('new');
+      else if (p.has('replace')) openCreatePresentationModal('replace');
+    })();
 
   </script>
 </body>
