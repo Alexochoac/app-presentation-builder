@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TEST</title>
+  <title>StarGlass</title>
   <style>
 /*
   Presentation Builder — Softsolution
@@ -456,10 +456,15 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     .fp-nm-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
     .fp-nm-item.fp-nm-active { color: #fff; font-weight: 600; }
     .fp-nm-item.fp-nm-active::before { content: "›"; margin-right: 6px; color: #888; }
+    /* Language switcher */
+    #fp-lang-switcher { display: flex; align-items: center; gap: 4px; margin-left: 6px; }
+    .lang-switcher-btn { background: none; border: 1px solid #333; border-radius: 4px; color: #888; font-size: 11px; font-family: system-ui, sans-serif; padding: 2px 7px; cursor: pointer; letter-spacing: 0.04em; text-transform: uppercase; }
+    .lang-switcher-btn:hover { border-color: #555; color: #ccc; }
+    .lang-switcher-btn.active { border-color: #888; color: #e5e5e5; background: rgba(255,255,255,0.08); }
   </style>
   <script defer src="https://umami.wbtm.io/script.js" data-website-id="306f3c58-2e8f-487c-b68f-e53f3b2a0b5d"></script>
 </head>
-<body>
+<body data-default-lang="es">
 <div id="fp-shell">
   <div id="fp-header">
     <a href="/" id="fp-dash-btn">&#8592; Dashboard</a>
@@ -468,7 +473,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     <div id="fp-counter">1 / 14</div>
     <button class="fp-nav-btn" id="fp-next">&#8250;</button>
     <div id="fp-header-spacer"></div>
-    <div id="fp-title">TEST</div>
+    <div id="fp-title">StarGlass</div>
     <button class="fp-share-btn" id="fp-share-btn-hdr" title="Share presentation"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
   </div>
   <div id="fp-viewer">
@@ -482,10 +487,10 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     <img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls">
   </div>
   <!-- Credit line -->
-  <span class="softsolution-credit" data-edit="credit">by GlassQuality.com</span>
+  <span class="softsolution-credit" data-edit="credit"><span data-lang="en" hidden="">by GlassQuality.com</span></span>
   <!-- Customer logo -->
   <div class="h77704536-customer-logo" data-edit="customer-logo">
-    <img class="h77704536-cust-img" src="../shared/CostOfQualityDefects.png" alt="Customer Logo">
+    <img class="h77704536-cust-img" src="../shared/LOGO-Softsolution-Black.jpg" alt="Customer Logo">
     <label class="h77704536-cust-placeholder" for="h77704536-logo-file" title="Click to upload logo">
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="3"></rect>
@@ -501,9 +506,9 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   <div class="hero-overlay"></div>
   <!-- Main content -->
   <div class="hero-content">
-    <div class="brand-badge" data-edit="badge">GlassQuality.com · LineScanner · Osprey</div>
-    <h1 data-edit="headline">Quality Inspection<br>for <span class="blue">Flat Glass</span></h1>
-    <h2 data-edit="subheadline">Proposal for TEST · TEST, TEST</h2>
+    <div class="brand-badge" data-edit="badge"><span data-lang="en" hidden="">GlassQuality.com · LineScanner · Osprey</span></div>
+    <h1 data-edit="headline"><span data-lang="en" hidden="">Quality Inspection<br>for <span class="blue">Flat Glass</span></span></h1>
+    <h2 data-edit="subheadline"><span data-lang="en" hidden="">Proposal for StarGlass · Juan Ochoa, Head of Quality</span></h2>
     
   </div>
   <!-- Gallery button -->
@@ -809,14 +814,16 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     <img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls">
   </div>
   <div class="slide-layout">
-  <span class="softsolution-credit" data-edit="credit">by GlassQuality.com</span>
+  <span class="softsolution-credit" data-edit="credit"><span data-lang="en" hidden="">by GlassQuality.com</span></span>
   <header class="slide-head">
-    <div class="section-label" data-edit="section-label">Our Company</div>
-    <h1 class="slide-title" data-edit="headline">Quality inspection <span class="blue">is all we do</span></h1>
-    <p class="slide-subtitle anim-in" data-edit="tagline">We inspect every quality aspect of your glass guaranteeing peak performance and the best quality.</p>
+    <div class="section-label" data-edit="section-label"><span data-lang="en" hidden="">Our Company</span></div>
+    <h1 class="slide-title" data-edit="headline"><span data-lang="en" hidden="">Quality inspection <span class="blue">is all we do</span></span></h1>
+    <p class="slide-subtitle anim-in" data-edit="tagline"><span data-lang="en" hidden="">We inspect every quality aspect of your glass guaranteeing peak performance and the best quality.</span></p>
   </header>
   <div class="slide-body">
-  <div class="ls-tabs ls2-tabs-wrap" data-edit="tabs" data-track="ls2:tabs" style="flex:1;min-height:0;width:100%;max-width:860px;">
+  <div class="ls-tabs ls2-tabs-wrap" data-edit="tabs" data-track="ls2:tabs" style="flex:1;min-height:0;width:100%;max-width:860px;"><span data-lang="en" hidden="">
+
+
 
 
 
@@ -966,12 +973,14 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   
   
   
-  </div>
+  
+  
+  </span></div>
   <div class="ls2-stats">
-    <div class="kpi-card"><div class="kpi-value" data-edit="stat-founded">1999</div><div class="kpi-label" data-edit="stat-label-founded">Founded</div></div>
-    <div class="kpi-card"><div class="kpi-value" data-edit="stat-systems">2050+</div><div class="kpi-label" data-edit="stat-label-systems">Systems installed</div></div>
-    <div class="kpi-card"><div class="kpi-value" data-edit="stat-countries">23</div><div class="kpi-label" data-edit="stat-label-countries">Countries · 6 continents</div></div>
-    <div class="kpi-card"><div class="kpi-value" data-edit="stat-employees">60</div><div class="kpi-label" data-edit="stat-label-employees">Specialized employees</div></div>
+    <div class="kpi-card"><div class="kpi-value" data-edit="stat-founded"><span data-lang="en" hidden="">1999</span></div><div class="kpi-label" data-edit="stat-label-founded"><span data-lang="en" hidden="">Founded</span></div></div>
+    <div class="kpi-card"><div class="kpi-value" data-edit="stat-systems"><span data-lang="en" hidden="">2050+</span></div><div class="kpi-label" data-edit="stat-label-systems"><span data-lang="en" hidden="">Systems installed</span></div></div>
+    <div class="kpi-card"><div class="kpi-value" data-edit="stat-countries"><span data-lang="en" hidden="">23</span></div><div class="kpi-label" data-edit="stat-label-countries"><span data-lang="en" hidden="">Countries · 6 continents</span></div></div>
+    <div class="kpi-card"><div class="kpi-value" data-edit="stat-employees"><span data-lang="en" hidden="">60</span></div><div class="kpi-label" data-edit="stat-label-employees"><span data-lang="en" hidden="">Specialized employees</span></div></div>
   </div>
   </div>
   </div>
@@ -1043,8 +1052,8 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
   <div class="slide-layout">
   <header class="slide-head">
-    <div class="section-label" data-edit="section-label">Our Company</div>
-    <h1 class="slide-title" data-edit="headline" style="margin-bottom:18px;">Quality Inspection<br>for <span class="blue">Flat Glass</span></h1>
+    <div class="section-label" data-edit="section-label"><span data-lang="en" hidden="">Our Company</span></div>
+    <h1 class="slide-title" data-edit="headline" style="margin-bottom:18px;"><span data-lang="en" hidden="">Quality Inspection<br>for <span class="blue">Flat Glass</span></span></h1>
   </header>
   <div class="slide-body">
   <div class="why3-grid">
@@ -1052,9 +1061,9 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     <div class="why3-col prob-col anim-in" style="" draggable="false">
       <div class="why3-col-header">
         <span class="why3-col-icon">⚠️</span>
-        <span class="why3-col-label" data-edit="col-header-prob">Without Inspection Automation</span>
+        <span class="why3-col-label" data-edit="col-header-prob"><span data-lang="en" hidden="">Without Inspection Automation</span></span>
       </div>
-      <ul class="why3-list" id="why3-prob-list" data-edit="prob-list" data-ls-list="">
+      <ul class="why3-list" id="why3-prob-list" data-edit="prob-list" data-ls-list=""><span data-lang="en" hidden="">
 
 
 
@@ -1077,7 +1086,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
       
       
       
-      </ul>
+      </span></ul>
       
       
     </div>
@@ -1085,9 +1094,9 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     <div class="why3-col ben-col anim-in" style="" draggable="false">
       <div class="why3-col-header">
         <span class="why3-col-icon">✓</span>
-        <span class="why3-col-label" data-edit="col-header-ben">LineScanner &amp; Osprey</span>
+        <span class="why3-col-label" data-edit="col-header-ben"><span data-lang="en" hidden="">LineScanner &amp; Osprey</span></span>
       </div>
-      <ul class="why3-list" id="why3-ben-list" data-edit="ben-list" data-ls-list="">
+      <ul class="why3-list" id="why3-ben-list" data-edit="ben-list" data-ls-list=""><span data-lang="en" hidden="">
 
 
 
@@ -1112,7 +1121,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
       
       
       
-      </ul>
+      </span></ul>
       
       
     </div>
@@ -1257,11 +1266,12 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
   <div class="slide-layout">
   <header class="slide-head">
-    <div class="section-label" data-edit="section-label">The Product</div>
-    <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;">LineScanner <span class="blue">Capability Overview</span></h1>
+    <div class="section-label" data-edit="section-label"><span data-lang="en" hidden="">The Product</span></div>
+    <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;"><span data-lang="en" hidden="">LineScanner <span class="blue">Capability Overview</span></span></h1>
   </header>
   <div class="slide-body">
-  <div class="ls-tabs" data-edit="tabs" data-track="ls4:tabs" style="flex:1;min-height:0;width:100%;max-width:960px;">
+  <div class="ls-tabs" data-edit="tabs" data-track="ls4:tabs" style="flex:1;min-height:0;width:100%;max-width:960px;"><span data-lang="en" hidden="">
+
 
 
 
@@ -1300,8 +1310,8 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
 
 <div class="ls-tab-list">
-  <button class="ls-tab active" data-panel="0" data-edit="tab-capability">Capability Matrix</button>
-  <button class="ls-tab" data-panel="1" data-edit="tab-process">Where in Your Process</button>
+  <button class="ls-tab active" data-panel="0" data-edit="tab-capability">Matriz de Capacidades</button>
+  <button class="ls-tab" data-panel="1" data-edit="tab-process">Dónde en Su Proceso</button>
 <button class="ls-tab" data-panel="2">Extras</button></div>
 <div class="ls-tab-panels">
 <!-- ══ PANEL 0 · Capability Matrix ══ -->
@@ -1309,7 +1319,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   <div class="ls4-grid">
     <div class="ls4-table-wrap anim-in" style="">
       <table class="ls4-table" data-ls-table="" data-edit="capability-matrix">
-        <colgroup><col><col class="ls-col-collapsed"><col class=""><col class="ls-col-collapsed"><col class="ls-col-collapsed"><col class="ls-col-collapsed"></colgroup>
+        <colgroup><col><col class=""><col class=""><col class=""><col class=""><col class=""></colgroup>
         <thead><tr>
           <th class="ls4-check-col"></th>
           <th class="ls4-prod-col"><span class="ls-col-label">Osprey-25</span></th>
@@ -1333,9 +1343,9 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
           <tr><td>Glass Type Recognition</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
           <tr class="ls4-shaded"><td>Data Matrix Code Interpretation</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
           <tr><td>Break Pattern Check</td><td></td><td></td><td></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td></tr>
-        <tr><td>New row</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>New row</td><td></td><td></td><td></td><td></td><td></td></tr></tbody>
+        </tbody>
       </table>
-      <div data-ls-col-restore=""><button class="ls-table-restore-chip">+ Osprey-25</button><button class="ls-table-restore-chip">+ White Haze</button><button class="ls-table-restore-chip">+ BowScanner</button><button class="ls-table-restore-chip">+ CulletScanner</button></div>
+      <div data-ls-col-restore=""></div>
       <div data-ls-row-restore=""></div>
       
       <div class="ls4-legend">
@@ -1344,7 +1354,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
       </div>
     </div>
     <div class="ls-carousel anim-in" data-counter="" data-edit="capability-carousel" data-zoom-group="" style="padding-bottom: 10px;" data-autoplay="3000">
-      <div class="ls-carousel-track" style="transform: translateX(0px);">
+      <div class="ls-carousel-track" style="transform: translateX(-786px);">
         <div class="ls-carousel-slide" style="flex-direction:column;">
           <img src="../shared/Vertical_LineScanner.png" alt="Vertical LineScanner" data-zoom="" style="flex:1;min-height:0;">
           <div class="ls4-car-label" data-edit="car-label-1">Vertical LineScanner</div>
@@ -1359,7 +1369,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
         <div class="ls-carousel-caption">Osprey</div></div>
       </div>
       
-    <div class="ls-carousel-counter">1 / 3</div></div>
+    <div class="ls-carousel-counter">3 / 3</div></div>
   </div>
 </div>
 <!-- ══ PANEL 1 · Where in Your Process ══ -->
@@ -1447,7 +1457,8 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   
   
   
-  </div><!-- ls-tabs -->
+  
+  </span></div><!-- ls-tabs -->
   </div><!-- slide-body -->
   </div><!-- slide-layout -->
 
@@ -1603,11 +1614,11 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
   <div class="slide-layout">
   <header class="slide-head">
-    <div class="section-label" data-edit="section-label">The Technology</div>
-    <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;">How LineScanner <span class="blue">sees what others miss</span></h1>
+    <div class="section-label" data-edit="section-label"><span data-lang="en" hidden="">The Technology</span></div>
+    <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;"><span data-lang="en" hidden="">How LineScanner <span class="blue">sees what others miss</span></span></h1>
   </header>
   <div class="slide-body">
-  <div class="ls-tabs" data-edit="tabs" data-track="t5:tabs" style="flex:1;min-height:0;width:100%;max-width:920px;flex-direction:column-reverse;">
+  <div class="ls-tabs" data-edit="tabs" data-track="t5:tabs" style="flex:1;min-height:0;width:100%;max-width:920px;flex-direction:column-reverse;"><span data-lang="en" hidden="">
 
 
 
@@ -1766,7 +1777,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   
   
   
-  </div>
+  </span></div>
   </div><!-- slide-body -->
   </div><!-- slide-layout -->
 
@@ -1839,11 +1850,11 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
   <div class="slide-layout">
   <header class="slide-head">
-    <div class="section-label" data-edit="section-label">The Technology</div>
-    <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;">How Osprey&nbsp;<span class="blue">sees what others miss</span></h1>
+    <div class="section-label" data-edit="section-label"><span data-lang="en" hidden="">The Technology</span></div>
+    <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;"><span data-lang="en" hidden="">How Osprey&nbsp;<span class="blue">sees what others miss</span></span></h1>
   </header>
   <div class="slide-body">
-  <div class="ls-tabs" data-edit="tabs" data-track="t5:tabs" style="flex:1;min-height:0;width:100%;max-width:920px;flex-direction:column-reverse;">
+  <div class="ls-tabs" data-edit="tabs" data-track="t5:tabs" style="flex:1;min-height:0;width:100%;max-width:920px;flex-direction:column-reverse;"><span data-lang="en" hidden="">
 
 
 
@@ -1907,7 +1918,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   
   
   
-  </div>
+  </span></div>
   </div><!-- slide-body -->
   </div><!-- slide-layout -->
 
@@ -1980,9 +1991,9 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
   <div class="slide-layout">
   <header class="slide-head">
-    <div class="section-label" data-edit="section-label">Surface Quality</div>
-    <h1 class="slide-title" data-edit="headline" style="margin-bottom:8px;">Defect detection with <span class="blue">Artificial Intelligence</span></h1>
-    <p class="slide-subtitle" data-edit="subtitle" style="margin-bottom:14px;">Neural network trained to automatically classify every defect type.</p>
+    <div class="section-label" data-edit="section-label"><span data-lang="en" hidden="">Surface Quality</span></div>
+    <h1 class="slide-title" data-edit="headline" style="margin-bottom:8px;"><span data-lang="en" hidden="">Defect detection with <span class="blue">Artificial Intelligence</span></span></h1>
+    <p class="slide-subtitle" data-edit="subtitle" style="margin-bottom:14px;"><span data-lang="en" hidden="">Neural network trained to automatically classify every defect type.</span></p>
   </header>
   <div class="slide-body">
 
@@ -1990,53 +2001,53 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   <div class="s6-selector anim-in" id="s6-selector"></div>
 
   <!-- ── Default carousel (shown when no defect is selected) ── -->
-  <div class="ls-carousel s6-car-wrap" id="s6CarWrap" data-counter="" data-edit="s6-default-carousel" data-track="s6:carousel:default" data-autoplay="5000" data-zoom-group="" style="flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+  <div class="ls-carousel s6-car-wrap" id="s6CarWrap" data-counter="" data-edit="s6-default-carousel" data-track="s6:carousel:default" data-autoplay="5000" data-zoom-group="" style="flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><span data-lang="en" hidden="">
 <div class="ls-carousel-track" style="transform: translateX(0px);">
   <div class="ls-carousel-slide"><img src="../shared/Details_Surface-Quality-Control.jpg" alt="Details_Surface Quality Control" data-zoom=""></div>
 </div>
-  </div>
+  </span></div>
 
   <!-- ── Scratches ── -->
-  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-scratches" data-counter="" data-edit="s6-defect-scratches" data-track="s6:carousel:scratches" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-scratches" data-counter="" data-edit="s6-defect-scratches" data-track="s6:carousel:scratches" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><span data-lang="en" hidden="">
 <div class="ls-carousel-track" style="transform: translateX(0px);">
   <div class="ls-carousel-slide ls-compare ls-split" data-compare-mode="split"><img src="../shared/Defect_of_a_Coating_Camera_image_2.png" alt="Camera" data-zoom="" class="ls-cmp-left"><img src="../shared/Defect-of-a-Coating-image-LineScanner-Raw-Image.png" alt="Defect of a Coating image LineScanner Raw Image" class="ls-cmp-right" data-zoom=""></div>
   <div class="ls-carousel-slide ls-compare ls-split" data-compare-mode="split"><img class="ls-cmp-left" src="../shared/Defect_of_a_Coating_Camera_image.png" alt="Camera" data-zoom=""><img class="ls-cmp-right" src="../shared/Defect_of_a_Coating_image_LineScanner_Raw_Image.png" alt="LineScanner" data-zoom=""></div>
 </div>
-  </div>
+  </span></div>
 
   <!-- ── Inclusions ── -->
-  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-inclusions" data-counter="" data-edit="s6-defect-inclusions" data-track="s6:carousel:inclusions" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;" data-autoplay="15000">
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-inclusions" data-counter="" data-edit="s6-defect-inclusions" data-track="s6:carousel:inclusions" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;" data-autoplay="15000"><span data-lang="en" hidden="">
 <div class="ls-carousel-track" style="transform: translateX(-2880px);">
   <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Inclusion.bmp" alt="Defect Piece Inclusion" data-zoom=""></div>
   <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Inclusion-Screenshot-2.jpg" alt="Defect Piece Inclusion Screenshot 2" data-zoom=""></div>
   <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Inclusion-Screenshot-2.png" alt="Defect Piece Inclusion Screenshot 2" data-zoom=""></div>
   <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Inclusion-Screenshot.png" alt="Defect Piece Inclusion Screenshot" data-zoom=""></div>
 </div>
-  </div>
+  </span></div>
 
   <!-- ── Dirt ── -->
-  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-dirt" data-counter="" data-edit="s6-defect-dirt" data-track="s6:carousel:dirt" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-dirt" data-counter="" data-edit="s6-defect-dirt" data-track="s6:carousel:dirt" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><span data-lang="en" hidden="">
 <div class="ls-carousel-track" style="transform: translateX(-960px);">
   <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Dirt-Screenshot.png" alt="Defect Piece Dirt Screenshot" data-zoom=""></div>
   <div class="ls-carousel-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects" data-zoom=""></div>
 </div>
-  </div>
+  </span></div>
 
   <!-- ── Dust ── -->
-  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-dust" data-counter="" data-edit="s6-defect-dust" data-track="s6:carousel:dust" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-dust" data-counter="" data-edit="s6-defect-dust" data-track="s6:carousel:dust" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><span data-lang="en" hidden="">
 <div class="ls-carousel-track"></div>
-  </div>
+  </span></div>
 
   <!-- ── Water ── -->
-  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-water" data-counter="" data-edit="s6-defect-water" data-track="s6:carousel:water" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-water" data-counter="" data-edit="s6-defect-water" data-track="s6:carousel:water" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><span data-lang="en" hidden="">
 <div class="ls-carousel-track" style="transform: translateX(0px);">
   <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Water-Drops-Screenshot.png" alt="Defect Piece Water Drops Screenshot" data-zoom=""></div>
   <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Water-Drops.png" alt="Defect Piece Water Drops" data-zoom=""></div>
 </div>
-  </div>
+  </span></div>
 
   <!-- ── Fingerprints ── -->
-  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-fingerprints" data-counter="" data-edit="s6-defect-fingerprints" data-track="s6:carousel:fingerprints" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-fingerprints" data-counter="" data-edit="s6-defect-fingerprints" data-track="s6:carousel:fingerprints" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><span data-lang="en" hidden="">
 <div class="ls-carousel-track" style="transform: translateX(0px);">
   <div class="ls-carousel-slide">
     <img src="../shared/Defect_of_a_Finger_prints_LineScanner_Raw_Image.png" alt="RAW scan — fingerprint defect" data-zoom="">
@@ -2044,15 +2055,15 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Finger-Print.bmp" alt="Defect Piece Finger Print" data-zoom=""></div>
   <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Finger-Print-2.bmp" alt="Defect Piece Finger Print 2" data-zoom=""></div>
 </div>
-  </div>
+  </span></div>
 
   <!-- ── Ignore ── -->
-  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-ignore" data-counter="" data-edit="s6-defect-ignore" data-track="s6:carousel:ignore" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-ignore" data-counter="" data-edit="s6-defect-ignore" data-track="s6:carousel:ignore" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><span data-lang="en" hidden="">
 <div class="ls-carousel-track"></div>
-  </div>
+  </span></div>
 
   <!-- ── Edge defects ── -->
-  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-edge-defects" data-counter="" data-edit="s6-defect-edge-defects" data-track="s6:carousel:edge-defects" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-edge-defects" data-counter="" data-edit="s6-defect-edge-defects" data-track="s6:carousel:edge-defects" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><span data-lang="en" hidden="">
 <div class="ls-carousel-track" style="transform: translateX(0px);">
   <div class="ls-carousel-slide">
     <img src="../shared/Defect_of_micro_edge_chips_on_a_cutout_detction_marks.png" alt="Micro edge chips — cutout detection marks" data-zoom="">
@@ -2070,10 +2081,10 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-Screenshot--6-.jpg" alt="Defect Piece Edge Chip Screenshot (6)" data-zoom=""></div>
   <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-Screenshot--7-.jpg" alt="Defect Piece Edge Chip Screenshot (7)" data-zoom=""></div>
 </div>
-  </div>
+  </span></div>
 
   <!-- ── Frame & bars ── -->
-  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-frame-bars" data-counter="" data-edit="s6-defect-frame-bars" data-track="s6:carousel:frame-bars" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-frame-bars" data-counter="" data-edit="s6-defect-frame-bars" data-track="s6:carousel:frame-bars" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><span data-lang="en" hidden="">
 <div class="ls-carousel-track" style="transform: translateX(0px);">
   <div class="ls-carousel-slide">
     <img src="../shared/Defect_on_an_IGU_Insulated_Glass_Secondary_Seal_inside_the_unit.jpeg" alt="Sightline defect — IGU secondary seal" data-zoom="">
@@ -2081,26 +2092,26 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-IG-Frame---Bars.jpg" alt="Defect Piece IG Frame &amp; Bars" data-zoom=""></div>
   <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-IG-Frame---Bars-2.PNG" alt="Defect Piece IG Frame &amp; Bars 2" data-zoom=""></div>
 </div>
-  </div>
+  </span></div>
 
   <!-- ── Undefined ── -->
-  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-undefined" data-counter="" data-edit="s6-defect-undefined" data-track="s6:carousel:undefined" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-undefined" data-counter="" data-edit="s6-defect-undefined" data-track="s6:carousel:undefined" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><span data-lang="en" hidden="">
 <div class="ls-carousel-track">
   <div class="ls-carousel-slide">
     <img src="../shared/Defect_Arcing_on_LineScanner_Raw_Image.png" alt="RAW scan — arcing defect" data-zoom="">
   </div>
 </div>
-  </div>
+  </span></div>
 
   <!-- ── Coating ── -->
-  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-coating" data-counter="" data-edit="s6-defect-coating" data-track="s6:carousel:coating" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="s6-car-coating" data-counter="" data-edit="s6-defect-coating" data-track="s6:carousel:coating" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><span data-lang="en" hidden="">
 <div class="ls-carousel-track" style="transform: translateX(0px);">
   <div class="ls-carousel-slide ls-compare ls-split" data-compare-mode="split">
     <img class="ls-cmp-left" src="../shared/Defect_of_a_Coating_2_Camera_image.png" alt="Camera" data-zoom="">
     <img class="ls-cmp-right" src="../shared/Defect_of_a_Coating_2_Camera_image_LineScanner_Raw_Image.png" alt="LineScanner" data-zoom="">
   </div>
 </div>
-  </div>
+  </span></div>
 
   </div><!-- slide-body -->
   </div><!-- slide-layout -->
@@ -2257,12 +2268,12 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
   <div class="slide-layout">
     <header class="slide-head">
-      <div class="section-label" data-edit="section-label">Dimensional Control</div>
-      <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;">Precise measurement of <span class="blue">dimensions and cutouts</span></h1>
+      <div class="section-label" data-edit="section-label"><span data-lang="en" hidden="">Dimensional Control</span></div>
+      <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;"><span data-lang="en" hidden="">Precise measurement of <span class="blue">dimensions and cutouts</span></span></h1>
     </header>
 
     <div class="slide-body">
-      <div class="ls-carousel anim-in" data-edit="carousel" data-counter="" data-track="ls7:carousel" data-zoom-group="" style="flex:1;min-height:0;width:100%;max-width:860px;">
+      <div class="ls-carousel anim-in" data-edit="carousel" data-counter="" data-track="ls7:carousel" data-zoom-group="" style="flex:1;min-height:0;width:100%;max-width:860px;"><span data-lang="en" hidden="">
 <div class="ls-carousel-track" style="transform: translateX(-2580px);">
     <div class="ls-carousel-slide">
       <img src="../shared/Screenshot_Scanned_Piece_of_glass_with_cutouts_and_a_shape_and_defects.png" alt="Dimensional control — automotive glass shapes" data-zoom="" data-track="ls7:zoom:dimensional-control">
@@ -2277,27 +2288,27 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
       <img src="../shared/Dimension_control_Cutouts_Drillholes_and_a_Door.jpg" alt="Dimensional control — cutouts, drillholes and door" data-zoom="" data-track="ls7:zoom:cutouts-drillholes">
     </div>
   </div>
-      </div>
+      </span></div>
 
       <div class="ls7-cards anim-in">
         <div class="col-card">
-          <div class="col-label" data-edit="card-header-1">What is measured?</div>
+          <div class="col-label" data-edit="card-header-1"><span data-lang="en" hidden="">What is measured?</span></div>
           <div class="col-list">
-            <div class="col-item" data-edit="dim-item-1"><strong>Overall dimensions</strong> of the glasss</div>
-            <div class="col-item" data-edit="dim-item-2"><strong>Position and size</strong> of drill holes</div>
-            <div class="col-item" data-edit="dim-item-3"><strong>Cutouts and notches</strong></div>
-            <div class="col-item" data-edit="dim-item-4"><strong>Angles and parallelism</strong> of edges</div>
-            <div class="col-item" data-edit="dim-item-5"><strong>Rotation and position</strong> on line</div>
+            <div class="col-item" data-edit="dim-item-1"><span data-lang="en" hidden=""><strong>Overall dimensions</strong> of the glasss</span></div>
+            <div class="col-item" data-edit="dim-item-2"><span data-lang="en" hidden=""><strong>Position and size</strong> of drill holes</span></div>
+            <div class="col-item" data-edit="dim-item-3"><span data-lang="en" hidden=""><strong>Cutouts and notches</strong></span></div>
+            <div class="col-item" data-edit="dim-item-4"><span data-lang="en" hidden=""><strong>Angles and parallelism</strong> of edges</span></div>
+            <div class="col-item" data-edit="dim-item-5"><span data-lang="en" hidden=""><strong>Rotation and position</strong> on line</span></div>
           </div>
         </div>
         <div class="col-card">
-          <div class="col-label" data-edit="card-header-2">Setup &amp; tolerances</div>
+          <div class="col-label" data-edit="card-header-2"><span data-lang="en" hidden="">Setup &amp; tolerances</span></div>
           <div class="col-list">
-            <div class="col-item" data-edit="dim-item-6">Compatible with <strong class="ls7-trigger" onclick="ls7OpenTolerances()">individual tolerances per measurement ↗</strong></div>
-            <div class="col-item" data-edit="dim-item-7"><strong>DXF</strong> model import</div>
-            <div class="col-item" data-edit="dim-item-8"><strong>2-step</strong> verification: global + detail</div>
-            <div class="col-item" data-edit="dim-item-9">Compatible with <strong class="ls7-trigger" onclick="ls7OpenConveyor()" data-umami-event="conveyor-gallery-open">belt conveyors ↗</strong></div>
-            <div class="col-item" data-edit="dim-item-10">Parallel light for <strong>maximum precision</strong></div>
+            <div class="col-item" data-edit="dim-item-6"><span data-lang="en" hidden="">Compatible with <strong class="ls7-trigger" onclick="ls7OpenTolerances()">individual tolerances per measurement ↗</strong></span></div>
+            <div class="col-item" data-edit="dim-item-7"><span data-lang="en" hidden=""><strong>DXF</strong> model import</span></div>
+            <div class="col-item" data-edit="dim-item-8"><span data-lang="en" hidden=""><strong>2-step</strong> verification: global + detail</span></div>
+            <div class="col-item" data-edit="dim-item-9"><span data-lang="en" hidden="">Compatible with <strong class="ls7-trigger" onclick="ls7OpenConveyor()" data-umami-event="conveyor-gallery-open">belt conveyors ↗</strong></span></div>
+            <div class="col-item" data-edit="dim-item-10"><span data-lang="en" hidden="">Parallel light for <strong>maximum precision</strong></span></div>
           </div>
         </div>
       </div>
@@ -2355,26 +2366,26 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
   <div class="slide-layout">
   <header class="slide-head">
-    <div class="section-label" data-edit="section-label">Screen Printing.</div>
-    <h1 class="slide-title" data-edit="headline" style="margin-bottom:8px;">Automatic quality control for.&nbsp;<span class="blue">screen-printed glass.</span></h1>
-    <p class="slide-subtitle" data-edit="subtitle" style="margin-bottom:16px;">The quality inspection of logos and screen printing is now standard — fully automated, 100% of the time..</p>
+    <div class="section-label" data-edit="section-label"><span data-lang="en" hidden="">Screen Printing.</span></div>
+    <h1 class="slide-title" data-edit="headline" style="margin-bottom:8px;"><span data-lang="en" hidden="">Automatic quality control for.&nbsp;<span class="blue">screen-printed glass.</span></span></h1>
+    <p class="slide-subtitle" data-edit="subtitle" style="margin-bottom:16px;"><span data-lang="en" hidden="">The quality inspection of logos and screen printing is now standard — fully automated, 100% of the time..</span></p>
   </header>
   <div class="slide-body">
   <div class="ls8-layout">
 
     <div class="col-card">
-      <div class="col-label" data-edit="col-label">What LineScanner checks.</div>
+      <div class="col-label" data-edit="col-label"><span data-lang="en" hidden="">What LineScanner checks.</span></div>
       <div class="col-list">
-        <div class="col-item" data-edit="col-item-1"><strong>Correct position</strong> of screen printing</div>
-        <div class="col-item" data-edit="col-item-2"><strong>Missing parts</strong>within a logo</div>
-        <div class="col-item" data-edit="col-item-3"><strong>Print thickness</strong> consistency</div>
-        <div class="col-item" data-edit="col-item-4"><strong>Detail errors</strong> in graphics.</div>
-        <div class="col-item" data-edit="col-item-5"><strong>Screen printing errors</strong> &amp; defects</div>
-        <div class="col-item" data-edit="col-item-6"><strong>Logo position &amp; rotation</strong></div>
+        <div class="col-item" data-edit="col-item-1"><span data-lang="en" hidden=""><strong>Correct position</strong> of screen printing</span></div>
+        <div class="col-item" data-edit="col-item-2"><span data-lang="en" hidden=""><strong>Missing parts</strong>within a logo</span></div>
+        <div class="col-item" data-edit="col-item-3"><span data-lang="en" hidden=""><strong>Print thickness</strong> consistency</span></div>
+        <div class="col-item" data-edit="col-item-4"><span data-lang="en" hidden=""><strong>Detail errors</strong> in graphics.</span></div>
+        <div class="col-item" data-edit="col-item-5"><span data-lang="en" hidden=""><strong>Screen printing errors</strong> &amp; defects</span></div>
+        <div class="col-item" data-edit="col-item-6"><span data-lang="en" hidden=""><strong>Logo position &amp; rotation</strong></span></div>
       </div>
     </div>
 
-    <div class="ls-carousel anim-in" data-edit="carousel" data-counter="" data-track="ls8:carousel" data-zoom-group="" style="width:100%;flex:1;min-height:0;">
+    <div class="ls-carousel anim-in" data-edit="carousel" data-counter="" data-track="ls8:carousel" data-zoom-group="" style="width:100%;flex:1;min-height:0;"><span data-lang="en" hidden="">
 <div class="ls-carousel-track" style="transform: translateX(0px);">
     <div class="ls-carousel-slide">
       <img src="../shared/Slide35.jpg" alt="Slide35" data-zoom="">
@@ -2385,7 +2396,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
       <img src="../shared/image83.png" alt="Logo position check" data-zoom="" data-track="ls8:zoom:logo-position-check">
     </div>
   </div>
-    </div>
+    </span></div>
 
   </div>
   </div><!-- slide-body -->
@@ -2428,13 +2439,13 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
   <div class="slide-layout">
     <header class="slide-head">
-      <div class="section-label" data-edit="section-label">Screen Printing &amp; Logo .</div>
-      <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;">Position and <span class="blue">print quality control</span></h1>
+      <div class="section-label" data-edit="section-label"><span data-lang="en" hidden="">Screen Printing &amp; Logo .</span></div>
+      <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;"><span data-lang="en" hidden="">Position and <span class="blue">print quality control</span></span></h1>
     </header>
 
     <div class="slide-body">
       <!-- ── Carousel ── -->
-      <div class="ls-carousel anim-in" id="ls9-carousel" data-edit="carousel" data-counter="" data-track="ls9:carousel" data-zoom-group="" style="flex:1;min-height:0;width:100%;max-width:860px;">
+      <div class="ls-carousel anim-in" id="ls9-carousel" data-edit="carousel" data-counter="" data-track="ls9:carousel" data-zoom-group="" style="flex:1;min-height:0;width:100%;max-width:860px;"><span data-lang="en" hidden="">
 <div class="ls-carousel-track" style="transform: translateX(0px);">
     <div class="ls-carousel-slide">
       <img src="../shared/image89.png" alt="Screen printing overview" data-zoom="" data-track="ls9:zoom:overview">
@@ -2452,17 +2463,17 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
       <img src="../shared/image96.png" alt="Filled items" data-zoom="" data-track="ls9:zoom:filled-items">
     </div>
   </div>
-      </div>
+      </span></div>
 
       <!-- ── Tags — always above nav ── -->
       <div class="ls9-info anim-in" style="">
         <div class="tag-grid" style="justify-content:center;">
-          <span class="tag error" data-edit="tag-1">❌ Missing print .</span>
-          <span class="tag error ls9-tag" data-img="1" data-edit="tag-2">📐 Distortion</span>
-          <span class="tag warn" data-edit="tag-3">💡 Shiny ink</span>
-          <span class="tag warn ls9-tag" data-img="2" data-edit="tag-4">🔄 Rotation</span>
-          <span class="tag error ls9-tag" data-img="3" data-edit="tag-5">📍 Out of position</span>
-          <span class="tag ls9-tag" data-img="4" data-edit="tag-6">⬛ "Filled" items</span>
+          <span class="tag error" data-edit="tag-1"><span data-lang="en" hidden="">❌ Missing print .</span></span>
+          <span class="tag error ls9-tag" data-img="1" data-edit="tag-2"><span data-lang="en" hidden="">📐 Distortion</span></span>
+          <span class="tag warn" data-edit="tag-3"><span data-lang="en" hidden="">💡 Shiny ink</span></span>
+          <span class="tag warn ls9-tag" data-img="2" data-edit="tag-4"><span data-lang="en" hidden="">🔄 Rotation</span></span>
+          <span class="tag error ls9-tag" data-img="3" data-edit="tag-5"><span data-lang="en" hidden="">📍 Out of position</span></span>
+          <span class="tag ls9-tag" data-img="4" data-edit="tag-6"><span data-lang="en" hidden="">⬛ "Filled" items</span></span>
         </div>
       </div>
     </div>
@@ -2530,13 +2541,13 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
   <div class="slide-layout">
   <header class="slide-head">
-  <div class="section-label" data-edit="section-label">Traceability &amp; Management .</div>
-  <h1 class="slide-title" data-edit="headline" style="margin-bottom:10px;">Decisions based on <span class="blue">real data .</span></h1>
+  <div class="section-label" data-edit="section-label"><span data-lang="en" hidden="">Traceability &amp; Management .</span></div>
+  <h1 class="slide-title" data-edit="headline" style="margin-bottom:10px;"><span data-lang="en" hidden="">Decisions based on <span class="blue">real data .</span></span></h1>
   </header>
 
   <div class="slide-body">
 
-  <div class="ls-tabs" data-edit="tabs" data-track="ls10:tabs" style="flex:1;min-height:0;width:100%;max-width:860px;">
+  <div class="ls-tabs" data-edit="tabs" data-track="ls10:tabs" style="flex:1;min-height:0;width:100%;max-width:860px;"><span data-lang="en" hidden="">
 
 
 
@@ -2611,7 +2622,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   
   
   
-  </div>
+  </span></div>
 
   </div><!-- /.slide-body -->
   </div><!-- /.slide-layout -->
@@ -2651,12 +2662,12 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
   <div class="slide-layout">
     <header class="slide-head">
-      <div class="section-label" data-edit="section-label">Sensitivity Adjustment</div>
-      <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;">Fully automatic <span class="blue">sensitivity adjustment</span></h1>
+      <div class="section-label" data-edit="section-label"><span data-lang="en" hidden="">Sensitivity Adjustment</span></div>
+      <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;"><span data-lang="en" hidden="">Fully automatic <span class="blue">sensitivity adjustment</span></span></h1>
     </header>
 
     <div class="slide-body">
-      <div class="ls-carousel anim-in" data-edit="carousel" data-counter="" data-track="ls11:carousel" data-zoom-group="" style="flex:1;min-height:0;width:100%;max-width:860px;">
+      <div class="ls-carousel anim-in" data-edit="carousel" data-counter="" data-track="ls11:carousel" data-zoom-group="" style="flex:1;min-height:0;width:100%;max-width:860px;"><span data-lang="en" hidden="">
 <div class="ls-carousel-track" style="transform: translateX(-2580px);">
   <div class="ls-carousel-slide">
     <img src="../shared/Slide62.jpg" alt="Quality &amp; Sensitivity Selection Options — auto recipe" data-zoom="" data-track="ls11:zoom:auto-recipe">
@@ -2672,33 +2683,33 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   </div>
   
 </div>
-      </div>
+      </span></div>
 
       <div class="ls11-steps-wrap anim-in">
-        <div class="ls11-steps-label" data-edit="steps-label">Automatic Quality Recipe Selection</div>
+        <div class="ls11-steps-label" data-edit="steps-label"><span data-lang="en" hidden="">Automatic Quality Recipe Selection</span></div>
         <div class="ls11-steps">
           <div class="ls11-step">
             <div class="ls11-num">1</div>
-            <div data-edit="step-1">Receives glass info via interface <span class="ls11-muted">(transfer file, PLC…)</span></div>
+            <div data-edit="step-1"><span data-lang="en" hidden="">Receives glass info via interface <span class="ls11-muted">(transfer file, PLC…)</span></span></div>
           </div>
           <div class="ls11-step">
             <div class="ls11-num">2</div>
-            <div data-edit="step-2">Logo detected → selects <strong>Tempered Glass</strong> sensitivity</div>
+            <div data-edit="step-2"><span data-lang="en" hidden="">Logo detected → selects <strong>Tempered Glass</strong> sensitivity</span></div>
           </div>
           <div class="ls11-step">
             <div class="ls11-num">3</div>
-            <div data-edit="step-3">GSS sensor detects laminated lite → <strong>Laminated Glass</strong> settings</div>
+            <div data-edit="step-3"><span data-lang="en" hidden="">GSS sensor detects laminated lite → <strong>Laminated Glass</strong> settings</span></div>
           </div>
           <div class="ls11-step">
             <div class="ls11-num">4</div>
-            <div data-edit="step-4">Coating detected → <strong>Coated Glass</strong> sensitivity setting</div>
+            <div data-edit="step-4"><span data-lang="en" hidden="">Coating detected → <strong>Coated Glass</strong> sensitivity setting</span></div>
           </div>
           <div class="ls11-step">
             <div class="ls11-num">5</div>
-            <div data-edit="step-5">Any other case → <strong>Default</strong> quality &amp; sensitivity settings</div>
+            <div data-edit="step-5"><span data-lang="en" hidden="">Any other case → <strong>Default</strong> quality &amp; sensitivity settings</span></div>
           </div>
         </div>
-        <div class="ls11-tagline" data-edit="tagline">LineScanner — as easy as a smart-phone</div>
+        <div class="ls11-tagline" data-edit="tagline"><span data-lang="en" hidden="">LineScanner — as easy as a smart-phone</span></div>
       </div>
     </div>
   </div>
@@ -2757,20 +2768,20 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
   <div class="slide-layout">
     <header class="slide-head">
-      <div class="section-label" data-edit="section-label">Installation</div>
-      <h1 class="slide-title" data-edit="headline">Modular based — <span class="blue">minimum footprint</span></h1>
-      <p class="slide-subtitle" data-edit="subtitle" style="margin-bottom:12px; margin-top:-6px;">unique · worldwide</p>
+      <div class="section-label" data-edit="section-label"><span data-lang="en" hidden="">Installation</span></div>
+      <h1 class="slide-title" data-edit="headline"><span data-lang="en" hidden="">Modular based — <span class="blue">minimum footprint</span></span></h1>
+      <p class="slide-subtitle" data-edit="subtitle" style="margin-bottom:12px; margin-top:-6px;"><span data-lang="en" hidden="">unique · worldwide</span></p>
     </header>
     <div class="slide-body">
       <div class="ls12-diagram-wrap anim-in">
-        <div class="ls-carousel" data-counter="" data-edit="footprint-diagram" data-track="ls12:carousel:footprint" style="width:100%;flex:1;min-height:0;">
+        <div class="ls-carousel" data-counter="" data-edit="footprint-diagram" data-track="ls12:carousel:footprint" style="width:100%;flex:1;min-height:0;"><span data-lang="en" hidden="">
 <div class="ls-carousel-track" style="transform: translateX(0px);">
     <div class="ls-carousel-slide">
       <img src="../shared/Slide66.jpg" alt="LineScanner footprint diagram" data-zoom="" data-track="ls12:zoom:footprint-diagram">
     </div>
   
 </div>
-        </div>
+        </span></div>
       </div>
     </div>
   </div>
@@ -2826,23 +2837,23 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
   <div class="slide-layout">
     <header class="slide-head">
-      <div class="section-label" data-edit="section-label">Next Steps</div>
-      <h1 class="slide-title" data-edit="headline">Ready for a<br><span class="blue">live demonstration?</span></h1>
+      <div class="section-label" data-edit="section-label"><span data-lang="en" hidden="">Next Steps</span></div>
+      <h1 class="slide-title" data-edit="headline"><span data-lang="en" hidden="">Ready for a<br><span class="blue">live demonstration?</span></span></h1>
       <div class="divider"></div>
     </header>
     <div class="slide-body">
   <div class="cta-box anim-in" style="flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center; padding-bottom:72px; max-width:680px; width:100%; text-align:left;">
-    <p data-edit="intro">We propose that your team visit our facilities in Austria so we can carry out an on-site demonstration with <strong>your own glass samples</strong> — together.</p>
+    <p data-edit="intro"><span data-lang="en" hidden="">We propose that your team visit our facilities in Austria so we can carry out an on-site demonstration with <strong>your own glass samples</strong> — together.</span></p>
     <div class="cta-steps">
-      <div class="cta-step" data-umami-event="cta-step" data-umami-event-step="1-analysis"><div class="step-num">1</div><span data-edit="step1">Analyse [Customer]'s current production line</span></div>
-      <div class="cta-step" data-umami-event="cta-step" data-umami-event-step="2-live-demo"><div class="step-num">2</div><span data-edit="step2">Live demo with [Customer] glass samples</span></div>
-      <div class="cta-step" data-umami-event="cta-step" data-umami-event-step="3-proposal"><div class="step-num">3</div><span data-edit="step3">Customised technical and commercial proposal</span></div>
+      <div class="cta-step" data-umami-event="cta-step" data-umami-event-step="1-analysis"><div class="step-num">1</div><span data-edit="step1"><span data-lang="en" hidden="">Analyse [Customer]'s current production line</span></span></div>
+      <div class="cta-step" data-umami-event="cta-step" data-umami-event-step="2-live-demo"><div class="step-num">2</div><span data-edit="step2"><span data-lang="en" hidden="">Live demo with [Customer] glass samples</span></span></div>
+      <div class="cta-step" data-umami-event="cta-step" data-umami-event-step="3-proposal"><div class="step-num">3</div><span data-edit="step3"><span data-lang="en" hidden="">Customised technical and commercial proposal</span></span></div>
     </div>
     <div class="cta-contact">
       <div class="cta-contact-name">
-        <strong data-edit="contact-name">Alex Ochoa</strong>
-        <span class="cta-contact-role" data-edit="contact-title">Sales Manager</span>
-        <span class="cta-contact-addr" data-edit="contact-addr">Im Vogelsang 18 · 3340 Waidhofen · Austria</span>
+        <strong data-edit="contact-name"><span data-lang="en" hidden="">Alex Ochoa</span></strong>
+        <span class="cta-contact-role" data-edit="contact-title"><span data-lang="en" hidden="">Sales Manager</span></span>
+        <span class="cta-contact-addr" data-edit="contact-addr"><span data-lang="en" hidden="">Im Vogelsang 18 · 3340 Waidhofen · Austria</span></span>
         <span class="cta-contact-phone" data-edit="contact-phone" title="WhatsApp phone number (digits only, e.g. 4366412345678)">+43 664 123 45678</span>
       </div>
       <div class="cta-contact-btns">
@@ -2852,7 +2863,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
         </a>
         <a class="cta-btn-email" href="mailto:alex.ochoa@softsolution.at" data-umami-event="cta-email">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
-          <span data-edit="contact-email">alex.ochoa@softsolution.at</span>
+          <span data-edit="contact-email"><span data-lang="en" hidden="">alex.ochoa@softsolution.at</span></span>
         </a>
       </div>
     </div>
@@ -2929,48 +2940,48 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
   <div class="slide-layout">
     <header class="slide-head">
-      <div class="section-label" data-edit="section-label">Integrations</div>
-      <h1 class="slide-title" data-edit="headline">Compatible with<br><span class="blue">your current machinery</span></h1>
+      <div class="section-label" data-edit="section-label"><span data-lang="en" hidden="">Integrations</span></div>
+      <h1 class="slide-title" data-edit="headline"><span data-lang="en" hidden="">Compatible with<br><span class="blue">your current machinery</span></span></h1>
       <div class="divider"></div>
-      <p class="slide-subtitle" data-edit="subtitle" style="margin-bottom:4px;">LineScanner is already integrated with the leading glass machinery manufacturers — if you already run any of these lines, integration is direct.</p>
+      <p class="slide-subtitle" data-edit="subtitle" style="margin-bottom:4px;"><span data-lang="en" hidden="">LineScanner is already integrated with the leading glass machinery manufacturers — if you already run any of these lines, integration is direct.</span></p>
     </header>
     <div class="slide-body">
   <div class="integration-grid">
     <div class="int-card anim-in">
-      <div class="int-name" data-edit="int-name-1">LiSEC</div>
-      <div class="int-type" data-edit="int-type-1">Processing lines</div>
+      <div class="int-name" data-edit="int-name-1"><span data-lang="en" hidden="">LiSEC</span></div>
+      <div class="int-type" data-edit="int-type-1"><span data-lang="en" hidden="">Processing lines</span></div>
     </div>
     <div class="int-card anim-in">
-      <div class="int-name" data-edit="int-name-2">FOREL</div>
-      <div class="int-type" data-edit="int-type-2">Architectural glass</div>
+      <div class="int-name" data-edit="int-name-2"><span data-lang="en" hidden="">FOREL</span></div>
+      <div class="int-type" data-edit="int-type-2"><span data-lang="en" hidden="">Architectural glass</span></div>
     </div>
     <div class="int-card anim-in">
-      <div class="int-name" data-edit="int-name-3">Benteler</div>
-      <div class="int-type" data-edit="int-type-3">Automotive glass</div>
+      <div class="int-name" data-edit="int-name-3"><span data-lang="en" hidden="">Benteler</span></div>
+      <div class="int-type" data-edit="int-type-3"><span data-lang="en" hidden="">Automotive glass</span></div>
     </div>
     <div class="int-card anim-in">
-      <div class="int-name" data-edit="int-name-4">CMS Tecglass</div>
-      <div class="int-type" data-edit="int-type-4">Digital printing</div>
+      <div class="int-name" data-edit="int-name-4"><span data-lang="en" hidden="">CMS Tecglass</span></div>
+      <div class="int-type" data-edit="int-type-4"><span data-lang="en" hidden="">Digital printing</span></div>
     </div>
     <div class="int-card anim-in">
-      <div class="int-name" data-edit="int-name-5">Bystronic</div>
-      <div class="int-type" data-edit="int-type-5">Cutting and processing</div>
+      <div class="int-name" data-edit="int-name-5"><span data-lang="en" hidden="">Bystronic</span></div>
+      <div class="int-type" data-edit="int-type-5"><span data-lang="en" hidden="">Cutting and processing</span></div>
     </div>
     <div class="int-card anim-in">
-      <div class="int-name" data-edit="int-name-6">Hegla</div>
-      <div class="int-type" data-edit="int-type-6">Cutting and storage</div>
+      <div class="int-name" data-edit="int-name-6"><span data-lang="en" hidden="">Hegla</span></div>
+      <div class="int-type" data-edit="int-type-6"><span data-lang="en" hidden="">Cutting and storage</span></div>
     </div>
     <div class="int-card anim-in">
-      <div class="int-name" data-edit="int-name-7">Glaston</div>
-      <div class="int-type" data-edit="int-type-7">Tempering and bending</div>
+      <div class="int-name" data-edit="int-name-7"><span data-lang="en" hidden="">Glaston</span></div>
+      <div class="int-type" data-edit="int-type-7"><span data-lang="en" hidden="">Tempering and bending</span></div>
     </div>
     <div class="int-card anim-in">
-      <div class="int-name" data-edit="int-name-8">TecoFerrari</div>
-      <div class="int-type" data-edit="int-type-8">Insulating glass</div>
+      <div class="int-name" data-edit="int-name-8"><span data-lang="en" hidden="">TecoFerrari</span></div>
+      <div class="int-type" data-edit="int-type-8"><span data-lang="en" hidden="">Insulating glass</span></div>
     </div>
     <div class="int-card anim-in">
-      <div class="int-name" data-edit="int-name-9">Erdman</div>
-      <div class="int-type" data-edit="int-type-9">Automated lines</div>
+      <div class="int-name" data-edit="int-name-9"><span data-lang="en" hidden="">Erdman</span></div>
+      <div class="int-type" data-edit="int-type-9"><span data-lang="en" hidden="">Automated lines</span></div>
     </div>
   </div>
     </div><!-- /.slide-body -->
@@ -3017,6 +3028,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     </div>
     <div id="fp-slide-name">Cover</div>
     <button class="fp-share-btn" id="fp-share-btn-ftr" title="Share presentation"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+    <div id="fp-lang-switcher"><button class="lang-switcher-btn" data-lang="en" onclick="switchLang('en')">EN</button></div>
   </div>
 </div>
 <button class="fp-side-arrow" id="fp-arrow-prev" disabled>&#8249;</button>
