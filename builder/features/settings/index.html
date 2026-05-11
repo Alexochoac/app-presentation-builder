@@ -6,46 +6,15 @@
   <title>Settings — Presentation Builder</title>
   <link rel="stylesheet" href="/shared/app-style.css">
   <style>
-    /* Logos list */
-    .logos-list { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px; }
-    .logo-item { display:flex; align-items:center; gap:10px; background:var(--card-bg,rgba(255,255,255,.05)); border:1px solid var(--border,rgba(255,255,255,.1)); border-radius:12px; padding:8px 12px; }
-    .logo-item-img { height:32px; max-width:100px; object-fit:contain; }
-    .logo-item-name { font-size:12px; color:var(--text-muted,rgba(255,255,255,.5)); flex:1; }
-    .logo-item-remove { background:none; border:none; color:rgba(255,255,255,.35); font-size:13px; cursor:pointer; padding:2px 6px; border-radius:6px; transition:color .2s,background .2s; }
-    .logo-item-remove:hover { color:#ff6b6b; background:rgba(255,100,100,.1); }
-    .btn-add-logo { font-size:13px; font-weight:600; padding:7px 16px; border-radius:20px; border:1px dashed rgba(255,255,255,.25); background:transparent; color:rgba(255,255,255,.55); cursor:pointer; transition:border-color .2s,color .2s; }
-    .btn-add-logo:hover { border-color:var(--accent,#7B8FF8); color:var(--accent,#7B8FF8); }
-
-    /* Toggle group */
     .toggle-group { display:flex; gap:6px; margin-top:8px; }
-    .toggle-opt { font-size:13px; font-weight:600; padding:7px 16px; border-radius:20px; border:1px solid var(--border,rgba(255,255,255,.15)); background:transparent; color:rgba(255,255,255,.45); cursor:pointer; transition:all .2s; }
+    .toggle-opt { font-size:13px; font-weight:600; padding:7px 16px; border-radius:20px; border:1px solid var(--border,rgba(255,255,255,.15)); background:transparent; color:rgba(255,255,255,.45); cursor:pointer; transition:all .2s; font-family:inherit; }
+    [data-theme="light"] .toggle-opt { color:rgba(0,0,0,.45); }
     .toggle-opt.active { background:var(--accent,#7B8FF8); border-color:var(--accent,#7B8FF8); color:#fff; }
-
-    /* Hero bg */
-    .hero-bg-wrap { display:flex; flex-direction:column; gap:10px; }
-    .hero-bg-preview { width:100%; max-width:340px; height:120px; border-radius:12px; border:1px solid var(--border,rgba(255,255,255,.12)); background:#111; background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; }
-    .hero-bg-placeholder { font-size:12px; color:rgba(255,255,255,.3); }
-    .hero-bg-actions { display:flex; gap:8px; }
-    .btn-upload-hero { font-size:13px; font-weight:600; padding:7px 16px; border-radius:20px; border:1px solid var(--border,rgba(255,255,255,.2)); background:rgba(255,255,255,.06); color:rgba(255,255,255,.7); cursor:pointer; transition:all .2s; }
-    .btn-upload-hero:hover { border-color:var(--accent,#7B8FF8); color:var(--accent,#7B8FF8); }
-    .btn-remove-hero { font-size:13px; font-weight:600; padding:7px 16px; border-radius:20px; border:1px solid rgba(255,100,100,.3); background:transparent; color:rgba(255,100,100,.7); cursor:pointer; transition:all .2s; }
-    .btn-remove-hero:hover { background:rgba(255,100,100,.1); color:#ff6b6b; }
-
-    /* Required badge */
-    .required-badge { font-size:10px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; padding:2px 7px; border-radius:20px; background:rgba(255,160,50,.15); border:1px solid rgba(255,160,50,.4); color:rgba(255,160,50,.9); margin-left:8px; vertical-align:middle; transition:opacity .3s; }
-    .required-badge.satisfied { opacity:0; pointer-events:none; }
-
-    /* Focal point picker — overlaid on preview */
-    .hero-bg-preview { position:relative; }
-    .focal-grid { display:none; position:absolute; inset:0; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,1fr); gap:2px; padding:2px; border-radius:12px; background:rgba(0,0,0,.35); backdrop-filter:blur(2px); }
-    .hero-bg-preview:hover .focal-grid,
-    .focal-grid:focus-within { display:grid; }
-    .focal-cell { border-radius:6px; border:1px solid rgba(255,255,255,.1); background:transparent; cursor:pointer; transition:background .15s, border-color .15s; }
-    .focal-cell:hover { background:rgba(255,255,255,.15); border-color:rgba(255,255,255,.4); }
-    .focal-cell.active { background:rgba(var(--accent-rgb,123,143,248),.55); border-color:var(--accent,#7B8FF8); box-shadow:0 0 0 2px var(--accent,#7B8FF8); }
-    .focal-size-wrap { display:flex; align-items:center; gap:6px; margin-left:auto; }
-    .focal-size-label { font-size:12px; color:rgba(255,255,255,.4); font-weight:600; letter-spacing:.05em; }
-    .focal-size-select { font-size:12px; padding:5px 10px; border-radius:10px; border:1px solid var(--border,rgba(255,255,255,.15)); background:var(--input-bg,rgba(255,255,255,.06)); color:var(--text,#fff); font-family:inherit; cursor:pointer; outline:none; }
+    .color-row { display:flex; align-items:center; gap:12px; margin-top:8px; }
+    .color-swatch { width:32px; height:32px; border-radius:8px; border:1px solid var(--border); cursor:pointer; padding:0; background:none; }
+    .color-swatch input[type=color] { opacity:0; position:absolute; width:32px; height:32px; cursor:pointer; }
+    .color-preview { width:32px; height:32px; border-radius:8px; border:2px solid var(--border); flex-shrink:0; }
+    .color-hex { font-size:13px; color:var(--muted); font-family:monospace; }
   </style>
 </head>
 <body>
@@ -53,170 +22,91 @@
   <div class="glow glow-a"></div>
   <div class="glow glow-b"></div>
 
-  <!-- Mobile Top Bar -->
   <header class="topbar-mobile">
     <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">&#9776;</button>
     <div class="logo-icon">P</div>
     <span class="logo-text">Presentation Builder</span>
   </header>
 
-  <!-- Sidebar Overlay (mobile) -->
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-  <!-- Sidebar -->
   <nav class="sidebar" id="sidebar">
     <div class="sidebar-brand">
       <div class="logo-icon">P</div>
       <span class="logo-text">Presentation Builder</span>
     </div>
-
     <ul class="sidebar-nav">
-      <li>
-        <a href="/" class="sidebar-nav-item">
-          <span class="nav-icon">&#9632;</span>
-          <span class="nav-label">Dashboard</span>
-        </a>
-      </li>
-      <li>
-        <a href="/slides" class="sidebar-nav-item">
-          <span class="nav-icon">&#9654;</span>
-          <span class="nav-label">Builder</span>
-        </a>
-      </li>
-      <li>
-        <a href="/settings" class="sidebar-nav-item active">
-          <span class="nav-icon">&#9881;</span>
-          <span class="nav-label">Settings</span>
-        </a>
-      </li>
+      <li><a href="/" class="sidebar-nav-item"><span class="nav-icon">&#9632;</span><span class="nav-label">Dashboard</span></a></li>
+      <li><a href="/builder" class="sidebar-nav-item"><span class="nav-icon">&#9654;</span><span class="nav-label">Builder</span></a></li>
+      <li><a href="/slides" class="sidebar-nav-item"><span class="nav-icon">&#9670;</span><span class="nav-label">Slides</span></a></li>
+      <li><a href="/settings" class="sidebar-nav-item active"><span class="nav-icon">&#9881;</span><span class="nav-label">Settings</span></a></li>
     </ul>
-
     <div class="sidebar-logout">
-      <a href="/auth/logout" class="sidebar-nav-item">
-        <span class="nav-icon">&#8617;</span>
-        <span class="nav-label">Log out</span>
-      </a>
+      <a href="/auth/logout" class="sidebar-nav-item"><span class="nav-icon">&#8617;</span><span class="nav-label">Log out</span></a>
     </div>
-
     <button class="sidebar-toggle" id="sidebarToggle" aria-label="Collapse sidebar">
       <span class="toggle-icon">&#8249;</span>
     </button>
   </nav>
 
-  <!-- App Body -->
   <div class="app-body" id="appBody">
   <main class="main">
 
-    <!-- Presentation -->
+    <!-- App Appearance -->
     <section class="settings-section">
       <div class="settings-header">
-        <h2 class="panel-title">Presentation</h2>
-        <span class="save-status" id="nameSaveStatus"></span>
+        <h2 class="panel-title">App Appearance</h2>
       </div>
-      <p class="settings-note">The name of your presentation as it appears in the builder and exported deck.</p>
+      <p class="settings-note">Controls the builder UI theme (dark or light).</p>
+      <div class="toggle-group">
+        <button class="toggle-opt" id="appThemeDark" onclick="setAppTheme('dark')">Dark</button>
+        <button class="toggle-opt" id="appThemeLight" onclick="setAppTheme('light')">Light</button>
+      </div>
+    </section>
+
+    <!-- New Deck Defaults -->
+    <section class="settings-section">
+      <div class="settings-header">
+        <h2 class="panel-title">New Deck Defaults</h2>
+        <span class="save-status" id="defaultsSaveStatus"></span>
+      </div>
+      <p class="settings-note">These values are applied when creating a new deck.</p>
       <div class="settings-fields">
         <div class="field">
-          <label for="presentationName">Presentation Name</label>
-          <input type="text" id="presentationName" placeholder="e.g. LineScanner Presentation">
-        </div>
-      </div>
-    </section>
-
-    <!-- Theme -->
-    <section class="settings-section">
-      <div class="settings-header">
-        <h2 class="panel-title">Theme</h2>
-      </div>
-      <div class="theme-options">
-        <button class="theme-option" id="themeDark" onclick="setTheme('dark')">Dark</button>
-        <button class="theme-option" id="themeLight" onclick="setTheme('light')">Light</button>
-      </div>
-    </section>
-
-    <!-- Branding -->
-    <section class="settings-section">
-      <div class="settings-header">
-        <h2 class="panel-title">Branding</h2>
-        <span class="save-status" id="brandingSaveStatus"></span>
-      </div>
-      <p class="settings-note">Logos and hero background used across your presentation.</p>
-
-      <!-- Logos -->
-      <div class="field">
-        <label>Logos</label>
-        <p class="settings-note" style="margin-top:4px;">These logos appear in the top-left corner of slides. Add one or more.</p>
-        <div class="logos-list" id="logosList"></div>
-        <button class="btn-add-logo" id="btnAddLogo">+ Add Logo</button>
-        <input type="file" id="logoFileInput" accept="image/*" style="display:none;">
-      </div>
-
-      <!-- Logo visibility toggle -->
-      <div class="field" style="margin-top:20px;">
-        <label>Show logos on</label>
-        <div class="toggle-group" id="logosToggleGroup">
-          <button class="toggle-opt active" data-val="all">All slides</button>
-          <button class="toggle-opt" data-val="hero">Hero slide only</button>
-        </div>
-      </div>
-
-      <!-- Hero background -->
-      <div class="field" style="margin-top:20px;">
-        <label>Hero Background Image <span class="required-badge" id="heroBgRequired">Required</span></label>
-        <p class="settings-note" style="margin-top:4px;">Full-bleed background for the cover/hero slide.</p>
-        <div class="hero-bg-wrap" id="heroBgWrap">
-          <div class="hero-bg-preview" id="heroBgPreview">
-            <span class="hero-bg-placeholder">No image set — upload one to activate the hero slide</span>
-            <!-- Focal point picker overlaid on image — cells generated by JS -->
-            <div class="focal-grid" id="focalGrid"></div>
-          </div>
-          <div class="hero-bg-actions">
-            <button class="btn-upload-hero" id="btnUploadHero">Upload Image</button>
-            <button class="btn-remove-hero" id="btnRemoveHero" style="display:none;">Remove</button>
-            <div class="focal-size-wrap">
-              <label class="focal-size-label">Grid</label>
-              <select id="focalSizeSelect" class="focal-size-select">
-                <option value="2">2×2</option>
-                <option value="3" selected>3×3</option>
-                <option value="4">4×4</option>
-                <option value="5">5×5</option>
-                <option value="6">6×6</option>
-              </select>
-            </div>
+          <label>Default Theme</label>
+          <div class="toggle-group" id="defaultThemeGroup">
+            <button class="toggle-opt" data-val="dark">Dark</button>
+            <button class="toggle-opt" data-val="light">Light</button>
           </div>
         </div>
-        <input type="file" id="heroBgFileInput" accept="image/*" style="display:none;">
+        <div class="field" style="margin-top:20px;">
+          <label>Default Primary Color</label>
+          <div class="color-row">
+            <div class="color-preview" id="defaultColorPreview" style="background:#7B8FF8;"></div>
+            <input type="color" id="defaultColorPicker" value="#7B8FF8">
+            <span class="color-hex" id="defaultColorHex">#7B8FF8</span>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- Presentation Defaults -->
+    <!-- App Language -->
     <section class="settings-section">
       <div class="settings-header">
-        <h2 class="panel-title">Presentation Defaults</h2>
+        <h2 class="panel-title">App Language</h2>
         <span class="badge-wip">Coming Soon</span>
       </div>
-      <p class="settings-note">Set default options applied to every new presentation.</p>
+      <p class="settings-note">Set the interface language for the builder.</p>
       <div class="settings-fields">
         <div class="field">
-          <label for="defaultTheme">Default Theme</label>
-          <select id="defaultTheme" disabled style="padding:10px 14px;background:var(--input-bg);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;font-family:var(--font);outline:none;opacity:0.35;cursor:not-allowed;">
-            <option>Dark</option>
-            <option>Light</option>
+          <label for="appLanguage">Language</label>
+          <select id="appLanguage" disabled style="padding:10px 14px;background:var(--input-bg);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;font-family:var(--font);outline:none;opacity:0.35;cursor:not-allowed;">
+            <option>English</option>
+            <option>German</option>
+            <option>French</option>
           </select>
         </div>
-        <div class="field">
-          <label for="defaultLanguage">Default Language</label>
-          <input type="text" id="defaultLanguage" placeholder="e.g. English" disabled>
-        </div>
       </div>
-    </section>
-
-    <!-- Integrations -->
-    <section class="settings-section">
-      <div class="settings-header">
-        <h2 class="panel-title">Integrations</h2>
-        <span class="badge-wip">Coming Soon</span>
-      </div>
-      <p class="settings-note">Connect CRM, email, and analytics tools.</p>
     </section>
 
     <!-- Account -->
@@ -228,249 +118,98 @@
       <p class="settings-note">Manage your login, password, and connected accounts.</p>
     </section>
 
+    <!-- Integrations -->
+    <section class="settings-section">
+      <div class="settings-header">
+        <h2 class="panel-title">Integrations</h2>
+        <span class="badge-wip">Coming Soon</span>
+      </div>
+      <p class="settings-note">Connect CRM, email, and analytics tools.</p>
+    </section>
+
   </main>
-  </div><!-- /.app-body -->
+  </div>
 
   <script>
     (function () {
-      var html = document.documentElement;
       var saved = localStorage.getItem('pb-theme');
-      if (saved) html.setAttribute('data-theme', saved);
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
     })();
 
-    function setTheme(t) {
+    function setAppTheme(t) {
       document.documentElement.setAttribute('data-theme', t);
       localStorage.setItem('pb-theme', t);
-      updateThemeButtons();
+      updateAppThemeBtns();
     }
 
-    function updateThemeButtons() {
+    function updateAppThemeBtns() {
       var current = document.documentElement.getAttribute('data-theme') || 'dark';
-      document.getElementById('themeDark').classList.toggle('active', current === 'dark');
-      document.getElementById('themeLight').classList.toggle('active', current === 'light');
+      document.getElementById('appThemeDark').classList.toggle('active', current === 'dark');
+      document.getElementById('appThemeLight').classList.toggle('active', current === 'light');
     }
 
-    document.addEventListener('DOMContentLoaded', updateThemeButtons);
+    document.addEventListener('DOMContentLoaded', function () {
+      updateAppThemeBtns();
+      initDefaultsSection();
+      initSidebar();
+    });
 
-    // ── Presentation Name ───────────────────────────────────────
-    (function () {
-      var input  = document.getElementById('presentationName');
-      var status = document.getElementById('nameSaveStatus');
+    // ── New Deck Defaults ─────────────────────────────────────────────────────
+    function initDefaultsSection() {
+      var saveStatus = document.getElementById('defaultsSaveStatus');
+      var themeGroup = document.getElementById('defaultThemeGroup');
+      var colorPicker = document.getElementById('defaultColorPicker');
+      var colorPreview = document.getElementById('defaultColorPreview');
+      var colorHex = document.getElementById('defaultColorHex');
+      var saveTimer = null;
 
-      fetch('/api/deck')
-        .then(function (r) { return r.json(); })
-        .then(function (data) { input.value = data.data.title || ''; });
-
-      input.addEventListener('blur', function () {
-        var title = input.value.trim();
-        if (!title) return;
-        status.textContent = 'Saving…';
-        fetch('/api/deck', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title: title })
-        })
-        .then(function (r) {
-          if (!r.ok) throw new Error('failed');
-          return r.json();
-        })
-        .then(function () {
-          status.textContent = 'Saved';
-          setTimeout(function () { status.textContent = ''; }, 2000);
-        })
-        .catch(function () { status.textContent = 'Error'; });
-      });
-    })();
-
-    // ── Branding ────────────────────────────────────────────────
-    (function () {
-      var status       = document.getElementById('brandingSaveStatus');
-      var logosList    = document.getElementById('logosList');
-      var toggleGroup  = document.getElementById('logosToggleGroup');
-      var heroBgPrev   = document.getElementById('heroBgPreview');
-      var btnRemHero   = document.getElementById('btnRemoveHero');
-      var focalGrid      = document.getElementById('focalGrid');
-      var heroBgRequired = document.getElementById('heroBgRequired');
-      var settings       = {};
-
-      function showStatus(msg) {
-        status.textContent = msg;
-        setTimeout(function () { status.textContent = ''; }, 2000);
+      function showSaved() {
+        saveStatus.textContent = 'Saved';
+        setTimeout(function () { saveStatus.textContent = ''; }, 2000);
       }
 
-      function saveSettings(patch) {
-        return fetch('/api/settings', {
+      function saveDefaults(patch) {
+        fetch('/api/settings', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(patch)
-        }).then(function (r) { return r.json(); });
+        }).then(function () { showSaved(); }).catch(function () {});
       }
 
-      function renderLogos(logos) {
-        logosList.innerHTML = '';
-        (logos || []).forEach(function (logo, i) {
-          var item = document.createElement('div');
-          item.className = 'logo-item';
-          item.innerHTML =
-            '<img src="' + logo.src + '" alt="' + (logo.alt || '') + '" class="logo-item-img">' +
-            '<span class="logo-item-name">' + (logo.alt || logo.src.split('/').pop()) + '</span>' +
-            '<button class="logo-item-remove" data-index="' + i + '">✕</button>';
-          logosList.appendChild(item);
+      // Load saved defaults
+      fetch('/api/settings').then(function (r) { return r.json(); }).then(function (res) {
+        var data = res.data || {};
+        var theme = data.defaultDeckTheme || 'dark';
+        themeGroup.querySelectorAll('.toggle-opt').forEach(function (btn) {
+          btn.classList.toggle('active', btn.dataset.val === theme);
         });
-        logosList.querySelectorAll('.logo-item-remove').forEach(function (btn) {
-          btn.addEventListener('click', function () {
-            var idx = btn.getAttribute('data-index');
-            fetch('/api/settings/logos/' + idx, { method: 'DELETE' })
-              .then(function (r) { return r.json(); })
-              .then(function (res) {
-                if (res.success) { settings = res.data; renderLogos(settings.logos); showStatus('Removed'); }
-              });
-          });
-        });
-      }
+        var color = data.defaultPrimaryColor || '#7B8FF8';
+        colorPicker.value = color;
+        colorPreview.style.background = color;
+        colorHex.textContent = color;
+      }).catch(function () {});
 
-      function renderHeroBg(src, focalPoint, gridSize) {
-        var pos  = focalPoint || '50% 50%';
-        var cols = gridSize || parseInt(focalSizeSelect.value) || 3;
-        if (src) {
-          heroBgPrev.style.backgroundImage    = 'url(' + src + ')';
-          heroBgPrev.style.backgroundPosition = pos;
-          var ph = heroBgPrev.querySelector('.hero-bg-placeholder');
-          if (ph) ph.style.display = 'none';
-          btnRemHero.style.display = '';
-          heroBgRequired.classList.add('satisfied');
-        } else {
-          heroBgPrev.style.backgroundImage = '';
-          var ph = heroBgPrev.querySelector('.hero-bg-placeholder');
-          if (ph) ph.style.display = '';
-          btnRemHero.style.display = 'none';
-          heroBgRequired.classList.remove('satisfied');
-        }
-        renderFocal(pos, cols);
-      }
-
-      var focalSizeSelect = document.getElementById('focalSizeSelect');
-
-      function buildFocalGrid(cols, activePos) {
-        focalGrid.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
-        focalGrid.style.gridTemplateRows    = 'repeat(' + cols + ', 1fr)';
-        focalGrid.innerHTML = '';
-        for (var r = 0; r < cols; r++) {
-          for (var c = 0; c < cols; c++) {
-            var xPct = cols === 1 ? 50 : Math.round(c / (cols - 1) * 100);
-            var yPct = cols === 1 ? 50 : Math.round(r / (cols - 1) * 100);
-            var pos  = xPct + '% ' + yPct + '%';
-            var cell = document.createElement('button');
-            cell.className = 'focal-cell' + (pos === activePos ? ' active' : '');
-            cell.setAttribute('data-pos', pos);
-            cell.title = xPct + '% · ' + yPct + '%';
-            cell.addEventListener('click', function () {
-              var p = this.getAttribute('data-pos');
-              focalGrid.querySelectorAll('.focal-cell').forEach(function (b) { b.classList.remove('active'); });
-              this.classList.add('active');
-              heroBgPrev.style.backgroundPosition = p;
-              saveSettings({ heroBgFocal: p }).then(function () { showStatus('Saved'); });
-            });
-            focalGrid.appendChild(cell);
-          }
-        }
-      }
-
-      function renderFocal(activePos, cols) {
-        buildFocalGrid(cols || parseInt(focalSizeSelect.value) || 3, activePos);
-      }
-
-      focalSizeSelect.addEventListener('change', function () {
-        var cols    = parseInt(focalSizeSelect.value) || 3;
-        var current = (focalGrid.querySelector('.active') || focalGrid.querySelector('[data-pos]'));
-        var pos     = current ? current.getAttribute('data-pos') : '50% 50%';
-        buildFocalGrid(cols, pos);
-        saveSettings({ heroBgFocalGrid: cols }).then(function () { showStatus('Saved'); });
-      });
-
-      function renderToggle(val) {
-        toggleGroup.querySelectorAll('.toggle-opt').forEach(function (b) {
-          b.classList.toggle('active', b.getAttribute('data-val') === val);
-        });
-      }
-
-      // Load initial settings
-      fetch('/api/settings')
-        .then(function (r) { return r.json(); })
-        .then(function (res) {
-          settings = res.data;
-          renderLogos(settings.logos);
-          renderToggle(settings.logosOnAllSlides === false ? 'hero' : 'all');
-          var gridSize = settings.heroBgFocalGrid || 3;
-          focalSizeSelect.value = String(gridSize);
-          renderHeroBg(settings.heroBg, settings.heroBgFocal, gridSize);
-        });
-
-      // Toggle
-      toggleGroup.querySelectorAll('.toggle-opt').forEach(function (btn) {
+      // Theme toggle
+      themeGroup.querySelectorAll('.toggle-opt').forEach(function (btn) {
         btn.addEventListener('click', function () {
-          var val = btn.getAttribute('data-val');
-          renderToggle(val);
-          saveSettings({ logosOnAllSlides: val === 'all' }).then(function () { showStatus('Saved'); });
+          themeGroup.querySelectorAll('.toggle-opt').forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          saveDefaults({ defaultDeckTheme: btn.dataset.val });
         });
       });
 
-      // Add logo
-      document.getElementById('btnAddLogo').addEventListener('click', function () {
-        document.getElementById('logoFileInput').click();
+      // Color picker
+      colorPicker.addEventListener('input', function () {
+        var c = colorPicker.value;
+        colorPreview.style.background = c;
+        colorHex.textContent = c;
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(function () { saveDefaults({ defaultPrimaryColor: c }); }, 600);
       });
-      document.getElementById('logoFileInput').addEventListener('change', function (e) {
-        var file = e.target.files[0]; if (!file) return;
-        var reader = new FileReader();
-        reader.onload = function (ev) {
-          fetch('/api/settings/logos', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ filename: file.name, data: ev.target.result })
-          })
-          .then(function (r) { return r.json(); })
-          .then(function (res) {
-            if (res.success) { settings = res.data; renderLogos(settings.logos); showStatus('Logo added'); }
-          });
-        };
-        reader.readAsDataURL(file);
-        e.target.value = '';
-      });
+    }
 
-      // Upload hero bg
-      document.getElementById('btnUploadHero').addEventListener('click', function () {
-        document.getElementById('heroBgFileInput').click();
-      });
-      document.getElementById('heroBgFileInput').addEventListener('change', function (e) {
-        var file = e.target.files[0]; if (!file) return;
-        var reader = new FileReader();
-        reader.onload = function (ev) {
-          fetch('/api/settings/hero-bg', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ filename: file.name, data: ev.target.result })
-          })
-          .then(function (r) { return r.json(); })
-          .then(function (res) {
-            if (res.success) { settings = res.data; renderHeroBg(settings.heroBg, settings.heroBgFocal, settings.heroBgFocalGrid); showStatus('Saved'); }
-          });
-        };
-        reader.readAsDataURL(file);
-        e.target.value = '';
-      });
-
-      // Remove hero bg
-      btnRemHero.addEventListener('click', function () {
-        saveSettings({ heroBg: '' }).then(function (res) {
-          settings = res.data;
-          renderHeroBg('');
-          showStatus('Removed');
-        });
-      });
-    })();
-
-    // ── Sidebar ─────────────────────────────────────────────────
-    (function () {
+    // ── Sidebar ───────────────────────────────────────────────────────────────
+    function initSidebar() {
       var sidebar   = document.getElementById('sidebar');
       var overlay   = document.getElementById('sidebarOverlay');
       var toggle    = document.getElementById('sidebarToggle');
@@ -499,7 +238,7 @@
         overlay.classList.remove('open');
         document.body.style.overflow = '';
       });
-    })();
+    }
   </script>
 </body>
 </html>

@@ -1,115 +1,13 @@
 {
   "presentations": [
     {
-      "id": "00000002",
-      "createdAt": "2026-04-30",
-      "presentationName": "TEST",
-      "customerName": "TEST",
-      "contactName": "TEST",
-      "contactTitle": "TEST",
-      "customerLogoSrc": "/slides/uploads/CostOfQualityDefects.png",
-      "slideCount": 14,
-      "slides": [
-        {
-          "id": "deck-lib-cover-1775977704536",
-          "librarySlideId": "lib-cover",
-          "name": "Cover",
-          "visible": true
-        },
-        {
-          "id": "deck-company",
-          "librarySlideId": "lib-company",
-          "name": "Company Intro",
-          "visible": true
-        },
-        {
-          "id": "deck-comparison",
-          "librarySlideId": "lib-comparison",
-          "name": "Why Us",
-          "visible": true
-        },
-        {
-          "id": "deck-capability",
-          "librarySlideId": "lib-capability",
-          "name": "LineScanner Overview",
-          "visible": true
-        },
-        {
-          "id": "deck-technology",
-          "librarySlideId": "lib-technology",
-          "name": "Technology",
-          "visible": true
-        },
-        {
-          "id": "deck-lib-1777096783950-1777096961176",
-          "librarySlideId": "lib-1777096783950",
-          "name": "Osprey",
-          "visible": true
-        },
-        {
-          "id": "deck-surface",
-          "librarySlideId": "lib-surface",
-          "name": "Surface Types",
-          "visible": true
-        },
-        {
-          "id": "deck-dimension",
-          "librarySlideId": "lib-dimension",
-          "name": "Dimensions",
-          "visible": true
-        },
-        {
-          "id": "deck-screenprint",
-          "librarySlideId": "lib-screenprint",
-          "name": "Screen Printing",
-          "visible": true
-        },
-        {
-          "id": "deck-logo-check",
-          "librarySlideId": "lib-logo-check",
-          "name": "Logo Check",
-          "visible": true
-        },
-        {
-          "id": "deck-database",
-          "librarySlideId": "lib-database",
-          "name": "Traceability",
-          "visible": true
-        },
-        {
-          "id": "deck-sensitivity",
-          "librarySlideId": "lib-sensitivity",
-          "name": "Sensitivity",
-          "visible": true
-        },
-        {
-          "id": "deck-footprint",
-          "librarySlideId": "lib-footprint",
-          "name": "Installation",
-          "visible": true
-        },
-        {
-          "id": "deck-integrations",
-          "librarySlideId": "lib-integrations",
-          "name": "Integrations",
-          "visible": false
-        },
-        {
-          "id": "deck-cta",
-          "librarySlideId": "lib-cta",
-          "name": "Call to Action",
-          "visible": true
-        }
-      ]
-    },
-    {
       "id": "00000003",
-      "createdAt": "2026-04-30",
-      "presentationName": "Demo LineScanner",
-      "customerName": "SoftSolution",
-      "contactName": "John Smith",
-      "contactTitle": "Head of Quality",
-      "customerLogoSrc": "/slides/uploads/LOGO_Osprey_25_black_and_white_.png",
+      "createdAt": "2026-05-10",
+      "presentationName": "Demo",
+      "customerName": "Acme Corp",
+      "contactName": "Jane Smith",
+      "contactTitle": "",
+      "customerLogoSrc": "",
       "slideCount": 14,
       "slides": [
         {
@@ -203,7 +101,142 @@
           "visible": true
         }
       ],
-      "archivedAt": "2026-04-30T05:18:55.947Z"
+      "defaultLanguage": "en",
+      "languages": []
+    },
+    {
+      "id": "00000002",
+      "createdAt": "2026-05-10",
+      "presentationName": "a2",
+      "customerName": "a2",
+      "contactName": "a2",
+      "contactTitle": "",
+      "customerLogoSrc": "",
+      "slideCount": 2,
+      "slides": [
+        {
+          "id": "deck-lib-cover-1778403844933",
+          "librarySlideId": "lib-cover",
+          "name": "Cover",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1778409594618-1778409594637",
+          "librarySlideId": "lib-1778409594618",
+          "name": "Call to Action",
+          "visible": true
+        }
+      ],
+      "defaultLanguage": "en",
+      "languages": [],
+      "publishedAt": "2026-05-10T10:40:30.638Z"
+    },
+    {
+      "id": "00000001",
+      "createdAt": "2026-05-10",
+      "presentationName": "a",
+      "customerName": "a",
+      "contactName": "a",
+      "contactTitle": "a",
+      "customerLogoSrc": "/slides/uploads/CostOfQualityDefects.png",
+      "slideCount": 14,
+      "slides": [
+        {
+          "id": "deck-lib-cover-1775977704536",
+          "librarySlideId": "lib-cover",
+          "name": "Cover",
+          "visible": true
+        },
+        {
+          "id": "deck-company",
+          "librarySlideId": "lib-company",
+          "name": "Company Intro",
+          "visible": true
+        },
+        {
+          "id": "deck-comparison",
+          "librarySlideId": "lib-comparison",
+          "name": "Why Us",
+          "visible": true
+        },
+        {
+          "id": "deck-capability",
+          "librarySlideId": "lib-capability",
+          "name": "LineScanner Overview",
+          "visible": true
+        },
+        {
+          "id": "deck-technology",
+          "librarySlideId": "lib-technology",
+          "name": "Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1777096783950-1777096961176",
+          "librarySlideId": "lib-1777096783950",
+          "name": "Osprey",
+          "visible": true
+        },
+        {
+          "id": "deck-surface",
+          "librarySlideId": "lib-surface",
+          "name": "Surface Types",
+          "visible": true
+        },
+        {
+          "id": "deck-dimension",
+          "librarySlideId": "lib-dimension",
+          "name": "Dimensions",
+          "visible": true
+        },
+        {
+          "id": "deck-screenprint",
+          "librarySlideId": "lib-screenprint",
+          "name": "Screen Printing",
+          "visible": true
+        },
+        {
+          "id": "deck-logo-check",
+          "librarySlideId": "lib-logo-check",
+          "name": "Logo Check",
+          "visible": true
+        },
+        {
+          "id": "deck-database",
+          "librarySlideId": "lib-database",
+          "name": "Traceability",
+          "visible": true
+        },
+        {
+          "id": "deck-sensitivity",
+          "librarySlideId": "lib-sensitivity",
+          "name": "Sensitivity",
+          "visible": true
+        },
+        {
+          "id": "deck-footprint",
+          "librarySlideId": "lib-footprint",
+          "name": "Installation",
+          "visible": true
+        },
+        {
+          "id": "deck-integrations",
+          "librarySlideId": "lib-integrations",
+          "name": "Integrations",
+          "visible": false
+        },
+        {
+          "id": "deck-cta",
+          "librarySlideId": "lib-cta",
+          "name": "Call to Action",
+          "visible": true
+        }
+      ],
+      "defaultLanguage": "en",
+      "languages": [
+        "es"
+      ],
+      "publishedAt": "2026-05-10T06:50:56.673Z"
     }
   ]
 }

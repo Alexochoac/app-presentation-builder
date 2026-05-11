@@ -1,18 +1,767 @@
 {
   "languages": [
     "en",
-    "es",
-    "it",
-    "pt",
-    "fr"
+    "es"
   ],
   "favorites": [
-    "es",
-    "it",
-    "pt",
-    "fr"
+    "es"
   ],
   "defaultLanguage": "en",
+  "slides": {
+    "lib-company": {
+      "credit": {
+        "en": "by GlassQuality.com",
+        "es": {
+          "current": "por GlassQuality.com",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "di GlassQuality.com",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "por GlassQuality.com",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "par GlassQuality.com",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "badge": {
+        "en": "GlassQuality.com · LineScanner · Osprey",
+        "es": {
+          "current": "GlassQuality.com · LineScanner · Osprey",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "GlassQuality.com · LineScanner · Osprey",
+          "previous": null,
+          "dirty": false
+        },
+        "pt": {
+          "current": "GlassQuality.com · LineScanner · Osprey",
+          "previous": null,
+          "dirty": false
+        },
+        "fr": {
+          "current": "GlassQuality.com · LineScanner · Osprey",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "headline": {
+        "en": "Quality inspection <span class=\"blue\">is all we do</span>",
+        "es": {
+          "current": "La inspección de calidad <span class=\"blue\">es todo lo que hacemos</span>",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "L'ispezione della qualità <span class=\"blue\">è tutto ciò che facciamo</span>",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "Inspeção de qualidade <span class=\"blue\">é tudo que fazemos</span>",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "L'inspection de qualité <span class=\"blue\">est notre seul métier</span>",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "subheadline": {
+        "en": "Proposal for LiteSentry-Osprey · Juan Ochoa, Head of Quality",
+        "es": {
+          "current": "Propuesta para LiteSentry-Osprey · Juan Ochoa, Jefe de Calidad",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Proposta per LiteSentry-Osprey · Juan Ochoa, Responsabile della Qualità",
+          "previous": null,
+          "dirty": false
+        },
+        "pt": {
+          "current": "Proposta para LiteSentry-Osprey · Juan Ochoa, Chefe de Qualidade",
+          "previous": null,
+          "dirty": false
+        },
+        "fr": {
+          "current": "Proposition pour LiteSentry-Osprey · Juan Ochoa, Responsable de la Qualité",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "section-label": {
+        "en": "Our Company",
+        "es": {
+          "current": "Nuestra Empresa",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "La Nostra Azienda",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "Nossa Empresa",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "Notre Entreprise",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tagline": {
+        "en": "We inspect every quality aspect of your glass guaranteeing peak performance and the best quality.",
+        "es": {
+          "current": "Inspeccionamos cada aspecto de calidad de su vidrio garantizando el máximo rendimiento y la mejor calidad.",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "Ispezionamo ogni aspetto della qualità del vostro vetro garantendo le massime prestazioni e la migliore qualità.",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "Inspecionamos cada aspecto de qualidade do seu vidro, garantindo desempenho máximo e a melhor qualidade.",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "Nous inspections tous les aspects de qualité de votre verre en garantissant les performances optimales et la meilleure qualité.",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tab-about": {
+        "en": "À Propos<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
+        "es": {
+          "current": "Acerca De<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "Chi Siamo<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "Sobre<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "À Propos<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tab-technologies": {
+        "en": "Technologies<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
+        "es": {
+          "current": "Tecnologías<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "Tecnologie<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "Tecnologias<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "Technologies<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tab-iqc": {
+        "en": "Groupe IQC<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
+        "es": {
+          "current": "Grupo IQC<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "Gruppo IQC<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "Grupo IQC<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "Groupe IQC<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "company-caption": {
+        "en": "Photo de groupe des membres de l'équipe",
+        "es": {
+          "current": "Foto de grupo de los miembros del equipo",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "Foto di gruppo dei membri del team",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "Foto em grupo dos membros da equipe",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "Photo de groupe des membres de l'équipe",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "pillar-1-title": {
+        "en": "Un Partenaire",
+        "es": {
+          "current": "Un Socio",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "Un Partner",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "Um Parceiro",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "Un Partenaire",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "pillar-1-desc": {
+        "en": "pour tous vos besoins d'inspection de qualité — surface, géométrie, dimension, et plus",
+        "es": {
+          "current": "para todas sus necesidades de inspección de calidad — superficie, geometría, dimensión, y más",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "per tutte le vostre esigenze di ispezione della qualità — superficie, geometria, dimensione e altro",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "para todas as suas necessidades de inspeção de qualidade — superfície, geometria, dimensão e muito mais",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "pour tous vos besoins d'inspection de qualité — surface, géométrie, dimension, et plus",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "pillar-2-title": {
+        "en": "Présence Mondiale",
+        "es": {
+          "current": "Presencia Mundial",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "Presenza Mondiale",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "Presença Global",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "Présence Mondiale",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "pillar-2-desc": {
+        "en": "centres de support mondiaux avec des experts locaux dans 23 pays sur 6 continents",
+        "es": {
+          "current": "centros de apoyo mundiales con expertos locales en 23 países en 6 continentes",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "centri di supporto mondiali con esperti locali in 23 paesi su 6 continenti",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "centros de suporte mundiais com especialistas locais em 23 países em 6 continentes",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "centres de support mondiaux avec des experts locaux dans 23 pays sur 6 continents",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "pillar-3-title": {
+        "en": "Leadership Technologique",
+        "es": {
+          "current": "Liderazgo Tecnológico",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "Leadership Tecnologica",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "Liderança Tecnológica",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "Leadership Technologique",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "pillar-3-desc": {
+        "en": "véritable balayage · champ clair · champ sombre · réflexion · spectromètre",
+        "es": {
+          "current": "escaneo verdadero · campo claro · campo oscuro · reflexión · espectrómetro",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "scansione reale · campo luminoso · campo scuro · riflessione · spettrometro",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "varredura verdadeira · campo claro · campo escuro · reflexão · espectrômetro",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "véritable balayage · champ clair · champ sombre · réflexion · spectromètre",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tech-1-name": {
+        "en": "Système de Lumière Parallèle 90°",
+        "es": {
+          "current": "Sistema de Luz Paralela 90°",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "Sistema di Illuminazione Parallela 90°",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "Sistema de Luz Paralela 90°",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "Système de Lumière Parallèle 90°",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tech-1-desc": {
+        "en": "— Technologie basée sur des capteurs utilisant un faisceau de lumière parallèle 90° pour détecter les défauts de surface avec haute précision et rapidité sur les panneaux de verre plats et courbes.",
+        "es": {
+          "current": "— Tecnología basada en sensores que utiliza un haz de luz paralela 90° para detectar defectos de superficie con alta precisión y rapidez en paneles de vidrio planos y curvos.",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "— Tecnologia basata su sensori che utilizza un fascio di luce parallelo a 90° per rilevare difetti di superficie con alta precisione e velocità su pannelli di vetro piani e curvi.",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "— Tecnologia baseada em sensores utilizando um feixe de luz paralela 90° para detectar defeitos de superfície com alta precisão e rapidez em painéis de vidro planos e curvos.",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "— Technologie basée sur des capteurs utilisant un faisceau de lumière parallèle 90° pour détecter les défauts de surface avec haute précision et rapidité sur les panneaux de verre plats et courbes.",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tech-2-name": {
+        "en": "Champ Clair &amp; Champ Sombre",
+        "es": {
+          "current": "Campo Claro y Campo Oscuro",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "Campo Luminoso &amp; Campo Scuro",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "Campo Claro &amp; Campo Escuro",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "Champ Clair &amp; Champ Sombre",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tech-2-desc": {
+        "en": "— Technologie basée sur caméra combinant les deux modes d'éclairage pour une détection complète des inclusions, rayures, bulles et revêtements.",
+        "es": {
+          "current": "— Tecnología basada en cámara que combina ambos modos de iluminación para una detección completa de inclusiones, arañazos, burbujas y recubrimientos.",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "— Tecnologia basata su telecamera che combina entrambe le modalità di illuminazione per il rilevamento completo di inclusioni, graffi, bolle e rivestimenti.",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "— Tecnologia baseada em câmera combinando os dois modos de iluminação para detecção completa de inclusões, arranhões, bolhas e revestimentos.",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "— Technologie basée sur caméra combinant les deux modes d'éclairage pour une détection complète des inclusions, rayures, bulles et revêtements.",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tech-3-name": {
+        "en": "Technologie de Réflexion",
+        "es": {
+          "current": "Tecnología de Reflexión",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "Tecnologia di Riflessione",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "Tecnologia de Reflexão",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "Technologie de Réflexion",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tech-3-desc": {
+        "en": "— Technologie de capteur et de lumière parasite utilisant des principes de réflexion pour détecter les défauts de bord et les anomalies de surface dans le verre plat et courbé.",
+        "es": {
+          "current": "— Tecnología de sensor y luz parásita utilizando principios de reflexión para detectar defectos de borde y anomalías de superficie en vidrio plano y curvado.",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "— Tecnologia di sensori e luce parassita utilizzando principi di riflessione per rilevare difetti di bordo e anomalie di superficie nel vetro piano e curvo.",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "— Tecnologia de sensor e luz parasita utilizando princípios de reflexão para detectar defeitos de borda e anomalias de superfície em vidro plano e curvado.",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "— Technologie de capteur et de lumière parasite utilisant des principes de réflexion pour détecter les défauts de bord et les anomalies de surface dans le verre plat et courbé.",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tech-4-name": {
+        "en": "Spectrométre",
+        "es": {
+          "current": "Espectrómetro",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "Spettrometro",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "Espectrômetro",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "Spectrométre",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tech-4-desc": {
+        "en": "— Technologie de capteur à filtre polarisé pour l'analyse spectrale — mesure les revêtements de verre, les propriétés de transmission optique et les profils de contrainte.",
+        "es": {
+          "current": "— Tecnología de sensor con filtro polarizado para análisis espectral — mide recubrimientos de vidrio, propiedades de transmisión óptica y perfiles de estrés.",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "— Tecnologia di sensori a filtro polarizzato per l'analisi spettrale — misura i rivestimenti di vetro, le proprietà di trasmissione ottica e i profili di stress.",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "— Tecnologia de sensor com filtro polarizado para análise espectral — mede revestimentos de vidro, propriedades de transmissão óptica e perfis de tensão.",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "— Technologie de capteur à filtre polarisé pour l'analyse spectrale — mesure les revêtements de verre, les propriétés de transmission optique et les profils de contrainte.",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "stat-founded": {
+        "en": "1999",
+        "es": {
+          "current": "1999",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "1999",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "1999",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "1999",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "stat-label-founded": {
+        "en": "Founded",
+        "es": {
+          "current": "Fundada",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "Fondato",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "Fundada",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "Fondée",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "stat-systems": {
+        "en": "2050+",
+        "es": {
+          "current": "2050+",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "2050+",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "2050+",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "2050+",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "stat-label-systems": {
+        "en": "Systems installed",
+        "es": {
+          "current": "Sistemas instalados",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "Sistemi installati",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "Sistemas instalados",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "Systèmes installés",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "stat-countries": {
+        "en": "23",
+        "es": {
+          "current": "23",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "23",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "23",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "23",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "stat-label-countries": {
+        "en": "Countries · 6 continents",
+        "es": {
+          "current": "Países · 6 continentes",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "Paesi · 6 continenti",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "Países · 6 continentes",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "Pays · 6 continents",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "stat-employees": {
+        "en": "60",
+        "es": {
+          "current": "60",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "60",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "60",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "60",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "stat-label-employees": {
+        "en": "Specialized employees",
+        "es": {
+          "current": "Empleados especializados",
+          "previous": null,
+          "dirty": true
+        },
+        "it": {
+          "current": "Dipendenti specializzati",
+          "previous": null,
+          "dirty": true
+        },
+        "pt": {
+          "current": "Funcionários especializados",
+          "previous": null,
+          "dirty": true
+        },
+        "fr": {
+          "current": "Employés spécialisés",
+          "previous": null,
+          "dirty": true
+        }
+      }
+    },
+    "lib-cover": {},
+    "lib-comparison": {},
+    "lib-capability": {},
+    "lib-technology": {},
+    "lib-surface": {},
+    "lib-dimension": {},
+    "lib-screenprint": {},
+    "lib-logo-check": {},
+    "lib-database": {},
+    "lib-sensitivity": {},
+    "lib-footprint": {},
+    "lib-integrations": {},
+    "lib-cta": {},
+    "lib-1777096783950": {},
+    "lib-1777100659426": {}
+  },
   "fields": {
     "hero-title": {
       "en": "Scan smarter, not harder",

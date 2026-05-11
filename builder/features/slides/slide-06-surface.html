@@ -9,7 +9,19 @@
   </header>
   <div class="slide-body">
   <!-- ── Defect type selector (acts as tabs) ── -->
-  <div class="s6-selector anim-in" id="s6-selector"></div>
+  <div class="s6-selector anim-in" id="s6-selector">
+    <button class="s6-defect-btn" data-defect-idx="0"><div class="s6-icon" data-defect-row="0"></div><span class="s6-defect-label" data-edit="s6-label-0" contenteditable="" spellcheck="false">Scratches</span></button>
+    <button class="s6-defect-btn" data-defect-idx="1"><div class="s6-icon" data-defect-row="1"></div><span class="s6-defect-label" data-edit="s6-label-1" contenteditable="" spellcheck="false">Inclusions</span></button>
+    <button class="s6-defect-btn" data-defect-idx="2"><div class="s6-icon" data-defect-row="2"></div><span class="s6-defect-label" data-edit="s6-label-2" contenteditable="" spellcheck="false">Dirt</span></button>
+    <button class="s6-defect-btn" data-defect-idx="3"><div class="s6-icon" data-defect-row="3"></div><span class="s6-defect-label" data-edit="s6-label-3" contenteditable="" spellcheck="false">Dust</span></button>
+    <button class="s6-defect-btn" data-defect-idx="4"><div class="s6-icon" data-defect-row="4"></div><span class="s6-defect-label" data-edit="s6-label-4" contenteditable="" spellcheck="false">Water</span></button>
+    <button class="s6-defect-btn" data-defect-idx="5"><div class="s6-icon" data-defect-row="5"></div><span class="s6-defect-label" data-edit="s6-label-5" contenteditable="" spellcheck="false">Fingerprints</span></button>
+    <button class="s6-defect-btn" data-defect-idx="6"><div class="s6-icon" data-defect-row="6"></div><span class="s6-defect-label" data-edit="s6-label-6" contenteditable="" spellcheck="false">Ignore</span></button>
+    <button class="s6-defect-btn" data-defect-idx="7"><div class="s6-icon" data-defect-row="7"></div><span class="s6-defect-label" data-edit="s6-label-7" contenteditable="" spellcheck="false">Edge defects</span></button>
+    <button class="s6-defect-btn" data-defect-idx="8"><div class="s6-icon" data-defect-row="8"></div><span class="s6-defect-label" data-edit="s6-label-8" contenteditable="" spellcheck="false">Frame &amp; bars</span></button>
+    <button class="s6-defect-btn" data-defect-idx="9"><div class="s6-icon" data-defect-row="9"></div><span class="s6-defect-label" data-edit="s6-label-9" contenteditable="" spellcheck="false">Undefined</span></button>
+    <button class="s6-defect-btn" data-defect-idx="10"><div class="s6-emoji-icon">◈</div><span class="s6-defect-label" data-edit="s6-label-10" contenteditable="" spellcheck="false">Coating</span></button>
+  </div>
 
   <!-- ── Default carousel (shown when no defect is selected) ── -->
   <div class="ls-carousel s6-car-wrap" id="s6CarWrap" data-counter="" data-edit="s6-default-carousel" data-track="s6:carousel:default" data-autoplay="5000" style="flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track" style="transform: translateX(0px);">
@@ -215,32 +227,17 @@
       updateBtns();
     }
 
-    // ── Build selector buttons ───────────────────────────────────────────────
-    DEFECTS.forEach(function (d, i) {
-      var btn = document.createElement('button');
-      btn.className = 's6-defect-btn';
-
-      if (d.icon) {
-        var emojiEl = document.createElement('div');
-        emojiEl.className = 's6-emoji-icon';
-        emojiEl.textContent = d.icon;
-        btn.appendChild(emojiEl);
-      } else {
-        var icon = document.createElement('div');
-        icon.className = 's6-icon';
-        setIconPos(icon, d.row, false);
-        btn.appendChild(icon);
-      }
-
-      var label = document.createElement('span');
-      label.textContent = d.name;
-      btn.appendChild(label);
-
+    // ── Attach handlers to pre-rendered buttons ──────────────────────────────
+    Array.from(selector.querySelectorAll('.s6-defect-btn')).forEach(function (btn, i) {
+      var iconEl = btn.querySelector('.s6-icon');
+      if (iconEl && DEFECTS[i]) setIconPos(iconEl, DEFECTS[i].row, false);
       btn.addEventListener('click', function () {
         showDefect(i);
-        if (window.Track) Track.click(Track.slideId(btn), d.name);
+        if (window.Track) {
+          var lbl = btn.querySelector('.s6-defect-label');
+          Track.click(Track.slideId(btn), lbl ? lbl.textContent.trim() : (DEFECTS[i] ? DEFECTS[i].name : ''));
+        }
       });
-      selector.appendChild(btn);
     });
 
     showDefault();

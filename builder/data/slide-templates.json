@@ -5,6 +5,7 @@
     "description": "Hero slide with title, subtitle, and logo area",
     "category": "cover",
     "label": "old",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"},{"type":"Button"}] }] }
     ]
@@ -15,6 +16,7 @@
     "description": "Header with two columns — text left, image right",
     "category": "content",
     "label": "old",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
       { "id": "r2", "layout": "half-half", "height": "tall", "cols": [{ "components": [{"type":"Text Block"}] }, { "components": [{"type":"Carousel"}] }] }
@@ -26,6 +28,7 @@
     "description": "Header with three stat/metric cards",
     "category": "metrics",
     "label": "old",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"}] }] },
       { "id": "r2", "layout": "thirds", "height": "tall", "cols": [{ "components": [{"type":"Text Block"}] }, { "components": [{"type":"Text Block"}] }, { "components": [{"type":"Text Block"}] }] }
@@ -37,6 +40,7 @@
     "description": "Header with tabbed sections for features or categories",
     "category": "content",
     "label": "old",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
       { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Tabs"}] }] }
@@ -48,6 +52,7 @@
     "description": "Header with full-width image carousel",
     "category": "visual",
     "label": "old",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"}] }] },
       { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Carousel"}] }] }
@@ -59,6 +64,7 @@
     "description": "Header with list left and carousel right",
     "category": "content",
     "label": "old",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
       { "id": "r2", "layout": "half-half", "height": "tall", "cols": [{ "components": [{"type":"List"}] }, { "components": [{"type":"Carousel"}] }] }
@@ -70,6 +76,7 @@
     "description": "Header with feature comparison table",
     "category": "content",
     "label": "old",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
       { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Table"}] }] }
@@ -81,6 +88,7 @@
     "description": "Header with horizontal step-by-step cards",
     "category": "content",
     "label": "old",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
       { "id": "r2", "layout": "thirds", "height": "auto", "cols": [{ "components": [{"type":"Text Block"}] }, { "components": [{"type":"Text Block"}] }, { "components": [{"type":"Text Block"}] }] }
@@ -92,6 +100,7 @@
     "description": "Tabbed sections each containing a data table",
     "category": "data",
     "label": "old",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"}] }] },
       { "id": "r2", "layout": "two-third", "height": "tall", "cols": [{ "components": [{"type":"Table"}] }, { "components": [{"type":"List"}] }] }
@@ -103,6 +112,7 @@
     "description": "Closing slide with big text, button, and contact info",
     "category": "cta",
     "label": "old",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"},{"type":"Text Block"},{"type":"Button"}] }] }
     ]
@@ -113,6 +123,7 @@
     "description": "Hero cover with full-bleed background, headline, and gallery carousel",
     "category": "cover",
     "label": "new",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"},{"type":"Carousel"}] }] },
       { "id": "r2", "layout": "full", "height": "short", "cols": [{ "components": [{"type":"Stats Bar"}] }] }
@@ -130,6 +141,7 @@
     "description": "Title and subtitle with tabbed content sections and stats bar",
     "category": "content",
     "label": "new",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
       { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Tabs"}] }] },
@@ -150,6 +162,7 @@
     "description": "Two equal columns each showing a feature or product list",
     "category": "content",
     "label": "new",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
       { "id": "r2", "layout": "half-half", "height": "tall", "cols": [{ "components": [{"type":"List"}] }, { "components": [{"type":"List"}] }] }
@@ -169,6 +182,7 @@
     "description": "Tabbed sections each containing a data table for capability comparison",
     "category": "data",
     "label": "new",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
       { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Tabs"}] }] }
@@ -186,6 +200,7 @@
     "description": "Tabs showcasing technologies with card grids and carousel inside",
     "category": "content",
     "label": "new",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
       { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Tabs"},{"type":"Cards Grid"},{"type":"Carousel"}] }] }
@@ -204,6 +219,7 @@
     "description": "Tag-filtered image gallery with carousel viewer",
     "category": "visual",
     "label": "new",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
       { "id": "r2", "layout": "full", "height": "short", "cols": [{ "components": [{"type":"Tags"}] }] },
@@ -224,6 +240,7 @@
     "description": "Full-width carousel above two info text columns",
     "category": "visual",
     "label": "new",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Carousel"}] }] },
       { "id": "r2", "layout": "half-half", "height": "auto", "cols": [{ "components": [{"type":"Text Block"}] }, { "components": [{"type":"Text Block"}] }] }
@@ -242,6 +259,7 @@
     "description": "Checklist on the left with a carousel visual on the right",
     "category": "content",
     "label": "new",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
       { "id": "r2", "layout": "third-two", "height": "tall", "cols": [{ "components": [{"type":"List"}] }, { "components": [{"type":"Carousel"}] }] }
@@ -261,6 +279,7 @@
     "description": "Full carousel with tag labels below",
     "category": "visual",
     "label": "new",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
       { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Carousel"}] }] },
@@ -280,6 +299,7 @@
     "description": "Tabs above with two text summary columns below",
     "category": "content",
     "label": "new",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
       { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Tabs"}] }] },
@@ -301,6 +321,7 @@
     "description": "Carousel visual followed by a process steps section",
     "category": "content",
     "label": "new",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
       { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Carousel"}] }] },
@@ -321,6 +342,7 @@
     "description": "Header with a large full-width carousel",
     "category": "visual",
     "label": "new",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
       { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Carousel"}] }] }
@@ -339,6 +361,7 @@
     "description": "Header with a grid of integration or feature cards",
     "category": "content",
     "label": "new",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
       { "id": "r2", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Integration Cards"}] }] }
@@ -358,6 +381,7 @@
     "description": "Closing slide with message, bullet points, and action button",
     "category": "cta",
     "label": "new",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
       { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Text Block"},{"type":"List"},{"type":"Button"}] }] }
@@ -379,6 +403,7 @@
     "description": "Header with a variant layout of integration or feature cards",
     "category": "content",
     "label": "new",
+    "version": 1,
     "rows": [
       { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
       { "id": "r2", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Integration Cards"}] }] }

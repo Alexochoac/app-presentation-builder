@@ -121,6 +121,7 @@ window.Tabs = (function () {
       var del = document.createElement('button');
       del.className = 'ls-tab-del';
       del.setAttribute('data-builder-only', '');
+      del.contentEditable = 'false';
       del.textContent = '✕';
       del.title = 'Delete tab';
       del.addEventListener('click', function (e) {
@@ -153,27 +154,31 @@ window.Tabs = (function () {
       });
     }
 
-    // ── Wire rename on double-click ──────────────────────────────────────────
+    // ── Wire rename ──────────────────────────────────────────────────────────
+    // Buttons with contenteditable="" are natively single-click editable —
+    // skip dblclick and don't reset the attribute on blur.
     function wireRename(tabBtn) {
       if (tabBtn._lsRenameWired) return;
       tabBtn._lsRenameWired = true;
-      tabBtn.addEventListener('dblclick', function (e) {
-        e.stopPropagation();
-        var del = tabBtn.querySelector('.ls-tab-del');
-        // Temporarily hide del button so it doesn't interfere
-        if (del) del.style.opacity = '0';
-        tabBtn.contentEditable = 'true';
-        tabBtn.focus();
-        // Select all text
-        var range = document.createRange();
-        range.selectNodeContents(tabBtn);
-        var sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-      });
+      var nativelyEditable = tabBtn.getAttribute('contenteditable') === '';
+
+      if (!nativelyEditable) {
+        tabBtn.addEventListener('dblclick', function (e) {
+          e.stopPropagation();
+          var del = tabBtn.querySelector('.ls-tab-del');
+          if (del) del.style.opacity = '0';
+          tabBtn.contentEditable = 'true';
+          tabBtn.focus();
+          var range = document.createRange();
+          range.selectNodeContents(tabBtn);
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        });
+      }
+
       tabBtn.addEventListener('blur', function () {
-        tabBtn.contentEditable = 'false';
-        // Strip any del button text that got into the label
+        if (!nativelyEditable) tabBtn.contentEditable = 'false';
         var del = tabBtn.querySelector('.ls-tab-del');
         if (del) del.style.opacity = '';
         saveTabs();

@@ -2,7 +2,7 @@
 title: Builder — My Decks — Card & Per-Deck Branding Settings (Premium Feature)
 type: Feature
 priority: H
-status: pending
+status: in-progress
 area: builder
 ---
 
@@ -106,14 +106,21 @@ The builder always operates in the context of the active deck. Opening the build
 - When duplicating a deck, should all slide content be deep-copied into the new deck?
 
 ## Acceptance Criteria
-- [ ] "My Decks" card appears on the Builder section
-- [ ] User can create a new named deck (premium gate enforced)
-- [ ] New deck is created with a hero slide and a last slide by default
-- [ ] Each deck stores its own logo, hero background, theme, and color settings
-- [ ] Selecting a deck sets it as active and updates the Your Presentations card preview
-- [ ] Your Presentations card shows the active deck name and its slide preview
-- [ ] "Open Builder" opens the active deck in the slide editor
-- [ ] Publishing always uses the active deck — no deck picker at publish time
-- [ ] Default deck exists for all users (maps to current global settings behavior)
-- [ ] Deck list shows name, theme, logo thumbnail, last edited date
-- [ ] Deck can be renamed, duplicated, and deleted
+
+<!-- Last updated: 2026-05-10 -->
+- [x] "My Decks" card appears on the Builder section
+- [x] User can create a new named deck — premium modal exists as placeholder; gate disabled for Phase 1
+- [ ] New deck is created with a hero slide and a last slide by default — **blocked by slide isolation task**
+- [x] Each deck stores its own logo, hero background, theme, and color settings
+- [x] Selecting a deck sets it as active and updates the Your Presentations card preview
+- [~] Your Presentations card shows the active deck name ✅ and slide preview ⚠️ — preview always shows global slides until slide isolation is done
+- [x] "Open Builder" opens the active deck in the slide editor
+- [ ] Publishing always uses the active deck — **not yet wired up**
+- [x] Default deck exists for all users (maps to current global settings behavior)
+- [x] Deck list shows name, theme, logo thumbnail, last edited date
+- [x] Deck can be renamed, duplicated, and deleted
+
+## Remaining work
+- Per-deck slide list and content → tracked in `Feature-H-2026-05-10-builder-decks-slide-isolation-per-deck-slide-list-and-content.md`
+- New deck default slides (hero + last) → depends on slide isolation
+- Wire publish flow to active deck context

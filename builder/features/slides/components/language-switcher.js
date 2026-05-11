@@ -2,12 +2,14 @@
  * language-switcher.js
  * Client-side language switcher for finished presentations.
  * Reads [data-lang] spans and shows only the active language.
- * Active language is resolved from: ?lang= URL param → localStorage → data-default-lang on <body>
+ * Active language is resolved from: ?lang= URL param → per-presentation localStorage → data-default-lang on <body>
  */
 (function () {
   'use strict';
 
-  var STORAGE_KEY = 'pres-lang';
+  // Use a per-presentation key so each presentation starts in its own default language
+  var presId = document.body.getAttribute('data-pres-id') || 'default';
+  var STORAGE_KEY = 'pres-lang-' + presId;
 
   function getDefaultLang() {
     return document.body.getAttribute('data-default-lang') || 'en';
@@ -44,7 +46,7 @@
   // Init on DOM ready
   function init() {
     var lang = resolveActiveLang();
-    // Validate: check if any [data-lang] spans exist for this lang; fall back to default
+    // Validate: if resolved lang has no spans in this presentation, fall back to default
     var available = Array.from(document.querySelectorAll('[data-lang]')).map(function (el) {
       return el.getAttribute('data-lang');
     });

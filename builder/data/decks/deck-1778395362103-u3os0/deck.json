@@ -1,0 +1,20 @@
+{
+  "title": "",
+  "slides": [
+    {
+      "id": "deck-lib-cover-1778412858006",
+      "visible": true,
+      "librarySlideId": "lib-cover"
+    },
+    {
+      "id": "deck-lib-1778409994605-1778409994631",
+      "visible": true,
+      "librarySlideId": "lib-1778409994605"
+    },
+    {
+      "id": "deck-lib-surface-1778411315286",
+      "visible": true,
+      "librarySlideId": "lib-surface"
+    }
+  ]
+}

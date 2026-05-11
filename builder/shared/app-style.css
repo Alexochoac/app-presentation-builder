@@ -319,6 +319,48 @@ ul { list-style: none; }
   pointer-events: none;
 }
 
+/* Sub-nav (e.g. Builder → Decks / Slides / Templates) */
+.sidebar-sub-nav {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 0 4px 0;
+  overflow: hidden;
+}
+.sidebar.collapsed .sidebar-sub-nav { display: none; }
+
+.sidebar-sub-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+  padding: 0 10px 0 46px;
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  text-decoration: none;
+}
+.sidebar-sub-item:hover { background: var(--surface-hov); color: var(--text); }
+.sidebar-sub-item.active {
+  background: var(--nav-active);
+  color: var(--text);
+  font-weight: 600;
+}
+.sidebar.collapsed .sidebar-sub-item { opacity: 0; pointer-events: none; }
+
+.sidebar-nav-item.builder-parent {
+  /* keep icon same but style as section header when expanded */
+}
+.sidebar-nav-item.builder-parent.active {
+  background: transparent;
+  color: var(--text);
+}
+
 /* Logout button at bottom */
 .sidebar-logout {
   padding: 12px 8px;

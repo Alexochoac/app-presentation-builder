@@ -13,5 +13,6 @@
   "logosOnAllSlides": true,
   "heroBg": "/slides/uploads/Panther_Eye.jpeg",
   "heroBgFocal": "25% 75%",
-  "heroBgFocalGrid": 5
+  "heroBgFocalGrid": 5,
+  "defaultPrimaryColor": "#121212"
 }

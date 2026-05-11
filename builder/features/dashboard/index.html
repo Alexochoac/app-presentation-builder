@@ -249,17 +249,152 @@
     }
     .pres-thumb-clickable:hover::after { opacity: 1; }
 
-    /* ── Modal solid backgrounds ── */
-    #editModal > div,
-    #dupModal  > div,
-    #hardDeleteModal > div {
-      background: #1c1c1e;
+    /* ── Summary cards ── */
+    .summary-cards {
+      display: flex;
+      gap: 12px;
+      margin: 14px 0 20px;
+      flex-wrap: wrap;
     }
-    [data-theme="light"] #editModal > div,
-    [data-theme="light"] #dupModal  > div,
-    [data-theme="light"] #hardDeleteModal > div {
-      background: #ffffff;
+    .summary-card {
+      flex: 1;
+      min-width: 140px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 14px 18px;
     }
+    .summary-card-value {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .summary-card--last .summary-card-value { font-size: 16px; font-weight: 600; }
+    .summary-card-label { font-size: 12px; color: var(--muted); margin-top: 5px; }
+
+    /* ── Recent activity ── */
+    .activity-list { list-style: none; margin: 0; padding: 0; }
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--text);
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+    .activity-text { flex: 1; }
+    .activity-time { color: var(--muted); font-size: 12px; white-space: nowrap; }
+    .activity-empty { padding: 12px 0; font-size: 13px; color: var(--muted); }
+
+    /* ── Finished Presentations panel ── */
+    .fp-list { list-style: none; margin: 0; padding: 0; }
+    .fp-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .fp-card:last-child { border-bottom: none; }
+    .fp-card-info { flex: 1; min-width: 0; }
+    .fp-card-name { font-size: 13px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .fp-card-sub  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .fp-card-meta { font-size: 12px; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+    .fp-card-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .fp-btn {
+      padding: 5px 10px;
+      border-radius: var(--radius-btn);
+      font-size: 12px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      transition: border-color .15s, color .15s;
+      white-space: nowrap;
+    }
+    .fp-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .fp-btn-danger:hover { border-color: #e55; color: #e55; }
+    .fp-btn:disabled { opacity: .4; cursor: default; pointer-events: none; }
+    .fp-pagination {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      justify-content: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .fp-pagination button {
+      padding: 5px 12px;
+      border-radius: var(--radius-btn);
+      font-size: 12px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      transition: border-color .15s;
+    }
+    .fp-pagination button:hover:not(:disabled) { border-color: var(--accent); }
+    .fp-pagination button:disabled { opacity: .35; cursor: default; }
+
+    /* ── Grid/List toggle ── */
+    .fp-view-btn {
+      width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-btn);
+      background: var(--bg);
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color .15s, color .15s, background .15s;
+    }
+    .fp-view-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 10%, var(--bg));
+    }
+
+    /* ── Grid mode ── */
+    .fp-list.fp-grid-mode {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+    }
+    .fp-list.fp-grid-mode .fp-card {
+      flex-direction: column;
+      align-items: flex-start;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 14px;
+      background: var(--surface);
+      gap: 8px;
+    }
+    .fp-list.fp-grid-mode .fp-card-actions { width: 100%; justify-content: flex-end; }
+    .fp-list.fp-grid-mode .fp-card-meta { margin-top: 2px; }
+
+    /* ── Metrics strip ── */
+    .fp-metrics {
+      display: flex;
+      gap: 14px;
+      font-size: 11px;
+      color: var(--muted);
+      flex-wrap: wrap;
+      margin-top: 3px;
+    }
+    .fp-metric { display: flex; align-items: center; gap: 3px; }
+    .fp-metric-val { color: var(--text); font-weight: 600; }
+    .fp-metric-loading { opacity: .4; font-style: italic; }
+
   </style>
 </head>
 <body>
@@ -292,9 +427,15 @@
         </a>
       </li>
       <li>
-        <a href="/slides" class="sidebar-nav-item">
+        <a href="/builder" class="sidebar-nav-item">
           <span class="nav-icon">&#9654;</span>
           <span class="nav-label">Builder</span>
+        </a>
+      </li>
+      <li>
+        <a href="/slides" class="sidebar-nav-item">
+          <span class="nav-icon">&#9670;</span>
+          <span class="nav-label">Slides</span>
         </a>
       </li>
       <li>
@@ -323,299 +464,156 @@
   <!-- Main Content -->
   <main class="main">
 
-    <!-- Views Overview -->
-    <section class="panel" style="overflow:visible;position:relative;z-index:10;">
-      <div class="panel-header">
-        <div>
-          <h2 class="panel-title">Views Overview <span class="coming-soon-badge">Coming Soon</span></h2>
-          <p class="panel-subtitle">Presentation views over time</p>
-        </div>
-        <div id="viewsDateDropdown">
-          <button id="viewsDateTrigger" class="filter-pill" type="button">
-            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5;flex-shrink:0;"><rect x="2" y="4" width="16" height="14" rx="2"/><line x1="2" y1="8" x2="18" y2="8"/><line x1="6" y1="2" x2="6" y2="6"/><line x1="14" y1="2" x2="14" y2="6"/></svg>
-            <span id="viewsDateLabel">Last 7 days</span>
-            <span class="chevron">&#9660;</span>
-          </button>
-          <div id="viewsDateMenu" class="views-floating-menu">
-            <div class="sort-option selected" data-value="7d">Last 7 days</div>
-            <div class="sort-option" data-value="24h">Last 24 hours</div>
-            <div class="sort-option" data-value="30d">Last 30 days</div>
-            <div class="sort-option" data-value="custom">Custom…</div>
-          </div>
-          <input id="viewsDateInput" type="text" readonly style="position:absolute;bottom:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none;">
-        </div>
-      </div>
-      <div style="position:relative;height:240px;margin-top:8px;">
-        <canvas id="viewsChart"></canvas>
-      </div>
-      <div id="viewsTabs" style="display:flex;gap:6px;margin-top:16px;flex-wrap:wrap;align-items:center;">
-        <button class="views-tab active" data-id="all">Overview</button>
-        <!-- Presentations dropdown -->
-        <div id="viewsPresDropdown">
-          <button id="viewsPresTrigger" class="views-tab" type="button">
-            <span id="viewsPresLabel">All presentations</span>
-            <span class="chevron" style="margin-left:4px;">&#9660;</span>
-          </button>
-          <div id="viewsPresMenu" class="views-floating-menu"></div>
-        </div>
-        <button id="viewsCustomDateBtn" type="button">
-          <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.7;flex-shrink:0;"><rect x="2" y="4" width="16" height="14" rx="2"/><line x1="2" y1="8" x2="18" y2="8"/><line x1="6" y1="2" x2="6" y2="6"/><line x1="14" y1="2" x2="14" y2="6"/></svg>
-          <span id="viewsCustomDateLabel">Pick dates</span>
-          <span style="opacity:.5;cursor:pointer;" id="viewsCustomDateClear" title="Clear">×</span>
-        </button>
-      </div>
-    </section>
-
     <!-- Finished Presentations -->
-    <section class="panel" style="overflow:visible;">
+    <section class="panel">
       <div class="panel-header">
         <div>
           <h2 class="panel-title">Finished Presentations</h2>
-          <p class="panel-subtitle">Completed customer decks</p>
+          <p class="panel-subtitle" id="fpSubtitle">Loading…</p>
         </div>
-        <div style="display:flex;gap:6px;">
-          <button id="viewList" aria-label="List view" title="List view" style="border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:6px;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;">&#9776;</button>
-          <button id="viewGrid" aria-label="Grid view" title="Grid view" style="border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:6px;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;">&#9632;&#9632;</button>
+        <div id="fpViewToggle" style="display:flex;gap:4px;">
+          <button id="fpViewList" class="fp-view-btn active" title="List view">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+              <rect x="0" y="2" width="16" height="2" rx="1"/>
+              <rect x="0" y="7" width="16" height="2" rx="1"/>
+              <rect x="0" y="12" width="16" height="2" rx="1"/>
+            </svg>
+          </button>
+          <button id="fpViewGrid" class="fp-view-btn" title="Grid view">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+              <rect x="0" y="0" width="7" height="7" rx="1"/>
+              <rect x="9" y="0" width="7" height="7" rx="1"/>
+              <rect x="0" y="9" width="7" height="7" rx="1"/>
+              <rect x="9" y="9" width="7" height="7" rx="1"/>
+            </svg>
+          </button>
         </div>
       </div>
-
-      <!-- Filter bar -->
-      <div id="filterBar">
-        <!-- Search pill -->
-        <label class="filter-pill" style="flex:1;min-width:180px;max-width:320px;">
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5;flex-shrink:0;"><circle cx="9" cy="9" r="6"/><line x1="14" y1="14" x2="19" y2="19"/></svg>
-          <input id="filterSearch" type="search" placeholder="Search by name, company or contact…">
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+        <label class="filter-pill" style="flex:1;min-width:160px;max-width:300px;">
+          <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.4;flex-shrink:0;"><circle cx="9" cy="9" r="6"/><line x1="14" y1="14" x2="18" y2="18"/></svg>
+          <input type="search" id="fpSearch" placeholder="Search name or customer…" style="flex:1;min-width:0;">
         </label>
-
-        <!-- Date range pill (Flatpickr) -->
-        <div style="position:relative;">
-          <button id="filterDateBtn" class="filter-pill" type="button">
-            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5;flex-shrink:0;"><rect x="2" y="4" width="16" height="14" rx="2"/><line x1="2" y1="8" x2="18" y2="8"/><line x1="6" y1="2" x2="6" y2="6"/><line x1="14" y1="2" x2="14" y2="6"/></svg>
-            <span id="filterDateLabel">All dates</span>
-            <span id="filterDateClear" title="Clear date filter">×</span>
+        <button id="fpDateBtn" class="filter-pill" type="button" style="white-space:nowrap;cursor:pointer;">
+          <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.4;flex-shrink:0;"><rect x="2" y="4" width="16" height="14" rx="2"/><line x1="2" y1="8" x2="18" y2="8"/><line x1="6" y1="2" x2="6" y2="6"/><line x1="14" y1="2" x2="14" y2="6"/></svg>
+          <span id="fpDateLabel">Date range</span>
+          <span id="fpDateClear" style="display:none;font-size:15px;line-height:1;color:var(--muted);cursor:pointer;padding:0 2px;" title="Clear">×</span>
+        </button>
+        <input id="fpDateInput" type="text" readonly style="position:absolute;bottom:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none;">
+        <div id="fpSortDropdown" style="position:relative;">
+          <button id="fpSortTrigger" class="filter-pill" type="button" style="cursor:pointer;user-select:none;">
+            <span id="fpSortLabel">Newest first</span>
+            <span class="chevron" style="font-size:10px;opacity:.5;transition:transform .15s;">&#9660;</span>
           </button>
-          <input id="filterDateInput" type="text" readonly style="position:absolute;bottom:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none;">
-        </div>
-
-        <!-- Sort pill (custom dropdown) -->
-        <div id="sortDropdown">
-          <button id="sortTrigger" class="filter-pill" type="button">
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5;flex-shrink:0;"><line x1="2" y1="4" x2="14" y2="4"/><line x1="4" y1="8" x2="12" y2="8"/><line x1="6" y1="12" x2="10" y2="12"/></svg>
-            <span id="sortLabel">Newest first</span>
-            <span class="chevron">▼</span>
-          </button>
-          <div id="sortMenu">
+          <div id="fpSortMenu" class="views-floating-menu">
             <div class="sort-option selected" data-value="newest">Newest first</div>
             <div class="sort-option" data-value="oldest">Oldest first</div>
-            <div class="sort-option" data-value="az">A → Z</div>
-            <div class="sort-option" data-value="za">Z → A</div>
+            <div class="sort-option" data-value="name">Name A–Z</div>
+          </div>
+        </div>
+      </div>
+      <ul id="fpList" class="fp-list"></ul>
+      <div id="fpPagination" class="fp-pagination"></div>
+    </section>
+
+    <!-- Publication Activity (collapsible, starts collapsed) -->
+    <section class="panel" style="margin-top:16px;overflow:visible;position:relative;z-index:10;">
+      <div class="panel-header" style="cursor:pointer;" id="pubActHeader">
+        <div>
+          <h2 class="panel-title">Publication Activity</h2>
+          <p class="panel-subtitle">Presentations published over time</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div id="viewsDateDropdown">
+            <button id="viewsDateTrigger" class="filter-pill" type="button">
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5;flex-shrink:0;"><rect x="2" y="4" width="16" height="14" rx="2"/><line x1="2" y1="8" x2="18" y2="8"/><line x1="6" y1="2" x2="6" y2="6"/><line x1="14" y1="2" x2="14" y2="6"/></svg>
+              <span id="viewsDateLabel">Last 7 days</span>
+              <span class="chevron">&#9660;</span>
+            </button>
+            <div id="viewsDateMenu" class="views-floating-menu">
+              <div class="sort-option selected" data-value="7d">Last 7 days</div>
+              <div class="sort-option" data-value="24h">Last 24 hours</div>
+              <div class="sort-option" data-value="30d">Last 30 days</div>
+              <div class="sort-option" data-value="custom">Custom…</div>
+            </div>
+            <input id="viewsDateInput" type="text" readonly style="position:absolute;bottom:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none;">
+          </div>
+          <span id="pubActChevron" style="font-size:12px;opacity:.5;transition:transform .2s;transform:rotate(-90deg);">&#9660;</span>
+        </div>
+      </div>
+      <div id="pubActBody" style="display:none;">
+        <div id="summaryCards" class="summary-cards">
+          <div class="summary-card">
+            <div class="summary-card-value" id="cardTotalPubs">—</div>
+            <div class="summary-card-label">Presentations published</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-card-value" id="cardTotalDecks">—</div>
+            <div class="summary-card-label">Total decks</div>
+          </div>
+          <div class="summary-card summary-card--last">
+            <div class="summary-card-value" id="cardLastPubName">—</div>
+            <div class="summary-card-label" id="cardLastPubLabel">Last published</div>
+          </div>
+        </div>
+        <div style="position:relative;height:240px;margin-top:8px;">
+          <canvas id="viewsChart"></canvas>
+        </div>
+        <div id="viewsTabs" style="display:flex;gap:6px;margin-top:16px;flex-wrap:wrap;align-items:center;">
+          <button class="views-tab active" data-id="all">Overview</button>
+          <!-- Presentations dropdown -->
+          <div id="viewsPresDropdown">
+            <button id="viewsPresTrigger" class="views-tab" type="button">
+              <span id="viewsPresLabel">All presentations</span>
+              <span class="chevron" style="margin-left:4px;">&#9660;</span>
+            </button>
+            <div id="viewsPresMenu" class="views-floating-menu"></div>
+          </div>
+          <button id="viewsCustomDateBtn" type="button">
+            <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.7;flex-shrink:0;"><rect x="2" y="4" width="16" height="14" rx="2"/><line x1="2" y1="8" x2="18" y2="8"/><line x1="6" y1="2" x2="6" y2="6"/><line x1="14" y1="2" x2="14" y2="6"/></svg>
+            <span id="viewsCustomDateLabel">Pick dates</span>
+            <span style="opacity:.5;cursor:pointer;" id="viewsCustomDateClear" title="Clear">×</span>
+          </button>
+        </div>
+
+        <!-- Engagement chart -->
+        <div style="margin-top:24px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <div>
+              <span style="font-size:13px;font-weight:600;color:var(--text);">Engagement</span>
+              <span style="font-size:12px;color:var(--muted);margin-left:8px;">Umami · last 30 days</span>
+            </div>
+            <div style="display:flex;gap:10px;font-size:11px;color:var(--muted);">
+              <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:3px;background:#F5A623;border-radius:2px;display:inline-block;"></span>Pageviews</span>
+              <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:3px;background:rgba(99,179,237,.8);border-radius:2px;display:inline-block;"></span>Visitors</span>
+            </div>
+          </div>
+          <div style="position:relative;height:180px;">
+            <canvas id="engagementChart"></canvas>
           </div>
         </div>
 
-        <!-- Show archived toggle -->
-        <button id="filterArchived" class="filter-pill" type="button" title="Show archived presentations" style="white-space:nowrap;">
-          <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5;flex-shrink:0;"><rect x="2" y="6" width="16" height="12" rx="2"/><path d="M2 6l2-4h12l2 4"/><line x1="8" y1="11" x2="12" y2="11"/></svg>
-          <span id="filterArchivedLabel">Show archived</span>
-        </button>
-      </div>
+        <!-- Recent Activity (collapsible subsection) -->
+        <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px;">
+          <div id="recentActHeader" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:0;">
+            <span style="font-size:13px;font-weight:600;color:var(--text);">Recent Activity</span>
+            <span id="recentActChevron" style="font-size:11px;opacity:.5;transition:transform .2s;">&#9660;</span>
+          </div>
+          <div id="recentActBody" style="margin-top:12px;">
+            <ul id="recentActivity" class="activity-list"></ul>
+          </div>
+        </div>
 
-      <p class="deck-empty hidden" id="finishedEmpty">No finished presentations yet.</p>
-      <p class="deck-empty hidden" id="finishedNoMatch">No presentations match your search.</p>
-      <ul class="finished-list" id="finishedList" style="list-style:none;padding:0;margin:0;"></ul>
+      </div><!-- /#pubActBody -->
     </section>
 
   </main>
 
   </div><!-- /.app-body -->
 
-<!-- Edit Presentation Modal -->
-<div id="editModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center;">
-  <div style="border:1px solid var(--border);border-radius:12px;padding:24px;width:100%;max-width:400px;margin:16px;">
-    <h3 style="margin:0 0 16px;font-size:16px;color:var(--text);">Edit Presentation</h3>
-    <label style="display:block;margin-bottom:12px;">
-      <span style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Presentation Name</span>
-      <input id="editPresentationName" type="text" placeholder="e.g. Q2 Demo, Security Overview…" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:14px;">
-    </label>
-    <label style="display:block;margin-bottom:12px;">
-      <span style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Company Name</span>
-      <input id="editCustomerName" type="text" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:14px;">
-    </label>
-    <label style="display:block;margin-bottom:12px;">
-      <span style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Contact Name</span>
-      <input id="editContactName" type="text" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:14px;">
-    </label>
-    <label style="display:block;margin-bottom:12px;">
-      <span style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Contact Title</span>
-      <input id="editContactTitle" type="text" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:14px;">
-    </label>
-    <label style="display:block;margin-bottom:20px;">
-      <span style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Customer Logo <span style="color:var(--muted);">(optional — keeps current if blank)</span></span>
-      <input id="editLogoFile" type="file" accept="image/*" style="width:100%;font-size:13px;color:var(--text);">
-    </label>
-    <div style="display:flex;gap:8px;justify-content:flex-end;">
-      <button id="editCancel" style="border:1px solid var(--border);background:transparent;color:var(--text);border-radius:20px;padding:6px 16px;font-size:13px;cursor:pointer;">Cancel</button>
-      <button id="editSave" style="border:none;background:var(--accent);color:#fff;border-radius:20px;padding:6px 16px;font-size:13px;cursor:pointer;">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- Duplicate Presentation Modal -->
-<div id="dupModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center;">
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;width:100%;max-width:420px;margin:16px;">
-    <h3 style="margin:0 0 4px;font-size:16px;color:var(--text);">Duplicate Presentation</h3>
-    <p style="margin:0 0 16px;font-size:12px;color:var(--muted);">Set new details for the copy.</p>
-    <label style="display:block;margin-bottom:12px;">
-      <span style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Presentation Name</span>
-      <input id="dupPresentationName" type="text" placeholder="e.g. Q2 Demo, Security Overview…" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:14px;">
-    </label>
-    <label style="display:block;margin-bottom:12px;">
-      <span style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Company Name <span style="color:#e55;">*</span></span>
-      <input id="dupCustomerName" type="text" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:14px;">
-    </label>
-    <label style="display:block;margin-bottom:12px;">
-      <span style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Contact Name</span>
-      <input id="dupContactName" type="text" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:14px;">
-    </label>
-    <label style="display:block;margin-bottom:12px;">
-      <span style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Contact Title</span>
-      <input id="dupContactTitle" type="text" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:14px;">
-    </label>
-    <label style="display:block;margin-bottom:20px;">
-      <span style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Customer Logo <span style="color:var(--muted);">(optional — keeps original if blank)</span></span>
-      <input id="dupLogoFile" type="file" accept="image/*" style="width:100%;font-size:13px;color:var(--text);">
-    </label>
-    <div style="display:flex;gap:8px;justify-content:flex-end;">
-      <button id="dupCancel" style="border:1px solid var(--border);background:transparent;color:var(--text);border-radius:20px;padding:6px 16px;font-size:13px;cursor:pointer;">Cancel</button>
-      <button id="dupSave" style="border:none;background:var(--accent);color:#fff;border-radius:20px;padding:6px 16px;font-size:13px;cursor:pointer;">Duplicate</button>
-    </div>
-  </div>
-</div>
-
-<!-- Hard Delete Modal -->
-<div id="hardDeleteModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center;">
-  <div style="border:1px solid var(--border);border-radius:12px;padding:24px;width:100%;max-width:420px;margin:16px;">
-    <h3 style="margin:0 0 12px;font-size:16px;color:var(--text);">Delete permanently?</h3>
-    <p id="hardDeleteMsg" style="margin:0 0 20px;font-size:13px;color:var(--muted);line-height:1.5;"></p>
-    <div style="display:flex;gap:8px;justify-content:flex-end;">
-      <button id="hardDeleteCancel" style="border:1px solid var(--border);background:transparent;color:var(--text);border-radius:20px;padding:6px 16px;font-size:13px;cursor:pointer;">Cancel</button>
-      <button id="hardDeleteConfirm" style="border:none;background:#c0392b;color:#fff;border-radius:20px;padding:6px 16px;font-size:13px;cursor:pointer;">Delete permanently</button>
-    </div>
-  </div>
-</div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <style>
-    #finishedList.grid-view {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 14px;
-      padding-top: 8px;
-    }
-    #finishedList.grid-view .pres-item {
-      display: flex !important;
-      flex-direction: column !important;
-      align-items: stretch !important;
-      border: 1px solid var(--border) !important;
-      border-bottom: 1px solid var(--border) !important;
-      border-radius: 10px;
-      padding: 0 !important;
-      overflow: hidden;
-      background: var(--surface);
-    }
-    #finishedList.grid-view .pres-thumb {
-      display: flex !important;
-      width: 100% !important;
-      height: 130px !important;
-      border-radius: 0 !important;
-    }
-    #finishedList.grid-view .pres-body {
-      padding: 10px 12px 8px;
-    }
-    #finishedList.grid-view .pres-menu-wrap {
-      padding: 0 12px 10px;
-      display: flex;
-      justify-content: flex-end;
-    }
-    /* list view thumb: small square logo */
-    .pres-thumb {
-      display: flex !important;
-      width: 44px !important;
-      height: 44px !important;
-      border-radius: 8px !important;
-      flex-shrink: 0 !important;
-    }
-    /* active toggle button */
-    .view-btn-active {
-      background: var(--accent) !important;
-      color: #fff !important;
-      border-color: var(--accent) !important;
-    }
-
-    /* ── Presentation card action menu ── */
-    .pres-menu-wrap { position: relative; flex-shrink: 0; }
-    .btn-menu {
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text);
-      border-radius: 8px;
-      width: 32px;
-      height: 32px;
-      font-size: 18px;
-      line-height: 1;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .12s, border-color .12s;
-    }
-    .btn-menu:hover { background: var(--surface); border-color: rgba(255,255,255,0.25); }
-    [data-theme="light"] .btn-menu:hover { border-color: rgba(0,0,0,0.25); }
-    .pres-dropdown {
-      display: none;
-      position: absolute;
-      bottom: calc(100% + 6px);
-      right: 0;
-      min-width: 150px;
-      background: #111;
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 10px;
-      padding: 4px;
-      box-shadow: 0 10px 36px rgba(0,0,0,.7);
-      z-index: 9999;
-    }
-    [data-theme="light"] .pres-dropdown { background: #fff; border-color: rgba(0,0,0,0.1); box-shadow: 0 10px 36px rgba(0,0,0,.15); }
-    .pres-dropdown.open { display: block; }
-    .pres-dropdown-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      width: 100%;
-      padding: 8px 12px;
-      border: none;
-      background: transparent;
-      color: rgba(255,255,255,.85);
-      font-size: 13px;
-      text-align: left;
-      border-radius: 7px;
-      cursor: pointer;
-      transition: background .1s;
-      white-space: nowrap;
-      text-decoration: none;
-      box-sizing: border-box;
-    }
-    [data-theme="light"] .pres-dropdown-item { color: rgba(0,0,0,.75); }
-    .pres-dropdown-item:hover { background: rgba(255,255,255,.08); color: #fff; }
-    [data-theme="light"] .pres-dropdown-item:hover { background: rgba(0,0,0,.05); color: #000; }
-    .pres-dropdown-item.danger { color: #e55; }
-    .pres-dropdown-item.danger:hover { background: rgba(229,85,85,.1); color: #e55; }
-    .pres-dropdown-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 4px 0; }
-    [data-theme="light"] .pres-dropdown-divider { background: rgba(0,0,0,0.08); }
-    .pres-name-clickable { cursor: pointer; }
-    .pres-name-clickable:hover { text-decoration: underline; text-decoration-color: rgba(255,255,255,0.3); text-underline-offset: 3px; }
-    [data-theme="light"] .pres-name-clickable:hover { text-decoration-color: rgba(0,0,0,0.3); }
-  </style>
-
   <script>
     (function () {
       var html = document.documentElement;
@@ -623,616 +621,18 @@
       if (saved) html.setAttribute('data-theme', saved);
     })();
 
-    // ── View Toggle ──────────────────────────────────────────────────
+    // Fetch presentations + decks for dashboard
     (function () {
-      var list    = document.getElementById('finishedList');
-      var btnList = document.getElementById('viewList');
-      var btnGrid = document.getElementById('viewGrid');
-      var current = localStorage.getItem('pb-pres-view') || 'list';
-
-      function applyView(v) {
-        current = v;
-        localStorage.setItem('pb-pres-view', v);
-        if (v === 'grid') {
-          list.classList.add('grid-view');
-          btnGrid.classList.add('view-btn-active');
-          btnList.classList.remove('view-btn-active');
-        } else {
-          list.classList.remove('grid-view');
-          btnList.classList.add('view-btn-active');
-          btnGrid.classList.remove('view-btn-active');
-        }
-      }
-
-      btnList.addEventListener('click', function () { applyView('list'); });
-      btnGrid.addEventListener('click', function () { applyView('grid'); });
-      applyView(current);
-    })();
-
-    // ── Load Finished Presentations ──────────────────────────────────
-    (function () {
-      var umamiId = '';
-      var allItems = [];
-
       Promise.all([
-        fetch('/api/presentations').then(function (r) { return r.json(); }),
-        fetch('/api/settings').then(function (r) { return r.json(); })
-      ])
-        .then(function (results) {
-          var res      = results[0];
-          var settings = results[1].data || {};
-          umamiId  = settings.umamiWebsiteId || '';
-          allItems = res.data || [];
-          window._viewsPresentations = allItems;
-          document.dispatchEvent(new CustomEvent('viewsPresentationsLoaded', { detail: allItems }));
-
-          if (allItems.length === 0) {
-            document.getElementById('finishedEmpty').classList.remove('hidden');
-            return;
-          }
-
-          applyFilters();
-          bindFilterControls();
-        })
-        .catch(function () {
-          document.getElementById('finishedEmpty').classList.remove('hidden');
-        });
-
-      var _showArchived = false;
-
-      function applyFilters() {
-        var q        = document.getElementById('filterSearch').value.trim().toLowerCase();
-        var dateFrom = window._fpDates ? window._fpDates[0] : '';
-        var dateTo   = window._fpDates ? (window._fpDates[1] || window._fpDates[0]) : '';
-        var sort     = window._sortValue || 'newest';
-        var list    = document.getElementById('finishedList');
-        var empty   = document.getElementById('finishedEmpty');
-        var noMatch = document.getElementById('finishedNoMatch');
-
-        var filtered = allItems.filter(function (p) {
-          // Archived filter — hide archived unless toggle is on
-          if (!_showArchived && p.archivedAt) return false;
-          if (_showArchived && !p.archivedAt) return false;
-          if (q && !(
-            (p.presentationName || '').toLowerCase().includes(q) ||
-            (p.customerName || '').toLowerCase().includes(q) ||
-            (p.contactName  || '').toLowerCase().includes(q)
-          )) return false;
-          var d = (p.createdAt || '');
-          if (dateFrom && d < dateFrom) return false;
-          if (dateTo   && d > dateTo)   return false;
-          return true;
-        });
-
-        filtered = filtered.slice().sort(function (a, b) {
-          var da = a.createdAt || '', db = b.createdAt || '';
-          var na = (a.presentationName || a.customerName || ''), nb = (b.presentationName || b.customerName || '');
-          if (sort === 'oldest') return da < db ? -1 : da > db ? 1 : a.id < b.id ? -1 : 1;
-          if (sort === 'az')     return na.localeCompare(nb) || (da > db ? -1 : 1);
-          if (sort === 'za')     return nb.localeCompare(na) || (da > db ? -1 : 1);
-          return da > db ? -1 : da < db ? 1 : a.id > b.id ? -1 : 1; // newest
-        });
-
-        list.innerHTML = '';
-        empty.classList.add('hidden');
-        noMatch.classList.add('hidden');
-
-        if (filtered.length === 0) {
-          if (allItems.length > 0) noMatch.classList.remove('hidden');
-          else empty.classList.remove('hidden');
-          return;
-        }
-
-        filtered.forEach(function (p) { list.appendChild(buildItem(p)); });
-      }
-
-      function bindFilterControls() {
-        document.getElementById('filterSearch').addEventListener('input', applyFilters);
-        window._sortValue = 'newest';
-
-        // Show archived toggle
-        document.getElementById('filterArchived').addEventListener('click', function () {
-          _showArchived = !_showArchived;
-          this.classList.toggle('active', _showArchived);
-          document.getElementById('filterArchivedLabel').textContent = _showArchived ? 'Hide archived' : 'Show archived';
-          applyFilters();
-        });
-
-        // Custom sort dropdown
-        var sortTrigger = document.getElementById('sortTrigger');
-        var sortMenu    = document.getElementById('sortMenu');
-        sortTrigger.addEventListener('click', function (e) {
-          e.stopPropagation();
-          var open = sortMenu.classList.toggle('open');
-          sortTrigger.classList.toggle('open', open);
-        });
-        sortMenu.querySelectorAll('.sort-option').forEach(function (opt) {
-          opt.addEventListener('click', function () {
-            window._sortValue = this.dataset.value;
-            document.getElementById('sortLabel').textContent = this.textContent;
-            sortMenu.querySelectorAll('.sort-option').forEach(function (o) { o.classList.remove('selected'); });
-            this.classList.add('selected');
-            sortMenu.classList.remove('open');
-            sortTrigger.classList.remove('open');
-            applyFilters();
-          });
-        });
-        document.addEventListener('click', function () {
-          sortMenu.classList.remove('open');
-          sortTrigger.classList.remove('open');
-          document.querySelectorAll('.pres-dropdown.open').forEach(function (d) {
-            d.classList.remove('open');
-            var parentLi = d.closest('li');
-            if (parentLi) { parentLi.style.position = ''; parentLi.style.zIndex = ''; parentLi.style.overflow = ''; }
-          });
-        });
-
-        // Flatpickr date range
-        var fp = flatpickr('#filterDateInput', {
-          mode: 'range',
-          dateFormat: 'Y-m-d',
-          disableMobile: true,
-          onChange: function (selectedDates, dateStr) {
-            window._fpDates = selectedDates.map(function (d) {
-              var y  = d.getFullYear();
-              var m  = String(d.getMonth() + 1).padStart(2, '0');
-              var dy = String(d.getDate()).padStart(2, '0');
-              return y + '-' + m + '-' + dy;
-            });
-            var btn   = document.getElementById('filterDateBtn');
-            var label = document.getElementById('filterDateLabel');
-            var clear = document.getElementById('filterDateClear');
-            if (selectedDates.length === 0) {
-              window._fpDates = null;
-              label.textContent = 'All dates';
-              btn.classList.remove('active');
-              clear.style.display = 'none';
-            } else if (selectedDates.length === 1) {
-              label.textContent = fmtDate(selectedDates[0]);
-              btn.classList.add('active');
-              clear.style.display = 'inline';
-            } else {
-              label.textContent = fmtDate(selectedDates[0]) + ' → ' + fmtDate(selectedDates[1]);
-              btn.classList.add('active');
-              clear.style.display = 'inline';
-            }
-            applyFilters();
-          }
-        });
-
-        document.getElementById('filterDateBtn').addEventListener('click', function (e) {
-          if (e.target.id === 'filterDateClear') return;
-          fp.open();
-        });
-
-        document.getElementById('filterDateClear').addEventListener('click', function (e) {
-          e.stopPropagation();
-          fp.clear();
-        });
-      }
-
-      function fmtDate(d) {
-        return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-      }
-
-      function detectLogoBg(img, thumbEl) {
-        try {
-          var w = img.naturalWidth  || 100;
-          var h = img.naturalHeight || 100;
-          var canvas = document.createElement('canvas');
-          canvas.width = w; canvas.height = h;
-          var ctx = canvas.getContext('2d', { willReadFrequently: true });
-          ctx.drawImage(img, 0, 0, w, h);
-          // Sample a small ring of border pixels to capture the background color
-          var size = Math.max(1, Math.round(Math.min(w, h) * 0.05));
-          var top    = ctx.getImageData(0, 0, w, size).data;
-          var bottom = ctx.getImageData(0, h - size, w, size).data;
-          var left   = ctx.getImageData(0, 0, size, h).data;
-          var right  = ctx.getImageData(w - size, 0, size, h).data;
-          var r = 0, g = 0, b = 0, a = 0, count = 0;
-          [top, bottom, left, right].forEach(function (d) {
-            for (var i = 0; i < d.length; i += 4) {
-              r += d[i]; g += d[i+1]; b += d[i+2]; a += d[i+3]; count++;
-            }
-          });
-          if (count === 0) return;
-          r = Math.round(r / count);
-          g = Math.round(g / count);
-          b = Math.round(b / count);
-          a = Math.round(a / count);
-          // If border is mostly transparent, fall back to white
-          if (a < 30) { thumbEl.style.background = '#fff'; return; }
-          thumbEl.style.background = 'rgb(' + r + ',' + g + ',' + b + ')';
-        } catch (e) { /* cross-origin or tainted canvas — leave default */ }
-      }
-
-      function buildItem(p) {
-        var isPublished = !!p.publishedAt;
-        var isArchived  = !!p.archivedAt;
-        var presUrl = 'https://app-presentation-builder.pages.dev/finished-presentations/' + p.id;
-
-        var displayName = p.presentationName || p.customerName || '?';
-        var initials = displayName.trim().split(/\s+/).map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase();
-
-        // Published URL row — shown when published (replaces old umamiId-gated row)
-        var publishedRowHtml = isPublished
-          ? '<div class="pres-tracking" style="font-size:11px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:4px;">' +
-              '<span style="opacity:0.5;">Live:</span>' +
-              '<a href="' + presUrl + '" target="_blank" rel="noopener" style="color:var(--accent,#7c8cf8);text-decoration:none;font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + presUrl + '">' +
-                presUrl +
-              '</a>' +
-            '</div>'
-          : (umamiId
-              ? '<div class="pres-tracking" style="font-size:11px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:4px;">' +
-                  '<span style="opacity:0.5;">Analytics:</span>' +
-                  '<a href="' + presUrl + '" target="_blank" rel="noopener" style="color:var(--accent,#7c8cf8);text-decoration:none;font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + presUrl + '">' +
-                    presUrl +
-                  '</a>' +
-                '</div>'
-              : '');
-
-        // Status badges
-        var badgesHtml = '';
-        if (isArchived) {
-          badgesHtml += '<span style="display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;background:rgba(255,255,255,0.08);color:var(--muted);margin-right:4px;">Archived</span>';
-        }
-        if (isPublished) {
-          badgesHtml += '<span style="display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;background:rgba(80,200,120,0.15);color:#50c878;margin-right:4px;">Published</span>';
-        }
-
-        // Action menu — Publish only available before first publish
-        var publishBtn = isPublished
-          ? ''
-          : '<button class="pres-dropdown-item btn-publish">&#8599; Publish</button>';
-
-        var bottomActions = isArchived
-          ? '<button class="pres-dropdown-item btn-unarchive">&#8617; Unarchive</button>' +
-            '<div class="pres-dropdown-divider"></div>' +
-            '<button class="pres-dropdown-item danger btn-delete">&#128465; Delete permanently</button>'
-          : '<div class="pres-dropdown-divider"></div>' +
-            '<button class="pres-dropdown-item btn-archive">&#128193; Archive</button>';
-
-        var li = document.createElement('li');
-        li.className = 'pres-item' + (isArchived ? ' pres-item-archived' : '');
-        li.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);' + (isArchived ? 'opacity:0.6;' : '');
-
-        var thumb = document.createElement('div');
-        thumb.className = 'pres-thumb pres-thumb-clickable';
-        thumb.title = 'Filter chart to this presentation';
-        thumb.style.cssText = 'position:relative;align-items:center;justify-content:center;background:var(--surface-alt,var(--border));overflow:hidden;';
-        thumb.addEventListener('click', function () {
-          document.dispatchEvent(new CustomEvent('viewsFilterByPres', { detail: p.id }));
-        });
-        if (p.customerLogoSrc) {
-          var img = document.createElement('img');
-          img.alt = '';
-          img.style.cssText = 'width:100%;height:100%;object-fit:contain;display:block;';
-          img.crossOrigin = 'anonymous';
-          img.addEventListener('load', function () { detectLogoBg(img, thumb); });
-          img.src = p.customerLogoSrc;
-          thumb.appendChild(img);
-        } else {
-          var span = document.createElement('span');
-          span.textContent = initials;
-          span.style.cssText = 'font-size:13px;font-weight:600;color:var(--muted);';
-          thumb.appendChild(span);
-        }
-
-        li.appendChild(thumb);
-        var rest = document.createElement('div');
-        rest.style.cssText = 'display:contents;';
-        rest.innerHTML =
-          '<div class="pres-body" style="flex:1;min-width:0;">' +
-            '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
-              '<div class="pres-name pres-name-clickable" title="Double-click to view" style="font-size:14px;font-weight:700;color:var(--text);line-height:1.3;">' + escDash(p.customerName || '?') + '</div>' +
-              badgesHtml +
-            '</div>' +
-            (p.presentationName ? '<div class="pres-pname" style="font-size:12px;color:var(--muted);margin-top:1px;line-height:1.3;">' + escDash(p.presentationName) + '</div>' : '') +
-            '<div class="pres-meta" style="font-size:12px;color:var(--muted);margin-top:2px;">' +
-              (p.contactName ? escDash(p.contactName) + (p.contactTitle ? ' · ' + escDash(p.contactTitle) : '') + ' · ' : '') +
-              p.slideCount + ' slides · ' + p.createdAt +
-            '</div>' +
-            publishedRowHtml +
-          '</div>' +
-          '<div class="pres-menu-wrap">' +
-            '<button class="btn-menu" title="Actions">&#8943;</button>' +
-            '<div class="pres-dropdown">' +
-              '<button class="pres-dropdown-item btn-edit">&#9998;&#xFE0E; Edit</button>' +
-              '<button class="pres-dropdown-item btn-duplicate">&#10697; Duplicate</button>' +
-              publishBtn +
-              bottomActions +
-            '</div>' +
-          '</div>';
-        li.appendChild(rest);
-
-        // Double-click company name → view
-        li.querySelector('.pres-name-clickable').addEventListener('dblclick', function () {
-          window.open('/view/' + p.id, '_blank');
-        });
-
-        // ⋯ menu toggle
-        var menuBtn  = li.querySelector('.btn-menu');
-        var dropdown = li.querySelector('.pres-dropdown');
-        menuBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          var isOpen = dropdown.classList.contains('open');
-          document.querySelectorAll('.pres-dropdown.open').forEach(function (d) {
-            d.classList.remove('open');
-            var parentLi = d.closest('li');
-            if (parentLi) { parentLi.style.position = ''; parentLi.style.zIndex = ''; parentLi.style.overflow = ''; }
-          });
-          if (!isOpen) {
-            dropdown.classList.add('open');
-            li.style.position = 'relative';
-            li.style.zIndex = '10';
-            li.style.overflow = 'visible';
-          }
-        });
-
-        function closeMenu() {
-          dropdown.classList.remove('open');
-          li.style.position = '';
-          li.style.zIndex = '';
-          li.style.overflow = '';
-        }
-
-        li.querySelector('.btn-edit').addEventListener('click', function () {
-          closeMenu();
-          openEditModal(p, li);
-        });
-        li.querySelector('.btn-duplicate').addEventListener('click', function () {
-          closeMenu();
-          openDupModal(p);
-        });
-        if (li.querySelector('.btn-publish')) {
-          li.querySelector('.btn-publish').addEventListener('click', function () {
-            closeMenu();
-            var btn = this;
-            btn.textContent = '↻ Publishing…';
-            btn.disabled = true;
-            fetch('/api/presentations/' + p.id + '/publish', { method: 'POST' })
-              .then(function (r) { return r.json(); })
-              .then(function (res) {
-                btn.disabled = false;
-                btn.innerHTML = '&#8599; Publish';
-                if (!res.success) { alert('Publish failed: ' + res.error); return; }
-                p.publishedAt = new Date().toISOString();
-                var idx = allItems.findIndex(function (x) { return x.id === p.id; });
-                if (idx !== -1) allItems[idx] = p;
-                applyFilters();
-                if (confirm('Published!\n\n' + res.url + '\n\nOpen link?')) window.open(res.url, '_blank');
-              })
-              .catch(function () {
-                btn.disabled = false;
-                btn.innerHTML = '&#8599; Publish';
-                alert('Publish failed — check that git and GitHub are configured.');
-              });
-          });
-        }
-
-        if (li.querySelector('.btn-archive')) {
-          li.querySelector('.btn-archive').addEventListener('click', function () {
-            closeMenu();
-            fetch('/api/presentations/' + p.id + '/archive', { method: 'POST' })
-              .then(function (r) { return r.json(); })
-              .then(function (res) {
-                if (!res.success) { alert('Archive failed: ' + res.error); return; }
-                var idx = allItems.findIndex(function (x) { return x.id === p.id; });
-                if (idx !== -1) allItems[idx] = res.data;
-                applyFilters();
-              })
-              .catch(function () { alert('Archive failed.'); });
-          });
-        }
-
-        if (li.querySelector('.btn-unarchive')) {
-          li.querySelector('.btn-unarchive').addEventListener('click', function () {
-            closeMenu();
-            fetch('/api/presentations/' + p.id + '/unarchive', { method: 'POST' })
-              .then(function (r) { return r.json(); })
-              .then(function (res) {
-                if (!res.success) { alert('Unarchive failed: ' + res.error); return; }
-                var idx = allItems.findIndex(function (x) { return x.id === p.id; });
-                if (idx !== -1) allItems[idx] = res.data;
-                applyFilters();
-              })
-              .catch(function () { alert('Unarchive failed.'); });
-          });
-        }
-
-        if (li.querySelector('.btn-delete')) {
-          li.querySelector('.btn-delete').addEventListener('click', function () {
-            closeMenu();
-            openHardDeleteModal(p);
-          });
-        }
-
-        return li;
-      }
-
-      var _hardDeleteTarget = null;
-
-      function openHardDeleteModal(pres) {
-        _hardDeleteTarget = pres;
-        var msg = pres.publishedAt
-          ? 'This presentation is published and may already be shared with the customer. Deleting it will break their link.\n\nConsider republishing with updated content instead — that updates the page without changing the URL.'
-          : 'This will permanently remove "' + (pres.customerName || pres.id) + '" and cannot be undone.';
-        document.getElementById('hardDeleteMsg').textContent = msg;
-        document.getElementById('hardDeleteModal').style.display = 'flex';
-      }
-
-      document.getElementById('hardDeleteCancel').addEventListener('click', function () {
-        document.getElementById('hardDeleteModal').style.display = 'none';
-        _hardDeleteTarget = null;
-      });
-
-      document.getElementById('hardDeleteModal').addEventListener('click', function (e) {
-        if (e.target === this) { this.style.display = 'none'; _hardDeleteTarget = null; }
-      });
-
-      document.getElementById('hardDeleteConfirm').addEventListener('click', function () {
-        if (!_hardDeleteTarget) return;
-        var pres = _hardDeleteTarget;
-        var btn = this;
-        btn.disabled = true;
-        btn.textContent = 'Deleting…';
-        fetch('/api/presentations/' + pres.id, { method: 'DELETE' })
-          .then(function (r) { return r.json(); })
-          .then(function (res) {
-            btn.disabled = false;
-            btn.textContent = 'Delete permanently';
-            if (!res.success) { alert('Delete failed: ' + res.error); return; }
-            allItems = allItems.filter(function (x) { return x.id !== pres.id; });
-            document.getElementById('hardDeleteModal').style.display = 'none';
-            _hardDeleteTarget = null;
-            applyFilters();
-          })
-          .catch(function () {
-            btn.disabled = false;
-            btn.textContent = 'Delete permanently';
-            alert('Delete failed.');
-          });
-      });
-
-      function escDash(str) {
-        var d = document.createElement('div');
-        d.textContent = str || '';
-        return d.innerHTML;
-      }
-
-      var _editTarget = null;
-      function openEditModal(pres, liEl) {
-        _editTarget = { pres: pres, li: liEl };
-        document.getElementById('editPresentationName').value = pres.presentationName || '';
-        document.getElementById('editCustomerName').value = pres.customerName || '';
-        document.getElementById('editContactName').value  = pres.contactName  || '';
-        document.getElementById('editContactTitle').value = pres.contactTitle || '';
-        document.getElementById('editLogoFile').value = '';
-        var modal = document.getElementById('editModal');
-        modal.style.display = 'flex';
-      }
-
-      document.getElementById('editCancel').addEventListener('click', function () {
-        document.getElementById('editModal').style.display = 'none';
-      });
-
-      document.getElementById('editSave').addEventListener('click', function () {
-        if (!_editTarget) return;
-        var id   = _editTarget.pres.id;
-        var btn  = this;
-        var file = document.getElementById('editLogoFile').files[0];
-
-        function doSave(logoFilename, logoData) {
-          btn.disabled = true;
-          btn.textContent = 'Saving…';
-          fetch('/api/presentations/' + id, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              presentationName: document.getElementById('editPresentationName').value.trim(),
-              customerName:  document.getElementById('editCustomerName').value.trim(),
-              contactName:   document.getElementById('editContactName').value.trim(),
-              contactTitle:  document.getElementById('editContactTitle').value.trim(),
-              logoFilename:  logoFilename || '',
-              logoData:      logoData     || ''
-            })
-          })
-            .then(function (r) { return r.json(); })
-            .then(function (res) {
-              btn.disabled = false;
-              btn.textContent = 'Save';
-              if (!res.success) { alert('Save failed: ' + res.error); return; }
-              var p = res.data;
-              var idx = allItems.findIndex(function (x) { return x.id === p.id; });
-              if (idx !== -1) allItems[idx] = p;
-              document.getElementById('editModal').style.display = 'none';
-              _editTarget = null;
-              applyFilters();
-            })
-            .catch(function () { btn.disabled = false; btn.textContent = 'Save'; alert('Save failed.'); });
-        }
-
-        if (file) {
-          var reader = new FileReader();
-          reader.onload = function (e) { doSave(file.name, e.target.result); };
-          reader.readAsDataURL(file);
-        } else {
-          doSave('', '');
-        }
-      });
-
-      document.getElementById('editModal').addEventListener('click', function (e) {
-        if (e.target === this) this.style.display = 'none';
-      });
-
-      // ── Duplicate Modal ────────────────────────────────────────────
-      var _dupSourceId = null;
-
-      function openDupModal(pres) {
-        _dupSourceId = pres.id;
-        document.getElementById('dupPresentationName').value = pres.presentationName || '';
-        document.getElementById('dupCustomerName').value = pres.customerName || '';
-        document.getElementById('dupContactName').value  = pres.contactName  || '';
-        document.getElementById('dupContactTitle').value = pres.contactTitle || '';
-        document.getElementById('dupLogoFile').value = '';
-        document.getElementById('dupModal').style.display = 'flex';
-        document.getElementById('dupCustomerName').focus();
-      }
-
-      document.getElementById('dupCancel').addEventListener('click', function () {
-        document.getElementById('dupModal').style.display = 'none';
-      });
-
-      document.getElementById('dupModal').addEventListener('click', function (e) {
-        if (e.target === this) this.style.display = 'none';
-      });
-
-      document.getElementById('dupSave').addEventListener('click', function () {
-        var name = document.getElementById('dupCustomerName').value.trim();
-        if (!name) { document.getElementById('dupCustomerName').focus(); return; }
-        var btn = this;
-        btn.disabled = true;
-        btn.textContent = 'Duplicating…';
-
-        var fileInput = document.getElementById('dupLogoFile');
-        var file = fileInput.files && fileInput.files[0];
-
-        function doSubmit(logoFilename, logoData) {
-          fetch('/api/presentations/' + _dupSourceId + '/duplicate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              presentationName: document.getElementById('dupPresentationName').value.trim(),
-              customerName:  name,
-              contactName:   document.getElementById('dupContactName').value.trim(),
-              contactTitle:  document.getElementById('dupContactTitle').value.trim(),
-              logoFilename:  logoFilename || '',
-              logoData:      logoData     || ''
-            })
-          })
-            .then(function (r) { return r.json(); })
-            .then(function (res) {
-              btn.disabled = false;
-              btn.textContent = 'Duplicate';
-              if (!res.success) { alert('Duplicate failed: ' + res.error); return; }
-              document.getElementById('dupModal').style.display = 'none';
-              allItems.unshift(res.data);
-              applyFilters();
-            })
-            .catch(function () {
-              btn.disabled = false;
-              btn.textContent = 'Duplicate';
-              alert('Duplicate failed.');
-            });
-        }
-
-        if (file) {
-          var reader = new FileReader();
-          reader.onload = function (e) { doSubmit(file.name, e.target.result); };
-          reader.readAsDataURL(file);
-        } else {
-          doSubmit('', '');
-        }
+        fetch('/api/presentations').then(function (r) { return r.json(); }).catch(function () { return { data: [] }; }),
+        fetch('/api/decks').then(function (r) { return r.json(); }).catch(function () { return { data: { decks: [] } }; })
+      ]).then(function (results) {
+        var items     = (results[0].data) || [];
+        var decksData = results[1].data || {};
+        var deckCount = decksData.decks ? decksData.decks.length : 0;
+        window._viewsPresentations = items;
+        window._viewsDeckCount     = deckCount;
+        document.dispatchEvent(new CustomEvent('viewsPresentationsLoaded', { detail: { items: items, deckCount: deckCount } }));
       });
     })();
 
@@ -1283,23 +683,46 @@
       var customDates = null;
       var chartInstance = null;
 
-      // ── Mock data generator ──────────────────────────────────────
-      function mockViewsForRange(days, presIds) {
-        var seed = presIds.join('') + days;
-        function rand(s, n) { var x = Math.sin(s + n) * 10000; return Math.floor((x - Math.floor(x)) * 80); }
+      // ── Real data: publications per day ─────────────────────────
+      function pubsForRange(presIds) {
+        var days = getDays();
         var labels = [], data = [];
         var now = new Date();
-        for (var i = days - 1; i >= 0; i--) {
-          var d = new Date(now); d.setDate(d.getDate() - i);
-          labels.push(days <= 1
-            ? d.getHours() + ':00'
-            : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }));
-          var total = 0;
-          presIds.forEach(function (id, pi) {
-            total += rand((seed.charCodeAt(pi % seed.length) || 65), i + pi * 7 + days);
-          });
-          data.push(total);
+        var startMs, endMs;
+
+        if (currentRange === 'custom' && customDates && customDates.length === 2) {
+          startMs = new Date(customDates[0]).setHours(0,0,0,0);
+          endMs   = new Date(customDates[1]).setHours(23,59,59,999);
+        } else {
+          endMs   = new Date(now).setHours(23,59,59,999);
+          var startDate = new Date(now);
+          startDate.setDate(startDate.getDate() - (days - 1));
+          startMs = startDate.setHours(0,0,0,0);
         }
+
+        // Build day buckets
+        var buckets = [];
+        var cursor = new Date(startMs);
+        while (cursor.getTime() <= endMs) {
+          buckets.push(cursor.toISOString().slice(0, 10));
+          cursor.setDate(cursor.getDate() + 1);
+        }
+
+        // Count publications per day
+        var countMap = {};
+        buckets.forEach(function (k) { countMap[k] = 0; });
+        presentations.forEach(function (p) {
+          if (presIds.length > 0 && presIds.indexOf(p.id) === -1) return;
+          var dateStr = (p.publishedAt || p.createdAt || '').slice(0, 10);
+          if (countMap.hasOwnProperty(dateStr)) countMap[dateStr]++;
+        });
+
+        buckets.forEach(function (k) {
+          var d = new Date(k + 'T00:00:00');
+          labels.push(d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }));
+          data.push(countMap[k]);
+        });
+
         return { labels: labels, data: data };
       }
 
@@ -1323,7 +746,7 @@
       function buildChart() {
         var canvas = document.getElementById('viewsChart');
         var ids = getActiveIds();
-        var d = mockViewsForRange(getDays(), ids.length ? ids : ['__empty__']);
+        var d = pubsForRange(ids);
         var dark = isDark();
         if (chartInstance) chartInstance.destroy();
         chartInstance = new Chart(canvas, {
@@ -1344,7 +767,7 @@
                 bodyColor: dark ? 'rgba(255,255,255,.6)' : 'rgba(0,0,0,.6)',
                 borderColor: dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)',
                 borderWidth: 1, padding: 10, cornerRadius: 8,
-                callbacks: { label: function (ctx) { return ' ' + ctx.parsed.y + ' views'; } }
+                callbacks: { label: function (ctx) { return ' ' + ctx.parsed.y + ' published'; } }
               }
             },
             scales: {
@@ -1544,23 +967,562 @@
         buildChart();
       });
 
+      // ── Time ago helper ──────────────────────────────────────────
+      function timeAgo(isoStr) {
+        if (!isoStr) return '';
+        var diff = Date.now() - new Date(isoStr).getTime();
+        var min = Math.floor(diff / 60000);
+        if (min < 2) return 'just now';
+        if (min < 60) return min + ' min ago';
+        var hr = Math.floor(diff / 3600000);
+        if (hr < 24) return hr + ' hour' + (hr === 1 ? '' : 's') + ' ago';
+        var days = Math.floor(diff / 86400000);
+        if (days < 30) return days + ' day' + (days === 1 ? '' : 's') + ' ago';
+        var months = Math.floor(days / 30);
+        return months + ' month' + (months === 1 ? '' : 's') + ' ago';
+      }
+
+      // ── Summary cards ────────────────────────────────────────────
+      function buildSummaryCards(pres, deckCount) {
+        var totalEl = document.getElementById('cardTotalPubs');
+        var decksEl = document.getElementById('cardTotalDecks');
+        var lastEl  = document.getElementById('cardLastPubName');
+        var lastLbl = document.getElementById('cardLastPubLabel');
+        if (totalEl) totalEl.textContent = pres.length;
+        if (decksEl) decksEl.textContent = (deckCount != null) ? deckCount : '—';
+        var sorted = pres.slice().sort(function (a, b) {
+          return (b.publishedAt || b.createdAt || '') > (a.publishedAt || a.createdAt || '') ? 1 : -1;
+        });
+        if (sorted.length > 0 && lastEl) {
+          var last = sorted[sorted.length - 1];
+          lastEl.textContent  = last.presentationName || last.customerName || '—';
+          if (lastLbl) lastLbl.textContent = 'Last published — ' + timeAgo(last.publishedAt || last.createdAt);
+        }
+      }
+
+      // ── Recent activity list ─────────────────────────────────────
+      function buildRecentActivity(pres) {
+        var list = document.getElementById('recentActivity');
+        if (!list) return;
+        list.innerHTML = '';
+        var sorted = pres.slice().sort(function (a, b) {
+          return (b.publishedAt || b.createdAt || '') > (a.publishedAt || a.createdAt || '') ? 1 : -1;
+        });
+        var items = sorted.slice(0, 10);
+        if (items.length === 0) {
+          var empty = document.createElement('li');
+          empty.className = 'activity-empty';
+          empty.textContent = 'No presentations published yet.';
+          list.appendChild(empty);
+          return;
+        }
+        items.forEach(function (p) {
+          var li   = document.createElement('li');
+          li.className = 'activity-item';
+          var dot  = document.createElement('div');
+          dot.className = 'activity-dot';
+          var text = document.createElement('div');
+          text.className = 'activity-text';
+          var name = p.presentationName || 'Untitled';
+          var cust = p.customerName;
+          text.textContent = 'Published "' + name + '"' + (cust ? ' for ' + cust : '');
+          var time = document.createElement('div');
+          time.className = 'activity-time';
+          time.textContent = timeAgo(p.publishedAt || p.createdAt);
+          li.appendChild(dot);
+          li.appendChild(text);
+          li.appendChild(time);
+          list.appendChild(li);
+        });
+      }
+
       // ── Bootstrap: wait for presentations to load ────────────────
-      function init(items) {
+      function init(items, deckCount) {
         presentations = items;
         checkedIds = items.map(function (p) { return p.id; });
         buildPresMenu();
         buildChart();
+        buildSummaryCards(items, deckCount);
+        buildRecentActivity(items);
       }
 
       if (window._viewsPresentations) {
-        init(window._viewsPresentations);
+        init(window._viewsPresentations, window._viewsDeckCount || 0);
       } else {
-        document.addEventListener('viewsPresentationsLoaded', function (e) { init(e.detail); });
+        document.addEventListener('viewsPresentationsLoaded', function (e) {
+          init(e.detail.items || [], e.detail.deckCount || 0);
+        });
         buildChart(); // draw empty chart immediately while waiting
       }
     })();
   </script>
 
+  <script>
+    // ── Publication Activity collapse ─────────────────────────────
+    (function () {
+      var header  = document.getElementById('pubActHeader');
+      var body    = document.getElementById('pubActBody');
+      var chevron = document.getElementById('pubActChevron');
+      var STORAGE_KEY = 'pb-pubact-collapsed';
+      function setOpen(open) {
+        body.style.display = open ? '' : 'none';
+        chevron.style.transform = open ? 'rotate(0deg)' : 'rotate(-90deg)';
+        localStorage.setItem(STORAGE_KEY, open ? '0' : '1');
+      }
+      var saved = localStorage.getItem(STORAGE_KEY);
+      setOpen(saved === '0'); // default collapsed
+      header.addEventListener('click', function (e) {
+        // don't collapse if clicking the date dropdown
+        if (e.target.closest('#viewsDateDropdown')) return;
+        setOpen(body.style.display === 'none');
+      });
+    })();
+  </script>
+
+  <script>
+    // ── Engagement chart (Umami pageviews over time) ──────────────
+    (function () {
+      var engChart = null;
+      function buildEngagementChart(pageviews, sessions) {
+        var canvas = document.getElementById('engagementChart');
+        if (!canvas) return;
+        var dark = document.documentElement.getAttribute('data-theme') !== 'light';
+        if (engChart) engChart.destroy();
+        engChart = new Chart(canvas, {
+          type: 'line',
+          data: {
+            labels: pageviews.map(function (p) {
+              var d = new Date(p.x || p.t);
+              return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+            }),
+            datasets: [
+              {
+                label: 'Pageviews',
+                data: pageviews.map(function (p) { return p.y; }),
+                borderColor: '#F5A623', backgroundColor: 'rgba(245,166,35,0.12)',
+                borderWidth: 2, fill: true, tension: 0.3, pointRadius: 2
+              },
+              {
+                label: 'Visitors',
+                data: sessions.map(function (p) { return p.y; }),
+                borderColor: 'rgba(99,179,237,.8)', backgroundColor: 'transparent',
+                borderWidth: 2, fill: false, tension: 0.3, pointRadius: 2
+              }
+            ]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: dark ? '#1c1c1e' : '#fff',
+                titleColor: dark ? '#fff' : '#000',
+                bodyColor: dark ? 'rgba(255,255,255,.6)' : 'rgba(0,0,0,.6)',
+                borderColor: dark ? 'rgba(255,255,255,.12)' : 'rgba(0,0,0,.12)',
+                borderWidth: 1, padding: 10, cornerRadius: 8
+              }
+            },
+            scales: {
+              x: { grid: { color: dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)', drawBorder: false },
+                   ticks: { color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 } },
+                   border: { display: false } },
+              y: { beginAtZero: true,
+                   grid: { color: dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)', drawBorder: false },
+                   ticks: { color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 } },
+                   border: { display: false } }
+            }
+          }
+        });
+      }
+
+      function loadEngagement() {
+        var startAt = Date.now() - 30 * 86400000;
+        var endAt   = Date.now();
+        fetch('/api/analytics/pageviews?startAt=' + startAt + '&endAt=' + endAt)
+          .then(function (r) { return r.json(); })
+          .then(function (r) {
+            if (!r.success || !r.data) return;
+            buildEngagementChart(r.data.pageviews || [], r.data.sessions || []);
+          })
+          .catch(function () {});
+      }
+
+      // Load when Publication Activity panel opens
+      var pubActHeader = document.getElementById('pubActHeader');
+      if (pubActHeader) {
+        pubActHeader.addEventListener('click', function () {
+          setTimeout(function () {
+            if (!engChart) loadEngagement();
+          }, 50);
+        });
+      }
+      // Also try on page load if panel starts open
+      if (localStorage.getItem('pb-pubact-collapsed') === '0') {
+        loadEngagement();
+      }
+    })();
+  </script>
+
+  <script>
+    // ── Recent Activity collapse ──────────────────────────────────
+    (function () {
+      var header  = document.getElementById('recentActHeader');
+      var body    = document.getElementById('recentActBody');
+      var chevron = document.getElementById('recentActChevron');
+      if (!header) return;
+      var STORAGE_KEY = 'pb-recentact-collapsed';
+      function setOpen(open) {
+        body.style.display = open ? '' : 'none';
+        chevron.style.transform = open ? 'rotate(0deg)' : 'rotate(-90deg)';
+        localStorage.setItem(STORAGE_KEY, open ? '0' : '1');
+      }
+      var saved = localStorage.getItem(STORAGE_KEY);
+      setOpen(saved !== '1'); // default open
+      header.addEventListener('click', function () {
+        setOpen(body.style.display === 'none');
+      });
+    })();
+  </script>
+
+  <script>
+    // ── Finished Presentations panel ──────────────────────────────
+    (function () {
+      var allPres      = [];
+      var currentSort  = 'newest';
+      var currentSearch = '';
+      var currentPage  = 1;
+      var dateRange    = null; // [Date, Date] or null
+      var PAGE_SIZE    = 10;
+      var currentView  = localStorage.getItem('pb-fp-view') || 'list';
+
+      // Apply saved view on init
+      (function () {
+        var list = document.getElementById('fpList');
+        var btnList = document.getElementById('fpViewList');
+        var btnGrid = document.getElementById('fpViewGrid');
+        if (currentView === 'grid') {
+          list.classList.add('fp-grid-mode');
+          btnList.classList.remove('active');
+          btnGrid.classList.add('active');
+        }
+      })();
+
+      // View toggle handlers
+      document.getElementById('fpViewList').addEventListener('click', function () {
+        currentView = 'list';
+        localStorage.setItem('pb-fp-view', 'list');
+        document.getElementById('fpList').classList.remove('fp-grid-mode');
+        document.getElementById('fpViewList').classList.add('active');
+        document.getElementById('fpViewGrid').classList.remove('active');
+      });
+      document.getElementById('fpViewGrid').addEventListener('click', function () {
+        currentView = 'grid';
+        localStorage.setItem('pb-fp-view', 'grid');
+        document.getElementById('fpList').classList.add('fp-grid-mode');
+        document.getElementById('fpViewGrid').classList.add('active');
+        document.getElementById('fpViewList').classList.remove('active');
+      });
+
+      function timeAgo(isoStr) {
+        if (!isoStr) return '';
+        var diff = Date.now() - new Date(isoStr).getTime();
+        var min  = Math.floor(diff / 60000);
+        if (min < 2)  return 'just now';
+        if (min < 60) return min + ' min ago';
+        var hr = Math.floor(diff / 3600000);
+        if (hr < 24)  return hr + ' hour' + (hr === 1 ? '' : 's') + ' ago';
+        var days = Math.floor(diff / 86400000);
+        if (days < 30) return days + ' day' + (days === 1 ? '' : 's') + ' ago';
+        var months = Math.floor(days / 30);
+        return months + ' month' + (months === 1 ? '' : 's') + ' ago';
+      }
+
+      function getFiltered() {
+        var q = currentSearch.toLowerCase().trim();
+        var out = allPres.filter(function (p) {
+          if (q && ((p.presentationName || '') + ' ' + (p.customerName || '')).toLowerCase().indexOf(q) === -1) return false;
+          if (dateRange) {
+            var d = new Date(p.publishedAt || p.createdAt || 0);
+            if (d < dateRange[0] || d > dateRange[1]) return false;
+          }
+          return true;
+        });
+        if (currentSort === 'newest') {
+          out.sort(function (a, b) { return ((b.publishedAt || b.createdAt || '') > (a.publishedAt || a.createdAt || '')) ? 1 : -1; });
+        } else if (currentSort === 'oldest') {
+          out.sort(function (a, b) { return ((a.publishedAt || a.createdAt || '') > (b.publishedAt || b.createdAt || '')) ? 1 : -1; });
+        } else {
+          out.sort(function (a, b) {
+            var na = (a.presentationName || a.customerName || '').toLowerCase();
+            var nb = (b.presentationName || b.customerName || '').toLowerCase();
+            return na > nb ? 1 : na < nb ? -1 : 0;
+          });
+        }
+        return out;
+      }
+
+      // ── Batch analytics fetch ─────────────────────────────────────
+      var _batchTimer = null;
+      function scheduleBatchFetch() {
+        clearTimeout(_batchTimer);
+        _batchTimer = setTimeout(function () {
+          var startAt = Date.now() - 30 * 86400000;
+          var endAt   = Date.now();
+          fetch('/api/analytics/batch?startAt=' + startAt + '&endAt=' + endAt)
+            .then(function (r) { return r.json(); })
+            .then(function (r) {
+              if (!r.success) return;
+              injectMetrics(r.data);
+            })
+            .catch(function () {});
+        }, 200);
+      }
+
+      function fmtDuration(ms) {
+        if (!ms) return '0s';
+        var s = Math.round(ms / 1000);
+        if (s < 60) return s + 's';
+        return Math.floor(s / 60) + 'm ' + (s % 60) + 's';
+      }
+
+      function injectMetrics(batchData) {
+        document.querySelectorAll('.fp-metrics[data-pres-id]').forEach(function (el) {
+          var id   = el.dataset.presId;
+          var d    = batchData[id];
+          if (!d) { el.innerHTML = '<span style="opacity:.35;font-size:11px;">no data yet</span>'; return; }
+          var visitors  = (d.visitors  && d.visitors.value  != null) ? d.visitors.value  : '—';
+          var visits    = (d.visits    && d.visits.value    != null) ? d.visits.value    : '—';
+          var pageviews = (d.pageviews && d.pageviews.value != null) ? d.pageviews.value : '—';
+          var bounce    = (d.bounces   && d.bounces.value   != null && visits && visits !== '—' && visits > 0)
+                          ? Math.round((d.bounces.value / visits) * 100) + '%' : '—';
+          var duration  = (d.totaltime && d.totaltime.value != null && visits && visits !== '—' && visits > 0)
+                          ? fmtDuration(Math.round(d.totaltime.value / visits) * 1000) : '—';
+          el.innerHTML =
+            '<span class="fp-metric">👤 <span class="fp-metric-val">' + visitors + '</span> visitors</span>' +
+            '<span class="fp-metric">👁 <span class="fp-metric-val">' + pageviews + '</span> views</span>' +
+            '<span class="fp-metric">↩ <span class="fp-metric-val">' + bounce + '</span> bounce</span>' +
+            '<span class="fp-metric">⏱ <span class="fp-metric-val">' + duration + '</span></span>';
+        });
+      }
+
+      function render() {
+        var filtered   = getFiltered();
+        var total      = filtered.length;
+        var totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+        if (currentPage > totalPages) currentPage = 1;
+        var page = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+        var subtitle = document.getElementById('fpSubtitle');
+        if (subtitle) subtitle.textContent = total + ' presentation' + (total === 1 ? '' : 's');
+
+        var list = document.getElementById('fpList');
+        list.innerHTML = '';
+
+        if (page.length === 0) {
+          var empty = document.createElement('li');
+          empty.className = 'activity-empty';
+          empty.textContent = allPres.length === 0 ? 'No presentations published yet.' : 'No results match your search.';
+          list.appendChild(empty);
+        } else {
+          page.forEach(function (p) {
+            var li = document.createElement('li');
+            li.className = 'fp-card';
+
+            var info   = document.createElement('div');
+            info.className = 'fp-card-info';
+            var nameEl = document.createElement('div');
+            nameEl.className = 'fp-card-name';
+            nameEl.textContent = p.presentationName || 'Untitled';
+            var subEl = document.createElement('div');
+            subEl.className = 'fp-card-sub';
+            var subParts = [];
+            if (p.customerName) subParts.push(p.customerName);
+            if (p.slideCount != null) subParts.push(p.slideCount + ' slide' + (p.slideCount === 1 ? '' : 's'));
+            subEl.textContent = subParts.join(' · ');
+            info.appendChild(nameEl);
+            info.appendChild(subEl);
+
+            var metricsEl = document.createElement('div');
+            metricsEl.className = 'fp-metrics';
+            metricsEl.dataset.presId = p.id;
+            metricsEl.innerHTML = '<span class="fp-metric-loading">loading metrics…</span>';
+
+            var meta = document.createElement('div');
+            meta.className = 'fp-card-meta';
+            meta.textContent = timeAgo(p.publishedAt || p.createdAt);
+
+            var actions = document.createElement('div');
+            actions.className = 'fp-card-actions';
+
+            var viewBtn = document.createElement('a');
+            viewBtn.className = 'fp-btn';
+            viewBtn.textContent = 'View';
+            viewBtn.href = '/view/' + p.id;
+            viewBtn.target = '_blank';
+            actions.appendChild(viewBtn);
+
+            var pubBtn = document.createElement('button');
+            pubBtn.className = 'fp-btn';
+            pubBtn.textContent = 'Re-publish';
+            pubBtn.addEventListener('click', function () {
+              pubBtn.disabled = true;
+              pubBtn.textContent = 'Publishing…';
+              fetch('/api/presentations/' + p.id + '/publish', { method: 'POST' })
+                .then(function (r) { return r.json(); })
+                .then(function (r) {
+                  pubBtn.textContent = r.success ? 'Published!' : 'Failed';
+                  setTimeout(function () { pubBtn.textContent = 'Re-publish'; pubBtn.disabled = false; }, 2500);
+                })
+                .catch(function () {
+                  pubBtn.textContent = 'Error';
+                  setTimeout(function () { pubBtn.textContent = 'Re-publish'; pubBtn.disabled = false; }, 2500);
+                });
+            });
+            actions.appendChild(pubBtn);
+
+            var delBtn = document.createElement('button');
+            delBtn.className = 'fp-btn fp-btn-danger';
+            delBtn.textContent = 'Delete';
+            delBtn.addEventListener('click', function () {
+              if (!confirm('Delete "' + (p.presentationName || p.customerName || p.id) + '"?\nThis cannot be undone.')) return;
+              delBtn.disabled = true;
+              delBtn.textContent = 'Deleting…';
+              fetch('/api/presentations/' + p.id + '/archive', { method: 'POST' })
+                .then(function (r) { return r.json(); })
+                .then(function (r) {
+                  if (!r.success) throw new Error(r.error);
+                  return fetch('/api/presentations/' + p.id, { method: 'DELETE' });
+                })
+                .then(function (r) { return r.json(); })
+                .then(function (r) {
+                  if (!r.success) throw new Error(r.error);
+                  refreshFromApi();
+                })
+                .catch(function () {
+                  delBtn.textContent = 'Error';
+                  setTimeout(function () { delBtn.textContent = 'Delete'; delBtn.disabled = false; }, 2500);
+                });
+            });
+            actions.appendChild(delBtn);
+
+            li.appendChild(info);
+            li.appendChild(metricsEl);
+            li.appendChild(meta);
+            li.appendChild(actions);
+            list.appendChild(li);
+          });
+
+          scheduleBatchFetch();
+        }
+
+        renderPagination(totalPages);
+      }
+
+      function renderPagination(totalPages) {
+        var container = document.getElementById('fpPagination');
+        container.innerHTML = '';
+        if (totalPages <= 1) return;
+        var prev = document.createElement('button');
+        prev.textContent = '← Prev';
+        prev.disabled = currentPage === 1;
+        prev.addEventListener('click', function () { currentPage--; render(); });
+        container.appendChild(prev);
+        var info = document.createElement('span');
+        info.textContent = 'Page ' + currentPage + ' of ' + totalPages;
+        container.appendChild(info);
+        var next = document.createElement('button');
+        next.textContent = 'Next →';
+        next.disabled = currentPage === totalPages;
+        next.addEventListener('click', function () { currentPage++; render(); });
+        container.appendChild(next);
+      }
+
+      function refreshFromApi() {
+        fetch('/api/presentations')
+          .then(function (r) { return r.json(); })
+          .then(function (r) {
+            allPres = r.data || [];
+            window._viewsPresentations = allPres;
+            render();
+          })
+          .catch(function () { render(); });
+      }
+
+      // ── Search ──────────────────────────────────────────────────
+      document.getElementById('fpSearch').addEventListener('input', function () {
+        currentSearch = this.value;
+        currentPage   = 1;
+        render();
+      });
+
+      // ── Sort dropdown ────────────────────────────────────────────
+      var sortTrigger = document.getElementById('fpSortTrigger');
+      var sortMenu    = document.getElementById('fpSortMenu');
+      sortTrigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var open = sortMenu.classList.toggle('open');
+        sortTrigger.querySelector('.chevron').style.transform = open ? 'rotate(180deg)' : '';
+      });
+      sortMenu.querySelectorAll('.sort-option').forEach(function (opt) {
+        opt.addEventListener('click', function () {
+          currentSort = this.dataset.value;
+          document.getElementById('fpSortLabel').textContent = this.textContent;
+          sortMenu.querySelectorAll('.sort-option').forEach(function (o) { o.classList.remove('selected'); });
+          this.classList.add('selected');
+          sortMenu.classList.remove('open');
+          sortTrigger.querySelector('.chevron').style.transform = '';
+          currentPage = 1;
+          render();
+        });
+      });
+      document.addEventListener('click', function () {
+        sortMenu.classList.remove('open');
+        sortTrigger.querySelector('.chevron').style.transform = '';
+      });
+      sortMenu.addEventListener('click', function (e) { e.stopPropagation(); });
+
+      // ── Date filter (flatpickr) ──────────────────────────────────
+      var fpDate = flatpickr('#fpDateInput', {
+        mode: 'range', dateFormat: 'Y-m-d', disableMobile: true,
+        onChange: function (dates) {
+          if (dates.length < 2) return;
+          var start = new Date(dates[0]); start.setHours(0, 0, 0, 0);
+          var end   = new Date(dates[1]); end.setHours(23, 59, 59, 999);
+          dateRange = [start, end];
+          function fmt(d) { return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); }
+          document.getElementById('fpDateLabel').textContent = fmt(dates[0]) + ' → ' + fmt(dates[1]);
+          document.getElementById('fpDateClear').style.display = 'inline';
+          document.getElementById('fpDateBtn').classList.add('active');
+          currentPage = 1;
+          render();
+        }
+      });
+      document.getElementById('fpDateBtn').addEventListener('click', function () {
+        fpDate.open();
+      });
+      document.getElementById('fpDateClear').addEventListener('click', function (e) {
+        e.stopPropagation();
+        fpDate.clear();
+        dateRange = null;
+        document.getElementById('fpDateLabel').textContent = 'Date range';
+        this.style.display = 'none';
+        document.getElementById('fpDateBtn').classList.remove('active');
+        currentPage = 1;
+        render();
+      });
+
+      // ── Init ─────────────────────────────────────────────────────
+      if (window._viewsPresentations) {
+        allPres = window._viewsPresentations;
+        render();
+      } else {
+        document.addEventListener('viewsPresentationsLoaded', function (e) {
+          allPres = e.detail.items || [];
+          render();
+        });
+      }
+    })();
+  </script>
 
 </body>
 </html>

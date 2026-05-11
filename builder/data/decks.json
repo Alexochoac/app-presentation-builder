@@ -1,0 +1,32 @@
+{
+  "activeDeckId": "deck-1778395362103-u3os0",
+  "decks": [
+    {
+      "id": "default",
+      "name": "SoftSolution",
+      "theme": "dark",
+      "createdAt": "2026-05-09T00:00:00.000Z",
+      "updatedAt": "2026-05-10T12:05:53.083Z",
+      "logo": "/slides/uploads/LOGO_Softsolution_Black.jpg",
+      "heroBg": "/slides/uploads/Panther_Eye.jpeg",
+      "heroBgFocal": "25% 50%",
+      "colors": {
+        "primary": "#F5A623"
+      },
+      "heroBgFocalGrid": 5
+    },
+    {
+      "id": "deck-1778395362103-u3os0",
+      "name": "Benteler",
+      "theme": "light",
+      "createdAt": "2026-05-10T06:42:42.103Z",
+      "updatedAt": "2026-05-10T12:18:18.601Z",
+      "logo": "/slides/uploads/LOGO_Benteler.jpg",
+      "heroBg": "/slides/uploads/Benteler_Conveyor_Picture_.jpg",
+      "heroBgFocal": "50% 50%",
+      "colors": {
+        "primary": "#022952"
+      }
+    }
+  ]
+}

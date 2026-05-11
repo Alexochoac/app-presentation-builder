@@ -1,17 +1,17 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-04-30 (session 13)
+Last updated: 2026-05-11 (session 14)
 
 ---
 
 ## Overview
 
-A local web app for building customized sales presentations for Softsolution's LineScanner glass inspection product. Sales reps log in, manage their slide deck from a dashboard, customize slides (logos, text, images) in the builder UI, and save changes back to disk.
+A local web app for building customized sales presentations for Softsolution's LineScanner glass inspection product. Sales reps log in, manage slide decks, customize slides, and publish to GitHub Pages / Cloudflare Pages.
 
 **Status:** Active — Phase 1 in development
 **Runs locally at:** `http://localhost:3000`
 **Start command:** `cd builder && node server.js`
-**Login → Dashboard → Builder (`/slides`) → Open Builder → preview.html → Create Presentation**
+**Flow:** Login → Dashboard → Builder (`/builder`) → Slides (`/slides`) → Settings (`/settings`)
 
 ---
 
@@ -20,57 +20,49 @@ A local web app for building customized sales presentations for Softsolution's L
 ```
 App-presentation-builder/
 ├── PLAN.md                         ← Full product roadmap + TODO
-├── CONTEXT.md                      ← Project context + next steps
-├── memory/sessions.md              ← Session history
+├── CONTEXT.md                      ← Project context + completed history
+├── tasks/                          ← Pending task specs
+│   └── done/                       ← Completed task specs
 ├── scripts/
-│   ├── build.js                    ← NEW (2026-04-20): CLI to rebuild frozen presentations (no server needed)
-│   └── deploy.js                   ← NEW (2026-04-26): git add→commit→push for one or all presentations; node scripts/deploy.js --id=<id> | --all
-├── frontend/                       ← NEW (2026-04-21): React/Vite/shadcn scaffolding (early stage)
-├── finished-presentations/         ← NEW (2026-04-20): Self-contained frozen presentation outputs
+│   ├── build.js                    ← CLI to rebuild frozen presentations (no server needed)
+│   └── deploy.js                   ← git add→commit→push for one or all presentations
+├── finished-presentations/         ← Self-contained frozen presentation outputs
 │   ├── [presId]/
 │   │   └── index.html              ← Frozen output (CSS+JS inlined, images via ../shared/)
-│   └── shared/                     ← Deduplicated image pool (~70 images across all presentations)
+│   └── shared/                     ← Deduplicated image pool
 │
 └── builder/                        ← The runnable web app
-    ├── server.js                   ← Express server — all API endpoints + slide render functions ⚠️ SOLE SOURCE OF TRUTH FOR SLIDES
-    ├── package.json                ← Dependencies: express, cheerio, dotenv, express-session
+    ├── server.js                   ← Express server — ALL API endpoints + slide render functions
+    │                                 ⚠️ SOLE SOURCE OF TRUTH FOR SLIDES
+    ├── package.json
     ├── lib/
-    │   └── translator.js           ← NEW (2026-04-30): OpenRouter API translation module; translate(fields, targetLanguage) → { ok, fields, error }
-    ├── .env                        ← SESSION_SECRET, BUILDER_USER, BUILDER_PASS, OPENROUTER_API_KEY (not in git)
-    ├── .env.example                ← Template for env vars
+    │   └── translator.js           ← OpenRouter API translation; translate(fields, lang) → { ok, fields, error }
+    ├── .env                        ← SESSION_SECRET, BUILDER_USER, BUILDER_PASS, OPENROUTER_API_KEY,
+    │                                 UMAMI_USERNAME, UMAMI_PASSWORD, UMAMI_BASE_URL (not in git)
     ├── data/
-    │   ├── deck.json               ← Slide order + visibility (librarySlideId refs)
-    │   ├── slide-library.json      ← Catalog of library slides (templateId + edits)
-    │   ├── slide-templates.json    ← Template definitions (id, defaultContent)
-    │   ├── layouts.json            ← User-created layouts (legacy new-slide system)
-    │   ├── settings.json           ← App settings (heroBg, heroBgFocal, etc.)
+    │   ├── decks.json              ← Deck registry: { decks: [{ id, name, logo, heroBg, theme, colors, ... }], activeDeckId }
+    │   ├── decks/                  ← Per-deck folders: decks/[deckId]/deck.json
+    │   │   └── [deckId]/deck.json  ← { id, name, slides: [{ id, librarySlideId, visible }] }
+    │   ├── slide-library.json      ← Library slides catalog + deckEdits per-deck overrides
+    │   ├── slide-templates.json    ← Template definitions (id, defaultContent, rows for new system)
+    │   ├── layouts.json            ← User-created layout templates (Slide Builder system)
+    │   ├── settings.json           ← App settings: umamiWebsiteId, logos, heroBg, defaultPrimaryColor
     │   ├── presentations.json      ← Finished presentations snapshot history
-    │   ├── languages.json          ← Static list of 103 world languages (ISO 639-1 codes + names)
-    │   ├── translations.json       ← Per-deck translation store (fields + per-language current/previous/dirty)
-    │   └── renderers/              ← Source files for per-slide render functions (agents write here)
-    │       ├── slide-06-surface.js     ← renderDefectGalleryLayout
-    │       ├── slide-07-dimension.js   ← renderCarouselCardsLayout
-    │       ├── slide-08-screenprint.js ← renderChecklistCarouselLayout
-    │       ├── slide-09-logo-check.js  ← renderCarouselTagsLayout
-    │       ├── slide-10-database.js    ← renderTabsCarouselLayout
-    │       ├── slide-11-sensitivity.js ← renderCarouselStepsLayout
-    │       ├── slide-12-footprint.js   ← renderFullCarouselLayout
-    │       ├── slide-13-integrations.js← renderCardsGridLayout
-    │       └── slide-14-cta.js         ← renderCtaLayout
+    │   ├── languages.json          ← 103 world languages (ISO 639-1)
+    │   └── translations.json       ← Per-deck translation store
     ├── features/
     │   ├── auth/
     │   │   ├── auth.js             ← Session auth middleware + login/logout routes
-    │   │   └── login.html          ← Login page (dark theme)
+    │   │   └── login.html          ← Login page
     │   ├── dashboard/
-    │   │   ├── index.html          ← Dashboard (served at /) — Views Overview chart (Coming Soon) + Finished Presentations list/grid toggle
-    │   │   ├── dashboard.css       ← Legacy styles (to be deleted)
-    │   │   └── dashboard.js        ← Legacy deck manager (no longer loaded by dashboard)
-    │   ├── settings/
-    │   │   └── index.html          ← Settings page (/settings) — Presentation Name, sidebar nav
+    │   │   └── index.html          ← Dashboard (served at /) — see Dashboard section below
+    │   ├── builder-ui/
+    │   │   ├── index.html          ← Builder section (/builder) — 3-zone layout, deck manager
+    │   │   └── preview.html        ← Legacy full-screen slide viewer (still in use)
     │   ├── slides/
-    │   │   ├── index.html          ← Builder page (/slides) — My Deck tab + Slide Manager tab; Create Presentation modal
-    │   │   ├── style.css           ← Shared slide CSS — mobile-first, all 15 slides
-    │   │   ├── slide-01-cover.html ← Original HTML fragments (source of truth for content)
+    │   │   ├── index.html          ← Slides section (/slides) — 3-tab: My Library / Templates / Slide Builder
+    │   │   ├── style.css           ← Shared slide CSS (mobile-first, all slides)
+    │   │   ├── slide-01-cover.html ← Original HTML fragments (source of truth for content structure)
     │   │   ├── ... (slides 02-15)
     │   │   ├── uploads/            ← Customer-uploaded images (gitignored)
     │   │   └── components/
@@ -79,378 +71,326 @@ App-presentation-builder/
     │   │       ├── tabs.js         ← ls-tabs: add/delete/rename; calls LSTable.init on tab switch
     │   │       ├── list.js         ← ul[data-ls-list]: add/hide/delete/reorder/edit
     │   │       ├── table.js        ← table[data-ls-table]: row+col edit, dot cycling, resizable col
-    │   │       │                     saveTable saves parent .ls-tabs container when inside tabs
-    │   │       ├── button.js       ← auto-attaches Track.click() to .slide-btn on load
-    │   │       ├── tags.js         ← auto-attaches Track.click() to .slide-tag on load
-    │   │       ├── language-switcher.js ← NEW (2026-04-30): client-side lang switcher for finished presentations; reads ?lang= / localStorage / data-default-lang; window.switchLang(code)
+    │   │       ├── button.js       ← auto-attaches Track.click() to .slide-btn
+    │   │       ├── tags.js         ← auto-attaches Track.click() to .slide-tag
+    │   │       ├── language-switcher.js ← client-side lang switcher for finished presentations
     │   │       └── tracker.js      ← Umami analytics tracker
-    │   ├── presentation-view/      ← PLANNED: Read-only viewer page for finished presentations
-    │   └── builder-ui/
-    │       └── preview.html        ← Builder UI (served at /builder/preview.html)
+    │   ├── layouts/
+    │   │   └── index.html          ← Redirects to /slides
+    │   ├── presentation-view/
+    │   │   └── index.html          ← Read-only viewer fallback (when no frozen file exists)
+    │   └── settings/
+    │       └── index.html          ← Settings (/settings) — global only (app appearance, new deck defaults)
     └── shared/
-        ├── app-style.css           ← Shared app shell CSS (dark/light theme)
+        ├── app-style.css           ← Shared app shell CSS (dark/light theme, CSS vars)
         └── assets/                 ← Brand logos (served at /slides/shared/)
 ```
 
 ---
 
-## Architecture
+## Navigation (current — 4 sidebar links)
 
-```
-Browser → Express (server.js)
-              ├── Auth routes (login/logout — public)
-              ├── requireAuth middleware (gates everything below)
-              ├── Static: /slides/uploads  → features/slides/uploads/
-              ├── Static: /slides/shared   → shared/assets/
-              ├── GET /slides/:deckSlideId.html      ← renders library slide via render chain (bare fragment)
-              ├── GET /slides/deck-preview/:id       ← renders deck slide + full HTML shell with component JS (carousel.js, tabs.js, etc.)
-              ├── GET /slides/preview/:id            ← shell route: wraps static fragment in full HTML
-              ├── Static: /slides          → features/slides/
-              ├── Static: /               → features/dashboard/
-              ├── GET  /settings              → features/settings/index.html
-              ├── GET  /slides                → features/slides/index.html
-              ├── Static: /builder        → features/builder-ui/
-              ├── GET  /api/deck               → reads deck.json + enriches with library data
-              ├── PUT  /api/deck               → merges into deck.json (preserves librarySlideId)
-              ├── POST /api/deck/slides/:id/edits  ← saves edits to library slide
-              ├── POST /api/library            ← create library slide
-              ├── POST /api/library/:id/edits  ← save edits to library slide directly
-              ├── GET  /api/slide-library      → reads slide-library.json
-              ├── DELETE /api/slide-library/:id → removes entry
-              ├── GET  /api/presentations      ← NEW (2026-04-12): returns all finished presentations
-              ├── POST /api/presentations      ← NEW (2026-04-12): saves new presentation snapshot
-              ├── GET  /api/presentations/:id  ← returns single presentation
-              ├── PUT  /api/presentations/:id  ← edit name/contact/title
-              ├── DELETE /api/presentations/:id ← delete presentation + frozen folder (fs.rmSync)
-              ├── POST /api/presentations/:id/duplicate ← clone with reconfigured customer settings
-              ├── POST /api/presentations/:id/archive   ← soft-delete (sets archivedAt)
-              ├── POST /api/presentations/:id/unarchive ← restore from archive
-              ├── POST /api/presentations/:id/publish   ← git add→commit→push; returns { success, url, alreadyPublished }
-              ├── Static: /finished           → finished-presentations/ (frozen outputs)
-              ├── GET  /view/:id              ← redirects to /finished/:presId/ if frozen file exists; else live viewer
-              ├── GET  /api/languages              ← returns full language list from languages.json
-              ├── GET  /api/translations           ← returns translations.json for the deck
-              ├── POST /api/translations/translate ← translate all dirty/missing fields via OpenRouter (chunked 20 fields/call)
-              ├── PATCH /api/translations/field    ← save manual correction to a field translation
-              ├── POST /api/translations/restore   ← restore previous version for a field+language
-              ├── PUT  /api/translations/settings  ← update deck languages, favorites, defaultLanguage
-              ├── POST /api/save               → edits slide HTML via Cheerio (old slides); also updates translations.json dirty flags
-              ├── POST /api/upload-image        → saves base64 image to uploads/
-              ├── POST /api/save-image-src      → updates img src in slide file
-              └── POST /api/clone-slide         → copies slide HTML, adds to library+deck
-```
+| Route | Page | Purpose |
+|-------|------|---------|
+| `/` | Dashboard | Analytics overview + Finished Presentations CRUD |
+| `/builder` | Builder | 3-zone layout: deck list + slide panel + main canvas |
+| `/slides` | Slides | 3-tab: My Library / Templates / Slide Builder |
+| `/settings` | Settings | Global app settings only |
+
+`/layouts` redirects to `/slides`.
 
 ---
 
-## presentations.json Structure
+## Dashboard (`builder/features/dashboard/index.html`)
 
+Three panels stacked vertically:
+
+### 1. Finished Presentations (top)
+- Filter bar: search (name + customer), flatpickr date range, sort dropdown (Newest / Oldest / Name A–Z)
+- Grid/List toggle in panel header — state saved to `localStorage` `pb-fp-view`
+- Paginated list (10/page) — each card shows: name, customer · slide count, relative time, **Umami metrics strip** (visitors / views / bounce rate / avg duration — loaded via `/api/analytics/batch` after render)
+- Actions per card: **View** (`/view/:id`), **Re-publish** (`POST /api/presentations/:id/publish`), **Delete** (archive → hard delete)
+
+### 2. Publication Activity (below FP, **starts collapsed**)
+- Collapse toggle (`#pubActHeader` / `#pubActBody`), state saved to `pb-pubact-collapsed` (default `'1'` = collapsed)
+- Date range dropdown (7d / 24h / 30d / Custom flatpickr)
+- Summary cards: total presentations, total decks, last published
+- Publications bar chart (`#viewsChart`, Chart.js 4) — real data from `/api/presentations`
+- Presentations multi-select dropdown with search
+- **Engagement chart** (`#engagementChart`) — Umami pageviews + visitors line chart, lazy-loaded on panel open via `/api/analytics/pageviews`
+- **Recent Activity** inside as collapsible subsection (`pb-recentact-collapsed`, default open) — last 10 published
+
+### Key CSS notes
+- `.panel` has `overflow:hidden` in `app-style.css` — date dropdowns use `overflow:visible` inline to escape
+- Grid mode: `.fp-list.fp-grid-mode` uses CSS grid `auto-fill minmax(240px,1fr)`
+
+---
+
+## Builder (`builder/features/builder-ui/index.html`)
+
+Three-zone layout:
+
+| Zone | Width | Content |
+|------|-------|---------|
+| Left sidebar | 280px | Deck list (from `GET /api/decks`), active deck set via `POST /api/decks/active`, rename/duplicate/delete/settings per deck |
+| Slide panel | bottom strip | 112×63px thumbnail iframes, drag-to-reorder (HTML5 drag API → `PUT /api/deck`), eye toggle, remove, "+ Add Slide" → opens `/slides?mode=pick` |
+| Main canvas | fills remaining | 1920×1080 iframe scaled to fit, inline editing ON, auto-saves via `POST /api/deck/slides/:id/edits` |
+
+**Deck Settings drawer** (340px right slide-in):
+- Opens via ⚙ icon or deck `⋯` menu → "Deck Settings"
+- Fields: Deck Name, Dark/Light theme toggle, Primary Color picker, Logo upload/remove, Hero Background upload/remove + focal point grid
+- Auto-saves to `PUT /api/decks/:id`
+- Logo: `POST /api/decks/:id/upload-logo`
+- Hero bg: `POST /api/decks/:id/upload-hero-bg`
+
+**Finished presentations strip** (collapsible, inside builder):
+- Lists presentations filtered by current deck
+- Publish button → save modal → `POST /api/presentations`
+
+---
+
+## Slides Section (`builder/features/slides/index.html`)
+
+Three top-level tabs:
+
+**My Library tab**
+- Grid of library slides from `GET /api/slide-library`
+- Scaled thumbnails via `GET /slides/library-preview/:id` (always readonly)
+- Actions: Edit (opens Slide Builder tab), Duplicate (`POST /api/slide-library/:id/duplicate`), Delete (`DELETE /api/slide-library/:id`)
+- Pick-mode: "Add to [DeckName]" → `POST /api/deck/slides` → redirects to `/builder`
+
+**Templates tab**
+- Filter pills by category (Cover / Content / Visual / Metrics / Data / CTA)
+- "Use Template" → name modal → creates library slide
+- "Edit Template" → opens Slide Builder tab with template rows pre-loaded
+- Pick-mode: "Use & Add to [DeckName]" → creates library slide + adds to deck
+
+**Slide Builder tab**
+- Top bar: slide name, Desktop/Mobile viewport toggle, "Save as Template" (`POST /api/layouts` or `PUT /api/layouts/:id`), "Save to Library" (`POST /api/library`)
+- Split pane: canvas (row/col/component builder) + live preview
+- Auto-saves on 800ms debounce when editing existing template
+
+---
+
+## Settings (`builder/features/settings/index.html`)
+
+Global-only settings (per-deck settings moved to Builder deck drawer):
+- App Appearance: dark/light builder UI toggle
+- New Deck Defaults: default theme + primary color (`/api/settings`)
+- App Language: Coming Soon
+- Account: Coming Soon
+- Integrations: Coming Soon
+
+---
+
+## API Endpoints (`server.js`)
+
+### Decks
+| Method | Path | What it does |
+|--------|------|-------------|
+| GET | `/api/decks` | List all decks from `decks.json` |
+| POST | `/api/decks` | Create new deck |
+| POST | `/api/decks/active` | Set active deck |
+| GET | `/api/deck` | Get active deck slides |
+| PUT | `/api/deck` | Reorder/update deck slides |
+| PUT | `/api/decks/:id` | Update deck metadata (name, theme, colors, heroBgFocalGrid) |
+| DELETE | `/api/decks/:id` | Delete deck |
+| POST | `/api/decks/:id/upload-logo` | Upload deck logo |
+| POST | `/api/decks/:id/upload-hero-bg` | Upload deck hero background |
+| POST | `/api/deck/slides` | Add slide to active deck |
+| POST | `/api/deck/slides/:id/edits` | Save edits to a deck slide |
+| DELETE | `/api/deck/slides/:id` | Remove slide from deck |
+
+### Slide Library
+| Method | Path | What it does |
+|--------|------|-------------|
+| GET | `/api/slide-library` | List all library slides |
+| POST | `/api/library` | Create library slide |
+| DELETE | `/api/slide-library/:id` | Delete library slide |
+| POST | `/api/slide-library/:id/duplicate` | Duplicate with "(Copy)" suffix |
+| GET | `/slides/library-preview/:id` | Render library slide as read-only HTML |
+| GET | `/slides/deck-preview/:id` | Render deck slide + full HTML shell |
+
+### Layouts / Templates
+| Method | Path | What it does |
+|--------|------|-------------|
+| GET | `/api/layouts` | List layout templates |
+| POST | `/api/layouts` | Create layout template |
+| PUT | `/api/layouts/:id` | Update layout template |
+| DELETE | `/api/layouts/:id` | Delete layout |
+
+### Presentations
+| Method | Path | What it does |
+|--------|------|-------------|
+| GET | `/api/presentations` | List all finished presentations |
+| POST | `/api/presentations` | Save new presentation snapshot (runs `buildFrozenPresentation`) |
+| GET | `/api/presentations/:id` | Get single presentation |
+| PUT | `/api/presentations/:id` | Update metadata |
+| DELETE | `/api/presentations/:id` | Hard delete (requires `archivedAt` first) |
+| POST | `/api/presentations/:id/archive` | Soft delete (sets `archivedAt`) |
+| POST | `/api/presentations/:id/unarchive` | Restore from archive |
+| POST | `/api/presentations/:id/duplicate` | Clone with new customer info |
+| POST | `/api/presentations/:id/publish` | git add→commit→push; returns `{ success, url, alreadyPublished }` |
+| POST | `/api/presentations/rebuild-all` | Regenerate all frozen HTML files |
+| GET | `/finished/:presId/` | Static: serves frozen output |
+| GET | `/view/:id` | Redirect to `/finished/:id/` if frozen exists; else live viewer |
+
+### Analytics (Umami proxy)
+| Method | Path | What it does |
+|--------|------|-------------|
+| GET | `/api/analytics/batch?startAt=&endAt=` | Stats for all presentations in parallel (visitors, visits, pageviews, bounces, totaltime) |
+| GET | `/api/analytics/presentation/:id?startAt=&endAt=` | Stats for one presentation by URL `/finished/:id/` |
+| GET | `/api/analytics/pageviews?startAt=&endAt=&presId=` | Time-series pageviews + sessions for engagement chart |
+
+**Umami auth pattern:** Server calls `POST /api/auth/login` with `UMAMI_USERNAME` + `UMAMI_PASSWORD` (self-hosted v1 has no API key UI). JWT cached 23h. Results cached 15min. `getUmamiToken(cb)` + `umamiGet(path, cb)` helpers.
+
+### Settings & Translation
+| Method | Path | What it does |
+|--------|------|-------------|
+| GET/POST | `/api/settings` | Read/write `settings.json` |
+| GET | `/api/languages` | List 103 languages |
+| GET | `/api/translations` | Read `translations.json` |
+| POST | `/api/translations/translate` | Translate dirty fields via OpenRouter (20 fields/chunk) |
+| PATCH | `/api/translations/field` | Save manual correction |
+| POST | `/api/translations/restore` | Restore previous translation version |
+| PUT | `/api/translations/settings` | Update deck languages / default |
+
+---
+
+## Data Models
+
+### `decks.json`
 ```json
 {
-  "presentations": [
-    {
-      "id": "00000001",
-      "createdAt": "2026-04-12",
-      "presentationName": "Q2 Demo",
-      "customerName": "Acme Corp",
-      "contactName": "Jane Doe",
-      "contactTitle": "VP Sales",
-      "customerLogoSrc": "/slides/uploads/logo.png",
-      "slideCount": 3,
-      "slides": [
-        { "id": "deck-cover", "librarySlideId": "lib-cover", "name": "Cover", "visible": true },
-        ...
-      ],
-      "publishedAt": "2026-04-26T10:00:00Z",   // set by POST /api/presentations/:id/publish
-      "archivedAt": null,                        // set by POST /api/presentations/:id/archive
-      "replacedAt": "2026-04-30T09:00:00Z"       // set when replaced via replaceId flow
-    }
-  ]
+  "decks": [{
+    "id": "deck-abc123",
+    "name": "GlassQuality Demo",
+    "logo": "/slides/uploads/logo.png",
+    "heroBg": "/slides/uploads/hero.jpeg",
+    "heroBgFocal": "25% 75%",
+    "heroBgFocalGrid": 5,
+    "theme": "dark",
+    "colors": { "primary": "#F5A623" }
+  }],
+  "activeDeckId": "deck-abc123"
 }
 ```
 
-**Presentation ID format:** numeric only (`00000001`, `00000002`, …) — generated by `makePresId()`.
-
-**Note:** When a presentation is created, `buildFrozenPresentation()` auto-runs and writes a fully self-contained `finished-presentations/[presId]/index.html` (CSS+JS inlined, images in `../shared/`). That frozen file is immutable — future builder edits only affect new builds. Deleting a presentation also removes its frozen folder.
-
-**`customerLogoSrc`** captured from `coverSlide.edits['customer-logo-src']` at save time. Older records without this field show initials fallback in grid view.
-
-**Dashboard filter bar** (added session 7): pill-style controls above the finished presentations list — real-time search (company + contact name), Flatpickr date range (dark-themed, local-time `YYYY-MM-DD`), custom sort dropdown (Newest/Oldest). All presentation mutations (edit, duplicate, delete) update `allItems` and call `applyFilters()` to re-render without a page reload.
-
-**Dashboard — Views Overview panel** (added 2026-04-25): bar chart section above Finished Presentations. Uses Chart.js 4 (CDN). Mock data only — no live Umami wiring yet. Features:
-- "Coming Soon" amber badge in panel title
-- Date range dropdown (Last 7 days default / Last 24 hours / Last 30 days / Custom via Flatpickr)
-- Custom date range shown as a pill below the chart with a clear button
-- Presentations multi-select dropdown: populated from `/api/presentations` via `viewsPresentationsLoaded` CustomEvent; search input filters the list; all checked by default; label updates dynamically
-- "Overview" tab resets all checkboxes to all-selected
-- Clicking the thumbnail area (`.pres-thumb`) of any finished presentation card dispatches `viewsFilterByPres` event → chart filters to that single presentation and scrolls into view
-- **CSS gotcha:** `.panel` has `overflow: hidden` in `app-style.css` — Views Overview section and Finished Presentations section both have `overflow:visible` inline to let dropdowns escape and stack above siblings.
-
-**Dashboard card actions menu (added 2026-04-26):**
-- Each finished presentation card now has a `⋯` button (`.btn-menu`) instead of inline View/Edit/Duplicate/Delete buttons
-- Clicking `⋯` opens `.pres-dropdown` — a floating menu with: Edit, Duplicate, Publish, (divider), Delete
-- View is removed as a button — double-click the company name to open in new tab
-- Menu positioning: dropdown uses `position:absolute; bottom:calc(100%+6px); right:0` (appears above the button)
-- Overflow fix: on open, the `li` gets `position:relative; z-index:10; overflow:visible` so the dropdown clears sibling cards in both list and grid view; all three properties are reset on close
-- Publish action calls `POST /api/presentations/:id/publish`, shows loading state, then a confirm dialog with the live URL
-
----
-
-## Template → Library → Deck Render Chain (implemented 2026-04-11)
-
-**The 3-level chain:**
-
-```
-slide-templates.json  →  slide-library.json  →  deck.json
-  (tpl-new-cover)          (lib-cover)           (deck-cover)
-  defaultContent            edits: {}             librarySlideId: "lib-cover"
-                                                  visible: true
-```
-
-**How a slide renders:**
-
-1. Browser requests `GET /slides/deck-cover.html`
-2. server.js looks up `deck-cover` in deck.json → gets `librarySlideId: "lib-cover"`
-3. Looks up `lib-cover` in slide-library.json → gets `templateId: "tpl-new-cover"`, `edits: {}`
-4. Calls `renderLayoutToHtml(tpl, deckSlideId, savedEdits)`
-5. `renderLayoutToHtml` dispatches to the correct render function by `tpl.id`
-6. Returns full HTML fragment
-
-**All 14 dispatch lines in server.js (~line 2572):**
-```js
-if (tplId === 'tpl-new-cover')              return renderHeroLayout(...)
-if (tplId === 'tpl-new-company')            return renderCompanyLayout(...)
-if (tplId === 'tpl-new-comparison')         return renderComparisonLayout(...)
-if (tplId === 'tpl-new-capability-matrix')  return renderCapabilityLayout(...)
-if (tplId === 'tpl-new-technology')         return renderTechnologyLayout(...)
-if (tplId === 'tpl-new-defect-gallery')     return renderDefectGalleryLayout(...)
-if (tplId === 'tpl-new-carousel-cards')     return renderCarouselCardsLayout(...)
-if (tplId === 'tpl-new-checklist-carousel') return renderChecklistCarouselLayout(...)
-if (tplId === 'tpl-new-carousel-tags')      return renderCarouselTagsLayout(...)
-if (tplId === 'tpl-new-tabs-carousel')      return renderTabsCarouselLayout(...)
-if (tplId === 'tpl-new-carousel-steps')     return renderCarouselStepsLayout(...)
-if (tplId === 'tpl-new-full-carousel')      return renderFullCarouselLayout(...)
-if (tplId === 'tpl-new-cards-grid')         return renderCardsGridLayout(...)
-if (tplId === 'tpl-new-cta')               return renderCtaLayout(...)
-```
-
-**Render function pattern:**
-```js
-function renderXxxLayout(slideId, savedEdits) {
-  savedEdits = savedEdits || {};
-  // Simple text:
-  applyEdit('key', 'default text', savedEdits)
-  // Complex containers (tabs/carousels/lists):
-  (savedEdits['key'] != null ? savedEdits['key'] : defaultHtml)
-  // Returns joined array of HTML strings
-}
-```
-
-**Save path for library-backed slides:**
-- Text fields: `doSave()` → `POST /api/deck/slides/:id/edits` → saves to library slide's `edits`
-- Carousels/tables/lists: dispatch `slide-carousel-save` event → same endpoint
-- Table inside `.ls-tabs`: `saveTable` detects ancestor `.ls-tabs[data-edit]` → saves whole tabs container under tabs' `data-edit` key (not just the table)
-
----
-
-## deck.json Structure (current)
-
+### `decks/[deckId]/deck.json`
 ```json
 {
-  "title": "GlassQuality",
+  "id": "deck-abc123",
+  "name": "GlassQuality Demo",
   "slides": [
-    { "id": "deck-cover",      "librarySlideId": "lib-cover",      "visible": true },
-    { "id": "deck-company",    "librarySlideId": "lib-company",     "visible": true },
-    { "id": "deck-comparison", "librarySlideId": "lib-comparison",  "visible": true },
-    { "id": "deck-capability", "librarySlideId": "lib-capability",  "visible": true },
-    { "id": "deck-technology", "librarySlideId": "lib-technology",  "visible": true },
-    ... (14 total)
+    { "id": "deck-lib-cover-xxx", "librarySlideId": "lib-cover", "visible": true }
   ]
 }
 ```
 
-`PUT /api/deck` merges incoming slides with existing data — preserves `librarySlideId` even if not in incoming payload.
+### `presentations.json`
+```json
+{
+  "presentations": [{
+    "id": "00000001",
+    "createdAt": "2026-04-12",
+    "presentationName": "Q2 Demo",
+    "customerName": "Acme Corp",
+    "contactName": "Jane Doe",
+    "contactTitle": "VP Sales",
+    "customerLogoSrc": "/slides/uploads/logo.png",
+    "slideCount": 3,
+    "slides": [{ "id": "...", "librarySlideId": "lib-cover", "name": "Cover", "visible": true }],
+    "publishedAt": "2026-04-26T10:00:00Z",
+    "archivedAt": null,
+    "replacedAt": null
+  }]
+}
+```
+
+**Presentation ID format:** numeric only (`00000001`, `00000002`, …) — `makePresId()`.
 
 ---
 
-## Slides (14 active — LineScanner product)
+## Template → Library → Deck Render Chain
 
-| Deck ID | Library ID | Template ID | Render Function | Source HTML |
-|---------|-----------|-------------|-----------------|-------------|
-| deck-cover | lib-cover | tpl-new-cover | renderHeroLayout | slide-01-cover.html |
-| deck-company | lib-company | tpl-new-company | renderCompanyLayout | slide-02-company.html |
-| deck-comparison | lib-comparison | tpl-new-comparison | renderComparisonLayout | slide-03-why.html |
-| deck-capability | lib-capability | tpl-new-capability-matrix | renderCapabilityLayout | slide-04-linescanner.html |
-| deck-technology | lib-technology | tpl-new-technology | renderTechnologyLayout | slide-05-technology.html |
-| deck-surface | lib-surface | tpl-new-defect-gallery | renderDefectGalleryLayout | slide-06-surface.html |
-| deck-dimension | lib-dimension | tpl-new-carousel-cards | renderCarouselCardsLayout | slide-07-dimension.html |
-| deck-screenprint | lib-screenprint | tpl-new-checklist-carousel | renderChecklistCarouselLayout | slide-08-screenprinting.html |
-| deck-logo-check | lib-logo-check | tpl-new-carousel-tags | renderCarouselTagsLayout | slide-09-logo-check.html |
-| deck-database | lib-database | tpl-new-tabs-carousel | renderTabsCarouselLayout | slide-10-database.html |
-| deck-sensitivity | lib-sensitivity | tpl-new-carousel-steps | renderCarouselStepsLayout | slide-11-sensitivity.html |
-| deck-footprint | lib-footprint | tpl-new-full-carousel | renderFullCarouselLayout | slide-12-footprint.html |
-| deck-integrations | lib-integrations | tpl-new-cards-grid | renderCardsGridLayout | slide-13-integrations.html |
-| deck-cta | lib-cta | tpl-new-cta | renderCtaLayout | slide-14-cta.html |
+```
+slide-templates.json  →  slide-library.json  →  decks/[id]/deck.json
+  (tpl-new-cover)          (lib-cover)           slides[].librarySlideId
+  defaultContent            edits: {}
+```
+
+`GET /slides/deck-preview/:id` → looks up deck slide → library slide → template → calls `renderLayoutToHtml(tpl, deckSlideId, savedEdits)` → dispatches to render function → returns full HTML page with component JS.
+
+**⚠️ server.js is the SOLE source of truth for slide structure.** The `.html` files in `features/slides/` are not served — they are reference only. All slide changes must go into render functions in `server.js`.
 
 ---
 
-## JS Components
+## Slide Render Functions (14 active)
 
-| Component | Attribute | What it does |
-|-----------|-----------|--------------|
-| carousel.js | `data-edit="key"` on `.ls-carousel` | Add/delete/reorder images, zoom, autoplay, compare |
-| lightbox.js | `data-zoom` on `<img>` | Click to zoom, gallery group, Add Image button |
-| tabs.js | `.ls-tabs` wrapper | Tab switcher, add/delete/rename; **calls LSTable.init on tab switch** |
-| list.js | `ul[data-ls-list]` | Add/hide/delete/reorder items, dblclick to edit |
-| table.js | `table[data-ls-table]` | Row+col add/hide/delete, dot cycling, resizable col; **saveTable saves parent .ls-tabs container** |
-| button.js | `.slide-btn` | Auto-attaches `Track.click()` on page load; exposes `Button.init(slideEl)` |
-| tags.js | `.slide-tag` | Auto-attaches `Track.click()` on page load; exposes `Tags.init(slideEl)` |
-
-**Save pattern (library slides):** Components dispatch `slide-carousel-save` → preview.html catches → `POST /api/deck/slides/:id/edits` → writes to library slide's edits in slide-library.json
-
-**table.js requirements:** Each `table[data-ls-table]` wrapper div must contain `[data-ls-col-restore]`, `[data-ls-row-restore]`, and `[data-ls-add-row]` elements. Column headers need `<span class="ls-col-label">`. Dot spans use `ls-dot ls-dot-on/off/red/blue` classes.
+| Template ID | Render Function |
+|-------------|----------------|
+| tpl-new-cover | renderHeroLayout |
+| tpl-new-company | renderCompanyLayout |
+| tpl-new-comparison | renderComparisonLayout |
+| tpl-new-capability-matrix | renderCapabilityLayout |
+| tpl-new-technology | renderTechnologyLayout |
+| tpl-new-defect-gallery | renderDefectGalleryLayout |
+| tpl-new-carousel-cards | renderCarouselCardsLayout |
+| tpl-new-checklist-carousel | renderChecklistCarouselLayout |
+| tpl-new-carousel-tags | renderCarouselTagsLayout |
+| tpl-new-tabs-carousel | renderTabsCarouselLayout |
+| tpl-new-carousel-steps | renderCarouselStepsLayout |
+| tpl-new-full-carousel | renderFullCarouselLayout |
+| tpl-new-cards-grid | renderCardsGridLayout |
+| tpl-new-cta | renderCtaLayout |
 
 ---
 
 ## Style System
 
-- **App shell styles:** `builder/shared/app-style.css` — Apple Keynote aesthetic, dark/light via `data-theme`, persisted as `pb-theme`
-- **Slide styles:** `builder/features/slides/style.css` — mobile-first (`min-width` breakpoints)
-- **Standard slide anatomy:** all 14 content slides use `slide-layout`/`slide-head`/`slide-body` wrappers
-- **Known conflict:** 3-layer CSS (style.css vs per-slide `<style>` vs inline styles) — design system refactor planned
-
-**⚠️ IMPORTANT — server.js is the sole source of truth for slides:**
-The `.html` files in `builder/features/slides/` and `builder/data/renderers/` are NOT served. Edits to those files have no effect. All slide CSS, HTML structure, and content must be changed inside the render functions in `server.js`. Restart the server after any change.
-
-**Cover slide — smart logo background detection (added session 8):**
-`renderHeroLayout` in `server.js` now includes a `detectLogoBg(img)` function injected into the rendered slide. On page load and after each logo upload, it samples the outer 5% border pixels of the customer logo image via canvas, averages RGBA values, and sets `.{P}-customer-logo { background }` inline — falls back to `#fff` for transparent logos (avg alpha < 30).
-
-**Mobile carousel root cause & fix pattern (session 2, 2026-04-11):**
-On mobile, `.slide-body` is `height:auto` so carousels with `flex:1` or `height:100%` collapse to 0px (invisible). Fix applied to all slides in `server.js`:
-```css
-.lsX .slide-body { width:100%; align-items:center; }
-.lsX .ls-carousel { min-height:260px !important; height:260px !important; }
-@media(min-width:769px) {
-  .lsX .ls-carousel { min-height:0 !important; height:100% !important; }
-}
-```
-Additional per-slide fixes:
-- **Slide 8**: two-column flex layout — carousel `flex:1` on desktop, explicit height on mobile
-- **Slide 12**: `.ls12-diagram-wrap` → `display:flex; flex-direction:column`; spec badges moved inside first carousel slide
-- **Slide 14**: `overflow:hidden` removed from slide root so mobile can scroll
-- **Slide 4**: vertical column headers (`writing-mode:vertical-rl`) on mobile; proc-grid forced to single column; slide scrollable
-
-**Slide 04 mobile layout:** `.ls4-grid` uses `display:flex; flex-direction:column` on mobile. Tab 1: carousel below table (`order:1`). Tab 2: proc-grid single column (`!important`), cards stacked. Resets to `display:grid` on desktop.
+- **App shell:** `builder/shared/app-style.css` — Apple Keynote aesthetic, dark/light via `data-theme` on `<html>`, persisted as `pb-theme`
+- **CSS variables:** `--border`, `--border-hov`, `--surface`, `--surface-hov`, `--bg`, `--muted`, `--dim`, `--text`, `--accent`, `--accent-dim`, `--accent-glow`, `--radius-btn`, `--radius-card`, `--sidebar-w` (220px), `--sidebar-collapsed-w` (64px), `--font`, `--input-bg`, `--nav-active`, `--topbar-bg`, `--remove-hov-fg`, `--remove-hov-bg`
+- **Slide CSS:** `builder/features/slides/style.css` — mobile-first (`min-width` breakpoints)
+- **Known conflict:** 3-layer CSS (style.css vs per-slide `<style>` vs inline) — design system refactor planned
 
 ---
 
-## Navigation Structure (updated 2026-04-12)
+## Translation System
 
-**Sidebar nav in all pages:** Dashboard | Builder | Settings
+**Store:** `builder/data/translations.json`
+- `en` is canonical (plain string); other languages have `{ current, previous, dirty }`
+- `dirty: true` set when English changes after a translation exists
 
-| Route | Page | Purpose |
-|-------|------|---------|
-| `/` | Dashboard | Overview + Finished Presentations list (read-only) |
-| `/slides` | Builder | Active editing workspace with Create Presentation modal |
-| `/settings` | Settings | Presentation config, branding |
-| `/builder/preview.html` | Preview | Full-screen slide viewer |
+**Translator:** `builder/lib/translator.js` — OpenRouter API, `anthropic/claude-haiku-4-5`, 20 fields/chunk
 
-**Builder (`/slides`) tab structure:**
-- **My Deck tab** (default): 2-col layout (Deck list left | Slide Preview right)
-  - "Your Presentation" panel header has **Open Builder →** button + `⋯` menu (Add Slide, Create Presentation, Replace Presentation)
-  - Slide Preview header has no action buttons — nav arrows only
-  - Preview arrows with prev/next + `N / total` counter
-  - Cover slide shown by default on load
-- **Slide Manager tab**: My Library + Templates — Add Slide modal with real template picker
-- URL params: `/slides?create` or `/slides?replace` auto-open the Save modal in the correct mode
-
-**Builder preview (`/builder/preview.html`) header bar:**
-- Fixed header: ← Back, title, orange Preview badge, slide counter
-- Header-right: **Create Presentation** (orange button) + `⋯` menu (Replace Presentation)
-- `body { padding-top: 48px }` + `#slidesContainer { height: calc(100dvh - 48px) }`
-
-**Save as Finished modal (`#createPresentationModal` in `/slides`):**
-- Two-option toggle at top: **New Presentation** (default) / **Replace Existing**
-- **New:** fields Company (required), Presentation Name, Contact Person, Title, Logo → `POST /api/presentations` → new ID + folder
-- **Replace:** dropdown of non-archived presentations (published first) → selecting one locks Company/Contact/Title as read-only, keeps Presentation Name editable → sends `replaceId` in POST → overwrites existing folder, sets `replacedAt`
-- Published warning shown if target has `publishedAt`
-- On success: navigates to `/?highlight=[id]`
-- Server: `POST /api/presentations` with `replaceId` → validates exists + not archived → overwrites `finished-presentations/[replaceId]/`, updates record in `presentations.json`
-
-**Deck list behavior:** rows with drag-to-reorder, eye toggle, remove. Click slide name → renders preview via `/slides/deck-preview/:id` in right pane.
-
-**`/slides/deck-preview/:id`:** renders deck slide via `renderLayoutToHtml` + wraps in full HTML shell with `style.css` + includes component JS scripts (carousel.js, tabs.js, lightbox.js, list.js, table.js) + runs init block calling `Carousel.init()`, `Tabs.init()`, `Lightbox.init()`, `List.init()`, `LSTable.init()`.
-
----
-
-## Translation System (added 2026-04-30)
-
-**Data store:** `builder/data/translations.json`
-```json
-{
-  "languages": ["en", "es", "it", "pt", "fr"],
-  "favorites": ["es", "it", "pt", "fr"],
-  "defaultLanguage": "en",
-  "fields": {
-    "headline": {
-      "en": "Quality Inspection for Flat Glass",
-      "es": { "current": "...", "previous": null, "dirty": false }
-    }
-  }
-}
-```
-- `en` is always the canonical source (plain string)
-- Each other language has `current`, `previous` (last version for rollback), and `dirty` (set when English changes after a translation exists)
-- When multi-deck support lands, moves to `decks/[deck-id]/translations.json`
-
-**Translator module:** `builder/lib/translator.js`
-- `translate(fields, targetLanguage)` → `{ ok, fields, error }`
-- Uses OpenRouter API (`fetch`, no SDK) — `OPENROUTER_API_KEY` in `.env`
-- Default model: `anthropic/claude-haiku-4-5` (overridable via `OPENROUTER_MODEL`)
-- Batched: one API call per language per chunk; server splits into chunks of 20 fields
-
-**Builder UI additions in `preview.html`:**
-- **🌐 EN ▾ language switcher** — dropdown in toolbar; switches all `[data-edit][contenteditable]` fields to the selected language; shows orange banner + disables editing when non-EN
-- **Translate button + badge** — badge counts dirty/missing fields; calls `POST /api/translations/translate`
-- **Per-field translation popover** — clicking any `[data-edit]` field opens panel showing current translation per language, dirty indicator, restore button, inline edit (saves on blur)
-- **Translation Settings modal** — in `⋯` menu; add/remove languages, set default language; calls `PUT /api/translations/settings`
-
-**Language picker in Create modal** (`/slides` → Save Presentation):
-- Default Language dropdown + Additional Languages multi-select with search
-- Selected languages sent in `POST /api/presentations` payload
-- HTML baking (`[data-lang]` spans + switcher injection) not yet implemented — see task `Feature-H-...-bake-language-spans`
+**Builder UI:** Language switcher in toolbar, Translate badge (dirty field count), per-field popover, Translation Settings modal
 
 **Known gaps:**
-- Finished presentation has no language switcher yet (baking deferred)
+- Finished presentation has no language switcher yet (baking deferred — task `Feature-H-...-bake-language-spans`)
 - Badge overcounts image/non-text fields
-- Dirty flag not hooked into `POST /api/deck/slides/:id/edits` (library slides)
+- Dirty flag not hooked into library slide edits
 - Language re-apply on slide navigate uses fragile `setTimeout(50)`
 
 ---
 
 ## Known Issues / Open Items
 
-- **3-layer CSS conflict** — style.css, per-slide `<style>` blocks, and inline styles conflict. Planned fix: style.css as single source of truth
-- **Slide-06 defect names** — selector button labels are JS-generated; needs testing through render path
-- **Slide-12 headline split** — agent split `headline` into `headline` + `headline-emphasis` keys; may need consolidation
-- **Publish built** — `POST /api/presentations/:id/publish` runs git add→commit→push via `execFile`. No auth token needed — relies on local git credentials.
+- **3-layer CSS conflict** — style.css, per-slide `<style>` blocks, inline styles. Design system refactor planned
+- **Tablet landscape responsive issue** — `Issue-M-2026-04-30-slides-css-responsive-layout-tablet-landscape-image-display.md`
 - **dashboard.css** — legacy file, should be deleted
-- **Image caption editing** — no UI to edit `img.alt`
-- **Builder header reposition** — `.builder-header` may need to move into slide container (task: builder-preview-header-move-to-slide-container)
-- **`umamiId` scope** — fixed: was declared inside `.then()` callback; hoisted to IIFE scope so duplicate handler can access it
-- **`slide-library.json` relative paths** — `../shared/` paths saved from iframe context 404 in builder. Fixed for `CostOfQualityDefects.png`. Watch for similar issues in other carousel edits
-- **File-input listeners in frozen outputs** — fixed: `carousel-file` and `logo-file` `addEventListener` calls in server.js are now guarded with `if (!window.PB_READONLY)` so finished presentations don't crash on load (was: `Cannot read properties of null (reading 'addEventListener')` at boot)
+- **Translation gaps** — see Translation section above
+- **Template update notifications** — when template rows change, library slides don't show an "Update available" badge yet (`Feature-L-2026-05-10-template-update-notifications-diff-and-review-flow.md`)
+- **Umami API token** — user's self-hosted Umami is v1 (no API key UI); using username/password auth. Credentials in `.env` as `UMAMI_USERNAME` + `UMAMI_PASSWORD`
 
 ---
 
 ## What's Next
 
-1. **Translation — Finished presentation baking** — wrap `[data-lang]` spans + inject `language-switcher.js` into output HTML at Create time (`tasks/Feature-H-2026-04-30-...-bake-language-spans.md`)
-2. **Translation — Badge overcount fix** — skip non-text (image) fields (`tasks/Issue-M-2026-04-30-...-badge-overcounts.md`)
-3. **Translation — Dirty flag for library slides** — hook into `POST /api/deck/slides/:id/edits` (`tasks/Issue-M-2026-04-30-...-dirty-flag-missing.md`)
-4. **Translation — Preview navigate fix** — replace `setTimeout(50)` with reliable slide-ready signal (`tasks/Feature-M-2026-04-30-...-preview-re-apply.md`)
-5. **Views Overview — live data** — wire chart to real Umami analytics API
-6. **Design system refactor** — eliminate CSS conflict; one source of truth in style.css
+1. **Translation — Finished presentation baking** — `[data-lang]` spans + inject `language-switcher.js` at Create time
+2. **Translation — Badge overcount fix** — skip non-text fields from badge count
+3. **Translation — Dirty flag for library slides** — hook into `POST /api/deck/slides/:id/edits`
+4. **Translation — Preview navigate fix** — replace `setTimeout(50)` with reliable slide-ready signal
+5. **Template update notifications** — "Update available" badge in My Library when template rows change
+6. **Design system refactor** — eliminate 3-layer CSS conflict
 7. Delete old `dashboard.css`
-8. **App UI icons — standardise minimalist** (`tasks/Feature-M-2026-04-30-app-ui-icons-standardise-minimalist.md`)
-9. **Builder slide sequence — hide/unhide slides** (`tasks/Feature-M-2026-04-30-builder-slide-sequence-hide-unhide-slides.md`)
-
+8. **App UI icons standardise** — minimalist icon set across all pages

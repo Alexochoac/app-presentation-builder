@@ -28,6 +28,38 @@
       margin-top: 4px;
     }
 
+    /* ── Pick-mode banner ────────────────────────────────────────── */
+
+    .pick-banner {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 18px;
+      border-radius: var(--radius-card);
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-glow);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+    .pick-banner strong { color: var(--accent); }
+    .pick-banner-cancel {
+      margin-left: auto;
+      padding: 5px 14px;
+      border-radius: var(--radius-btn);
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      text-decoration: none;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .pick-banner-cancel:hover { color: var(--text); border-color: var(--border-hov); }
+
     /* ── Tab bar ─────────────────────────────────────────────────── */
 
     .slides-tabs {
@@ -55,6 +87,10 @@
       color: var(--accent);
       border-bottom-color: var(--accent);
     }
+
+    /* ── Tab panel ───────────────────────────────────────────────── */
+
+    .tab-panel { }
 
     /* ── Empty state ─────────────────────────────────────────────── */
 
@@ -226,15 +262,32 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-card);
-      padding: 20px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
       transition: border-color 0.2s, background 0.2s;
     }
     .lib-card:hover {
       border-color: var(--border-hov);
       background: var(--surface-hov);
+    }
+    .lib-card-thumb {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: var(--bg);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .lib-card-thumb-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .lib-card-name {
       font-size: 15px;
@@ -254,49 +307,11 @@
       font-size: 12px;
       color: var(--muted);
     }
-    .lib-card-meta {
-      font-size: 12px;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .badge-count {
-      display: inline-flex;
-      align-items: center;
-      padding: 2px 10px;
-      border-radius: 100px;
-      background: var(--accent-dim);
-      color: var(--accent);
-      font-size: 11px;
-      font-weight: 600;
-      border: 1px solid var(--accent-glow);
-    }
     .lib-card-actions {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
       margin-top: auto;
-    }
-
-    /* In Deck toggle */
-    .btn-in-deck-toggle {
-      padding: 5px 12px;
-      border-radius: var(--radius-btn);
-      font-size: 11px;
-      font-weight: 600;
-      font-family: var(--font);
-      cursor: pointer;
-      transition: all 0.15s;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-    }
-    .btn-in-deck-toggle.active {
-      background: var(--accent-dim);
-      border-color: rgba(245,166,35,0.4);
-      color: var(--accent);
     }
 
     .btn-edit {
@@ -316,7 +331,7 @@
       border-color: var(--border-hov);
       background: var(--surface-hov);
     }
-    .btn-save-tpl {
+    .btn-dupe {
       padding: 7px 12px;
       border-radius: var(--radius-btn);
       background: transparent;
@@ -328,7 +343,7 @@
       cursor: pointer;
       transition: color 0.2s, border-color 0.2s;
     }
-    .btn-save-tpl:hover { color: var(--text); border-color: var(--border-hov); }
+    .btn-dupe:hover { color: var(--text); border-color: var(--border-hov); }
     .btn-delete {
       padding: 7px 12px;
       border-radius: var(--radius-btn);
@@ -346,6 +361,21 @@
       border-color: var(--remove-hov-fg);
       background: var(--remove-hov-bg);
     }
+    .btn-pick-add {
+      width: 100%;
+      padding: 9px 14px;
+      border-radius: var(--radius-btn);
+      background: linear-gradient(135deg, #F5A623, #e8850a);
+      border: none;
+      color: #000;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+      white-space: nowrap;
+    }
+    .btn-pick-add:hover { opacity: 0.88; transform: translateY(-1px); }
 
     /* Toast */
     .toast {
@@ -371,18 +401,15 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    /* ── Layout Builder — full-screen overlay ────────────────────── */
+    /* ── Slide Builder tab — inline builder ──────────────────────── */
 
-    #layoutBuilder {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 200;
-      flex-direction: column;
-      background: var(--bg);
-    }
-    #layoutBuilder.builder-visible {
+    .slide-builder-tab {
       display: flex;
+      flex-direction: column;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      overflow: hidden;
     }
 
     /* ── Builder top bar ─────────────────────────────────────────── */
@@ -393,29 +420,9 @@
       gap: 12px;
       padding: 10px 16px;
       border-bottom: 1px solid var(--border);
-      background: var(--topbar-bg);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
+      background: var(--surface);
       flex-shrink: 0;
     }
-    .btn-back {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: var(--radius-btn);
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 500;
-      font-family: var(--font);
-      cursor: pointer;
-      transition: color 0.2s, border-color 0.2s;
-      flex-shrink: 0;
-      white-space: nowrap;
-    }
-    .btn-back:hover { color: var(--text); border-color: var(--border-hov); }
 
     .layout-name-input {
       flex: 1;
@@ -441,7 +448,7 @@
       display: flex;
       align-items: center;
       gap: 2px;
-      background: var(--surface);
+      background: var(--surface-hov);
       border: 1px solid var(--border);
       border-radius: var(--radius-btn);
       padding: 3px;
@@ -476,11 +483,43 @@
     .save-status.saving { color: var(--accent); }
     .save-status.saved  { color: var(--muted); }
 
+    .btn-save-tpl {
+      padding: 7px 16px;
+      border-radius: var(--radius-btn);
+      background: linear-gradient(135deg, #F5A623, #e8850a);
+      border: none;
+      color: #000;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .btn-save-tpl:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .btn-save-lib {
+      padding: 7px 14px;
+      border-radius: var(--radius-btn);
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .btn-save-lib:hover { color: var(--text); border-color: var(--border-hov); }
+
     /* ── Builder body: split pane ────────────────────────────────── */
 
     .builder-body {
       display: flex;
-      flex: 1;
+      height: 580px;
       overflow: hidden;
       min-height: 0;
     }
@@ -819,7 +858,7 @@
       gap: 8px;
     }
 
-    /* Phone frame wrapper — scales down to fit panel */
+    /* Phone frame wrapper */
     .preview-phone-wrap {
       display: flex;
       align-items: center;
@@ -1002,20 +1041,20 @@
       padding: 40px 0;
     }
 
-    /* ── Mobile: single pane + bottom tabs ─────────────────────── */
+    /* Mobile preview header */
+    .mobile-preview-header {
+      display: none;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      justify-content: center;
+    }
 
+    /* Mobile: bottom tab bar for builder */
     .bottom-tabs {
       display: none;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
       height: 52px;
-      background: var(--topbar-bg);
+      background: var(--surface);
       border-top: 1px solid var(--border);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      z-index: 300;
     }
     .bottom-tabs-inner {
       display: flex;
@@ -1035,127 +1074,6 @@
     .tab-btn.active { color: var(--accent); }
     .tab-btn:hover:not(.active) { color: var(--text); }
 
-    /* Mobile preview viewport toggle strip */
-    .mobile-preview-header {
-      display: none;
-      padding: 10px 16px;
-      border-bottom: 1px solid var(--border);
-      justify-content: center;
-    }
-
-    /* ── Responsive ──────────────────────────────────────────── */
-
-    /* ── Preview & Edit: new top bar buttons ────────────────────── */
-
-    .btn-save-to-library {
-      padding: 7px 16px;
-      border-radius: var(--radius-btn);
-      background: linear-gradient(135deg, #F5A623, #e8850a);
-      border: none;
-      color: #000;
-      font-size: 13px;
-      font-weight: 700;
-      font-family: var(--font);
-      cursor: pointer;
-      transition: opacity 0.2s, transform 0.2s;
-      flex-shrink: 0;
-      white-space: nowrap;
-    }
-    .btn-save-to-library:hover { opacity: 0.88; transform: translateY(-1px); }
-
-    .btn-discard {
-      padding: 7px 14px;
-      border-radius: var(--radius-btn);
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 500;
-      font-family: var(--font);
-      cursor: pointer;
-      transition: color 0.2s, border-color 0.2s;
-      flex-shrink: 0;
-      white-space: nowrap;
-    }
-    .btn-discard:hover { color: var(--text); border-color: var(--border-hov); }
-
-    /* ── Deck card ───────────────────────────────────────────────── */
-
-    .deck-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-card);
-      padding: 14px 18px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      transition: border-color 0.2s;
-    }
-    .deck-card:hover { border-color: var(--border-hov); }
-    .deck-card-num {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--dim);
-      min-width: 22px;
-      text-align: center;
-    }
-    .deck-card-info {
-      flex: 1;
-      min-width: 0;
-    }
-    .deck-card-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .deck-card-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-    .btn-reorder {
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 13px;
-      font-family: var(--font);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .btn-reorder:hover { color: var(--text); border-color: var(--border-hov); }
-    .btn-reorder:disabled { opacity: 0.25; cursor: default; }
-    .btn-visibility {
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 13px;
-      font-family: var(--font);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: color 0.2s, border-color 0.2s, background 0.2s;
-    }
-    .btn-visibility.hidden-slide {
-      color: var(--dim);
-      border-color: var(--border);
-      opacity: 0.5;
-    }
-    .btn-visibility:hover { color: var(--text); border-color: var(--border-hov); }
-
     @media (max-width: 768px) {
       .builder-canvas,
       .builder-preview {
@@ -1164,82 +1082,234 @@
       }
       .builder-body {
         flex-direction: column;
+        height: auto;
       }
-      .builder-wrap .builder-canvas.tab-hidden,
-      .builder-wrap .builder-preview.tab-hidden {
-        display: none;
-      }
-      .builder-body .builder-canvas.tab-hidden,
-      .builder-body .builder-preview.tab-hidden {
+      .builder-canvas.tab-hidden,
+      .builder-preview.tab-hidden {
         display: none;
       }
       .bottom-tabs { display: flex; }
       .mobile-preview-header { display: flex; }
-      #layoutBuilder { padding-bottom: 52px; }
       .save-status { display: none; }
     }
 
-    /* ── Builder workspace 2-col ─────────────────────────────────── */
-    .builder-workspace {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      align-items: start;
+    /* ── Grouped picker ──────────────────────────────────────────────────────── */
+
+    .picker-group-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      padding: 10px 14px 4px;
+      pointer-events: none;
     }
-    @media (max-width: 900px) {
-      .builder-workspace { grid-template-columns: 1fr; }
+    .picker-group-label:first-child { padding-top: 0; }
+    .picker-item-name {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
     }
-    .workspace-deck,
-    .workspace-preview {
-      height: 420px;
-      display: flex;
-      flex-direction: column;
+    .picker-item-desc {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 400;
+      margin-top: 2px;
     }
-    .workspace-deck .deck-list-scroll {
-      flex: 1;
-      overflow-y: auto;
-      min-height: 0;
-    }
-    .preview-pane {
-      flex: 1;
-      min-height: 0;
+    .picker-item:hover .picker-item-desc { color: var(--accent); opacity: .75; }
+
+    /* ── New preview component types ─────────────────────────────── */
+
+    .pv-image {
+      background: var(--surface-hov);
+      border: 1px dashed var(--border);
+      border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--surface);
-      border-radius: var(--radius-card);
-      border: 1px dashed var(--border);
-      overflow: hidden;
+      gap: 5px;
+      padding: 10px 8px;
+      font-size: 10px;
+      color: var(--dim);
+      min-height: 40px;
+    }
+    .pv-stat {
+      padding: 8px 6px;
+      text-align: center;
+    }
+    .pv-stat-number {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .pv-stat-label {
+      font-size: 8px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-top: 3px;
+    }
+    .pv-section-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      padding: 3px 6px;
+      border-left: 2px solid var(--accent);
     }
 
-    /* ── Customer settings (moved from dashboard) ────────────────── */
-    .settings-section {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-card);
+    /* ── Row drag states ─────────────────────────────────────────────────────── */
+
+    .builder-row.dragging { opacity: 0.4; }
+    .builder-row.drag-over {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    /* ── Preview popup ───────────────────────────────────────────── */
+
+    .preview-popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       padding: 24px;
     }
-    .settings-header {
+    .preview-popup-panel {
+      background: #111;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius-card);
+      width: 100%;
+      max-width: 1200px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,.8);
+    }
+    .preview-popup-header {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 8px;
+      justify-content: space-between;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
     }
-    .settings-note {
-      font-size: 13px;
+    .preview-popup-tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--surface-hov);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-btn);
+      padding: 3px;
+    }
+    .preview-popup-tab {
+      padding: 5px 16px;
+      border-radius: 100px;
+      background: transparent;
+      border: none;
       color: var(--muted);
-      margin-bottom: 20px;
-      line-height: 1.5;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
     }
-    .settings-fields {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 20px;
+    .preview-popup-tab.active {
+      background: var(--nav-active);
+      color: var(--text);
     }
-    @media (max-width: 700px) {
-      .settings-fields { grid-template-columns: 1fr; }
+    .preview-popup-close {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 16px;
+      font-family: inherit;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s, color .15s;
     }
+    .preview-popup-close:hover { background: var(--surface-hov); color: var(--text); }
+    .preview-popup-viewport-label {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .preview-popup-content {
+      flex: 1;
+      overflow: auto;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px 24px;
+      background: var(--bg);
+    }
+    .popup-desktop-frame {
+      width: 100%;
+      max-width: 900px;
+      aspect-ratio: 16 / 9;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 8px 40px rgba(0,0,0,.5);
+      padding: 24px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .popup-tablet-frame {
+      width: 768px;
+      max-width: 100%;
+      aspect-ratio: 4 / 3;
+      background: var(--surface);
+      border: 3px solid rgba(255,255,255,.15);
+      border-radius: 16px;
+      box-shadow: 0 8px 40px rgba(0,0,0,.5);
+      padding: 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .popup-mobile-frame {
+      width: 375px;
+      min-height: 640px;
+      background: var(--surface);
+      border: 3px solid rgba(255,255,255,.15);
+      border-radius: 36px;
+      box-shadow: 0 8px 40px rgba(0,0,0,.5);
+      padding: 40px 16px 32px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+    }
+    .popup-mobile-frame::before {
+      content: '';
+      position: absolute;
+      top: 14px; left: 50%;
+      transform: translateX(-50%);
+      width: 70px; height: 18px;
+      background: var(--bg);
+      border-radius: 100px;
+      border: 2px solid rgba(255,255,255,.1);
+    }
+
+    /* ── New Slide Modal ─────────────────────────────────────────── */
     .field {
       display: flex;
       flex-direction: column;
@@ -1263,234 +1333,74 @@
     }
     .field input:focus { border-color: var(--accent); }
     .field input::placeholder { color: var(--muted); }
-    .logo-upload-wrap {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .logo-preview {
-      width: 56px;
-      height: 56px;
-      border-radius: var(--radius-btn);
-      border: 1px solid var(--border);
-      background: var(--surface-hov);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .logo-preview-placeholder {
-      font-size: 10px;
-      color: var(--muted);
-    }
-    .btn-save {
-      padding: 9px 20px;
-      border-radius: var(--radius-btn);
-      background: var(--accent);
-      border: none;
-      color: #fff;
-      font-size: 13px;
-      font-weight: 600;
-      font-family: var(--font);
-      cursor: pointer;
-    }
     .coming-soon-msg {
       font-size: 12px;
       color: var(--muted);
       margin-top: 8px;
     }
-    .badge-wip {
-      padding: 2px 9px;
-      border-radius: 100px;
-      background: var(--surface-hov);
+
+    /* Template update badge */
+    .lib-update-badge {
+      display: inline-block;
+      margin: 4px 0 0 0;
+      padding: 3px 8px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 20px;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      user-select: none;
+    }
+    .lib-update-badge:hover { opacity: 0.85; }
+    .lib-update-badge--ignored {
+      background: transparent;
+      border: 1px solid var(--border);
       color: var(--muted);
-      font-size: 10px;
+      cursor: default;
+      font-weight: 400;
+    }
+    .lib-update-badge--ignored:hover { opacity: 1; }
+
+    /* Update review modal — overrides .picker-panel max-width */
+    .picker-panel.update-review-modal {
+      width: 560px;
+      max-width: 95vw;
+    }
+    .update-review-info {
+      padding: 12px 20px;
+      color: var(--muted);
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+    }
+    .update-review-diff {
+      padding: 16px 20px;
+      max-height: 340px;
+      overflow-y: auto;
+    }
+    .diff-section { margin-bottom: 16px; }
+    .diff-section-title {
+      font-size: 11px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-    }
-    /* ── Deck rows ───────────────────────────────────────────────────── */
-    .deck-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--border);
-      cursor: default;
-      transition: background 0.15s;
-    }
-    .deck-row:last-child { border-bottom: none; }
-    .deck-row:hover { background: var(--surface-hov); }
-    .deck-row.dragging { opacity: 0.4; }
-    .deck-row.drag-over { border-top: 2px solid var(--accent); }
-    .drag-handle {
       color: var(--muted);
-      cursor: grab;
-      font-size: 18px;
-      line-height: 1;
-      flex-shrink: 0;
+      margin-bottom: 8px;
     }
-    .slide-num {
-      font-size: 12px;
-      color: var(--muted);
-      min-width: 20px;
-      flex-shrink: 0;
-    }
-    .slide-title {
-      flex: 1;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text);
-      cursor: pointer;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .slide-title:hover { color: var(--accent); text-decoration: underline; }
-    .deck-row.is-hidden-row .slide-title { opacity: 0.45; }
-    .deck-row.is-locked .drag-handle { opacity: 0.2; cursor: default; }
-    .btn-lock { background: transparent; border: none; color: var(--muted); padding: 4px; flex-shrink: 0; line-height: 1; opacity: 0.4; cursor: default; font-size: 13px; }
-    .btn-visibility {
-      background: transparent;
-      border: none;
-      color: var(--muted);
-      cursor: pointer;
-      padding: 4px;
-      flex-shrink: 0;
-      line-height: 1;
-    }
-    .btn-visibility.is-visible { color: var(--text); }
-    .btn-remove {
-      background: transparent;
-      border: none;
-      color: var(--muted);
-      cursor: pointer;
-      font-size: 18px;
-      padding: 4px 6px;
-      flex-shrink: 0;
-      line-height: 1;
-      transition: color 0.15s;
-    }
-    .btn-remove:hover { color: var(--remove-hov-fg, #f87171); }
-
-    /* ── Preview nav arrows ──────────────────────────────────────────── */
-    .preview-nav {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .preview-nav.hidden { display: none; }
-    .preview-nav-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
-      width: 30px;
-      height: 30px;
-      border-radius: var(--radius-btn);
-      cursor: pointer;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: border-color 0.15s, background 0.15s;
-    }
-    .preview-nav-btn:hover { border-color: var(--border-hov); background: var(--surface-hov); }
-    .preview-nav-btn:disabled { opacity: 0.3; cursor: default; }
-    .preview-nav-count {
-      font-size: 12px;
-      color: var(--muted);
-      min-width: 36px;
-      text-align: center;
-    }
-
-    /* ── Deck list scrollbar (theme-sensitive) ───────────────────────── */
-    .deck-list-scroll {
-      scrollbar-width: thin;
-      scrollbar-color: var(--border-hov) transparent;
-    }
-    .deck-list-scroll::-webkit-scrollbar { width: 5px; }
-    .deck-list-scroll::-webkit-scrollbar-track { background: transparent; }
-    .deck-list-scroll::-webkit-scrollbar-thumb {
-      background: var(--border-hov);
-      border-radius: 99px;
-    }
-    .deck-list-scroll::-webkit-scrollbar-thumb:hover {
-      background: var(--muted);
-    }
-
-    .btn-secondary {
-      display: inline-flex;
-      align-items: center;
-      padding: 8px 16px;
-      border-radius: var(--radius-btn);
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-size: 13px;
-      font-weight: 500;
-      font-family: var(--font);
-      text-decoration: none;
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .btn-secondary:hover {
-      border-color: var(--border-hov);
-      background: var(--surface-hov);
-    }
-    .btn-menu {
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text);
-      border-radius: 8px;
-      width: 32px;
-      height: 32px;
-      font-size: 18px;
-      line-height: 1;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .12s, border-color .12s;
-    }
-    .btn-menu:hover { background: var(--surface); border-color: rgba(255,255,255,0.25); }
-    [data-theme="light"] .btn-menu:hover { border-color: rgba(0,0,0,0.25); }
-    .pres-menu-wrap { position: relative; flex-shrink: 0; }
-    .pres-dropdown {
-      display: none;
-      position: absolute;
-      right: 0;
-      min-width: 200px;
-      background: #111;
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 10px;
-      padding: 4px;
-      box-shadow: 0 10px 36px rgba(0,0,0,.7);
-      z-index: 9999;
-    }
-    [data-theme="light"] .pres-dropdown { background: #fff; border-color: rgba(0,0,0,0.1); box-shadow: 0 10px 36px rgba(0,0,0,.15); }
-    .pres-dropdown.open { display: block; }
-    .pres-dropdown-item {
+    .diff-row {
       display: flex;
       align-items: center;
       gap: 8px;
-      width: 100%;
-      padding: 8px 12px;
-      border: none;
-      background: transparent;
-      color: rgba(255,255,255,.85);
+      padding: 6px 10px;
+      border-radius: 6px;
       font-size: 13px;
-      text-align: left;
-      border-radius: 7px;
-      cursor: pointer;
-      transition: background .1s;
-      white-space: nowrap;
-      font-family: var(--font);
-      box-sizing: border-box;
+      margin-bottom: 4px;
     }
-    [data-theme="light"] .pres-dropdown-item { color: rgba(0,0,0,.75); }
-    .pres-dropdown-item:hover { background: rgba(255,255,255,.08); color: #fff; }
-    [data-theme="light"] .pres-dropdown-item:hover { background: rgba(0,0,0,.05); color: #000; }
-    .pres-dropdown-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 4px 0; }
-    [data-theme="light"] .pres-dropdown-divider { background: rgba(0,0,0,0.08); }
+    .diff-row--added   { background: #1a3a1a; color: #6fcf6f; }
+    .diff-row--removed { background: #3a1a1a; color: #cf6f6f; }
+    .diff-row--same    { background: var(--surface); color: var(--text); }
+    .diff-row-icon { font-size: 14px; min-width: 16px; }
   </style>
 </head>
 <body>
@@ -1523,9 +1433,15 @@
         </a>
       </li>
       <li>
-        <a href="/slides" class="sidebar-nav-item active">
+        <a href="/builder" class="sidebar-nav-item">
           <span class="nav-icon">&#9654;</span>
           <span class="nav-label">Builder</span>
+        </a>
+      </li>
+      <li>
+        <a href="/slides" class="sidebar-nav-item active">
+          <span class="nav-icon">&#9670;</span>
+          <span class="nav-label">Slides</span>
         </a>
       </li>
       <li>
@@ -1552,242 +1468,158 @@
   <div class="app-body" id="appBody">
     <main class="main">
 
-      <!-- Page header (always visible) -->
+      <!-- Page header -->
       <div class="page-header">
         <div>
-          <h1 class="page-title">Builder</h1>
-          <p class="page-subtitle">Your active workspace</p>
+          <h1 class="page-title">Slides</h1>
+          <p class="page-subtitle">Browse, create, and manage your slide library</p>
         </div>
       </div>
 
-      <!-- ── Builder top-level tabs ───────────────────────────── -->
-      <div class="slides-tabs" style="margin-bottom:24px;">
-        <button class="slides-tab active" data-btab="deck" onclick="switchBuilderTab('deck')">My Deck</button>
-        <button class="slides-tab" data-btab="slidemanager" onclick="switchBuilderTab('slidemanager')">Slide Manager</button>
+      <!-- Pick-mode banner (visible when ?mode=pick) -->
+      <div class="pick-banner hidden" id="pickBanner">
+        <span>Picking a slide for <strong id="pickDeckName">your deck</strong></span>
+        <a href="/builder" class="pick-banner-cancel">Cancel</a>
       </div>
 
-      <!-- ══ Tab: My Deck ════════════════════════════════════════ -->
-      <div id="btab-deck">
+      <!-- Three-tab navigation -->
+      <div class="slides-tabs">
+        <button class="slides-tab active" data-tab="library" onclick="switchTab('library')">My Library</button>
+        <button class="slides-tab" data-tab="templates" onclick="switchTab('templates')">Templates</button>
+        <button class="slides-tab" data-tab="builder" onclick="switchTab('builder')">Slide Builder</button>
+      </div>
 
-      <!-- ── Builder Top: 2-col (Deck + Preview) ──────────────── -->
-      <div class="builder-workspace">
+      <!-- ══ Tab: My Library ══════════════════════════════════════ -->
+      <div id="panel-library" class="tab-panel">
 
-        <!-- Left: Your Presentation -->
-        <section class="panel workspace-deck" style="overflow:visible;">
-          <div class="panel-header">
-            <div>
-              <h2 class="panel-title">Your Presentation</h2>
-              <p class="panel-subtitle"><span id="deckCount">0</span> slides in your deck</p>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+          <p style="font-size:14px;color:var(--muted);">
+            <span id="libraryCount">0</span> slides in your library
+          </p>
+          <button class="btn-primary" onclick="openNewSlideModal()">+ New Slide</button>
+        </div>
+
+        <div id="libraryLoading" style="color:var(--muted);font-size:14px;padding:20px 0;">Loading library&hellip;</div>
+
+        <div class="empty-state hidden" id="libraryEmpty">
+          <div class="empty-icon">&#9645;</div>
+          <div class="empty-title">No library slides yet</div>
+          <p class="empty-desc">Start from a template or use the Slide Builder to create from scratch.</p>
+          <button class="btn-primary" onclick="switchTab('templates')">Browse Templates</button>
+        </div>
+
+        <div class="cards-grid hidden" id="libraryGrid"></div>
+
+      </div><!-- /#panel-library -->
+
+      <!-- ══ Tab: Templates ══════════════════════════════════════ -->
+      <div id="panel-templates" class="tab-panel hidden">
+
+        <div class="filter-pills" id="categoryPills">
+          <button class="filter-pill active" data-cat="new" onclick="filterTemplates('new')">New</button>
+          <button class="filter-pill" data-cat="all" onclick="filterTemplates('all')">All</button>
+          <button class="filter-pill" data-cat="Cover" onclick="filterTemplates('Cover')">Cover</button>
+          <button class="filter-pill" data-cat="Content" onclick="filterTemplates('Content')">Content</button>
+          <button class="filter-pill" data-cat="Visual" onclick="filterTemplates('Visual')">Visual</button>
+          <button class="filter-pill" data-cat="Metrics" onclick="filterTemplates('Metrics')">Metrics</button>
+          <button class="filter-pill" data-cat="Data" onclick="filterTemplates('Data')">Data</button>
+          <button class="filter-pill" data-cat="CTA" onclick="filterTemplates('CTA')">CTA</button>
+        </div>
+
+        <div id="templatesLoading" style="color:var(--muted);font-size:14px;padding:20px 0;">Loading templates&hellip;</div>
+
+        <div class="empty-state hidden" id="templatesEmpty">
+          <div class="empty-icon">&#9645;</div>
+          <div class="empty-title">No templates found</div>
+          <p class="empty-desc">No templates match this category.</p>
+        </div>
+
+        <div class="cards-grid hidden" id="templatesGrid"></div>
+
+      </div><!-- /#panel-templates -->
+
+      <!-- ══ Tab: Slide Builder ══════════════════════════════════ -->
+      <div id="panel-builder" class="tab-panel hidden">
+
+        <div class="slide-builder-tab">
+
+          <!-- Builder top bar -->
+          <div class="builder-topbar">
+            <input
+              class="layout-name-input"
+              id="layoutNameInput"
+              type="text"
+              value="Untitled Slide"
+              placeholder="Slide name..."
+              aria-label="Slide name"
+              onblur="saveLayoutName(this.value)"
+            >
+            <div class="viewport-toggle" id="viewportToggle">
+              <button class="viewport-btn active" id="vpDesktop" onclick="setViewMode('desktop')">Desktop</button>
+              <button class="viewport-btn" id="vpMobile" onclick="setViewMode('mobile')">Mobile</button>
             </div>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <a href="/builder/preview.html" class="btn-secondary">Open Builder &rarr;</a>
-              <div class="pres-menu-wrap" id="actionsMenuWrap">
-                <button class="btn-menu" id="actionsMenuBtn" onclick="toggleActionsMenu()" title="More actions">&#8943;</button>
-                <div class="pres-dropdown" id="actionsMenu" style="bottom:auto;top:calc(100% + 6px);">
-                  <button class="pres-dropdown-item" onclick="closeActionsMenu();openAddSlideModal();">+ Add Slide</button>
-                  <div class="pres-dropdown-divider"></div>
-                  <button class="pres-dropdown-item" onclick="closeActionsMenu();openCreatePresentationModal('new');">&#128196; Create Presentation</button>
-                  <button class="pres-dropdown-item" onclick="closeActionsMenu();openCreatePresentationModal('replace');">&#8635; Replace Presentation</button>
+            <button class="btn-save-lib" id="btnPreview" onclick="openPreviewPopup()">Preview</button>
+            <button class="btn-save-tpl" id="btnSaveAsTemplate" onclick="saveAsTemplate()">Save as Template</button>
+            <button class="btn-save-lib" id="btnSaveToLibrary" onclick="saveToLibrary()">Save to Library</button>
+            <div class="save-status" id="saveStatus"></div>
+          </div>
+
+          <!-- Builder body: canvas + preview -->
+          <div class="builder-body">
+
+            <!-- Canvas (left) -->
+            <div class="builder-canvas" id="builderCanvas">
+              <div class="canvas-inner" id="canvasInner">
+                <div class="canvas-add-row">
+                  <button class="btn-add-row" onclick="addRow()">&#43; Add Row</button>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Deck empty state -->
-          <div class="empty-state hidden" id="deckEmpty">
-            <div class="empty-icon">&#9645;</div>
-            <div class="empty-title">Deck is empty</div>
-            <p class="empty-desc">Add slides from the library to build your deck.</p>
-            <button class="btn-primary" onclick="openAddSlideModal()">+ Add Slide</button>
-          </div>
-
-          <!-- Deck list -->
-          <div class="deck-list-scroll">
-            <ul id="deckList" style="list-style:none;padding:0;margin:0;"></ul>
-          </div>
-        </section>
-
-        <!-- Right: Slide Preview -->
-        <section class="panel workspace-preview">
-          <div class="panel-header">
-            <div>
-              <h2 class="panel-title">Slide Preview</h2>
-              <p class="panel-subtitle" id="previewSubtitle">Select a slide to preview</p>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <div class="preview-nav hidden" id="previewNav">
-                <button class="preview-nav-btn" id="previewPrev" title="Previous slide">&#8592;</button>
-                <span class="preview-nav-count" id="previewCount"></span>
-                <button class="preview-nav-btn" id="previewNext" title="Next slide">&#8594;</button>
+            <!-- Preview (right) -->
+            <div class="builder-preview" id="builderPreview">
+              <div class="mobile-preview-header">
+                <div class="viewport-toggle">
+                  <button class="viewport-btn active" id="vpDesktopMobile" onclick="setViewMode('desktop')">Desktop</button>
+                  <button class="viewport-btn" id="vpMobileMobile" onclick="setViewMode('mobile')">Mobile</button>
+                </div>
+              </div>
+              <div class="preview-inner" id="previewInner">
+                <!-- Rendered by renderPreview() -->
               </div>
             </div>
-          </div>
-          <div class="preview-pane" id="slidePreviewPane">
-            <div class="empty-state">
-              <div class="empty-icon">&#9645;</div>
-              <div class="empty-title">No slide selected</div>
-              <p class="empty-desc">Click a slide in your deck to preview it here.</p>
+
+          </div><!-- /.builder-body -->
+
+          <!-- Mobile bottom tab bar -->
+          <div class="bottom-tabs" id="bottomTabs">
+            <div class="bottom-tabs-inner">
+              <button class="tab-btn active" id="tabEdit" onclick="setActiveTab('edit')">Edit</button>
+              <button class="tab-btn" id="tabPreview" onclick="setActiveTab('preview')">Preview</button>
             </div>
           </div>
-        </section>
 
-      </div>
+        </div><!-- /.slide-builder-tab -->
 
-      </div><!-- /#btab-deck -->
-
-      <!-- ══ Tab: Slide Manager ══════════════════════════════════ -->
-      <div id="btab-slidemanager" class="hidden">
-      <section>
-        <div class="page-header" style="margin-bottom:16px;">
-          <div>
-            <h2 class="panel-title">Slide Manager</h2>
-            <p class="panel-subtitle">Manage your library and browse templates</p>
-          </div>
-        </div>
-
-        <!-- Tab bar -->
-        <div class="slides-tabs">
-          <button class="slides-tab active" data-tab="library" onclick="switchTab('library')">My Library</button>
-          <button class="slides-tab" data-tab="templates" onclick="switchTab('templates')">Templates</button>
-        </div>
-
-        <!-- ── Tab 1: My Library ──────────────────────────────── -->
-        <div id="panel-library" class="tab-panel">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
-            <p style="font-size: 14px; color: var(--muted);">
-              <span id="libraryCount">0</span> slides in your library
-            </p>
-            <button class="btn-primary" onclick="openNewSlideModal()">+ New Slide</button>
-          </div>
-          <div id="libraryLoading" style="color: var(--muted); font-size: 14px; padding: 20px 0;">Loading library...</div>
-          <div class="empty-state hidden" id="libraryEmpty">
-            <div class="empty-icon">&#9645;</div>
-            <div class="empty-title">No slides yet</div>
-            <p class="empty-desc">Go to Templates to create your first slide, or click New Slide to start from scratch.</p>
-            <button class="btn-primary" onclick="openNewSlideModal()">+ New Slide</button>
-          </div>
-          <div class="cards-grid hidden" id="libraryGrid"></div>
-        </div>
-
-        <!-- ── Tab 2: Templates ───────────────────────────────── -->
-        <div id="panel-templates" class="tab-panel hidden">
-          <div class="filter-pills" id="categoryPills">
-            <button class="filter-pill active" data-cat="new" onclick="filterTemplates('new')">New</button>
-            <button class="filter-pill" data-cat="all" onclick="filterTemplates('all')">All</button>
-            <button class="filter-pill" data-cat="Cover" onclick="filterTemplates('Cover')">Cover</button>
-            <button class="filter-pill" data-cat="Content" onclick="filterTemplates('Content')">Content</button>
-            <button class="filter-pill" data-cat="Visual" onclick="filterTemplates('Visual')">Visual</button>
-            <button class="filter-pill" data-cat="Metrics" onclick="filterTemplates('Metrics')">Metrics</button>
-            <button class="filter-pill" data-cat="Data" onclick="filterTemplates('Data')">Data</button>
-            <button class="filter-pill" data-cat="CTA" onclick="filterTemplates('CTA')">CTA</button>
-          </div>
-          <div id="templatesLoading" style="color: var(--muted); font-size: 14px; padding: 20px 0;">Loading templates...</div>
-          <div class="empty-state hidden" id="templatesEmpty">
-            <div class="empty-icon">&#9645;</div>
-            <div class="empty-title">No templates found</div>
-            <p class="empty-desc">No templates match this category.</p>
-          </div>
-          <div class="cards-grid hidden" id="templatesGrid"></div>
-        </div>
-
-      </section>
-      </div><!-- /#btab-slidemanager -->
+      </div><!-- /#panel-builder -->
 
     </main>
   </div><!-- /.app-body -->
 
-  <!-- ── Create Presentation Modal ───────────────────────────────── -->
-  <div class="picker-overlay hidden" id="createPresentationModal" style="align-items:flex-start;overflow-y:auto;padding:16px;">
-    <div class="picker-panel" style="max-width:480px;width:100%;margin:auto;flex-shrink:0;">
-      <div class="picker-title" style="margin-bottom:4px;">Save Presentation</div>
-      <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Save a finished copy of the current deck for a customer.</p>
-
-      <div style="display:flex;gap:6px;margin-bottom:20px;">
-        <button id="cpOptNew" onclick="_cpSetOption('new')" style="flex:1;padding:8px 0;border-radius:var(--radius-btn);border:1px solid var(--accent);background:var(--accent);color:#fff;font-size:13px;font-weight:600;cursor:pointer;">New Presentation</button>
-        <button id="cpOptReplace" onclick="_cpSetOption('replace')" style="flex:1;padding:8px 0;border-radius:var(--radius-btn);border:1px solid var(--border);background:transparent;color:var(--text);font-size:13px;font-weight:500;cursor:pointer;">Replace Existing</button>
-      </div>
-
-      <div id="cpReplaceSection" style="display:none;margin-bottom:14px;">
-        <div class="field">
-          <label for="cpReplaceSelect">Select Presentation</label>
-          <select id="cpReplaceSelect" style="width:100%;padding:8px 10px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;">
-            <option value="">— Select a presentation —</option>
-          </select>
-        </div>
-        <div id="cpPublishedWarning" style="display:none;margin-top:10px;padding:10px 12px;border-radius:var(--radius-btn);border:1px solid #f59e0b;background:rgba(245,158,11,0.08);color:#f59e0b;font-size:12px;">This will overwrite the live version. The customer's link will continue to work but will show the updated content.</div>
-        <p class="coming-soon-msg hidden" id="cpReplaceError" style="color:#f87171;margin-top:8px;margin-bottom:0;"></p>
-      </div>
-
-      <div style="display:flex;flex-direction:column;gap:14px;">
-        <div class="field">
-          <label for="cpCustomerName">Customer Company <span style="color:var(--accent);">*</span></label>
-          <input type="text" id="cpCustomerName" placeholder="e.g. Acme Glass Co." autocomplete="off">
-        </div>
-        <div class="field">
-          <label for="cpPresentationName">Presentation Name</label>
-          <input type="text" id="cpPresentationName" placeholder="e.g. Q2 Demo, Security Overview…" autocomplete="off">
-        </div>
-        <div class="field">
-          <label for="cpContactName">Contact Person</label>
-          <input type="text" id="cpContactName" placeholder="e.g. John Smith">
-        </div>
-        <div class="field">
-          <label for="cpContactTitle">Contact Title</label>
-          <input type="text" id="cpContactTitle" placeholder="e.g. Head of Quality">
-        </div>
-        <div class="field">
-          <label for="cpLogo">Customer Logo</label>
-          <input type="file" id="cpLogo" accept="image/*" style="color:var(--text);">
-          <div id="cpLogoPreview" style="margin-top:8px;display:none;">
-            <img id="cpLogoPreviewImg" style="max-height:48px;border-radius:4px;border:1px solid var(--border);" alt="Logo preview">
-          </div>
-        </div>
-      </div>
-
-      <!-- Language section -->
-      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
-        <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Languages</div>
-        <div class="field" style="margin-bottom:10px;">
-          <label for="cpDefaultLang">Default Language</label>
-          <select id="cpDefaultLang" style="width:100%;padding:8px 10px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;">
-            <option value="en">English</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Additional Languages</label>
-          <div id="cpLangSearch" style="position:relative;">
-            <input type="text" id="cpLangInput" placeholder="Search languages…" autocomplete="off"
-              style="width:100%;padding:8px 10px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:13px;box-sizing:border-box;"
-              oninput="filterCpLangs(this.value)" onfocus="showCpLangDropdown()" onblur="setTimeout(hideCpLangDropdown,150)">
-            <div id="cpLangDropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-btn);max-height:160px;overflow-y:auto;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.6);"></div>
-          </div>
-          <div id="cpSelectedLangs" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;min-height:10px;"></div>
-        </div>
-      </div>
-
-      <p class="coming-soon-msg hidden" id="cpError" style="color:#f87171;margin-top:12px;"></p>
-
-      <div style="display:flex;gap:8px;margin-top:20px;">
-        <button class="picker-cancel" onclick="closeCreatePresentationModal()" style="flex:0 0 auto;">Cancel</button>
-        <button class="btn-primary" onclick="submitCreatePresentation()" style="flex:1;" id="cpSubmitBtn">Save Presentation</button>
-      </div>
-    </div>
-  </div>
-
   <!-- ── New Slide Modal ─────────────────────────────────────────── -->
   <div class="picker-overlay hidden" id="newSlideModal">
-    <div class="picker-panel" style="max-width: 540px; width: 100%;">
+    <div class="picker-panel" style="max-width:540px;width:100%;">
 
       <!-- Step 1: Pick a template -->
       <div id="newSlideStep1">
-        <div class="picker-title" style="margin-bottom: 16px;">Choose a Template</div>
+        <div class="picker-title" style="margin-bottom:16px;">Choose a Template</div>
         <div id="modalTemplatesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;max-height:380px;overflow-y:auto;margin-bottom:16px;"></div>
         <button class="picker-cancel" onclick="closeNewSlideModal()">Cancel</button>
       </div>
 
       <!-- Step 2: Name the slide -->
       <div id="newSlideStep2" class="hidden">
-        <div class="picker-title" style="margin-bottom: 6px;">Name Your Slide</div>
+        <div class="picker-title" style="margin-bottom:6px;">Name Your Slide</div>
         <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Give this slide a name so you can find it in your library.</p>
         <input
           id="newSlideName"
@@ -1804,66 +1636,21 @@
     </div>
   </div>
 
-  <!-- ── Full-screen Layout Builder (outside app-body) ───────────── -->
-  <div id="layoutBuilder">
-
-    <!-- Top bar -->
-    <div class="builder-topbar">
-      <button class="btn-back" id="btnBack" onclick="backToLayouts()">&#8592; Slides</button>
-      <input
-        class="layout-name-input"
-        id="layoutNameInput"
-        type="text"
-        value="Untitled Slide"
-        placeholder="Slide name..."
-        aria-label="Slide name"
-        onblur="saveLayoutName(this.value)"
-      >
-      <div class="viewport-toggle" id="viewportToggle">
-        <button class="viewport-btn active" id="vpDesktop" onclick="setViewMode('desktop')">Desktop</button>
-        <button class="viewport-btn" id="vpMobile" onclick="setViewMode('mobile')">Mobile</button>
-      </div>
-      <button class="btn-save-to-library hidden" id="btnSaveToLibrary">Save to Library</button>
-      <button class="btn-discard hidden" id="btnDiscard">Discard</button>
-      <div class="save-status" id="saveStatus"></div>
-    </div>
-
-    <!-- Builder body: canvas + preview -->
-    <div class="builder-body">
-
-      <!-- Canvas (left / edit tab) -->
-      <div class="builder-canvas" id="builderCanvas">
-        <div class="canvas-inner" id="canvasInner">
-          <div class="canvas-add-row">
-            <button class="btn-add-row" onclick="addRow()">&#43; Add Row</button>
-          </div>
+  <!-- Preview Popup -->
+  <div class="preview-popup-overlay hidden" id="previewPopup">
+    <div class="preview-popup-panel">
+      <div class="preview-popup-header">
+        <div class="preview-popup-tabs">
+          <button class="preview-popup-tab active" data-vp="desktop" onclick="switchPopupViewport('desktop')">Desktop</button>
+          <button class="preview-popup-tab" data-vp="tablet" onclick="switchPopupViewport('tablet')">Tablet</button>
+          <button class="preview-popup-tab" data-vp="mobile" onclick="switchPopupViewport('mobile')">Mobile</button>
         </div>
+        <span class="preview-popup-viewport-label" id="popupViewportLabel">1920 × 1080</span>
+        <button class="preview-popup-close" onclick="closePreviewPopup()">&#10005;</button>
       </div>
-
-      <!-- Preview (right / preview tab) -->
-      <div class="builder-preview" id="builderPreview">
-        <div class="mobile-preview-header">
-          <div class="viewport-toggle">
-            <button class="viewport-btn active" id="vpDesktopMobile" onclick="setViewMode('desktop')">Desktop</button>
-            <button class="viewport-btn" id="vpMobileMobile" onclick="setViewMode('mobile')">Mobile</button>
-          </div>
-        </div>
-        <div class="preview-inner" id="previewInner">
-          <!-- Rendered by renderPreview() -->
-        </div>
-      </div>
-
+      <div class="preview-popup-content" id="previewPopupContent"></div>
     </div>
-
-    <!-- Mobile bottom tab bar -->
-    <div class="bottom-tabs" id="bottomTabs">
-      <div class="bottom-tabs-inner">
-        <button class="tab-btn active" id="tabEdit" onclick="setActiveTab('edit')">Edit</button>
-        <button class="tab-btn" id="tabPreview" onclick="setActiveTab('preview')">Preview</button>
-      </div>
-    </div>
-
-  </div><!-- /#layoutBuilder -->
+  </div>
 
   <!-- Component Picker (overlay) -->
   <div class="picker-overlay hidden" id="pickerOverlay">
@@ -1871,6 +1658,22 @@
       <div class="picker-title">Add Component</div>
       <div class="picker-list" id="pickerList"></div>
       <button class="picker-cancel" onclick="closePicker()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Template Update Review Modal -->
+  <div class="picker-overlay hidden" id="updateReviewModal">
+    <div class="picker-panel update-review-modal">
+      <div class="picker-title" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>Template Update Available</span>
+        <button onclick="closeUpdateReviewModal()" style="background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0;line-height:1;">&#x2715;</button>
+      </div>
+      <div class="update-review-info" id="updateReviewInfo"></div>
+      <div class="update-review-diff" id="updateReviewDiff"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button class="btn-secondary" onclick="ignoreTemplateUpdate()">Ignore for now</button>
+        <button class="btn-primary" onclick="acceptTemplateUpdate()">Accept update</button>
+      </div>
     </div>
   </div>
 
@@ -1916,11 +1719,28 @@
       });
     })();
 
+    // ── Pick-mode state ─────────────────────────────────────────────
+    var pickMode   = false;
+    var pickDeckId = '';
+    var pickDeckName = '';
+
+    (function () {
+      var p = new URLSearchParams(window.location.search);
+      if (p.get('mode') === 'pick') {
+        pickMode     = true;
+        pickDeckId   = p.get('deck')     || '';
+        pickDeckName = p.get('deckName') || 'your deck';
+        var banner = document.getElementById('pickBanner');
+        var nameEl = document.getElementById('pickDeckName');
+        nameEl.textContent = pickDeckName;
+        banner.classList.remove('hidden');
+      }
+    })();
+
     // ── Global state ────────────────────────────────────────────────
-    var activePageTab   = 'library';   // 'library' | 'templates'
-    var templates       = [];          // from GET /api/slide-templates
-    var librarySlides   = [];          // from GET /api/slide-library
-    var deckSlides      = [];          // from GET /api/deck → data.slides
+    var activePageTab   = 'library';
+    var templates       = [];
+    var librarySlides   = [];
     var activeCatFilter = 'new';
 
     // New Slide modal state
@@ -1928,15 +1748,35 @@
     var newSlideTemplateName = '';
 
     // Builder state
-    var currentLayout = null; // { id, name, rows: [...] }
-    var builderMode   = 'edit'; // 'edit' | 'preview'
+    var currentLayout = null;
     var viewMode      = 'desktop';
-    var activeTab     = 'edit'; // builder mobile tab: 'edit' | 'preview'
+    var activeTab     = 'edit';
+    var pickerTarget  = null;
+    var saveTimer     = null;
+    var dragSrcRowIdx = null;
 
-    var pickerTarget = null;
-    var saveTimer    = null;
-
-    var COMPONENT_TYPES = ['Text Block', 'Title', 'Subtitle', 'Tabs', 'Carousel', 'Table', 'List', 'Button'];
+    var COMPONENT_GROUPS = [
+      {
+        label: 'Content',
+        types: [
+          { name: 'Title',         desc: 'Large headline, optional subtitle below' },
+          { name: 'Text Block',    desc: 'Body text, supports bold and inline links' },
+          { name: 'List',          desc: 'Bullet or numbered list, items editable' },
+          { name: 'Section Label', desc: 'Small uppercase label — section intro' },
+          { name: 'Stat Block',    desc: 'Large number + label + optional sublabel' }
+        ]
+      },
+      {
+        label: 'Interactive',
+        types: [
+          { name: 'Tabs',     desc: 'Tab bar + panels, set tab count and labels' },
+          { name: 'Carousel', desc: 'Image + caption slides, swipeable' },
+          { name: 'Button',   desc: 'CTA button — links to tab, slide, or URL' },
+          { name: 'Image',    desc: 'Single image with optional caption' },
+          { name: 'Matrix',   desc: 'Grid of cells with headers and data rows' }
+        ]
+      }
+    ];
 
     var COL_LAYOUTS = {
       'full':      ['1fr'],
@@ -1956,30 +1796,20 @@
 
     // ── Tab switching ────────────────────────────────────────────────
 
-    function switchBuilderTab(tab) {
-      var tabs = ['deck', 'slidemanager'];
-      tabs.forEach(function (t) {
-        var panel = document.getElementById('btab-' + t);
-        var btn = document.querySelector('[data-btab="' + t + '"]');
-        if (panel) panel.classList.toggle('hidden', t !== tab);
-        if (btn) btn.classList.toggle('active', t === tab);
-      });
-    }
-
     function switchTab(tab) {
       activePageTab = tab;
-
       var tabs = document.querySelectorAll('.slides-tab');
       for (var i = 0; i < tabs.length; i++) {
         tabs[i].classList.toggle('active', tabs[i].getAttribute('data-tab') === tab);
       }
-
-      var panels = document.querySelectorAll('.tab-panel');
-      for (var p = 0; p < panels.length; p++) {
-        panels[p].classList.add('hidden');
+      var panels = ['library', 'templates', 'builder'];
+      panels.forEach(function (t) {
+        var el = document.getElementById('panel-' + t);
+        if (el) el.classList.toggle('hidden', t !== tab);
+      });
+      if (tab === 'builder' && !currentLayout) {
+        startNewLayout();
       }
-      var activePanel = document.getElementById('panel-' + tab);
-      if (activePanel) activePanel.classList.remove('hidden');
     }
 
     // ── Toast ────────────────────────────────────────────────────────
@@ -2052,7 +1882,6 @@
       var card = document.createElement('div');
       card.className = 'tpl-card';
 
-      // Header row: name + category badge
       var header = document.createElement('div');
       header.className = 'tpl-card-header';
 
@@ -2074,27 +1903,43 @@
       header.appendChild(name);
       header.appendChild(badge);
 
-      // Description
       var desc = document.createElement('div');
       desc.className = 'tpl-card-desc';
       desc.textContent = tpl.description || '';
 
-      // Mini layout preview
       var preview = buildMiniPreview(tpl.rows || []);
 
-      // Button row
       var cardActions = document.createElement('div');
       cardActions.style.cssText = 'display:flex;gap:8px;';
 
-      var useBtn = document.createElement('button');
-      useBtn.className = 'btn-primary';
-      useBtn.textContent = 'Use Template';
-      useBtn.style.flex = '1';
-      (function (t) {
-        useBtn.addEventListener('click', function () { openNewSlideModal(t); });
-      })(tpl);
+      if (pickMode) {
+        // In pick-mode: Use Template creates a library slide, adds to deck, returns to builder
+        var pickBtn = document.createElement('button');
+        pickBtn.className = 'btn-pick-add';
+        pickBtn.textContent = 'Use & Add to ' + pickDeckName;
+        (function (t) {
+          pickBtn.addEventListener('click', function () { pickUseTemplate(t); });
+        })(tpl);
+        cardActions.appendChild(pickBtn);
+      } else {
+        var useBtn = document.createElement('button');
+        useBtn.className = 'btn-primary';
+        useBtn.textContent = 'Use Template';
+        useBtn.style.flex = '1';
+        (function (t) {
+          useBtn.addEventListener('click', function () { openNewSlideModal(t); });
+        })(tpl);
 
-      cardActions.appendChild(useBtn);
+        var editTplBtn = document.createElement('button');
+        editTplBtn.className = 'btn-dupe';
+        editTplBtn.textContent = 'Edit Template';
+        (function (t) {
+          editTplBtn.addEventListener('click', function () { openBuilderWithTemplate(t); });
+        })(tpl);
+
+        cardActions.appendChild(useBtn);
+        cardActions.appendChild(editTplBtn);
+      }
 
       card.appendChild(header);
       card.appendChild(desc);
@@ -2109,7 +1954,6 @@
       wrap.className = 'tpl-preview';
 
       if (!rows || rows.length === 0) {
-        // Show a single placeholder row
         var ph = document.createElement('div');
         ph.className = 'tpl-row';
         var col = document.createElement('div');
@@ -2133,12 +1977,10 @@
           var colEl = document.createElement('div');
           colEl.className = 'tpl-col';
 
-          // Flex based on fraction value
           var fraction = fractions[c];
           var flexVal = fraction === '2fr' ? 2 : 1;
           colEl.style.flex = String(flexVal);
 
-          // One dot per component
           var colData = cols[c] || {};
           var comps = colData.components || [];
           for (var i = 0; i < comps.length; i++) {
@@ -2156,359 +1998,237 @@
       return wrap;
     }
 
-    // ── New Slide Modal ──────────────────────────────────────────────
+    // ── My Library ───────────────────────────────────────────────────
 
-    var _cpPreloadedLogoSrc = '';
-
-    var _cpOption = 'new';
-    var _cpPresentationsMap = {};
-
-    function _cpSetOption(opt) {
-      _cpOption = opt;
-      var btnNew     = document.getElementById('cpOptNew');
-      var btnReplace = document.getElementById('cpOptReplace');
-      var replSec    = document.getElementById('cpReplaceSection');
-      if (opt === 'new') {
-        btnNew.style.background = 'var(--accent)';
-        btnNew.style.borderColor = 'var(--accent)';
-        btnNew.style.color = '#fff';
-        btnNew.style.fontWeight = '600';
-        btnReplace.style.background = 'transparent';
-        btnReplace.style.borderColor = 'var(--border)';
-        btnReplace.style.color = 'var(--text)';
-        btnReplace.style.fontWeight = '500';
-        replSec.style.display = 'none';
-        _cpRestoreFields();
-      } else {
-        btnReplace.style.background = 'var(--accent)';
-        btnReplace.style.borderColor = 'var(--accent)';
-        btnReplace.style.color = '#fff';
-        btnReplace.style.fontWeight = '600';
-        btnNew.style.background = 'transparent';
-        btnNew.style.borderColor = 'var(--border)';
-        btnNew.style.color = 'var(--text)';
-        btnNew.style.fontWeight = '500';
-        replSec.style.display = 'block';
-        _cpLoadPresentations();
-      }
-    }
-
-    function _cpRestoreFields() {
-      ['cpCustomerName', 'cpContactName', 'cpContactTitle'].forEach(function (id) {
-        var el = document.getElementById(id);
-        el.removeAttribute('readonly');
-        el.style.background = '';
-        el.style.color = '';
-      });
-    }
-
-    function _cpLoadPresentations() {
-      var sel = document.getElementById('cpReplaceSelect');
-      sel.innerHTML = '<option value="">— Select a presentation —</option>';
-      _cpPresentationsMap = {};
-      fetch('/api/presentations')
-        .then(function (r) { return r.json(); })
-        .then(function (res) {
-          var list = (res.data || []).filter(function (p) { return !p.archivedAt; });
-          list.sort(function (a, b) {
-            var ap = a.publishedAt ? 0 : 1;
-            var bp = b.publishedAt ? 0 : 1;
-            return ap - bp;
-          });
-          list.forEach(function (p) {
-            _cpPresentationsMap[p.id] = p;
-            var label = (p.customerName || '') + ' — ' + (p.presentationName || p.name || '') + (p.publishedAt ? ' (Published)' : ' (Draft)');
-            var opt = document.createElement('option');
-            opt.value = p.id;
-            opt.textContent = label;
-            sel.appendChild(opt);
-          });
-        })
-        .catch(function () {});
-    }
-
-    document.getElementById('cpReplaceSelect').addEventListener('change', function () {
-        var id = this.value;
-        var pub = document.getElementById('cpPublishedWarning');
-        var replErr = document.getElementById('cpReplaceError');
-        replErr.classList.add('hidden');
-        replErr.textContent = '';
-        if (!id) {
-          pub.style.display = 'none';
-          _cpRestoreFields();
-          document.getElementById('cpCustomerName').value = '';
-          document.getElementById('cpPresentationName').value = '';
-          document.getElementById('cpContactName').value = '';
-          document.getElementById('cpContactTitle').value = '';
-          return;
-        }
-        var p = _cpPresentationsMap[id];
-        if (!p) return;
-        document.getElementById('cpCustomerName').value = p.customerName || '';
-        document.getElementById('cpPresentationName').value = p.presentationName || p.name || '';
-        document.getElementById('cpContactName').value = p.contactName || '';
-        document.getElementById('cpContactTitle').value = p.contactTitle || '';
-        ['cpCustomerName', 'cpContactName', 'cpContactTitle'].forEach(function (fid) {
-          var el = document.getElementById(fid);
-          el.setAttribute('readonly', true);
-          el.style.background = 'var(--bg)';
-          el.style.color = 'var(--muted)';
-        });
-        if (p.publishedAt) {
-          pub.style.display = 'block';
-        } else {
-          pub.style.display = 'none';
-        }
-    });
-
-    function toggleActionsMenu() {
-      document.getElementById('actionsMenu').classList.toggle('open');
-    }
-
-    function closeActionsMenu() {
-      document.getElementById('actionsMenu').classList.remove('open');
-    }
-
-    document.addEventListener('click', function (e) {
-      var wrap = document.getElementById('actionsMenuWrap');
-      if (wrap && !wrap.contains(e.target)) closeActionsMenu();
-    });
-
-    function openCreatePresentationModal(mode) {
-      _cpOption = 'new';
-      _cpPresentationsMap = {};
-      _cpSetOption(mode === 'replace' ? 'replace' : 'new');
-      document.getElementById('cpReplaceSelect').innerHTML = '<option value="">— Select a presentation —</option>';
-      document.getElementById('cpPublishedWarning').style.display = 'none';
-      document.getElementById('cpReplaceError').classList.add('hidden');
-      document.getElementById('cpReplaceError').textContent = '';
-      document.getElementById('cpCustomerName').value     = '';
-      document.getElementById('cpPresentationName').value = '';
-      document.getElementById('cpContactName').value      = '';
-      document.getElementById('cpContactTitle').value     = '';
-      document.getElementById('cpLogo').value         = '';
-      document.getElementById('cpLogoPreview').style.display = 'none';
-      document.getElementById('cpError').classList.add('hidden');
-      document.getElementById('cpError').textContent = '';
-      _cpPreloadedLogoSrc = '';
-      document.getElementById('createPresentationModal').classList.remove('hidden');
-      setTimeout(function () { document.getElementById('cpCustomerName').focus(); }, 50);
-      loadLangsForModal();
-
-      // Pre-populate logo from the cover slide if one exists
+    function loadLibrary() {
       fetch('/api/slide-library')
         .then(function (r) { return r.json(); })
         .then(function (res) {
-          var coverSlide = (res.data || []).find(function (s) { return s.id === 'lib-cover'; });
-          var logoSrc = coverSlide && coverSlide.edits && coverSlide.edits['customer-logo-src'];
-          if (logoSrc && !document.getElementById('cpLogo').files[0]) {
-            _cpPreloadedLogoSrc = logoSrc;
-            var preview = document.getElementById('cpLogoPreview');
-            var img     = document.getElementById('cpLogoPreviewImg');
-            img.src = logoSrc;
-            preview.style.display = 'block';
-          }
+          librarySlides = (res && res.data) ? res.data : [];
+          var loadingEl = document.getElementById('libraryLoading');
+          if (loadingEl) loadingEl.classList.add('hidden');
+          renderLibraryGrid();
         })
-        .catch(function () {});
-    }
-
-    document.getElementById('cpLogo').addEventListener('change', function () {
-      var file = this.files[0];
-      var preview = document.getElementById('cpLogoPreview');
-      var img     = document.getElementById('cpLogoPreviewImg');
-      if (file) {
-        _cpPreloadedLogoSrc = ''; // user chose a new file, discard preloaded
-        var reader = new FileReader();
-        reader.onload = function (e) { img.src = e.target.result; preview.style.display = 'block'; };
-        reader.readAsDataURL(file);
-      } else {
-        preview.style.display = 'none';
-      }
-    });
-
-    function closeCreatePresentationModal() {
-      document.getElementById('createPresentationModal').classList.add('hidden');
-    }
-
-    // ── Language picker for Create modal ──────────────────────────────────────
-    var _cpAllLangs = [];
-    var _cpSelectedLangs = [];
-
-    function loadLangsForModal() {
-      if (_cpAllLangs.length > 0) { populateCpDefaultLang(); return; }
-      fetch('/api/languages')
-        .then(function (r) { return r.json(); })
-        .then(function (res) {
-          if (res.success) { _cpAllLangs = res.data; }
-          // Also load favorites from translations
-          return fetch('/api/translations');
-        })
-        .then(function (r) { return r.json(); })
-        .then(function (res) {
-          if (res.success && res.data.favorites) {
-            _cpSelectedLangs = res.data.favorites.slice();
-          }
-          _cpSelectedLangs = [];
-          populateCpDefaultLang();
-          renderCpSelectedLangs();
-        })
-        .catch(function () {});
-    }
-
-    function populateCpDefaultLang() {
-      var sel = document.getElementById('cpDefaultLang');
-      var current = sel.value;
-      sel.innerHTML = '';
-      _cpAllLangs.forEach(function (l) {
-        var opt = document.createElement('option');
-        opt.value = l.code; opt.textContent = l.name;
-        sel.appendChild(opt);
-      });
-      if (current) sel.value = current;
-    }
-
-    function filterCpLangs(query) {
-      showCpLangDropdown(query);
-    }
-
-    function showCpLangDropdown(query) {
-      var dd = document.getElementById('cpLangDropdown');
-      var q = (query || document.getElementById('cpLangInput').value || '').toLowerCase();
-      var filtered = _cpAllLangs.filter(function (l) {
-        return !_cpSelectedLangs.includes(l.code) && (l.name.toLowerCase().includes(q) || l.code.includes(q));
-      }).slice(0, 30);
-      dd.innerHTML = '';
-      filtered.forEach(function (l) {
-        var item = document.createElement('div');
-        item.textContent = l.name + ' (' + l.code + ')';
-        item.style.cssText = 'padding:8px 12px;font-size:13px;cursor:pointer;color:var(--text);';
-        item.onmouseenter = function () { this.style.background = 'rgba(255,255,255,.08)'; };
-        item.onmouseleave = function () { this.style.background = ''; };
-        item.onmousedown = function (e) { e.preventDefault(); addCpLang(l.code); };
-        dd.appendChild(item);
-      });
-      dd.style.display = filtered.length > 0 ? 'block' : 'none';
-    }
-
-    function hideCpLangDropdown() {
-      var dd = document.getElementById('cpLangDropdown');
-      if (dd) dd.style.display = 'none';
-    }
-
-    function addCpLang(code) {
-      if (!_cpSelectedLangs.includes(code)) {
-        _cpSelectedLangs.push(code);
-        renderCpSelectedLangs();
-      }
-      document.getElementById('cpLangInput').value = '';
-      hideCpLangDropdown();
-    }
-
-    function removeCpLang(code) {
-      _cpSelectedLangs = _cpSelectedLangs.filter(function (c) { return c !== code; });
-      renderCpSelectedLangs();
-    }
-
-    function renderCpSelectedLangs() {
-      var container = document.getElementById('cpSelectedLangs');
-      container.innerHTML = '';
-      _cpSelectedLangs.forEach(function (code) {
-        var lang = _cpAllLangs.find(function (l) { return l.code === code; });
-        var tag = document.createElement('span');
-        tag.style.cssText = 'display:inline-flex;align-items:center;gap:4px;background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.3);color:#F5A623;font-size:12px;font-weight:600;padding:3px 10px;border-radius:100px;';
-        tag.textContent = (lang ? lang.name : code);
-        var rm = document.createElement('button');
-        rm.textContent = '×';
-        rm.style.cssText = 'background:none;border:none;color:#F5A623;cursor:pointer;padding:0;font-size:14px;line-height:1;';
-        rm.onclick = function () { removeCpLang(code); };
-        tag.appendChild(rm);
-        container.appendChild(tag);
-      });
-    }
-
-    function submitCreatePresentation() {
-      var isReplace    = _cpOption === 'replace';
-      var customerName     = document.getElementById('cpCustomerName').value.trim();
-      var presentationName = document.getElementById('cpPresentationName').value.trim();
-      var contactName  = document.getElementById('cpContactName').value.trim();
-      var contactTitle = document.getElementById('cpContactTitle').value.trim();
-      var logoFile     = document.getElementById('cpLogo').files[0];
-      var errEl        = document.getElementById('cpError');
-      var submitBtn    = document.getElementById('cpSubmitBtn');
-
-      if (isReplace) {
-        var replaceId = document.getElementById('cpReplaceSelect').value;
-        var replErr   = document.getElementById('cpReplaceError');
-        if (!replaceId) {
-          replErr.textContent = 'Please select a presentation to replace.';
-          replErr.classList.remove('hidden');
-          return;
-        }
-        replErr.classList.add('hidden');
-        replErr.textContent = '';
-      } else {
-        if (!customerName) {
-          errEl.textContent = 'Customer company name is required.';
-          errEl.classList.remove('hidden');
-          return;
-        }
-      }
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Saving…';
-
-      function doSubmit(logoFilename, logoData) {
-        var defaultLang = document.getElementById('cpDefaultLang').value || 'en';
-        var payload = { presentationName: presentationName, customerName: customerName, contactName: contactName, contactTitle: contactTitle, defaultLanguage: defaultLang, languages: _cpSelectedLangs };
-        if (logoFilename) { payload.logoFilename = logoFilename; payload.logoData = logoData; }
-        else if (_cpPreloadedLogoSrc) { payload.existingLogoSrc = _cpPreloadedLogoSrc; }
-        if (isReplace) { payload.replaceId = document.getElementById('cpReplaceSelect').value; }
-        fetch('/api/presentations', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        })
-        .then(function (r) { return r.json(); })
-        .then(function (res) {
-          if (!res.success) throw new Error(res.error || 'Failed to save');
-          closeCreatePresentationModal();
-          if (isReplace) {
-            showToast('Presentation updated for ' + customerName);
-            window.location.href = '/?highlight=' + (res.data && res.data.id ? res.data.id : '');
-          } else {
-            showToast('Presentation saved for ' + customerName);
-            window.location.href = '/?highlight=' + (res.data && res.data.id ? res.data.id : '');
-          }
-        })
-        .catch(function (err) {
-          errEl.textContent = err.message || 'Something went wrong.';
-          errEl.classList.remove('hidden');
-        })
-        .finally(function () {
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Save Presentation';
+        .catch(function () {
+          librarySlides = [];
+          var loadingEl = document.getElementById('libraryLoading');
+          if (loadingEl) loadingEl.classList.add('hidden');
+          renderLibraryGrid();
         });
+    }
+
+    function getTemplateName(templateId) {
+      for (var i = 0; i < templates.length; i++) {
+        if (templates[i].id === templateId) return templates[i].name;
+      }
+      return templateId || 'Unknown';
+    }
+
+    function renderLibraryGrid() {
+      var empty = document.getElementById('libraryEmpty');
+      var grid  = document.getElementById('libraryGrid');
+      var count = document.getElementById('libraryCount');
+
+      if (count) count.textContent = librarySlides.length;
+
+      if (librarySlides.length === 0) {
+        empty.classList.remove('hidden');
+        grid.classList.add('hidden');
+        return;
       }
 
-      if (logoFile) {
-        var reader = new FileReader();
-        reader.onload = function (e) { doSubmit(logoFile.name, e.target.result); };
-        reader.onerror = function () { doSubmit(null, null); };
-        reader.readAsDataURL(logoFile);
+      empty.classList.add('hidden');
+      grid.classList.remove('hidden');
+      grid.innerHTML = '';
+
+      for (var i = 0; i < librarySlides.length; i++) {
+        grid.appendChild(buildLibraryCard(librarySlides[i]));
+      }
+    }
+
+    function buildLibraryCard(slide) {
+      var card = document.createElement('div');
+      card.className = 'lib-card';
+      card.id = 'lib-card-' + slide.id;
+
+      // Thumbnail iframe
+      var thumbWrap = document.createElement('div');
+      thumbWrap.className = 'lib-card-thumb';
+      var SLIDE_W = 1280, SLIDE_H = 720;
+      var thumbW = 260, thumbH = Math.round(260 * 720 / 1280);
+      var scale = thumbW / SLIDE_W;
+      thumbWrap.style.height = thumbH + 'px';
+      thumbWrap.innerHTML =
+        '<div class="lib-card-thumb-inner">' +
+          '<div style="width:' + thumbW + 'px;height:' + thumbH + 'px;overflow:hidden;position:relative;">' +
+            '<div style="width:' + SLIDE_W + 'px;height:' + SLIDE_H + 'px;transform:scale(' + scale + ');transform-origin:top left;pointer-events:none;">' +
+              '<iframe src="/slides/library-preview/' + slide.id + '" style="width:' + SLIDE_W + 'px;height:' + SLIDE_H + 'px;border:none;" scrolling="no" tabindex="-1" title="Slide thumbnail"></iframe>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      card.appendChild(thumbWrap);
+
+      // Slide name (editable)
+      var name = document.createElement('div');
+      name.className = 'lib-card-name';
+      name.textContent = slide.name || 'Untitled Slide';
+      name.contentEditable = 'true';
+      name.spellcheck = false;
+      (function (s, el) {
+        el.addEventListener('blur', function () {
+          var newName = el.textContent.trim() || 'Untitled Slide';
+          el.textContent = newName;
+          s.name = newName;
+        });
+        el.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+        });
+      })(slide, name);
+      card.appendChild(name);
+
+      // Template origin
+      var origin = document.createElement('div');
+      origin.className = 'lib-card-origin';
+      origin.textContent = slide.templateId ? getTemplateName(slide.templateId) : 'No template';
+      card.appendChild(origin);
+
+      // Update badge
+      if (slide.hasTemplateUpdate) {
+        var badge = document.createElement('div');
+        badge.className = 'lib-update-badge';
+        badge.textContent = 'Update available';
+        (function (s) {
+          badge.addEventListener('click', function (e) {
+            e.stopPropagation();
+            openUpdateReviewModal(s);
+          });
+        })(slide);
+        card.appendChild(badge);
+      } else if (slide.templateUpdateIgnored) {
+        var ignoredBadge = document.createElement('div');
+        ignoredBadge.className = 'lib-update-badge lib-update-badge--ignored';
+        ignoredBadge.title = 'Template update available (ignored)';
+        ignoredBadge.textContent = 'Update ignored';
+        card.appendChild(ignoredBadge);
+      }
+
+      // Actions
+      var actions = document.createElement('div');
+      actions.className = 'lib-card-actions';
+
+      if (pickMode) {
+        // Pick-mode: show Add to Deck button prominently
+        var pickBtn = document.createElement('button');
+        pickBtn.className = 'btn-pick-add';
+        pickBtn.textContent = 'Add to ' + pickDeckName;
+        (function (s) {
+          pickBtn.addEventListener('click', function () { pickAddSlide(s.id); });
+        })(slide);
+        actions.appendChild(pickBtn);
       } else {
-        doSubmit(null, null);
+        // Normal mode: Edit, Duplicate, Delete
+        var editBtn = document.createElement('button');
+        editBtn.className = 'btn-edit';
+        editBtn.textContent = 'Edit';
+        (function (s) {
+          editBtn.addEventListener('click', function () { openBuilderWithLibrarySlide(s); });
+        })(slide);
+
+        var dupeBtn = document.createElement('button');
+        dupeBtn.className = 'btn-dupe';
+        dupeBtn.textContent = 'Duplicate';
+        (function (s) {
+          dupeBtn.addEventListener('click', function () { duplicateLibrarySlide(s.id); });
+        })(slide);
+
+        var delBtn = document.createElement('button');
+        delBtn.className = 'btn-delete';
+        delBtn.textContent = 'Delete';
+        (function (s) {
+          delBtn.addEventListener('click', function () { deleteLibrarySlide(s.id); });
+        })(slide);
+
+        actions.appendChild(editBtn);
+        actions.appendChild(dupeBtn);
+        actions.appendChild(delBtn);
       }
+
+      card.appendChild(actions);
+      return card;
     }
 
-    function showComingSoon(btn) {
-      var msg = document.getElementById('comingSoonMsg');
-      if (msg) { msg.classList.remove('hidden'); }
+    function duplicateLibrarySlide(id) {
+      fetch('/api/slide-library/' + id + '/duplicate', { method: 'POST' })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.success) throw new Error(res.error || 'Failed');
+          librarySlides.push(res.data);
+          renderLibraryGrid();
+          showToast('Slide duplicated');
+        })
+        .catch(function () {
+          showToast('Could not duplicate. Try again.');
+        });
     }
 
-    function openAddSlideModal() {
-      // TODO: open add-slide modal (Phase next)
-      openNewSlideModal();
+    function deleteLibrarySlide(id) {
+      if (!confirm('Delete this slide from your library?')) return;
+      fetch('/api/slide-library/' + id, { method: 'DELETE' })
+        .then(function () {
+          librarySlides = librarySlides.filter(function (s) { return s.id !== id; });
+          renderLibraryGrid();
+          showToast('Slide deleted');
+        })
+        .catch(function () {
+          showToast('Could not delete. Try again.');
+        });
     }
+
+    // ── Pick-mode actions ────────────────────────────────────────────
+
+    function pickAddSlide(librarySlideId) {
+      var btn = event.target;
+      btn.disabled = true;
+      btn.textContent = 'Adding…';
+      fetch('/api/deck/slides', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ librarySlideId: librarySlideId, deckId: pickDeckId })
+      })
+        .then(function () {
+          window.location.href = '/builder';
+        })
+        .catch(function () {
+          btn.disabled = false;
+          btn.textContent = 'Add to ' + pickDeckName;
+          showToast('Could not add slide. Try again.');
+        });
+    }
+
+    function pickUseTemplate(tpl) {
+      fetch('/api/library', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ templateId: tpl.id, name: tpl.name || 'Untitled Slide' })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          var created = res.data || res;
+          return fetch('/api/deck/slides', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ librarySlideId: created.id, deckId: pickDeckId })
+          });
+        })
+        .then(function () {
+          window.location.href = '/builder';
+        })
+        .catch(function () {
+          showToast('Could not add slide. Try again.');
+        });
+    }
+
+    // ── New Slide Modal ──────────────────────────────────────────────
 
     function openNewSlideModal(preselectedTemplate) {
       var modal = document.getElementById('newSlideModal');
@@ -2520,7 +2240,6 @@
       newSlideTemplateId   = null;
       newSlideTemplateName = '';
 
-      // Populate template grid in modal
       var grid = document.getElementById('modalTemplatesGrid');
       grid.innerHTML = '';
 
@@ -2572,7 +2291,6 @@
 
       modal.classList.remove('hidden');
 
-      // If a template was pre-selected (from Templates tab), skip to step 2
       if (preselectedTemplate) {
         newSlideTemplateId   = preselectedTemplate.id;
         newSlideTemplateName = preselectedTemplate.name || 'Untitled';
@@ -2609,640 +2327,55 @@
           var created = (res && res.data) ? res.data : res;
           librarySlides.push(created);
           closeNewSlideModal();
-
-          return fetch('/api/deck/slides', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ librarySlideId: created.id })
-          })
-            .then(function (r) { return r.json(); })
-            .then(function (deckRes) {
-              var deckSlide = (deckRes && deckRes.data) ? deckRes.data : deckRes;
-              deckSlide.name = created.name;
-              deckSlides.push(deckSlide);
-              renderDeckList();
-              renderLibraryGrid();
-              showToast('Slide added to library and deck');
-            });
+          switchTab('library');
+          renderLibraryGrid();
+          showToast('Slide added to library');
         })
         .catch(function () {
           showToast('Could not create slide. Try again.');
         });
     }
 
-    // ── My Library ───────────────────────────────────────────────────
+    // ── Slide Builder ────────────────────────────────────────────────
 
-    function loadLibrary() {
-      Promise.all([
-        fetch('/api/slide-library').then(function (r) { return r.json(); }),
-        fetch('/api/deck').then(function (r) { return r.json(); })
-      ]).then(function (results) {
-        librarySlides = (results[0] && results[0].data) ? results[0].data : [];
-        var deck = (results[1] && results[1].data) ? results[1].data : {};
-        deckSlides = deck.slides || [];
-
-        var loadingEl = document.getElementById('libraryLoading');
-        if (loadingEl) loadingEl.classList.add('hidden');
-
-        renderLibraryGrid();
-        renderDeckList();
-        if (deckSlides.length > 0) { previewIdx = 0; renderPreviewAt(0); updatePreviewNav(); }
-      }).catch(function () {
-        librarySlides = [];
-        deckSlides = [];
-        var loadingEl = document.getElementById('libraryLoading');
-        if (loadingEl) loadingEl.classList.add('hidden');
-        renderLibraryGrid();
-        renderDeckList();
-      });
-    }
-
-    function getDeckSlideForLibrary(librarySlideId) {
-      for (var i = 0; i < deckSlides.length; i++) {
-        if (deckSlides[i].librarySlideId === librarySlideId) return deckSlides[i];
-      }
-      return null;
-    }
-
-    function getTemplateName(templateId) {
-      for (var i = 0; i < templates.length; i++) {
-        if (templates[i].id === templateId) return templates[i].name;
-      }
-      return templateId || 'Unknown';
-    }
-
-    function renderLibraryGrid() {
-      var empty = document.getElementById('libraryEmpty');
-      var grid  = document.getElementById('libraryGrid');
-      var count = document.getElementById('libraryCount');
-
-      if (count) count.textContent = librarySlides.length;
-
-      if (librarySlides.length === 0) {
-        empty.classList.remove('hidden');
-        grid.classList.add('hidden');
-        return;
-      }
-
-      empty.classList.add('hidden');
-      grid.classList.remove('hidden');
-      grid.innerHTML = '';
-
-      for (var i = 0; i < librarySlides.length; i++) {
-        grid.appendChild(buildLibraryCard(librarySlides[i]));
-      }
-    }
-
-    function buildLibraryCard(slide) {
-      var deckSlide = getDeckSlideForLibrary(slide.id);
-      var inDeck = deckSlide !== null;
-
-      var card = document.createElement('div');
-      card.className = 'lib-card';
-      card.id = 'lib-card-' + slide.id;
-
-      // Editable name
-      var name = document.createElement('div');
-      name.className = 'lib-card-name';
-      name.textContent = slide.name || 'Untitled Slide';
-      name.contentEditable = 'true';
-      name.spellcheck = false;
-      (function (s, el) {
-        el.addEventListener('blur', function () {
-          var newName = el.textContent.trim() || 'Untitled Slide';
-          el.textContent = newName;
-          if (newName !== s.name) {
-            s.name = newName;
-            saveLibrarySlideName(s.id, newName);
-          }
-        });
-        el.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
-        });
-      })(slide, name);
-
-      // Template origin
-      var origin = document.createElement('div');
-      origin.className = 'lib-card-origin';
-      origin.textContent = slide.templateId ? getTemplateName(slide.templateId) : 'No template';
-
-      // Actions
-      var actions = document.createElement('div');
-      actions.className = 'lib-card-actions';
-
-      // Add to Deck / In Deck toggle
-      var deckBtn = document.createElement('button');
-      deckBtn.className = 'btn-in-deck-toggle' + (inDeck ? ' active' : '');
-      deckBtn.textContent = inDeck ? '\u2713 In Deck' : '+ Add to Deck';
-      (function (s, btn) {
-        btn.addEventListener('click', function () {
-          var ds = getDeckSlideForLibrary(s.id);
-          toggleDeck(s.id, ds, btn);
-        });
-      })(slide, deckBtn);
-
-      // Edit button — navigate to builder
-      var editBtn = document.createElement('button');
-      editBtn.className = 'btn-edit';
-      editBtn.textContent = 'Edit';
-      (function (s) {
-        editBtn.addEventListener('click', function () {
-          var ds = getDeckSlideForLibrary(s.id);
-          if (ds) {
-            window.location.href = '/builder/preview.html';
-          } else {
-            // Add to deck first then open builder
-            addToDeckThenEdit(s.id);
-          }
-        });
-      })(slide);
-
-      // Delete button — disabled while slide is in the deck
-      var delBtn = document.createElement('button');
-      delBtn.className = 'btn-delete';
-      delBtn.textContent = 'Delete';
-      if (inDeck) {
-        delBtn.disabled = true;
-        delBtn.title = 'Remove from deck before deleting';
-      } else {
-        (function (s) {
-          delBtn.addEventListener('click', function () { deleteLibrarySlide(s.id); });
-        })(slide);
-      }
-
-      actions.appendChild(deckBtn);
-      actions.appendChild(editBtn);
-      actions.appendChild(delBtn);
-
-      card.appendChild(name);
-      card.appendChild(origin);
-      card.appendChild(actions);
-
-      return card;
-    }
-
-    function toggleDeck(librarySlideId, existingDeckSlide, btn) {
-      if (existingDeckSlide) {
-        // Remove from deck
-        btn.classList.remove('active');
-        btn.textContent = '+ Add to Deck';
-        deckSlides = deckSlides.filter(function (s) { return s.id !== existingDeckSlide.id; });
-        renderDeckList();
-
-        fetch('/api/deck/slides/' + existingDeckSlide.id, { method: 'DELETE' })
-          .catch(function () {
-            deckSlides.push(existingDeckSlide);
-            btn.classList.add('active');
-            btn.textContent = '\u2713 In Deck';
-            showToast('Could not remove from deck. Try again.');
-          });
-      } else {
-        // Add to deck
-        btn.classList.add('active');
-        btn.textContent = '\u2713 In Deck';
-
-        fetch('/api/deck/slides', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ librarySlideId: librarySlideId })
-        })
-          .then(function (r) { return r.json(); })
-          .then(function (res) {
-            var newDeckSlide = (res && res.data) ? res.data : res;
-            var libSlide = librarySlides.find(function (s) { return s.id === librarySlideId; });
-            if (libSlide && libSlide.name) newDeckSlide.name = libSlide.name;
-            var alreadyInMemory = deckSlides.some(function (s) { return s.id === newDeckSlide.id; });
-            if (newDeckSlide && newDeckSlide.id && !alreadyInMemory) {
-              insertDeckSlideInOrder(newDeckSlide);
-              renderDeckList();
-            }
-          })
-          .catch(function () {
-            btn.classList.remove('active');
-            btn.textContent = '+ Add to Deck';
-            showToast('Could not add to deck. Try again.');
-          });
-      }
-    }
-
-    function addToDeckThenEdit(librarySlideId) {
-      fetch('/api/deck/slides', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ librarySlideId: librarySlideId })
-      })
-        .then(function () {
-          window.location.href = '/builder/preview.html';
-        })
-        .catch(function () {
-          showToast('Could not open editor. Try again.');
-        });
-    }
-
-    function deleteLibrarySlide(id) {
-      if (!confirm('Delete this slide from your library?')) return;
-      fetch('/api/slide-library/' + id, { method: 'DELETE' })
-        .then(function () {
-          librarySlides = librarySlides.filter(function (s) { return s.id !== id; });
-          deckSlides    = deckSlides.filter(function (s) { return s.librarySlideId !== id; });
-          renderLibraryGrid();
-          showToast('Slide deleted');
-        })
-        .catch(function () {
-          showToast('Could not delete. Try again.');
-        });
-    }
-
-    function saveLibrarySlideName(id, name) {
-      // No dedicated rename endpoint specified; use slide-library PATCH if available
-      // For now silently skip — server may handle via a PUT
-    }
-
-    // ── My Deck ──────────────────────────────────────────────────────
-
-    function renderDeckList() {
-      var empty   = document.getElementById('deckEmpty');
-      var list    = document.getElementById('deckList');
-      var count   = document.getElementById('deckCount');
-
-      var visibleSlides = deckSlides.filter(function (s) { return s.visible !== false; });
-      if (count) count.textContent = visibleSlides.length;
-
-      if (deckSlides.length === 0) {
-        empty.classList.remove('hidden');
-        list.classList.add('hidden');
-        return;
-      }
-
-      empty.classList.add('hidden');
-      list.innerHTML = '';
-
-      var visNum = 0;
-      for (var i = 0; i < deckSlides.length; i++) {
-        var isHiddenRow = deckSlides[i].visible === false;
-        var displayIdx  = isHiddenRow ? null : visNum++;
-        list.appendChild(buildDeckCard(deckSlides[i], displayIdx, isHiddenRow));
-      }
-    }
-
-    var LOCKED_LIBRARY_IDS = ['lib-cover', 'lib-cta'];
-
-    function insertDeckSlideInOrder(newDeckSlide) {
-      if (newDeckSlide.librarySlideId === 'lib-cover') {
-        deckSlides = deckSlides.filter(function (s) { return s.librarySlideId !== 'lib-cover'; });
-        deckSlides.unshift(newDeckSlide);
-      } else if (newDeckSlide.librarySlideId === 'lib-cta') {
-        deckSlides = deckSlides.filter(function (s) { return s.librarySlideId !== 'lib-cta'; });
-        deckSlides.push(newDeckSlide);
-      } else {
-        deckSlides.push(newDeckSlide);
-      }
-    }
-
-    function isLockedSlide(deckSlide) {
-      return LOCKED_LIBRARY_IDS.indexOf(deckSlide.librarySlideId) !== -1;
-    }
-
-    function buildDeckCard(deckSlide, idx, isHiddenRow) {
-      var locked = isLockedSlide(deckSlide);
-      var li = document.createElement('li');
-      li.className = 'deck-row' + (isHiddenRow ? ' is-hidden-row' : '') + (locked ? ' is-locked' : '');
-      li.dataset.id = deckSlide.id;
-      li.draggable = !locked;
-
-      var slideLabel = deckSlide.name || 'Untitled Slide';
-      var numHtml = isHiddenRow ? '' : '<span class="slide-num">' + (idx + 1) + '</span>';
-      var actionBtn = locked
-        ? '<button class="btn-lock" title="This slide is locked" tabindex="-1">&#128274;</button>'
-        : '<button class="btn-visibility' + (isHiddenRow ? '' : ' is-visible') + '" title="' + (isHiddenRow ? 'Show slide' : 'Hide slide') + '">' + (isHiddenRow ? eyeOffIcon() : eyeIcon()) + '</button>';
-
-      li.innerHTML =
-        '<span class="drag-handle" aria-hidden="true">&#8942;</span>' +
-        numHtml +
-        '<span class="slide-title">' +
-          escapeHtml(slideLabel) +
-        '</span>' +
-        actionBtn +
-        '<button class="btn-remove" title="Remove slide">&times;</button>';
-
-      li.querySelector('.slide-title').addEventListener('click', function () {
-        showSlidePreview(deckSlide);
-      });
-
-      if (!locked) {
-        li.querySelector('.btn-visibility').addEventListener('click', function () {
-          toggleDeckVisibility(deckSlide);
-        });
-      }
-
-      li.querySelector('.btn-remove').addEventListener('click', function () {
-        removeDeckSlide(deckSlide);
-      });
-
-      if (!locked) attachDeckDragEvents(li);
-
-      return li;
-    }
-
-    var dragSrcId = null;
-
-    function attachDeckDragEvents(row) {
-      row.addEventListener('dragstart', function (e) {
-        dragSrcId = row.dataset.id;
-        row.classList.add('dragging');
-        e.dataTransfer.effectAllowed = 'move';
-      });
-      row.addEventListener('dragend', function () {
-        row.classList.remove('dragging');
-        document.querySelectorAll('.deck-row').forEach(function (r) { r.classList.remove('drag-over'); });
-        dragSrcId = null;
-      });
-      row.addEventListener('dragover', function (e) {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-        if (row.dataset.id !== dragSrcId) row.classList.add('drag-over');
-      });
-      row.addEventListener('dragleave', function () { row.classList.remove('drag-over'); });
-      row.addEventListener('drop', function (e) {
-        e.preventDefault();
-        row.classList.remove('drag-over');
-        if (!dragSrcId || row.dataset.id === dragSrcId) return;
-        var srcIdx  = deckSlides.findIndex(function (s) { return s.id === dragSrcId; });
-        var destIdx = deckSlides.findIndex(function (s) { return s.id === row.dataset.id; });
-        if (srcIdx === -1 || destIdx === -1) return;
-        // Block moves that would displace a locked slide's position
-        if (isLockedSlide(deckSlides[destIdx])) return;
-        if (destIdx === 0 && isLockedSlide(deckSlides[0])) return;
-        if (destIdx === deckSlides.length - 1 && isLockedSlide(deckSlides[deckSlides.length - 1])) return;
-        var moved = deckSlides.splice(srcIdx, 1)[0];
-        deckSlides.splice(destIdx, 0, moved);
-        saveDeckOrder();
-        renderDeckList();
-      });
-    }
-
-    var previewIdx = -1;
-
-    function showSlidePreview(deckSlide) {
-      var idx = deckSlides.findIndex(function (s) { return s.id === deckSlide.id; });
-      previewIdx = idx;
-      renderPreviewAt(previewIdx);
-      updatePreviewNav();
-    }
-
-    function renderPreviewAt(idx) {
-      var slide = deckSlides[idx];
-      if (!slide) return;
-
-      var pane = document.getElementById('slidePreviewPane');
-      if (!pane) return;
-
-      var src = '/slides/deck-preview/' + slide.id;
-      var SLIDE_W = 1280, SLIDE_H = 720;
-      var availW = pane.clientWidth  || 500;
-      var availH = pane.clientHeight || 320;
-      var scale  = Math.min(availW / SLIDE_W, availH / SLIDE_H);
-      var fitW   = Math.round(SLIDE_W * scale);
-      var fitH   = Math.round(SLIDE_H * scale);
-
-      pane.innerHTML =
-        '<div style="width:' + fitW + 'px;height:' + fitH + 'px;overflow:hidden;position:relative;">' +
-          '<div style="width:' + SLIDE_W + 'px;height:' + SLIDE_H + 'px;transform:scale(' + scale + ');transform-origin:top left;">' +
-            '<iframe src="' + src + '" style="width:' + SLIDE_W + 'px;height:' + SLIDE_H + 'px;border:none;" scrolling="no" title="Slide preview"></iframe>' +
-          '</div>' +
-        '</div>';
-
-      var subtitle = document.getElementById('previewSubtitle');
-      if (subtitle) subtitle.textContent = slide.name || 'Slide ' + (idx + 1);
-    }
-
-    function updatePreviewNav() {
-      var nav   = document.getElementById('previewNav');
-      var prev  = document.getElementById('previewPrev');
-      var next  = document.getElementById('previewNext');
-      var count = document.getElementById('previewCount');
-      if (!nav) return;
-
-      if (previewIdx < 0 || deckSlides.length === 0) {
-        nav.classList.add('hidden');
-        return;
-      }
-
-      var visSlides  = deckSlides.filter(function (s) { return s.visible !== false; });
-      var curSlide   = deckSlides[previewIdx];
-      var visIdx     = curSlide ? visSlides.findIndex(function (s) { return s.id === curSlide.id; }) : -1;
-
-      nav.classList.remove('hidden');
-      if (visIdx === -1) {
-        count.textContent = '— / ' + visSlides.length;
-        prev.disabled = false;
-        next.disabled = false;
-      } else {
-        count.textContent = (visIdx + 1) + ' / ' + visSlides.length;
-        prev.disabled = visIdx === 0;
-        next.disabled = visIdx === visSlides.length - 1;
-      }
-    }
-
-    function prevVisibleIdx() {
-      var visSlides = deckSlides.filter(function (s) { return s.visible !== false; });
-      var curSlide  = deckSlides[previewIdx];
-      var visIdx    = curSlide ? visSlides.findIndex(function (s) { return s.id === curSlide.id; }) : -1;
-      if (visIdx <= 0) return -1;
-      var target = visSlides[visIdx - 1];
-      return deckSlides.findIndex(function (s) { return s.id === target.id; });
-    }
-
-    function nextVisibleIdx() {
-      var visSlides = deckSlides.filter(function (s) { return s.visible !== false; });
-      var curSlide  = deckSlides[previewIdx];
-      var visIdx    = curSlide ? visSlides.findIndex(function (s) { return s.id === curSlide.id; }) : -1;
-      if (visIdx === -1 || visIdx >= visSlides.length - 1) return -1;
-      var target = visSlides[visIdx + 1];
-      return deckSlides.findIndex(function (s) { return s.id === target.id; });
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-      document.getElementById('previewPrev').addEventListener('click', function () {
-        var pi = prevVisibleIdx();
-        if (pi !== -1) { previewIdx = pi; renderPreviewAt(previewIdx); updatePreviewNav(); }
-      });
-      document.getElementById('previewNext').addEventListener('click', function () {
-        var ni = nextVisibleIdx();
-        if (ni !== -1) { previewIdx = ni; renderPreviewAt(previewIdx); updatePreviewNav(); }
-      });
-    });
-
-    function escapeHtml(str) {
-      var d = document.createElement('div');
-      d.textContent = str || '';
-      return d.innerHTML;
-    }
-
-    function eyeIcon() {
-      return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
-    }
-
-    function eyeOffIcon() {
-      return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
-    }
-
-    function moveDeckSlide(idx, direction) {
-      var newIdx = idx + direction;
-      if (newIdx < 0 || newIdx >= deckSlides.length) return;
-      var tmp = deckSlides[idx];
-      deckSlides[idx] = deckSlides[newIdx];
-      deckSlides[newIdx] = tmp;
-      saveDeckOrder();
-      renderDeckList();
-    }
-
-    function toggleDeckVisibility(deckSlide) {
-      var wasCurrentPreview = (previewIdx >= 0 && deckSlides[previewIdx] && deckSlides[previewIdx].id === deckSlide.id);
-      deckSlide.visible = deckSlide.visible === false ? true : false;
-      saveDeckOrder();
-      renderDeckList();
-
-      if (wasCurrentPreview && deckSlide.visible === false) {
-        // Slide was just hidden — move preview to nearest visible slide
-        var visSlides = deckSlides.filter(function (s) { return s.visible !== false; });
-        if (visSlides.length === 0) {
-          previewIdx = -1;
-          document.getElementById('slidePreviewPane').innerHTML =
-            '<div class="empty-state"><div class="empty-icon">&#9645;</div><div class="empty-title">No slide selected</div><p class="empty-desc">Click a slide in your deck to preview it here.</p></div>';
-          document.getElementById('previewSubtitle').textContent = 'Select a slide to preview';
-        } else {
-          // Find nearest visible slide before the hidden one
-          var newTarget = null;
-          for (var i = previewIdx - 1; i >= 0; i--) {
-            if (deckSlides[i].visible !== false) { newTarget = deckSlides[i]; break; }
-          }
-          if (!newTarget) {
-            for (var j = previewIdx + 1; j < deckSlides.length; j++) {
-              if (deckSlides[j].visible !== false) { newTarget = deckSlides[j]; break; }
-            }
-          }
-          if (newTarget) {
-            previewIdx = deckSlides.findIndex(function (s) { return s.id === newTarget.id; });
-            renderPreviewAt(previewIdx);
-          }
-        }
-      }
-      updatePreviewNav();
-    }
-
-    function removeDeckSlide(deckSlide) {
-      deckSlides = deckSlides.filter(function (s) { return s.id !== deckSlide.id; });
-      renderDeckList();
-      // Also update the library grid button state
-      renderLibraryGrid();
-
-      fetch('/api/deck/slides/' + deckSlide.id, { method: 'DELETE' })
-        .catch(function () {
-          deckSlides.push(deckSlide);
-          renderDeckList();
-          showToast('Could not remove. Try again.');
-        });
-    }
-
-    function saveDeckOrder() {
-      var payload = deckSlides.map(function (s) {
-        return { id: s.id, librarySlideId: s.librarySlideId, visible: s.visible !== false };
-      });
-
-      fetch('/api/deck', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slides: payload })
-      }).catch(function (err) {
-        console.warn('[deck] Could not save order:', err);
-      });
-    }
-
-    // ── Builder (full-screen) ────────────────────────────────────────
-
-    function openBuilder(layout) {
-      builderMode = 'edit';
+    function startNewLayout() {
       currentLayout = {
-        id:           layout.id,
-        name:         layout.name || 'Untitled Slide',
-        rows:         layout.rows ? JSON.parse(JSON.stringify(layout.rows)) : [],
-        fromTemplate: layout.fromTemplate
+        id:   null,
+        name: 'Untitled Slide',
+        rows: []
       };
-      openBuilderUI();
-    }
-
-    function previewTemplate(tpl) {
-      builderMode = 'preview';
-      currentLayout = {
-        id:           null,
-        name:         tpl.name || 'Untitled Slide',
-        rows:         JSON.parse(JSON.stringify(tpl.rows || [])),
-        fromTemplate: tpl.id
-      };
-      openBuilderUI();
-    }
-
-    function openBuilderUI() {
-      // Hide app body, sidebar, mobile topbar
-      document.getElementById('appBody').style.display = 'none';
-      var sidebar = document.getElementById('sidebar');
-      var topbarMobile = document.getElementById('topbar-mobile');
-      if (sidebar) sidebar.style.display = 'none';
-      if (topbarMobile) topbarMobile.style.display = 'none';
-
-      // Show/hide top bar buttons based on mode
-      var isPreview = builderMode === 'preview';
-      document.getElementById('btnBack').classList.toggle('hidden', isPreview);
-      document.getElementById('btnSaveToLibrary').classList.toggle('hidden', !isPreview);
-      document.getElementById('btnDiscard').classList.toggle('hidden', !isPreview);
-      var saveStatusEl = document.getElementById('saveStatus');
-      if (saveStatusEl) saveStatusEl.classList.toggle('hidden', isPreview);
-
-      // Show the full-screen builder
-      document.body.classList.add('editor-active');
-      document.getElementById('layoutBuilder').classList.add('builder-visible');
-      document.getElementById('layoutNameInput').value = currentLayout.name;
-
-      activeTab = 'edit';
-      applyTabClasses();
+      document.getElementById('layoutNameInput').value = 'Untitled Slide';
+      setSaveStatus('');
       renderCanvas();
       renderPreview();
     }
 
-    function closeBuilder() {
-      // Hide builder
-      document.getElementById('layoutBuilder').classList.remove('builder-visible');
-      document.body.classList.remove('editor-active');
-
-      // Restore app body + sidebar
-      document.getElementById('appBody').style.display = '';
-      var sidebar = document.getElementById('sidebar');
-      var topbarMobile = document.getElementById('topbar-mobile');
-      var appBody = document.getElementById('appBody');
-      if (sidebar) sidebar.style.display = '';
-      if (topbarMobile) topbarMobile.style.display = '';
-
-      // Restore save status visibility for next open
-      var saveStatusEl = document.getElementById('saveStatus');
-      if (saveStatusEl) saveStatusEl.classList.remove('hidden');
-
-      if (appBody) {
-        appBody.style.marginLeft = '';
-        var collapsed = localStorage.getItem('pb-sidebar-collapsed') === '1';
-        if (collapsed) {
-          appBody.classList.add('sidebar-collapsed');
-        } else {
-          appBody.classList.remove('sidebar-collapsed');
-        }
-      }
-
-      currentLayout = null;
+    function openBuilderWithTemplate(tpl) {
+      currentLayout = {
+        id:           tpl.id,
+        name:         tpl.name || 'Untitled',
+        rows:         tpl.rows ? JSON.parse(JSON.stringify(tpl.rows)) : [],
+        isTemplate:   true
+      };
+      document.getElementById('layoutNameInput').value = currentLayout.name;
+      switchTab('builder');
+      renderCanvas();
+      renderPreview();
     }
 
-    function backToLayouts() {
-      closeBuilder();
-      loadLibrary();
+    function openBuilderWithLibrarySlide(slide) {
+      var tpl = templates.find(function (t) { return t.id === slide.templateId; });
+      currentLayout = {
+        id:             tpl ? tpl.id : null,
+        name:           slide.name || 'Untitled',
+        rows:           tpl ? JSON.parse(JSON.stringify(tpl.rows || [])) : [],
+        isTemplate:     !!tpl,
+        librarySlideId: slide.id
+      };
+      document.getElementById('layoutNameInput').value = currentLayout.name;
+      switchTab('builder');
+      renderCanvas();
+      renderPreview();
     }
 
     function saveLayoutName(name) {
@@ -3250,7 +2383,74 @@
       name = name.trim() || 'Untitled Slide';
       currentLayout.name = name;
       document.getElementById('layoutNameInput').value = name;
-      scheduleSave();
+      if (currentLayout.id && currentLayout.isTemplate) scheduleSave();
+    }
+
+    function saveAsTemplate() {
+      if (!currentLayout) return;
+      var name = currentLayout.name || 'Untitled Slide';
+      if (currentLayout.id && currentLayout.isTemplate) {
+        // Update existing template
+        setSaveStatus('saving');
+        fetch('/api/layouts/' + currentLayout.id, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: name, rows: currentLayout.rows })
+        })
+          .then(function (r) { return r.json(); })
+          .then(function () {
+            setSaveStatus('saved');
+            setTimeout(function () { setSaveStatus(''); }, 2000);
+            showToast('Template saved');
+            loadTemplates();
+          })
+          .catch(function () {
+            setSaveStatus('');
+            showToast('Could not save. Try again.');
+          });
+      } else {
+        // Create new template
+        fetch('/api/layouts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: name, rows: currentLayout.rows })
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (res.success && res.data) {
+              currentLayout.id         = res.data.id;
+              currentLayout.isTemplate = true;
+            }
+            showToast('Saved as template: ' + name);
+            loadTemplates();
+          })
+          .catch(function () {
+            showToast('Could not save. Try again.');
+          });
+      }
+    }
+
+    function saveToLibrary() {
+      if (!currentLayout) return;
+      fetch('/api/library', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name:       currentLayout.name || 'Untitled Slide',
+          templateId: (currentLayout.isTemplate && currentLayout.id) ? currentLayout.id : null
+        })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          var saved = res.data || res;
+          librarySlides.push(saved);
+          switchTab('library');
+          renderLibraryGrid();
+          showToast('Slide saved to My Library');
+        })
+        .catch(function () {
+          showToast('Could not save. Try again.');
+        });
     }
 
     // ── Row / Col / Component manipulation ──────────────────────────
@@ -3258,10 +2458,10 @@
     function addRow() {
       if (!currentLayout) return;
       currentLayout.rows.push({
-        id: 'row-' + Date.now(),
+        id:     'row-' + Date.now(),
         layout: 'full',
         height: 'auto',
-        cols: [{ components: [] }]
+        cols:   [{ components: [] }]
       });
       renderCanvas();
       renderPreview();
@@ -3294,11 +2494,6 @@
       renderCanvas();
       renderPreview();
       scheduleSave();
-    }
-
-    function setRowCols(rowIdx, count) {
-      var keyMap = { 1: 'full', 2: 'half-half', 3: 'thirds' };
-      setRowLayout(rowIdx, keyMap[count] || 'full');
     }
 
     function removeRow(rowIdx) {
@@ -3348,6 +2543,37 @@
     function buildRowElement(rowIdx, row) {
       var rowEl = document.createElement('div');
       rowEl.className = 'builder-row';
+      rowEl.draggable = true;
+      (function (ri) {
+        rowEl.addEventListener('dragstart', function (e) {
+          dragSrcRowIdx = ri;
+          e.dataTransfer.effectAllowed = 'move';
+          setTimeout(function () { rowEl.classList.add('dragging'); }, 0);
+        });
+        rowEl.addEventListener('dragend', function () {
+          rowEl.classList.remove('dragging');
+          document.querySelectorAll('.builder-row').forEach(function (r) { r.classList.remove('drag-over'); });
+          dragSrcRowIdx = null;
+        });
+        rowEl.addEventListener('dragover', function (e) {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          document.querySelectorAll('.builder-row').forEach(function (r) { r.classList.remove('drag-over'); });
+          if (dragSrcRowIdx !== null && dragSrcRowIdx !== ri) rowEl.classList.add('drag-over');
+        });
+        rowEl.addEventListener('drop', function (e) {
+          e.preventDefault();
+          rowEl.classList.remove('drag-over');
+          if (dragSrcRowIdx === null || dragSrcRowIdx === ri) return;
+          var moved = currentLayout.rows.splice(dragSrcRowIdx, 1)[0];
+          var targetIdx = ri > dragSrcRowIdx ? ri - 1 : ri;
+          currentLayout.rows.splice(targetIdx, 0, moved);
+          dragSrcRowIdx = null;
+          renderCanvas();
+          renderPreview();
+          scheduleSave();
+        });
+      })(rowIdx);
 
       var currentLayoutKey = row.layout || 'full';
       var currentHeight    = row.height || 'auto';
@@ -3359,7 +2585,7 @@
       var handle = document.createElement('span');
       handle.className = 'drag-handle';
       handle.innerHTML = '&#8942;';
-      handle.title = 'Drag to reorder (coming soon)';
+      handle.title = 'Drag to reorder';
 
       var label = document.createElement('span');
       label.className = 'row-label';
@@ -3615,18 +2841,12 @@
         el.className = 'pv-tabs';
         var tabHeader = document.createElement('div');
         tabHeader.className = 'pv-tabs-header';
-        var t1 = document.createElement('div');
-        t1.className = 'pv-tab active-tab';
-        t1.textContent = 'Tab 1';
-        var t2 = document.createElement('div');
-        t2.className = 'pv-tab';
-        t2.textContent = 'Tab 2';
-        var t3 = document.createElement('div');
-        t3.className = 'pv-tab';
-        t3.textContent = 'Tab 3';
-        tabHeader.appendChild(t1);
-        tabHeader.appendChild(t2);
-        tabHeader.appendChild(t3);
+        ['Tab 1', 'Tab 2', 'Tab 3'].forEach(function (label, i) {
+          var t = document.createElement('div');
+          t.className = 'pv-tab' + (i === 0 ? ' active-tab' : '');
+          t.textContent = label;
+          tabHeader.appendChild(t);
+        });
         var tabBody = document.createElement('div');
         tabBody.className = 'pv-tabs-body';
         tabBody.textContent = 'Tab content area';
@@ -3638,7 +2858,7 @@
         el.className = 'pv-carousel';
         var icon = document.createElement('div');
         icon.className = 'pv-carousel-icon';
-        icon.textContent = '\u25B6';
+        icon.textContent = '▶';
         var clabel = document.createElement('div');
         clabel.className = 'pv-carousel-label';
         clabel.textContent = 'Image Carousel';
@@ -3672,18 +2892,58 @@
       } else if (type === 'List') {
         el = document.createElement('div');
         el.className = 'pv-list';
-        var items = ['List item one', 'List item two', 'List item three'];
-        for (var li = 0; li < items.length; li++) {
+        ['List item one', 'List item two', 'List item three'].forEach(function (txt) {
           var item = document.createElement('div');
           item.className = 'pv-list-item';
-          item.textContent = items[li];
+          item.textContent = txt;
           el.appendChild(item);
-        }
+        });
 
       } else if (type === 'Button') {
         el = document.createElement('div');
         el.className = 'pv-button';
         el.textContent = 'Call to Action';
+
+      } else if (type === 'Image') {
+        el = document.createElement('div');
+        el.className = 'pv-image';
+        el.innerHTML = '&#128444; Image';
+
+      } else if (type === 'Stat Block') {
+        el = document.createElement('div');
+        el.className = 'pv-stat';
+        el.innerHTML =
+          '<div class="pv-stat-number">2,050+</div>' +
+          '<div class="pv-stat-label">Systems Installed</div>';
+
+      } else if (type === 'Section Label') {
+        el = document.createElement('div');
+        el.className = 'pv-section-label';
+        el.textContent = 'Section Label';
+
+      } else if (type === 'Matrix') {
+        el = document.createElement('table');
+        el.className = 'pv-table';
+        var mhead = document.createElement('thead');
+        var mhrow = document.createElement('tr');
+        for (var mh = 0; mh < 3; mh++) {
+          var mth = document.createElement('th');
+          mth.textContent = 'Col ' + (mh + 1);
+          mhrow.appendChild(mth);
+        }
+        mhead.appendChild(mhrow);
+        var mtbody = document.createElement('tbody');
+        for (var mtr = 0; mtr < 2; mtr++) {
+          var mtrow = document.createElement('tr');
+          for (var mtd = 0; mtd < 3; mtd++) {
+            var mtcell = document.createElement('td');
+            mtcell.textContent = '—';
+            mtrow.appendChild(mtcell);
+          }
+          mtbody.appendChild(mtrow);
+        }
+        el.appendChild(mhead);
+        el.appendChild(mtbody);
 
       } else {
         el = document.createElement('div');
@@ -3702,18 +2962,25 @@
       var list = document.getElementById('pickerList');
       list.innerHTML = '';
 
-      for (var i = 0; i < COMPONENT_TYPES.length; i++) {
-        var btn = document.createElement('button');
-        btn.className = 'picker-item';
-        btn.textContent = COMPONENT_TYPES[i];
-        (function (type) {
+      COMPONENT_GROUPS.forEach(function (group) {
+        var groupLabel = document.createElement('div');
+        groupLabel.className = 'picker-group-label';
+        groupLabel.textContent = group.label;
+        list.appendChild(groupLabel);
+
+        group.types.forEach(function (comp) {
+          var btn = document.createElement('button');
+          btn.className = 'picker-item';
+          btn.innerHTML =
+            '<span class="picker-item-name">' + comp.name + '</span>' +
+            '<span class="picker-item-desc">' + comp.desc + '</span>';
           btn.addEventListener('click', function () {
-            addComponent(pickerTarget.rowIdx, pickerTarget.colIdx, type);
+            addComponent(pickerTarget.rowIdx, pickerTarget.colIdx, comp.name);
             closePicker();
           });
-        })(COMPONENT_TYPES[i]);
-        list.appendChild(btn);
-      }
+          list.appendChild(btn);
+        });
+      });
 
       document.getElementById('pickerOverlay').classList.remove('hidden');
     }
@@ -3772,7 +3039,7 @@
       var el = document.getElementById('saveStatus');
       if (!el) return;
       if (state === 'saving') {
-        el.textContent = 'Saving\u2026';
+        el.textContent = 'Saving…';
         el.className = 'save-status saving';
       } else if (state === 'saved') {
         el.textContent = 'Saved';
@@ -3784,60 +3051,93 @@
     }
 
     function scheduleSave() {
-      if (builderMode === 'preview' || !currentLayout || currentLayout.id === null) return;
+      if (!currentLayout || !currentLayout.id || !currentLayout.isTemplate) return;
       setSaveStatus('saving');
       if (saveTimer) clearTimeout(saveTimer);
-      saveTimer = setTimeout(saveLayout, 800);
+      saveTimer = setTimeout(saveTemplateLayout, 800);
     }
 
-    function saveLayout() {
-      if (!currentLayout || builderMode === 'preview' || currentLayout.id === null) return;
+    function saveTemplateLayout() {
+      if (!currentLayout || !currentLayout.id || !currentLayout.isTemplate) return;
       fetch('/api/layouts/' + currentLayout.id, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: currentLayout.name,
-          rows: currentLayout.rows
-        })
+        body: JSON.stringify({ name: currentLayout.name, rows: currentLayout.rows })
       }).then(function (res) {
-        if (!res.ok) console.warn('[layouts] Save failed:', res.status, res.statusText);
+        if (!res.ok) console.warn('[layouts] Save failed');
         setSaveStatus('saved');
         setTimeout(function () { setSaveStatus(''); }, 2000);
-      }).catch(function (err) {
-        console.warn('[layouts] Save error:', err);
+      }).catch(function () {
         setSaveStatus('');
       });
     }
 
-    // ── Save to Library (preview mode) ───────────────────────────────
+    // ── Preview popup ─────────────────────────────────────────────────
 
-    document.getElementById('btnSaveToLibrary').addEventListener('click', function () {
-      if (!currentLayout) return;
-      fetch('/api/library', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name:       currentLayout.name,
-          templateId: currentLayout.fromTemplate || null
-        })
-      })
-      .then(function (r) { return r.json(); })
-      .then(function (res) {
-        var saved = res.data || res;
-        librarySlides.push(saved);
-        closeBuilder();
-        switchTab('library');
-        loadLibrary();
-        showToast('Slide saved to My Library');
-      })
-      .catch(function () {
-        showToast('Could not save. Try again.');
+    var popupViewport = 'desktop';
+
+    var POPUP_VIEWPORT_LABELS = {
+      desktop: '1920 × 1080',
+      tablet:  '768px wide',
+      mobile:  '375px wide'
+    };
+
+    function openPreviewPopup() {
+      popupViewport = 'desktop';
+      document.querySelectorAll('.preview-popup-tab').forEach(function (btn) {
+        btn.classList.toggle('active', btn.dataset.vp === 'desktop');
       });
-    });
+      document.getElementById('popupViewportLabel').textContent = POPUP_VIEWPORT_LABELS.desktop;
+      renderPopupPreview();
+      document.getElementById('previewPopup').classList.remove('hidden');
+    }
 
-    document.getElementById('btnDiscard').addEventListener('click', function () {
-      closeBuilder();
-      switchTab('templates');
+    function closePreviewPopup() {
+      document.getElementById('previewPopup').classList.add('hidden');
+    }
+
+    function switchPopupViewport(vp) {
+      popupViewport = vp;
+      document.querySelectorAll('.preview-popup-tab').forEach(function (btn) {
+        btn.classList.toggle('active', btn.dataset.vp === vp);
+      });
+      document.getElementById('popupViewportLabel').textContent = POPUP_VIEWPORT_LABELS[vp] || '';
+      renderPopupPreview();
+    }
+
+    function renderPopupPreview() {
+      var content = document.getElementById('previewPopupContent');
+      content.innerHTML = '';
+
+      var rows = (currentLayout && currentLayout.rows) ? currentLayout.rows : [];
+      var isMobile = popupViewport === 'mobile';
+      var isTablet = popupViewport === 'tablet';
+
+      var frameEl = document.createElement('div');
+      if (popupViewport === 'desktop') {
+        frameEl.className = 'popup-desktop-frame';
+      } else if (isTablet) {
+        frameEl.className = 'popup-tablet-frame';
+      } else {
+        frameEl.className = 'popup-mobile-frame';
+      }
+
+      if (rows.length === 0) {
+        var ph = document.createElement('div');
+        ph.className = 'preview-placeholder';
+        ph.textContent = 'Add rows to see a preview';
+        frameEl.appendChild(ph);
+      } else {
+        for (var r = 0; r < rows.length; r++) {
+          frameEl.appendChild(buildPreviewRow(rows[r], isMobile || isTablet));
+        }
+      }
+
+      content.appendChild(frameEl);
+    }
+
+    document.getElementById('previewPopup').addEventListener('click', function (e) {
+      if (e.target === this) closePreviewPopup();
     });
 
     // ── Modal backdrop click ──────────────────────────────────────────
@@ -3852,15 +3152,103 @@
 
     // ── Init ──────────────────────────────────────────────────────────
 
-    // Load templates + library in parallel on page load
-    // Active tab is "library" by default — templates loaded for modal use
+    // ── Template Update Review Modal ─────────────────────────────────
+    var _reviewSlide = null;
+
+    function openUpdateReviewModal(slide) {
+      _reviewSlide = slide;
+      document.getElementById('updateReviewModal').classList.remove('hidden');
+
+      // Info line
+      var info = document.getElementById('updateReviewInfo');
+      info.textContent = '"' + (slide.name || 'Untitled Slide') + '" was built from the "' + getTemplateName(slide.templateId) + '" template, which has been updated.';
+
+      // Build diff
+      renderUpdateDiff(slide);
+    }
+
+    function closeUpdateReviewModal() {
+      _reviewSlide = null;
+      document.getElementById('updateReviewModal').classList.add('hidden');
+    }
+
+    function renderUpdateDiff(slide) {
+      var diff = document.getElementById('updateReviewDiff');
+      diff.innerHTML = '';
+
+      var tpl = templates.find(function (t) { return t.id === slide.templateId; });
+      if (!tpl) {
+        diff.textContent = 'Template not found.';
+        return;
+      }
+
+      var section = document.createElement('div');
+      section.className = 'diff-section';
+      var title = document.createElement('div');
+      title.className = 'diff-section-title';
+      title.textContent = 'Updated template structure (' + (tpl.rows ? tpl.rows.length : 0) + ' rows)';
+      section.appendChild(title);
+
+      (tpl.rows || []).forEach(function (row, ri) {
+        var components = [];
+        (row.cols || []).forEach(function (col) {
+          (col.components || []).forEach(function (c) { components.push(c.type); });
+        });
+        var rowEl = document.createElement('div');
+        rowEl.className = 'diff-row diff-row--same';
+        rowEl.innerHTML =
+          '<span class="diff-row-icon">&#9632;</span>' +
+          '<span>Row ' + (ri + 1) + ' — ' + (row.layout || 'full') + ' — ' + (components.join(', ') || 'empty') + '</span>';
+        section.appendChild(rowEl);
+      });
+
+      var noteEl = document.createElement('div');
+      noteEl.style.cssText = 'color:var(--muted);font-size:12px;margin-top:12px;';
+      noteEl.textContent = 'Accepting will apply this structure. Your existing text edits will be preserved where fields match.';
+      section.appendChild(noteEl);
+
+      diff.appendChild(section);
+    }
+
+    function acceptTemplateUpdate() {
+      if (!_reviewSlide) return;
+      var id = _reviewSlide.id;
+      fetch('/api/slide-library/' + id + '/accept-update', { method: 'POST' })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.success) throw new Error(res.error || 'Failed');
+          closeUpdateReviewModal();
+          loadLibrary();
+        })
+        .catch(function (err) { showToast('Error: ' + err.message); });
+    }
+
+    function ignoreTemplateUpdate() {
+      if (!_reviewSlide) return;
+      var id = _reviewSlide.id;
+      fetch('/api/slide-library/' + id + '/ignore-update', { method: 'POST' })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.success) throw new Error(res.error || 'Failed');
+          closeUpdateReviewModal();
+          loadLibrary();
+        })
+        .catch(function (err) { showToast('Error: ' + err.message); });
+    }
+
+    document.getElementById('updateReviewModal').addEventListener('click', function (e) {
+      if (e.target === this) closeUpdateReviewModal();
+    });
+
     loadTemplates();
     loadLibrary();
 
+    // Deep-link: ?tab=builder or ?tab=templates
     (function () {
       var p = new URLSearchParams(window.location.search);
-      if (p.has('create')) openCreatePresentationModal('new');
-      else if (p.has('replace')) openCreatePresentationModal('replace');
+      var tab = p.get('tab');
+      if (tab === 'templates' || tab === 'builder') switchTab(tab);
+      else if (pickMode) switchTab('library');
     })();
 
   </script>

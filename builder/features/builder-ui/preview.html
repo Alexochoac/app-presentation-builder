@@ -243,6 +243,17 @@
     }
     .trans-restore-btn:hover { color: #F5A623; }
     .trans-placeholder { font-size: 12px; color: rgba(255,255,255,.25); font-style: italic; }
+    #tc-table th { position:sticky;top:0;background:#1a1a1a;color:rgba(255,255,255,.5);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:8px 12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.1); }
+    #tc-table td { padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.06);vertical-align:top; }
+    #tc-table tr:hover td { background:rgba(255,255,255,.03); }
+    .tc-slide-header td { background:#1a1a1a;color:rgba(255,255,255,.5);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:6px 12px; }
+    .tc-cell-en { color:rgba(255,255,255,.7);max-width:280px;word-break:break-word; }
+    .tc-cell-lang { min-width:180px; }
+    .tc-cell-lang textarea { width:100%;background:transparent;border:1px solid transparent;border-radius:6px;color:#e5e5e5;font-size:12px;font-family:inherit;resize:vertical;min-height:36px;padding:4px 6px;line-height:1.4; }
+    .tc-cell-lang textarea:focus { outline:none;border-color:rgba(255,255,255,.2);background:#1a1a1a; }
+    .tc-cell-lang textarea.dirty { border-color:#F5A623 !important; }
+    .tc-cell-lang textarea.missing { border-color:#f87171 !important; }
+    .tc-field-key { color:rgba(255,255,255,.3);font-size:11px;font-family:monospace; }
   </style>
 </head>
 <body>
@@ -260,9 +271,6 @@
           <button class="footer-menu-item" onclick="window.location.href='/slides?create'">&#128196; Create Presentation</button>
           <button class="footer-menu-item" onclick="window.location.href='/slides?replace'">&#8635; Replace Presentation</button>
           <hr style="border:none;border-top:1px solid rgba(255,255,255,.08);margin:4px 0;">
-          <button class="footer-menu-item" id="btnTranslate" onclick="document.getElementById('presActionsMenu').classList.remove('open');handleTranslateClick()">
-            &#127760; Translate <span id="translateBadge"></span>
-          </button>
           <button class="footer-menu-item" onclick="document.getElementById('presActionsMenu').classList.remove('open');openTranslationSettings()">&#9881; Translation Settings</button>
         </div>
       </div>
@@ -300,11 +308,6 @@
         <button onclick="closeTranslationSettings()" style="background:none;border:none;color:rgba(255,255,255,.4);font-size:18px;cursor:pointer;padding:0;">&#10005;</button>
       </div>
 
-      <div style="margin-bottom:16px;">
-        <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Default Language</div>
-        <select id="tsDefaultLang" style="width:100%;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:#111;color:#e5e5e5;font-size:13px;font-family:inherit;"></select>
-      </div>
-
       <div style="margin-bottom:8px;">
         <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Active Languages</div>
         <div style="display:flex;gap:6px;margin-bottom:8px;">
@@ -318,6 +321,12 @@
 
       <p id="tsError" style="display:none;color:#f87171;font-size:12px;margin:8px 0 0;"></p>
 
+      <button onclick="openTranslationCenter()" style="width:100%;padding:10px 18px;border-radius:8px;border:1px solid rgba(245,166,35,.3);background:transparent;color:#F5A623;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:8px;">
+        &#128196; Open Translation Center &rarr;
+      </button>
+      <button id="btnTranslateInSettings" onclick="handleTranslateClick()" style="width:100%;padding:10px 18px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:#222;color:#e5e5e5;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;">
+        &#127760; Translate <span id="translateBadge" style="background:#F5A623;color:#111;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;display:none;"></span>
+      </button>
       <div style="display:flex;gap:8px;margin-top:20px;">
         <button onclick="closeTranslationSettings()" style="flex:0 0 auto;padding:8px 18px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.6);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Cancel</button>
         <button onclick="saveTranslationSettings()" id="tsSaveBtn" style="flex:1;padding:8px 18px;border-radius:8px;border:none;background:#F5A623;color:#111;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Save</button>
@@ -329,6 +338,28 @@
   <div id="translationPanel">
     <h4>Translations <button onclick="closeTranslationPanel()">&#10005;</button></h4>
     <div id="translationPanelBody"></div>
+  </div>
+
+  <!-- Translation Center -->
+  <div id="translationCenter" style="display:none;position:fixed;inset:0;z-index:99998;background:#111;flex-direction:column;">
+    <div id="tc-header" style="display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.1);flex-shrink:0;">
+      <button onclick="closeTranslationCenter()" style="background:none;border:none;color:rgba(255,255,255,.5);font-size:20px;cursor:pointer;padding:0;line-height:1;">&#8592;</button>
+      <div style="font-size:15px;font-weight:700;color:#e5e5e5;flex:1;">&#127760; Translation Center</div>
+      <button id="btnTranslateAll" onclick="handleTranslateAllClick()" style="padding:8px 20px;border-radius:8px;border:none;background:#F5A623;color:#111;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">
+        Translate Missing &amp; Changed <span id="translateAllBadge" style="display:none;background:#111;color:#F5A623;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;margin-left:4px;"></span>
+      </button>
+    </div>
+    <div style="padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;">
+      <input id="tcSearch" type="text" placeholder="Filter fields…" oninput="filterTcRows(this.value)"
+        style="width:100%;max-width:360px;padding:7px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:#1a1a1a;color:#e5e5e5;font-size:13px;font-family:inherit;">
+    </div>
+    <div id="tc-table-wrap" style="flex:1;overflow:auto;padding:0 20px 20px;">
+      <div id="tc-loading" style="padding:40px;text-align:center;color:rgba(255,255,255,.4);">Loading…</div>
+      <table id="tc-table" style="display:none;width:100%;border-collapse:collapse;font-size:13px;margin-top:12px;">
+        <thead id="tc-thead"></thead>
+        <tbody id="tc-tbody"></tbody>
+      </table>
+    </div>
   </div>
 
   <!-- Lightbox -->
@@ -771,7 +802,8 @@
 
   function updateTranslateBadge() {
     var badge = document.getElementById('translateBadge');
-    if (!translationsData) { badge.className = ''; return; }
+    if (!badge) return;
+    if (!translationsData) { badge.style.display = 'none'; return; }
     var count = 0;
     var langs = (translationsData.languages || []).filter(function (l) { return l !== 'en'; });
     Object.values(translationsData.fields || {}).forEach(function (field) {
@@ -779,35 +811,43 @@
         if (!field[lang] || !field[lang].current || field[lang].dirty) count++;
       });
     });
+    Object.values(translationsData.slides || {}).forEach(function (slideFields) {
+      Object.values(slideFields).forEach(function (field) {
+        langs.forEach(function (lang) {
+          if (typeof field[lang] === 'object' && (!field[lang].current || field[lang].dirty)) count++;
+        });
+      });
+    });
     badge.textContent = count;
-    badge.className = count > 0 ? 'visible' : '';
+    badge.style.display = count > 0 ? 'inline' : 'none';
   }
 
   function handleTranslateClick() {
-    var btn = document.getElementById('btnTranslate');
+    var btn = document.getElementById('btnTranslateInSettings');
+    if (!btn || btn.disabled) return;
+    var langs = translationsData && translationsData.languages
+      ? translationsData.languages.filter(function(l){ return l !== 'en'; })
+      : [];
+    if (langs.length === 0) { alert('No additional languages configured.'); return; }
     btn.disabled = true;
-    btn.innerHTML = '&#127760; Translating…';
-    fetch('/api/translations/translate', {
+    btn.textContent = 'Translating all slides…';
+    fetch('/api/translations/translate-all', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({})
+      body: JSON.stringify({ languages: langs })
     })
-    .then(function (r) { return r.json(); })
-    .then(function (res) {
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      if (!res.success) throw new Error(res.error || 'Translation failed');
+      translationsData = res.data;
       btn.disabled = false;
-      btn.innerHTML = '&#127760; Translate <span id="translateBadge"></span>';
-      if (res.success) {
-        translationsData = res.data;
-        updateTranslateBadge();
-      } else {
-        document.getElementById('translateBadge').textContent = '!';
-        document.getElementById('translateBadge').className = 'visible';
-      }
+      btn.innerHTML = '&#127760; Translate <span id="translateBadge" style="background:#F5A623;color:#111;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;display:none;margin-left:4px;"></span>';
+      updateTranslateBadge();
     })
-    .catch(function () {
+    .catch(function(err){
       btn.disabled = false;
-      btn.innerHTML = '&#127760; Translate <span id="translateBadge">!</span>';
-      document.getElementById('translateBadge').className = 'visible';
+      btn.innerHTML = '&#127760; Translate <span id="translateBadge" style="background:#F5A623;color:#111;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;display:none;margin-left:4px;"></span>';
+      alert('Translation error: ' + err.message);
     });
   }
 
@@ -815,6 +855,8 @@
     if (!translationsData) { loadTranslations().then(function () { openTranslationPanel(fieldKey); }); return; }
     var langs = (translationsData.languages || []).filter(function (l) { return l !== 'en'; });
     var fields = translationsData.fields || {};
+    var slideId = SLIDES[current] && SLIDES[current].librarySlideId;
+    var slideStore = (translationsData.slides && slideId && translationsData.slides[slideId]) || {};
     var body = document.getElementById('translationPanelBody');
 
     if (langs.length === 0) {
@@ -825,37 +867,40 @@
 
     var html = '';
     langs.forEach(function (lang) {
-      var entry = fields[fieldKey] && fields[fieldKey][lang];
+      // Per-slide entry takes priority; fall back to global
+      var entry = (slideStore[fieldKey] && slideStore[fieldKey][lang]) || (fields[fieldKey] && fields[fieldKey][lang]);
       var current = entry && entry.current ? entry.current : '';
       var previous = entry && entry.previous ? entry.previous : null;
       var dirty = entry && entry.dirty;
+      var sid = slideId || '';
       html += '<div class="trans-lang-row" data-lang="' + lang + '">';
       html += '<div class="trans-lang-label">' + lang.toUpperCase();
       if (dirty) html += ' <span class="trans-dirty-dot" title="Outdated"></span>';
       html += '</div>';
       if (current) {
-        html += '<textarea class="trans-current" data-field="' + fieldKey + '" data-lang="' + lang + '" rows="2">' + current + '</textarea>';
+        html += '<textarea class="trans-current" data-field="' + fieldKey + '" data-lang="' + lang + '" data-slide="' + sid + '" rows="2">' + current + '</textarea>';
       } else {
         html += '<div class="trans-placeholder">Not yet translated</div>';
-        html += '<textarea class="trans-current" data-field="' + fieldKey + '" data-lang="' + lang + '" rows="2" placeholder="Type correction…"></textarea>';
+        html += '<textarea class="trans-current" data-field="' + fieldKey + '" data-lang="' + lang + '" data-slide="' + sid + '" rows="2" placeholder="Type correction…"></textarea>';
       }
       if (previous) {
-        html += '<button class="trans-restore-btn" data-field="' + fieldKey + '" data-lang="' + lang + '" onclick="restoreTranslation(this)" title="' + previous + '">&#8635; Restore: ' + previous.substring(0, 40) + (previous.length > 40 ? '…' : '') + '</button>';
+        html += '<button class="trans-restore-btn" data-field="' + fieldKey + '" data-lang="' + lang + '" data-slide="' + sid + '" onclick="restoreTranslation(this)" title="' + previous + '">&#8635; Restore: ' + previous.substring(0, 40) + (previous.length > 40 ? '…' : '') + '</button>';
       }
       html += '</div>';
     });
 
     body.innerHTML = html;
 
-    // Save on blur
+    // Save on blur — include slideId so translation is stored per-slide
     body.querySelectorAll('.trans-current').forEach(function (ta) {
       ta.addEventListener('blur', function () {
-        var fk = ta.getAttribute('data-field');
-        var lg = ta.getAttribute('data-lang');
+        var fk  = ta.getAttribute('data-field');
+        var lg  = ta.getAttribute('data-lang');
+        var sid = ta.getAttribute('data-slide') || null;
         fetch('/api/translations/field', {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fieldKey: fk, language: lg, value: ta.value })
+          body: JSON.stringify({ fieldKey: fk, language: lg, value: ta.value, slideId: sid || undefined })
         }).then(function (r) { return r.json(); })
           .then(function (res) { if (res.success) loadTranslations(); });
       });
@@ -865,12 +910,13 @@
   }
 
   function restoreTranslation(btn) {
-    var fk = btn.getAttribute('data-field');
-    var lg = btn.getAttribute('data-lang');
+    var fk  = btn.getAttribute('data-field');
+    var lg  = btn.getAttribute('data-lang');
+    var sid = btn.getAttribute('data-slide') || null;
     fetch('/api/translations/restore', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fieldKey: fk, language: lg })
+      body: JSON.stringify({ fieldKey: fk, language: lg, slideId: sid || undefined })
     }).then(function (r) { return r.json(); })
       .then(function (res) {
         if (res.success) { loadTranslations().then(function () { openTranslationPanel(fk); }); }
@@ -957,15 +1003,18 @@
 
   function applyPreviewLang(lang) {
     var fields = translationsData && translationsData.fields ? translationsData.fields : {};
+    var slideId = SLIDES[current] && SLIDES[current].librarySlideId;
+    var slideStore = (translationsData && translationsData.slides && slideId && translationsData.slides[slideId]) || {};
     document.querySelectorAll('[data-edit]').forEach(function (el) {
       var key = el.getAttribute('data-edit');
       var isEditable = el.hasAttribute('contenteditable');
-      if (!isEditable) return; // skip image/non-text fields
+      if (!isEditable) return;
       if (lang === 'en') {
         if (enSnapshot[key] !== undefined) el.innerHTML = enSnapshot[key];
         el.contentEditable = 'true';
       } else {
-        var entry = fields[key] && fields[key][lang];
+        // Per-slide entry first, then global fallback
+        var entry = (slideStore[key] && slideStore[key][lang]) || (fields[key] && fields[key][lang]);
         if (entry && entry.current) el.innerHTML = entry.current;
         el.contentEditable = 'false';
       }
@@ -1006,18 +1055,8 @@
       var langsRes = results[0];
       var transRes = results[1];
       if (langsRes.success) _tsAllLangs = langsRes.data;
-      var current = transRes.success ? transRes.data : { languages: ['en'], defaultLanguage: 'en' };
+      var current = transRes.success ? transRes.data : { languages: ['en'] };
       _tsActiveLangs = (current.languages || ['en']).slice();
-
-      // Populate default language select
-      var sel = document.getElementById('tsDefaultLang');
-      sel.innerHTML = '';
-      _tsAllLangs.forEach(function (l) {
-        var opt = document.createElement('option');
-        opt.value = l.code; opt.textContent = l.name;
-        if (l.code === current.defaultLanguage) opt.selected = true;
-        sel.appendChild(opt);
-      });
 
       renderTsActiveLangs();
     }).catch(function () {
@@ -1089,20 +1128,17 @@
   function saveTranslationSettings() {
     var btn = document.getElementById('tsSaveBtn');
     var errEl = document.getElementById('tsError');
-    var defaultLang = document.getElementById('tsDefaultLang').value;
     errEl.style.display = 'none';
     btn.disabled = true;
     btn.textContent = 'Saving…';
 
-    // Make sure default lang is in the active list
-    if (!_tsActiveLangs.includes(defaultLang)) _tsActiveLangs.unshift(defaultLang);
     // Always include English
     if (!_tsActiveLangs.includes('en')) _tsActiveLangs.unshift('en');
 
     fetch('/api/translations/settings', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ languages: _tsActiveLangs, defaultLanguage: defaultLang, favorites: _tsActiveLangs.filter(function (c) { return c !== 'en'; }) })
+      body: JSON.stringify({ languages: _tsActiveLangs, defaultLanguage: 'en', favorites: _tsActiveLangs.filter(function (c) { return c !== 'en'; }) })
     })
     .then(function (r) { return r.json(); })
     .then(function (res) {
@@ -1125,6 +1161,226 @@
   document.getElementById('translationSettingsModal').addEventListener('click', function (e) {
     if (e.target === this) closeTranslationSettings();
   });
+
+  // ── Translation Center ────────────────────────────────────────────────────
+  var tcRows = [];
+
+  function openTranslationCenter() {
+    closeTranslationSettings();
+    var el = document.getElementById('translationCenter');
+    el.style.display = 'flex';
+    loadTranslationCenter();
+  }
+
+  function closeTranslationCenter() {
+    document.getElementById('translationCenter').style.display = 'none';
+  }
+
+  function loadTranslationCenter() {
+    document.getElementById('tc-loading').style.display = 'block';
+    document.getElementById('tc-table').style.display = 'none';
+    fetch('/api/translations/fields-summary')
+      .then(function(r){ return r.json(); })
+      .then(function(res){
+        if (!res.success) throw new Error(res.error || 'Failed');
+        tcRows = res.rows;
+        renderTcTable(tcRows);
+      })
+      .catch(function(err){
+        document.getElementById('tc-loading').textContent = 'Error loading: ' + err.message;
+      });
+  }
+
+  function renderTcTable(rows) {
+    var activeLangs = (translationsData && translationsData.languages || []).filter(function(l){ return l !== 'en'; });
+
+    // Build header
+    var thead = document.getElementById('tc-thead');
+    var headerCells = '<th>Slide / Field</th><th>English</th>';
+    activeLangs.forEach(function(lang){ headerCells += '<th>' + lang.toUpperCase() + '</th>'; });
+    thead.innerHTML = '<tr>' + headerCells + '</tr>';
+
+    // Filter out non-translatable rows (large HTML blobs, tiny values, pure numbers)
+    rows = rows.filter(function(row) {
+      var v = row.en || '';
+      // Skip large HTML blobs (tabs component, carousels, etc.)
+      if (v.length > 400) return false;
+      // Skip if plain text is less than 3 characters after stripping tags
+      var plain = stripHtmlTags(v).trim();
+      if (plain.length < 3) return false;
+      // Skip purely numeric values
+      if (/^\d+[\d,+%°\.]*$/.test(plain)) return false;
+      return true;
+    });
+
+    // Build body
+    var tbody = document.getElementById('tc-tbody');
+    var html = '';
+    var lastSlide = null;
+    var totalDirtyMissing = 0;
+
+    rows.forEach(function(row) {
+      if (row.slideId !== lastSlide) {
+        lastSlide = row.slideId;
+        html += '<tr class="tc-slide-header"><td colspan="' + (2 + activeLangs.length) + '">' + (row.slideTitle || row.slideId) + '</td></tr>';
+      }
+      var sid = escHtml(row.slideId);
+      var fk  = escHtml(row.fieldKey);
+      html += '<tr>';
+      html += '<td class="tc-field-key">' + fk + '</td>';
+      html += '<td class="tc-cell-en"><textarea class="tc-en-edit" data-slide-id="' + sid + '" data-field-key="' + fk + '" rows="2" style="width:100%;background:transparent;border:1px solid transparent;border-radius:6px;color:rgba(255,255,255,.8);font-size:12px;font-family:inherit;resize:vertical;min-height:36px;padding:4px 6px;line-height:1.4;">' + escHtml(row.en || '') + '</textarea></td>';
+      activeLangs.forEach(function(lang) {
+        var entry = row.langs && row.langs[lang];
+        var val = entry && entry.current || '';
+        var cls = !val ? 'missing' : (entry && entry.dirty ? 'dirty' : '');
+        if (cls) totalDirtyMissing++;
+        html += '<td class="tc-cell-lang"><textarea class="' + cls + '" data-slide-id="' + sid + '" data-field-key="' + fk + '" data-lang="' + lang + '" rows="2">' + escHtml(val) + '</textarea></td>';
+      });
+      html += '</tr>';
+    });
+
+    tbody.innerHTML = html;
+    document.getElementById('tc-loading').style.display = 'none';
+    document.getElementById('tc-table').style.display = 'table';
+
+    // Update badge
+    var badge = document.getElementById('translateAllBadge');
+    if (totalDirtyMissing > 0) {
+      badge.textContent = totalDirtyMissing;
+      badge.style.display = 'inline';
+    } else {
+      badge.style.display = 'none';
+    }
+
+    // Wire non-English textarea save on blur
+    tbody.querySelectorAll('textarea:not(.tc-en-edit)').forEach(function(ta) {
+      ta.addEventListener('blur', function() {
+        var slideId  = ta.dataset.slideId;
+        var fieldKey = ta.dataset.fieldKey;
+        var lang     = ta.dataset.lang;
+        if (!slideId || !fieldKey || !lang) return;
+        var val = ta.value.trim();
+        fetch('/api/translations/field', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slideId: slideId, fieldKey: fieldKey, language: lang, value: val })
+        }).then(function(){
+          ta.classList.remove('dirty','missing');
+          if (!translationsData.slides) translationsData.slides = {};
+          if (!translationsData.slides[slideId]) translationsData.slides[slideId] = {};
+          if (!translationsData.slides[slideId][fieldKey]) translationsData.slides[slideId][fieldKey] = {};
+          translationsData.slides[slideId][fieldKey][lang] = { current: val, previous: null, dirty: false };
+          updateTranslateBadge();
+        });
+      });
+    });
+
+    // Wire English textarea save on blur
+    tbody.querySelectorAll('textarea.tc-en-edit').forEach(function(ta) {
+      ta.addEventListener('blur', function() {
+        var slideId  = ta.dataset.slideId;
+        var fieldKey = ta.dataset.fieldKey;
+        if (!slideId || !fieldKey) return;
+        var val = ta.value;
+        var originalVal = ta.dataset.originalEn;
+        if (val === originalVal) return; // no change
+        fetch('/api/library/' + slideId + '/edits', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ edits: { [fieldKey]: val } })
+        }).then(function() {
+          ta.dataset.originalEn = val;
+          // Mark all language cells for this field as dirty
+          var langCells = tbody.querySelectorAll('textarea[data-slide-id="' + slideId + '"][data-field-key="' + fieldKey + '"]:not(.tc-en-edit)');
+          langCells.forEach(function(lt) { lt.classList.add('dirty'); });
+        });
+      });
+      // Store original value for change detection
+      ta.dataset.originalEn = ta.value;
+    });
+  }
+
+  function filterTcRows(query) {
+    var q = query.toLowerCase();
+    var filtered = q ? tcRows.filter(function(r){
+      return r.fieldKey.toLowerCase().includes(q) || (r.en||'').toLowerCase().includes(q) || (r.slideTitle||'').toLowerCase().includes(q);
+    }) : tcRows;
+    renderTcTable(filtered);
+  }
+
+  function handleTranslateAllClick() {
+    var btn = document.getElementById('btnTranslateAll');
+    if (!btn || btn.disabled) return;
+    var langs = (translationsData && translationsData.languages || []).filter(function(l){ return l !== 'en'; });
+    if (langs.length === 0) { alert('No additional languages configured.'); return; }
+
+    // Show progress bar area
+    var progressEl = document.getElementById('tc-translate-progress');
+    if (!progressEl) {
+      progressEl = document.createElement('div');
+      progressEl.id = 'tc-translate-progress';
+      progressEl.style.cssText = 'padding:10px 20px;background:#1a1a1a;border-bottom:1px solid rgba(255,255,255,.08);font-size:12px;color:rgba(255,255,255,.6);display:flex;gap:16px;align-items:center;flex-shrink:0;';
+      document.getElementById('tc-header').insertAdjacentElement('afterend', progressEl);
+    }
+
+    btn.disabled = true;
+    var slides = tcRows.reduce(function(acc, r) {
+      if (!acc.find(function(s){ return s.id === r.slideId; })) acc.push({ id: r.slideId, title: r.slideTitle });
+      return acc;
+    }, []);
+
+    var done = 0, failed = 0, total = slides.length;
+
+    function updateProgress(currentTitle) {
+      progressEl.innerHTML =
+        (currentTitle ? '<span>&#9654; ' + escHtml(currentTitle) + '</span>' : '') +
+        '<span style="color:#4ade80;">&#10003; Done: ' + done + '</span>' +
+        '<span style="color:rgba(255,255,255,.4);">Pending: ' + (total - done - failed) + '</span>' +
+        (failed ? '<span style="color:#f87171;">&#10007; Failed: ' + failed + '</span>' : '');
+    }
+
+    function processNext(idx) {
+      if (idx >= slides.length) {
+        // All done
+        return fetch('/api/translations').then(function(r){ return r.json(); }).then(function(res){
+          if (res.success) translationsData = res.data;
+          btn.disabled = false;
+          updateProgress(null);
+          progressEl.innerHTML += '<span style="color:#4ade80;font-weight:700;">&#10003; All done!</span>';
+          loadTranslationCenter();
+          updateTranslateBadge();
+        });
+      }
+      var slide = slides[idx];
+      updateProgress(slide.title);
+      // Collect fields for this slide from tcRows
+      var sourceFields = {};
+      tcRows.filter(function(r){ return r.slideId === slide.id; }).forEach(function(r){ sourceFields[r.fieldKey] = r.en; });
+      fetch('/api/translations/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slideId: slide.id, sourceFields: sourceFields, languages: langs })
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(res){
+        if (res.success && res.data) { translationsData = res.data; }
+        done++;
+      })
+      .catch(function(){ failed++; })
+      .finally(function(){ processNext(idx + 1); });
+    }
+
+    updateProgress(slides[0] && slides[0].title);
+    processNext(0);
+  }
+
+  function stripHtmlTags(html) {
+    return html.replace(/<[^>]*>/g,'').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&nbsp;/g,' ').trim();
+  }
+
+  function escHtml(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
   </script>
 
 </body>
