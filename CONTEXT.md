@@ -134,7 +134,13 @@ All content slides now use this structure:
 - [ ] **Translation — Preview navigate fix** — replace fragile `setTimeout(50)` with reliable slide-ready signal
 - [ ] **Design system refactor** (carried) — eliminate 3-layer CSS conflict; one source of truth in style.css
 - [ ] Delete old `dashboard.css`
-- [ ] **Views Overview — live data** — wire chart to real Umami analytics API when tracking is active
+- [x] **Dashboard — Finished Presentations panel restored** — search, date filter, sort, paginated list, View / Re-publish / Delete per row (2026-05-10)
+- [x] **Dashboard — FP grid/list toggle** — icon buttons in panel header, CSS grid mode, localStorage persistence (2026-05-11)
+- [x] **Dashboard — Publication Activity collapsible** — moved below FP, starts collapsed, chevron toggle, localStorage; date dropdown click doesn't trigger collapse (2026-05-11)
+- [x] **Dashboard — Recent Activity as collapsible subsection** — moved inside Publication Activity panel, starts open, independent collapse toggle (2026-05-11)
+- [x] **Dashboard — Umami analytics proxy** — server-side JWT auth (`getUmamiToken`), 15-min cache (`umamiGet`), 3 endpoints: `/api/analytics/batch`, `/api/analytics/presentation/:id`, `/api/analytics/pageviews`; credentials in `.env` (`UMAMI_USERNAME`, `UMAMI_PASSWORD`) (2026-05-11)
+- [x] **Dashboard — Per-card Umami metrics** — visitors / views / bounce rate / avg duration strip injected into each FP card after batch fetch (2026-05-11)
+- [x] **Dashboard — Engagement chart** — Chart.js line chart (pageviews + visitors) inside Publication Activity, lazy-loads on panel open (2026-05-11)
 
 ## Phase Roadmap
 - **Phase 1** (current) — Local app, single user, build + publish
@@ -142,4 +148,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-04-30 (session 13)
+Last updated: 2026-05-11 (session 14)
