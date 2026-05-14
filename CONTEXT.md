@@ -147,6 +147,18 @@ All content slides now use this structure:
 - [x] **Presentation lifecycle** — `makePresId()` uses max(existing)+1 (no repeated IDs after delete); archive-only from active list (no accidental hard delete); permanent delete from Archived view requires typing DELETE; public GitHub Pages URL used for published links (2026-05-14)
 - [ ] **Slides — Templates tab standardization** — apply gear+3-dots card action pattern (Use Template = dblclick/primary, Edit Template = dropdown item)
 - [ ] **builder-ui — fpDelete improve** — replace native confirm() with proper modal matching dashboard archive flow
+- [x] **Zone Builder — Layout Library data model** — `layout-skeletons.json` (10 skeletons), `GET /api/layout-skeletons` endpoint (2026-05-14)
+- [x] **Zone Builder — 3-panel builder shell** — layout picker screen + 3-panel builder (palette / canvas / properties) at `/zone-builder` (2026-05-14)
+- [x] **Zone Builder — Canvas renderer** — header zone (section label + headline), component palette drop system, slot picking (2026-05-14)
+- [x] **Zone Builder — Properties panel text styles** — font size, weight, style, align, color controls per selected component (2026-05-14)
+- [x] **Zone Builder — HTML assembler + save** — `assembleHtml()` produces anatomy-compliant HTML, `POST /api/slide-builder/save` endpoint (2026-05-14)
+- [x] **Zone Builder — Carousel image upload** — file picker to upload API, add/remove slides, placeholder stripping at assembly (2026-05-14)
+- [x] **Zone Builder — Save to Templates catalog** — saves to `templates.json` (not library); category selector; ZB badge on template cards; "Zone Builder" edit button for ZB templates (2026-05-14)
+- [x] **Slides — New Slide modal redesign** — full-screen takeover to 860px centered popup; New Template + Import + Cancel footer (2026-05-14)
+- [x] **Slides — Templates tab New Template button** — navigates to `/zone-builder` (2026-05-14)
+- [ ] **Zone Builder — Component resize** — size control (compact / default / wide) in properties panel, maps to flex/width on component wrapper
+- [ ] **Zone Builder — Properties panel Task 6** — component-specific settings (carousel config, list items, etc.)
+- [ ] **Zone Builder — Linking system Task 8** — trigger-button component for embedded slide navigation
 
 ## Phase Roadmap
 - **Phase 1** (current) — Local app, single user, build + publish
@@ -154,4 +166,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-05-14 (session 15)
+Last updated: 2026-05-14 (session 16)
