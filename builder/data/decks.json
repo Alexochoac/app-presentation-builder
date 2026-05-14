@@ -1,5 +1,5 @@
 {
-  "activeDeckId": "deck-1778395362103-u3os0",
+  "activeDeckId": "default",
   "decks": [
     {
       "id": "default",
@@ -26,6 +26,32 @@
       "heroBgFocal": "50% 50%",
       "colors": {
         "primary": "#022952"
+      }
+    },
+    {
+      "id": "deck-1778751042387-0rk26",
+      "name": "Alex Ochoa",
+      "theme": "light",
+      "createdAt": "2026-05-14T09:30:42.387Z",
+      "updatedAt": "2026-05-14T09:31:01.749Z",
+      "logo": "/slides/uploads/LOGO_TEST.png",
+      "heroBg": null,
+      "heroBgFocal": "50% 50%",
+      "colors": {
+        "primary": "#F5A623"
+      }
+    },
+    {
+      "id": "deck-1778758303796-6gkot",
+      "name": "q",
+      "theme": "dark",
+      "createdAt": "2026-05-14T11:31:43.796Z",
+      "updatedAt": "2026-05-14T11:31:50.900Z",
+      "logo": null,
+      "heroBg": null,
+      "heroBgFocal": "50% 50%",
+      "colors": {
+        "primary": "#F5A623"
       }
     }
   ]

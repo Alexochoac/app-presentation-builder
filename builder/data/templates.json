@@ -1,0 +1,263 @@
+[
+  {
+    "id": "ls01-cover",
+    "name": "Cover Slide",
+    "category": "Cover",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "logo",
+      "customer-logo"
+    ],
+    "file": "features/slides/slide-01-cover.html",
+    "createdAt": "2026-05-13T00:00:00.000Z"
+  },
+  {
+    "id": "ls02-company",
+    "name": "Company Overview",
+    "category": "Content",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "carousel",
+      "tabs"
+    ],
+    "file": "features/slides/slide-02-company.html",
+    "createdAt": "2026-05-13T00:00:00.000Z"
+  },
+  {
+    "id": "ls03-why",
+    "name": "Why Inspection",
+    "category": "Content",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "grid"
+    ],
+    "file": "features/slides/slide-03-why.html",
+    "createdAt": "2026-05-13T00:00:00.000Z"
+  },
+  {
+    "id": "ls04-linescanner",
+    "name": "LineScanner Overview",
+    "category": "Content",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "carousel",
+      "tabs",
+      "table"
+    ],
+    "file": "features/slides/slide-04-linescanner.html",
+    "createdAt": "2026-05-13T00:00:00.000Z"
+  },
+  {
+    "id": "ls05-technology",
+    "name": "Technology",
+    "category": "Content",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "carousel",
+      "tabs"
+    ],
+    "file": "features/slides/slide-05-technology.html",
+    "createdAt": "2026-05-13T00:00:00.000Z"
+  },
+  {
+    "id": "ls06-surface",
+    "name": "Surface Quality",
+    "category": "Visual",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "carousel",
+      "grid"
+    ],
+    "file": "features/slides/slide-06-surface.html",
+    "createdAt": "2026-05-13T00:00:00.000Z"
+  },
+  {
+    "id": "ls07-dimension",
+    "name": "Dimensional Control",
+    "category": "Content",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "carousel",
+      "grid"
+    ],
+    "file": "features/slides/slide-07-dimension.html",
+    "createdAt": "2026-05-13T00:00:00.000Z"
+  },
+  {
+    "id": "ls08-screenprinting",
+    "name": "Screen Printing",
+    "category": "Visual",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "carousel",
+      "grid"
+    ],
+    "file": "features/slides/slide-08-screenprinting.html",
+    "createdAt": "2026-05-13T00:00:00.000Z"
+  },
+  {
+    "id": "ls09-logo-check",
+    "name": "Logo Check",
+    "category": "Visual",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "carousel",
+      "grid"
+    ],
+    "file": "features/slides/slide-09-logo-check.html",
+    "createdAt": "2026-05-13T00:00:00.000Z"
+  },
+  {
+    "id": "ls10-database",
+    "name": "Database & Traceability",
+    "category": "Data",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "grid",
+      "table"
+    ],
+    "file": "features/slides/slide-10-database.html",
+    "createdAt": "2026-05-13T00:00:00.000Z"
+  },
+  {
+    "id": "ls11-sensitivity",
+    "name": "Sensitivity Adjustment",
+    "category": "Stats",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "carousel",
+      "grid"
+    ],
+    "file": "features/slides/slide-11-sensitivity.html",
+    "createdAt": "2026-05-13T00:00:00.000Z"
+  },
+  {
+    "id": "ls12-footprint",
+    "name": "Minimum Footprint",
+    "category": "Visual",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "carousel",
+      "grid"
+    ],
+    "file": "features/slides/slide-12-footprint.html",
+    "createdAt": "2026-05-13T00:00:00.000Z"
+  },
+  {
+    "id": "ls13-integrations",
+    "name": "Integrations",
+    "category": "Content",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "logo",
+      "grid"
+    ],
+    "file": "features/slides/slide-13-integrations.html",
+    "createdAt": "2026-05-13T00:00:00.000Z"
+  },
+  {
+    "id": "ls14-cta",
+    "name": "Call to Action",
+    "category": "CTA",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "cta-steps",
+      "contact"
+    ],
+    "file": "features/slides/slide-14-cta.html",
+    "createdAt": "2026-05-13T00:00:00.000Z"
+  },
+  {
+    "id": "ls15-integrations-template",
+    "name": "Integrations (Template)",
+    "category": "Content",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "logo",
+      "grid"
+    ],
+    "file": "features/slides/slide-15-clone-of-integrations.html",
+    "createdAt": "2026-05-13T00:00:00.000Z"
+  },
+  {
+    "id": "ls16-test-wizard-template",
+    "name": "TEST Wizard Template",
+    "category": "Cover",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "section-label",
+      "subtitle"
+    ],
+    "file": "features/slides/slide-16-ls16-test-wizard-template.html",
+    "createdAt": "2026-05-13T14:16:25.446Z"
+  },
+  {
+    "id": "ls17-test-428",
+    "name": "TEST 428",
+    "category": "Cover",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "section-label",
+      "subtitle",
+      "body-text",
+      "image"
+    ],
+    "file": "features/slides/slide-17-ls17-test-428.html",
+    "createdAt": "2026-05-13T14:36:22.770Z"
+  },
+  {
+    "id": "ls18-test-452",
+    "name": "TEST 452",
+    "category": "Cover",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "section-label",
+      "subtitle",
+      "cta-button"
+    ],
+    "file": "features/slides/slide-18-ls18-test-452.html",
+    "createdAt": "2026-05-13T14:52:37.062Z"
+  },
+  {
+    "id": "ls00-osprey-------ade-by--laude--kill",
+    "name": "Osprey TEST Made By Claude Skill",
+    "category": "Content",
+    "slideMode": "sequence",
+    "components": [],
+    "file": "features/slides/slide-19-ls00-osprey-------ade-by--laude--kill.html",
+    "createdAt": "2026-05-13T15:49:01.530Z"
+  },
+  {
+    "id": "ls19-nueva",
+    "name": "NUEVA",
+    "category": "Visual",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "section-label",
+      "subtitle",
+      "body-text",
+      "image"
+    ],
+    "file": "features/slides/slide-20-ls19-nueva.html",
+    "createdAt": "2026-05-14T11:12:05.451Z"
+  }
+]

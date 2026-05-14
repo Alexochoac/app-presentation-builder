@@ -78,6 +78,14 @@ node server.js
 ```
 Then open: http://localhost:3000/preview.html
 
+## Architecture & Design Docs
+All specs and architectural decisions live in [`architecture/`](architecture/).
+
+| Document | Purpose |
+|---|---|
+| [`architecture/template-anatomy.md`](architecture/template-anatomy.md) | **The template spec** — 5-layer anatomy every slide template must follow (style, translations, tracking, slide mode, data feed). Read this before creating or modifying any slide template. |
+| [`architecture/claude-skill-template-creator.md`](architecture/claude-skill-template-creator.md) | **Claude Desktop skill** — paste into a Claude Desktop Project to get a template generator that always follows the anatomy spec. |
+
 ## Key Conventions
 - Each slide is a self-contained HTML fragment (`<div class="slide ...">`)
 - Slide prefix: `ls[NN]-` (ls01-, ls02-, …) — never reuse a prefix

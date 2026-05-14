@@ -1,0 +1,34 @@
+<div class="slide hero ls16-test-wizard-template"
+     data-slide="ls16-test-wizard-template"
+     data-slide-mode="sequence">
+
+  <div class="slide-logo-row">
+    <img src="/slides/shared/LOGO SoftSolution grays.png" alt="Softsolution">
+    <span class="slide-logo-sep"></span>
+    <img src="/slides/shared/LOGO LiteSentry Greys.png" alt="LiteSentry" class="slide-logo-ls">
+  </div>
+
+  <div class="slide-layout">
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label" data-lang-key="ls16-test-wizard-template.section-label" contenteditable spellcheck="false">Section Name</div>
+      <h1 class="slide-title" data-edit="headline" data-lang-key="ls16-test-wizard-template.headline" contenteditable spellcheck="false">Headline Placeholder</h1>
+      <div class="divider"></div>
+    </header>
+    <div class="slide-body">
+      <p class="slide-subtitle" data-edit="subtitle" data-lang-key="ls16-test-wizard-template.subtitle" contenteditable spellcheck="false">Subtitle placeholder</p>
+    </div>
+  </div>
+
+  <style>
+    .ls16-test-wizard-template { /* layout */ }
+  </style>
+
+  <script>
+  (function () {
+    var slide   = document.currentScript.closest('[data-slide]');
+    var slideId = slide ? slide.dataset.slide : 'ls16-test-wizard-template';
+    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
+  })();
+  </script>
+
+</div>

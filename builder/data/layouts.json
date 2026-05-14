@@ -279,5 +279,81 @@
     ],
     "id": "layout-1778414912190",
     "createdAt": "2026-05-10T12:08:32.190Z"
+  },
+  {
+    "name": "CANVAS TEST",
+    "components": [],
+    "rows": [
+      {
+        "id": "row-1778683448907",
+        "layout": "full",
+        "height": "auto",
+        "cols": [
+          {
+            "components": [
+              {
+                "type": "Title"
+              },
+              {
+                "type": "List"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "row-1778683468823",
+        "layout": "thirds",
+        "height": "auto",
+        "cols": [
+          {
+            "components": [
+              {
+                "type": "Image"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Image"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Image"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "row-1778683480585",
+        "layout": "third-two",
+        "height": "auto",
+        "cols": [
+          {
+            "components": [
+              {
+                "type": "Image"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Matrix"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "id": "layout-1778683508737",
+    "version": 3,
+    "createdAt": "2026-05-13T14:45:08.737Z",
+    "updatedAt": "2026-05-13T14:45:17.530Z"
   }
 ]

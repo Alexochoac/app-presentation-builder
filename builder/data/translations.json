@@ -10,7 +10,7 @@
   "slides": {
     "lib-company": {
       "credit": {
-        "en": "by GlassQuality.com",
+        "en": "Interface<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
         "es": {
           "current": "por GlassQuality.com",
           "previous": null,
@@ -56,7 +56,7 @@
         }
       },
       "headline": {
-        "en": "Quality inspection <span class=\"blue\">is all we do</span>",
+        "en": "<br>",
         "es": {
           "current": "La inspección de calidad <span class=\"blue\">es todo lo que hacemos</span>",
           "previous": null,
@@ -148,7 +148,7 @@
         }
       },
       "tab-about": {
-        "en": "À Propos<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
+        "en": "About Us<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
         "es": {
           "current": "Acerca De<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
           "previous": null,
@@ -171,7 +171,7 @@
         }
       },
       "tab-technologies": {
-        "en": "Technologies<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
+        "en": "Technologies<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
         "es": {
           "current": "Tecnologías<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
           "previous": null,
@@ -194,7 +194,7 @@
         }
       },
       "tab-iqc": {
-        "en": "Groupe IQC<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
+        "en": "IQC Group<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
         "es": {
           "current": "Grupo IQC<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>",
           "previous": null,
@@ -240,7 +240,7 @@
         }
       },
       "pillar-1-title": {
-        "en": "Un Partenaire",
+        "en": "One Partner",
         "es": {
           "current": "Un Socio",
           "previous": null,
@@ -263,7 +263,7 @@
         }
       },
       "pillar-1-desc": {
-        "en": "pour tous vos besoins d'inspection de qualité — surface, géométrie, dimension, et plus",
+        "en": "<strong>Transmission homogenization:</strong> Glass from 15% to 99% processed with the same setup — identical results across all types.",
         "es": {
           "current": "para todas sus necesidades de inspección de calidad — superficie, geometría, dimensión, y más",
           "previous": null,
@@ -286,7 +286,7 @@
         }
       },
       "pillar-2-title": {
-        "en": "Présence Mondiale",
+        "en": "Global Presence",
         "es": {
           "current": "Presencia Mundial",
           "previous": null,
@@ -309,7 +309,7 @@
         }
       },
       "pillar-2-desc": {
-        "en": "centres de support mondiaux avec des experts locaux dans 23 pays sur 6 continents",
+        "en": "global support centers with local experts in 23 countries across 6 continents",
         "es": {
           "current": "centros de apoyo mundiales con expertos locales en 23 países en 6 continentes",
           "previous": null,
@@ -332,7 +332,7 @@
         }
       },
       "pillar-3-title": {
-        "en": "Leadership Technologique",
+        "en": "Technology Leadership",
         "es": {
           "current": "Liderazgo Tecnológico",
           "previous": null,
@@ -355,7 +355,7 @@
         }
       },
       "pillar-3-desc": {
-        "en": "véritable balayage · champ clair · champ sombre · réflexion · spectromètre",
+        "en": "real scanning · bright field · dark field · reflection · spectrometer",
         "es": {
           "current": "escaneo verdadero · campo claro · campo oscuro · reflexión · espectrómetro",
           "previous": null,
@@ -378,7 +378,7 @@
         }
       },
       "tech-1-name": {
-        "en": "Système de Lumière Parallèle 90°",
+        "en": "90° Parallel Light System",
         "es": {
           "current": "Sistema de Luz Paralela 90°",
           "previous": null,
@@ -401,7 +401,7 @@
         }
       },
       "tech-1-desc": {
-        "en": "— Technologie basée sur des capteurs utilisant un faisceau de lumière parallèle 90° pour détecter les défauts de surface avec haute précision et rapidité sur les panneaux de verre plats et courbes.",
+        "en": "— Sensor-based technology using a 90° parallel light beam to detect surface defects with high precision and speed on flat and curved glass panels.",
         "es": {
           "current": "— Tecnología basada en sensores que utiliza un haz de luz paralela 90° para detectar defectos de superficie con alta precisión y rapidez en paneles de vidrio planos y curvos.",
           "previous": null,
@@ -424,7 +424,7 @@
         }
       },
       "tech-2-name": {
-        "en": "Champ Clair &amp; Champ Sombre",
+        "en": "Bright Field &amp; Dark Field",
         "es": {
           "current": "Campo Claro y Campo Oscuro",
           "previous": null,
@@ -447,7 +447,7 @@
         }
       },
       "tech-2-desc": {
-        "en": "— Technologie basée sur caméra combinant les deux modes d'éclairage pour une détection complète des inclusions, rayures, bulles et revêtements.",
+        "en": "— Camera-based technology combining both illumination modes for comprehensive detection of inclusions, scratches, bubbles, and coatings.",
         "es": {
           "current": "— Tecnología basada en cámara que combina ambos modos de iluminación para una detección completa de inclusiones, arañazos, burbujas y recubrimientos.",
           "previous": null,
@@ -470,7 +470,7 @@
         }
       },
       "tech-3-name": {
-        "en": "Technologie de Réflexion",
+        "en": "Reflection Technology",
         "es": {
           "current": "Tecnología de Reflexión",
           "previous": null,
@@ -493,7 +493,7 @@
         }
       },
       "tech-3-desc": {
-        "en": "— Technologie de capteur et de lumière parasite utilisant des principes de réflexion pour détecter les défauts de bord et les anomalies de surface dans le verre plat et courbé.",
+        "en": "— Sensor and scattered-light technology using reflection principles to detect edge defects and surface anomalies in flat and curved glass.",
         "es": {
           "current": "— Tecnología de sensor y luz parásita utilizando principios de reflexión para detectar defectos de borde y anomalías de superficie en vidrio plano y curvado.",
           "previous": null,
@@ -516,7 +516,7 @@
         }
       },
       "tech-4-name": {
-        "en": "Spectrométre",
+        "en": "Spectrometer",
         "es": {
           "current": "Espectrómetro",
           "previous": null,
@@ -539,7 +539,7 @@
         }
       },
       "tech-4-desc": {
-        "en": "— Technologie de capteur à filtre polarisé pour l'analyse spectrale — mesure les revêtements de verre, les propriétés de transmission optique et les profils de contrainte.",
+        "en": "— Polarized-filter sensor technology for spectral analysis — measures glass coatings, optical transmission properties, and stress patterns.",
         "es": {
           "current": "— Tecnología de sensor con filtro polarizado para análisis espectral — mide recubrimientos de vidrio, propiedades de transmisión óptica y perfiles de estrés.",
           "previous": null,

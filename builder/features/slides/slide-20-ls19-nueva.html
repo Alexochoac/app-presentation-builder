@@ -1,0 +1,36 @@
+<div class="slide content ls19-nueva"
+     data-slide="ls19-nueva"
+     data-slide-mode="sequence">
+
+  <div class="slide-logo-row">
+    <img src="/slides/shared/LOGO SoftSolution grays.png" alt="Softsolution">
+    <span class="slide-logo-sep"></span>
+    <img src="/slides/shared/LOGO LiteSentry Greys.png" alt="LiteSentry" class="slide-logo-ls">
+  </div>
+
+  <div class="slide-layout">
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label" data-lang-key="ls19-nueva.section-label" contenteditable spellcheck="false">Section Name</div>
+      <h1 class="slide-title" data-edit="headline" data-lang-key="ls19-nueva.headline" contenteditable spellcheck="false">Headline Placeholder</h1>
+      <div class="divider"></div>
+    </header>
+    <div class="slide-body">
+      <p class="slide-subtitle" data-edit="subtitle" data-lang-key="ls19-nueva.subtitle" contenteditable spellcheck="false">Subtitle placeholder</p>
+      <p class="slide-body-text" data-edit="body" data-lang-key="ls19-nueva.body" contenteditable spellcheck="false">Body text placeholder</p>
+      <div class="slide-img-slot" data-edit="image" data-builder-only="">[ Image ]</div>
+    </div>
+  </div>
+
+  <style>
+    .ls19-nueva { /* base layout */ }
+  </style>
+
+  <script>
+  (function () {
+    var slide   = document.currentScript.closest('[data-slide]');
+    var slideId = Track.slideId(slide);
+    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
+  })();
+  </script>
+
+</div>

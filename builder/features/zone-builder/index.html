@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Builder — Presentation Builder</title>
+  <link rel="stylesheet" href="/shared/app-style.css">
+  <!-- Slide base styles (CSS variables + anatomy element styles) -->
+  <link rel="stylesheet" href="/slides/style.css">
+  <!-- Component scripts: inject their CSS on load; .init() is NOT called so they stay static -->
+  <script src="/slides/components/carousel.js"></script>
+  <script src="/slides/components/tabs.js"></script>
+  <script src="/slides/components/list.js"></script>
+  <script src="/slides/components/table.js"></script>
+  <script src="/slides/components/button.js"></script>
+  <script src="/slides/components/tags.js"></script>
+  <style>
+
+    html, body { height: 100%; overflow: hidden; }
+
+    /* ── Screen switcher ─────────────────────────────────────── */
+
+    .zb-screen {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       SCREEN 1 — Layout Picker
+    ══════════════════════════════════════════════════════════ */
+
+    .picker-topbar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0 32px;
+      height: var(--topbar-h);
+      border-bottom: 1px solid var(--border);
+      background: var(--topbar-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      flex-shrink: 0;
+    }
+
+    .picker-back-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .picker-back-link:hover { color: var(--text); }
+
+    .picker-sep {
+      width: 1px;
+      height: 18px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .picker-topbar-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .picker-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px;
+    }
+
+    .picker-section-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 18px;
+    }
+
+    .picker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 14px;
+    }
+
+    .layout-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, transform 0.15s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+    .layout-card:hover {
+      border-color: var(--accent);
+      background: var(--surface-hov);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .layout-card-thumb {
+      padding: 20px;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .layout-card-body {
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .layout-card-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .layout-card-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .zone-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 100px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+      align-self: flex-start;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       SCREEN 2 — 3-Panel Builder
+    ══════════════════════════════════════════════════════════ */
+
+    /* ── Top bar ─────────────────────────────────────────────── */
+
+    .zb-topbar {
+      height: 52px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--topbar-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .zb-back-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      background: none;
+      border: none;
+      font-family: var(--font);
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: var(--radius-btn);
+      transition: color 0.2s, background 0.2s;
+      flex-shrink: 0;
+    }
+    .zb-back-btn:hover { color: var(--text); background: var(--surface); }
+
+    .zb-topbar-sep {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .zb-name-input {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid transparent;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 600;
+      font-family: var(--font);
+      padding: 2px 4px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .zb-name-input:hover,
+    .zb-name-input:focus { border-bottom-color: var(--border-hov); }
+
+    .zb-topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .zb-btn {
+      padding: 7px 16px;
+      border-radius: var(--radius-btn);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .zb-btn:hover { border-color: var(--border-hov); background: var(--surface-hov); }
+
+    .zb-btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000;
+    }
+    .zb-btn-primary:hover { background: #e09515; border-color: #e09515; }
+
+    /* ── 3-panel body ────────────────────────────────────────── */
+
+    .zb-body {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ── Left: Palette ───────────────────────────────────────── */
+
+    .zb-palette {
+      width: 240px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-section {
+      padding: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-section-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+
+    .component-group-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 8px 0 4px;
+    }
+
+    .component-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      user-select: none;
+    }
+    .component-item:hover { background: var(--surface-hov); color: var(--text); }
+
+    .component-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: var(--surface-hov);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+      color: var(--muted);
+    }
+
+    .current-layout-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+
+    .current-layout-type {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      text-transform: capitalize;
+    }
+
+    .change-layout-link {
+      font-size: 12px;
+      color: var(--accent);
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: var(--font);
+      padding: 0;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .change-layout-link:hover { opacity: 0.8; }
+
+    /* ── Center: Canvas wrap ─────────────────────────────────── */
+
+    .zb-canvas-wrap {
+      flex: 1;
+      overflow: auto;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 28px 24px;
+      background: rgba(0,0,0,0.3);
+      position: relative;
+    }
+
+    .zb-canvas {
+      width: 100%;
+      max-width: 900px;
+      background: #000;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+    }
+
+    /* ── Zone labels (builder-only) ──────────────────────────── */
+
+    .zone-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.18);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      padding: 4px 12px;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      flex-shrink: 0;
+    }
+
+    /* ── Header zone ─────────────────────────────────────────── */
+
+    .zb-header-row {
+      display: flex;
+      align-items: stretch;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      min-height: 90px;
+    }
+
+    .zb-logo-col {
+      width: 120px;
+      flex-shrink: 0;
+      border-right: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 14px 16px;
+    }
+
+    .zb-logo-col img {
+      max-width: 80px;
+      height: auto;
+      max-height: 22px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+      opacity: 0.6;
+    }
+
+    .zb-logo-sep {
+      width: 1px;
+      height: 18px;
+      background: rgba(255,255,255,0.2);
+    }
+
+    .zb-header-text {
+      flex: 1;
+      padding: 16px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    /* Override slide.css centering for canvas context */
+    .zb-canvas .section-label {
+      text-align: left;
+      margin-bottom: 4px;
+      cursor: text;
+    }
+
+    .zb-canvas h1.slide-title {
+      text-align: left;
+      margin-bottom: 4px;
+      font-size: clamp(18px, 3vw, 32px);
+    }
+
+    .zb-canvas .divider {
+      margin: 6px 0 0;
+    }
+
+    /* ── Body zone ───────────────────────────────────────────── */
+
+    .zb-body-zone {
+      flex: 1;
+      display: flex;
+      padding: 16px;
+      gap: 12px;
+      min-height: 320px;
+    }
+
+    .zb-body-zone.zone-type-full    { flex-direction: column; }
+    .zb-body-zone.zone-type-two-col { flex-direction: row; }
+    .zb-body-zone.zone-type-tabbed  { flex-direction: column; }
+    .zb-body-zone.zone-type-steps   { flex-direction: column; }
+    .zb-body-zone.zone-type-grid    { flex-direction: row; flex-wrap: wrap; align-content: flex-start; }
+
+    /* Slot containers */
+    .zb-slot { display: flex; flex-direction: column; gap: 10px; }
+    .zb-slot-main  { flex: 1; min-height: 0; }
+    .zb-slot-left  { flex: 1; min-height: 0; }
+    .zb-slot-right { flex: 2; min-height: 0; }
+
+    /* ── Component wrapper (selectable) ──────────────────────── */
+
+    .zb-component {
+      position: relative;
+      border-radius: 8px;
+      border: 1.5px solid transparent;
+      transition: border-color 0.15s;
+      cursor: pointer;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .zb-component:hover {
+      border-color: rgba(245,166,35,0.4);
+    }
+
+    .zb-component.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(245,166,35,0.2);
+    }
+
+    .zb-component-label {
+      position: absolute;
+      top: -1px;
+      left: 8px;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: #000;
+      padding: 0 4px;
+      border-radius: 2px;
+      opacity: 0;
+      transition: opacity 0.15s;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .zb-component:hover .zb-component-label,
+    .zb-component.selected .zb-component-label { opacity: 1; }
+
+    /* ── Component fragment styles ───────────────────────────── */
+
+    /* Carousel placeholder */
+    .zb-img-placeholder {
+      width: 100%;
+      height: 100%;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      color: rgba(255,255,255,0.2);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .zb-img-placeholder-icon { font-size: 28px; opacity: 0.4; }
+
+    /* Tab panel placeholder */
+    .zb-panel-placeholder {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.15);
+      font-size: 12px;
+      font-weight: 500;
+      min-height: 100px;
+    }
+
+    /* Stat block */
+    .zb-stat-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      gap: 6px;
+      flex: 1;
+    }
+    .zb-stat-value {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+    }
+    .zb-stat-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+    }
+
+    /* Card grid */
+    .zb-card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      width: 100%;
+    }
+
+    .zb-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .zb-card h3 { font-size: 13px; font-weight: 600; color: var(--text); }
+    .zb-card p  { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+    /* Logo grid */
+    .zb-logo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      width: 100%;
+    }
+    .zb-logo-cell {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.15);
+      font-size: 11px;
+      font-weight: 600;
+      min-height: 60px;
+    }
+
+    /* Text block */
+    .zb-text-block {
+      padding: 8px 4px;
+      color: rgba(255,255,255,0.7);
+      font-size: 14px;
+      line-height: 1.7;
+      cursor: text;
+    }
+
+    /* Steps (re-use slide CTA styles, override alignment) */
+    .zb-canvas .cta-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      width: 100%;
+    }
+    .zb-canvas .cta-step {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .zb-canvas .step-num {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--accent-dim);
+      border: 1.5px solid var(--accent);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* CTA button within steps */
+    .zb-cta-row {
+      padding: 20px 8px 8px;
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    /* ── Right: Properties ───────────────────────────────────── */
+
+    .zb-props {
+      width: 280px;
+      flex-shrink: 0;
+      border-left: 1px solid var(--border);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .props-empty {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 24px;
+      text-align: center;
+    }
+    .props-empty-icon { font-size: 36px; opacity: 0.12; }
+    .props-empty-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* Properties — component selected state (scaffold for Task 5) */
+    .props-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .props-body {
+      padding: 14px 16px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .zb-component-content { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* ── Properties panel — style controls ──────────────────────── */
+    .props-section { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    .props-section-title {
+      font-size: 10px; font-weight: 700; color: var(--dim);
+      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;
+    }
+    .props-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .props-row:last-child { margin-bottom: 0; }
+    .props-label { font-size: 12px; color: var(--muted); }
+
+    .color-swatch-list { display: flex; flex-direction: column; gap: 4px; width: 100%; margin-top: 6px; }
+    .color-swatch-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 5px 8px; border-radius: 6px; cursor: pointer;
+      font-size: 12px; color: var(--muted);
+      border: 1.5px solid transparent;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .color-swatch-item:hover { background: var(--surface-hov); }
+    .color-swatch-item.active { border-color: var(--accent); color: var(--text); }
+    .color-dot {
+      width: 14px; height: 14px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.15); flex-shrink: 0;
+    }
+    .color-var-name { font-family: monospace; font-size: 11px; }
+    .color-var-label { margin-left: auto; font-size: 11px; color: var(--dim); }
+
+    .props-select {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); font-size: 12px; font-family: var(--font);
+      border-radius: 6px; padding: 4px 8px; cursor: pointer;
+      outline: none; transition: border-color 0.15s;
+    }
+    .props-select:hover, .props-select:focus { border-color: var(--border-hov); }
+
+    .style-toggle-group { display: flex; gap: 3px; }
+    .style-toggle-btn {
+      width: 28px; height: 28px; border-radius: 6px;
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--muted); font-family: var(--font); font-size: 13px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+    }
+    .style-toggle-btn:hover { border-color: var(--border-hov); color: var(--text); }
+    .style-toggle-btn.active { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+
+    .props-remove-section { padding: 12px 16px; }
+    .props-remove-btn {
+      width: 100%; padding: 7px 12px; border-radius: var(--radius-btn);
+      border: 1px solid rgba(255,80,80,0.3); background: rgba(255,80,80,0.06);
+      color: #ff6060; font-size: 12px; font-weight: 500; font-family: var(--font);
+      cursor: pointer; transition: border-color 0.2s, background 0.2s;
+    }
+    .props-remove-btn:hover { border-color: rgba(255,80,80,0.6); background: rgba(255,80,80,0.12); }
+
+    /* ── Slot picker ─────────────────────────────────────────────── */
+
+    .zb-slot-picker {
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1.5px solid var(--accent);
+      border-radius: 10px;
+      padding: 10px 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      white-space: nowrap;
+    }
+    .zb-slot-picker-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-right: 4px;
+    }
+    .zb-slot-btn {
+      padding: 5px 14px;
+      border-radius: var(--radius-btn);
+      border: 1px solid var(--border);
+      background: var(--surface-hov);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .zb-slot-btn:hover { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+    .zb-slot-cancel { color: var(--muted); }
+    .zb-slot-cancel:hover { border-color: var(--border-hov); background: var(--surface); color: var(--muted); }
+
+    /* ── Per-component remove (×) button ────────────────────────── */
+    .zb-comp-remove {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,80,80,0.3);
+      background: rgba(0,0,0,0.75);
+      color: #ff6060;
+      font-size: 11px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.15s, border-color 0.15s;
+      z-index: 6;
+      padding: 0;
+      pointer-events: all;
+    }
+    .zb-component:hover .zb-comp-remove { opacity: 1; }
+    .zb-comp-remove:hover { border-color: rgba(255,80,80,0.8); background: rgba(255,80,80,0.15); }
+
+  </style>
+</head>
+<body>
+
+  <!-- ════════════════════════════════════════════════════
+       SCREEN 1 — Layout Picker
+  ════════════════════════════════════════════════════ -->
+  <div id="screenPicker" class="zb-screen">
+
+    <div class="picker-topbar">
+      <a href="/slides" class="picker-back-link">&#8592; Slides</a>
+      <div class="picker-sep"></div>
+      <span class="picker-topbar-title">Choose a layout</span>
+    </div>
+
+    <div class="picker-body">
+      <div class="picker-section-label">Starting layouts</div>
+      <div class="picker-grid" id="pickerGrid">
+        <div style="grid-column:1/-1;padding:48px 0;text-align:center;color:var(--muted);font-size:14px;">Loading layouts…</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       SCREEN 2 — 3-Panel Builder
+  ════════════════════════════════════════════════════ -->
+  <div id="screenBuilder" class="zb-screen hidden">
+
+    <!-- Top bar -->
+    <div class="zb-topbar">
+      <button class="zb-back-btn" id="btnBack" onclick="zbGoBack()">&#8592; Back</button>
+      <div class="zb-topbar-sep"></div>
+      <input
+        class="zb-name-input"
+        id="slideNameInput"
+        value="New Slide"
+        placeholder="Slide name…"
+        aria-label="Slide name"
+        oninput="zbMarkDirty()"
+      >
+      <div class="zb-topbar-right">
+        <button class="zb-btn" id="btnPreview" title="Preview — coming in Task 3">Preview</button>
+        <button class="zb-btn zb-btn-primary" id="btnSave" onclick="zbSave()">Save</button>
+      </div>
+    </div>
+
+    <!-- 3-panel body -->
+    <div class="zb-body">
+
+      <!-- Left: Component palette -->
+      <div class="zb-palette">
+
+        <div class="panel-section">
+          <div class="panel-section-label">Components</div>
+          <div id="componentList"></div>
+        </div>
+
+        <div class="panel-section">
+          <div class="panel-section-label">Layout</div>
+          <div class="current-layout-name" id="currentLayoutName">—</div>
+          <div class="current-layout-type" id="currentLayoutType">—</div>
+          <button class="change-layout-link" onclick="zbGoBack()">Change layout</button>
+        </div>
+
+      </div>
+
+      <!-- Center: Canvas -->
+      <div class="zb-canvas-wrap">
+        <div id="zbSlotPicker" class="zb-slot-picker hidden">
+          <span class="zb-slot-picker-label">Add to slot:</span>
+          <button class="zb-slot-btn" onclick="zbAddToSlot('left')">&#8592; Left</button>
+          <button class="zb-slot-btn" onclick="zbAddToSlot('right')">Right &#8594;</button>
+          <button class="zb-slot-btn zb-slot-cancel" onclick="zbCancelSlotPick()">Cancel</button>
+        </div>
+        <div class="zb-canvas" id="zbCanvas"></div>
+      </div>
+
+      <!-- Right: Properties -->
+      <div class="zb-props" id="zbProps">
+        <div class="props-empty" id="propsEmpty">
+          <div class="props-empty-icon">&#9678;</div>
+          <div class="props-empty-text">Select a component<br>to edit its properties</div>
+        </div>
+      </div>
+
+    </div><!-- /.zb-body -->
+
+  </div><!-- /#screenBuilder -->
+
+  <script>
+  (function () {
+
+    /* ── State ────────────────────────────────────────────────────────────── */
+    var state = {
+      skeletons:     [],
+      skeleton:      null,
+      selected:      null,   // currently selected component id
+      selectedField: null,   // 'section-label' | 'headline' | null
+      dirty:         false,
+      styles:        {},     // { [id]: { fontSize, color, fontWeight, fontStyle, textAlign } }
+      counters:      {},     // { [type]: count } — for unique component IDs
+      slideId:       '',     // draft ID used in data-lang-key
+      pendingType:   null,   // component type waiting for slot pick
+      savedSlideId:  null,   // null = new slide; real lsNN-slug after first save
+      content: {
+        header: { sectionLabel: 'Section Name', headline: 'Dummy Headline Text' },
+        components: []   // [{ id, type, slot }]
+      }
+    };
+
+    /* ── Component palette definition ────────────────────────────────────── */
+    var COMPONENTS = [
+      { id: 'carousel',         label: 'Carousel',         icon: '&#9655;', group: 'Interactive' },
+      { id: 'tabs',             label: 'Tabs',             icon: '&#8861;', group: 'Interactive' },
+      { id: 'tag-chips',        label: 'Tag Chips',        icon: '&#9673;', group: 'Interactive' },
+      { id: 'capability-table', label: 'Capability Table', icon: '&#8862;', group: 'Interactive' },
+      { id: 'cta-button',       label: 'CTA Button',       icon: '&#8599;', group: 'Interactive' },
+      { id: 'trigger-button',   label: 'Trigger Button',   icon: '&#10547;', group: 'Interactive' },
+      { id: 'text-block',       label: 'Text Block',       icon: 'T',        group: 'Content' },
+      { id: 'editable-list',    label: 'Editable List',    icon: '&bull;',   group: 'Content' },
+      { id: 'stat-block',       label: 'Stat Block',       icon: '#',        group: 'Content' },
+      { id: 'card-grid',        label: 'Card Grid',        icon: '&#8942;',  group: 'Content' },
+      { id: 'numbered-steps',   label: 'Numbered Steps',   icon: '1.',       group: 'Content' },
+      { id: 'logo-grid',        label: 'Logo Grid',        icon: '&#8862;',  group: 'Content' }
+    ];
+
+    var COLOR_VARS = [
+      { var: '--text',    label: 'Primary text' },
+      { var: '--muted',   label: 'Secondary'    },
+      { var: '--accent',  label: 'Brand accent' },
+      { var: '--bg',      label: 'Background'   },
+      { var: '--surface', label: 'Card surface' },
+      { var: '--border',  label: 'Border'       }
+    ];
+
+    var FONT_SIZES = ['12px','14px','16px','18px','20px','24px','28px','32px','40px','48px'];
+
+    /* ── Boot ─────────────────────────────────────────────────────────────── */
+    renderComponentList();
+    fetchSkeletons();
+    var params    = new URLSearchParams(window.location.search);
+    var preLayout = params.get('layout');
+
+    /* ── API ──────────────────────────────────────────────────────────────── */
+    function fetchSkeletons() {
+      fetch('/api/layout-skeletons')
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (!data.success) throw new Error(data.error || 'API error');
+          state.skeletons = data.data;
+          renderPicker(data.data);
+          if (preLayout) {
+            var match = data.data.find(function (s) { return s.id === preLayout; });
+            if (match) selectLayout(match);
+          }
+        })
+        .catch(function (err) {
+          document.getElementById('pickerGrid').innerHTML =
+            '<div style="grid-column:1/-1;padding:48px;text-align:center;color:var(--muted);">Failed to load layouts: ' + err.message + '</div>';
+        });
+    }
+
+    /* ── Picker ───────────────────────────────────────────────────────────── */
+    function renderPicker(skeletons) {
+      document.getElementById('pickerGrid').innerHTML = skeletons.map(function (s) {
+        return '<div class="layout-card" onclick="zbPick(\'' + s.id + '\')">' +
+          '<div class="layout-card-thumb">' + thumbSvg(s) + '</div>' +
+          '<div class="layout-card-body">' +
+            '<div class="layout-card-name">' + esc(s.name) + '</div>' +
+            '<div class="layout-card-desc">' + esc(s.description) + '</div>' +
+            '<div class="zone-badge">' + esc(s.bodyZone.type) + '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function thumbSvg(s) {
+      var W = 140, H = 84;
+      var stroke = 'rgba(255,255,255,0.14)', fill = 'rgba(255,255,255,0.05)', accent = 'rgba(245,166,35,0.5)';
+      var dash   = 'stroke-dasharray="3,2"';
+      var header =
+        '<rect x="0" y="0" width="32" height="42" rx="2" fill="' + fill + '" stroke="' + stroke + '" stroke-width="1"/>' +
+        '<rect x="10" y="10" width="12" height="6" rx="1" fill="' + stroke + '"/>' +
+        '<rect x="10" y="20" width="12" height="6" rx="1" fill="' + stroke + '"/>' +
+        '<rect x="36" y="6" width="40" height="5" rx="1" fill="' + stroke + '"/>' +
+        '<rect x="36" y="15" width="62" height="9" rx="2" fill="rgba(255,255,255,0.1)"/>' +
+        '<rect x="36" y="28" width="16" height="2" rx="1" fill="' + accent + '"/>';
+      var bx = 0, by = 46, bw = W, bh = H - by, body = '';
+      switch (s.bodyZone.type) {
+        case 'full':
+          body = r(bx, by, bw, bh, fill, stroke, dash); break;
+        case 'two-col':
+          var lw = s.bodyZone.ratio === '1:2' ? Math.round(bw * 0.36) - 2 : Math.round(bw * 0.50) - 2;
+          body = r(bx, by, lw, bh, fill, stroke, dash) + r(bx + lw + 4, by, bw - lw - 4, bh, fill, stroke, dash); break;
+        case 'tabbed':
+          body = '<rect x="0" y="46" width="26" height="8" rx="2" fill="' + accent + '"/>' +
+                 '<rect x="30" y="46" width="20" height="8" rx="2" fill="' + fill + '" stroke="' + stroke + '" stroke-width="1"/>' +
+                 '<rect x="54" y="46" width="20" height="8" rx="2" fill="' + fill + '" stroke="' + stroke + '" stroke-width="1"/>' +
+                 r(0, 58, bw, H - 58, fill, stroke, dash); break;
+        case 'steps':
+          var sh = Math.floor((bh - 12) / 3);
+          body = [0,1,2].map(function(i){
+            var y = by + i*(sh+2);
+            return '<circle cx="7" cy="'+(y+sh/2)+'" r="4" fill="none" stroke="'+stroke+'" stroke-width="1"/>' +
+                   '<rect x="16" y="'+(y+sh/2-3)+'" width="'+(bw-18)+'" height="5" rx="2" fill="'+fill+'"/>';
+          }).join('') + '<rect x="'+(bw/2-18)+'" y="'+(H-10)+'" width="36" height="7" rx="4" fill="'+accent+'"/>';
+          break;
+        case 'grid':
+          var cols = s.bodyZone.columns||2, rows = 2;
+          var cw = Math.floor((bw-(cols-1)*3)/cols), ch = Math.floor((bh-(rows-1)*3)/rows);
+          for(var rv=0;rv<rows;rv++) for(var cv=0;cv<cols;cv++)
+            body += r(bx+cv*(cw+3), by+rv*(ch+3), cw, ch, fill, stroke, dash);
+          break;
+        default: body = r(bx, by, bw, bh, fill, stroke, '');
+      }
+      return '<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'+header+body+'</svg>';
+    }
+
+    function r(x,y,w,h,fill,stroke,extra){
+      return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="2" fill="'+fill+'" stroke="'+stroke+'" stroke-width="1" '+(extra||'')+'/>';
+    }
+
+    /* ── Select layout ────────────────────────────────────────────────────── */
+    window.zbPick = function (id) {
+      var s = state.skeletons.find(function (sk) { return sk.id === id; });
+      if (s) selectLayout(s);
+    };
+
+    function selectLayout(skeleton) {
+      state.skeleton       = skeleton;
+      state.selected       = null;
+      state.selectedField  = null;
+      state.dirty          = false;
+      state.styles         = {};
+      state.counters       = {};
+      state.slideId        = 'draft-' + Date.now();
+      state.pendingType    = null;
+      state.content   = {
+        header: { sectionLabel: 'Section Name', headline: 'Dummy Headline Text' },
+        components: skeleton.defaultComponents.map(function (dc) {
+          return { id: generateCompId(dc.component), type: dc.component, slot: dc.slot };
+        })
+      };
+
+      var url = new URL(window.location.href);
+      url.searchParams.set('layout', skeleton.id);
+      history.replaceState(null, '', url.toString());
+
+      document.getElementById('currentLayoutName').textContent = skeleton.name;
+      document.getElementById('currentLayoutType').textContent = skeleton.bodyZone.type;
+
+      renderCanvas(skeleton);
+      renderPropsEmpty();
+      showScreen('builder');
+    }
+
+    /* ── Canvas rendering ─────────────────────────────────────────────────── */
+    function renderCanvas(skeleton) {
+      var canvas = document.getElementById('zbCanvas');
+      canvas.innerHTML =
+        '<div class="zone-label">Header zone</div>' +
+        '<div class="zb-header-row">' +
+          '<div class="zb-logo-col">' +
+            '<img src="/slides/shared/LOGO SoftSolution grays.png" alt="SoftSolution">' +
+            '<div class="zb-logo-sep"></div>' +
+            '<img src="/slides/shared/LOGO LiteSentry Greys.png" alt="LiteSentry">' +
+          '</div>' +
+          '<div class="zb-header-text">' +
+            '<div class="section-label"' +
+              ' data-edit="section-label"' +
+              ' contenteditable spellcheck="false">' +
+              esc(state.content.header.sectionLabel) +
+            '</div>' +
+            '<h1 class="slide-title"' +
+              ' data-edit="headline"' +
+              ' contenteditable spellcheck="false">' +
+              esc(state.content.header.headline) +
+            '</h1>' +
+            '<div class="divider"></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="zone-label">Body zone — ' + esc(skeleton.bodyZone.type) + '</div>' +
+        '<div class="zb-body-zone zone-type-' + esc(skeleton.bodyZone.type) + '">' +
+          renderBodyZone(skeleton, state.content.components) +
+        '</div>';
+
+      wireHeaderEvents(canvas);
+      wireComponentSelection(canvas);
+      reapplyStyles();
+    }
+
+    /* ── Body zone by layout type ─────────────────────────────────────────── */
+    function renderBodyZone(skeleton, components) {
+      var type = skeleton.bodyZone.type;
+      var compsFor = function (slot) {
+        return components.filter(function (c) { return c.slot === slot; });
+      };
+
+      switch (type) {
+        case 'full':
+          return '<div class="zb-slot zb-slot-main">' +
+            compsFor('main').map(compWrapper).join('') +
+          '</div>';
+
+        case 'two-col':
+          var flex = skeleton.bodyZone.ratio === '1:2' ? 'flex:2' : 'flex:1';
+          return '<div class="zb-slot zb-slot-left">'  + compsFor('left').map(compWrapper).join('')  + '</div>' +
+                 '<div class="zb-slot zb-slot-right" style="' + flex + '">' + compsFor('right').map(compWrapper).join('') + '</div>';
+
+        case 'tabbed':
+          return '<div class="zb-slot zb-slot-main" style="flex:1;min-height:0;">' +
+            compsFor('main').map(compWrapper).join('') +
+          '</div>';
+
+        case 'steps':
+          return '<div class="zb-slot zb-slot-main">' +
+            compsFor('main').map(compWrapper).join('') +
+          '</div>';
+
+        case 'grid':
+          return '<div class="zb-slot zb-slot-main" style="display:flex;flex-wrap:wrap;gap:10px;width:100%;">' +
+            compsFor('main').map(compWrapper).join('') +
+          '</div>';
+
+        default:
+          return '<div class="zb-slot zb-slot-main">' +
+            components.map(compWrapper).join('') +
+          '</div>';
+      }
+    }
+
+    function compWrapper(comp) {
+      var styleObj  = state.styles[comp.id] || {};
+      var styleAttr = Object.keys(styleObj).map(function(k) {
+        return k.replace(/([A-Z])/g, '-$1').toLowerCase() + ':' + styleObj[k];
+      }).join(';');
+      return '<div class="zb-component" data-component-id="' + comp.id + '" data-component-type="' + comp.type + '">' +
+        '<div class="zb-component-label">' + comp.type + '</div>' +
+        '<button class="zb-comp-remove" data-builder-only="" title="Remove" onclick="event.stopPropagation();zbRemoveComponent(\'' + comp.id + '\')">&#x2715;</button>' +
+        '<div class="zb-component-content"' + (styleAttr ? ' style="' + styleAttr + '"' : '') + '>' +
+          componentFragment(comp) +
+        '</div>' +
+      '</div>';
+    }
+
+    /* ── Component fragments ──────────────────────────────────────────────── */
+    function componentFragment(comp) {
+      var id  = comp.id;
+      var lk  = state.slideId + '.' + id;  // data-lang-key prefix
+      switch (comp.type) {
+
+        case 'carousel':
+          return '<div class="ls-carousel" data-edit="' + id + '" data-counter="" style="min-height:180px;pointer-events:none;">' +
+            '<div class="ls-carousel-track">' +
+              '<div class="ls-carousel-slide">' +
+                '<div class="zb-img-placeholder">' +
+                  '<div class="zb-img-placeholder-icon">&#128247;</div>' +
+                  '<span>Image 1</span>' +
+                '</div>' +
+              '</div>' +
+              '<div class="ls-carousel-slide">' +
+                '<div class="zb-img-placeholder"><span>Image 2</span></div>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+
+        case 'tabs':
+          return '<div class="ls-tabs" data-edit="' + id + '" style="flex:1;min-height:0;width:100%;pointer-events:none;">' +
+            '<div class="ls-tab-list">' +
+              '<button class="ls-tab active" data-panel="0" data-lang-key="' + lk + '-tab0">Tab 1</button>' +
+              '<button class="ls-tab" data-panel="1" data-lang-key="' + lk + '-tab1">Tab 2</button>' +
+              '<button class="ls-tab" data-panel="2" data-lang-key="' + lk + '-tab2">Tab 3</button>' +
+            '</div>' +
+            '<div class="ls-tab-panels">' +
+              '<div class="ls-tab-panel active" data-panel="0">' +
+                '<div class="zb-panel-placeholder">Tab content area</div>' +
+              '</div>' +
+              '<div class="ls-tab-panel" data-panel="1"></div>' +
+              '<div class="ls-tab-panel" data-panel="2"></div>' +
+            '</div>' +
+          '</div>';
+
+        case 'editable-list':
+          return '<ul data-ls-list data-edit="' + id + '" style="width:100%;pointer-events:none;">' +
+            '<li data-lang-key="' + lk + '-0">First feature or bullet point</li>' +
+            '<li data-lang-key="' + lk + '-1">Second feature or bullet point</li>' +
+            '<li data-lang-key="' + lk + '-2">Third feature or bullet point</li>' +
+          '</ul>';
+
+        case 'tag-chips':
+          return '<div class="slide-tags" style="pointer-events:none;">' +
+            '<span class="slide-tag active" data-edit="' + id + '-1" data-lang-key="' + lk + '-1">Category 1</span>' +
+            '<span class="slide-tag" data-edit="' + id + '-2" data-lang-key="' + lk + '-2">Category 2</span>' +
+            '<span class="slide-tag" data-edit="' + id + '-3" data-lang-key="' + lk + '-3">Category 3</span>' +
+          '</div>';
+
+        case 'capability-table':
+          return '<div style="overflow:auto;width:100%;pointer-events:none;">' +
+            '<table data-ls-table data-edit="' + id + '" style="width:100%;border-collapse:collapse;">' +
+              '<thead><tr>' +
+                '<th style="width:160px;"></th>' +
+                '<th class="ls-th-col"><span class="ls-col-label" data-lang-key="' + lk + '-col0">Product A</span></th>' +
+                '<th class="ls-th-col ls-dot-red"><span class="ls-col-label" data-lang-key="' + lk + '-col1">Competitor</span></th>' +
+              '</tr></thead>' +
+              '<tbody>' +
+                '<tr><td data-lang-key="' + lk + '-r0">Feature One</td><td><span class="ls-dot ls-dot-on">&#9670;</span></td><td><span class="ls-dot ls-dot-off">&#9671;</span></td></tr>' +
+                '<tr><td data-lang-key="' + lk + '-r1">Feature Two</td><td><span class="ls-dot ls-dot-on">&#9670;</span></td><td><span class="ls-dot ls-dot-off">&#9671;</span></td></tr>' +
+              '</tbody>' +
+            '</table>' +
+          '</div>';
+
+        case 'cta-button':
+          return '<div class="zb-cta-row" style="pointer-events:none;">' +
+            '<a class="slide-btn" data-edit="' + id + '" data-lang-key="' + lk + '">Contact Us</a>' +
+          '</div>';
+
+        case 'trigger-button':
+          return '<div class="zb-cta-row" style="pointer-events:none;">' +
+            '<button class="slide-btn" data-trigger-slide="" data-edit="' + id + '" data-lang-key="' + lk + '">View Detail</button>' +
+          '</div>';
+
+        case 'text-block':
+          return '<p class="zb-text-block" data-edit="' + id + '" data-lang-key="' + lk + '" style="pointer-events:none;">' +
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' +
+            'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' +
+          '</p>';
+
+        case 'stat-block':
+          return '<div class="zb-stat-block" style="pointer-events:none;">' +
+            '<div class="zb-stat-value" data-edit="' + id + '-value" data-lang-key="' + lk + '-value">2,050+</div>' +
+            '<div class="zb-stat-label" data-edit="' + id + '-label" data-lang-key="' + lk + '-label">Systems Installed</div>' +
+          '</div>';
+
+        case 'card-grid':
+          return '<div class="zb-card-grid" style="pointer-events:none;">' +
+            '<div class="zb-card"><h3>Card Title</h3><p>Card description text</p></div>' +
+            '<div class="zb-card"><h3>Card Title</h3><p>Card description text</p></div>' +
+            '<div class="zb-card"><h3>Card Title</h3><p>Card description text</p></div>' +
+            '<div class="zb-card"><h3>Card Title</h3><p>Card description text</p></div>' +
+          '</div>';
+
+        case 'numbered-steps':
+          return '<div class="cta-steps" style="pointer-events:none;">' +
+            '<div class="cta-step"><div class="step-num">1</div><span>Analyse your current production line</span></div>' +
+            '<div class="cta-step"><div class="step-num">2</div><span>Live demo with your samples</span></div>' +
+            '<div class="cta-step"><div class="step-num">3</div><span>Customised technical proposal</span></div>' +
+          '</div>';
+
+        case 'logo-grid':
+          return '<div class="zb-logo-grid" style="pointer-events:none;">' +
+            '<div class="zb-logo-cell">Partner</div>' +
+            '<div class="zb-logo-cell">Partner</div>' +
+            '<div class="zb-logo-cell">Partner</div>' +
+            '<div class="zb-logo-cell">Partner</div>' +
+            '<div class="zb-logo-cell">Partner</div>' +
+            '<div class="zb-logo-cell">Partner</div>' +
+          '</div>';
+
+        default:
+          return '<div class="zb-text-block" style="color:var(--muted);">' + comp.type + '</div>';
+      }
+    }
+
+    /* ── Wire header contenteditable ──────────────────────────────────────── */
+    function wireHeaderEvents(canvas) {
+      var sectionLabel = canvas.querySelector('[data-edit="section-label"]');
+      var headline     = canvas.querySelector('[data-edit="headline"]');
+
+      if (sectionLabel) {
+        sectionLabel.addEventListener('input', function () {
+          state.content.header.sectionLabel = this.textContent;
+          zbMarkDirty();
+        });
+        sectionLabel.addEventListener('click', function (e) {
+          e.stopPropagation();
+          selectHeaderField('section-label');
+        });
+      }
+
+      if (headline) {
+        headline.addEventListener('input', function () {
+          state.content.header.headline = this.textContent;
+          zbMarkDirty();
+        });
+        headline.addEventListener('click', function (e) {
+          e.stopPropagation();
+          selectHeaderField('headline');
+        });
+      }
+    }
+
+    /* ── Component selection ──────────────────────────────────────────────── */
+    function wireComponentSelection(canvas) {
+      var components = canvas.querySelectorAll('.zb-component');
+      components.forEach(function (el) {
+        el.addEventListener('click', function (e) {
+          e.stopPropagation();
+          selectComponent(el.dataset.componentId, el.dataset.componentType);
+        });
+      });
+
+      // Click on canvas background = deselect
+      canvas.addEventListener('click', function () {
+        deselectComponent();
+      });
+    }
+
+    function selectComponent(id, type) {
+      state.selected = id;
+
+      // Update selection styling on all components
+      document.querySelectorAll('.zb-component').forEach(function (el) {
+        el.classList.toggle('selected', el.dataset.componentId === id);
+      });
+
+      // Show component info in properties panel
+      renderPropsSelected(id, type);
+    }
+
+    function deselectComponent() {
+      state.selected      = null;
+      state.selectedField = null;
+      document.querySelectorAll('.zb-component').forEach(function (el) {
+        el.classList.remove('selected');
+      });
+      renderPropsEmpty();
+    }
+
+    /* ── Properties panel ─────────────────────────────────────────────────── */
+    function renderPropsEmpty() {
+      document.getElementById('zbProps').innerHTML =
+        '<div class="props-empty">' +
+          '<div class="props-empty-icon">&#9678;</div>' +
+          '<div class="props-empty-text">Select a component<br>to edit its properties</div>' +
+        '</div>';
+    }
+
+    function renderPropsSelected(id, type) {
+      var compDef = COMPONENTS.find(function(c){return c.id===type;});
+      var label   = compDef ? compDef.label : type;
+      document.getElementById('zbProps').innerHTML =
+        '<div class="props-header">' + esc(label) + '</div>' +
+        renderStyleSection(id) +
+        '<div class="props-remove-section">' +
+          '<button class="props-remove-btn" onclick="zbRemoveComponent(\'' + id + '\')">Remove component</button>' +
+        '</div>';
+    }
+
+    /* ── Header field selection ───────────────────────────────────────────── */
+    function selectHeaderField(field) {
+      document.querySelectorAll('.zb-component').forEach(function(el) { el.classList.remove('selected'); });
+      state.selected      = null;
+      state.selectedField = field;
+      renderPropsHeader(field);
+    }
+
+    function renderPropsHeader(field) {
+      var label = field === 'section-label' ? 'Section Label' : 'Headline';
+      document.getElementById('zbProps').innerHTML =
+        '<div class="props-header">' + label + '</div>' +
+        renderStyleSection(field);
+    }
+
+    /* ── Shared style section ─────────────────────────────────────────────── */
+    function renderStyleSection(id) {
+      var styleObj  = getStyleObj(id);
+      var rootStyle = getComputedStyle(document.documentElement);
+      var isBold    = styleObj.fontWeight === 'bold';
+      var isItalic  = styleObj.fontStyle  === 'italic';
+      var align     = styleObj.textAlign  || 'left';
+
+      var colorRows = COLOR_VARS.map(function(cv) {
+        var resolved = rootStyle.getPropertyValue(cv.var).trim() || '#888';
+        var isActive = styleObj.color === 'var(' + cv.var + ')';
+        return '<div class="color-swatch-item' + (isActive ? ' active' : '') + '"' +
+          ' onclick="zbApplyStyle(\'' + id + '\',\'color\',\'var(' + cv.var + ')\')">' +
+          '<div class="color-dot" style="background:' + resolved + '"></div>' +
+          '<span class="color-var-name">' + cv.var + '</span>' +
+          '<span class="color-var-label">' + esc(cv.label) + '</span>' +
+        '</div>';
+      }).join('');
+
+      var sizeOptions = FONT_SIZES.map(function(sz) {
+        return '<option value="' + sz + '"' + (styleObj.fontSize === sz ? ' selected' : '') + '>' + sz + '</option>';
+      }).join('');
+
+      return '<div class="props-section">' +
+        '<div class="props-section-title">Style</div>' +
+        '<div class="props-row">' +
+          '<span class="props-label">Font size</span>' +
+          '<select class="props-select" onchange="zbApplyStyle(\'' + id + '\',\'fontSize\',this.value)">' +
+            '<option value="">Default</option>' + sizeOptions +
+          '</select>' +
+        '</div>' +
+        '<div class="props-label" style="margin-bottom:6px;">Text color</div>' +
+        '<div class="color-swatch-list">' + colorRows + '</div>' +
+        '<div class="props-row" style="margin-top:10px;">' +
+          '<span class="props-label">Format</span>' +
+          '<div class="style-toggle-group">' +
+            '<button class="style-toggle-btn' + (isBold   ? ' active' : '') + '"' +
+              ' onclick="zbToggleStyle(\'' + id + '\',\'fontWeight\',\'bold\',\'normal\')" title="Bold"><b>B</b></button>' +
+            '<button class="style-toggle-btn' + (isItalic ? ' active' : '') + '"' +
+              ' onclick="zbToggleStyle(\'' + id + '\',\'fontStyle\',\'italic\',\'normal\')" title="Italic"><i>I</i></button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="props-row">' +
+          '<span class="props-label">Align</span>' +
+          '<div class="style-toggle-group">' +
+            '<button class="style-toggle-btn' + (align==='left'   ? ' active' : '') + '"' +
+              ' onclick="zbSetAlign(\'' + id + '\',\'left\')"   title="Left">&#8676;</button>' +
+            '<button class="style-toggle-btn' + (align==='center' ? ' active' : '') + '"' +
+              ' onclick="zbSetAlign(\'' + id + '\',\'center\')" title="Center">&#8596;</button>' +
+            '<button class="style-toggle-btn' + (align==='right'  ? ' active' : '') + '"' +
+              ' onclick="zbSetAlign(\'' + id + '\',\'right\')"  title="Right">&#8677;</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }
+
+    /* ── Style state helpers ──────────────────────────────────────────────── */
+    function getStyleObj(id) {
+      if (!state.styles[id]) state.styles[id] = {};
+      return state.styles[id];
+    }
+
+    function getStyleTarget(id) {
+      if (id === 'section-label' || id === 'headline') {
+        return document.querySelector('[data-edit="' + id + '"]');
+      }
+      var el = document.querySelector('[data-component-id="' + id + '"]');
+      return el ? el.querySelector('.zb-component-content') : null;
+    }
+
+    function reapplyStyles() {
+      Object.keys(state.styles).forEach(function(id) {
+        var obj = state.styles[id];
+        if (!Object.keys(obj).length) return;
+        var target = getStyleTarget(id);
+        if (!target) return;
+        Object.keys(obj).forEach(function(prop) {
+          var cssProp = prop.replace(/([A-Z])/g, '-$1').toLowerCase();
+          target.style.setProperty(cssProp, obj[prop]);
+        });
+      });
+    }
+
+    function applyStyle(id, prop, val) {
+      var styleObj = getStyleObj(id);
+      if (val === '') { delete styleObj[prop]; } else { styleObj[prop] = val; }
+      zbMarkDirty();
+      var target = getStyleTarget(id);
+      if (target) {
+        var cssProp = prop.replace(/([A-Z])/g, '-$1').toLowerCase();
+        if (val === '') { target.style.removeProperty(cssProp); }
+        else            { target.style.setProperty(cssProp, val); }
+      }
+      if (id === 'section-label' || id === 'headline') {
+        renderPropsHeader(id);
+      } else {
+        var compEl = document.querySelector('[data-component-id="' + id + '"]');
+        renderPropsSelected(id, compEl ? compEl.dataset.componentType : '');
+      }
+    }
+
+    function removeComponent(id) {
+      state.content.components = state.content.components.filter(function(c) { return c.id !== id; });
+      delete state.styles[id];
+      state.selected      = null;
+      state.selectedField = null;
+      zbMarkDirty();
+      renderCanvas(state.skeleton);
+      renderPropsEmpty();
+    }
+
+    /* ── Palette add system ───────────────────────────────────────────────── */
+    function generateCompId(type) {
+      if (!state.counters[type]) state.counters[type] = 0;
+      state.counters[type]++;
+      return type + '-' + state.counters[type];
+    }
+
+    function getAvailableSlots(skeleton) {
+      return skeleton.bodyZone.type === 'two-col' ? ['left', 'right'] : ['main'];
+    }
+
+    function addComponent(type, slot) {
+      var comp = { id: generateCompId(type), type: type, slot: slot };
+      state.content.components.push(comp);
+      zbMarkDirty();
+      renderCanvas(state.skeleton);
+    }
+
+    function showSlotPicker(type) {
+      state.pendingType = type;
+      document.getElementById('zbSlotPicker').classList.remove('hidden');
+    }
+
+    /* ── Component palette ────────────────────────────────────────────────── */
+    function renderComponentList() {
+      var byGroup = {};
+      COMPONENTS.forEach(function (c) {
+        if (!byGroup[c.group]) byGroup[c.group] = [];
+        byGroup[c.group].push(c);
+      });
+      var html = '';
+      Object.keys(byGroup).forEach(function (g) {
+        html += '<div class="component-group-label">' + g + '</div>';
+        byGroup[g].forEach(function (c) {
+          html += '<div class="component-item" data-component="' + c.id + '" title="' + c.label + '" onclick="zbPickComponent(\'' + c.id + '\')">' +
+            '<div class="component-icon">' + c.icon + '</div>' +
+            '<span>' + c.label + '</span>' +
+          '</div>';
+        });
+      });
+      document.getElementById('componentList').innerHTML = html;
+    }
+
+    /* ── Screen switching ─────────────────────────────────────────────────── */
+    function showScreen(name) {
+      document.getElementById('screenPicker').classList.toggle('hidden', name !== 'picker');
+      document.getElementById('screenBuilder').classList.toggle('hidden', name !== 'builder');
+    }
+
+    window.zbGoBack = function () {
+      if (state.dirty && !window.confirm('You have unsaved changes. Return to layout picker?')) return;
+      state.dirty    = false;
+      state.skeleton = null;
+      state.selected = null;
+      var url = new URL(window.location.href);
+      url.searchParams.delete('layout');
+      history.replaceState(null, '', url.toString());
+      showScreen('picker');
+    };
+
+    window.zbMarkDirty     = function () { state.dirty = true; };
+    window.zbPickComponent = function (type) {
+      if (!state.skeleton) return;
+      var slots = getAvailableSlots(state.skeleton);
+      if (slots.length > 1) { showSlotPicker(type); }
+      else                  { addComponent(type, slots[0]); }
+    };
+    window.zbAddToSlot = function (slot) {
+      if (!state.pendingType) return;
+      var type = state.pendingType;
+      state.pendingType = null;
+      document.getElementById('zbSlotPicker').classList.add('hidden');
+      addComponent(type, slot);
+    };
+    window.zbCancelSlotPick = function () {
+      state.pendingType = null;
+      document.getElementById('zbSlotPicker').classList.add('hidden');
+    };
+    window.zbApplyStyle    = function (id, prop, val) { applyStyle(id, prop, val); };
+    window.zbToggleStyle   = function (id, prop, onVal, offVal) {
+      var obj = getStyleObj(id);
+      applyStyle(id, prop, obj[prop] === onVal ? offVal : onVal);
+    };
+    window.zbSetAlign      = function (id, val) { applyStyle(id, 'textAlign', val); };
+    window.zbRemoveComponent = function (id) { removeComponent(id); };
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !document.getElementById('screenBuilder').classList.contains('hidden')) {
+        zbGoBack();
+      }
+    });
+
+    /* ── Save + HTML assembler ────────────────────────────────────────────── */
+
+    window.zbSave = function () {
+      var name = document.getElementById('slideNameInput').value.trim();
+      if (!name) {
+        document.getElementById('slideNameInput').focus();
+        return;
+      }
+      var html   = assembleHtml();
+      var errors = validateSlide(html);
+      if (errors.length) {
+        alert('Cannot save:\n\n' + errors.join('\n'));
+        return;
+      }
+      var btn         = document.getElementById('btnSave');
+      btn.disabled    = true;
+      btn.textContent = 'Saving…';
+      fetch('/api/slide-builder/save', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({
+          slideName:    name,
+          savedSlideId: state.savedSlideId || null,
+          layoutId:     state.skeleton ? state.skeleton.id : null,
+          html:         html
+        })
+      })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (!data.ok) throw new Error(data.error || 'Save failed');
+        state.savedSlideId = data.slideId;
+        state.dirty        = false;
+        btn.disabled       = false;
+        btn.textContent    = 'Saved';
+        setTimeout(function () { btn.textContent = 'Save'; }, 2500);
+      })
+      .catch(function (err) {
+        btn.disabled    = false;
+        btn.textContent = 'Save';
+        alert('Save failed: ' + err.message);
+      });
+    };
+
+    function assembleHtml() {
+      var slideId = state.savedSlideId || '__SLIDE_ID__';
+      var canvas  = document.getElementById('zbCanvas');
+      var clone   = canvas.cloneNode(true);
+
+      // Strip all builder-only UI elements
+      clone.querySelectorAll(
+        '.zone-label, .zb-component-label, .zb-comp-remove, [data-builder-only]'
+      ).forEach(function (el) {
+        if (el.parentNode) el.parentNode.removeChild(el);
+      });
+
+      // Stamp data-lang-key on header fields (builder canvas omits these)
+      var sl = clone.querySelector('[data-edit="section-label"]');
+      if (sl) sl.setAttribute('data-lang-key', slideId + '.section-label');
+      var hl = clone.querySelector('[data-edit="headline"]');
+      if (hl) hl.setAttribute('data-lang-key', slideId + '.headline');
+
+      // Remove pointer-events:none (builder freezes interaction; viewer must not)
+      clone.querySelectorAll('[style]').forEach(function (el) {
+        el.style.removeProperty('pointer-events');
+        if (!el.getAttribute('style') || !el.getAttribute('style').trim()) {
+          el.removeAttribute('style');
+        }
+      });
+
+      // Flatten .zb-component wrapper: replace with .zb-component-content child.
+      // This keeps user-applied inline text-style rules while removing builder chrome.
+      clone.querySelectorAll('.zb-component').forEach(function (wrapper) {
+        var content = wrapper.querySelector('.zb-component-content');
+        if (!wrapper.parentNode) return;
+        if (content) { wrapper.parentNode.insertBefore(content, wrapper); }
+        wrapper.parentNode.removeChild(wrapper);
+      });
+
+      return [
+        '<div class="slide" data-slide="' + slideId + '" data-slide-mode="sequence">',
+        clone.innerHTML,
+        '<style>',
+        buildLayoutCss(slideId),
+        '</style>',
+        '<script>',
+        buildScriptBlock(slideId),
+        '<\/script>',
+        '</div>'
+      ].join('\n');
+    }
+
+    function buildLayoutCss(slideId) {
+      var s = '[data-slide="' + slideId + '"]';
+      return [
+        s + ' { display:flex; flex-direction:column; height:100%; min-height:0; }',
+        s + ' .zb-header-row { display:flex; align-items:stretch; border-bottom:1px solid rgba(255,255,255,.07); min-height:90px; flex-shrink:0; }',
+        s + ' .zb-logo-col { width:120px; flex-shrink:0; border-right:1px solid rgba(255,255,255,.07); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:14px 16px; }',
+        s + ' .zb-logo-col img { max-width:80px; height:auto; max-height:22px; object-fit:contain; filter:brightness(0) invert(1); opacity:.6; }',
+        s + ' .zb-logo-sep { width:1px; height:18px; background:rgba(255,255,255,.2); flex-shrink:0; }',
+        s + ' .zb-header-text { flex:1; padding:16px 24px; display:flex; flex-direction:column; justify-content:center; gap:4px; }',
+        s + ' .zb-body-zone { flex:1; display:flex; padding:16px; gap:12px; min-height:0; }',
+        s + ' .zb-body-zone.zone-type-full    { flex-direction:column; }',
+        s + ' .zb-body-zone.zone-type-two-col { flex-direction:row; }',
+        s + ' .zb-body-zone.zone-type-tabbed  { flex-direction:column; }',
+        s + ' .zb-body-zone.zone-type-steps   { flex-direction:column; }',
+        s + ' .zb-body-zone.zone-type-grid    { flex-direction:row; flex-wrap:wrap; align-content:flex-start; }',
+        s + ' .zb-slot { display:flex; flex-direction:column; gap:10px; }',
+        s + ' .zb-slot-main  { flex:1; min-height:0; }',
+        s + ' .zb-slot-left  { flex:1; min-height:0; }',
+        s + ' .zb-slot-right { flex:2; min-height:0; }',
+        s + ' .zb-component-content { flex:1; min-height:0; display:flex; flex-direction:column; overflow:hidden; }'
+      ].join('\n');
+    }
+
+    function buildScriptBlock(slideId) {
+      return [
+        '(function () {',
+        '  var slide   = document.querySelector(\'[data-slide="' + slideId + '"]\');',
+        '  var slideId = slide ? slide.dataset.slide : \'\';',
+        '  if (typeof Track !== \'undefined\') Track.slideId(slideId);',
+        '  setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);',
+        '})();'
+      ].join('\n');
+    }
+
+    function validateSlide(html) {
+      var errors = [];
+      if (!html.includes('data-slide='))      errors.push('Missing data-slide on root');
+      if (!html.includes('data-slide-mode=')) errors.push('Missing data-slide-mode on root');
+      if (!html.includes('data-lang-key='))   errors.push('No data-lang-key found (translation layer)');
+      if (!html.includes('PE.initSlide'))     errors.push('Missing PE.initSlide call (slide mode layer)');
+      if (/style="[^"]*#[0-9a-fA-F]{3,8}/.test(html)) {
+        errors.push('Hardcoded hex color in inline style — use CSS variables');
+      }
+      return errors;
+    }
+
+    /* ── Utility ──────────────────────────────────────────────────────────── */
+    function esc(s) {
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+  })();
+  </script>
+</body>
+</html>

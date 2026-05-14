@@ -1,0 +1,45 @@
+<div class="slide hero ls18-test-452"
+     data-slide="ls18-test-452"
+     data-slide-mode="sequence">
+
+  <div class="slide-logo-row">
+    <img src="/slides/shared/LOGO SoftSolution grays.png" alt="Softsolution">
+    <span class="slide-logo-sep"></span>
+    <img src="/slides/shared/LOGO LiteSentry Greys.png" alt="LiteSentry" class="slide-logo-ls">
+  </div>
+
+  <div class="slide-layout">
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label" data-lang-key="ls18-test-452.section-label" contenteditable spellcheck="false">Section Name</div>
+      <h1 class="slide-title" data-edit="headline" data-lang-key="ls18-test-452.headline" contenteditable spellcheck="false">Headline Placeholder</h1>
+      <div class="divider"></div>
+    </header>
+    <div class="hero-overlay">
+      <p class="slide-subtitle" data-edit="subtitle" data-lang-key="ls18-test-452.subtitle" contenteditable spellcheck="false">Subtitle placeholder</p>
+      <div class="cta-actions">
+        <a class="cta-btn cta-btn-wa" href="#" data-lang-key="ls18-test-452.btn-wa">WhatsApp</a>
+        <a class="cta-btn cta-btn-email" href="#" data-lang-key="ls18-test-452.btn-email">Email</a>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .ls18-test-452 { /* base layout */ }
+    .ls18-test-452.hero         { position: relative; }
+    .ls18-test-452 .hero-overlay { position: absolute; bottom: 10%; left: 10%; right: 10%; }
+    .ls18-test-452 .slide-title  { font-size: clamp(2rem, 5vw, 3.5rem); color: #fff; }
+  </style>
+
+  <script>
+  (function () {
+    var slide   = document.currentScript.closest('[data-slide]');
+    var slideId = Track.slideId(slide);
+    var btnWa    = slide.querySelector('.cta-btn-wa');
+    var btnEmail = slide.querySelector('.cta-btn-email');
+    if (btnWa)    btnWa.addEventListener('click', function () { Track.click(slideId, 'whatsapp'); });
+    if (btnEmail) btnEmail.addEventListener('click', function () { Track.click(slideId, 'email'); });
+    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
+  })();
+  </script>
+
+</div>

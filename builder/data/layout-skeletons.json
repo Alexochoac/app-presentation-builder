@@ -1,0 +1,145 @@
+[
+  {
+    "id": "hero",
+    "name": "Hero",
+    "description": "Full-width carousel with a strong headline. Good for cover slides and product reveals.",
+    "bodyZone": {
+      "type": "full"
+    },
+    "defaultComponents": [
+      { "slot": "main", "component": "carousel" }
+    ],
+    "sourceSlides": ["slide-01-cover"],
+    "thumbnail": null
+  },
+  {
+    "id": "tabbed",
+    "name": "Tabbed Content",
+    "description": "Tab bar with multiple content panels. Each panel can hold carousels, tables, or text.",
+    "bodyZone": {
+      "type": "tabbed"
+    },
+    "defaultComponents": [
+      { "slot": "main", "component": "tabs" }
+    ],
+    "sourceSlides": ["slide-02-company", "slide-04-linescanner", "slide-05-technology", "slide-10-database"],
+    "thumbnail": null
+  },
+  {
+    "id": "two-col-compare",
+    "name": "Two Column — Compare",
+    "description": "Left column for a problem/benefit list, right column for supporting visuals. Good for before/after and differentiation slides.",
+    "bodyZone": {
+      "type": "two-col",
+      "ratio": "1:1"
+    },
+    "defaultComponents": [
+      { "slot": "left",  "component": "editable-list" },
+      { "slot": "right", "component": "carousel" }
+    ],
+    "sourceSlides": ["slide-03-why", "slide-08-screenprinting"],
+    "thumbnail": null
+  },
+  {
+    "id": "selector-carousel",
+    "name": "Selector + Carousel",
+    "description": "Tag chips at the top act as a category selector. Each tag reveals a different carousel below. Good for defect types, product variants, or grouped visuals.",
+    "bodyZone": {
+      "type": "full"
+    },
+    "defaultComponents": [
+      { "slot": "main", "component": "tag-chips" },
+      { "slot": "main", "component": "carousel" }
+    ],
+    "sourceSlides": ["slide-06-surface"],
+    "thumbnail": null
+  },
+  {
+    "id": "carousel-cards",
+    "name": "Carousel + Info Cards",
+    "description": "Narrow left column for specification cards, wide right column for a carousel. Good for product detail and installation slides.",
+    "bodyZone": {
+      "type": "two-col",
+      "ratio": "1:2"
+    },
+    "defaultComponents": [
+      { "slot": "left",  "component": "card-grid" },
+      { "slot": "right", "component": "carousel" }
+    ],
+    "sourceSlides": ["slide-07-dimension", "slide-12-footprint"],
+    "thumbnail": null
+  },
+  {
+    "id": "steps-cta",
+    "name": "Steps + CTA",
+    "description": "Numbered process steps with a call-to-action button below. Good for onboarding, contact, and next-steps slides.",
+    "bodyZone": {
+      "type": "steps"
+    },
+    "defaultComponents": [
+      { "slot": "main", "component": "numbered-steps" },
+      { "slot": "main", "component": "cta-button" }
+    ],
+    "sourceSlides": ["slide-14-cta"],
+    "thumbnail": null
+  },
+  {
+    "id": "partner-grid",
+    "name": "Partner / Logo Grid",
+    "description": "Grid of partner or machinery vendor logos. Good for integration, ecosystem, and technology partner slides.",
+    "bodyZone": {
+      "type": "grid",
+      "columns": 3
+    },
+    "defaultComponents": [
+      { "slot": "main", "component": "logo-grid" }
+    ],
+    "sourceSlides": ["slide-13-integrations"],
+    "thumbnail": null
+  },
+  {
+    "id": "two-col-list",
+    "name": "Two Column — List + Visual",
+    "description": "Left column for a feature or checklist, right column for a carousel or single image. Good for quality checks and process overviews.",
+    "bodyZone": {
+      "type": "two-col",
+      "ratio": "1:1"
+    },
+    "defaultComponents": [
+      { "slot": "left",  "component": "editable-list" },
+      { "slot": "right", "component": "carousel" }
+    ],
+    "sourceSlides": ["slide-09-logo-check"],
+    "thumbnail": null
+  },
+  {
+    "id": "full-text",
+    "name": "Full Width — Text",
+    "description": "Single full-width text block. Good for intro slides, legal copy, or any slide that leads with words.",
+    "bodyZone": {
+      "type": "full"
+    },
+    "defaultComponents": [
+      { "slot": "main", "component": "text-block" }
+    ],
+    "sourceSlides": [],
+    "thumbnail": null
+  },
+  {
+    "id": "kpi-stats",
+    "name": "KPI Stats Grid",
+    "description": "2×2 grid of large stat blocks, each with a value, label, and optional sublabel. Good for company facts and key numbers slides.",
+    "bodyZone": {
+      "type": "grid",
+      "columns": 2
+    },
+    "defaultComponents": [
+      { "slot": "main", "component": "stat-block" },
+      { "slot": "main", "component": "stat-block" },
+      { "slot": "main", "component": "stat-block" },
+      { "slot": "main", "component": "stat-block" }
+    ],
+    "sourceSlides": [],
+    "thumbnail": null
+  }
+]
