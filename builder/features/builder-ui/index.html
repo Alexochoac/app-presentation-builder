@@ -145,6 +145,54 @@
     .modal-field { display: flex; flex-direction: column; gap: 4px; }
     .modal-label { font-size: 12px; color: var(--muted); }
 
+    /* ── Save Presentation modal extras ── */
+    .modal-divider {
+      height: 1px; background: var(--border); margin: 4px 0;
+    }
+    .modal-select {
+      width: 100%; padding: 10px 14px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--input-bg);
+      color: var(--text); font-size: 14px; font-family: inherit; outline: none;
+      appearance: none; cursor: pointer;
+      transition: border-color .15s;
+    }
+    .modal-select:focus { border-color: var(--accent); }
+    .save-logo-row {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .save-logo-preview {
+      width: 48px; height: 48px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface-hov);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; flex-shrink: 0; cursor: pointer;
+    }
+    .save-logo-preview img { width: 100%; height: 100%; object-fit: contain; }
+    .save-logo-placeholder { font-size: 20px; color: var(--muted); }
+    .save-logo-actions { display: flex; flex-direction: column; gap: 4px; }
+    .save-logo-hint { font-size: 11px; color: var(--muted); }
+    .btn-logo-upload {
+      padding: 5px 12px; border-radius: var(--radius-btn);
+      border: 1px solid var(--border); background: transparent;
+      color: var(--muted); font-size: 12px; font-weight: 500;
+      cursor: pointer; font-family: inherit; transition: color .15s, border-color .15s;
+    }
+    .btn-logo-upload:hover { color: var(--text); border-color: var(--border-hov); }
+    .lang-chips {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px;
+    }
+    .lang-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 100px;
+      border: 1px solid var(--border); background: var(--surface-hov);
+      color: var(--muted); font-size: 12px; font-weight: 500;
+      cursor: pointer; user-select: none; transition: background .15s, color .15s, border-color .15s;
+    }
+    .lang-chip.selected {
+      background: var(--accent-dim); border-color: var(--accent); color: var(--accent);
+    }
+    .lang-chip-check { font-size: 10px; }
+    .no-langs-hint { font-size: 12px; color: var(--muted); }
+
     /* ── Premium modal ── */
     #premiumModal .modal-box { text-align: center; }
     .premium-icon { font-size: 40px; margin-bottom: 12px; }
@@ -155,6 +203,21 @@
       border: 1px solid var(--border); background: transparent;
       color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
     }
+
+    /* ── Builder sidebar submenu ── */
+    .sidebar-nav-group { list-style: none; }
+    .sidebar-submenu { list-style: none; margin: 0; padding: 0; }
+    .sidebar.collapsed .sidebar-submenu { display: none; }
+
+    .sidebar-sub-item {
+      display: block; padding: 5px 12px 5px 36px;
+      font-size: 13px; color: var(--muted);
+      text-decoration: none; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
+      transition: color 0.15s;
+    }
+    .sidebar-sub-item:hover { color: var(--text); }
+    .sidebar-sub-item.active { color: var(--accent); font-weight: 600; }
 
     /* ── Builder page layout ── */
     .builder-app {
@@ -172,7 +235,26 @@
       flex-direction: column;
       height: 100%;
       overflow: hidden;
+      transition: width 0.25s ease;
     }
+    .deck-sidebar.collapsed { width: 52px; }
+
+    /* Collapsed: hide all text, show only logos */
+    .deck-sidebar.collapsed .deck-sidebar-header { display: none; }
+    .deck-sidebar.collapsed .deck-info,
+    .deck-sidebar.collapsed .deck-active-dot,
+    .deck-sidebar.collapsed .deck-row-actions,
+    .deck-sidebar.collapsed .deck-open-btn { display: none !important; }
+    .deck-sidebar.collapsed .deck-row {
+      padding: 8px;
+      justify-content: center;
+    }
+    .deck-sidebar.collapsed .deck-row.active-deck .deck-logo-thumb {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: 10px;
+    }
+
     .deck-sidebar-header {
       display: flex;
       align-items: center;
@@ -397,11 +479,15 @@
       flex-shrink: 0;
       border-top: 1px solid var(--border);
     }
-    .finished-panel-toggle {
-      width: 100%;
+    .finished-panel-hdr {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+    }
+    .finished-panel-toggle {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
       padding: 9px 14px;
       border: none;
       background: var(--surface);
@@ -413,54 +499,126 @@
       letter-spacing: .06em;
       cursor: pointer;
       transition: background .15s, color .15s;
+      text-align: left;
     }
     .finished-panel-toggle:hover { background: var(--surface-hov); color: var(--text); }
     .finished-panel-toggle[aria-expanded="true"] .finished-chevron { transform: rotate(180deg); }
     .finished-chevron { font-size: 10px; transition: transform .2s; opacity: .5; }
+    .finished-search-wrap { padding: 8px 10px 4px; }
+    .finished-search {
+      width: 100%; box-sizing: border-box;
+      padding: 5px 10px;
+      border: 1px solid var(--border); border-radius: 6px;
+      background: var(--bg); color: var(--text);
+      font-size: 12px; font-family: var(--font); outline: none;
+      transition: border-color .15s;
+    }
+    .finished-search:focus { border-color: var(--accent); }
+    .finished-search::placeholder { color: var(--muted); }
     .finished-panel-body {
-      max-height: 220px;
+      max-height: 320px;
       overflow-y: auto;
       display: none;
     }
     .finished-panel-body.open { display: block; }
+    /* List view */
     .finished-item {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 10px 14px;
+      padding: 8px 14px;
       border-bottom: 1px solid var(--border);
+      transition: background .15s;
     }
     .finished-item:last-child { border-bottom: none; }
-    .finished-item-info { flex: 1; min-width: 0; }
+    .finished-item:hover { background: var(--surface-hov); }
+    .finished-item-logo {
+      width: 36px; height: 36px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      flex-shrink: 0;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .finished-item-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .finished-item-logo-placeholder { font-size: 14px; font-weight: 700; color: var(--muted); }
+    .finished-item-info {
+      flex: 1; min-width: 0;
+      display: flex; flex-direction: column; gap: 3px;
+    }
+    .finished-item-row1 {
+      display: flex; align-items: center; gap: 6px; min-width: 0;
+    }
     .finished-item-name {
-      font-size: 13px; font-weight: 600; color: var(--text);
+      flex: 1; min-width: 0;
+      font-size: 12px; font-weight: 600; color: var(--text);
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .finished-item-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .finished-item-row2 {
+      display: flex; align-items: center; min-width: 0; gap: 0;
+    }
+    .finished-item-meta {
+      font-size: 10px; color: var(--muted);
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .finished-item-actions { display: flex; align-items: center; flex-shrink: 0; }
     .finished-item-link {
-      font-size: 12px;
-      color: var(--accent);
-      text-decoration: none;
-      flex-shrink: 0;
-      white-space: nowrap;
+      font-size: 10px; color: var(--accent); cursor: pointer;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      flex: 1; min-width: 0; user-select: none;
     }
     .finished-item-link:hover { text-decoration: underline; }
+    .finished-item-link.copied { color: #4ade80; }
+    .finished-status-badge {
+      display: inline-flex; align-items: center;
+      font-size: 9px; font-weight: 700; letter-spacing: .04em;
+      padding: 1px 5px; border-radius: 999px; flex-shrink: 0;
+    }
+    .finished-status-badge--pub   { background: rgba(74,222,128,.15); color: #4ade80; }
+    .finished-status-badge--draft { background: rgba(255,255,255,.06); color: var(--muted); }
+    /* Gear menu */
+    .finished-gear-btn {
+      width: 24px; height: 24px;
+      border: none; background: transparent;
+      color: var(--muted); font-size: 14px;
+      border-radius: 6px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s, color .15s; font-family: inherit;
+    }
+    .finished-gear-btn:hover { background: var(--surface-hov); color: var(--text); }
+    .finished-row-actions { position: relative; }
+    .finished-dropdown {
+      display: none;
+      position: absolute; right: 0; bottom: 100%;
+      margin-bottom: 4px;
+      min-width: 160px;
+      background: #111;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 10px; padding: 4px;
+      box-shadow: 0 10px 36px rgba(0,0,0,.7);
+      z-index: 9999;
+    }
+    [data-theme="light"] .finished-dropdown {
+      background: #fff; border-color: rgba(0,0,0,.1);
+      box-shadow: 0 10px 36px rgba(0,0,0,.15);
+    }
+    .finished-dropdown.open { display: block; }
+    .finished-dropdown-item {
+      padding: 8px 12px; border-radius: 7px;
+      font-size: 13px; color: rgba(255,255,255,.8);
+      cursor: pointer; transition: background .1s; white-space: nowrap;
+    }
+    [data-theme="light"] .finished-dropdown-item { color: rgba(0,0,0,.75); }
+    .finished-dropdown-item:hover { background: rgba(255,255,255,.08); color: #fff; }
+    [data-theme="light"] .finished-dropdown-item:hover { background: rgba(0,0,0,.05); color: #000; }
+    .finished-dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
     .finished-empty {
       padding: 18px 14px;
       font-size: 13px;
       color: var(--muted);
       text-align: center;
     }
-    .btn-publish-item {
-      font-size: 11px; padding: 4px 10px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      background: transparent; color: var(--muted);
-      cursor: pointer; font-family: inherit;
-      transition: border-color .15s, color .15s;
-      white-space: nowrap; flex-shrink: 0;
-    }
-    .btn-publish-item:hover { border-color: var(--accent); color: var(--accent); }
 
     /* ── Deck gear btn ── */
     .deck-gear-btn {
@@ -636,11 +794,14 @@
           <span class="nav-label">Dashboard</span>
         </a>
       </li>
-      <li>
-        <a href="/builder" class="sidebar-nav-item active">
+      <li class="sidebar-nav-group">
+        <a href="/builder" class="sidebar-nav-item active has-submenu">
           <span class="nav-icon">&#9654;</span>
           <span class="nav-label">Builder</span>
         </a>
+        <ul class="sidebar-submenu" id="builderSubmenu">
+          <li><a href="/builder" class="sidebar-sub-item active">Decks</a></li>
+        </ul>
       </li>
       <li>
         <a href="/slides" class="sidebar-nav-item">
@@ -671,7 +832,7 @@
   <div class="app-body builder-app" id="appBody">
 
     <!-- ── Deck List Sidebar ── -->
-    <aside class="deck-sidebar">
+    <aside class="deck-sidebar collapsed">
       <div class="deck-sidebar-header">
         <span class="deck-sidebar-title">
           My Decks
@@ -692,8 +853,11 @@
         <div class="canvas-header">
           <div class="canvas-slide-name" id="canvasSlideName">Select a slide</div>
           <div class="canvas-header-actions">
-            <a id="editInEditorBtn" class="btn-edit-in-editor" href="#" style="display:none;">
-              Edit in Slide Editor &rarr;
+            <a id="backToLibraryBtn" class="btn-edit-in-editor" href="/slides" style="display:none;">
+              &larr; Back to Library
+            </a>
+            <a id="editInEditorBtn" class="btn-edit-in-editor" href="/builder/preview.html" style="display:none;">
+              Open Builder &rarr;
             </a>
             <button id="savePresBtn" class="btn-primary" style="font-size:12px;padding:6px 14px;">
               Save as Presentation
@@ -726,10 +890,13 @@
       <!-- Finished Presentations -->
       <div class="finished-panel">
         <button class="finished-panel-toggle" id="finishedToggleBtn" aria-expanded="false">
-          <span>Finished Presentations</span>
           <span class="finished-chevron">&#9660;</span>
+          <span>Finished Presentations</span>
         </button>
         <div class="finished-panel-body" id="finishedPanelBody">
+          <div class="finished-search-wrap">
+            <input id="finishedSearch" class="finished-search" type="text" placeholder="Search presentations…">
+          </div>
           <div id="finishedList"></div>
         </div>
       </div>
@@ -774,12 +941,23 @@
     </div>
   </div>
 
+  <!-- ── Presentation History Modal ── -->
+  <div class="modal-backdrop" id="presHistoryModal">
+    <div class="modal-box" style="max-width:420px;">
+      <div class="modal-title">Presentation History</div>
+      <div id="presHistoryBody" style="font-size:13px;color:var(--text);display:flex;flex-direction:column;gap:10px;margin-bottom:16px;"></div>
+      <div class="modal-actions">
+        <button class="modal-cancel" id="presHistoryClose">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ── Save as Presentation Modal ── -->
   <div class="modal-backdrop" id="savePresModal">
-    <div class="modal-box" style="max-width:480px;">
-      <div class="modal-title">Save as Presentation</div>
-      <p class="modal-body" style="margin-bottom:20px;">Takes a snapshot of the active deck and saves it as a finished presentation.</p>
+    <div class="modal-box" style="max-width:480px;max-height:90vh;overflow-y:auto;">
+      <div class="modal-title" id="savePresModalTitle">Save as Presentation</div>
       <div style="display:flex;flex-direction:column;gap:14px;">
+
         <div class="modal-field">
           <label class="modal-label" for="savePresCompany">Company Name <span style="color:#f87171;">*</span></label>
           <input class="modal-input" id="savePresCompany" type="text" placeholder="e.g. Acme Corp" maxlength="100" autocomplete="off">
@@ -792,6 +970,39 @@
           <label class="modal-label" for="savePresContact">Contact Name</label>
           <input class="modal-input" id="savePresContact" type="text" placeholder="e.g. Jane Smith" maxlength="100" autocomplete="off">
         </div>
+
+        <div class="modal-divider"></div>
+
+        <div class="modal-field">
+          <label class="modal-label">Logo</label>
+          <div class="save-logo-row">
+            <div class="save-logo-preview" id="saveLogoPreview" title="Click to upload logo">
+              <span class="save-logo-placeholder" id="saveLogoPlaceholder">&#128444;</span>
+              <img id="saveLogoImg" src="" alt="Logo" style="display:none;">
+            </div>
+            <div class="save-logo-actions">
+              <button class="btn-logo-upload" id="saveLogoUploadBtn" type="button">Upload logo</button>
+              <span class="save-logo-hint" id="saveLogoHint">Using deck logo</span>
+            </div>
+          </div>
+          <input type="file" id="saveLogoFile" accept="image/*" style="display:none;">
+        </div>
+
+        <div class="modal-divider"></div>
+
+        <div class="modal-field">
+          <label class="modal-label" for="savePresDefaultLang">Default Language</label>
+          <select class="modal-select" id="savePresDefaultLang">
+            <option value="en">English (en)</option>
+          </select>
+        </div>
+        <div class="modal-field" id="savePresAdditionalLangField">
+          <label class="modal-label">Additional Languages</label>
+          <div class="lang-chips" id="savePresLangChips">
+            <span class="no-langs-hint">No additional languages configured.</span>
+          </div>
+        </div>
+
       </div>
       <div class="modal-actions">
         <button class="modal-cancel" id="savePresCancel">Cancel</button>
@@ -910,9 +1121,39 @@
     var drawerDeck    = null;
     var drawerSaveTimer = null;
 
+    function initDeckSidebarHover() {
+      var sidebar = document.querySelector('.deck-sidebar');
+      if (!sidebar) return;
+      sidebar.addEventListener('mouseenter', function () { sidebar.classList.remove('collapsed'); });
+      sidebar.addEventListener('mouseleave', function () { sidebar.classList.add('collapsed'); });
+    }
+
+    // ── Library slide mode ─────────────────────────────────────────────────────
+    function enterLibrarySlideMode(slideId, slideName) {
+      document.querySelector('.deck-sidebar').style.display = 'none';
+      document.querySelector('.slide-panel').style.display = 'none';
+      document.querySelector('.finished-panel').style.display = 'none';
+      document.getElementById('backToLibraryBtn').style.display = '';
+      document.getElementById('savePresBtn').style.display = 'none';
+      document.getElementById('canvasSlideName').textContent = slideName;
+      var frame = document.getElementById('slideFrame');
+      frame.src = '/slides/library-edit/' + slideId;
+      frame.onload = function () { scaleFrame(); };
+      frame.style.display = '';
+      document.getElementById('canvasEmptyState').style.display = 'none';
+      window.addEventListener('resize', scaleFrame);
+    }
+
     // ── Init ───────────────────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', function () {
       initSidebar();
+      var params    = new URLSearchParams(window.location.search);
+      var libSlideId = params.get('librarySlide');
+      if (libSlideId) {
+        enterLibrarySlideMode(libSlideId, params.get('slideName') || 'Untitled');
+        return;
+      }
+      initDeckSidebarHover();
       loadDecks();
       bindModals();
       bindSavePresModal();
@@ -957,7 +1198,7 @@
           : '<span class="deck-logo-placeholder">&#127920;</span>';
         var updated = deck.updatedAt ? 'Edited ' + relDate(deck.updatedAt) : '';
         return (
-          '<div class="deck-row' + (isActive ? ' active-deck' : '') + '" data-deck-id="' + esc(deck.id) + '">' +
+          '<div class="deck-row' + (isActive ? ' active-deck' : '') + '" data-deck-id="' + esc(deck.id) + '" title="' + esc(deck.name) + '">' +
             '<div class="deck-logo-thumb">' + logoHtml + '</div>' +
             '<div class="deck-info">' +
               '<div class="deck-name">' + esc(deck.name) + '</div>' +
@@ -986,6 +1227,20 @@
 
       el.querySelectorAll('.deck-row').forEach(function (row) {
         row.addEventListener('click', function () { setActiveDeck(row.dataset.deckId); });
+        row.addEventListener('dblclick', function () {
+          var id = row.dataset.deckId;
+          if (id !== activeDeckId) {
+            fetch('/api/decks/active', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: id })
+            }).then(function (r) { return r.json(); }).then(function (res) {
+              if (res.success) { window.location.href = '/builder/preview.html'; }
+            });
+          } else {
+            window.location.href = '/builder/preview.html';
+          }
+        });
       });
       document.addEventListener('click', closeAllMenus);
     }
@@ -1201,7 +1456,6 @@
       // Inline editing ON (no ?readonly=1)
       frame.src = '/slides/deck-preview/' + slideId;
       editorBtn.style.display = '';
-      editorBtn.href = '/slides?slide=' + encodeURIComponent(slideId);
 
       frame.addEventListener('load', scaleFrame, { once: true });
       scaleFrame();
@@ -1280,97 +1534,390 @@
     }
 
     // ── Finished Presentations ─────────────────────────────────────────────────
+    var cachedFinishedItems = [];
+    var finishedSearchQuery = '';
+
+    function toggleFinishedMenu(btn) {
+      var drop = btn.nextElementSibling;
+      var wasOpen = drop.classList.contains('open');
+      closeAllFinishedMenus();
+      if (!wasOpen) drop.classList.add('open');
+    }
+
+    function closeAllFinishedMenus() {
+      document.querySelectorAll('.finished-dropdown.open').forEach(function (d) {
+        d.classList.remove('open');
+      });
+    }
+
+    function buildFinishedLogoEl(p) {
+      var wrap = document.createElement('div');
+      wrap.className = 'finished-item-logo';
+      if (p.customerLogoSrc) {
+        var img = document.createElement('img');
+        img.src = p.customerLogoSrc;
+        img.alt = p.customerName || '';
+        wrap.appendChild(img);
+      } else {
+        var ph = document.createElement('div');
+        ph.className = 'finished-item-logo-placeholder';
+        ph.textContent = (p.customerName || p.presentationName || '?').charAt(0).toUpperCase();
+        wrap.appendChild(ph);
+      }
+      return wrap;
+    }
+
+    function fpDropItem(label, onClick, danger) {
+      var item = document.createElement('div');
+      item.className = 'finished-dropdown-item' + (danger ? ' danger' : '');
+      item.textContent = label;
+      item.addEventListener('click', function (e) { e.stopPropagation(); closeAllFinishedMenus(); onClick(); });
+      return item;
+    }
+    function fpDropDivider() {
+      var d = document.createElement('div');
+      d.className = 'finished-dropdown-divider';
+      return d;
+    }
+
+    function buildFinishedLinkEl(p) {
+      var viewUrl = p.publishedAt
+        ? 'https://app-presentation-builder.pages.dev/finished-presentations/' + p.id
+        : null;
+      if (!viewUrl) return null;
+      var el = document.createElement('span');
+      el.className = 'finished-item-link';
+      el.textContent = '#' + p.id;
+      el.title = viewUrl + '\n\nClick to copy · Double-click to open';
+      var timer = null;
+      el.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (timer) { clearTimeout(timer); timer = null; return; }
+        timer = setTimeout(function () {
+          timer = null;
+          navigator.clipboard.writeText(viewUrl).then(function () {
+            el.classList.add('copied');
+            el.textContent = 'Copied!';
+            setTimeout(function () { el.classList.remove('copied'); el.textContent = viewUrl; }, 1500);
+          }).catch(function () { prompt('Copy link:', viewUrl); });
+        }, 240);
+      });
+      el.addEventListener('dblclick', function (e) {
+        e.stopPropagation();
+        if (timer) { clearTimeout(timer); timer = null; }
+        window.open(viewUrl, '_blank');
+      });
+      return el;
+    }
+
+    function buildFinishedActions(p) {
+      var viewUrl = p.publishedAt
+        ? 'https://app-presentation-builder.pages.dev/finished-presentations/' + p.id
+        : null;
+
+      var wrap = document.createElement('div');
+      wrap.className = 'finished-row-actions';
+
+      var gearBtn = document.createElement('button');
+      gearBtn.className = 'finished-gear-btn';
+      gearBtn.title = 'Options';
+      gearBtn.innerHTML = '&#9881;';
+      (function (btn) {
+        btn.addEventListener('click', function (e) { e.stopPropagation(); toggleFinishedMenu(btn); });
+      })(gearBtn);
+
+      var drop = document.createElement('div');
+      drop.className = 'finished-dropdown';
+
+      drop.appendChild(fpDropItem('Duplicate', function () { fpDuplicate(p); }));
+      drop.appendChild(fpDropItem(viewUrl ? 'Republish' : 'Publish', function () { fpPublish(p.id); }));
+      drop.appendChild(fpDropDivider());
+      drop.appendChild(fpDropItem('Edit', function () { openSavePresModal(p); }));
+      drop.appendChild(fpDropItem('History', function () { fpHistory(p); }));
+      drop.appendChild(fpDropDivider());
+      drop.appendChild(fpDropItem('Delete', function () { fpDelete(p.id); }, true));
+
+      wrap.appendChild(gearBtn);
+      wrap.appendChild(drop);
+
+      var outer = document.createElement('div');
+      outer.className = 'finished-item-actions';
+      outer.appendChild(wrap);
+      return outer;
+    }
+
+    function fpPublish(id) {
+      fetch('/api/presentations/' + id + '/publish', { method: 'POST' })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.success) { alert('Publish failed'); return; }
+          if (confirm('Published!\n\n' + res.url + '\n\nOpen link?')) window.open(res.url, '_blank');
+          loadFinishedPresentations();
+        })
+        .catch(function () { alert('Publish failed'); });
+    }
+
+    function fpDuplicate(p) {
+      fetch('/api/presentations/' + p.id + '/duplicate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ customerName: (p.customerName || 'Copy') + ' (copy)' })
+      }).then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.success) { alert('Duplicate failed'); return; }
+          loadFinishedPresentations();
+        })
+        .catch(function () { alert('Duplicate failed'); });
+    }
+
+    function fpDelete(id) {
+      if (!confirm('Archive this presentation? It will be hidden from this deck.')) return;
+      fetch('/api/presentations/' + id + '/archive', { method: 'POST' })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.success) { alert('Failed to delete'); return; }
+          loadFinishedPresentations();
+        })
+        .catch(function () { alert('Failed to delete'); });
+    }
+
+    function fpHistory(p) {
+      var body = document.getElementById('presHistoryBody');
+      function row(label, val) {
+        return '<div style="display:flex;gap:8px;"><span style="color:var(--muted);min-width:120px;">' + label + '</span><span>' + (val || '—') + '</span></div>';
+      }
+      body.innerHTML =
+        row('ID',         p.id) +
+        row('Created',    p.createdAt || '—') +
+        row('Customer',   p.customerName || '—') +
+        row('Name',       p.presentationName || '—') +
+        row('Slides',     p.slideCount ? String(p.slideCount) : '—') +
+        row('Language',   p.defaultLanguage || '—') +
+        row('Published',  p.publishedAt ? new Date(p.publishedAt).toLocaleString() : 'Not published') +
+        row('Last edit',  p.replacedAt  ? new Date(p.replacedAt).toLocaleString()  : '—');
+      document.getElementById('presHistoryModal').classList.add('open');
+    }
+
     function initFinishedPanel() {
       var btn  = document.getElementById('finishedToggleBtn');
       var body = document.getElementById('finishedPanelBody');
+
       btn.addEventListener('click', function () {
         var expanded = this.getAttribute('aria-expanded') === 'true';
         this.setAttribute('aria-expanded', String(!expanded));
         body.classList.toggle('open', !expanded);
         if (!expanded) loadFinishedPresentations();
       });
+
+      document.getElementById('finishedSearch').addEventListener('input', function () {
+        finishedSearchQuery = this.value.trim().toLowerCase();
+        renderFinishedPresentations(cachedFinishedItems);
+      });
+
+      document.addEventListener('click', function () { closeAllFinishedMenus(); });
     }
 
     function loadFinishedPresentations() {
       fetch('/api/presentations').then(function (r) { return r.json(); }).then(function (res) {
-        renderFinishedPresentations(res.data || []);
+        cachedFinishedItems = res.data || [];
+        renderFinishedPresentations(cachedFinishedItems);
       }).catch(function () {
+        cachedFinishedItems = [];
         renderFinishedPresentations([]);
       });
     }
 
     function renderFinishedPresentations(items) {
       var el = document.getElementById('finishedList');
-      var active = items.filter(function (p) { return !p.archivedAt; });
+      var active = items.filter(function (p) {
+        if (p.archivedAt || p.deckId !== activeDeckId) return false;
+        if (!finishedSearchQuery) return true;
+        var haystack = ((p.presentationName || '') + ' ' + (p.customerName || '')).toLowerCase();
+        return haystack.includes(finishedSearchQuery);
+      });
       if (!active.length) {
-        el.innerHTML = '<div class="finished-empty">No presentations saved yet. Use &ldquo;Save as Presentation&rdquo; above to create one.</div>';
+        el.innerHTML = '<div class="finished-empty">' +
+          (finishedSearchQuery ? 'No results.' : 'No presentations saved yet. Use &ldquo;Save as Presentation&rdquo; above to create one.') +
+          '</div>';
         return;
       }
-      el.innerHTML = active.map(function (p) {
-        var name = p.presentationName || p.customerName || '?';
-        var date = p.createdAt ? new Date(p.createdAt).toLocaleDateString() : '';
-        var meta = [p.customerName, date].filter(Boolean).join(' &bull; ');
-        var viewUrl = p.publishedAt
-          ? 'https://app-presentation-builder.pages.dev/finished-presentations/' + p.id
-          : null;
-        return (
-          '<div class="finished-item">' +
-            '<div class="finished-item-info">' +
-              '<div class="finished-item-name">' + esc(name) + '</div>' +
-              '<div class="finished-item-meta">' + meta + '</div>' +
-            '</div>' +
-            (viewUrl
-              ? '<a href="' + esc(viewUrl) + '" target="_blank" rel="noopener" class="finished-item-link">View &rarr;</a>'
-              : '<button class="btn-publish-item" data-id="' + esc(p.id) + '">Publish</button>') +
-          '</div>'
-        );
-      }).join('');
+      el.innerHTML = '';
+      active.forEach(function (p) {
+        var name    = p.presentationName || p.customerName || '?';
+        var date    = p.createdAt ? new Date(p.createdAt).toLocaleDateString() : '';
+        var company = (p.customerName && p.customerName !== name) ? p.customerName : null;
+        var metaParts = [company, date].filter(Boolean);
 
-      el.querySelectorAll('.btn-publish-item').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var id = btn.dataset.id;
-          btn.textContent = 'Publishing…';
-          btn.disabled = true;
-          fetch('/api/presentations/' + id + '/publish', { method: 'POST' })
-            .then(function (r) { return r.json(); })
-            .then(function (res) {
-              btn.disabled = false;
-              if (!res.success) { btn.textContent = 'Failed'; return; }
-              if (confirm('Published!\n\n' + res.url + '\n\nOpen link?')) window.open(res.url, '_blank');
-              loadFinishedPresentations();
-            })
-            .catch(function () {
-              btn.disabled = false;
-              btn.textContent = 'Failed';
-            });
-        });
+        var item = document.createElement('div');
+        item.className = 'finished-item';
+        item.appendChild(buildFinishedLogoEl(p));
+
+        var info = document.createElement('div');
+        info.className = 'finished-item-info';
+
+        // ── Row 1: name + status badge ──
+        var row1 = document.createElement('div');
+        row1.className = 'finished-item-row1';
+
+        var nameEl = document.createElement('div');
+        nameEl.className = 'finished-item-name';
+        nameEl.textContent = name;
+        nameEl.title = name;
+        row1.appendChild(nameEl);
+
+        var badge = document.createElement('span');
+        badge.className = 'finished-status-badge ' + (p.publishedAt ? 'finished-status-badge--pub' : 'finished-status-badge--draft');
+        badge.textContent = p.publishedAt ? 'Live' : 'Draft';
+        row1.appendChild(badge);
+        info.appendChild(row1);
+
+        // ── Row 2: meta · link ──
+        var row2 = document.createElement('div');
+        row2.className = 'finished-item-row2';
+
+        var linkEl = buildFinishedLinkEl(p);
+
+        if (metaParts.length) {
+          var metaEl = document.createElement('span');
+          metaEl.className = 'finished-item-meta';
+          metaEl.textContent = metaParts.join(' · ');
+          row2.appendChild(metaEl);
+          if (linkEl) {
+            var sep = document.createElement('span');
+            sep.className = 'finished-item-meta';
+            sep.textContent = ' · ';
+            row2.appendChild(sep);
+          }
+        }
+        if (linkEl) row2.appendChild(linkEl);
+        if (row2.children.length) info.appendChild(row2);
+
+        item.appendChild(info);
+        item.appendChild(buildFinishedActions(p));
+        el.appendChild(item);
       });
     }
 
-    // ── Save as Presentation Modal ─────────────────────────────────────────────
+    // ── Save / Edit Presentation Modal (shared state) ─────────────────────────
+    var saveLogoData     = '';
+    var saveLogoFilename = '';
+    var selectedLangs    = [];
+    var pendingReplaceId = null;
+
+    function setLogoPreview(src, hint) {
+      var img         = document.getElementById('saveLogoImg');
+      var placeholder = document.getElementById('saveLogoPlaceholder');
+      var hintEl      = document.getElementById('saveLogoHint');
+      if (src) { img.src = src; img.style.display = ''; placeholder.style.display = 'none'; }
+      else     { img.src = ''; img.style.display = 'none'; placeholder.style.display = ''; }
+      if (hintEl) hintEl.textContent = hint || '';
+    }
+
+    function renderLangChips(availableLangs) {
+      var container  = document.getElementById('savePresLangChips');
+      var nonDefault = availableLangs.filter(function (l) {
+        return l !== (document.getElementById('savePresDefaultLang').value || 'en');
+      });
+      if (nonDefault.length === 0) {
+        container.innerHTML = '<span class="no-langs-hint">No additional languages configured.</span>';
+        return;
+      }
+      container.innerHTML = '';
+      nonDefault.forEach(function (lang) {
+        var chip = document.createElement('span');
+        chip.className = 'lang-chip' + (selectedLangs.indexOf(lang) !== -1 ? ' selected' : '');
+        chip.dataset.lang = lang;
+        chip.innerHTML = '<span class="lang-chip-check">&#10003;</span> ' + lang.toUpperCase();
+        chip.addEventListener('click', function () {
+          var idx = selectedLangs.indexOf(lang);
+          if (idx === -1) { selectedLangs.push(lang); chip.classList.add('selected'); }
+          else { selectedLangs.splice(idx, 1); chip.classList.remove('selected'); }
+        });
+        container.appendChild(chip);
+      });
+    }
+
+    function openSavePresModal(editPres) {
+      var modal = document.getElementById('savePresModal');
+      pendingReplaceId = editPres ? editPres.id : null;
+      document.getElementById('savePresModalTitle').textContent = editPres ? 'Edit Presentation' : 'Save as Presentation';
+      document.getElementById('savePresCompany').value = editPres ? (editPres.customerName     || '') : '';
+      document.getElementById('savePresName').value    = editPres ? (editPres.presentationName || '') : '';
+      document.getElementById('savePresContact').value = editPres ? (editPres.contactName      || '') : '';
+      saveLogoData = ''; saveLogoFilename = '';
+
+      if (editPres) {
+        setLogoPreview(editPres.customerLogoSrc || '', editPres.customerLogoSrc ? 'Current logo' : 'No logo');
+      } else {
+        var activeDeck = decks.find(function (d) { return d.id === activeDeckId; });
+        setLogoPreview(activeDeck && activeDeck.logo ? activeDeck.logo : '', activeDeck && activeDeck.logo ? 'Using deck logo' : 'No logo');
+      }
+
+      fetch('/api/translations').then(function (r) { return r.json(); }).then(function (res) {
+        var data    = (res.success && res.data) || {};
+        var langs   = data.languages || [];
+        var defLang = editPres ? (editPres.defaultLanguage || 'en') : (data.defaultLanguage || 'en');
+        var select  = document.getElementById('savePresDefaultLang');
+        select.innerHTML = '';
+        var allLangs = langs.length ? langs : ['en'];
+        allLangs.forEach(function (l) {
+          var opt = document.createElement('option');
+          opt.value = l; opt.textContent = l.toUpperCase();
+          if (l === defLang) opt.selected = true;
+          select.appendChild(opt);
+        });
+        selectedLangs = editPres
+          ? (editPres.languages || []).filter(function (l) { return l !== defLang; })
+          : langs.filter(function (l) { return l !== defLang; });
+        renderLangChips(allLangs);
+      }).catch(function () { renderLangChips([]); });
+
+      modal.classList.add('open');
+      setTimeout(function () { document.getElementById('savePresCompany').focus(); }, 60);
+    }
+
     function bindSavePresModal() {
       var modal   = document.getElementById('savePresModal');
-      var openBtn = document.getElementById('savePresBtn');
       var cancel  = document.getElementById('savePresCancel');
       var confirm = document.getElementById('savePresConfirm');
 
-      openBtn.addEventListener('click', function () {
-        document.getElementById('savePresCompany').value = '';
-        document.getElementById('savePresName').value    = '';
-        document.getElementById('savePresContact').value = '';
-        modal.classList.add('open');
-        setTimeout(function () { document.getElementById('savePresCompany').focus(); }, 60);
+      document.getElementById('savePresBtn').addEventListener('click', function () { openSavePresModal(null); });
+
+      document.getElementById('saveLogoUploadBtn').addEventListener('click', function () {
+        document.getElementById('saveLogoFile').click();
+      });
+      document.getElementById('saveLogoPreview').addEventListener('click', function () {
+        document.getElementById('saveLogoFile').click();
+      });
+      document.getElementById('saveLogoFile').addEventListener('change', function () {
+        var file = this.files && this.files[0];
+        if (!file) return;
+        saveLogoFilename = file.name;
+        var reader = new FileReader();
+        reader.onload = function (e) { saveLogoData = e.target.result; setLogoPreview(saveLogoData, file.name); };
+        reader.readAsDataURL(file);
+        this.value = '';
       });
 
-      cancel.addEventListener('click', function () { modal.classList.remove('open'); });
-      modal.addEventListener('click', function (e) { if (e.target === this) this.classList.remove('open'); });
+      document.getElementById('savePresDefaultLang').addEventListener('change', function () {
+        fetch('/api/translations').then(function (r) { return r.json(); }).then(function (res) {
+          renderLangChips(((res.success && res.data) || {}).languages || []);
+        });
+      });
+
+      cancel.addEventListener('click', function () { modal.classList.remove('open'); pendingReplaceId = null; });
+      modal.addEventListener('click', function (e) { if (e.target === this) { this.classList.remove('open'); pendingReplaceId = null; } });
       document.getElementById('savePresCompany').addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') modal.classList.remove('open');
+        if (e.key === 'Escape') { modal.classList.remove('open'); pendingReplaceId = null; }
       });
 
       confirm.addEventListener('click', function () {
         var company = document.getElementById('savePresCompany').value.trim();
         if (!company) { document.getElementById('savePresCompany').focus(); return; }
+
+        var defaultLang = document.getElementById('savePresDefaultLang').value || 'en';
+        var allLangs    = [defaultLang].concat(selectedLangs.filter(function (l) { return l !== defaultLang; }));
+
         var btn = this;
         btn.disabled = true;
         btn.textContent = 'Saving…';
@@ -1378,25 +1925,32 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            deckId:           activeDeckId,
+            replaceId:        pendingReplaceId || '',
             customerName:     company,
             presentationName: document.getElementById('savePresName').value.trim(),
-            contactName:      document.getElementById('savePresContact').value.trim()
+            contactName:      document.getElementById('savePresContact').value.trim(),
+            logoFilename:     saveLogoFilename,
+            logoData:         saveLogoData,
+            defaultLanguage:  defaultLang,
+            languages:        allLangs
           })
         }).then(function (r) { return r.json(); }).then(function (res) {
           btn.disabled = false;
-          btn.textContent = 'Save Presentation';
+          btn.textContent = pendingReplaceId ? 'Save Changes' : 'Save Presentation';
           if (!res.success) { alert('Save failed: ' + (res.error || '')); return; }
+          pendingReplaceId = null;
           modal.classList.remove('open');
-          var body = document.getElementById('finishedPanelBody');
-          var toggleBtn = document.getElementById('finishedToggleBtn');
-          if (!body.classList.contains('open')) {
+          var panelBody  = document.getElementById('finishedPanelBody');
+          var toggleBtn  = document.getElementById('finishedToggleBtn');
+          if (!panelBody.classList.contains('open')) {
             toggleBtn.setAttribute('aria-expanded', 'true');
-            body.classList.add('open');
+            panelBody.classList.add('open');
           }
           loadFinishedPresentations();
         }).catch(function () {
           btn.disabled = false;
-          btn.textContent = 'Save Presentation';
+          btn.textContent = pendingReplaceId ? 'Save Changes' : 'Save Presentation';
           alert('Save failed — check the server.');
         });
       });
@@ -1490,6 +2044,14 @@
         if (e.target === this) { this.classList.remove('open'); pendingRemoveSlideId = null; }
       });
       document.getElementById('removeSlideConfirm').addEventListener('click', doRemoveSlide);
+
+      // Presentation history modal
+      document.getElementById('presHistoryClose').addEventListener('click', function () {
+        document.getElementById('presHistoryModal').classList.remove('open');
+      });
+      document.getElementById('presHistoryModal').addEventListener('click', function (e) {
+        if (e.target === this) this.classList.remove('open');
+      });
 
       // Premium modal
       document.getElementById('premiumClose').addEventListener('click', function () {

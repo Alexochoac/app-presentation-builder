@@ -60,16 +60,10 @@
     }
     .pick-banner-cancel:hover { color: var(--text); border-color: var(--border-hov); }
 
-    /* ── Tab bar ─────────────────────────────────────────────────── */
+    /* ── (tab bar removed — screens navigate via sidebar) ────────── */
 
-    .slides-tabs {
-      display: flex;
-      gap: 4px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 24px;
-      padding-bottom: 0;
-    }
     .slides-tab {
+      display: none;
       padding: 10px 20px;
       background: transparent;
       border: none;
@@ -116,6 +110,47 @@
     }
 
     /* ── Template tab ────────────────────────────────────────────── */
+
+    .templates-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .templates-header .filter-pills { margin-bottom: 0; flex: 1; }
+
+    /* Import anatomy checklist */
+    .import-checklist { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+    .import-check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .import-check-icon {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 1px;
+    }
+    .import-check-icon.pass  { background: rgba(34,197,94,0.2);  color: #4ade80; }
+    .import-check-icon.warn  { background: rgba(245,166,35,0.2); color: #F5A623; }
+    .import-check-icon.error { background: rgba(239,68,68,0.2);  color: #f87171; }
+    .import-check-body { flex: 1; }
+    .import-check-label { font-weight: 500; color: var(--text); }
+    .import-check-msg   { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
     .filter-pills {
       display: flex;
@@ -220,6 +255,41 @@
       vertical-align: middle;
     }
 
+    /* Category badge color variants */
+    .badge-cat-Cover    { background: rgba(59,130,246,0.15);  border-color: rgba(59,130,246,0.35);  color: #60a5fa; }
+    .badge-cat-Content  { background: rgba(34,197,94,0.15);   border-color: rgba(34,197,94,0.35);   color: #4ade80; }
+    .badge-cat-Visual   { background: rgba(168,85,247,0.15);  border-color: rgba(168,85,247,0.35);  color: #c084fc; }
+    .badge-cat-Metrics  { background: rgba(249,115,22,0.15);  border-color: rgba(249,115,22,0.35);  color: #fb923c; }
+    .badge-cat-Data     { background: rgba(20,184,166,0.15);  border-color: rgba(20,184,166,0.35);  color: #2dd4bf; }
+    .badge-cat-CTA      { background: rgba(245,166,35,0.15);  border-color: rgba(245,166,35,0.35);  color: #F5A623; }
+
+    .badge-embedded {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 100px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: rgba(168,85,247,0.12);
+      border: 1px solid rgba(168,85,247,0.25);
+      color: #c084fc;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .tpl-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+    .tpl-chip {
+      padding: 2px 8px;
+      border-radius: 100px;
+      font-size: 10px;
+      background: var(--surface-hov);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      text-transform: lowercase;
+    }
+
     /* Mini layout preview */
     .tpl-preview {
       height: 72px;
@@ -258,6 +328,87 @@
 
     /* ── My Library tab ──────────────────────────────────────────── */
 
+    /* ── My Library toolbar ── */
+    .lib-toolbar {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .lib-search {
+      flex: 1; min-width: 180px;
+      padding: 8px 12px; border-radius: var(--radius-btn);
+      border: 1px solid var(--border); background: var(--input-bg);
+      color: var(--text); font-size: 13px; font-family: var(--font); outline: none;
+      transition: border-color .15s;
+    }
+    .lib-search:focus { border-color: var(--accent); }
+    .lib-view-toggle {
+      display: flex; border: 1px solid var(--border);
+      border-radius: var(--radius-btn); overflow: hidden; flex-shrink: 0;
+    }
+    .lib-view-btn {
+      padding: 7px 11px; border: none; background: transparent;
+      color: var(--muted); cursor: pointer; font-size: 15px;
+      transition: background .15s, color .15s; font-family: var(--font);
+    }
+    .lib-view-btn.active { background: var(--nav-active); color: var(--text); }
+    .lib-view-btn:hover:not(.active) { background: var(--surface-hov); color: var(--text); }
+
+    /* ── My Library body layout ── */
+    .lib-body { display: flex; gap: 0; min-height: 400px; }
+    .lib-folders {
+      width: 190px; flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      padding: 4px 0; margin-right: 20px;
+      overflow-y: auto;
+    }
+    .lib-folder-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 12px; font-size: 13px; color: var(--muted);
+      cursor: pointer; border-radius: 8px; margin: 0 6px 2px;
+      transition: background .15s, color .15s; white-space: nowrap;
+      overflow: hidden;
+    }
+    .lib-folder-item:hover { background: var(--surface-hov); color: var(--text); }
+    .lib-folder-item.active { background: var(--nav-active); color: var(--text); font-weight: 600; }
+    .lib-folder-name { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+    .lib-folder-count {
+      margin-left: auto; flex-shrink: 0;
+      font-size: 11px; font-weight: 600; color: var(--muted);
+      background: var(--surface-hov); padding: 1px 6px; border-radius: 999px;
+    }
+    .lib-folder-divider { height: 1px; background: var(--border); margin: 6px 10px; }
+
+    .lib-content { flex: 1; overflow-y: auto; min-width: 0; }
+    .lib-count-row { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+
+    /* ── List view ── */
+    .lib-list { display: flex; flex-direction: column; gap: 4px; }
+    .lib-list-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 10px 14px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--surface);
+      cursor: pointer; transition: background .15s;
+    }
+    .lib-list-row:hover { background: var(--surface-hov); }
+    .lib-list-thumb {
+      width: 80px; height: 45px; border-radius: 6px;
+      overflow: hidden; flex-shrink: 0; position: relative;
+      background: var(--surface-hov);
+    }
+    .lib-list-name {
+      flex: 1; font-size: 13px; font-weight: 600; color: var(--text);
+      min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .lib-list-template { font-size: 12px; color: var(--muted); flex-shrink: 0; min-width: 100px; }
+    .lib-list-deck-tags { display: flex; gap: 4px; flex-wrap: wrap; flex-shrink: 0; }
+    .lib-list-deck-tag {
+      font-size: 10px; font-weight: 700; letter-spacing: .04em;
+      padding: 2px 7px; border-radius: 999px;
+      border: 1px solid var(--border); color: var(--muted);
+      white-space: nowrap;
+    }
+    .lib-list-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
     .lib-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -281,6 +432,7 @@
       overflow: hidden;
       position: relative;
       flex-shrink: 0;
+      cursor: pointer;
     }
     .lib-card-thumb-inner {
       position: absolute;
@@ -309,28 +461,52 @@
     }
     .lib-card-actions {
       display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 4px;
       margin-top: auto;
     }
+    .lib-card-gear-btn,
+    .lib-card-more-btn {
+      width: 28px; height: 28px;
+      border: none; background: transparent;
+      color: var(--muted); font-size: 16px;
+      border-radius: 6px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s, color .15s; font-family: inherit;
+    }
+    .lib-card-gear-btn:hover,
+    .lib-card-more-btn:hover { background: var(--surface-hov); color: var(--text); }
+    .lib-card-row-actions { position: relative; }
+    .lib-card-dropdown {
+      display: none;
+      position: absolute; right: 0; top: 100%;
+      min-width: 140px;
+      background: #111;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 10px; padding: 4px;
+      box-shadow: 0 10px 36px rgba(0,0,0,.7);
+      z-index: 9999;
+    }
+    [data-theme="light"] .lib-card-dropdown {
+      background: #fff; border-color: rgba(0,0,0,.1);
+      box-shadow: 0 10px 36px rgba(0,0,0,.15);
+    }
+    .lib-card-dropdown.open { display: block; }
+    .lib-card-dropdown-item {
+      padding: 8px 12px; border-radius: 7px;
+      font-size: 13px; color: rgba(255,255,255,.8);
+      cursor: pointer; transition: background .1s; white-space: nowrap;
+    }
+    [data-theme="light"] .lib-card-dropdown-item { color: rgba(0,0,0,.75); }
+    .lib-card-dropdown-item:hover { background: rgba(255,255,255,.08); color: #fff; }
+    [data-theme="light"] .lib-card-dropdown-item:hover { background: rgba(0,0,0,.05); color: #000; }
+    .lib-card-dropdown-item.danger { color: #f87171; }
+    .lib-card-dropdown-item.danger:hover { background: rgba(248,113,113,.1); }
+    [data-theme="light"] .lib-card-dropdown-item.danger { color: #dc3545; }
+    [data-theme="light"] .lib-card-dropdown-item.danger:hover { background: rgba(220,53,69,.08); }
+    .lib-card-dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
 
-    .btn-edit {
-      flex: 1;
-      padding: 7px 12px;
-      border-radius: var(--radius-btn);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-size: 12px;
-      font-weight: 500;
-      font-family: var(--font);
-      cursor: pointer;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .btn-edit:hover {
-      border-color: var(--border-hov);
-      background: var(--surface-hov);
-    }
     .btn-dupe {
       padding: 7px 12px;
       border-radius: var(--radius-btn);
@@ -820,6 +996,53 @@
       transition: color 0.2s, border-color 0.2s;
     }
     .picker-cancel:hover { color: var(--text); border-color: var(--border-hov); }
+
+    /* ── Full-screen New Slide modal ─────────────────────────────── */
+    #newSlideModal.picker-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #newSlideModal .picker-panel {
+      max-width: none !important;
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+      border: none;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar submenu (Slides page) ───────────────────────────── */
+    .sidebar-nav-group { list-style: none; }
+    .sidebar-submenu {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .sidebar-sub-item {
+      display: block;
+      padding: 5px 12px 5px 44px;
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      border-radius: var(--radius-btn);
+      transition: color 0.15s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sidebar-sub-item:hover { color: var(--text); }
+    .sidebar-sub-item.active { color: var(--accent); }
+    /* Hide submenu text when sidebar is collapsed */
+    .sidebar.collapsed .sidebar-submenu { display: none; }
 
     /* ── Preview panel ───────────────────────────────────────────── */
 
@@ -1401,6 +1624,368 @@
     .diff-row--removed { background: #3a1a1a; color: #cf6f6f; }
     .diff-row--same    { background: var(--surface); color: var(--text); }
     .diff-row-icon { font-size: 14px; min-width: 16px; }
+
+    /* ── Template Creator Wizard ─────────────────────────────────── */
+
+    .builder-mode-toggle {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      background: var(--surface-hov);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-btn);
+      padding: 3px;
+      flex-shrink: 0;
+    }
+
+    .wizard-pane {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 0;
+    }
+
+    .wz-stepper {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 0;
+      padding: 20px 28px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+
+    .wz-step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .wz-step-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--surface-hov);
+      border: 2px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+
+    .wz-step-item.active .wz-step-dot {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000;
+    }
+
+    .wz-step-item.done .wz-step-dot {
+      background: var(--accent-dim, rgba(79,172,254,0.15));
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .wz-step-label {
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .wz-step-item.active .wz-step-label { color: var(--text); }
+
+    .wz-step-line {
+      flex: 1;
+      height: 2px;
+      background: var(--border);
+      margin-top: 13px;
+      min-width: 24px;
+    }
+
+    .wz-step-content {
+      flex: 1;
+      padding: 24px 28px;
+      overflow-y: auto;
+    }
+
+    .wz-field-group {
+      margin-bottom: 22px;
+    }
+
+    .wz-field-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .wz-category-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .wz-pill {
+      padding: 7px 18px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .wz-pill:hover { color: var(--text); border-color: var(--border-hov, var(--accent)); }
+    .wz-pill.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000;
+      font-weight: 700;
+    }
+
+    .wz-layout-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .wz-layout-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .wz-layout-card {
+      border: 2px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 10px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      background: var(--surface);
+    }
+
+    .wz-layout-card:hover { border-color: var(--accent); }
+    .wz-layout-card.selected {
+      border-color: var(--accent);
+      background: var(--accent-dim, rgba(79,172,254,0.08));
+    }
+
+    .wz-wireframe {
+      width: 100%;
+      aspect-ratio: 16/9;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      background: var(--surface-hov);
+      border-radius: 4px;
+      padding: 6px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .wf-header { height: 28%; background: var(--border); border-radius: 3px; flex-shrink: 0; }
+    .wf-body   { flex: 1; background: var(--surface-hov); border: 1px solid var(--border); border-radius: 3px; }
+    .wf-cols   { flex: 1; display: flex; gap: 4px; }
+    .wf-col    { flex: 1; background: var(--surface-hov); border: 1px solid var(--border); border-radius: 3px; }
+    .wf-col-img { background: var(--border); opacity: 0.5; }
+    .wf-stats  { flex: 1; display: flex; gap: 4px; }
+    .wf-stat   { flex: 1; background: var(--border); border-radius: 3px; opacity: 0.6; }
+    .wf-hero   { background: var(--border) !important; position: relative; }
+    .wf-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+      border-radius: 3px;
+    }
+    .wf-bullets { flex: 1; display: flex; flex-direction: column; gap: 3px; padding: 2px; }
+    .wf-bullet  { height: 8px; background: var(--border); border-radius: 2px; }
+    .wf-cta-steps { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+    .wf-cta-step  { height: 20%; background: var(--border); border-radius: 3px; opacity: 0.7; }
+
+    .wz-layout-card-label {
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 7px;
+      font-weight: 500;
+    }
+
+    .wz-blocks-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .wz-block-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-btn);
+      background: var(--surface);
+    }
+
+    .wz-block-toggle {
+      padding: 4px 12px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--font);
+      cursor: pointer;
+      min-width: 44px;
+      text-align: center;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .wz-block-toggle.on {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000;
+    }
+
+    .wz-block-toggle:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .wz-block-name { flex: 1; font-size: 14px; color: var(--text); }
+
+    .wz-block-feed-wrap { display: flex; align-items: center; gap: 8px; }
+
+    .wz-block-feed {
+      padding: 5px 10px;
+      border-radius: var(--radius-btn);
+      border: 1px solid var(--border);
+      background: var(--surface-hov);
+      color: var(--text);
+      font-size: 12px;
+      font-family: monospace;
+      width: 110px;
+      outline: none;
+    }
+
+    .wz-anatomy-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .wz-anatomy-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .wz-check {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--surface-hov);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+      font-weight: 700;
+    }
+
+    .wz-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 28px;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+
+    /* ── Wizard preview thumbnail + popup ────────────────────────── */
+
+    .wz-preview-thumb {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      cursor: pointer;
+      background: var(--surface-hov);
+      height: 200px;
+      margin-bottom: 22px;
+      transition: border-color 0.15s;
+    }
+    .wz-preview-thumb:hover { border-color: var(--accent); }
+    .wz-preview-thumb iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      pointer-events: none;
+    }
+    .wz-preview-thumb-label {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 28px 12px 8px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.6));
+      font-size: 12px;
+      color: #fff;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .wz-preview-popup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      z-index: 9000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .wz-preview-popup.hidden { display: none; }
+    .wz-preview-popup-inner {
+      width: 92vw;
+      height: 92vh;
+      display: flex;
+      flex-direction: column;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.7);
+    }
+    .wz-preview-popup-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .wz-preview-popup-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .wz-preview-popup-close {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px 8px;
+      line-height: 1;
+      font-family: var(--font);
+      transition: color 0.15s;
+    }
+    .wz-preview-popup-close:hover { color: var(--text); }
+    .wz-preview-popup-frame {
+      flex: 1;
+      border: none;
+      width: 100%;
+      background: #fff;
+    }
   </style>
 </head>
 <body>
@@ -1438,11 +2023,16 @@
           <span class="nav-label">Builder</span>
         </a>
       </li>
-      <li>
-        <a href="/slides" class="sidebar-nav-item active">
+      <li class="sidebar-nav-group">
+        <a href="/slides/library" class="sidebar-nav-item active has-submenu">
           <span class="nav-icon">&#9670;</span>
           <span class="nav-label">Slides</span>
         </a>
+        <ul class="sidebar-submenu">
+          <li><a href="/slides/library"   class="sidebar-sub-item" id="subLibrary">My Library</a></li>
+          <li><a href="/slides/templates" class="sidebar-sub-item" id="subTemplates">Templates</a></li>
+          <li><a href="/slides/builder"   class="sidebar-sub-item" id="subBuilder">Slide Builder</a></li>
+        </ul>
       </li>
       <li>
         <a href="/settings" class="sidebar-nav-item">
@@ -1482,49 +2072,56 @@
         <a href="/builder" class="pick-banner-cancel">Cancel</a>
       </div>
 
-      <!-- Three-tab navigation -->
-      <div class="slides-tabs">
-        <button class="slides-tab active" data-tab="library" onclick="switchTab('library')">My Library</button>
-        <button class="slides-tab" data-tab="templates" onclick="switchTab('templates')">Templates</button>
-        <button class="slides-tab" data-tab="builder" onclick="switchTab('builder')">Slide Builder</button>
-      </div>
-
       <!-- ══ Tab: My Library ══════════════════════════════════════ -->
       <div id="panel-library" class="tab-panel">
 
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
-          <p style="font-size:14px;color:var(--muted);">
-            <span id="libraryCount">0</span> slides in your library
-          </p>
+        <!-- Toolbar -->
+        <div class="lib-toolbar">
+          <input type="text" class="lib-search" id="libSearch" placeholder="Search slides&hellip;" oninput="setLibrarySearch(this.value)">
+          <div class="lib-view-toggle">
+            <button class="lib-view-btn active" id="viewBtnGrid" onclick="setLibraryView('grid')" title="Grid view">&#x229E;</button>
+            <button class="lib-view-btn" id="viewBtnList" onclick="setLibraryView('list')" title="List view">&#x2630;</button>
+          </div>
           <button class="btn-primary" onclick="openNewSlideModal()">+ New Slide</button>
         </div>
 
-        <div id="libraryLoading" style="color:var(--muted);font-size:14px;padding:20px 0;">Loading library&hellip;</div>
+        <!-- Body: folders sidebar + slides content -->
+        <div class="lib-body">
 
-        <div class="empty-state hidden" id="libraryEmpty">
-          <div class="empty-icon">&#9645;</div>
-          <div class="empty-title">No library slides yet</div>
-          <p class="empty-desc">Start from a template or use the Slide Builder to create from scratch.</p>
-          <button class="btn-primary" onclick="switchTab('templates')">Browse Templates</button>
+          <div class="lib-folders" id="libFolders"></div>
+
+          <div class="lib-content">
+            <p class="lib-count-row"><span id="libraryCount">0</span> slides</p>
+            <div id="libraryLoading" style="color:var(--muted);font-size:14px;padding:20px 0;">Loading library&hellip;</div>
+            <div class="empty-state hidden" id="libraryEmpty">
+              <div class="empty-icon">&#9645;</div>
+              <div class="empty-title">No slides found</div>
+              <p class="empty-desc">Start from a template or use the Slide Builder to create from scratch.</p>
+              <button class="btn-primary" onclick="switchTab('templates')">Browse Templates</button>
+            </div>
+            <div class="cards-grid hidden" id="libraryGrid"></div>
+            <div class="lib-list hidden" id="libraryList"></div>
+          </div>
+
         </div>
-
-        <div class="cards-grid hidden" id="libraryGrid"></div>
-
       </div><!-- /#panel-library -->
 
       <!-- ══ Tab: Templates ══════════════════════════════════════ -->
       <div id="panel-templates" class="tab-panel hidden">
 
-        <div class="filter-pills" id="categoryPills">
-          <button class="filter-pill active" data-cat="new" onclick="filterTemplates('new')">New</button>
-          <button class="filter-pill" data-cat="all" onclick="filterTemplates('all')">All</button>
-          <button class="filter-pill" data-cat="Cover" onclick="filterTemplates('Cover')">Cover</button>
-          <button class="filter-pill" data-cat="Content" onclick="filterTemplates('Content')">Content</button>
-          <button class="filter-pill" data-cat="Visual" onclick="filterTemplates('Visual')">Visual</button>
-          <button class="filter-pill" data-cat="Metrics" onclick="filterTemplates('Metrics')">Metrics</button>
-          <button class="filter-pill" data-cat="Data" onclick="filterTemplates('Data')">Data</button>
-          <button class="filter-pill" data-cat="CTA" onclick="filterTemplates('CTA')">CTA</button>
+        <div class="templates-header">
+          <div class="filter-pills" id="categoryPills">
+            <button class="filter-pill active" data-cat="all"     onclick="filterTemplates('all')">All</button>
+            <button class="filter-pill"        data-cat="Cover"   onclick="filterTemplates('Cover')">Cover</button>
+            <button class="filter-pill"        data-cat="Content" onclick="filterTemplates('Content')">Content</button>
+            <button class="filter-pill"        data-cat="Visual"  onclick="filterTemplates('Visual')">Visual</button>
+            <button class="filter-pill"        data-cat="Stats"   onclick="filterTemplates('Stats')">Stats</button>
+            <button class="filter-pill"        data-cat="Data"    onclick="filterTemplates('Data')">Data</button>
+            <button class="filter-pill"        data-cat="CTA"     onclick="filterTemplates('CTA')">CTA</button>
+          </div>
+          <button class="btn-dupe" onclick="openImportModal()" style="flex-shrink:0;">&#8593; Import Template</button>
         </div>
+        <input type="file" id="importFileInput" accept=".html" style="display:none;">
 
         <div id="templatesLoading" style="color:var(--muted);font-size:14px;padding:20px 0;">Loading templates&hellip;</div>
 
@@ -1545,6 +2142,10 @@
 
           <!-- Builder top bar -->
           <div class="builder-topbar">
+            <div class="builder-mode-toggle" id="builderModeToggle">
+              <button class="viewport-btn active" id="modeWizard" onclick="setBuilderMode('wizard')">Wizard</button>
+              <button class="viewport-btn" id="modeCanvas" onclick="setBuilderMode('canvas')">Canvas</button>
+            </div>
             <input
               class="layout-name-input"
               id="layoutNameInput"
@@ -1565,7 +2166,7 @@
           </div>
 
           <!-- Builder body: canvas + preview -->
-          <div class="builder-body">
+          <div class="builder-body" id="builderBody">
 
             <!-- Canvas (left) -->
             <div class="builder-canvas" id="builderCanvas">
@@ -1591,6 +2192,167 @@
 
           </div><!-- /.builder-body -->
 
+          <!-- ══ Template Creator Wizard ═════════════════════════════ -->
+          <div class="wizard-pane hidden" id="wizardPane">
+
+            <!-- Step indicator -->
+            <div class="wz-stepper" id="wzStepper">
+              <div class="wz-step-item active" id="wzDot1">
+                <div class="wz-step-dot">1</div>
+                <div class="wz-step-label">Basic Info</div>
+              </div>
+              <div class="wz-step-line"></div>
+              <div class="wz-step-item" id="wzDot2">
+                <div class="wz-step-dot">2</div>
+                <div class="wz-step-label">Layout</div>
+              </div>
+              <div class="wz-step-line"></div>
+              <div class="wz-step-item" id="wzDot3">
+                <div class="wz-step-dot">3</div>
+                <div class="wz-step-label">Blocks</div>
+              </div>
+              <div class="wz-step-line"></div>
+              <div class="wz-step-item" id="wzDot4">
+                <div class="wz-step-dot">4</div>
+                <div class="wz-step-label">Review</div>
+              </div>
+            </div>
+
+            <!-- Step 1: Basic Info -->
+            <div class="wz-step-content" id="wzStep1">
+              <div class="wz-field-group">
+                <div class="wz-field-label">Slide Name</div>
+                <input class="layout-name-input" id="wzName" type="text" placeholder="e.g. Surface Quality" style="border:1px solid var(--border);border-radius:var(--radius-btn);padding:9px 12px;width:100%;box-sizing:border-box;font-size:15px;">
+              </div>
+              <div class="wz-field-group">
+                <div class="wz-field-label">Category</div>
+                <div class="wz-category-pills" id="wzCategoryPills">
+                  <button class="wz-pill" data-val="Cover"   onclick="wzPickCategory(this)">Cover</button>
+                  <button class="wz-pill" data-val="Content" onclick="wzPickCategory(this)">Content</button>
+                  <button class="wz-pill" data-val="Stats"   onclick="wzPickCategory(this)">Stats</button>
+                  <button class="wz-pill" data-val="Visual"  onclick="wzPickCategory(this)">Visual</button>
+                  <button class="wz-pill" data-val="CTA"     onclick="wzPickCategory(this)">CTA</button>
+                  <button class="wz-pill" data-val="Data"    onclick="wzPickCategory(this)">Data</button>
+                </div>
+              </div>
+              <div class="wz-field-group">
+                <div class="wz-field-label">Slide Mode</div>
+                <div class="wz-category-pills">
+                  <button class="wz-pill active" data-val="sequence" id="wzModeSeq" onclick="wzPickMode(this)">Sequence</button>
+                  <button class="wz-pill"        data-val="embedded" id="wzModeEmb" onclick="wzPickMode(this)">Embedded</button>
+                </div>
+              </div>
+              <div class="wz-field-group">
+                <div class="wz-field-label">Slide ID (auto)</div>
+                <div id="wzIdPreview" style="font-size:14px;color:var(--muted);font-family:monospace;padding:8px 12px;background:var(--surface-hov);border-radius:var(--radius-btn);display:inline-block;">ls16-new-slide</div>
+              </div>
+            </div>
+
+            <!-- Step 2: Layout Picker -->
+            <div class="wz-step-content hidden" id="wzStep2">
+              <div class="wz-field-label" style="margin-bottom:14px;">Choose a layout</div>
+              <div class="wz-layout-grid" id="wzLayoutGrid">
+                <div class="wz-layout-card" data-layout="single-col" onclick="wzPickLayout(this)">
+                  <div class="wz-wireframe">
+                    <div class="wf-header"></div>
+                    <div class="wf-body"></div>
+                  </div>
+                  <div class="wz-layout-card-label">Single Column</div>
+                </div>
+                <div class="wz-layout-card" data-layout="two-col" onclick="wzPickLayout(this)">
+                  <div class="wz-wireframe">
+                    <div class="wf-header"></div>
+                    <div class="wf-cols"><div class="wf-col"></div><div class="wf-col wf-col-img"></div></div>
+                  </div>
+                  <div class="wz-layout-card-label">Two Column</div>
+                </div>
+                <div class="wz-layout-card" data-layout="stats-grid" onclick="wzPickLayout(this)">
+                  <div class="wz-wireframe">
+                    <div class="wf-header"></div>
+                    <div class="wf-stats"><div class="wf-stat"></div><div class="wf-stat"></div><div class="wf-stat"></div></div>
+                  </div>
+                  <div class="wz-layout-card-label">Stats Grid</div>
+                </div>
+                <div class="wz-layout-card" data-layout="hero" onclick="wzPickLayout(this)">
+                  <div class="wz-wireframe wf-hero">
+                    <div class="wf-hero-overlay"></div>
+                  </div>
+                  <div class="wz-layout-card-label">Hero</div>
+                </div>
+                <div class="wz-layout-card" data-layout="list" onclick="wzPickLayout(this)">
+                  <div class="wz-wireframe">
+                    <div class="wf-header"></div>
+                    <div class="wf-cols"><div class="wf-bullets"><div class="wf-bullet"></div><div class="wf-bullet"></div><div class="wf-bullet"></div></div><div class="wf-bullets"><div class="wf-bullet"></div><div class="wf-bullet"></div></div></div>
+                  </div>
+                  <div class="wz-layout-card-label">List</div>
+                </div>
+                <div class="wz-layout-card" data-layout="cta" onclick="wzPickLayout(this)">
+                  <div class="wz-wireframe">
+                    <div class="wf-header"></div>
+                    <div class="wf-cta-steps"><div class="wf-cta-step"></div><div class="wf-cta-step"></div><div class="wf-cta-step"></div></div>
+                  </div>
+                  <div class="wz-layout-card-label">CTA</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3: Content Blocks -->
+            <div class="wz-step-content hidden" id="wzStep3">
+              <div class="wz-field-label" style="margin-bottom:14px;">Toggle content blocks</div>
+              <div class="wz-blocks-list" id="wzBlocksList"></div>
+            </div>
+
+            <!-- Step 4: Review & Generate -->
+            <div class="wz-step-content hidden" id="wzStep4">
+              <!-- Preview thumbnail — click to open full-screen popup -->
+              <div class="wz-preview-thumb" id="wzPreviewThumb" onclick="wzOpenPreviewPopup()" title="Click to preview full screen">
+                <iframe id="wzPreviewIframe" scrolling="no"></iframe>
+                <div class="wz-preview-thumb-label">Click to preview full screen</div>
+              </div>
+
+              <div class="wz-field-label" style="margin-bottom:14px;">Anatomy checklist</div>
+              <div class="wz-anatomy-list" id="wzAnatomyList">
+                <div class="wz-anatomy-item" id="waStyle">
+                  <span class="wz-check" id="wck-style">&#10003;</span>
+                  <span>Style-Ready — CSS variables only, no hardcoded colors</span>
+                </div>
+                <div class="wz-anatomy-item" id="waTrans">
+                  <span class="wz-check" id="wck-trans">&#10003;</span>
+                  <span>Translation-Ready — all text nodes have <code>data-lang-key</code></span>
+                </div>
+                <div class="wz-anatomy-item" id="waTrack">
+                  <span class="wz-check" id="wck-track">&#10003;</span>
+                  <span>Tracking-Ready — interactive elements have <code>Track.*</code> calls</span>
+                </div>
+                <div class="wz-anatomy-item" id="waMode">
+                  <span class="wz-check" id="wck-mode">&#10003;</span>
+                  <span>Slide Mode — <code>data-slide-mode</code> declared</span>
+                </div>
+                <div class="wz-anatomy-item" id="waFeed">
+                  <span class="wz-check" id="wck-feed">&#8211;</span>
+                  <span>Data Feed — <code>data-feed</code> on live-data blocks (if any)</span>
+                </div>
+              </div>
+
+              <div id="wzReviewSummary" style="margin-top:20px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card);font-size:13px;color:var(--muted);line-height:1.6;"></div>
+
+              <div id="wzResult" class="hidden" style="margin-top:16px;padding:14px 16px;background:var(--surface);border:1px solid var(--accent);border-radius:var(--radius-card);">
+                <div style="font-weight:600;color:var(--accent);margin-bottom:6px;">Template created</div>
+                <div id="wzResultPath" style="font-size:12px;color:var(--muted);font-family:monospace;"></div>
+              </div>
+            </div>
+
+            <!-- Wizard footer (Back / Next / Generate) -->
+            <div class="wz-footer">
+              <button class="btn-secondary" id="wzBackBtn" onclick="wzBack()" style="visibility:hidden;">Back</button>
+              <div style="display:flex;gap:10px;align-items:center;">
+                <span id="wzStepLabel" style="font-size:13px;color:var(--muted);">Step 1 of 4</span>
+                <button class="btn-primary" id="wzNextBtn" onclick="wzNext()">Next</button>
+              </div>
+            </div>
+
+          </div><!-- /#wizardPane -->
+
           <!-- Mobile bottom tab bar -->
           <div class="bottom-tabs" id="bottomTabs">
             <div class="bottom-tabs-inner">
@@ -1608,13 +2370,42 @@
 
   <!-- ── New Slide Modal ─────────────────────────────────────────── -->
   <div class="picker-overlay hidden" id="newSlideModal">
-    <div class="picker-panel" style="max-width:540px;width:100%;">
+    <div class="picker-panel">
 
       <!-- Step 1: Pick a template -->
-      <div id="newSlideStep1">
-        <div class="picker-title" style="margin-bottom:16px;">Choose a Template</div>
-        <div id="modalTemplatesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;max-height:380px;overflow-y:auto;margin-bottom:16px;"></div>
-        <button class="picker-cancel" onclick="closeNewSlideModal()">Cancel</button>
+      <div id="newSlideStep1" style="display:flex;flex-direction:column;height:100%;">
+
+        <!-- Header bar -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 28px 16px;border-bottom:1px solid var(--border);flex-shrink:0;">
+          <div>
+            <div style="font-size:20px;font-weight:700;color:var(--text);letter-spacing:-0.3px;">Choose a Template</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:2px;">Select a template to start from, or create a new one from scratch.</div>
+          </div>
+          <button onclick="closeNewSlideModal()" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:4px;line-height:1;transition:color .15s;" onmouseenter="this.style.color='var(--text)'" onmouseleave="this.style.color='var(--muted)'">&#x2715;</button>
+        </div>
+
+        <!-- Filter pills -->
+        <div style="display:flex;gap:6px;flex-wrap:wrap;padding:16px 28px;border-bottom:1px solid var(--border);flex-shrink:0;" id="modalFilterPills">
+          <button class="filter-pill active" data-cat="all"     onclick="filterModalTemplates('all')">All</button>
+          <button class="filter-pill"        data-cat="Cover"   onclick="filterModalTemplates('Cover')">Cover</button>
+          <button class="filter-pill"        data-cat="Content" onclick="filterModalTemplates('Content')">Content</button>
+          <button class="filter-pill"        data-cat="Visual"  onclick="filterModalTemplates('Visual')">Visual</button>
+          <button class="filter-pill"        data-cat="Metrics" onclick="filterModalTemplates('Metrics')">Metrics</button>
+          <button class="filter-pill"        data-cat="Data"    onclick="filterModalTemplates('Data')">Data</button>
+          <button class="filter-pill"        data-cat="CTA"     onclick="filterModalTemplates('CTA')">CTA</button>
+        </div>
+
+        <!-- Template grid (scrollable) -->
+        <div style="flex:1;overflow-y:auto;padding:24px 28px;">
+          <div id="modalTemplatesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;"></div>
+        </div>
+
+        <!-- Footer -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-top:1px solid var(--border);flex-shrink:0;">
+          <button class="btn-secondary" onclick="openSlideBuilder()">+ New Template (Slide Builder)</button>
+          <button class="picker-cancel" onclick="closeNewSlideModal()">Cancel</button>
+        </div>
+
       </div>
 
       <!-- Step 2: Name the slide -->
@@ -1631,6 +2422,60 @@
           <button class="picker-cancel" onclick="newSlideBack()" style="flex:0 0 auto;">Back</button>
           <button class="btn-primary" onclick="createLibrarySlide()" style="flex:1;">Create Slide</button>
         </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Import Template Modal -->
+  <div class="picker-overlay hidden" id="importModal">
+    <div class="picker-panel" style="max-width:540px;width:100%;">
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <div class="picker-title" style="margin-bottom:0;">Import Template</div>
+        <button onclick="closeImportModal()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;padding:4px;" onmouseenter="this.style.color='var(--text)'" onmouseleave="this.style.color='var(--muted)'">&#x2715;</button>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:4px;" id="importFileName"></p>
+
+      <!-- Anatomy checklist -->
+      <div class="import-checklist" id="importChecklist"></div>
+
+      <!-- Metadata form -->
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px;">
+        <div>
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;">Name</label>
+          <input id="importName" type="text" placeholder="Template name…"
+            style="width:100%;box-sizing:border-box;padding:9px 11px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-size:14px;font-family:var(--font);outline:none;">
+        </div>
+        <div style="display:flex;gap:12px;">
+          <div style="flex:1;">
+            <label style="display:block;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;">Category</label>
+            <select id="importCategory"
+              style="width:100%;padding:9px 11px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-size:14px;font-family:var(--font);outline:none;">
+              <option value="">Select…</option>
+              <option value="Cover">Cover</option>
+              <option value="Content">Content</option>
+              <option value="Visual">Visual</option>
+              <option value="Stats">Stats</option>
+              <option value="Data">Data</option>
+              <option value="CTA">CTA</option>
+            </select>
+          </div>
+          <div style="flex:1;">
+            <label style="display:block;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;">Slide Mode</label>
+            <select id="importMode"
+              style="width:100%;padding:9px 11px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-size:14px;font-family:var(--font);outline:none;">
+              <option value="sequence">Sequence</option>
+              <option value="embedded">Embedded</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div style="display:flex;gap:8px;margin-top:20px;">
+        <button class="picker-cancel" onclick="closeImportModal()">Cancel</button>
+        <button class="btn-primary" id="importSubmitBtn" onclick="submitImport()" style="flex:1;">Import Template</button>
       </div>
 
     </div>
@@ -1674,6 +2519,17 @@
         <button class="btn-secondary" onclick="ignoreTemplateUpdate()">Ignore for now</button>
         <button class="btn-primary" onclick="acceptTemplateUpdate()">Accept update</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Wizard Template Preview Popup -->
+  <div class="wz-preview-popup hidden" id="wzPreviewPopup">
+    <div class="wz-preview-popup-inner">
+      <div class="wz-preview-popup-bar">
+        <span class="wz-preview-popup-title" id="wzPreviewPopupTitle">Template Preview</span>
+        <button class="wz-preview-popup-close" onclick="wzClosePreviewPopup()">&#10005;</button>
+      </div>
+      <iframe class="wz-preview-popup-frame" id="wzPreviewPopupFrame"></iframe>
     </div>
   </div>
 
@@ -1740,8 +2596,15 @@
     // ── Global state ────────────────────────────────────────────────
     var activePageTab   = 'library';
     var templates       = [];
+    var htmlCatalog     = [];
     var librarySlides   = [];
-    var activeCatFilter = 'new';
+    var libraryDecks    = [];
+    var activeFolder    = 'all';
+    var libraryView     = 'grid';
+    var librarySearch   = '';
+    var activeCatFilter = 'all';
+    var importHtml      = '';
+    var importFileName  = '';
 
     // New Slide modal state
     var newSlideTemplateId   = null;
@@ -1796,12 +2659,14 @@
 
     // ── Tab switching ────────────────────────────────────────────────
 
-    function switchTab(tab) {
+    var SCREEN_META = {
+      library:   { h1: 'My Library',    sub: 'Browse and manage your slide library' },
+      templates: { h1: 'Templates',     sub: 'Browse and use slide templates' },
+      builder:   { h1: 'Slide Builder', sub: 'Create and edit slide templates' }
+    };
+
+    function switchTab(tab, _noPush) {
       activePageTab = tab;
-      var tabs = document.querySelectorAll('.slides-tab');
-      for (var i = 0; i < tabs.length; i++) {
-        tabs[i].classList.toggle('active', tabs[i].getAttribute('data-tab') === tab);
-      }
       var panels = ['library', 'templates', 'builder'];
       panels.forEach(function (t) {
         var el = document.getElementById('panel-' + t);
@@ -1809,6 +2674,33 @@
       });
       if (tab === 'builder' && !currentLayout) {
         startNewLayout();
+      }
+      // Update sidebar submenu highlight
+      var subMap = { library: 'subLibrary', templates: 'subTemplates', builder: 'subBuilder' };
+      var subItems = document.querySelectorAll('.sidebar-sub-item');
+      for (var j = 0; j < subItems.length; j++) {
+        subItems[j].classList.remove('active');
+      }
+      var activeSubId = subMap[tab];
+      if (activeSubId) {
+        var activeSub = document.getElementById(activeSubId);
+        if (activeSub) activeSub.classList.add('active');
+      }
+      // Update page title / subtitle
+      var meta = SCREEN_META[tab];
+      if (meta) {
+        var h1El  = document.querySelector('.page-title');
+        var subEl = document.querySelector('.page-subtitle');
+        if (h1El)  h1El.textContent  = meta.h1;
+        if (subEl) subEl.textContent = meta.sub;
+        document.title = meta.h1 + ' — Presentation Builder';
+      }
+      // Update URL
+      if (!_noPush) {
+        var newPath = '/slides/' + tab;
+        if (window.location.pathname !== newPath) {
+          history.pushState({ tab: tab }, '', newPath);
+        }
       }
     }
 
@@ -1840,11 +2732,342 @@
 
     function filterTemplates(cat) {
       activeCatFilter = cat;
-      var pills = document.querySelectorAll('.filter-pill');
+      var pills = document.querySelectorAll('#categoryPills .filter-pill');
       for (var i = 0; i < pills.length; i++) {
         pills[i].classList.toggle('active', pills[i].getAttribute('data-cat') === cat);
       }
-      renderTemplatesGrid();
+      renderHtmlCatalog();
+    }
+
+    function loadHtmlCatalog() {
+      var loading = document.getElementById('templatesLoading');
+      var empty   = document.getElementById('templatesEmpty');
+      var grid    = document.getElementById('templatesGrid');
+      if (loading) loading.classList.remove('hidden');
+      if (empty)   empty.classList.add('hidden');
+      if (grid)    grid.classList.add('hidden');
+      fetch('/api/templates')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          htmlCatalog = (res && res.data) ? res.data : [];
+          renderHtmlCatalog();
+        })
+        .catch(function () {
+          htmlCatalog = [];
+          renderHtmlCatalog();
+        });
+    }
+
+    function renderHtmlCatalog() {
+      var loading = document.getElementById('templatesLoading');
+      var empty   = document.getElementById('templatesEmpty');
+      var grid    = document.getElementById('templatesGrid');
+
+      if (loading) loading.classList.add('hidden');
+
+      var filtered = htmlCatalog;
+      if (activeCatFilter !== 'all') {
+        filtered = htmlCatalog.filter(function (t) { return t.category === activeCatFilter; });
+      }
+
+      if (filtered.length === 0) {
+        var emptyTitle = empty.querySelector('.empty-title');
+        var emptyDesc  = empty.querySelector('.empty-desc');
+        if (htmlCatalog.length === 0) {
+          if (emptyTitle) emptyTitle.textContent = 'No templates yet';
+          if (emptyDesc)  emptyDesc.textContent  = 'Use the Slide Builder wizard to create your first template.';
+          if (!empty.querySelector('.empty-catalog-btn')) {
+            var btn = document.createElement('button');
+            btn.className = 'btn-primary empty-catalog-btn';
+            btn.style.marginTop = '12px';
+            btn.textContent = 'Open Slide Builder';
+            btn.addEventListener('click', function () { setBuilderMode('wizard'); switchTab('builder'); });
+            empty.appendChild(btn);
+          }
+        } else {
+          if (emptyTitle) emptyTitle.textContent = 'No templates in this category';
+          if (emptyDesc)  emptyDesc.textContent  = 'Try a different category or create a new template.';
+          var existingBtn = empty.querySelector('.empty-catalog-btn');
+          if (existingBtn) existingBtn.remove();
+        }
+        empty.classList.remove('hidden');
+        grid.classList.add('hidden');
+        return;
+      }
+
+      empty.classList.add('hidden');
+      grid.classList.remove('hidden');
+      grid.innerHTML = '';
+
+      for (var i = 0; i < filtered.length; i++) {
+        grid.appendChild(buildHtmlCatalogCard(filtered[i]));
+      }
+    }
+
+    function buildHtmlCatalogCard(tpl) {
+      var card = document.createElement('div');
+      card.className = 'tpl-card';
+      card.style.display = 'flex';
+      card.style.flexDirection = 'column';
+
+      var header = document.createElement('div');
+      header.className = 'tpl-card-header';
+
+      var nameEl = document.createElement('div');
+      nameEl.className = 'tpl-card-name';
+      nameEl.textContent = tpl.name || 'Untitled';
+
+      if (tpl.slideMode === 'embedded') {
+        var embBadge = document.createElement('span');
+        embBadge.className = 'badge-embedded';
+        embBadge.textContent = 'Embedded';
+        nameEl.appendChild(embBadge);
+      }
+
+      var catBadge = document.createElement('span');
+      catBadge.className = 'badge-category badge-cat-' + (tpl.category || '');
+      catBadge.textContent = tpl.category || 'General';
+
+      header.appendChild(nameEl);
+      header.appendChild(catBadge);
+      card.appendChild(header);
+
+      if (tpl.description) {
+        var desc = document.createElement('div');
+        desc.className = 'tpl-card-desc';
+        desc.textContent = tpl.description;
+        card.appendChild(desc);
+      }
+
+      var comps = tpl.components || [];
+      if (comps.length > 0) {
+        var chips = document.createElement('div');
+        chips.className = 'tpl-chips';
+        for (var j = 0; j < comps.length; j++) {
+          var chip = document.createElement('span');
+          chip.className = 'tpl-chip';
+          chip.textContent = comps[j];
+          chips.appendChild(chip);
+        }
+        card.appendChild(chips);
+      }
+
+      var actions = document.createElement('div');
+      actions.style.cssText = 'display:flex;gap:8px;margin-top:auto;padding-top:12px;';
+
+      var previewBtn = document.createElement('button');
+      previewBtn.className = 'btn-dupe';
+      previewBtn.textContent = 'Preview';
+      (function (t) {
+        previewBtn.addEventListener('click', function () {
+          var id = (t.file || '').replace('features/slides/', '').replace('.html', '');
+          openUrlPreviewPopup('/slides/preview/' + id);
+        });
+      })(tpl);
+
+      var useBtn = document.createElement('button');
+      useBtn.className = 'btn-primary';
+      useBtn.textContent = 'Use';
+      useBtn.style.flex = '1';
+      (function (t) {
+        useBtn.addEventListener('click', function () {
+          showToast('Use this template in the Slide Builder wizard');
+        });
+      })(tpl);
+
+      actions.appendChild(previewBtn);
+      actions.appendChild(useBtn);
+      card.appendChild(actions);
+
+      return card;
+    }
+
+    // ── Import Template ──────────────────────────────────────────────
+
+    function openImportModal() {
+      document.getElementById('importFileInput').value = '';
+      document.getElementById('importChecklist').innerHTML = '';
+      document.getElementById('importFileName').textContent = '';
+      document.getElementById('importName').value = '';
+      document.getElementById('importCategory').value = '';
+      document.getElementById('importMode').value = 'sequence';
+      document.getElementById('importSubmitBtn').disabled = true;
+      importHtml = '';
+      importFileName = '';
+      document.getElementById('importFileInput').click();
+    }
+
+    function closeImportModal() {
+      document.getElementById('importModal').classList.add('hidden');
+    }
+
+    function validateAnatomy(html, doc) {
+      var checks = [];
+
+      var root = doc.querySelector('[data-slide]');
+      checks.push({
+        label:  'Root element has data-slide',
+        status: root ? 'pass' : 'error',
+        msg:    root ? 'data-slide="' + root.getAttribute('data-slide') + '"' : 'Missing — required for slide identification'
+      });
+
+      var modeEl = doc.querySelector('[data-slide-mode]');
+      checks.push({
+        label:  'Root element has data-slide-mode',
+        status: modeEl ? 'pass' : 'error',
+        msg:    modeEl ? 'mode: ' + modeEl.getAttribute('data-slide-mode') : 'Missing — required'
+      });
+
+      var langKeys = doc.querySelectorAll('[data-lang-key]');
+      checks.push({
+        label:  'Translation keys (data-lang-key)',
+        status: langKeys.length > 0 ? 'pass' : 'error',
+        msg:    langKeys.length > 0 ? langKeys.length + ' keys found' : 'No data-lang-key attributes — required'
+      });
+
+      var editEls = doc.querySelectorAll('[data-edit]');
+      checks.push({
+        label:  'Editable fields (data-edit)',
+        status: editEls.length > 0 ? 'pass' : 'error',
+        msg:    editEls.length > 0 ? editEls.length + ' editable fields found' : 'No data-edit attributes — required'
+      });
+
+      var styleBlocks = doc.querySelectorAll('style');
+      var hasHex = false;
+      styleBlocks.forEach(function (s) {
+        if (/#[0-9a-fA-F]{3,6}(?:[^0-9a-fA-F]|$)/.test(s.textContent)) hasHex = true;
+      });
+      checks.push({
+        label:  'No hardcoded hex colors in styles',
+        status: hasHex ? 'warn' : 'pass',
+        msg:    hasHex ? 'Hardcoded colors found — prefer CSS variables' : 'No hardcoded colors detected'
+      });
+
+      var scriptBlocks = doc.querySelectorAll('script');
+      var hasTrack = false;
+      scriptBlocks.forEach(function (s) {
+        if (/Track\./.test(s.textContent)) hasTrack = true;
+      });
+      checks.push({
+        label:  'Analytics tracking (Track. calls)',
+        status: hasTrack ? 'pass' : 'warn',
+        msg:    hasTrack ? 'Track calls found' : 'No Track. calls — consider adding analytics'
+      });
+
+      return checks;
+    }
+
+    function renderImportChecklist(checks) {
+      var icons = { pass: '&#10003;', warn: '&#9888;', error: '&#10005;' };
+      var list = document.getElementById('importChecklist');
+      list.innerHTML = '';
+      checks.forEach(function (c) {
+        var item = document.createElement('div');
+        item.className = 'import-check-item';
+
+        var icon = document.createElement('div');
+        icon.className = 'import-check-icon ' + c.status;
+        icon.innerHTML = icons[c.status] || '';
+
+        var body = document.createElement('div');
+        body.className = 'import-check-body';
+        body.innerHTML = '<div class="import-check-label">' + c.label + '</div>' +
+                         '<div class="import-check-msg">'   + c.msg   + '</div>';
+
+        item.appendChild(icon);
+        item.appendChild(body);
+        list.appendChild(item);
+      });
+    }
+
+    document.getElementById('importFileInput').addEventListener('change', function (e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      importFileName = file.name;
+      var reader = new FileReader();
+      reader.onload = function (ev) {
+        importHtml = ev.target.result;
+
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(importHtml, 'text/html');
+        var checks = validateAnatomy(importHtml, doc);
+        var hasBlockingError = checks.some(function (c) { return c.status === 'error'; });
+
+        // Pre-fill metadata from the HTML
+        var slideEl   = doc.querySelector('[data-slide]');
+        var modeEl    = doc.querySelector('[data-slide-mode]');
+        var slideId   = slideEl ? slideEl.getAttribute('data-slide') : '';
+        var slideMode = modeEl  ? modeEl.getAttribute('data-slide-mode') : 'sequence';
+
+        var suggestedName = slideId
+          ? slideId.replace(/^ls\d+-/, '').replace(/-/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); })
+          : file.name.replace(/\.html$/i, '').replace(/[-_]/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+
+        document.getElementById('importFileName').textContent = file.name;
+        document.getElementById('importName').value = suggestedName;
+        document.getElementById('importMode').value = (slideMode === 'embedded') ? 'embedded' : 'sequence';
+        document.getElementById('importSubmitBtn').disabled = hasBlockingError;
+
+        renderImportChecklist(checks);
+        document.getElementById('importModal').classList.remove('hidden');
+      };
+      reader.readAsText(file);
+    });
+
+    function submitImport() {
+      var name     = document.getElementById('importName').value.trim();
+      var category = document.getElementById('importCategory').value;
+      var mode     = document.getElementById('importMode').value;
+
+      if (!name)     { showToast('Please enter a template name.');   return; }
+      if (!category) { showToast('Please select a category.');       return; }
+      if (!importHtml) { showToast('No file loaded.');               return; }
+
+      var parser  = new DOMParser();
+      var doc     = parser.parseFromString(importHtml, 'text/html');
+      var slideEl = doc.querySelector('[data-slide]');
+      var rawId   = slideEl ? slideEl.getAttribute('data-slide') : name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      var id      = rawId.replace(/[^a-z0-9-]/g, '-').toLowerCase();
+
+      var btn = document.getElementById('importSubmitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Importing…';
+
+      fetch('/api/templates', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ id: id, name: name, category: category, slideMode: mode, html: importHtml, components: [] })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.success) throw new Error(res.error || 'Import failed');
+          closeImportModal();
+          loadHtmlCatalog();
+          showToast('Template imported: ' + name);
+        })
+        .catch(function (err) {
+          showToast('Error: ' + err.message);
+          btn.disabled = false;
+          btn.textContent = 'Import Template';
+        });
+    }
+
+    function filterModalTemplates(cat) {
+      var pills = document.querySelectorAll('#modalFilterPills .filter-pill');
+      for (var i = 0; i < pills.length; i++) {
+        pills[i].classList.toggle('active', pills[i].getAttribute('data-cat') === cat);
+      }
+      var cards = document.querySelectorAll('#modalTemplatesGrid [data-cat]');
+      for (var j = 0; j < cards.length; j++) {
+        var show = cat === 'all' || cards[j].getAttribute('data-cat') === cat;
+        cards[j].style.display = show ? '' : 'none';
+      }
+    }
+
+    function openSlideBuilder() {
+      closeNewSlideModal();
+      switchTab('builder');
+      startNewLayout();
     }
 
     function renderTemplatesGrid() {
@@ -2004,13 +3227,21 @@
       fetch('/api/slide-library')
         .then(function (r) { return r.json(); })
         .then(function (res) {
-          librarySlides = (res && res.data) ? res.data : [];
+          if (res && res.data && res.data.slides) {
+            librarySlides = res.data.slides;
+            libraryDecks  = res.data.decks || [];
+          } else {
+            librarySlides = (res && res.data) ? res.data : [];
+            libraryDecks  = [];
+          }
           var loadingEl = document.getElementById('libraryLoading');
           if (loadingEl) loadingEl.classList.add('hidden');
+          renderLibraryFolders();
           renderLibraryGrid();
         })
         .catch(function () {
           librarySlides = [];
+          libraryDecks  = [];
           var loadingEl = document.getElementById('libraryLoading');
           if (loadingEl) loadingEl.classList.add('hidden');
           renderLibraryGrid();
@@ -2024,26 +3255,194 @@
       return templateId || 'Unknown';
     }
 
+    function getFilteredSlides() {
+      var slides = librarySlides;
+      if (activeFolder === 'unassigned') {
+        slides = slides.filter(function (s) { return !s.decks || s.decks.length === 0; });
+      } else if (activeFolder !== 'all') {
+        slides = slides.filter(function (s) {
+          return s.decks && s.decks.some(function (d) { return d.id === activeFolder; });
+        });
+      }
+      if (librarySearch) {
+        var q = librarySearch.toLowerCase();
+        slides = slides.filter(function (s) { return (s.name || '').toLowerCase().indexOf(q) !== -1; });
+      }
+      return slides;
+    }
+
+    function renderLibraryFolders() {
+      var el = document.getElementById('libFolders');
+      if (!el) return;
+      var unassignedCount = librarySlides.filter(function (s) { return !s.decks || s.decks.length === 0; }).length;
+      var html = buildFolderItem('all', 'All Slides', librarySlides.length);
+      if (libraryDecks.length) {
+        html += '<div class="lib-folder-divider"></div>';
+        libraryDecks.forEach(function (deck) {
+          var count = librarySlides.filter(function (s) {
+            return s.decks && s.decks.some(function (d) { return d.id === deck.id; });
+          }).length;
+          html += buildFolderItem(deck.id, deck.name, count);
+        });
+      }
+      if (unassignedCount > 0) {
+        html += '<div class="lib-folder-divider"></div>';
+        html += buildFolderItem('unassigned', 'Unassigned', unassignedCount);
+      }
+      el.innerHTML = html;
+    }
+
+    function buildFolderItem(id, label, count) {
+      var active = activeFolder === id ? ' active' : '';
+      return '<div class="lib-folder-item' + active + '" onclick="setActiveFolder(\'' + id.replace(/'/g, "\\'") + '\')">' +
+        '<span class="lib-folder-name">' + escHtml(label) + '</span>' +
+        '<span class="lib-folder-count">' + count + '</span>' +
+      '</div>';
+    }
+
+    function escHtml(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function setActiveFolder(id) {
+      activeFolder = id;
+      renderLibraryFolders();
+      renderLibraryGrid();
+    }
+
+    function setLibraryView(view) {
+      libraryView = view;
+      document.getElementById('viewBtnGrid').classList.toggle('active', view === 'grid');
+      document.getElementById('viewBtnList').classList.toggle('active', view === 'list');
+      document.getElementById('libraryGrid').classList.toggle('hidden', view !== 'grid');
+      document.getElementById('libraryList').classList.toggle('hidden', view !== 'list');
+      renderLibraryGrid();
+    }
+
+    function setLibrarySearch(val) {
+      librarySearch = val;
+      renderLibraryGrid();
+    }
+
     function renderLibraryGrid() {
-      var empty = document.getElementById('libraryEmpty');
-      var grid  = document.getElementById('libraryGrid');
-      var count = document.getElementById('libraryCount');
+      var empty  = document.getElementById('libraryEmpty');
+      var grid   = document.getElementById('libraryGrid');
+      var listEl = document.getElementById('libraryList');
+      var count  = document.getElementById('libraryCount');
 
-      if (count) count.textContent = librarySlides.length;
+      var slides = getFilteredSlides();
+      if (count) count.textContent = slides.length;
 
-      if (librarySlides.length === 0) {
+      if (slides.length === 0) {
         empty.classList.remove('hidden');
         grid.classList.add('hidden');
+        if (listEl) listEl.classList.add('hidden');
         return;
       }
 
       empty.classList.add('hidden');
-      grid.classList.remove('hidden');
-      grid.innerHTML = '';
 
-      for (var i = 0; i < librarySlides.length; i++) {
-        grid.appendChild(buildLibraryCard(librarySlides[i]));
+      if (libraryView === 'list') {
+        grid.classList.add('hidden');
+        listEl.classList.remove('hidden');
+        listEl.innerHTML = '';
+        slides.forEach(function (slide) { listEl.appendChild(buildLibraryListRow(slide)); });
+      } else {
+        if (listEl) listEl.classList.add('hidden');
+        grid.classList.remove('hidden');
+        grid.innerHTML = '';
+        slides.forEach(function (slide) { grid.appendChild(buildLibraryCard(slide)); });
       }
+    }
+
+    function toggleLibCardMenu(btn) {
+      var drop = btn.nextElementSibling;
+      var wasOpen = drop.classList.contains('open');
+      closeAllLibCardMenus();
+      if (!wasOpen) drop.classList.add('open');
+    }
+
+    function closeAllLibCardMenus() {
+      document.querySelectorAll('.lib-card-dropdown.open').forEach(function (d) {
+        d.classList.remove('open');
+      });
+    }
+
+    function buildLibraryCardActions(slide) {
+      var actions = document.createElement('div');
+      actions.className = 'lib-card-actions';
+
+      if (pickMode) {
+        var pickBtn = document.createElement('button');
+        pickBtn.className = 'btn-pick-add';
+        pickBtn.textContent = 'Add to ' + pickDeckName;
+        (function (s) {
+          pickBtn.addEventListener('click', function () { pickAddSlide(s.id); });
+        })(slide);
+        actions.appendChild(pickBtn);
+      } else {
+        var gearBtn = document.createElement('button');
+        gearBtn.className = 'lib-card-gear-btn';
+        gearBtn.title = 'Open in Builder';
+        gearBtn.innerHTML = '&#9881;';
+        (function (s) {
+          gearBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            openBuilderWithLibrarySlide(s);
+          });
+        })(slide);
+
+        var moreWrap = document.createElement('div');
+        moreWrap.className = 'lib-card-row-actions';
+
+        var moreBtn = document.createElement('button');
+        moreBtn.className = 'lib-card-more-btn';
+        moreBtn.title = 'More options';
+        moreBtn.innerHTML = '&#8942;';
+        moreBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          toggleLibCardMenu(moreBtn);
+        });
+
+        var drop = document.createElement('div');
+        drop.className = 'lib-card-dropdown';
+
+        var dupeItem = document.createElement('div');
+        dupeItem.className = 'lib-card-dropdown-item';
+        dupeItem.textContent = 'Duplicate';
+        (function (s) {
+          dupeItem.addEventListener('click', function (e) {
+            e.stopPropagation();
+            closeAllLibCardMenus();
+            duplicateLibrarySlide(s.id);
+          });
+        })(slide);
+
+        var divider = document.createElement('div');
+        divider.className = 'lib-card-dropdown-divider';
+
+        var delItem = document.createElement('div');
+        delItem.className = 'lib-card-dropdown-item danger';
+        delItem.textContent = 'Delete';
+        (function (s) {
+          delItem.addEventListener('click', function (e) {
+            e.stopPropagation();
+            closeAllLibCardMenus();
+            deleteLibrarySlide(s.id);
+          });
+        })(slide);
+
+        drop.appendChild(dupeItem);
+        drop.appendChild(divider);
+        drop.appendChild(delItem);
+        moreWrap.appendChild(moreBtn);
+        moreWrap.appendChild(drop);
+
+        actions.appendChild(gearBtn);
+        actions.appendChild(moreWrap);
+      }
+
+      return actions;
     }
 
     function buildLibraryCard(slide) {
@@ -2066,6 +3465,12 @@
             '</div>' +
           '</div>' +
         '</div>';
+      (function (s) {
+        thumbWrap.addEventListener('dblclick', function (e) {
+          e.stopPropagation();
+          if (!pickMode) openBuilderWithLibrarySlide(s);
+        });
+      })(slide);
       card.appendChild(thumbWrap);
 
       // Slide name (editable)
@@ -2112,49 +3517,74 @@
         card.appendChild(ignoredBadge);
       }
 
-      // Actions
-      var actions = document.createElement('div');
-      actions.className = 'lib-card-actions';
-
-      if (pickMode) {
-        // Pick-mode: show Add to Deck button prominently
-        var pickBtn = document.createElement('button');
-        pickBtn.className = 'btn-pick-add';
-        pickBtn.textContent = 'Add to ' + pickDeckName;
-        (function (s) {
-          pickBtn.addEventListener('click', function () { pickAddSlide(s.id); });
-        })(slide);
-        actions.appendChild(pickBtn);
-      } else {
-        // Normal mode: Edit, Duplicate, Delete
-        var editBtn = document.createElement('button');
-        editBtn.className = 'btn-edit';
-        editBtn.textContent = 'Edit';
-        (function (s) {
-          editBtn.addEventListener('click', function () { openBuilderWithLibrarySlide(s); });
-        })(slide);
-
-        var dupeBtn = document.createElement('button');
-        dupeBtn.className = 'btn-dupe';
-        dupeBtn.textContent = 'Duplicate';
-        (function (s) {
-          dupeBtn.addEventListener('click', function () { duplicateLibrarySlide(s.id); });
-        })(slide);
-
-        var delBtn = document.createElement('button');
-        delBtn.className = 'btn-delete';
-        delBtn.textContent = 'Delete';
-        (function (s) {
-          delBtn.addEventListener('click', function () { deleteLibrarySlide(s.id); });
-        })(slide);
-
-        actions.appendChild(editBtn);
-        actions.appendChild(dupeBtn);
-        actions.appendChild(delBtn);
-      }
-
-      card.appendChild(actions);
+      card.appendChild(buildLibraryCardActions(slide));
       return card;
+    }
+
+    function buildLibraryListRow(slide) {
+      var row = document.createElement('div');
+      row.className = 'lib-list-row';
+      row.id = 'lib-list-' + slide.id;
+
+      // Thumb
+      var SLIDE_W = 1280, SLIDE_H = 720, thumbW = 80, thumbH = 45;
+      var scale = thumbW / SLIDE_W;
+      var thumb = document.createElement('div');
+      thumb.className = 'lib-list-thumb';
+      thumb.style.cursor = 'pointer';
+      thumb.innerHTML =
+        '<div style="width:' + SLIDE_W + 'px;height:' + SLIDE_H + 'px;transform:scale(' + scale + ');transform-origin:top left;pointer-events:none;">' +
+          '<iframe src="/slides/library-preview/' + slide.id + '" style="width:' + SLIDE_W + 'px;height:' + SLIDE_H + 'px;border:none;" scrolling="no" tabindex="-1" title="Slide thumbnail"></iframe>' +
+        '</div>';
+      (function (s) {
+        thumb.addEventListener('dblclick', function (e) {
+          e.stopPropagation();
+          if (!pickMode) openBuilderWithLibrarySlide(s);
+        });
+      })(slide);
+      row.appendChild(thumb);
+
+      // Name (editable)
+      var name = document.createElement('div');
+      name.className = 'lib-list-name';
+      name.textContent = slide.name || 'Untitled Slide';
+      name.contentEditable = 'true';
+      name.spellcheck = false;
+      (function (s, el) {
+        el.addEventListener('blur', function () {
+          var newName = el.textContent.trim() || 'Untitled Slide';
+          el.textContent = newName;
+          s.name = newName;
+        });
+        el.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
+        });
+      })(slide, name);
+      row.appendChild(name);
+
+      // Template
+      var tpl = document.createElement('div');
+      tpl.className = 'lib-list-template';
+      tpl.textContent = slide.templateId ? getTemplateName(slide.templateId) : 'No template';
+      row.appendChild(tpl);
+
+      // Deck tags
+      var tags = document.createElement('div');
+      tags.className = 'lib-list-deck-tags';
+      if (slide.decks && slide.decks.length) {
+        slide.decks.forEach(function (d) {
+          var tag = document.createElement('span');
+          tag.className = 'lib-list-deck-tag';
+          tag.textContent = d.name;
+          tags.appendChild(tag);
+        });
+      }
+      row.appendChild(tags);
+
+      // Actions
+      row.appendChild(buildLibraryCardActions(slide));
+
+      return row;
     }
 
     function duplicateLibrarySlide(id) {
@@ -2243,50 +3673,77 @@
       var grid = document.getElementById('modalTemplatesGrid');
       grid.innerHTML = '';
 
-      var newTemplates = templates.filter(function (t) { return t.label === 'new'; });
-      if (newTemplates.length === 0) newTemplates = templates;
+      // Reset modal filter pills to "All"
+      var modalPills = document.querySelectorAll('#modalFilterPills .filter-pill');
+      for (var p = 0; p < modalPills.length; p++) {
+        modalPills[p].classList.toggle('active', modalPills[p].getAttribute('data-cat') === 'all');
+      }
 
-      for (var i = 0; i < newTemplates.length; i++) {
-        (function (t) {
-          var card = document.createElement('div');
-          card.className = 'tpl-card';
-          card.style.cursor = 'pointer';
+      function makeModalCard(t, isHtmlCatalog) {
+        var card = document.createElement('div');
+        card.className = 'tpl-card';
+        card.style.cursor = 'pointer';
+        card.setAttribute('data-cat', t.category || 'General');
 
-          var hd = document.createElement('div');
-          hd.className = 'tpl-card-header';
+        var hd = document.createElement('div');
+        hd.className = 'tpl-card-header';
 
-          var nm = document.createElement('div');
-          nm.className = 'tpl-card-name';
-          nm.textContent = t.name || 'Untitled';
+        var nm = document.createElement('div');
+        nm.className = 'tpl-card-name';
+        nm.textContent = t.name || 'Untitled';
 
-          var bd = document.createElement('span');
-          bd.className = 'badge-category';
-          bd.textContent = t.category || 'General';
+        if (isHtmlCatalog && t.slideMode === 'embedded') {
+          var emb = document.createElement('span');
+          emb.className = 'badge-embedded';
+          emb.textContent = 'Embedded';
+          nm.appendChild(emb);
+        }
 
-          hd.appendChild(nm);
-          hd.appendChild(bd);
+        var bd = document.createElement('span');
+        bd.className = isHtmlCatalog
+          ? 'badge-category badge-cat-' + (t.category || '')
+          : 'badge-category';
+        bd.textContent = t.category || 'General';
 
-          var ds = document.createElement('div');
-          ds.className = 'tpl-card-desc';
-          ds.textContent = t.description || '';
+        hd.appendChild(nm);
+        hd.appendChild(bd);
 
-          var pv = buildMiniPreview(t.rows || []);
+        var ds = document.createElement('div');
+        ds.className = 'tpl-card-desc';
+        ds.textContent = t.description || '';
 
-          card.appendChild(hd);
-          card.appendChild(ds);
-          card.appendChild(pv);
+        card.appendChild(hd);
+        card.appendChild(ds);
 
-          card.addEventListener('click', function () {
-            newSlideTemplateId   = t.id;
-            newSlideTemplateName = t.name || 'Untitled';
-            document.getElementById('newSlideName').value = newSlideTemplateName;
-            step1.classList.add('hidden');
-            step2.classList.remove('hidden');
-            document.getElementById('newSlideName').focus();
-          });
+        if (!isHtmlCatalog) {
+          card.appendChild(buildMiniPreview(t.rows || []));
+        } else if (t.components && t.components.length > 0) {
+          var chips = document.createElement('div');
+          chips.className = 'tpl-chips';
+          for (var j = 0; j < t.components.length; j++) {
+            var chip = document.createElement('span');
+            chip.className = 'tpl-chip';
+            chip.textContent = t.components[j];
+            chips.appendChild(chip);
+          }
+          card.appendChild(chips);
+        }
 
-          grid.appendChild(card);
-        })(newTemplates[i]);
+        card.addEventListener('click', function () {
+          newSlideTemplateId   = t.id;
+          newSlideTemplateName = t.name || 'Untitled';
+          document.getElementById('newSlideName').value = newSlideTemplateName;
+          step1.classList.add('hidden');
+          step2.classList.remove('hidden');
+          document.getElementById('newSlideName').focus();
+        });
+
+        return card;
+      }
+
+      // HTML catalog templates only
+      for (var h = 0; h < htmlCatalog.length; h++) {
+        grid.appendChild(makeModalCard(htmlCatalog[h], true));
       }
 
       modal.classList.remove('hidden');
@@ -2364,18 +3821,8 @@
     }
 
     function openBuilderWithLibrarySlide(slide) {
-      var tpl = templates.find(function (t) { return t.id === slide.templateId; });
-      currentLayout = {
-        id:             tpl ? tpl.id : null,
-        name:           slide.name || 'Untitled',
-        rows:           tpl ? JSON.parse(JSON.stringify(tpl.rows || [])) : [],
-        isTemplate:     !!tpl,
-        librarySlideId: slide.id
-      };
-      document.getElementById('layoutNameInput').value = currentLayout.name;
-      switchTab('builder');
-      renderCanvas();
-      renderPreview();
+      window.location.href = '/builder?librarySlide=' + encodeURIComponent(slide.id) +
+        '&slideName=' + encodeURIComponent(slide.name || 'Untitled');
     }
 
     function saveLayoutName(name) {
@@ -3075,6 +4522,8 @@
     // ── Preview popup ─────────────────────────────────────────────────
 
     var popupViewport = 'desktop';
+    var popupMode     = 'canvas'; // 'canvas' | 'url'
+    var popupPreviewUrl = '';
 
     var POPUP_VIEWPORT_LABELS = {
       desktop: '1920 × 1080',
@@ -3083,6 +4532,7 @@
     };
 
     function openPreviewPopup() {
+      popupMode = 'canvas';
       popupViewport = 'desktop';
       document.querySelectorAll('.preview-popup-tab').forEach(function (btn) {
         btn.classList.toggle('active', btn.dataset.vp === 'desktop');
@@ -3092,8 +4542,44 @@
       document.getElementById('previewPopup').classList.remove('hidden');
     }
 
+    function openUrlPreviewPopup(url) {
+      popupMode = 'url';
+      popupPreviewUrl = url;
+      popupViewport = 'desktop';
+      document.querySelectorAll('.preview-popup-tab').forEach(function (btn) {
+        btn.classList.toggle('active', btn.dataset.vp === 'desktop');
+      });
+      document.getElementById('popupViewportLabel').textContent = POPUP_VIEWPORT_LABELS.desktop;
+      renderUrlPreview();
+      document.getElementById('previewPopup').classList.remove('hidden');
+    }
+
+    function renderUrlPreview() {
+      var content = document.getElementById('previewPopupContent');
+      content.innerHTML = '';
+
+      var frameClass = 'popup-desktop-frame';
+      if (popupViewport === 'tablet') frameClass = 'popup-tablet-frame';
+      else if (popupViewport === 'mobile') frameClass = 'popup-mobile-frame';
+
+      var wrapper = document.createElement('div');
+      wrapper.className = frameClass;
+      wrapper.style.overflow = 'hidden';
+      if (popupViewport === 'mobile') wrapper.style.height = '667px';
+
+      var iframe = document.createElement('iframe');
+      iframe.src = popupPreviewUrl;
+      iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;';
+      iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+
+      wrapper.appendChild(iframe);
+      content.appendChild(wrapper);
+    }
+
     function closePreviewPopup() {
       document.getElementById('previewPopup').classList.add('hidden');
+      popupMode = 'canvas';
+      popupPreviewUrl = '';
     }
 
     function switchPopupViewport(vp) {
@@ -3102,7 +4588,11 @@
         btn.classList.toggle('active', btn.dataset.vp === vp);
       });
       document.getElementById('popupViewportLabel').textContent = POPUP_VIEWPORT_LABELS[vp] || '';
-      renderPopupPreview();
+      if (popupMode === 'url') {
+        renderUrlPreview();
+      } else {
+        renderPopupPreview();
+      }
     }
 
     function renderPopupPreview() {
@@ -3144,6 +4634,10 @@
 
     document.getElementById('newSlideModal').addEventListener('click', function (e) {
       if (e.target === this) closeNewSlideModal();
+    });
+
+    document.getElementById('importModal').addEventListener('click', function (e) {
+      if (e.target === this) closeImportModal();
     });
 
     document.getElementById('newSlideName').addEventListener('keydown', function (e) {
@@ -3241,15 +4735,457 @@
     });
 
     loadTemplates();
+    loadHtmlCatalog();
     loadLibrary();
 
-    // Deep-link: ?tab=builder or ?tab=templates
+    // Resolve active screen from path (/slides/library) or legacy ?tab= param
     (function () {
-      var p = new URLSearchParams(window.location.search);
-      var tab = p.get('tab');
-      if (tab === 'templates' || tab === 'builder') switchTab(tab);
-      else if (pickMode) switchTab('library');
+      var validTabs = { library: 1, templates: 1, builder: 1 };
+      var pathMatch = window.location.pathname.match(/^\/slides\/(\w+)/);
+      var tab = pathMatch ? pathMatch[1] : null;
+      if (!tab || !validTabs[tab]) {
+        var p = new URLSearchParams(window.location.search);
+        tab = p.get('tab');
+      }
+      if (!tab || !validTabs[tab]) tab = pickMode ? 'library' : 'library';
+      // Canonicalise the URL without adding a history entry
+      var canonPath = '/slides/' + tab;
+      if (window.location.pathname !== canonPath) {
+        history.replaceState({ tab: tab }, '', canonPath);
+      }
+      switchTab(tab, true);
     })();
+
+    // Close lib card dropdowns when clicking elsewhere
+    document.addEventListener('click', function () { closeAllLibCardMenus(); });
+
+    // Browser back / forward
+    window.addEventListener('popstate', function (e) {
+      var tab = (e.state && e.state.tab) ? e.state.tab : 'library';
+      if (!tab) {
+        var m = window.location.pathname.match(/^\/slides\/(\w+)/);
+        tab = m ? m[1] : 'library';
+      }
+      switchTab(tab, true);
+    });
+
+    // ── Template Creator Wizard ──────────────────────────────────────
+
+    var wzCurrentStep = 1;
+    var wzData = { name: '', category: '', slideMode: 'sequence', slideId: '', layout: '', blocks: [] };
+    var wzBuilderMode = 'wizard';
+
+    var WZ_LAYOUT_BLOCKS = {
+      'single-col':  ['headline', 'section-label', 'subtitle', 'body-text', 'image'],
+      'two-col':     ['headline', 'section-label', 'subtitle', 'body-text', 'image'],
+      'stats-grid':  ['headline', 'section-label', 'stat-number', 'stat-number', 'stat-number'],
+      'hero':        ['headline', 'section-label', 'subtitle', 'cta-button'],
+      'list':        ['headline', 'section-label', 'subtitle', 'bullet-list', 'image'],
+      'cta':         ['headline', 'section-label', 'cta-steps', 'cta-button', 'contact-block']
+    };
+
+    var WZ_BLOCK_META = {
+      'headline':      { label: 'Headline',         alwaysOn: true,  liveData: false },
+      'section-label': { label: 'Section Label',    alwaysOn: true,  liveData: false },
+      'subtitle':      { label: 'Subtitle / Intro', alwaysOn: false, liveData: false },
+      'body-text':     { label: 'Body Text',         alwaysOn: false, liveData: false },
+      'image':         { label: 'Image Slot',        alwaysOn: false, liveData: true  },
+      'stat-number':   { label: 'Stat Number',       alwaysOn: false, liveData: true  },
+      'bullet-list':   { label: 'Bullet List',       alwaysOn: false, liveData: false },
+      'cta-button':    { label: 'CTA Button',        alwaysOn: false, liveData: false },
+      'contact-block': { label: 'Contact Block',     alwaysOn: false, liveData: false },
+      'cta-steps':     { label: 'CTA Steps',         alwaysOn: false, liveData: false }
+    };
+
+    function setBuilderMode(mode) {
+      wzBuilderMode = mode;
+      var wizardPane  = document.getElementById('wizardPane');
+      var builderBody = document.getElementById('builderBody');
+      var modeWizard  = document.getElementById('modeWizard');
+      var modeCanvas  = document.getElementById('modeCanvas');
+      if (mode === 'wizard') {
+        wizardPane.classList.remove('hidden');
+        if (builderBody) builderBody.classList.add('hidden');
+        modeWizard.classList.add('active');
+        modeCanvas.classList.remove('active');
+      } else {
+        wizardPane.classList.add('hidden');
+        if (builderBody) builderBody.classList.remove('hidden');
+        modeCanvas.classList.add('active');
+        modeWizard.classList.remove('active');
+      }
+    }
+
+    function wzPickCategory(btn) {
+      document.querySelectorAll('#wzCategoryPills .wz-pill').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      wzData.category = btn.dataset.val;
+    }
+
+    function wzPickMode(btn) {
+      document.querySelectorAll('#wzStep1 .wz-category-pills:last-of-type .wz-pill').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      wzData.slideMode = btn.dataset.val;
+    }
+
+    function wzPickLayout(card) {
+      document.querySelectorAll('.wz-layout-card').forEach(function (c) { c.classList.remove('selected'); });
+      card.classList.add('selected');
+      wzData.layout = card.dataset.layout;
+    }
+
+    function wzComputeId() {
+      var name = (document.getElementById('wzName').value || '').trim();
+      var slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'new-slide';
+      var preview = document.getElementById('wzIdPreview');
+      fetch('/api/templates')
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res.success) return;
+          var maxNum = 0;
+          (res.data || []).forEach(function (t) {
+            var m = (t.id || '').match(/^ls(\d+)-/);
+            if (m) maxNum = Math.max(maxNum, parseInt(m[1], 10));
+          });
+          var nextNum = String(maxNum + 1).padStart(2, '0');
+          wzData.slideId = 'ls' + nextNum + '-' + slug;
+          if (preview) preview.textContent = wzData.slideId;
+        })
+        .catch(function () { wzData.slideId = 'ls16-' + slug; if (preview) preview.textContent = wzData.slideId; });
+    }
+
+    function wzBuildBlocksList() {
+      var list = document.getElementById('wzBlocksList');
+      list.innerHTML = '';
+      var layout = wzData.layout || 'single-col';
+      var blockIds = WZ_LAYOUT_BLOCKS[layout] || WZ_LAYOUT_BLOCKS['single-col'];
+
+      // dedupe, keeping order
+      var seen = {};
+      var unique = [];
+      blockIds.forEach(function (id) { if (!seen[id]) { seen[id] = true; unique.push(id); } });
+
+      wzData.blocks = unique.map(function (id) {
+        var meta = WZ_BLOCK_META[id] || { label: id, alwaysOn: false, liveData: false };
+        return { id: id, label: meta.label, on: true, alwaysOn: meta.alwaysOn, liveData: meta.liveData, feedKey: '' };
+      });
+
+      wzData.blocks.forEach(function (block) {
+        var row = document.createElement('div');
+        row.className = 'wz-block-row';
+
+        var toggleBtn = document.createElement('button');
+        toggleBtn.className = 'wz-block-toggle' + (block.on ? ' on' : '');
+        toggleBtn.textContent = block.on ? 'ON' : 'OFF';
+        if (block.alwaysOn) { toggleBtn.disabled = true; toggleBtn.title = 'Always required'; }
+
+        var feedWrap = document.createElement('div');
+        feedWrap.className = 'wz-block-feed-wrap';
+        feedWrap.style.display = (block.on && block.liveData) ? 'flex' : 'none';
+
+        toggleBtn.addEventListener('click', function () {
+          block.on = !block.on;
+          toggleBtn.classList.toggle('on', block.on);
+          toggleBtn.textContent = block.on ? 'ON' : 'OFF';
+          feedWrap.style.display = (block.on && block.liveData) ? 'flex' : 'none';
+        });
+
+        var nameEl = document.createElement('span');
+        nameEl.className = 'wz-block-name';
+        nameEl.textContent = block.label;
+
+        if (block.liveData) {
+          var feedCheck = document.createElement('label');
+          feedCheck.style.cssText = 'font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;flex-shrink:0;';
+          var chk = document.createElement('input');
+          chk.type = 'checkbox';
+          chk.style.accentColor = 'var(--accent)';
+          feedCheck.appendChild(chk);
+          feedCheck.appendChild(document.createTextNode('Live data'));
+
+          var feedInput = document.createElement('input');
+          feedInput.type = 'text';
+          feedInput.placeholder = 'feed-key';
+          feedInput.className = 'wz-block-feed';
+          feedInput.addEventListener('input', function () { block.feedKey = feedInput.value; });
+
+          chk.addEventListener('change', function () {
+            feedInput.style.display = chk.checked ? 'block' : 'none';
+          });
+          feedInput.style.display = 'none';
+
+          feedWrap.appendChild(feedCheck);
+          feedWrap.appendChild(feedInput);
+        }
+
+        row.appendChild(toggleBtn);
+        row.appendChild(nameEl);
+        row.appendChild(feedWrap);
+        list.appendChild(row);
+      });
+    }
+
+    function wzBuildReview() {
+      var summary = document.getElementById('wzReviewSummary');
+      var hasLiveFeed = wzData.blocks.some(function (b) { return b.on && b.liveData && b.feedKey; });
+      summary.innerHTML =
+        '<strong>ID:</strong> ' + (wzData.slideId || '&#8212;') + '<br>' +
+        '<strong>Name:</strong> ' + (wzData.name || '&#8212;') + '<br>' +
+        '<strong>Category:</strong> ' + (wzData.category || '&#8212;') + '<br>' +
+        '<strong>Layout:</strong> ' + (wzData.layout || '&#8212;') + '<br>' +
+        '<strong>Mode:</strong> ' + (wzData.slideMode || 'sequence') + '<br>' +
+        '<strong>Blocks:</strong> ' + wzData.blocks.filter(function (b) { return b.on; }).map(function (b) { return b.label; }).join(', ');
+
+      // Anatomy checks
+      document.getElementById('wck-style').textContent = '✓';
+      document.getElementById('wck-style').style.color = 'var(--accent)';
+      document.getElementById('wck-trans').textContent = '✓';
+      document.getElementById('wck-trans').style.color = 'var(--accent)';
+      document.getElementById('wck-track').textContent = wzData.blocks.some(function(b){ return b.on && (b.id === 'cta-button' || b.id === 'cta-steps'); }) ? '✓' : '–';
+      document.getElementById('wck-track').style.color = 'var(--muted)';
+      document.getElementById('wck-mode').textContent = '✓';
+      document.getElementById('wck-mode').style.color = 'var(--accent)';
+      document.getElementById('wck-feed').textContent = hasLiveFeed ? '✓' : '–';
+      document.getElementById('wck-feed').style.color = hasLiveFeed ? 'var(--accent)' : 'var(--muted)';
+
+      wzRenderPreview();
+    }
+
+    function wzBuildPreviewPage(skeletonHtml) {
+      var origin = window.location.origin;
+      return '<!DOCTYPE html><html><head>' +
+        '<meta charset="UTF-8">' +
+        '<link rel="stylesheet" href="' + origin + '/slides/style.css">' +
+        '<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}' +
+        'html,body{width:100%;height:100%;overflow:hidden;background:#1a1a2e}' +
+        '.slides-container{position:relative;width:100%;height:100%}' +
+        '.slide{opacity:1!important;transform:scale(1)!important;pointer-events:none!important}' +
+        '</style></head><body>' +
+        '<div class="slides-container">' + skeletonHtml + '</div>' +
+        '</body></html>';
+    }
+
+    function wzRenderPreview() {
+      var html = wzBuildHtml();
+      var page = wzBuildPreviewPage(html);
+      var blob = new Blob([page], { type: 'text/html' });
+      var url  = URL.createObjectURL(blob);
+      var thumb = document.getElementById('wzPreviewIframe');
+      if (thumb) {
+        if (thumb._blobUrl) URL.revokeObjectURL(thumb._blobUrl);
+        thumb._blobUrl = url;
+        thumb.src = url;
+      }
+    }
+
+    function wzOpenPreviewPopup() {
+      var thumb = document.getElementById('wzPreviewIframe');
+      var frame = document.getElementById('wzPreviewPopupFrame');
+      var title = document.getElementById('wzPreviewPopupTitle');
+      if (thumb && thumb._realUrl) {
+        frame.src = thumb._realUrl;
+        if (title) title.textContent = wzData.name || 'Template Preview';
+      } else if (thumb && thumb._blobUrl) {
+        frame.src = thumb._blobUrl;
+        if (title) title.textContent = (wzData.name || 'Template Preview') + ' (preview)';
+      }
+      document.getElementById('wzPreviewPopup').classList.remove('hidden');
+    }
+
+    function wzClosePreviewPopup() {
+      document.getElementById('wzPreviewPopup').classList.add('hidden');
+    }
+
+    document.getElementById('wzPreviewPopup').addEventListener('click', function (e) {
+      if (e.target === this) wzClosePreviewPopup();
+    });
+
+    function wzBuildHtml() {
+      var id   = wzData.slideId;
+      var mode = wzData.slideMode || 'sequence';
+      var blocks = wzData.blocks.filter(function (b) { return b.on; });
+
+      var bodyParts = [];
+      blocks.forEach(function (b) {
+        var feedAttr = (b.liveData && b.feedKey) ? ' data-feed="' + b.feedKey + '" data-feed-type="' + (b.id === 'image' ? 'text' : 'number') + '"' : '';
+        if (b.id === 'subtitle') {
+          bodyParts.push('      <p class="slide-subtitle" data-edit="subtitle" data-lang-key="' + id + '.subtitle" contenteditable spellcheck="false">Subtitle placeholder</p>');
+        } else if (b.id === 'body-text') {
+          bodyParts.push('      <p class="slide-body-text" data-edit="body" data-lang-key="' + id + '.body" contenteditable spellcheck="false">Body text placeholder</p>');
+        } else if (b.id === 'image') {
+          bodyParts.push('      <div class="slide-img-slot"' + feedAttr + ' data-edit="image" data-builder-only="">[ Image ]</div>');
+        } else if (b.id === 'stat-number') {
+          bodyParts.push('      <div class="stat-block"><div class="stat-number"' + feedAttr + '>0</div><div class="stat-label" data-edit="stat-label" data-lang-key="' + id + '.stat-label" contenteditable spellcheck="false">Metric</div></div>');
+        } else if (b.id === 'bullet-list') {
+          bodyParts.push('      <ul class="slide-bullets"><li data-edit="bullet-1" data-lang-key="' + id + '.bullet-1" contenteditable spellcheck="false">Bullet item</li></ul>');
+        } else if (b.id === 'cta-steps') {
+          bodyParts.push('      <div class="cta-steps"><div class="cta-step"><div class="step-num">1</div><span data-edit="step-1" data-lang-key="' + id + '.step-1" contenteditable spellcheck="false">First step</span></div></div>');
+        } else if (b.id === 'cta-button') {
+          bodyParts.push('      <div class="cta-actions"><a class="cta-btn cta-btn-wa" href="#" data-lang-key="' + id + '.btn-wa">WhatsApp</a><a class="cta-btn cta-btn-email" href="#" data-lang-key="' + id + '.btn-email">Email</a></div>');
+        } else if (b.id === 'contact-block') {
+          bodyParts.push('      <div class="cta-contact"><strong data-edit="contact-name" data-lang-key="' + id + '.contact-name" contenteditable spellcheck="false">Contact Name</strong></div>');
+        }
+      });
+
+      var layoutClass = wzData.layout === 'hero' ? 'hero' : 'content';
+
+      return [
+        '<div class="slide ' + layoutClass + ' ' + id + '"',
+        '     data-slide="' + id + '"',
+        '     data-slide-mode="' + mode + '">',
+        '',
+        '  <div class="slide-logo-row">',
+        '    <img src="/slides/shared/LOGO SoftSolution grays.png" alt="Softsolution">',
+        '    <span class="slide-logo-sep"></span>',
+        '    <img src="/slides/shared/LOGO LiteSentry Greys.png" alt="LiteSentry" class="slide-logo-ls">',
+        '  </div>',
+        '',
+        '  <div class="slide-layout">',
+        '    <header class="slide-head">',
+        '      <div class="section-label" data-edit="section-label" data-lang-key="' + id + '.section-label" contenteditable spellcheck="false">Section Name</div>',
+        '      <h1 class="slide-title" data-edit="headline" data-lang-key="' + id + '.headline" contenteditable spellcheck="false">Headline Placeholder</h1>',
+        '      <div class="divider"></div>',
+        '    </header>',
+        '    <div class="slide-body">',
+        bodyParts.join('\n'),
+        '    </div>',
+        '  </div>',
+        '',
+        '  <style>',
+        '    .' + id + ' { /* layout */ }',
+        '  </style>',
+        '',
+        '  <script>',
+        '  (function () {',
+        '    var slide   = document.currentScript.closest(\'[data-slide]\');',
+        '    var slideId = slide ? slide.dataset.slide : \'' + id + '\';',
+        '    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);',
+        '  })();',
+        '  <\/script>',
+        '',
+        '</div>'
+      ].join('\n');
+    }
+
+    function wzValidateStep(step) {
+      if (step === 1) {
+        var name = (document.getElementById('wzName').value || '').trim();
+        if (!name) { showToast('Please enter a slide name'); return false; }
+        if (!wzData.category) { showToast('Please pick a category'); return false; }
+        wzData.name = name;
+      }
+      if (step === 2) {
+        if (!wzData.layout) { showToast('Please choose a layout'); return false; }
+      }
+      return true;
+    }
+
+    function wzShowStep(n) {
+      wzCurrentStep = n;
+      for (var i = 1; i <= 4; i++) {
+        var stepEl = document.getElementById('wzStep' + i);
+        if (stepEl) stepEl.classList.toggle('hidden', i !== n);
+        var dot = document.getElementById('wzDot' + i);
+        if (dot) dot.classList.toggle('active', i === n);
+        if (dot) dot.classList.toggle('done', i < n);
+      }
+      document.getElementById('wzStepLabel').textContent = 'Step ' + n + ' of 4';
+      document.getElementById('wzBackBtn').style.visibility = n > 1 ? 'visible' : 'hidden';
+
+      var nextBtn = document.getElementById('wzNextBtn');
+      if (n === 4) {
+        nextBtn.textContent = 'Generate Template';
+        nextBtn.onclick = wzGenerate;
+      } else {
+        nextBtn.textContent = 'Next';
+        nextBtn.onclick = wzNext;
+      }
+    }
+
+    function wzNext() {
+      if (!wzValidateStep(wzCurrentStep)) return;
+      if (wzCurrentStep === 1) {
+        wzComputeId();
+        wzShowStep(2);
+      } else if (wzCurrentStep === 2) {
+        wzBuildBlocksList();
+        wzShowStep(3);
+      } else if (wzCurrentStep === 3) {
+        wzBuildReview();
+        wzShowStep(4);
+      }
+    }
+
+    function wzBack() {
+      if (wzCurrentStep > 1) wzShowStep(wzCurrentStep - 1);
+    }
+
+    function wzReset() {
+      wzData = { name: '', category: '', slideMode: 'sequence', slideId: '', layout: '', blocks: [] };
+      wzCurrentStep = 1;
+      document.getElementById('wzName').value = '';
+      document.querySelectorAll('#wzCategoryPills .wz-pill').forEach(function (b) { b.classList.remove('active'); });
+      document.getElementById('wzModeSeq').classList.add('active');
+      document.getElementById('wzModeEmb').classList.remove('active');
+      document.querySelectorAll('.wz-layout-card').forEach(function (c) { c.classList.remove('selected'); });
+      document.getElementById('wzResult').classList.add('hidden');
+      wzShowStep(1);
+    }
+
+    function wzGenerate() {
+      var btn = document.getElementById('wzNextBtn');
+      btn.textContent = 'Generating…';
+      btn.disabled = true;
+
+      // Send layout + blocks to server — server generates anatomy-compliant HTML
+      var blocks = wzData.blocks.filter(function (b) { return b.on; }).map(function (b) {
+        var entry = { type: b.id };
+        if (b.feedKey) { entry.feedKey = b.feedKey; entry.feedType = b.id === 'image' ? 'text' : 'number'; }
+        return entry;
+      });
+
+      fetch('/api/templates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id:        wzData.slideId,
+          name:      wzData.name,
+          category:  wzData.category,
+          slideMode: wzData.slideMode,
+          layout:    wzData.layout,
+          blocks:    blocks
+        })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          btn.textContent = 'Generate Template';
+          btn.disabled = false;
+          if (!res.success) { showToast('Error: ' + (res.error || 'Unknown error')); return; }
+          var result = document.getElementById('wzResult');
+          var pathEl = document.getElementById('wzResultPath');
+          result.classList.remove('hidden');
+          pathEl.textContent = res.data.file;
+          btn.textContent = 'Create Another';
+          btn.onclick = wzReset;
+          showToast('Template created: ' + res.data.id);
+          // Switch preview to real server URL now that the file exists
+          var filename = (res.data.file || '').replace('features/slides/', '').replace('.html', '');
+          var realUrl  = '/slides/preview/' + filename;
+          var thumb    = document.getElementById('wzPreviewIframe');
+          if (thumb) { thumb._realUrl = realUrl; thumb.src = realUrl; }
+        })
+        .catch(function (err) {
+          btn.textContent = 'Generate Template';
+          btn.disabled = false;
+          btn.onclick = wzGenerate;
+          showToast('Error: ' + err.message);
+        });
+    }
+
+    // Init wizard mode on load
+    setBuilderMode('wizard');
+    wzShowStep(1);
+    wzComputeId();
 
   </script>
 </body>

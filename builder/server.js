@@ -9,6 +9,7 @@ const session  = require('express-session');
 const { requireAuth, registerAuthRoutes } = require('./features/auth/auth');
 const { execFile } = require('child_process');
 const { translate } = require('./lib/translator');
+const { generateHtml } = require('./lib/template-generator');
 
 const app  = express();
 const PORT = 3000;
@@ -49,13 +50,15 @@ app.get('/slides/deck-preview/:id', function (req, res) {
     var libSlide = library.slides.find(function (s) { return s.id === deckSlide.librarySlideId; });
     if (!libSlide) return res.status(404).type('text/plain').send('Library slide not found');
 
-    var templates = JSON.parse(fs.readFileSync(TEMPLATES_PATH, 'utf8'));
-    var tpl       = templates.find(function (t) { return t.id === libSlide.templateId; });
-    if (!tpl) return res.status(404).type('text/plain').send('Template not found');
+    var resolved = resolveTemplate(libSlide.templateId);
+    if (!resolved) return res.status(404).type('text/plain').send('Template not found');
 
-    var fragment = renderLayoutToHtml(tpl, id, resolveSlideEdits(libSlide, activeDeckId));
-    if (readonly) {
-      fragment = fragment.replace(/ contenteditable=""/g, '').replace(/ contenteditable=''/g, '');
+    var fragment;
+    if (resolved.source === 'canvas') {
+      fragment = renderLayoutToHtml(resolved.tpl, id, resolveSlideEdits(libSlide, activeDeckId));
+      if (readonly) fragment = fragment.replace(/ contenteditable=""/g, '').replace(/ contenteditable=''/g, '');
+    } else {
+      fragment = applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), resolveSlideEdits(libSlide, activeDeckId), !readonly);
     }
     var page = [
       '<!DOCTYPE html>',
@@ -65,11 +68,14 @@ app.get('/slides/deck-preview/:id', function (req, res) {
       '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
       '  <link rel="stylesheet" href="/slides/style.css">',
       readonly ? '  <script>window.PB_READONLY = true;</script>' : '',
+      '  <script src="/slides/components/tracker.js"></script>',
       '  <script src="/slides/components/lightbox.js"></script>',
       '  <script src="/slides/components/carousel.js"></script>',
       '  <script src="/slides/components/tabs.js"></script>',
       '  <script src="/slides/components/list.js"></script>',
       '  <script src="/slides/components/table.js"></script>',
+      '  <script src="/slides/components/button.js"></script>',
+      '  <script src="/slides/components/tags.js"></script>',
       '  <style>',
       '    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }',
       '    html, body { width: 100%; height: 100%; overflow: hidden; }',
@@ -102,6 +108,24 @@ app.get('/slides/deck-preview/:id', function (req, res) {
       '      if (window.LSTable)  LSTable.init(root);',
       '    });',
       '  </script>',
+      !readonly ? [
+        '  <script>',
+        '  (function () {',
+        '    var DECK_SLIDE_ID = "' + id + '";',
+        '    document.addEventListener("focusout", function (e) {',
+        '      if (!e.target.hasAttribute || !e.target.hasAttribute("data-edit") || !e.target.hasAttribute("contenteditable")) return;',
+        '      var edits = {};',
+        '      document.querySelectorAll("[data-edit][contenteditable]").forEach(function (el) {',
+        '        edits[el.getAttribute("data-edit")] = el.innerHTML;',
+        '      });',
+        '      fetch("/api/deck/slides/" + DECK_SLIDE_ID + "/edits", {',
+        '        method: "POST", headers: { "Content-Type": "application/json" },',
+        '        body: JSON.stringify({ edits: edits })',
+        '      });',
+        '    });',
+        '  })();',
+        '  </script>',
+      ].join('\n') : '',
       '</body>',
       '</html>'
     ].join('\n');
@@ -709,6 +733,29 @@ function applyEditsToBlob(blobHtml, savedEdits) {
     var key = $(this).attr('data-edit');
     if (key && savedEdits[key] !== undefined) {
       $(this).html(savedEdits[key]);
+    }
+    // Blobs are saved with runtime state — tabs.js and other components temporarily
+    // set contenteditable="false" on inner elements. Normalize back to "" so edits work.
+    if ($(this).is('[contenteditable]')) {
+      $(this).attr('contenteditable', '');
+    }
+  });
+  return $.html();
+}
+
+function applyEditsToHtml(html, edits, editable) {
+  if (!html) return html;
+  edits = edits || {};
+  var $ = cheerio.load(html, { decodeEntities: false }, false);
+  $('[data-edit]').each(function () {
+    var key = $(this).attr('data-edit');
+    if (key && edits[key] !== undefined) {
+      $(this).html(edits[key]);
+    }
+    if (editable) {
+      $(this).attr('contenteditable', '').attr('spellcheck', 'false');
+    } else {
+      $(this).removeAttr('contenteditable').removeAttr('spellcheck');
     }
   });
   return $.html();
@@ -2843,12 +2890,16 @@ app.get('/slides/:deckSlideId.html', function (req, res, next) {
     var libSlide = library.slides.find(function (s) { return s.id === deckSlide.librarySlideId; });
     if (!libSlide) return next();
 
-    var templates = JSON.parse(fs.readFileSync(TEMPLATES_PATH, 'utf8'));
-    var tpl       = templates.find(function (t) { return t.id === libSlide.templateId; });
-    if (!tpl) return next();
+    var resolved = resolveTemplate(libSlide.templateId);
+    if (!resolved) return next();
 
     var savedEdits = resolveSlideEdits(libSlide, activeDeckId);
-    var html = renderLayoutToHtml(tpl, deckSlideId, savedEdits);
+    var html;
+    if (resolved.source === 'canvas') {
+      html = renderLayoutToHtml(resolved.tpl, deckSlideId, savedEdits);
+    } else {
+      html = applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), savedEdits, true);
+    }
     res.type('text/html').send(html);
   } catch (err) {
     console.error('Deck slide render error:', err.message);
@@ -2956,11 +3007,32 @@ var DECK_PATH          = path.join(__dirname, 'data', 'deck.json');
 var DECKS_DIR_PATH     = path.join(__dirname, 'data', 'decks');
 var LIBRARY_PATH       = path.join(__dirname, 'data', 'slide-library.json');
 var PRESENTATIONS_PATH = path.join(__dirname, 'data', 'presentations.json');
-var LAYOUTS_PATH   = path.join(__dirname, 'data', 'layouts.json');
-var TEMPLATES_PATH = path.join(__dirname, 'data', 'slide-templates.json');
-var SETTINGS_PATH  = path.join(__dirname, 'data', 'settings.json');
+var LAYOUTS_PATH              = path.join(__dirname, 'data', 'layouts.json');
+var LAYOUT_SKELETONS_PATH     = path.join(__dirname, 'data', 'layout-skeletons.json');
+var TEMPLATES_PATH            = path.join(__dirname, 'data', 'slide-templates.json');
+var TEMPLATE_CATALOG_PATH  = path.join(__dirname, 'data', 'templates.json');
+var SETTINGS_PATH          = path.join(__dirname, 'data', 'settings.json');
 var LANGUAGES_PATH     = path.join(__dirname, 'data', 'languages.json');
 var TRANSLATIONS_PATH  = path.join(__dirname, 'data', 'translations.json');
+
+// Resolve a template by id from either the canvas builder store or the HTML catalog.
+// Returns { source: 'canvas'|'html', tpl, filePath? } or null.
+function resolveTemplate(templateId) {
+  var canvasList = JSON.parse(fs.readFileSync(TEMPLATES_PATH, 'utf8'));
+  var canvasTpl  = canvasList.find(function (t) { return t.id === templateId; });
+  if (canvasTpl) return { source: 'canvas', tpl: canvasTpl };
+
+  var catalog  = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
+  var htmlTpl  = catalog.find(function (t) { return t.id === templateId; });
+  if (htmlTpl) {
+    return {
+      source:   'html',
+      tpl:      htmlTpl,
+      filePath: path.join(__dirname, htmlTpl.file)
+    };
+  }
+  return null;
+}
 
 // ── Umami analytics proxy ─────────────────────────────────────────────────────
 var UMAMI_BASE_URL = process.env.UMAMI_BASE_URL || 'https://umami.wbtm.io';
@@ -3989,8 +4061,12 @@ function buildFrozenPresentation(presentation) {
 
 function makePresId() {
   var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
-  var count = (data.presentations || []).length + 1;
-  return String(count).padStart(8, '0');
+  var ids = (data.presentations || []).map(function (p) {
+    var n = parseInt(p.id, 10);
+    return isNaN(n) ? 0 : n;
+  });
+  var max = ids.length > 0 ? Math.max.apply(null, ids) : 0;
+  return String(max + 1).padStart(8, '0');
 }
 
 // POST /api/presentations/rebuild-all — regenerate all frozen HTML files
@@ -4097,7 +4173,9 @@ app.post('/api/presentations', function (req, res) {
     return res.status(400).json({ success: false, error: 'customerName is required' });
   }
   try {
-    var deck    = readDeckById(getActiveDeckId());
+    var activeDeckId = getActiveDeckId();
+    var deck    = readDeckById(activeDeckId);
+    var deckMeta = (readDecks().decks || []).find(function (d) { return d.id === activeDeckId; }) || {};
     var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
 
     var presentationName = (body.presentationName || '').trim();
@@ -4118,6 +4196,8 @@ app.post('/api/presentations', function (req, res) {
         customerLogoSrc = '/slides/uploads/' + logoSafe;
       }
     }
+    // Fall back to the deck's own logo if no file was uploaded
+    if (!customerLogoSrc && deckMeta.logo) customerLogoSrc = deckMeta.logo;
 
     // Build a snapshot: deck slide order + names
     var slides = (deck.slides || []).map(function (s) {
@@ -4167,6 +4247,7 @@ app.post('/api/presentations', function (req, res) {
     var presentation = {
       id:              makePresId(),
       createdAt:       new Date().toISOString().slice(0, 10),
+      deckId:          (body.deckId || '').trim(),
       presentationName: presentationName,
       customerName:    customerName,
       contactName:     contactName,
@@ -4329,12 +4410,16 @@ app.post('/api/presentations/:id/duplicate', function (req, res) {
     var presentation = {
       id:              makePresId(),
       createdAt:       new Date().toISOString().slice(0, 10),
+      deckId:          src.deckId || '',
+      presentationName: src.presentationName || '',
       customerName:    customerName,
       contactName:     contactName,
       contactTitle:    contactTitle,
       customerLogoSrc: logoSrc,
       slideCount:      slides.filter(function (s) { return s.visible; }).length,
-      slides:          slides
+      slides:          slides,
+      defaultLanguage: src.defaultLanguage || 'en',
+      languages:       src.languages || []
     };
 
     data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
@@ -4414,13 +4499,37 @@ app.get('/view/:id', function (req, res) {
   res.sendFile(path.join(__dirname, 'features/presentation-view/index.html'));
 });
 
-// GET /api/slide-library — return the slide library catalog
+// GET /api/slide-library — return the slide library catalog with deck membership
 app.get('/api/slide-library', function (req, res) {
   try {
     var library   = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
     var templates = JSON.parse(fs.readFileSync(TEMPLATES_PATH, 'utf8'));
     var tplMap    = {};
     templates.forEach(function (t) { tplMap[t.id] = t; });
+
+    // Build deck membership map: librarySlideId -> [{ id, name }]
+    var deckMembershipMap = {};
+    var deckList = [];
+    try {
+      var decksData = readDecks();
+      var allDecks  = decksData.decks || [];
+      allDecks.forEach(function (deckMeta) {
+        try {
+          var deck = readDeckById(deckMeta.id);
+          var deckEntry = { id: deckMeta.id, name: deck.title || deckMeta.name || deckMeta.id };
+          deckList.push(deckEntry);
+          var deckSlides = deck.slides || [];
+          deckSlides.forEach(function (ds) {
+            if (ds.librarySlideId) {
+              if (!deckMembershipMap[ds.librarySlideId]) {
+                deckMembershipMap[ds.librarySlideId] = [];
+              }
+              deckMembershipMap[ds.librarySlideId].push(deckEntry);
+            }
+          });
+        } catch (e) { /* skip missing/corrupt deck files */ }
+      });
+    } catch (e) { /* non-fatal — proceed without membership data */ }
 
     var slides = library.slides.map(function (s) {
       var tpl = s.templateId ? tplMap[s.templateId] : null;
@@ -4430,11 +4539,12 @@ app.get('/api/slide-library', function (req, res) {
       var ignored    = !!(s.templateUpdateIgnoredAt && hasUpdate);
       return Object.assign({}, s, {
         hasTemplateUpdate: hasUpdate && !ignored,
-        templateUpdateIgnored: ignored
+        templateUpdateIgnored: ignored,
+        decks: deckMembershipMap[s.id] || []
       });
     });
 
-    res.json({ success: true, data: slides });
+    res.json({ success: true, data: { slides: slides, decks: deckList } });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -4445,6 +4555,114 @@ app.get('/api/slide-templates', function (req, res) {
   try {
     var templates = JSON.parse(fs.readFileSync(TEMPLATES_PATH, 'utf8'));
     res.json({ success: true, data: templates });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /api/templates — return the HTML slide template catalog; ?category=CTA to filter
+app.get('/api/templates', function (req, res) {
+  try {
+    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
+    var category = req.query.category;
+    if (category) {
+      catalog = catalog.filter(function (t) {
+        return t.category.toLowerCase() === category.toLowerCase();
+      });
+    }
+    res.json({ success: true, data: catalog });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/templates — register a new HTML slide template
+// Generator mode (preferred): { id, name, category, slideMode, layout, blocks }
+// Direct mode (backward compat): { id, name, category, slideMode, components, html }
+// Writes the HTML to features/slides/slide-[NN]-[slug].html, appends entry to templates.json
+app.post('/api/templates', function (req, res) {
+  try {
+    var body = req.body || {};
+    var id        = (body.id       || '').trim();
+    var name      = (body.name     || '').trim();
+    var category  = (body.category || '').trim();
+    var slideMode = (body.slideMode || 'sequence').trim();
+
+    if (!id || !name || !category) {
+      return res.status(400).json({ success: false, error: 'id, name, and category are required' });
+    }
+
+    // Generator mode: layout + blocks → server builds HTML
+    var html, components;
+    if (body.layout) {
+      var blocks = Array.isArray(body.blocks) ? body.blocks : [];
+      try {
+        html = generateHtml({ id: id, slideMode: slideMode, layout: body.layout, blocks: blocks });
+      } catch (genErr) {
+        return res.status(400).json({ success: false, error: 'Generator error: ' + genErr.message });
+      }
+      components = blocks.map(function (b) { return b.type; }).filter(Boolean);
+    } else {
+      // Direct mode: caller supplies html
+      html = (body.html || '').trim();
+      components = Array.isArray(body.components) ? body.components : [];
+      if (!html) {
+        return res.status(400).json({ success: false, error: 'Either layout+blocks or html is required' });
+      }
+    }
+
+    var validCategories = ['Cover', 'Content', 'Stats', 'Visual', 'CTA', 'Data'];
+    if (!validCategories.includes(category)) {
+      return res.status(400).json({ success: false, error: 'category must be one of: ' + validCategories.join(', ') });
+    }
+
+    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
+    if (catalog.find(function (t) { return t.id === id; })) {
+      return res.status(409).json({ success: false, error: 'Template id already exists: ' + id });
+    }
+
+    // Derive next slide number from existing files
+    var slidesDir = path.join(__dirname, 'features', 'slides');
+    var existing  = fs.readdirSync(slidesDir).filter(function (f) { return /^slide-\d+-.+\.html$/.test(f); });
+    var maxNum    = existing.reduce(function (max, f) {
+      var m = f.match(/^slide-(\d+)-/);
+      return m ? Math.max(max, parseInt(m[1], 10)) : max;
+    }, 0);
+    var nextNum  = String(maxNum + 1).padStart(2, '0');
+    var slug     = id.replace(/[^a-z0-9-]/gi, '-').toLowerCase();
+    var filename = 'slide-' + nextNum + '-' + slug + '.html';
+    var filePath = path.join(slidesDir, filename);
+    var fileRef  = 'features/slides/' + filename;
+
+    fs.writeFileSync(filePath, html, 'utf8');
+
+    var entry = {
+      id:         id,
+      name:       name,
+      category:   category,
+      slideMode:  slideMode,
+      components: components,
+      file:       fileRef,
+      createdAt:  new Date().toISOString()
+    };
+    catalog.push(entry);
+    fs.writeFileSync(TEMPLATE_CATALOG_PATH, JSON.stringify(catalog, null, 2), 'utf8');
+
+    res.status(201).json({ success: true, data: entry });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// DELETE /api/templates/:id — deregister a template (keeps the HTML file)
+app.delete('/api/templates/:id', function (req, res) {
+  try {
+    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
+    var idx     = catalog.findIndex(function (t) { return t.id === req.params.id; });
+    if (idx === -1) return res.status(404).json({ success: false, error: 'Template not found: ' + req.params.id });
+    catalog.splice(idx, 1);
+    fs.writeFileSync(TEMPLATE_CATALOG_PATH, JSON.stringify(catalog, null, 2), 'utf8');
+    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -4522,15 +4740,13 @@ app.post('/api/library', function (req, res) {
     var name       = body.name || 'Untitled Slide';
     if (!templateId) return res.status(400).json({ success: false, error: 'templateId is required' });
 
-    var templates = JSON.parse(fs.readFileSync(TEMPLATES_PATH, 'utf8'));
-    var tpl = templates.find(function (t) { return t.id === templateId; });
-
+    var resolved = resolveTemplate(templateId);
     var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
     var newSlide = {
       id: 'lib-' + Date.now(),
       name: name,
       templateId: templateId,
-      templateVersion: tpl ? (tpl.version || 1) : 1,
+      templateVersion: (resolved && resolved.source === 'canvas' && resolved.tpl.version) ? resolved.tpl.version : 1,
       edits: {}
     };
     library.slides.push(newSlide);
@@ -4551,11 +4767,28 @@ app.get('/slides/library-preview/:id', function (req, res) {
     var library   = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
     var libSlide  = library.slides.find(function (s) { return s.id === id; });
     if (!libSlide) return res.status(404).type('text/plain').send('Library slide not found');
-    var templates = JSON.parse(fs.readFileSync(TEMPLATES_PATH, 'utf8'));
-    var tpl       = templates.find(function (t) { return t.id === libSlide.templateId; });
-    if (!tpl) return res.status(404).type('text/plain').send('Template not found');
-    var fragment  = renderLayoutToHtml(tpl, id, libSlide.edits || {});
-    fragment = fragment.replace(/ contenteditable=""/g, '').replace(/ contenteditable=''/g, '');
+
+    var fragment;
+
+    // Zone-builder slides are stored as complete HTML files — resolve directly
+    if (libSlide.builtWith === 'zone-builder' && libSlide.file) {
+      var zbPath = path.join(__dirname, libSlide.file);
+      if (!fs.existsSync(zbPath)) {
+        return res.status(404).type('text/plain').send('Zone-builder slide file not found');
+      }
+      fragment = fs.readFileSync(zbPath, 'utf8');
+      fragment = fragment.replace(/ contenteditable(?:="")?/g, '');
+    } else {
+      var resolved = resolveTemplate(libSlide.templateId);
+      if (!resolved) return res.status(404).type('text/plain').send('Template not found');
+      if (resolved.source === 'canvas') {
+        fragment = renderLayoutToHtml(resolved.tpl, id, libSlide.edits || {});
+        fragment = fragment.replace(/ contenteditable=""/g, '').replace(/ contenteditable=''/g, '');
+      } else {
+        fragment = applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), libSlide.edits || {}, false);
+      }
+    }
+
     var page = [
       '<!DOCTYPE html>',
       '<html lang="en">',
@@ -4590,14 +4823,138 @@ app.get('/slides/library-preview/:id', function (req, res) {
   }
 });
 
+// GET /slides/library-edit/:id — editable view of a library slide (saves to deckEdits.default)
+app.get('/slides/library-edit/:id', function (req, res) {
+  var id = req.params.id;
+  if (!/^[a-z0-9-]+$/i.test(id)) {
+    return res.status(400).type('text/plain').send('Invalid id');
+  }
+  try {
+    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var libSlide = library.slides.find(function (s) { return s.id === id; });
+    if (!libSlide) return res.status(404).type('text/plain').send('Library slide not found');
+
+    var fragment;
+
+    // Zone-builder slides are complete HTML files — serve as-is (readonly for edit view)
+    if (libSlide.builtWith === 'zone-builder' && libSlide.file) {
+      var zbEditPath = path.join(__dirname, libSlide.file);
+      if (!fs.existsSync(zbEditPath)) {
+        return res.status(404).type('text/plain').send('Zone-builder slide file not found');
+      }
+      fragment = fs.readFileSync(zbEditPath, 'utf8');
+    } else {
+      var resolved = resolveTemplate(libSlide.templateId);
+      if (!resolved) return res.status(404).type('text/plain').send('Template not found');
+
+      var baseEdits = resolveSlideEdits(libSlide, 'default');
+      if (resolved.source === 'canvas') {
+        fragment = renderLayoutToHtml(resolved.tpl, id, baseEdits);
+      } else {
+        fragment = applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), baseEdits, true);
+      }
+    }
+    var page = [
+      '<!DOCTYPE html>',
+      '<html lang="en">',
+      '<head>',
+      '  <meta charset="UTF-8">',
+      '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+      '  <link rel="stylesheet" href="/slides/style.css">',
+      '  <script src="/slides/components/tracker.js"></script>',
+      '  <script src="/slides/components/lightbox.js"></script>',
+      '  <script src="/slides/components/carousel.js"></script>',
+      '  <script src="/slides/components/tabs.js"></script>',
+      '  <script src="/slides/components/list.js"></script>',
+      '  <script src="/slides/components/table.js"></script>',
+      '  <script src="/slides/components/button.js"></script>',
+      '  <script src="/slides/components/tags.js"></script>',
+      '  <style>',
+      '    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }',
+      '    html, body { width: 100%; height: 100%; overflow: hidden; }',
+      '    .slides-container { position: relative; width: 100%; height: 100%; }',
+      '    .slide { opacity: 1 !important; transform: scale(1) !important; pointer-events: auto !important; }',
+      '  </style>',
+      '</head>',
+      '<body>',
+      '  <div class="slides-container">',
+      fragment,
+      '  </div>',
+      '  <div id="lightbox">',
+      '    <div id="lb-inner">',
+      '      <button id="lb-close">&#10005;</button>',
+      '      <button id="lb-prev" class="lb-nav-btn">&#8249;</button>',
+      '      <div id="lb-stage"><img id="lb-img" src="" alt=""><div id="lb-cap"></div></div>',
+      '      <button id="lb-next" class="lb-nav-btn">&#8250;</button>',
+      '      <div id="lb-thumbs"></div>',
+      '    </div>',
+      '  </div>',
+      '  <script>',
+      '    document.addEventListener("DOMContentLoaded", function () {',
+      '      var root = document.querySelector(".slides-container");',
+      '      if (window.Carousel) Carousel.init(root);',
+      '      if (window.Tabs)     Tabs.init(root);',
+      '      if (window.Lightbox) Lightbox.init(root);',
+      '      if (window.List)     List.init(root);',
+      '      if (window.LSTable)  LSTable.init(root);',
+      '    });',
+      '  </script>',
+      '  <script>',
+      '  (function () {',
+      '    var LIB_SLIDE_ID = "' + id + '";',
+      '    document.addEventListener("focusout", function (e) {',
+      '      if (!e.target.hasAttribute || !e.target.hasAttribute("data-edit") || !e.target.hasAttribute("contenteditable")) return;',
+      '      var edits = {};',
+      '      document.querySelectorAll("[data-edit][contenteditable]").forEach(function (el) {',
+      '        edits[el.getAttribute("data-edit")] = el.innerHTML;',
+      '      });',
+      '      fetch("/api/slide-library/" + LIB_SLIDE_ID + "/edits", {',
+      '        method: "POST", headers: { "Content-Type": "application/json" },',
+      '        body: JSON.stringify({ edits: edits })',
+      '      });',
+      '    });',
+      '  })();',
+      '  </script>',
+      '</body>',
+      '</html>'
+    ].join('\n');
+    res.type('text/html').send(page);
+  } catch (err) {
+    res.status(500).type('text/plain').send('Error: ' + err.message);
+  }
+});
+
+// POST /api/slide-library/:id/edits — save base edits for a library slide (stored in deckEdits.default)
+app.post('/api/slide-library/:id/edits', function (req, res) {
+  try {
+    var id    = req.params.id;
+    var edits = req.body.edits;
+    if (!id || !edits) return res.status(400).json({ success: false, error: 'Missing id or edits' });
+
+    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var libSlide = library.slides.find(function (s) { return s.id === id; });
+    if (!libSlide) return res.status(404).json({ success: false, error: 'Library slide not found' });
+
+    if (!libSlide.deckEdits) libSlide.deckEdits = {};
+    if (!libSlide.deckEdits['default']) libSlide.deckEdits['default'] = {};
+    libSlide.deckEdits['default'] = Object.assign({}, libSlide.deckEdits['default'], edits);
+    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // ── Page: slides ──────────────────────────────────────────────────────────────
 app.get('/layouts', function (_req, res) {
   res.redirect('/slides');
 });
 
-app.get('/slides', function (_req, res) {
-  res.sendFile(path.join(__dirname, 'features/slides/index.html'));
-});
+app.get('/slides',           function (_req, res) { res.sendFile(path.join(__dirname, 'features/slides/index.html')); });
+app.get('/slides/library',   function (_req, res) { res.sendFile(path.join(__dirname, 'features/slides/index.html')); });
+app.get('/slides/templates', function (_req, res) { res.sendFile(path.join(__dirname, 'features/slides/index.html')); });
+app.get('/slides/builder',   function (_req, res) { res.sendFile(path.join(__dirname, 'features/slides/index.html')); });
+app.get('/zone-builder',     function (_req, res) { res.sendFile(path.join(__dirname, 'features/zone-builder/index.html')); });
 
 // ── API: languages ────────────────────────────────────────────────────────────
 app.get('/api/languages', function (_req, res) {
@@ -4965,6 +5322,88 @@ app.get('/api/layouts', function (_req, res) {
     res.json({ success: true, data: layouts });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ── API: layout skeletons (zone-based builder) ────────────────────────────────
+app.get('/api/layout-skeletons', function (_req, res) {
+  try {
+    var skeletons = JSON.parse(fs.readFileSync(LAYOUT_SKELETONS_PATH, 'utf8'));
+    res.json({ success: true, data: skeletons });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/slide-builder/save — assemble and persist a zone-builder slide
+app.post('/api/slide-builder/save', function (req, res) {
+  try {
+    var body         = req.body || {};
+    var slideName    = (body.slideName    || '').trim();
+    var savedSlideId = (body.savedSlideId || '').trim() || null;
+    var layoutId     = (body.layoutId     || '').trim();
+    var html         = (body.html         || '').trim();
+
+    if (!slideName || !html) {
+      return res.status(400).json({ ok: false, error: 'slideName and html are required' });
+    }
+
+    var slidesDir = path.join(__dirname, 'features', 'slides');
+    var library   = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var now       = new Date().toISOString();
+    var slideId, filePath;
+
+    if (savedSlideId) {
+      // Re-save: overwrite existing file and bump lastModified
+      var existing = library.slides.find(function (s) { return s.id === savedSlideId; });
+      if (!existing) {
+        return res.status(404).json({ ok: false, error: 'Slide not found: ' + savedSlideId });
+      }
+      slideId  = savedSlideId;
+      filePath = path.join(__dirname, existing.file);
+      html     = html.replace(/__SLIDE_ID__/g, slideId);
+      fs.writeFileSync(filePath, html, 'utf8');
+      existing.name         = slideName;
+      existing.lastModified = now;
+
+    } else {
+      // New slide: find next available NN across all slide files
+      var allFiles = fs.readdirSync(slidesDir).filter(function (f) {
+        return /^(?:slide-|ls)\d+-.+\.html$/.test(f);
+      });
+      var maxNum  = allFiles.reduce(function (max, f) {
+        var m = f.match(/^(?:slide-|ls)(\d+)-/);
+        return m ? Math.max(max, parseInt(m[1], 10)) : max;
+      }, 0);
+      var nextNum = String(maxNum + 1).padStart(2, '0');
+      var slug    = slideName.replace(/[^a-z0-9]+/gi, '-').toLowerCase().replace(/^-+|-+$/g, '') || 'slide';
+      slideId     = 'ls' + nextNum + '-' + slug;
+      var filename = 'slide-' + nextNum + '-' + slug + '.html';
+      var fileRef  = 'features/slides/' + filename;
+      filePath     = path.join(slidesDir, filename);
+
+      html = html.replace(/__SLIDE_ID__/g, slideId);
+      fs.writeFileSync(filePath, html, 'utf8');
+
+      library.slides.push({
+        id:           slideId,
+        name:         slideName,
+        file:         fileRef,
+        layoutId:     layoutId || null,
+        builtWith:    'zone-builder',
+        edits:        {},
+        deckEdits:    {},
+        createdAt:    now,
+        lastModified: now
+      });
+    }
+
+    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    res.json({ ok: true, slideId: slideId });
+
+  } catch (err) {
+    console.error('[slide-builder/save]', err.message);
+    res.status(500).json({ ok: false, error: err.message });
   }
 });
 

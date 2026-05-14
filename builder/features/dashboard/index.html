@@ -298,76 +298,108 @@
     .fp-card {
       display: flex;
       align-items: center;
-      gap: 14px;
-      padding: 11px 0;
+      gap: 12px;
+      padding: 10px 0;
       border-bottom: 1px solid var(--border);
     }
     .fp-card:last-child { border-bottom: none; }
-    .fp-card-info { flex: 1; min-width: 0; }
-    .fp-card-name { font-size: 13px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .fp-card-sub  { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .fp-card-meta { font-size: 12px; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
-    .fp-card-actions { display: flex; gap: 6px; flex-shrink: 0; }
-    .fp-btn {
-      padding: 5px 10px;
-      border-radius: var(--radius-btn);
-      font-size: 12px;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      color: var(--text);
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      transition: border-color .15s, color .15s;
-      white-space: nowrap;
+    .fp-item-logo {
+      width: 38px; height: 38px; border-radius: 8px; flex-shrink: 0;
+      overflow: hidden; display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,.07); font-size: 14px; font-weight: 700;
+      color: var(--muted); text-transform: uppercase; cursor: pointer;
+      position: relative; transition: opacity .15s;
     }
-    .fp-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .fp-btn-danger:hover { border-color: #e55; color: #e55; }
-    .fp-btn:disabled { opacity: .4; cursor: default; pointer-events: none; }
+    .fp-item-logo:hover { opacity: .8; }
+    .fp-item-logo::after {
+      content: 'Filter chart';
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 600; letter-spacing: .03em;
+      color: #fff; background: rgba(0,0,0,.6);
+      opacity: 0; transition: opacity .15s;
+      text-align: center; padding: 2px;
+    }
+    .fp-item-logo:hover::after { opacity: 1; }
+    [data-theme="light"] .fp-item-logo { background: rgba(0,0,0,.06); }
+    .fp-item-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .fp-card-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .fp-card-row1 { display: flex; align-items: center; gap: 6px; min-width: 0; }
+    .fp-card-name { flex: 1; min-width: 0; font-size: 13px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .fp-card-row2 { display: flex; align-items: center; gap: 0; min-width: 0; }
+    .fp-card-meta { font-size: 11px; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+    .fp-item-link {
+      font-size: 11px; color: var(--accent); cursor: pointer; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis; flex: 1; min-width: 0; user-select: none;
+    }
+    .fp-item-link:hover { text-decoration: underline; }
+    .fp-item-link.copied { color: #4ade80; }
+    .fp-status-badge {
+      display: inline-flex; align-items: center; font-size: 9px; font-weight: 700;
+      letter-spacing: .04em; padding: 1px 5px; border-radius: 999px; flex-shrink: 0;
+    }
+    .fp-status-badge--pub { background: rgba(74,222,128,.15); color: #4ade80; }
+    .fp-status-badge--draft { background: rgba(255,255,255,.06); color: var(--muted); }
+    [data-theme="light"] .fp-status-badge--draft { background: rgba(0,0,0,.06); }
+    .fp-status-badge--archived { background: rgba(251,146,60,.12); color: #f97316; }
+    .fp-item-actions { display: flex; align-items: center; flex-shrink: 0; }
+    .fp-gear-btn {
+      width: 28px; height: 28px; border: none; background: transparent;
+      color: var(--muted); font-size: 15px; border-radius: 6px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s, color .15s; font-family: inherit;
+    }
+    .fp-gear-btn:hover { background: rgba(255,255,255,.08); color: var(--text); }
+    [data-theme="light"] .fp-gear-btn:hover { background: rgba(0,0,0,.06); }
+    .fp-row-actions { position: relative; }
+    .fp-dropdown {
+      display: none; position: absolute; right: 0; bottom: 100%; margin-bottom: 4px;
+      min-width: 168px; background: #111; border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px; padding: 4px; box-shadow: 0 10px 36px rgba(0,0,0,.7); z-index: 9999;
+    }
+    [data-theme="light"] .fp-dropdown { background: #fff; border-color: rgba(0,0,0,0.1); box-shadow: 0 10px 36px rgba(0,0,0,.15); }
+    .fp-dropdown.open { display: block; }
+    .fp-dropdown-item {
+      padding: 8px 12px; border-radius: 7px; font-size: 13px;
+      color: rgba(255,255,255,.8); cursor: pointer; transition: background .1s; white-space: nowrap;
+    }
+    [data-theme="light"] .fp-dropdown-item { color: rgba(0,0,0,.75); }
+    .fp-dropdown-item:hover { background: rgba(255,255,255,.08); color: #fff; }
+    [data-theme="light"] .fp-dropdown-item:hover { background: rgba(0,0,0,.05); color: #000; }
+    .fp-dropdown-item.danger { color: #e55; }
+    .fp-dropdown-item.danger:hover { background: rgba(238,85,85,.1); }
+    .fp-dropdown-divider { height: 1px; background: rgba(255,255,255,.08); margin: 4px 0; }
+    [data-theme="light"] .fp-dropdown-divider { background: rgba(0,0,0,.08); }
     .fp-pagination {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 14px;
-      justify-content: center;
-      font-size: 13px;
-      color: var(--muted);
+      display: flex; align-items: center; gap: 10px; margin-top: 14px;
+      justify-content: center; font-size: 13px; color: var(--muted);
     }
     .fp-pagination button {
-      padding: 5px 12px;
-      border-radius: var(--radius-btn);
-      font-size: 12px;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      color: var(--text);
-      transition: border-color .15s;
+      padding: 5px 12px; border-radius: var(--radius-btn); font-size: 12px;
+      cursor: pointer; border: 1px solid var(--border); background: var(--bg);
+      color: var(--text); transition: border-color .15s;
     }
     .fp-pagination button:hover:not(:disabled) { border-color: var(--accent); }
     .fp-pagination button:disabled { opacity: .35; cursor: default; }
 
-    /* ── Grid/List toggle ── */
+    /* ── View toggle ── */
+    .fp-view-toggle {
+      display: flex; border: 1px solid var(--border);
+      border-radius: var(--radius-btn); overflow: hidden; flex-shrink: 0;
+    }
     .fp-view-btn {
-      width: 30px; height: 30px;
-      display: flex; align-items: center; justify-content: center;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-btn);
-      background: var(--bg);
-      color: var(--muted);
-      cursor: pointer;
-      transition: border-color .15s, color .15s, background .15s;
+      padding: 7px 11px; border: none; background: transparent;
+      color: var(--muted); cursor: pointer; font-size: 15px;
+      transition: background .15s, color .15s; font-family: inherit;
     }
-    .fp-view-btn.active {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: color-mix(in srgb, var(--accent) 10%, var(--bg));
-    }
+    .fp-view-btn.active { background: var(--nav-active); color: var(--text); }
+    .fp-view-btn:hover:not(.active) { background: rgba(255,255,255,.06); color: var(--text); }
+    [data-theme="light"] .fp-view-btn:hover:not(.active) { background: rgba(0,0,0,.05); }
 
     /* ── Grid mode ── */
     .fp-list.fp-grid-mode {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: 12px;
     }
     .fp-list.fp-grid-mode .fp-card {
@@ -377,23 +409,37 @@
       border-radius: var(--radius-card);
       padding: 14px;
       background: var(--surface);
-      gap: 8px;
+      gap: 10px;
+      position: relative;
     }
-    .fp-list.fp-grid-mode .fp-card-actions { width: 100%; justify-content: flex-end; }
-    .fp-list.fp-grid-mode .fp-card-meta { margin-top: 2px; }
+    .fp-list.fp-grid-mode .fp-item-logo { width: 56px; height: 56px; font-size: 22px; border-radius: 10px; }
+    .fp-list.fp-grid-mode .fp-card-info { width: 100%; }
+    .fp-list.fp-grid-mode .fp-card-row2 { flex-wrap: wrap; gap: 2px; }
+    .fp-list.fp-grid-mode .fp-item-actions { position: absolute; top: 10px; right: 10px; }
 
     /* ── Metrics strip ── */
     .fp-metrics {
-      display: flex;
-      gap: 14px;
-      font-size: 11px;
-      color: var(--muted);
-      flex-wrap: wrap;
-      margin-top: 3px;
+      display: flex; gap: 14px; font-size: 11px; color: var(--muted);
+      flex-wrap: wrap; margin-top: 2px;
     }
     .fp-metric { display: flex; align-items: center; gap: 3px; }
     .fp-metric-val { color: var(--text); font-weight: 600; }
     .fp-metric-loading { opacity: .4; font-style: italic; }
+
+    /* ── Modal boxes ── */
+    .fp-modal-box {
+      background: #1c1c1e;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 14px;
+      padding: 24px;
+      width: 90%;
+      box-shadow: 0 24px 64px rgba(0,0,0,.8);
+    }
+    [data-theme="light"] .fp-modal-box {
+      background: #ffffff;
+      border-color: rgba(0,0,0,.1);
+      box-shadow: 0 24px 64px rgba(0,0,0,.2);
+    }
 
   </style>
 </head>
@@ -471,22 +517,9 @@
           <h2 class="panel-title">Finished Presentations</h2>
           <p class="panel-subtitle" id="fpSubtitle">Loading…</p>
         </div>
-        <div id="fpViewToggle" style="display:flex;gap:4px;">
-          <button id="fpViewList" class="fp-view-btn active" title="List view">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-              <rect x="0" y="2" width="16" height="2" rx="1"/>
-              <rect x="0" y="7" width="16" height="2" rx="1"/>
-              <rect x="0" y="12" width="16" height="2" rx="1"/>
-            </svg>
-          </button>
-          <button id="fpViewGrid" class="fp-view-btn" title="Grid view">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-              <rect x="0" y="0" width="7" height="7" rx="1"/>
-              <rect x="9" y="0" width="7" height="7" rx="1"/>
-              <rect x="0" y="9" width="7" height="7" rx="1"/>
-              <rect x="9" y="9" width="7" height="7" rx="1"/>
-            </svg>
-          </button>
+        <div class="fp-view-toggle">
+          <button id="fpViewGrid" class="fp-view-btn" title="Grid view">&#x229E;</button>
+          <button id="fpViewList" class="fp-view-btn active" title="List view">&#x2630;</button>
         </div>
       </div>
       <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
@@ -494,6 +527,17 @@
           <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.4;flex-shrink:0;"><circle cx="9" cy="9" r="6"/><line x1="14" y1="14" x2="18" y2="18"/></svg>
           <input type="search" id="fpSearch" placeholder="Search name or customer…" style="flex:1;min-width:0;">
         </label>
+        <div id="fpStatusDropdown" style="position:relative;">
+          <button id="fpStatusTrigger" class="filter-pill" type="button" style="cursor:pointer;user-select:none;">
+            <span id="fpStatusLabel">Active</span>
+            <span class="chevron" style="font-size:10px;opacity:.5;transition:transform .15s;">&#9660;</span>
+          </button>
+          <div id="fpStatusMenu" class="views-floating-menu">
+            <div class="sort-option selected" data-value="active">Active</div>
+            <div class="sort-option" data-value="archived">Archived</div>
+            <div class="sort-option" data-value="all">All</div>
+          </div>
+        </div>
         <button id="fpDateBtn" class="filter-pill" type="button" style="white-space:nowrap;cursor:pointer;">
           <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.4;flex-shrink:0;"><rect x="2" y="4" width="16" height="14" rx="2"/><line x1="2" y1="8" x2="18" y2="8"/><line x1="6" y1="2" x2="6" y2="6"/><line x1="14" y1="2" x2="14" y2="6"/></svg>
           <span id="fpDateLabel">Date range</span>
@@ -611,6 +655,37 @@
 
   </div><!-- /.app-body -->
 
+
+  <!-- Presentation Delete/Archive modal -->
+  <div id="fpDeleteModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:99999;align-items:center;justify-content:center;">
+    <div class="fp-modal-box" style="max-width:420px;">
+      <div id="fpDeleteModalTitle" style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px;"></div>
+      <p id="fpDeleteModalDesc" style="font-size:13px;color:var(--muted);margin:0 0 16px;line-height:1.6;"></p>
+      <div id="fpDeleteModalWarning" style="display:none;background:rgba(238,85,85,.08);border:1px solid rgba(238,85,85,.3);border-radius:8px;padding:12px;margin-bottom:16px;">
+        <div id="fpDeleteModalWarnTitle" style="font-size:13px;font-weight:700;color:#e55;margin-bottom:6px;"></div>
+        <div id="fpDeleteModalWarnBody" style="font-size:12px;color:var(--muted);line-height:1.6;"></div>
+      </div>
+      <div id="fpDeleteModalInputWrap" style="display:none;margin-bottom:16px;">
+        <input id="fpDeleteModalInput" type="text" placeholder="Type DELETE to confirm" autocomplete="off"
+          style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;outline:none;font-family:inherit;">
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button id="fpDeleteModalCancel" style="padding:7px 18px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;cursor:pointer;font-family:inherit;">Cancel</button>
+        <button id="fpDeleteModalConfirm" style="padding:7px 18px;border-radius:var(--radius-btn);border:1px solid rgba(238,85,85,.4);background:rgba(238,85,85,.12);color:#e55;font-size:13px;cursor:pointer;font-family:inherit;transition:opacity .15s;"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Presentation History modal -->
+  <div id="fpHistoryModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:99999;align-items:center;justify-content:center;">
+    <div class="fp-modal-box" style="max-width:400px;">
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:16px;">Presentation History</div>
+      <div id="fpHistoryBody" style="font-size:13px;color:var(--muted);line-height:1.7;"></div>
+      <div style="margin-top:20px;text-align:right;">
+        <button id="fpHistoryClose" style="padding:7px 18px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;cursor:pointer;">Close</button>
+      </div>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -1187,41 +1262,27 @@
   <script>
     // ── Finished Presentations panel ──────────────────────────────
     (function () {
-      var allPres      = [];
-      var currentSort  = 'newest';
+      var allPres       = [];
+      var currentSort   = 'newest';
       var currentSearch = '';
-      var currentPage  = 1;
-      var dateRange    = null; // [Date, Date] or null
-      var PAGE_SIZE    = 10;
+      var currentPage   = 1;
+      var dateRange     = null;
+      var PAGE_SIZE     = 10;
+      var currentStatus = 'active';
       var currentView  = localStorage.getItem('pb-fp-view') || 'list';
 
-      // Apply saved view on init
-      (function () {
-        var list = document.getElementById('fpList');
-        var btnList = document.getElementById('fpViewList');
-        var btnGrid = document.getElementById('fpViewGrid');
-        if (currentView === 'grid') {
-          list.classList.add('fp-grid-mode');
-          btnList.classList.remove('active');
-          btnGrid.classList.add('active');
-        }
-      })();
-
-      // View toggle handlers
-      document.getElementById('fpViewList').addEventListener('click', function () {
-        currentView = 'list';
-        localStorage.setItem('pb-fp-view', 'list');
-        document.getElementById('fpList').classList.remove('fp-grid-mode');
-        document.getElementById('fpViewList').classList.add('active');
-        document.getElementById('fpViewGrid').classList.remove('active');
-      });
+      function applyView() {
+        document.getElementById('fpList').classList.toggle('fp-grid-mode', currentView === 'grid');
+        document.getElementById('fpViewGrid').classList.toggle('active', currentView === 'grid');
+        document.getElementById('fpViewList').classList.toggle('active', currentView === 'list');
+      }
       document.getElementById('fpViewGrid').addEventListener('click', function () {
-        currentView = 'grid';
-        localStorage.setItem('pb-fp-view', 'grid');
-        document.getElementById('fpList').classList.add('fp-grid-mode');
-        document.getElementById('fpViewGrid').classList.add('active');
-        document.getElementById('fpViewList').classList.remove('active');
+        currentView = 'grid'; localStorage.setItem('pb-fp-view', 'grid'); applyView();
       });
+      document.getElementById('fpViewList').addEventListener('click', function () {
+        currentView = 'list'; localStorage.setItem('pb-fp-view', 'list'); applyView();
+      });
+      applyView();
 
       function timeAgo(isoStr) {
         if (!isoStr) return '';
@@ -1240,6 +1301,8 @@
       function getFiltered() {
         var q = currentSearch.toLowerCase().trim();
         var out = allPres.filter(function (p) {
+          if (currentStatus === 'active'   &&  p.archivedAt) return false;
+          if (currentStatus === 'archived' && !p.archivedAt) return false;
           if (q && ((p.presentationName || '') + ' ' + (p.customerName || '')).toLowerCase().indexOf(q) === -1) return false;
           if (dateRange) {
             var d = new Date(p.publishedAt || p.createdAt || 0);
@@ -1270,10 +1333,7 @@
           var endAt   = Date.now();
           fetch('/api/analytics/batch?startAt=' + startAt + '&endAt=' + endAt)
             .then(function (r) { return r.json(); })
-            .then(function (r) {
-              if (!r.success) return;
-              injectMetrics(r.data);
-            })
+            .then(function (r) { if (r.success) injectMetrics(r.data); })
             .catch(function () {});
         }, 200);
       }
@@ -1287,13 +1347,13 @@
 
       function injectMetrics(batchData) {
         document.querySelectorAll('.fp-metrics[data-pres-id]').forEach(function (el) {
-          var id   = el.dataset.presId;
-          var d    = batchData[id];
+          var id = el.dataset.presId;
+          var d  = batchData[id];
           if (!d) { el.innerHTML = '<span style="opacity:.35;font-size:11px;">no data yet</span>'; return; }
           var visitors  = (d.visitors  && d.visitors.value  != null) ? d.visitors.value  : '—';
           var visits    = (d.visits    && d.visits.value    != null) ? d.visits.value    : '—';
           var pageviews = (d.pageviews && d.pageviews.value != null) ? d.pageviews.value : '—';
-          var bounce    = (d.bounces   && d.bounces.value   != null && visits && visits !== '—' && visits > 0)
+          var bounce    = (d.bounces && d.bounces.value != null && visits && visits !== '—' && visits > 0)
                           ? Math.round((d.bounces.value / visits) * 100) + '%' : '—';
           var duration  = (d.totaltime && d.totaltime.value != null && visits && visits !== '—' && visits > 0)
                           ? fmtDuration(Math.round(d.totaltime.value / visits) * 1000) : '—';
@@ -1305,6 +1365,259 @@
         });
       }
 
+      // ── Menu helpers ──────────────────────────────────────────────
+      function closeAllFpMenus() {
+        document.querySelectorAll('.fp-dropdown.open').forEach(function (d) { d.classList.remove('open'); });
+      }
+
+      function toggleFpMenu(btn) {
+        var dropdown = btn.nextElementSibling;
+        var wasOpen = dropdown.classList.contains('open');
+        closeAllFpMenus();
+        if (!wasOpen) dropdown.classList.add('open');
+      }
+
+      document.addEventListener('click', function () { closeAllFpMenus(); });
+
+      // ── Card builders ─────────────────────────────────────────────
+      function buildFpLogoEl(p) {
+        var wrap = document.createElement('div');
+        wrap.className = 'fp-item-logo';
+        if (p.customerLogoSrc) {
+          var img = document.createElement('img');
+          img.src = p.customerLogoSrc;
+          img.alt = '';
+          wrap.appendChild(img);
+        } else {
+          wrap.textContent = (p.customerName || p.presentationName || '?').charAt(0).toUpperCase();
+        }
+        wrap.addEventListener('dblclick', function () {
+          // Open Publication Activity panel if collapsed
+          var pubBody = document.getElementById('pubActBody');
+          if (pubBody && pubBody.style.display === 'none') {
+            document.getElementById('pubActHeader').click();
+          }
+          document.dispatchEvent(new CustomEvent('viewsFilterByPres', { detail: p.id }));
+        });
+        return wrap;
+      }
+
+      function buildFpLinkEl(p) {
+        var viewUrl = p.publishedAt
+          ? 'https://app-presentation-builder.pages.dev/finished-presentations/' + p.id + '/'
+          : window.location.origin + '/view/' + p.id;
+        var span = document.createElement('span');
+        span.className = 'fp-item-link';
+        span.textContent = '#' + p.id;
+        span.title = viewUrl + '\n\nClick to copy · Double-click to open';
+        var clickTimer = null;
+        span.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (clickTimer) return;
+          clickTimer = setTimeout(function () {
+            clickTimer = null;
+            navigator.clipboard.writeText(viewUrl).catch(function () {});
+            var orig = span.textContent;
+            span.textContent = 'Copied!';
+            span.classList.add('copied');
+            setTimeout(function () { span.textContent = orig; span.classList.remove('copied'); }, 1500);
+          }, 240);
+        });
+        span.addEventListener('dblclick', function (e) {
+          e.stopPropagation();
+          if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
+          window.open(viewUrl, '_blank');
+        });
+        return span;
+      }
+
+      function fpDropItem(label, onClick, danger) {
+        var div = document.createElement('div');
+        div.className = 'fp-dropdown-item' + (danger ? ' danger' : '');
+        div.textContent = label;
+        div.addEventListener('click', function (e) { e.stopPropagation(); closeAllFpMenus(); onClick(); });
+        return div;
+      }
+
+      function fpDropDivider() {
+        var div = document.createElement('div');
+        div.className = 'fp-dropdown-divider';
+        return div;
+      }
+
+      function buildFpActions(p) {
+        var wrap = document.createElement('div');
+        wrap.className = 'fp-item-actions';
+        var rowActions = document.createElement('div');
+        rowActions.className = 'fp-row-actions';
+
+        var gearBtn = document.createElement('button');
+        gearBtn.className = 'fp-gear-btn';
+        gearBtn.title = 'Actions';
+        gearBtn.textContent = '⚙';
+        gearBtn.addEventListener('click', function (e) { e.stopPropagation(); toggleFpMenu(gearBtn); });
+
+        var dropdown = document.createElement('div');
+        dropdown.className = 'fp-dropdown';
+        dropdown.addEventListener('click', function (e) { e.stopPropagation(); });
+
+        if (p.archivedAt) {
+          dropdown.appendChild(fpDropItem('Restore', function () { fpRestore(p.id); }));
+          dropdown.appendChild(fpDropDivider());
+          dropdown.appendChild(fpDropItem('Permanently Delete', function () { fpPermanentDelete(p); }, true));
+        } else {
+          dropdown.appendChild(fpDropItem('Duplicate', function () { fpDuplicate(p); }));
+          dropdown.appendChild(fpDropItem(p.publishedAt ? 'Republish' : 'Publish', function () { fpPublish(p.id); }));
+          dropdown.appendChild(fpDropDivider());
+          dropdown.appendChild(fpDropItem('History', function () { fpHistory(p); }));
+          dropdown.appendChild(fpDropDivider());
+          dropdown.appendChild(fpDropItem('Archive', function () { fpDelete(p); }, true));
+        }
+
+        rowActions.appendChild(gearBtn);
+        rowActions.appendChild(dropdown);
+        wrap.appendChild(rowActions);
+        return wrap;
+      }
+
+      // ── Actions ───────────────────────────────────────────────────
+      function fpPublish(id) {
+        fetch('/api/presentations/' + id + '/publish', { method: 'POST' })
+          .then(function (r) { return r.json(); })
+          .then(function (r) { if (r.success) refreshFromApi(); })
+          .catch(function () {});
+      }
+
+      function fpDuplicate(p) {
+        fetch('/api/presentations/' + p.id + '/duplicate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ customerName: (p.customerName || '') + ' (copy)' })
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (r) { if (r.success) refreshFromApi(); })
+          .catch(function () {});
+      }
+
+      var _deleteTarget = null;
+      var _deleteMode   = 'archive'; // 'archive' | 'permanent'
+
+      function _openDeleteModal(p, mode) {
+        _deleteTarget = p;
+        _deleteMode   = mode;
+        var name         = p.presentationName || p.customerName || p.id;
+        var wasPublished = !!p.publishedAt;
+
+        if (mode === 'archive') {
+          document.getElementById('fpDeleteModalTitle').textContent = 'Archive Presentation';
+          document.getElementById('fpDeleteModalDesc').textContent  = '“' + name + '” will be moved to archive and hidden from your active list. You can restore it at any time.';
+
+          if (wasPublished) {
+            document.getElementById('fpDeleteModalWarnTitle').textContent = 'This presentation is Live';
+            document.getElementById('fpDeleteModalWarnBody').textContent  = 'Customers with the link can still access it — archiving only hides it from your active list. The published file stays on the server until you permanently delete it.';
+            document.getElementById('fpDeleteModalWarning').style.display = 'block';
+          } else {
+            document.getElementById('fpDeleteModalWarning').style.display = 'none';
+          }
+
+          // Archive never requires typing
+          document.getElementById('fpDeleteModalInputWrap').style.display  = 'none';
+          document.getElementById('fpDeleteModalConfirm').disabled          = false;
+          document.getElementById('fpDeleteModalConfirm').textContent       = 'Archive';
+
+        } else {
+          document.getElementById('fpDeleteModalTitle').textContent = 'Permanently Delete';
+          document.getElementById('fpDeleteModalDesc').textContent  = '“' + name + '” will be permanently removed from the server. This cannot be undone.';
+          document.getElementById('fpDeleteModalWarning').style.display    = 'block';
+          document.getElementById('fpDeleteModalInputWrap').style.display  = 'block';
+          document.getElementById('fpDeleteModalConfirm').disabled          = true;
+          document.getElementById('fpDeleteModalConfirm').textContent       = 'Delete permanently';
+
+          if (wasPublished) {
+            document.getElementById('fpDeleteModalWarnTitle').textContent = 'This presentation is Live';
+            document.getElementById('fpDeleteModalWarnBody').innerHTML =
+              'This presentation has a public link that customers may have saved or shared. ' +
+              '<strong style=”color:var(--text);”>Permanently deleting it will break that link immediately</strong> ' +
+              '— anyone visiting it will see a 404 error and the URL will stop working forever. ' +
+              'To confirm, type <strong style=”color:var(--text);letter-spacing:.05em;”>DELETE</strong> below.';
+          } else {
+            document.getElementById('fpDeleteModalWarnTitle').textContent = 'This action is irreversible';
+            document.getElementById('fpDeleteModalWarnBody').innerHTML =
+              'All data and files for this presentation will be removed from the server with no way to recover them. ' +
+              'To confirm, type <strong style=”color:var(--text);letter-spacing:.05em;”>DELETE</strong> below.';
+          }
+
+          setTimeout(function () { document.getElementById('fpDeleteModalInput').focus(); }, 50);
+        }
+
+        document.getElementById('fpDeleteModalInput').value = '';
+        document.getElementById('fpDeleteModal').style.display = 'flex';
+      }
+
+      function fpDelete(p)          { _openDeleteModal(p, 'archive'); }
+      function fpPermanentDelete(p) { _openDeleteModal(p, 'permanent'); }
+
+      function fpRestore(id) {
+        fetch('/api/presentations/' + id + '/unarchive', { method: 'POST' })
+          .then(function (r) { return r.json(); })
+          .then(function (r) { if (r.success) refreshFromApi(); })
+          .catch(function () {});
+      }
+
+      document.getElementById('fpDeleteModalInput').addEventListener('input', function () {
+        document.getElementById('fpDeleteModalConfirm').disabled = (this.value !== 'DELETE');
+      });
+
+      document.getElementById('fpDeleteModalConfirm').addEventListener('click', function () {
+        if (!_deleteTarget) return;
+        document.getElementById('fpDeleteModal').style.display = 'none';
+        var id   = _deleteTarget.id;
+        var mode = _deleteMode;
+        _deleteTarget = null;
+        if (mode === 'archive') {
+          fetch('/api/presentations/' + id + '/archive', { method: 'POST' })
+            .then(function (r) { return r.json(); })
+            .then(function (r) { if (r.success) refreshFromApi(); })
+            .catch(function () {});
+        } else {
+          fetch('/api/presentations/' + id, { method: 'DELETE' })
+            .then(function (r) { return r.json(); })
+            .then(function (r) { if (r.success) refreshFromApi(); })
+            .catch(function () {});
+        }
+      });
+
+      document.getElementById('fpDeleteModalCancel').addEventListener('click', function () {
+        _deleteTarget = null;
+        document.getElementById('fpDeleteModal').style.display = 'none';
+      });
+
+      function fpHistory(p) {
+        var body  = document.getElementById('fpHistoryBody');
+        var modal = document.getElementById('fpHistoryModal');
+        if (!body || !modal) return;
+        var rows = [
+          ['ID', '#' + p.id],
+          ['Name', p.presentationName || '—'],
+          ['Customer', p.customerName || '—'],
+          ['Created', p.createdAt || '—'],
+          ['Published', p.publishedAt ? timeAgo(p.publishedAt) + ' (' + p.publishedAt.slice(0, 10) + ')' : 'Not published'],
+          ['Slides', p.slideCount != null ? p.slideCount : '—'],
+          ['Languages', (p.languages || []).join(', ') || '—']
+        ];
+        body.innerHTML = rows.map(function (r) {
+          return '<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);">' +
+            '<span style="width:80px;flex-shrink:0;color:var(--muted);">' + r[0] + '</span>' +
+            '<span style="flex:1;color:var(--text);word-break:break-all;">' + r[1] + '</span></div>';
+        }).join('');
+        modal.style.display = 'flex';
+      }
+
+      document.getElementById('fpHistoryClose').addEventListener('click', function () {
+        document.getElementById('fpHistoryModal').style.display = 'none';
+      });
+
+      // ── Render ────────────────────────────────────────────────────
       function render() {
         var filtered   = getFiltered();
         var total      = filtered.length;
@@ -1321,94 +1634,74 @@
         if (page.length === 0) {
           var empty = document.createElement('li');
           empty.className = 'activity-empty';
-          empty.textContent = allPres.length === 0 ? 'No presentations published yet.' : 'No results match your search.';
+          empty.textContent = allPres.length === 0 ? 'No presentations yet.' : 'No results match your search.';
           list.appendChild(empty);
         } else {
           page.forEach(function (p) {
             var li = document.createElement('li');
             li.className = 'fp-card';
 
-            var info   = document.createElement('div');
+            // Logo
+            li.appendChild(buildFpLogoEl(p));
+
+            // Info block
+            var info = document.createElement('div');
             info.className = 'fp-card-info';
+
+            // Row 1: name + badge
+            var row1 = document.createElement('div');
+            row1.className = 'fp-card-row1';
             var nameEl = document.createElement('div');
             nameEl.className = 'fp-card-name';
             nameEl.textContent = p.presentationName || 'Untitled';
-            var subEl = document.createElement('div');
-            subEl.className = 'fp-card-sub';
-            var subParts = [];
-            if (p.customerName) subParts.push(p.customerName);
-            if (p.slideCount != null) subParts.push(p.slideCount + ' slide' + (p.slideCount === 1 ? '' : 's'));
-            subEl.textContent = subParts.join(' · ');
-            info.appendChild(nameEl);
-            info.appendChild(subEl);
+            var badge = document.createElement('span');
+            if (p.archivedAt) {
+              badge.className = 'fp-status-badge fp-status-badge--archived';
+              badge.textContent = 'Archived';
+            } else if (p.publishedAt) {
+              badge.className = 'fp-status-badge fp-status-badge--pub';
+              badge.textContent = 'Live';
+            } else {
+              badge.className = 'fp-status-badge fp-status-badge--draft';
+              badge.textContent = 'Draft';
+            }
+            row1.appendChild(nameEl);
+            row1.appendChild(badge);
+            info.appendChild(row1);
 
+            // Row 2: meta + link
+            var row2 = document.createElement('div');
+            row2.className = 'fp-card-row2';
+            var metaParts = [];
+            if (p.customerName && p.customerName !== p.presentationName) metaParts.push(p.customerName);
+            var dateStr = timeAgo(p.publishedAt || p.createdAt);
+            if (dateStr) metaParts.push(dateStr);
+            var linkEl = buildFpLinkEl(p);
+            if (metaParts.length > 0) {
+              var metaSpan = document.createElement('span');
+              metaSpan.className = 'fp-card-meta';
+              metaSpan.textContent = metaParts.join(' · ');
+              row2.appendChild(metaSpan);
+              var sep = document.createElement('span');
+              sep.className = 'fp-card-meta';
+              sep.textContent = ' · ';
+              row2.appendChild(sep);
+            }
+            row2.appendChild(linkEl);
+            info.appendChild(row2);
+
+            // Metrics strip
             var metricsEl = document.createElement('div');
             metricsEl.className = 'fp-metrics';
             metricsEl.dataset.presId = p.id;
             metricsEl.innerHTML = '<span class="fp-metric-loading">loading metrics…</span>';
-
-            var meta = document.createElement('div');
-            meta.className = 'fp-card-meta';
-            meta.textContent = timeAgo(p.publishedAt || p.createdAt);
-
-            var actions = document.createElement('div');
-            actions.className = 'fp-card-actions';
-
-            var viewBtn = document.createElement('a');
-            viewBtn.className = 'fp-btn';
-            viewBtn.textContent = 'View';
-            viewBtn.href = '/view/' + p.id;
-            viewBtn.target = '_blank';
-            actions.appendChild(viewBtn);
-
-            var pubBtn = document.createElement('button');
-            pubBtn.className = 'fp-btn';
-            pubBtn.textContent = 'Re-publish';
-            pubBtn.addEventListener('click', function () {
-              pubBtn.disabled = true;
-              pubBtn.textContent = 'Publishing…';
-              fetch('/api/presentations/' + p.id + '/publish', { method: 'POST' })
-                .then(function (r) { return r.json(); })
-                .then(function (r) {
-                  pubBtn.textContent = r.success ? 'Published!' : 'Failed';
-                  setTimeout(function () { pubBtn.textContent = 'Re-publish'; pubBtn.disabled = false; }, 2500);
-                })
-                .catch(function () {
-                  pubBtn.textContent = 'Error';
-                  setTimeout(function () { pubBtn.textContent = 'Re-publish'; pubBtn.disabled = false; }, 2500);
-                });
-            });
-            actions.appendChild(pubBtn);
-
-            var delBtn = document.createElement('button');
-            delBtn.className = 'fp-btn fp-btn-danger';
-            delBtn.textContent = 'Delete';
-            delBtn.addEventListener('click', function () {
-              if (!confirm('Delete "' + (p.presentationName || p.customerName || p.id) + '"?\nThis cannot be undone.')) return;
-              delBtn.disabled = true;
-              delBtn.textContent = 'Deleting…';
-              fetch('/api/presentations/' + p.id + '/archive', { method: 'POST' })
-                .then(function (r) { return r.json(); })
-                .then(function (r) {
-                  if (!r.success) throw new Error(r.error);
-                  return fetch('/api/presentations/' + p.id, { method: 'DELETE' });
-                })
-                .then(function (r) { return r.json(); })
-                .then(function (r) {
-                  if (!r.success) throw new Error(r.error);
-                  refreshFromApi();
-                })
-                .catch(function () {
-                  delBtn.textContent = 'Error';
-                  setTimeout(function () { delBtn.textContent = 'Delete'; delBtn.disabled = false; }, 2500);
-                });
-            });
-            actions.appendChild(delBtn);
+            info.appendChild(metricsEl);
 
             li.appendChild(info);
-            li.appendChild(metricsEl);
-            li.appendChild(meta);
-            li.appendChild(actions);
+
+            // Gear + dropdown actions
+            li.appendChild(buildFpActions(p));
+
             list.appendChild(li);
           });
 
@@ -1455,6 +1748,29 @@
         render();
       });
 
+      // ── Status filter dropdown ───────────────────────────────────
+      var statusTrigger = document.getElementById('fpStatusTrigger');
+      var statusMenu    = document.getElementById('fpStatusMenu');
+      statusTrigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var open = statusMenu.classList.toggle('open');
+        statusTrigger.querySelector('.chevron').style.transform = open ? 'rotate(180deg)' : '';
+      });
+      statusMenu.querySelectorAll('.sort-option').forEach(function (opt) {
+        opt.addEventListener('click', function () {
+          currentStatus = this.dataset.value;
+          document.getElementById('fpStatusLabel').textContent = this.textContent;
+          statusMenu.querySelectorAll('.sort-option').forEach(function (o) { o.classList.remove('selected'); });
+          this.classList.add('selected');
+          statusMenu.classList.remove('open');
+          statusTrigger.querySelector('.chevron').style.transform = '';
+          statusTrigger.classList.toggle('active', currentStatus !== 'active');
+          currentPage = 1;
+          render();
+        });
+      });
+      statusMenu.addEventListener('click', function (e) { e.stopPropagation(); });
+
       // ── Sort dropdown ────────────────────────────────────────────
       var sortTrigger = document.getElementById('fpSortTrigger');
       var sortMenu    = document.getElementById('fpSortMenu');
@@ -1478,6 +1794,8 @@
       document.addEventListener('click', function () {
         sortMenu.classList.remove('open');
         sortTrigger.querySelector('.chevron').style.transform = '';
+        statusMenu.classList.remove('open');
+        statusTrigger.querySelector('.chevron').style.transform = '';
       });
       sortMenu.addEventListener('click', function (e) { e.stopPropagation(); });
 
@@ -1497,9 +1815,7 @@
           render();
         }
       });
-      document.getElementById('fpDateBtn').addEventListener('click', function () {
-        fpDate.open();
-      });
+      document.getElementById('fpDateBtn').addEventListener('click', function () { fpDate.open(); });
       document.getElementById('fpDateClear').addEventListener('click', function (e) {
         e.stopPropagation();
         fpDate.clear();
