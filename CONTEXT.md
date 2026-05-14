@@ -141,6 +141,12 @@ All content slides now use this structure:
 - [x] **Dashboard — Umami analytics proxy** — server-side JWT auth (`getUmamiToken`), 15-min cache (`umamiGet`), 3 endpoints: `/api/analytics/batch`, `/api/analytics/presentation/:id`, `/api/analytics/pageviews`; credentials in `.env` (`UMAMI_USERNAME`, `UMAMI_PASSWORD`) (2026-05-11)
 - [x] **Dashboard — Per-card Umami metrics** — visitors / views / bounce rate / avg duration strip injected into each FP card after batch fetch (2026-05-11)
 - [x] **Dashboard — Engagement chart** — Chart.js line chart (pageviews + visitors) inside Publication Activity, lazy-loads on panel open (2026-05-11)
+- [x] **Slides — My Library card actions** — replaced Edit/Duplicate/Delete bar with gear ⚙ + 3-dots (⋮) dropdown; double-click thumbnail opens Builder; list-row double-click also wired (2026-05-14)
+- [x] **builder-ui — Finished Presentations redesign** — gear dropdown (Duplicate, Publish, Edit, History, Archive), filtered by active deck, search input, deckId persisted on save/duplicate, upward-opening dropdown (2026-05-14)
+- [x] **Dashboard — Finished Presentations full redesign** — grid/list toggle (⊞/☰); two-row horizontal layout (name+badge / customer·date·#ID link); status filter (Active/Archived/All); Live/Draft/Archived badges; gear ⚙ upward dropdown; click #ID = copy public URL, dblclick = open; logo dblclick filters Publication Activity chart; 38px list / 56px grid logos with hover tooltip; opaque modals (#1c1c1e dark / #fff light) (2026-05-14)
+- [x] **Presentation lifecycle** — `makePresId()` uses max(existing)+1 (no repeated IDs after delete); archive-only from active list (no accidental hard delete); permanent delete from Archived view requires typing DELETE; public GitHub Pages URL used for published links (2026-05-14)
+- [ ] **Slides — Templates tab standardization** — apply gear+3-dots card action pattern (Use Template = dblclick/primary, Edit Template = dropdown item)
+- [ ] **builder-ui — fpDelete improve** — replace native confirm() with proper modal matching dashboard archive flow
 
 ## Phase Roadmap
 - **Phase 1** (current) — Local app, single user, build + publish
@@ -148,4 +154,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-05-11 (session 14)
+Last updated: 2026-05-14 (session 15)
