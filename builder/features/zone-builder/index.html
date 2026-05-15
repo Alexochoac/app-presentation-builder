@@ -209,6 +209,18 @@
     .zb-name-input:hover,
     .zb-name-input:focus { border-bottom-color: var(--border-hov); }
 
+    .zb-category-select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 12px;
+      padding: 4px 8px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .zb-category-select:focus { outline: 2px solid var(--accent); }
+
     .zb-topbar-right {
       display: flex;
       align-items: center;
@@ -521,6 +533,68 @@
       font-weight: 500;
     }
     .zb-img-placeholder-icon { font-size: 28px; opacity: 0.4; }
+
+    /* Carousel builder controls */
+    .zb-car-slide { position: relative; overflow: hidden; border-radius: 6px; }
+
+    .zb-img-change-btn {
+      position: absolute;
+      bottom: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 4px 12px;
+      border-radius: 100px;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(0,0,0,0.6);
+      color: rgba(255,255,255,0.8);
+      font-size: 11px;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.15s;
+      white-space: nowrap;
+      pointer-events: all;
+    }
+    .zb-car-slide:hover .zb-img-change-btn { opacity: 1; }
+
+    .zb-img-remove-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,80,80,0.4);
+      background: rgba(0,0,0,0.65);
+      color: #ff6060;
+      font-size: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.15s;
+      pointer-events: all;
+      padding: 0;
+    }
+    .zb-car-slide:hover .zb-img-remove-btn { opacity: 1; }
+
+    .zb-img-add-btn {
+      width: 100%;
+      margin-top: 6px;
+      padding: 6px;
+      border-radius: 6px;
+      border: 1px dashed rgba(255,255,255,0.15);
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+      pointer-events: all;
+    }
+    .zb-img-add-btn:hover { border-color: var(--accent); color: var(--accent); }
 
     /* Tab panel placeholder */
     .zb-panel-placeholder {
@@ -842,14 +916,22 @@
       <input
         class="zb-name-input"
         id="slideNameInput"
-        value="New Slide"
-        placeholder="Slide name…"
-        aria-label="Slide name"
+        value="New Template"
+        placeholder="Template name…"
+        aria-label="Template name"
         oninput="zbMarkDirty()"
       >
+      <select class="zb-category-select" id="slideCategorySelect" title="Template category">
+        <option value="Content" selected>Content</option>
+        <option value="Cover">Cover</option>
+        <option value="Stats">Stats</option>
+        <option value="Visual">Visual</option>
+        <option value="CTA">CTA</option>
+        <option value="Data">Data</option>
+      </select>
       <div class="zb-topbar-right">
         <button class="zb-btn" id="btnPreview" title="Preview — coming in Task 3">Preview</button>
-        <button class="zb-btn zb-btn-primary" id="btnSave" onclick="zbSave()">Save</button>
+        <button class="zb-btn zb-btn-primary" id="btnSave" onclick="zbSave()">Save as Template</button>
       </div>
     </div>
 
@@ -907,10 +989,11 @@
       selectedField: null,   // 'section-label' | 'headline' | null
       dirty:         false,
       styles:        {},     // { [id]: { fontSize, color, fontWeight, fontStyle, textAlign } }
+      images:        {},     // { [compId]: string[] } — carousel slide image URLs (null = placeholder)
       counters:      {},     // { [type]: count } — for unique component IDs
       slideId:       '',     // draft ID used in data-lang-key
       pendingType:   null,   // component type waiting for slot pick
-      savedSlideId:  null,   // null = new slide; real lsNN-slug after first save
+      savedTemplateId: null,   // null = new template; real lsNN-slug after first save
       content: {
         header: { sectionLabel: 'Section Name', headline: 'Dummy Headline Text' },
         components: []   // [{ id, type, slot }]
@@ -1036,14 +1119,16 @@
     };
 
     function selectLayout(skeleton) {
-      state.skeleton       = skeleton;
-      state.selected       = null;
-      state.selectedField  = null;
-      state.dirty          = false;
-      state.styles         = {};
-      state.counters       = {};
-      state.slideId        = 'draft-' + Date.now();
-      state.pendingType    = null;
+      state.skeleton         = skeleton;
+      state.selected         = null;
+      state.selectedField    = null;
+      state.dirty            = false;
+      state.styles           = {};
+      state.images           = {};
+      state.counters         = {};
+      state.slideId          = 'draft-' + Date.now();
+      state.pendingType      = null;
+      state.savedTemplateId  = null;
       state.content   = {
         header: { sectionLabel: 'Section Name', headline: 'Dummy Headline Text' },
         components: skeleton.defaultComponents.map(function (dc) {
@@ -1158,20 +1243,34 @@
       var lk  = state.slideId + '.' + id;  // data-lang-key prefix
       switch (comp.type) {
 
-        case 'carousel':
-          return '<div class="ls-carousel" data-edit="' + id + '" data-counter="" style="min-height:180px;pointer-events:none;">' +
-            '<div class="ls-carousel-track">' +
-              '<div class="ls-carousel-slide">' +
-                '<div class="zb-img-placeholder">' +
+        case 'carousel': {
+          var imgs = (state.images[id] && state.images[id].length) ? state.images[id] : [null];
+          var slides = imgs.map(function (src, idx) {
+            var hasImg = !!src;
+            var inner  = hasImg
+              ? '<img src="' + esc(src) + '" alt="Slide ' + (idx + 1) + '" data-zoom="" style="width:100%;height:100%;min-height:160px;object-fit:cover;display:block;">'
+              : '<div class="zb-img-placeholder" onclick="event.stopPropagation();zbChangeImage(\'' + id + '\',' + idx + ')">' +
                   '<div class="zb-img-placeholder-icon">&#128247;</div>' +
-                  '<span>Image 1</span>' +
-                '</div>' +
-              '</div>' +
-              '<div class="ls-carousel-slide">' +
-                '<div class="zb-img-placeholder"><span>Image 2</span></div>' +
-              '</div>' +
-            '</div>' +
+                  '<span>Click to add image</span>' +
+                '</div>';
+            // Slides with no image are stripped at assemble time (data-builder-only on placeholder slides)
+            return '<div class="ls-carousel-slide zb-car-slide" style="position:relative;min-height:160px;"' +
+              (hasImg ? '' : ' data-builder-only=""') + '>' +
+              inner +
+              '<button class="zb-img-change-btn" data-builder-only="" title="Change image"' +
+                ' onclick="event.stopPropagation();zbChangeImage(\'' + id + '\',' + idx + ')">&#128247;</button>' +
+              (imgs.length > 1
+                ? '<button class="zb-img-remove-btn" data-builder-only="" title="Remove slide"' +
+                  ' onclick="event.stopPropagation();zbRemoveCarouselSlide(\'' + id + '\',' + idx + ')">&#x2715;</button>'
+                : '') +
+            '</div>';
+          }).join('');
+          return '<div class="ls-carousel" data-edit="' + id + '" data-counter="" style="min-height:160px;">' +
+            '<div class="ls-carousel-track">' + slides + '</div>' +
+            '<button class="zb-img-add-btn" data-builder-only=""' +
+              ' onclick="event.stopPropagation();zbAddCarouselSlide(\'' + id + '\')">+ Add slide</button>' +
           '</div>';
+        }
 
         case 'tabs':
           return '<div class="ls-tabs" data-edit="' + id + '" style="flex:1;min-height:0;width:100%;pointer-events:none;">' +
@@ -1474,6 +1573,7 @@
     function removeComponent(id) {
       state.content.components = state.content.components.filter(function(c) { return c.id !== id; });
       delete state.styles[id];
+      delete state.images[id];
       state.selected      = null;
       state.selectedField = null;
       zbMarkDirty();
@@ -1573,10 +1673,62 @@
       }
     });
 
+    /* ── Carousel image management ───────────────────────────────────────── */
+
+    window.zbChangeImage = function (compId, idx) {
+      var input    = document.createElement('input');
+      input.type   = 'file';
+      input.accept = 'image/*';
+      input.onchange = function () {
+        if (!this.files || !this.files[0]) return;
+        var file   = this.files[0];
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+          fetch('/api/upload-image', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ filename: file.name, data: ev.target.result })
+          })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (!data.ok) throw new Error(data.error || 'Upload failed');
+            if (!state.images[compId]) state.images[compId] = [null];
+            state.images[compId][idx] = data.path;
+            zbMarkDirty();
+            var prevId   = state.selected;
+            var prevType = prevId
+              ? (state.content.components.find(function (c) { return c.id === prevId; }) || {}).type
+              : null;
+            renderCanvas(state.skeleton);
+            if (prevId && prevType) selectComponent(prevId, prevType);
+          })
+          .catch(function (err) { alert('Upload failed: ' + err.message); });
+        };
+        reader.readAsDataURL(file);
+      };
+      input.click();
+    };
+
+    window.zbAddCarouselSlide = function (compId) {
+      if (!state.images[compId]) state.images[compId] = [null];
+      state.images[compId].push(null);
+      zbMarkDirty();
+      renderCanvas(state.skeleton);
+    };
+
+    window.zbRemoveCarouselSlide = function (compId, idx) {
+      if (!state.images[compId]) return;
+      state.images[compId].splice(idx, 1);
+      if (!state.images[compId].length) state.images[compId] = [null];
+      zbMarkDirty();
+      renderCanvas(state.skeleton);
+    };
+
     /* ── Save + HTML assembler ────────────────────────────────────────────── */
 
     window.zbSave = function () {
-      var name = document.getElementById('slideNameInput').value.trim();
+      var name     = document.getElementById('slideNameInput').value.trim();
+      var category = document.getElementById('slideCategorySelect').value;
       if (!name) {
         document.getElementById('slideNameInput').focus();
         return;
@@ -1594,30 +1746,31 @@
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({
-          slideName:    name,
-          savedSlideId: state.savedSlideId || null,
-          layoutId:     state.skeleton ? state.skeleton.id : null,
-          html:         html
+          slideName:       name,
+          savedTemplateId: state.savedTemplateId || null,
+          layoutId:        state.skeleton ? state.skeleton.id : null,
+          category:        category,
+          html:            html
         })
       })
       .then(function (r) { return r.json(); })
       .then(function (data) {
         if (!data.ok) throw new Error(data.error || 'Save failed');
-        state.savedSlideId = data.slideId;
-        state.dirty        = false;
-        btn.disabled       = false;
-        btn.textContent    = 'Saved';
-        setTimeout(function () { btn.textContent = 'Save'; }, 2500);
+        state.savedTemplateId = data.templateId;
+        state.dirty           = false;
+        btn.disabled          = false;
+        btn.textContent       = 'Saved ✓';
+        setTimeout(function () { btn.textContent = 'Save as Template'; }, 2500);
       })
       .catch(function (err) {
         btn.disabled    = false;
-        btn.textContent = 'Save';
+        btn.textContent = 'Save as Template';
         alert('Save failed: ' + err.message);
       });
     };
 
     function assembleHtml() {
-      var slideId = state.savedSlideId || '__SLIDE_ID__';
+      var slideId = state.savedTemplateId || '__SLIDE_ID__';
       var canvas  = document.getElementById('zbCanvas');
       var clone   = canvas.cloneNode(true);
 

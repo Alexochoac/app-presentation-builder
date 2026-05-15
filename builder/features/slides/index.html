@@ -997,23 +997,25 @@
     }
     .picker-cancel:hover { color: var(--text); border-color: var(--border-hov); }
 
-    /* ── Full-screen New Slide modal ─────────────────────────────── */
+    /* ── New Slide modal — centered popup ────────────────────────── */
     #newSlideModal.picker-overlay {
       position: fixed;
       inset: 0;
       z-index: 2000;
-      background: var(--bg);
+      background: rgba(0,0,0,0.55);
       display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
       overflow: hidden;
     }
     #newSlideModal .picker-panel {
-      max-width: none !important;
+      max-width: 860px !important;
       width: 100%;
-      height: 100%;
-      border-radius: 0;
-      border: none;
-      background: transparent;
+      max-height: 80vh;
+      border-radius: var(--radius-card);
+      border: 1px solid var(--border);
+      background: #111;
       display: flex;
       flex-direction: column;
       padding: 0;
@@ -2097,7 +2099,7 @@
               <div class="empty-icon">&#9645;</div>
               <div class="empty-title">No slides found</div>
               <p class="empty-desc">Start from a template or use the Slide Builder to create from scratch.</p>
-              <button class="btn-primary" onclick="switchTab('templates')">Browse Templates</button>
+              <button class="btn-primary" onclick="openNewSlideModal()">Browse Templates</button>
             </div>
             <div class="cards-grid hidden" id="libraryGrid"></div>
             <div class="lib-list hidden" id="libraryList"></div>
@@ -2119,7 +2121,10 @@
             <button class="filter-pill"        data-cat="Data"    onclick="filterTemplates('Data')">Data</button>
             <button class="filter-pill"        data-cat="CTA"     onclick="filterTemplates('CTA')">CTA</button>
           </div>
-          <button class="btn-dupe" onclick="openImportModal()" style="flex-shrink:0;">&#8593; Import Template</button>
+          <div style="display:flex;gap:8px;flex-shrink:0;">
+            <button class="btn-primary" onclick="openZoneBuilder()">+ New Template</button>
+            <button class="btn-dupe" onclick="openImportModal()">&#8593; Import</button>
+          </div>
         </div>
         <input type="file" id="importFileInput" accept=".html" style="display:none;">
 
@@ -2402,7 +2407,10 @@
 
         <!-- Footer -->
         <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-top:1px solid var(--border);flex-shrink:0;">
-          <button class="btn-secondary" onclick="openSlideBuilder()">+ New Template (Slide Builder)</button>
+          <div style="display:flex;gap:8px;">
+            <button class="btn-primary" onclick="openZoneBuilder()">+ New Template</button>
+            <button class="btn-secondary" onclick="closeNewSlideModal();openImportModal()">&#8593; Import</button>
+          </div>
           <button class="picker-cancel" onclick="closeNewSlideModal()">Cancel</button>
         </div>
 
@@ -3070,6 +3078,11 @@
       startNewLayout();
     }
 
+    function openZoneBuilder() {
+      closeNewSlideModal();
+      window.location.href = '/zone-builder';
+    }
+
     function renderTemplatesGrid() {
       var loading = document.getElementById('templatesLoading');
       var empty   = document.getElementById('templatesEmpty');
@@ -3126,6 +3139,14 @@
       header.appendChild(name);
       header.appendChild(badge);
 
+      if (tpl.builtWith === 'zone-builder') {
+        var zbBadge = document.createElement('span');
+        zbBadge.className = 'badge-category';
+        zbBadge.style.cssText = 'background:#1a3a5c;color:#7ec8f4;margin-left:4px;';
+        zbBadge.textContent = 'ZB';
+        header.appendChild(zbBadge);
+      }
+
       var desc = document.createElement('div');
       desc.className = 'tpl-card-desc';
       desc.textContent = tpl.description || '';
@@ -3155,10 +3176,19 @@
 
         var editTplBtn = document.createElement('button');
         editTplBtn.className = 'btn-dupe';
-        editTplBtn.textContent = 'Edit Template';
-        (function (t) {
-          editTplBtn.addEventListener('click', function () { openBuilderWithTemplate(t); });
-        })(tpl);
+        if (tpl.builtWith === 'zone-builder') {
+          editTplBtn.textContent = 'Zone Builder';
+          (function (t) {
+            editTplBtn.addEventListener('click', function () {
+              window.location.href = '/zone-builder' + (t.layoutId ? '?layout=' + encodeURIComponent(t.layoutId) : '');
+            });
+          })(tpl);
+        } else {
+          editTplBtn.textContent = 'Edit Template';
+          (function (t) {
+            editTplBtn.addEventListener('click', function () { openBuilderWithTemplate(t); });
+          })(tpl);
+        }
 
         cardActions.appendChild(useBtn);
         cardActions.appendChild(editTplBtn);

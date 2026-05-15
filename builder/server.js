@@ -5335,39 +5335,44 @@ app.get('/api/layout-skeletons', function (_req, res) {
   }
 });
 
-// POST /api/slide-builder/save — assemble and persist a zone-builder slide
+// POST /api/slide-builder/save — assemble and persist a zone-builder slide as a template
 app.post('/api/slide-builder/save', function (req, res) {
   try {
-    var body         = req.body || {};
-    var slideName    = (body.slideName    || '').trim();
-    var savedSlideId = (body.savedSlideId || '').trim() || null;
-    var layoutId     = (body.layoutId     || '').trim();
-    var html         = (body.html         || '').trim();
+    var body            = req.body || {};
+    var slideName       = (body.slideName       || '').trim();
+    var savedTemplateId = (body.savedTemplateId || '').trim() || null;
+    var layoutId        = (body.layoutId        || '').trim();
+    var category        = (body.category        || 'Content').trim();
+    var html            = (body.html            || '').trim();
 
     if (!slideName || !html) {
       return res.status(400).json({ ok: false, error: 'slideName and html are required' });
     }
 
-    var slidesDir = path.join(__dirname, 'features', 'slides');
-    var library   = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
-    var now       = new Date().toISOString();
-    var slideId, filePath;
+    var validCategories = ['Cover', 'Content', 'Stats', 'Visual', 'CTA', 'Data'];
+    if (!validCategories.includes(category)) category = 'Content';
 
-    if (savedSlideId) {
+    var slidesDir  = path.join(__dirname, 'features', 'slides');
+    var catalog    = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
+    var now        = new Date().toISOString();
+    var templateId, filePath;
+
+    if (savedTemplateId) {
       // Re-save: overwrite existing file and bump lastModified
-      var existing = library.slides.find(function (s) { return s.id === savedSlideId; });
+      var existing = catalog.find(function (t) { return t.id === savedTemplateId; });
       if (!existing) {
-        return res.status(404).json({ ok: false, error: 'Slide not found: ' + savedSlideId });
+        return res.status(404).json({ ok: false, error: 'Template not found: ' + savedTemplateId });
       }
-      slideId  = savedSlideId;
-      filePath = path.join(__dirname, existing.file);
-      html     = html.replace(/__SLIDE_ID__/g, slideId);
+      templateId = savedTemplateId;
+      filePath   = path.join(__dirname, existing.file);
+      html       = html.replace(/__SLIDE_ID__/g, templateId);
       fs.writeFileSync(filePath, html, 'utf8');
       existing.name         = slideName;
+      existing.category     = category;
       existing.lastModified = now;
 
     } else {
-      // New slide: find next available NN across all slide files
+      // New template: find next available NN across all slide files
       var allFiles = fs.readdirSync(slidesDir).filter(function (f) {
         return /^(?:slide-|ls)\d+-.+\.html$/.test(f);
       });
@@ -5375,31 +5380,32 @@ app.post('/api/slide-builder/save', function (req, res) {
         var m = f.match(/^(?:slide-|ls)(\d+)-/);
         return m ? Math.max(max, parseInt(m[1], 10)) : max;
       }, 0);
-      var nextNum = String(maxNum + 1).padStart(2, '0');
-      var slug    = slideName.replace(/[^a-z0-9]+/gi, '-').toLowerCase().replace(/^-+|-+$/g, '') || 'slide';
-      slideId     = 'ls' + nextNum + '-' + slug;
+      var nextNum  = String(maxNum + 1).padStart(2, '0');
+      var slug     = slideName.replace(/[^a-z0-9]+/gi, '-').toLowerCase().replace(/^-+|-+$/g, '') || 'template';
+      templateId   = 'ls' + nextNum + '-' + slug;
       var filename = 'slide-' + nextNum + '-' + slug + '.html';
       var fileRef  = 'features/slides/' + filename;
       filePath     = path.join(slidesDir, filename);
 
-      html = html.replace(/__SLIDE_ID__/g, slideId);
+      html = html.replace(/__SLIDE_ID__/g, templateId);
       fs.writeFileSync(filePath, html, 'utf8');
 
-      library.slides.push({
-        id:           slideId,
+      catalog.push({
+        id:           templateId,
         name:         slideName,
+        category:     category,
+        slideMode:    'sequence',
+        components:   [],
         file:         fileRef,
         layoutId:     layoutId || null,
         builtWith:    'zone-builder',
-        edits:        {},
-        deckEdits:    {},
         createdAt:    now,
         lastModified: now
       });
     }
 
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
-    res.json({ ok: true, slideId: slideId });
+    fs.writeFileSync(TEMPLATE_CATALOG_PATH, JSON.stringify(catalog, null, 2), 'utf8');
+    res.json({ ok: true, templateId: templateId });
 
   } catch (err) {
     console.error('[slide-builder/save]', err.message);

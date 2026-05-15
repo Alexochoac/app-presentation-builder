@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-05-14 (session 15)
+Last updated: 2026-05-14 (session 16)
 
 ---
 
@@ -44,7 +44,9 @@ App-presentation-builder/
     │   ├── decks/                  ← Per-deck folders: decks/[deckId]/deck.json
     │   │   └── [deckId]/deck.json  ← { id, name, slides: [{ id, librarySlideId, visible }] }
     │   ├── slide-library.json      ← Library slides catalog + deckEdits per-deck overrides
-    │   ├── slide-templates.json    ← Template definitions (id, defaultContent, rows for new system)
+    │   ├── slide-templates.json    ← Canvas-builder template definitions (id, defaultContent, rows)
+    │   ├── templates.json          ← HTML template catalog (TEMPLATE_CATALOG_PATH) — wizard + zone-builder templates
+    │   ├── layout-skeletons.json   ← 10 zone-builder layout skeletons (id, name, bodyZone, defaultComponents)
     │   ├── layouts.json            ← User-created layout templates (Slide Builder system)
     │   ├── settings.json           ← App settings: umamiWebsiteId, logos, heroBg, defaultPrimaryColor
     │   ├── presentations.json      ← Finished presentations snapshot history
@@ -59,11 +61,13 @@ App-presentation-builder/
     │   ├── builder-ui/
     │   │   ├── index.html          ← Builder section (/builder) — 3-zone layout, deck manager
     │   │   └── preview.html        ← Legacy full-screen slide viewer (still in use)
+    │   ├── zone-builder/
+    │   │   └── index.html          ← Zone Builder (/zone-builder) — visual slide builder; see Zone Builder section
     │   ├── slides/
     │   │   ├── index.html          ← Slides section (/slides) — 3-tab: My Library / Templates / Slide Builder
     │   │   ├── style.css           ← Shared slide CSS (mobile-first, all slides)
     │   │   ├── slide-01-cover.html ← Original HTML fragments (source of truth for content structure)
-    │   │   ├── ... (slides 02-15)
+    │   │   ├── ... (slides 02-22)  ← Files ≥16 are zone-builder or wizard-generated templates
     │   │   ├── uploads/            ← Customer-uploaded images (gitignored)
     │   │   └── components/
     │   │       ├── carousel.js     ← ls-carousel: add/delete/reorder/zoom/autoplay/compare
@@ -95,6 +99,7 @@ App-presentation-builder/
 | `/` | Dashboard | Analytics overview + Finished Presentations CRUD |
 | `/builder` | Builder | 3-zone layout: deck list + slide panel + main canvas |
 | `/slides` | Slides | 3-tab: My Library / Templates / Slide Builder |
+| `/zone-builder` | Zone Builder | Visual drag-drop slide builder (creates Templates) |
 | `/settings` | Settings | Global app settings only |
 
 `/layouts` redirects to `/slides`.
@@ -149,26 +154,72 @@ Three-zone layout:
 
 ---
 
+## Zone Builder (`builder/features/zone-builder/index.html`)
+
+A dedicated visual slide builder at `/zone-builder`. Creates slides as **Templates** (written to `templates.json`), not library slides.
+
+**Two-screen flow:**
+1. **Layout Picker** — grid of 10 layout skeletons from `GET /api/layout-skeletons`; `?layout=id` URL param pre-selects
+2. **3-Panel Builder** — palette (240px) | canvas (center) | properties (280px)
+
+**Topbar:**
+- Template name input (default "New Template")
+- Category select (Content / Cover / Stats / Visual / CTA / Data)
+- "Save as Template" button → `POST /api/slide-builder/save` → writes to `templates.json`
+
+**Canvas zones:**
+- Header zone: section-label + headline (both `contenteditable`)
+- Body zone: slots populated by skeleton's `defaultComponents`; click empty slot to pick component
+
+**Component palette:** carousel, tabs, editable-list, capability-table, cta-button, tag-chips, text-block, stat-block, logo-grid, card-grid, numbered-steps
+
+**Properties panel:** text style controls (font size/weight/style/align/color) per selected component
+
+**State object (key fields):**
+```js
+state = {
+  skeleton, selected, savedTemplateId,  // null = new; lsNN-slug after first save
+  images,    // { [compId]: string[] } carousel image URLs (null = placeholder)
+  styles,    // { [id]: { fontSize, color, fontWeight, ... } }
+  content: { header: { sectionLabel, headline }, components: [{ id, type, slot }] }
+}
+```
+
+**HTML assembly (`assembleHtml`):** clones canvas DOM, strips `data-builder-only` elements, stamps `data-lang-key`, flattens `.zb-component` wrappers, embeds layout CSS + script block into the slide fragment.
+
+**Template catalog entries** from zone builder have `builtWith: 'zone-builder'` — used by the Templates tab to show "ZB" badge and "Zone Builder" edit button instead of canvas builder.
+
+---
+
 ## Slides Section (`builder/features/slides/index.html`)
 
 Three top-level tabs:
 
 **My Library tab**
-- Grid of library slides from `GET /api/slide-library`
+- Grid/list view of library slides from `GET /api/slide-library`
+- Search, folder filter, sort
+- Card actions: gear ⚙ dropdown + 3-dots (⋮) upward dropdown; double-click thumbnail = edit in Slide Builder
 - Scaled thumbnails via `GET /slides/library-preview/:id` (always readonly)
-- Actions: Edit (opens Slide Builder tab), Duplicate (`POST /api/slide-library/:id/duplicate`), Delete (`DELETE /api/slide-library/:id`)
+- Duplicate (`POST /api/slide-library/:id/duplicate`), Delete (`DELETE /api/slide-library/:id`)
 - Pick-mode: "Add to [DeckName]" → `POST /api/deck/slides` → redirects to `/builder`
 
 **Templates tab**
-- Filter pills by category (Cover / Content / Visual / Metrics / Data / CTA)
-- "Use Template" → name modal → creates library slide
-- "Edit Template" → opens Slide Builder tab with template rows pre-loaded
+- Filter pills by category (Cover / Content / Visual / Stats / CTA / Data)
+- "New Template" button → navigates to `/zone-builder`
+- "Import" button → opens import modal
+- Template cards: "Use Template" (→ name modal → creates library slide), "Edit Template" (canvas builder) or "Zone Builder" (for `builtWith: 'zone-builder'` entries)
+- Zone-builder templates show a blue "ZB" badge
 - Pick-mode: "Use & Add to [DeckName]" → creates library slide + adds to deck
 
 **Slide Builder tab**
 - Top bar: slide name, Desktop/Mobile viewport toggle, "Save as Template" (`POST /api/layouts` or `PUT /api/layouts/:id`), "Save to Library" (`POST /api/library`)
 - Split pane: canvas (row/col/component builder) + live preview
 - Auto-saves on 800ms debounce when editing existing template
+
+**New Slide Modal** (opens from "My Library" empty state or "+ New Slide"):
+- 860px centered popup (not full-screen takeover)
+- Shows template picker grid with filter pills
+- Footer: "New Template" (→ zone builder), "Import", "Cancel"
 
 ---
 
@@ -214,10 +265,15 @@ Global-only settings (per-deck settings moved to Builder deck drawer):
 ### Layouts / Templates
 | Method | Path | What it does |
 |--------|------|-------------|
-| GET | `/api/layouts` | List layout templates |
+| GET | `/api/layouts` | List layout templates (canvas builder) |
 | POST | `/api/layouts` | Create layout template |
 | PUT | `/api/layouts/:id` | Update layout template |
 | DELETE | `/api/layouts/:id` | Delete layout |
+| GET | `/api/layout-skeletons` | List zone-builder layout skeletons from `layout-skeletons.json` |
+| GET | `/api/templates` | List HTML template catalog (`templates.json`) — wizard + zone-builder entries |
+| POST | `/api/templates` | Register HTML template (wizard mode or direct html) |
+| DELETE | `/api/templates/:id` | Deregister template (keeps HTML file) |
+| POST | `/api/slide-builder/save` | Zone builder: save assembled HTML as template to `templates.json`; `{ slideName, savedTemplateId, layoutId, category, html }` → `{ ok, templateId }` |
 
 ### Presentations
 | Method | Path | What it does |
@@ -386,11 +442,13 @@ slide-templates.json  →  slide-library.json  →  decks/[id]/deck.json
 
 ## What's Next
 
-1. **Translation — Finished presentation baking** — `[data-lang]` spans + inject `language-switcher.js` at Create time
-2. **Translation — Badge overcount fix** — skip non-text fields from badge count
-3. **Translation — Dirty flag for library slides** — hook into `POST /api/deck/slides/:id/edits`
-4. **Translation — Preview navigate fix** — replace `setTimeout(50)` with reliable slide-ready signal
-5. **Template update notifications** — "Update available" badge in My Library when template rows change
-6. **Design system refactor** — eliminate 3-layer CSS conflict
-7. Delete old `dashboard.css`
-8. **App UI icons standardise** — minimalist icon set across all pages
+1. **Zone Builder — Component resize** — size control (compact / default / wide) in properties panel
+2. **Zone Builder — Properties panel Task 6** — component-specific settings (carousel config, list items, etc.)
+3. **Zone Builder — Linking system Task 8** — trigger-button component for embedded slide navigation
+4. **Translation — Finished presentation baking** — `[data-lang]` spans + inject `language-switcher.js` at Create time
+5. **Translation — Badge overcount fix** — skip non-text fields from badge count
+6. **Translation — Dirty flag for library slides** — hook into `POST /api/deck/slides/:id/edits`
+7. **Translation — Preview navigate fix** — replace `setTimeout(50)` with reliable slide-ready signal
+8. **Template update notifications** — "Update available" badge in My Library when template rows change
+9. **Design system refactor** — eliminate 3-layer CSS conflict
+10. **App UI icons standardise** — minimalist icon set across all pages

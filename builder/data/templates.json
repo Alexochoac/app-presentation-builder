@@ -259,5 +259,17 @@
     ],
     "file": "features/slides/slide-20-ls19-nueva.html",
     "createdAt": "2026-05-14T11:12:05.451Z"
+  },
+  {
+    "id": "ls22-new-template",
+    "name": "New Template",
+    "category": "Content",
+    "slideMode": "sequence",
+    "components": [],
+    "file": "features/slides/slide-22-new-template.html",
+    "layoutId": "carousel-cards",
+    "builtWith": "zone-builder",
+    "createdAt": "2026-05-14T19:02:00.708Z",
+    "lastModified": "2026-05-14T19:02:03.238Z"
   }
 ]
