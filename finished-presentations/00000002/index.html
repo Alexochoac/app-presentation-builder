@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>1</title>
+  <title>Spanish</title>
   <style>
 /*
   Presentation Builder — Softsolution
@@ -87,12 +87,12 @@ body {
 
 .brand-badge {
   display:inline-flex; align-items:center; gap:10px;
-  background:rgba(91,108,240,.15); border:1px solid rgba(91,108,240,.45);
+  background:rgba(var(--accent-rgb),.15); border:1px solid rgba(var(--accent-rgb),.45);
   border-radius:100px; padding:7px 18px;
-  font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#A8B4FF;
+  font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--accent-light);
   margin-bottom:18px;
 }
-.brand-badge::before { content:''; width:6px; height:6px; border-radius:50%; background:#A8B4FF; animation:pulse 2s ease-in-out infinite; }
+.brand-badge::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--accent); animation:pulse 2s ease-in-out infinite; }
 
 .hero-content h1 {
   font-size:clamp(38px,5.5vw,72px);
@@ -107,11 +107,6 @@ body {
   -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
   display:inline-block;
 }
-.slide.hero .blue {
-  background:linear-gradient(90deg,#7B8FF8 0%,#A8B4FF 100%);
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-}
-
 /* ── Logo Row (top-left, all slides) ── */
 .slide-logo-row {
   position: absolute;
@@ -121,12 +116,16 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
+  background: rgba(0,0,0,.32);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border-radius: 10px;
+  padding: 6px 14px;
 }
 .slide-logo-row img {
-  height: 30px;
+  height: 28px;
   width: auto;
-  filter: brightness(0) invert(1);
-  opacity: .75;
+  opacity: .90;
 }
 .slide-logo-sep {
   width: 1px;
@@ -392,7 +391,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   -webkit-overflow-scrolling: touch;
 }
 
-:root{--accent:#1fb722;--accent-rgb:31,183,34;}
+:root{--accent:#f524ce;--accent-mid:#d820b5;--accent-light:#f980e3;--accent-rgb:245,36,206;}
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0a0a; }
     #fp-shell { display: flex; flex-direction: column; height: 100vh; }
@@ -465,7 +464,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   </style>
   <script defer src="https://umami.wbtm.io/script.js" data-website-id="306f3c58-2e8f-487c-b68f-e53f3b2a0b5d"></script>
 </head>
-<body data-default-lang="en" data-pres-id="00000002">
+<body data-default-lang="es" data-pres-id="00000002">
 <div id="fp-shell">
   <div id="fp-header">
     <a href="/" id="fp-dash-btn">&#8592; Dashboard</a>
@@ -474,335 +473,668 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     <div id="fp-counter">1 / 2</div>
     <button class="fp-nav-btn" id="fp-next">&#8250;</button>
     <div id="fp-header-spacer"></div>
-    <div id="fp-title">1</div>
+    <div id="fp-title">Spanish</div>
     <button class="fp-share-btn" id="fp-share-btn-hdr" title="Share presentation"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
   </div>
   <div id="fp-viewer">
     <div class="slides-container">
 <div class="fp-slide" data-slide-index="0" style="">
-<div class="slide hero" data-slide="cover-quality-inspection-1">
-  <!-- Logo row -->
-  <div class="slide-logo-row" style="position:absolute;top:22px;left:36px;z-index:10;">
-    <img src="../shared/LOGO_TEST.png" alt="Alex Ochoa">
+<div class="slide hero" data-slide="cover-slide-test">
+
+  <!-- Softsolution + LiteSentry logo row — top left -->
+  <div class="slide-logo-row" style="position:absolute; top:22px; left:36px; z-index:10;">
+    <img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution">
+    <span class="slide-logo-sep"></span>
+    <img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls">
   </div>
-  <!-- Credit line -->
-  <span class="softsolution-credit" data-edit="credit"><span data-lang="en">by GlassQuality.com</span><span data-lang="es" hidden="">by GlassQuality.com</span></span>
-  <!-- Customer logo -->
-  <div class="h49349598-customer-logo" data-edit="customer-logo">
-    <img class="h49349598-cust-img" src="../shared/LOGO_TEST.png" alt="Customer Logo">
-    <label class="h49349598-cust-placeholder" for="h49349598-logo-file" title="Click to upload logo">
+
+  <!-- Credit line: top right -->
+  <span class="softsolution-credit" data-edit="credit"><span data-lang="es">by GlassQuality.com</span><span data-lang="en" hidden="">by GlassQuality.com</span></span>
+
+  <!-- Customer logo — centered in right half -->
+  <div class="ls1-customer-logo" data-edit="customer-logo">
+    <img class="ls1-cust-img" src="../shared/LOGO-StrainOptics.png" alt="Customer Logo" onerror="this.classList.add('ls1-cust-img--missing')">
+    <label class="ls1-cust-placeholder" for="ls1-logo-file" title="Click to upload logo">
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="3"></rect>
         <circle cx="8.5" cy="8.5" r="1.5"></circle>
         <polyline points="21 15 16 10 5 21"></polyline>
       </svg>
-      <span>Customer Logo</span><small>Click to upload</small>
+      <span>Customer Logo</span>
+      <small>Click to upload</small>
     </label>
     
   </div>
-  <!-- Hero background -->
-  <img class="hero-bg" src="../shared/Cullet_Scanner_Picture.png" alt="Hero background" data-edit="hero-bg" style="object-position:50% 50%;">
+
+  <!-- Hero background image -->
+  <img class="hero-bg" src="../shared/CostOfQualityDefects.png" alt="Hero background" style="object-position:50% 75%;object-fit:contain;">
   <div class="hero-overlay"></div>
+
   <!-- Main content -->
   <div class="hero-content">
-    <div class="brand-badge" data-edit="badge"><span data-lang="en">GlassQuality.com · LineScanner · Osprey</span><span data-lang="es" hidden="">GlassQuality.com · LineScanner · Osprey</span></div>
-    <h1 data-edit="headline"><span data-lang="en">Quality Inspectiion<br>for <span class="blue">Flat Glass</span></span><span data-lang="es" hidden="">Quality Inspectiion<br>for <span class="blue">Flat Glass</span></span></h1>
-    <h2 data-edit="subheadline"><span data-lang="en">Proposal for 1 · 1</span><span data-lang="es" hidden="">Proposal for 1 · 1</span></h2>
+    <div class="brand-badge" data-edit="badge"><span data-lang="es">GlassQuality.com · LineScanner<span style="letter-spacing: 1.2px;">· Osprey</span></span><span data-lang="en" hidden="">GlassQuality.com · LineScanner<span style="letter-spacing: 1.2px;">· Osprey</span></span></div>
+    <h1 data-edit="headline"><span data-lang="es">Quality Inspection<br>for <span class="blue">Flat Glass</span></span><span data-lang="en" hidden="">Quality Inspection<br>for <span class="blue">Flat Glass</span></span></h1>
+    <h2 data-edit="subheadline"><span data-lang="es">Proposal for [Customer] · [Name], [Title]</span><span data-lang="en" hidden="">Proposal for [Customer] · [Name], [Title]</span></h2>
     
   </div>
+
   <!-- Gallery button -->
-  <button class="h49349598-gallery-btn" onclick="h49349598OpenGallery()" title="Show installation gallery">
+  <button class="ls1-gallery-btn" onclick="ls1OpenGallery()" title="Show installation gallery">
     <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect>
-      <rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect>
-    </svg> Gallery
+      <rect x="3" y="3" width="7" height="7"></rect>
+      <rect x="14" y="3" width="7" height="7"></rect>
+      <rect x="14" y="14" width="7" height="7"></rect>
+      <rect x="3" y="14" width="7" height="7"></rect>
+    </svg>
+    Gallery
   </button>
+
   <!-- Gallery overlay -->
-  <div class="h49349598-gallery-overlay" id="h49349598GalleryOverlay" style="display:none;">
-    <div class="h49349598-gallery-popup">
-      <button class="h49349598-gallery-close" onclick="h49349598CloseGallery()">✕</button>
-      <div class="h49349598-car-wrap" id="h49349598CarWrap">
-        <div class="h49349598-car-track" id="h49349598CarTrack" data-autoplay="8">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <div class="ls1-gallery-overlay" id="ls1GalleryOverlay" style="display:none;">
+    <div class="ls1-gallery-popup">
+      <button class="ls1-gallery-close" onclick="ls1CloseGallery()">✕</button>
+      <div class="ls1-car-wrap" id="ls1CarWrap">
+        <div class="ls1-car-track" id="ls1CarTrack" data-edit="carousel-track" data-autoplay="8">
 
           
+
+          <div class="ls1-car-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects"><div class="ls1-car-caption">CostOfQualityDefects</div></div><div class="ls1-car-slide ls1-car-slide--text">
+            <div class="ls1-stat-block">
+              <div class="section-label" data-edit="stat-1-label"><span data-lang="es">Cost of Quality Defects</span><span data-lang="en" hidden="">Cost of Quality Defects</span></div>
+              <span class="stat-number" data-edit="stat-1-number"><span data-lang="es">Rule 1+10+100</span><span data-lang="en" hidden="">Rule 1+10+100</span></span>
+              <div class="stat-label" data-edit="stat-1-text"><span data-lang="es">Catching a defect early costs 1, while letting it reach the customer can cost 100 times more in replacements and recalls</span><span data-lang="en" hidden="">Catching a defect early costs 1, while letting it reach the customer can cost 100 times more in replacements and recalls</span></div>
+            </div>
+            
+            
+          </div><div class="ls1-car-slide" data-edit="gallery-image-1">
+            <img src="../shared/Render_Tempering_Line.png" alt="Tempering Line">
+            <div class="ls1-car-caption" data-edit="gallery-caption-1"><span data-lang="es">Tempering Line</span><span data-lang="en" hidden="">Tempering Line</span></div>
+            
+            
+            
+          </div><div class="ls1-car-slide ls1-car-slide--text"><div class="ls1-stat-block"><div class="section-label" data-edit="stat-4-label"><span data-lang="es">Quality as a selling factor</span><span data-lang="en" hidden="">Quality as a selling factor</span></div><span class="stat-number" data-edit="stat-4-number"><span data-lang="es">CUSTOMER SATISFACTION</span><span data-lang="en" hidden="">CUSTOMER SATISFACTION</span></span><div class="stat-label" data-edit="stat-4-text"><span data-lang="es">A happy customer always buys more</span><span data-lang="en" hidden="">A happy customer always buys more</span></div></div></div>
+
+          <div class="ls1-car-slide" data-edit="gallery-image-2">
+            <img src="../shared/Render_IG_LIne.png" alt="IG Line">
+            <div class="ls1-car-caption" data-edit="gallery-caption-2"><span data-lang="es">IG Line</span><span data-lang="en" hidden="">IG Line</span></div>
+            
+            
+            
+          </div><div class="ls1-car-slide ls1-car-slide--text">
+            <div class="ls1-stat-block">
+              <div class="section-label" data-edit="stat-2-label"><span data-lang="es">The Human Limit</span><span data-lang="en" hidden="">The Human Limit</span></div>
+              <span class="stat-number" data-edit="stat-2-number"><span data-lang="es">Ghost Zone</span><span data-lang="en" hidden="">Ghost Zone</span></span>
+              <div class="stat-label" data-edit="stat-2-text"><span data-lang="es">Human inspectors lose nearly all accuracy once line speeds increases</span><span data-lang="en" hidden="">Human inspectors lose nearly all accuracy once line speeds increases</span></div>
+            </div>
+            
+            
+          </div>
+
           
-        <div class="h77704536-car-slide h77704536-car-slide--text"><div class="h77704536-stat-block"><div class="section-label">Label</div><span class="stat-number"><span style="letter-spacing: -2.64px;">Rule1+10+100</span></span><div class="stat-label">Test</div></div><button class="h77704536-car-move h77704536-car-move--l" onclick="h77704536MoveCarSlide(this,-1)">‹</button><button class="h77704536-car-move h77704536-car-move--r" onclick="h77704536MoveCarSlide(this,1)">›</button></div><div class="h77704536-car-slide"><img src="../shared/CostOfQualityDefects.png" alt="Gallery image"><div class="h77704536-car-caption">New image</div><button class="h77704536-car-move h77704536-car-move--l" onclick="h77704536MoveCarSlide(this,-1)">‹</button><button class="h77704536-car-move h77704536-car-move--r" onclick="h77704536MoveCarSlide(this,1)">›</button></div>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <div class="h77704536-car-slide"><img src="../shared/Render-Coating-line.png" alt="Gallery image"><div class="h77704536-car-caption">New image</div><button class="h77704536-car-move h77704536-car-move--l" onclick="h77704536MoveCarSlide(this,-1)">‹</button><button class="h77704536-car-move h77704536-car-move--r" onclick="h77704536MoveCarSlide(this,1)">›</button></div>
-        
+
+          <div class="ls1-car-slide" data-edit="gallery-image-3">
+            <img src="../shared/Render_Automotive_Printing_Line.png" alt="Automotive Printing Line">
+            <div class="ls1-car-caption" data-edit="gallery-caption-3"><span data-lang="es">Automotive Printing Line</span><span data-lang="en" hidden="">Automotive Printing Line</span></div>
+            
+            
+            
+          </div><div class="ls1-car-slide ls1-car-slide--text">
+            <div class="ls1-stat-block">
+              <div class="section-label" data-edit="stat-3-label"><span data-lang="es">Invisible Risks</span><span data-lang="en" hidden="">Invisible Risks</span></div>
+              <span class="stat-number" data-edit="stat-3-number"><span data-lang="es">Anisotropy &amp; Distortion</span><span data-lang="en" hidden="">Anisotropy &amp; Distortion</span></span>
+              <div class="stat-label" data-edit="stat-3-text"><span data-lang="es">By seeing what the eye misses, you prevent unplanned costs before the product ever leaves to your customer</span><span data-lang="en" hidden="">By seeing what the eye misses, you prevent unplanned costs before the product ever leaves to your customer</span></div>
+            </div>
+            
+            
+          </div>
+
+          
+
         </div>
-        <button class="h49349598-car-prev" onclick="h49349598CarMove(-1)">‹</button>
-        <button class="h49349598-car-next" onclick="h49349598CarMove(1)">›</button>
+        <button class="ls1-car-prev" onclick="ls1CarMove(-1)">‹</button>
+        <button class="ls1-car-next" onclick="ls1CarMove(1)">›</button>
       </div>
-      <div class="h49349598-thumb-strip" id="h49349598ThumbStrip"></div>
+
+      <!-- Thumbnail strip — builder + final presentation -->
+      <div class="ls1-thumb-strip" id="ls1ThumbStrip"></div>
+
+      <!-- Footer — builder only -->
       
     </div>
   </div>
+
+  <!-- Shared file input for carousel image swaps -->
   
+
+  <!-- Scoped styles — slide-01 only -->
   <style>
-    .h49349598-customer-logo { position:static; transform:none; margin:16px auto 0; z-index:10; display:flex; align-items:center; justify-content:center; background:#fff; backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.18); border-radius:24px; padding:18px; width:160px; height:160px; cursor:pointer; }
-    .h49349598-customer-logo::after { content:"Change Logo"; position:absolute; inset:0; border-radius:24px; background:rgba(0,0,0,.55); color:#fff; font-size:12px; font-weight:700; letter-spacing:.06em; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s; }
-    .h49349598-customer-logo:hover::after { opacity:1; }
-    .h49349598-cust-img { width:90%; height:90%; object-fit:contain; }
-    .h49349598-cust-img--missing { display:none; }
-    .h49349598-cust-img--missing ~ .h49349598-cust-placeholder { display:flex; }
-    .h49349598-cust-placeholder { display:none; flex-direction:column; align-items:center; justify-content:center; gap:10px; width:100%; height:100%; border:2px dashed rgba(255,255,255,.25); border-radius:16px; cursor:pointer; color:rgba(255,255,255,.55); text-align:center; }
-    .h49349598-cust-placeholder span { font-size:14px; font-weight:700; letter-spacing:.04em; }
-    .h49349598-cust-placeholder small { font-size:11px; opacity:.65; }
-    .h49349598-gallery-btn { position:absolute; bottom:80px; right:16px; z-index:10; display:flex; align-items:center; gap:6px; padding:7px 14px; background:rgba(0,0,0,.40); border:1px solid rgba(255,255,255,.20); border-radius:20px; color:rgba(255,255,255,.70); font-size:11px; font-weight:600; letter-spacing:.06em; cursor:pointer; backdrop-filter:blur(8px); transition:background .25s,border-color .25s,color .25s; font-family:inherit; }
-    .h49349598-gallery-btn:hover { background:rgba(var(--accent-rgb),.25); border-color:var(--accent); color:#fff; }
-    .h49349598-gallery-overlay { position:fixed; inset:0; z-index:9000; background:rgba(0,0,0,.70); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; }
-    .h49349598-gallery-popup { position:relative; background:rgba(10,10,14,.92); border:1px solid rgba(255,255,255,.14); border-radius:20px; padding:20px; box-shadow:0 32px 96px rgba(0,0,0,.80); }
-    .h49349598-gallery-close { position:absolute; top:-14px; right:-14px; width:30px; height:30px; border-radius:50%; min-width:44px; min-height:44px; background:rgba(40,40,50,.95); border:1px solid rgba(255,255,255,.22); color:rgba(255,255,255,.80); font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-    .h49349598-car-wrap { position:relative; width:100%; height:auto; border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,.12); box-shadow:0 24px 80px rgba(0,0,0,.7); }
-    .h49349598-car-track { display:flex; height:auto; transition:transform .55s cubic-bezier(.4,0,.2,1); }
-    .h49349598-car-slide { flex:0 0 100%; width:100%; height:auto; position:relative; background:#111; }
-    .h49349598-car-slide img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; user-select:none; pointer-events:none; }
-    .h49349598-car-caption { position:absolute; bottom:0; left:0; right:0; padding:10px 18px; background:linear-gradient(transparent,rgba(0,0,0,.75)); color:rgba(255,255,255,.85); font-size:12px; font-weight:600; letter-spacing:.05em; text-align:center; }
-    .h49349598-car-prev, .h49349598-car-next { position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,.50); border:1px solid rgba(255,255,255,.20); color:#fff; font-size:26px; width:40px; height:40px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:5; }
-    .h49349598-car-prev { left:12px; } .h49349598-car-next { right:12px; }
-    .h49349598-car-img-overlay { position:absolute; inset:0; z-index:15; background:rgba(0,0,0,.55); display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; font-weight:700; opacity:0; transition:opacity .2s; cursor:pointer; }
-    .h49349598-car-slide:hover .h49349598-car-img-overlay { opacity:1; }
-    .h49349598-car-move { position:absolute; bottom:10px; z-index:20; width:28px; height:28px; border-radius:50%; background:rgba(0,0,0,.65); border:1px solid rgba(255,255,255,.30); color:#fff; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s; font-family:inherit; }
-    .h49349598-car-slide:hover .h49349598-car-move { opacity:1; }
-    .h49349598-car-move--l { right:48px; } .h49349598-car-move--r { right:12px; }
-    .h49349598-car-delete { position:absolute; top:8px; right:8px; z-index:20; width:26px; height:26px; border-radius:50%; background:rgba(180,40,40,.80); border:1px solid rgba(255,80,80,.40); color:#fff; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s; font-family:inherit; padding:0; line-height:1; }
-    .h49349598-car-slide:hover .h49349598-car-delete { opacity:1; }
-    .h49349598-car-slide--text { flex:0 0 100%; background:linear-gradient(135deg,#0d1117 0%,#1a1f2e 100%); display:flex; align-items:center; justify-content:center; }
-    .h49349598-stat-block { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:32px; width:100%; text-align:center; }
-    .h49349598-stat-block .stat-number { font-size:clamp(48px,8vw,88px); font-weight:900; letter-spacing:-.03em; line-height:1; background:linear-gradient(135deg,var(--accent),var(--accent-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; display:block; }
-    .h49349598-stat-block .stat-label { font-size:15px; color:var(--text-muted); margin-top:8px; font-weight:500; }
-    .h49349598-thumb-strip { display:flex; gap:6px; padding:10px 0 4px; overflow-x:auto; }
-    .h49349598-thumb { flex:0 0 72px; height:46px; border-radius:8px; border:2px solid rgba(255,255,255,.12); background:#222; background-size:cover; background-position:center; cursor:pointer; transition:border-color .2s; }
-    .h49349598-thumb--active { border-color:var(--accent) !important; }
-    .h49349598-thumb--text { display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#0d1117,#1a1f2e); font-size:9px; font-weight:700; letter-spacing:.06em; color:var(--accent); text-align:center; padding:4px; text-transform:uppercase; }
-    .h49349598-car-footer { display:flex; align-items:center; justify-content:space-between; padding:8px 2px 0; }
-    .h49349598-autoplay-ctrl { font-size:11px; color:rgba(255,255,255,.40); font-weight:600; letter-spacing:.06em; }
-    .h49349598-add-btns { display:flex; gap:6px; }
-    .h49349598-add-btn { font-size:11px; font-weight:700; padding:5px 12px; border-radius:20px; cursor:pointer; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.15); color:rgba(255,255,255,.6); font-family:inherit; }
-    .h49349598-add-btn:hover { background:rgba(var(--accent-rgb),.15); border-color:var(--accent); color:var(--accent); }
+    .ls1-customer-logo {
+      position: static;
+      transform: none;
+      margin: 16px auto 0;
+      z-index: 10;
+      display: flex; align-items: center; justify-content: center;
+      background: #ffffff; /* overridden by detectLogoBg at runtime */
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 24px; padding: 18px;
+      width: 160px; height: 160px;
+    }
+    .ls1-customer-logo { cursor: pointer; }
+    .ls1-customer-logo::after {
+      content: 'Change Logo';
+      position: absolute; inset: 0; border-radius: 24px;
+      background: rgba(0,0,0,.55);
+      color: #fff; font-size: 12px; font-weight: 700; letter-spacing: .06em;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .2s;
+    }
+    .ls1-customer-logo:hover::after { opacity: 1; }
+    .ls1-cust-img { width:90%; height:90%; object-fit:contain; }
+    .ls1-cust-img--missing { display:none; }
+    .ls1-cust-img--missing ~ .ls1-cust-placeholder { display:flex; }
+    .ls1-cust-placeholder {
+      display:none; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+      width:100%; height:100%;
+      border:2px dashed rgba(255,255,255,.25); border-radius:16px;
+      cursor:pointer; color:rgba(255,255,255,.55); text-align:center;
+      transition:border-color .2s, color .2s;
+    }
+    .ls1-cust-placeholder:hover { border-color:rgba(var(--accent-rgb),.6); color:var(--accent); }
+    .ls1-cust-placeholder span { font-size:14px; font-weight:700; letter-spacing:.04em; }
+    .ls1-cust-placeholder small { font-size:11px; opacity:.65; }
+
+    .ls1-gallery-btn {
+      position:absolute; bottom:80px; right:16px; z-index:10;
+      display:flex; align-items:center; gap:6px;
+      padding:7px 14px;
+      background:rgba(0,0,0,.40); border:1px solid rgba(255,255,255,.20);
+      border-radius:20px; color:rgba(255,255,255,.70);
+      font-size:11px; font-weight:600; letter-spacing:.06em;
+      cursor:pointer; backdrop-filter:blur(8px);
+      transition:background .25s, border-color .25s, color .25s;
+      font-family:inherit; user-select:none;
+    }
+    .ls1-gallery-btn:hover { background:rgba(var(--accent-rgb),.25); border-color:var(--accent); color:#fff; }
+
+    .ls1-gallery-overlay {
+      position:fixed; inset:0; z-index:9000;
+      background:rgba(0,0,0,.70); backdrop-filter:blur(4px);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .ls1-gallery-popup {
+      position:relative;
+      background:rgba(10,10,14,.92); border:1px solid rgba(255,255,255,.14);
+      border-radius:20px; padding:20px;
+      box-shadow:0 32px 96px rgba(0,0,0,.80);
+    }
+    .ls1-gallery-close {
+      position:absolute; top:-14px; right:-14px;
+      width:30px; height:30px; border-radius:50%;
+      min-width:44px; min-height:44px;
+      background:rgba(40,40,50,.95); border:1px solid rgba(255,255,255,.22);
+      color:rgba(255,255,255,.80); font-size:13px; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:background .2s, color .2s; z-index:5;
+    }
+    .ls1-gallery-close:hover { background:rgba(255,255,255,.20); color:#fff; }
+
+    .ls1-car-wrap { position:relative; width:100%; height:auto; border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,.12); box-shadow:0 24px 80px rgba(0,0,0,.7); }
+    .ls1-car-track { display:flex; height:auto; transition:transform .55s cubic-bezier(.4,0,.2,1); }
+    .ls1-car-slide { flex:0 0 100%; width:100%; height:auto; position:relative; background:#111; }
+    .ls1-car-slide img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; user-select:none; pointer-events:none; }
+    .ls1-car-caption { position:absolute; bottom:0; left:0; right:0; padding:10px 18px; background:linear-gradient(transparent,rgba(0,0,0,.75)); color:rgba(255,255,255,.85); font-size:12px; font-weight:600; letter-spacing:.05em; text-align:center; }
+    .ls1-car-caption:focus { outline:none; }
+
+    .ls1-car-prev, .ls1-car-next { position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,.50); border:1px solid rgba(255,255,255,.20); color:#fff; font-size:26px; line-height:1; width:40px; height:40px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .2s; z-index:5; }
+    .ls1-car-prev { left:12px; }
+    .ls1-car-next { right:12px; }
+    .ls1-car-prev:hover, .ls1-car-next:hover { background:rgba(var(--accent-rgb),.60); }
+
+    /* ── Carousel builder controls ── */
+    .ls1-car-img-overlay {
+      position:absolute; inset:0; z-index:15;
+      background:rgba(0,0,0,.55);
+      display:flex; align-items:center; justify-content:center;
+      color:#fff; font-size:12px; font-weight:700; letter-spacing:.06em;
+      opacity:0; transition:opacity .2s; cursor:pointer;
+    }
+    .ls1-car-slide:hover .ls1-car-img-overlay { opacity:1; }
+    .ls1-car-move {
+      position:absolute; bottom:10px; z-index:20;
+      width:28px; height:28px; border-radius:50%;
+      background:rgba(0,0,0,.65); border:1px solid rgba(255,255,255,.30);
+      color:#fff; font-size:18px; line-height:1; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      opacity:0; transition:opacity .2s, background .2s;
+      font-family:inherit;
+    }
+    .ls1-car-slide:hover .ls1-car-move { opacity:1; }
+    .ls1-car-move--l { right:48px; }
+    .ls1-car-move--r { right:12px; }
+    .ls1-car-move:hover { background:rgba(var(--accent-rgb),.65); }
+
+    /* ── Delete button ── */
+    .ls1-car-del {
+      position:absolute; top:8px; left:8px; z-index:22;
+      width:24px; height:24px; border-radius:50%;
+      background:rgba(180,30,30,.75); border:1px solid rgba(255,100,100,.30);
+      color:#fff; font-size:13px; line-height:1; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      opacity:0; transition:opacity .2s, background .2s;
+      font-family:inherit;
+    }
+    .ls1-car-slide:hover .ls1-car-del { opacity:1; }
+    .ls1-car-del:hover { background:rgba(220,40,40,1); }
+
+    .ls1-car-slide--text { flex:0 0 100%; background:linear-gradient(135deg,#0d1117 0%,#1a1f2e 100%); display:flex; align-items:center; justify-content:center; }
+    .ls1-stat-block { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:32px; width:100%; text-align:center; }
+    .ls1-stat-block .stat-number { font-size:clamp(48px,8vw,88px); font-weight:900; letter-spacing:-.03em; line-height:1; background:linear-gradient(135deg,var(--accent),var(--accent-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; display:block; }
+    .ls1-stat-block .stat-label { font-size:15px; color:var(--text-muted); margin-top:8px; font-weight:500; }
+    [contenteditable]:focus { outline:none; }
+
+    /* ── Thumbnail strip ── */
+    .ls1-thumb-strip {
+      display:flex; gap:6px; padding:10px 0 4px;
+      overflow-x:auto; scrollbar-width:thin;
+      scrollbar-color:rgba(255,255,255,.15) transparent;
+    }
+    .ls1-thumb {
+      flex:0 0 72px; height:46px; border-radius:8px;
+      border:2px solid rgba(255,255,255,.12);
+      background:#222; background-size:cover; background-position:center;
+      cursor:pointer; transition:border-color .2s, opacity .2s;
+      position:relative; overflow:hidden; user-select:none;
+    }
+    .ls1-thumb:hover { border-color:rgba(255,255,255,.35); }
+    .ls1-thumb--active { border-color:var(--accent) !important; }
+    .ls1-thumb--dragging { opacity:.4; }
+    .ls1-thumb--text {
+      display:flex; align-items:center; justify-content:center;
+      background:linear-gradient(135deg,#0d1117,#1a1f2e);
+      font-size:9px; font-weight:700; letter-spacing:.06em;
+      color:var(--accent); text-align:center; padding:4px;
+      text-transform:uppercase;
+    }
+    .ls1-thumb-dragover { border-color:var(--accent); border-style:dashed; }
+
+    /* ── Footer: autoplay + add buttons ── */
+    .ls1-car-footer {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:8px 2px 0;
+    }
+    .ls1-autoplay-ctrl {
+      font-size:11px; color:rgba(255,255,255,.40); font-weight:600;
+      letter-spacing:.06em; user-select:none;
+    }
+    .ls1-autoplay-ctrl span {
+      color:rgba(255,255,255,.65); min-width:14px; display:inline-block;
+      text-align:center; border-bottom:1px solid rgba(255,255,255,.2);
+    }
+    .ls1-autoplay-ctrl span:focus { outline:none; border-color:var(--accent); color:#fff; }
+    .ls1-add-btns { display:flex; gap:6px; }
+    .ls1-add-btn {
+      font-size:11px; font-weight:700; letter-spacing:.05em;
+      padding:5px 12px; border-radius:20px; cursor:pointer;
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.15);
+      color:rgba(255,255,255,.6); font-family:inherit;
+      transition:background .2s, border-color .2s, color .2s;
+    }
+    .ls1-add-btn:hover { background:rgba(var(--accent-rgb),.15); border-color:var(--accent); color:var(--accent); }
+
+    /* ── Desktop (≥769px) ── */
     @media(min-width:769px) {
-      .h49349598-customer-logo { position:absolute; left:75%; top:50%; transform:translate(-50%,-50%); margin:0; width:clamp(150px,15vw,250px); height:clamp(150px,15vw,250px); padding:28px; }
-      .h49349598-gallery-btn { bottom:64px; right:32px; }
-      .h49349598-car-wrap { width:760px; height:460px; }
-      .h49349598-car-track { height:460px; }
-      .h49349598-car-slide { flex:0 0 760px; width:760px; height:460px; }
-      .h49349598-car-slide--text { flex:0 0 760px; }
+      .ls1-customer-logo { position: absolute; left: 75%; top: 50%; transform: translate(-50%, -50%); margin: 0; width: clamp(150px,15vw,250px); height: clamp(150px,15vw,250px); padding: 28px; }
+      .ls1-gallery-btn { bottom:64px; right:32px; }
+      .ls1-car-wrap { width:760px; height:460px; }
+      .ls1-car-track { height:460px; }
+      .ls1-car-slide { flex:0 0 760px; width:760px; height:460px; }
+      .ls1-car-slide img { width:100%; height:100%; object-fit:contain; }
+      .ls1-car-slide--text { flex:0 0 760px; }
     }
   </style>
+
+  <!-- Gallery JS — self-contained -->
   <script>
   (function () {
-    var idx = 0, autoTimer = null, targetSlide = null;
-    var P = "h49349598";
-    var SLIDE_ID = "deck-lib-cover-1778849349598";
-    function saveCarouselTrack() {
-      if (!SLIDE_ID) return;
-      var track = document.getElementById(P + "CarTrack");
-      var clone = track.cloneNode(true);
-      clone.querySelectorAll("[data-builder-only]").forEach(function (n) { n.remove(); });
-      fetch("/api/deck/slides/" + SLIDE_ID + "/edits", {
-        method: "POST", headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({ edits: { "carousel-track-html": clone.innerHTML } })
-      });
-    }
-    function getSlides()    { return Array.from(document.querySelectorAll("#" + P + "CarTrack > ." + P + "-car-slide")); }
-    function getWrapWidth() { return document.getElementById(P + "CarWrap").offsetWidth; }
-    function getAutoSecs()  { return (parseInt(document.getElementById(P + "CarTrack").getAttribute("data-autoplay")) || 8) * 1000; }
+    var idx         = 0;
+    var autoTimer   = null;
+    var targetSlide = null;
+
+    // ── Helpers ────────────────────────────────────────────────────────────
+    function getSlides()    { return Array.from(document.querySelectorAll('#ls1CarTrack > .ls1-car-slide')); }
+    function getWrapWidth() { return document.getElementById('ls1CarWrap').offsetWidth; }
+    function getAutoplay()  { return (parseInt(document.getElementById('ls1CarTrack').getAttribute('data-autoplay')) || 7) * 1000; }
+
     function goTo(i) {
       var slides = getSlides();
       idx = Math.max(0, Math.min(slides.length - 1, i));
-      document.getElementById(P + "CarTrack").style.transform = "translateX(" + (idx * -getWrapWidth()) + "px)";
-      updateThumbs();
+      document.getElementById('ls1CarTrack').style.transform = 'translateX(' + (idx * -getWrapWidth()) + 'px)';
+      ls1UpdateThumbs();
+      // Analytics
+      var caption = slides[idx] ? slides[idx].querySelector('[data-edit^="gallery-caption"]') : null;
+      var name = caption ? caption.textContent.trim().toLowerCase().replace(/\s+/g, '-') : 'item-' + (idx + 1);
+      if (window.umami) umami.track('gallery:' + name);
     }
-    function startAutoplay() { clearInterval(autoTimer); autoTimer = setInterval(function () { goTo(idx < getSlides().length - 1 ? idx + 1 : 0); }, getAutoSecs()); }
-    function stopAutoplay()  { clearInterval(autoTimer); }
-    var wrap = document.getElementById(P + "CarWrap");
-    wrap.addEventListener("mouseenter", stopAutoplay);
-    wrap.addEventListener("mouseleave", function () { if (document.getElementById(P + "GalleryOverlay").style.display !== "none") startAutoplay(); });
-    window[P + "DeleteCarSlide"] = function (btn) {
-      var slide = btn.closest("." + P + "-car-slide");
-      var slides = getSlides();
-      if (slides.length <= 1) return;
-      var i = slides.indexOf(slide);
-      slide.parentNode.removeChild(slide);
-      goTo(Math.min(i, getSlides().length - 1));
-      buildThumbs();
-      saveCarouselTrack();
-    };
-    function injectBuilderControls() {
-      getSlides().forEach(function (slide) {
-        if (!slide.querySelector("." + P + "-car-move--l")) {
-          var ml = document.createElement("button");
-          ml.className = P + "-car-move " + P + "-car-move--l";
-          ml.setAttribute("data-builder-only", "");
-          ml.onclick = function () { window[P + "MoveCarSlide"](ml, -1); };
-          ml.textContent = "‹";
-          slide.appendChild(ml);
-        }
-        if (!slide.querySelector("." + P + "-car-move--r")) {
-          var mr = document.createElement("button");
-          mr.className = P + "-car-move " + P + "-car-move--r";
-          mr.setAttribute("data-builder-only", "");
-          mr.onclick = function () { window[P + "MoveCarSlide"](mr, 1); };
-          mr.textContent = "›";
-          slide.appendChild(mr);
-        }
-        if (!slide.querySelector("." + P + "-car-delete")) {
-          var del = document.createElement("button");
-          del.className = P + "-car-delete";
-          del.setAttribute("data-builder-only", "");
-          del.onclick = function () { window[P + "DeleteCarSlide"](del); };
-          del.textContent = "✕";
-          slide.appendChild(del);
-        }
-      });
+
+    // ── Auto-advance ───────────────────────────────────────────────────────
+    function startAutoplay() {
+      clearInterval(autoTimer);
+      autoTimer = setInterval(function () {
+        var count = getSlides().length;
+        goTo(idx < count - 1 ? idx + 1 : 0);
+      }, getAutoplay());
     }
-    window[P + "OpenGallery"]  = function () { var o = document.getElementById(P + "GalleryOverlay"); document.body.appendChild(o); o.style.display = "flex"; goTo(0); buildThumbs(); if (!window.PB_READONLY) injectBuilderControls(); startAutoplay(); };
-    window[P + "CloseGallery"] = function () { document.getElementById(P + "GalleryOverlay").style.display = "none"; stopAutoplay(); };
-    window[P + "CarMove"]      = function (dir) { goTo(idx + dir); };
-    window[P + "MoveCarSlide"] = function (btn, dir) {
-      var track = document.getElementById(P + "CarTrack");
-      var slide = btn.closest("." + P + "-car-slide");
-      var slides = getSlides();
-      var i = slides.indexOf(slide);
-      var j = i + dir;
-      if (j < 0 || j >= slides.length) return;
-      dir < 0 ? track.insertBefore(slide, slides[j]) : track.insertBefore(slides[j], slide);
-      buildThumbs();
-      saveCarouselTrack();
-    };
-    window[P + "ChangeCarImage"] = function (overlay) {
-      targetSlide = overlay.closest("." + P + "-car-slide");
-      document.getElementById(P + "-carousel-file").click();
-    };
-    window[P + "AddImage"] = function () {
-      var track = document.getElementById(P + "CarTrack");
-      var n = getSlides().length + 1;
-      var slide = document.createElement("div");
-      slide.className = P + "-car-slide";
-      slide.innerHTML = '<img src="" alt="Gallery image"><div class="' + P + '-car-caption" contenteditable="" spellcheck="false">New image</div><div class="' + P + '-car-img-overlay" data-builder-only="" onclick="' + P + 'ChangeCarImage(this)">Change Image</div><button class="' + P + '-car-move ' + P + '-car-move--l" onclick="' + P + 'MoveCarSlide(this,-1)">‹</button><button class="' + P + '-car-move ' + P + '-car-move--r" onclick="' + P + 'MoveCarSlide(this,1)">›</button><button class="' + P + '-car-delete" data-builder-only="" onclick="' + P + 'DeleteCarSlide(this)">✕</button>';
-      track.appendChild(slide);
-      goTo(getSlides().length - 1);
-      buildThumbs();
-      saveCarouselTrack();
-    };
-    window[P + "AddText"] = function () {
-      var track = document.getElementById(P + "CarTrack");
-      var slide = document.createElement("div");
-      slide.className = P + "-car-slide " + P + "-car-slide--text";
-      slide.innerHTML = '<div class="' + P + '-stat-block"><div class="section-label" contenteditable="" spellcheck="false">Label</div><span class="stat-number" contenteditable="" spellcheck="false">Value</span><div class="stat-label" contenteditable="" spellcheck="false">Description</div></div><button class="' + P + '-car-move ' + P + '-car-move--l" onclick="' + P + 'MoveCarSlide(this,-1)">‹</button><button class="' + P + '-car-move ' + P + '-car-move--r" onclick="' + P + 'MoveCarSlide(this,1)">›</button><button class="' + P + '-car-delete" data-builder-only="" onclick="' + P + 'DeleteCarSlide(this)">✕</button>';
-      track.appendChild(slide);
-      goTo(getSlides().length - 1);
-      buildThumbs();
-      saveCarouselTrack();
-    };
-    if (!window.PB_READONLY) { var _cf = document.getElementById(P + "-carousel-file"); if (_cf) _cf.addEventListener("change", function (e) {
-      var file = e.target.files[0];
-      if (!file || !targetSlide) return;
-      var img = targetSlide.querySelector("img");
-      img.src = URL.createObjectURL(file);
-      var reader = new FileReader();
-      reader.onload = function (ev) {
-        fetch("/api/upload-image", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ filename: file.name, data: ev.target.result }) })
-        .then(function (r) { return r.json(); })
-        .then(function (d) {
-          if (!d.path) return;
-          img.src = d.path;
-          buildThumbs();
-          saveCarouselTrack();
-        });
-      };
-      reader.readAsDataURL(file);
-      e.target.value = "";
-    }); }
-    if (!window.PB_READONLY) document.getElementById(P + "-logo-file").addEventListener("change", function (e) {
-      var file = e.target.files[0]; if (!file) return;
-      var img = document.querySelector("." + P + "-cust-img");
-      img.src = URL.createObjectURL(file);
-      img.classList.remove(P + "-cust-img--missing");
-      var reader = new FileReader();
-      reader.onload = function (ev) {
-        fetch("/api/upload-image", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ filename: file.name, data: ev.target.result }) })
-        .then(function (r) { return r.json(); })
-        .then(function (d) {
-          if (!d.path) return;
-          img.src = d.path;
-          img.classList.remove(P + "-cust-img--missing");
-          var slideId = document.querySelector(".slide[data-slide]").getAttribute("data-slide");
-          fetch("/api/deck/slides/" + slideId + "/edits", {
-            method: "POST", headers: {"Content-Type":"application/json"},
-            body: JSON.stringify({ edits: { "customer-logo-src": d.path } })
-          });
-        });
-      };
-      reader.readAsDataURL(file);
-      e.target.value = "";
+
+    function stopAutoplay() { clearInterval(autoTimer); }
+
+    // Pause on hover, resume on leave
+    var wrap = document.getElementById('ls1CarWrap');
+    wrap.addEventListener('mouseenter', stopAutoplay);
+    wrap.addEventListener('mouseleave', function () {
+      if (document.getElementById('ls1GalleryOverlay').style.display !== 'none') startAutoplay();
     });
-    function buildThumbs() {
-      var strip = document.getElementById(P + "ThumbStrip");
-      strip.innerHTML = "";
-      getSlides().forEach(function (slide, i) {
-        var thumb = document.createElement("div");
-        thumb.className = P + "-thumb" + (i === idx ? " " + P + "-thumb--active" : "");
-        var img = slide.querySelector("img");
-        if (img && img.src) { thumb.style.backgroundImage = "url(" + img.src + ")"; }
-        else { thumb.classList.add(P + "-thumb--text"); var lbl = slide.querySelector(".section-label"); thumb.textContent = lbl && lbl.textContent.trim() ? lbl.textContent.trim().substring(0, 14) : "Text"; }
-        thumb.addEventListener("click", function () { goTo(i); });
+
+    // ── Public API ─────────────────────────────────────────────────────────
+    window.ls1OpenGallery = function () {
+      document.getElementById('ls1GalleryOverlay').style.display = 'flex';
+      goTo(0);
+      ls1BuildThumbs(); // also calls ls1EnsureDeleteBtns internally
+      startAutoplay();
+    };
+
+    window.ls1CloseGallery = function () {
+      document.getElementById('ls1GalleryOverlay').style.display = 'none';
+      stopAutoplay();
+    };
+
+    window.ls1CarMove = function (dir) { goTo(idx + dir); };
+
+    // ── Thumbnail strip ────────────────────────────────────────────────────
+    window.ls1BuildThumbs = function () {
+      var strip  = document.getElementById('ls1ThumbStrip');
+      var slides = getSlides();
+      strip.innerHTML = '';
+
+      slides.forEach(function (slide, i) {
+        var thumb = document.createElement('div');
+        thumb.className = 'ls1-thumb' + (i === idx ? ' ls1-thumb--active' : '');
+        thumb.setAttribute('data-index', i);
+
+        var img = slide.querySelector('img');
+        if (img) {
+          thumb.style.backgroundImage = 'url(' + img.src + ')';
+        } else {
+          thumb.classList.add('ls1-thumb--text');
+          var lbl = slide.querySelector('.section-label');
+          thumb.textContent = lbl ? lbl.textContent.substring(0, 14) : 'Text';
+        }
+
+        // Click to navigate
+        thumb.addEventListener('click', function () { goTo(i); });
+
+        // Drag to reorder
+        thumb.draggable = true;
+        thumb.addEventListener('dragstart', function (e) {
+          e.dataTransfer.setData('text/plain', String(i));
+          setTimeout(function () { thumb.classList.add('ls1-thumb--dragging'); }, 0);
+        });
+        thumb.addEventListener('dragend', function () { thumb.classList.remove('ls1-thumb--dragging'); });
+        thumb.addEventListener('dragover', function (e) { e.preventDefault(); thumb.classList.add('ls1-thumb-dragover'); });
+        thumb.addEventListener('dragleave', function ()  { thumb.classList.remove('ls1-thumb-dragover'); });
+        thumb.addEventListener('drop', function (e) {
+          e.preventDefault();
+          thumb.classList.remove('ls1-thumb-dragover');
+          var from = parseInt(e.dataTransfer.getData('text/plain'));
+          var to   = i;
+          if (from === to) return;
+          var track      = document.getElementById('ls1CarTrack');
+          var allSlides  = getSlides();
+          var fromSlide  = allSlides[from];
+          var toSlide    = allSlides[to];
+          from < to ? track.insertBefore(fromSlide, toSlide.nextSibling)
+                    : track.insertBefore(fromSlide, toSlide);
+          goTo(0);
+          ls1BuildThumbs();
+          ls1SaveCarousel();
+        });
+
         strip.appendChild(thumb);
       });
-    }
-    function updateThumbs() {
-      document.querySelectorAll("#" + P + "ThumbStrip ." + P + "-thumb").forEach(function (t, i) {
-        t.classList.toggle(P + "-thumb--active", i === idx);
+
+      ls1EnsureDeleteBtns();
+    };
+
+    function ls1EnsureDeleteBtns() {
+      getSlides().forEach(function (slide) {
+        if (!slide.querySelector('.ls1-car-del')) {
+          var btn = document.createElement('button');
+          btn.className = 'ls1-car-del';
+          btn.title = 'Remove';
+          btn.textContent = '✕';
+          btn.addEventListener('click', function () { ls1DeleteCarSlide(btn); });
+          slide.insertBefore(btn, slide.firstChild);
+        }
       });
     }
-    // Save carousel track whenever any text inside it is edited
-    document.getElementById(P + "CarTrack").addEventListener("focusout", function (e) {
-      if (e.target.matches("[contenteditable]")) saveCarouselTrack();
+
+    window.ls1DeleteCarSlide = function (btn) {
+      var slide = btn.closest('.ls1-car-slide');
+      var all   = getSlides();
+      if (all.length <= 1) return; // keep at least one slide
+      slide.remove();
+      goTo(0);
+      ls1BuildThumbs();
+      ls1SaveCarousel();
+    };
+
+    window.ls1UpdateThumbs = function () {
+      document.querySelectorAll('#ls1ThumbStrip .ls1-thumb').forEach(function (t, i) {
+        t.classList.toggle('ls1-thumb--active', i === idx);
+      });
+    };
+
+    // ── Autoplay value editing (builder only) ──────────────────────────────
+    var autoValEl = document.getElementById('ls1AutoVal');
+    if (autoValEl) {
+      autoValEl.addEventListener('input', function () {
+        var val = parseInt(autoValEl.textContent) || 7;
+        document.getElementById('ls1CarTrack').setAttribute('data-autoplay', val);
+        startAutoplay(); // restart with new interval
+      });
+      autoValEl.addEventListener('blur', function () { ls1SaveCarousel(); });
+    }
+
+    // ── Change carousel image ──────────────────────────────────────────────
+    window.ls1ChangeCarImage = function (overlay) {
+      targetSlide = overlay.closest('.ls1-car-slide');
+      document.getElementById('ls1-carousel-file').click();
+    };
+
+    document.getElementById('ls1-carousel-file').addEventListener('change', function (e) {
+      var file = e.target.files[0];
+      if (!file || !targetSlide) return;
+      var img = targetSlide.querySelector('img');
+      img.src = URL.createObjectURL(file);
+      var reader = new FileReader();
+      reader.onload = function (ev) {
+        fetch('/api/upload-image', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename: file.name, data: ev.target.result })
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data.path) { img.src = data.path; ls1BuildThumbs(); ls1SaveCarousel(); }
+        });
+      };
+      reader.readAsDataURL(file);
+      e.target.value = '';
     });
-    var autoValEl = document.getElementById(P + "AutoVal");
-    if (autoValEl) autoValEl.addEventListener("input", function () {
-      document.getElementById(P + "CarTrack").setAttribute("data-autoplay", parseInt(autoValEl.textContent) || 8);
-    });
+
+    // ── Reorder via buttons (fallback) ─────────────────────────────────────
+    window.ls1MoveCarSlide = function (btn, dir) {
+      var slide = btn.closest('.ls1-car-slide');
+      var all   = getSlides();
+      var i     = all.indexOf(slide);
+      var swap  = all[i + dir];
+      if (!swap) return;
+      var track = document.getElementById('ls1CarTrack');
+      dir === 1 ? track.insertBefore(swap, slide) : track.insertBefore(slide, swap);
+      goTo(0); ls1BuildThumbs(); ls1SaveCarousel();
+    };
+
+    // ── Add items (builder only) ───────────────────────────────────────────
+    window.ls1AddImage = function () {
+      var input = document.createElement('input');
+      input.type = 'file'; input.accept = 'image/*';
+      input.style.display = 'none';
+      document.body.appendChild(input);
+      input.addEventListener('change', function (e) {
+        document.body.removeChild(input);
+        var file = e.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+          fetch('/api/upload-image', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ filename: file.name, data: ev.target.result })
+          })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (data.path) {
+              document.getElementById('ls1CarTrack').appendChild(makeImageSlide(data.path, file.name.replace(/\.[^.]+$/, '')));
+              var newIdx = getSlides().length - 1;
+              ls1BuildThumbs();
+              ls1SaveCarousel();
+              goTo(newIdx);
+            }
+          });
+        };
+        reader.readAsDataURL(file);
+      });
+      input.click();
+    };
+
+    window.ls1AddText = function () {
+      document.getElementById('ls1CarTrack').appendChild(makeTextSlide());
+      ls1BuildThumbs(); ls1SaveCarousel();
+      goTo(getSlides().length - 1);
+    };
+
+    function makeImageSlide(src, caption) {
+      var d = document.createElement('div');
+      d.className = 'ls1-car-slide';
+      d.innerHTML = '<img src="' + src + '" alt="' + caption + '">'
+        + '<div class="ls1-car-caption" contenteditable spellcheck="false">' + caption + '</div>'
+        + '<div class="ls1-car-img-overlay" data-builder-only="" onclick="ls1ChangeCarImage(this)">Change Image</div>'
+        + '<button class="ls1-car-move ls1-car-move--l" onclick="ls1MoveCarSlide(this,-1)">&#8249;</button>'
+        + '<button class="ls1-car-move ls1-car-move--r" onclick="ls1MoveCarSlide(this,1)">&#8250;</button>';
+      return d;
+    }
+
+    function makeTextSlide() {
+      var d = document.createElement('div');
+      d.className = 'ls1-car-slide ls1-car-slide--text';
+      d.innerHTML = '<div class="ls1-stat-block">'
+        + '<div class="section-label" contenteditable spellcheck="false">Section Title</div>'
+        + '<span class="stat-number" contenteditable spellcheck="false">Key Fact</span>'
+        + '<div class="stat-label" contenteditable spellcheck="false">Description text here</div>'
+        + '</div>'
+        + '<button class="ls1-car-move ls1-car-move--l" onclick="ls1MoveCarSlide(this,-1)">&#8249;</button>'
+        + '<button class="ls1-car-move ls1-car-move--r" onclick="ls1MoveCarSlide(this,1)">&#8250;</button>';
+      return d;
+    }
+
+    // ── Save carousel state ────────────────────────────────────────────────
+    function ls1SaveCarousel() {
+      var autoVal = parseInt(document.getElementById('ls1CarTrack').getAttribute('data-autoplay')) || 7;
+      var clone   = document.getElementById('ls1CarTrack').cloneNode(true);
+      clone.querySelectorAll('.ls1-car-del').forEach(function (el) { el.remove(); });
+      document.dispatchEvent(new CustomEvent('slide-carousel-save', {
+        detail: {
+          html:    clone.innerHTML,
+          autoplay: String(autoVal)
+        }
+      }));
+    }
+
+    window.ls1SaveCarousel = ls1SaveCarousel;
+
   })();
-  </script>
-  <script>
+
+  // ── Smart background detection for customer logo ─────────────────────────
+  function ls1DetectLogoBg(img) {
+    try {
+      var container = img.closest('.ls1-customer-logo');
+      if (!container) return;
+      var w = img.naturalWidth  || 100;
+      var h = img.naturalHeight || 100;
+      var canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      var ctx = canvas.getContext('2d', { willReadFrequently: true });
+      ctx.drawImage(img, 0, 0, w, h);
+      var size = Math.max(1, Math.round(Math.min(w, h) * 0.05));
+      var top    = ctx.getImageData(0, 0, w, size).data;
+      var bottom = ctx.getImageData(0, h - size, w, size).data;
+      var left   = ctx.getImageData(0, 0, size, h).data;
+      var right  = ctx.getImageData(w - size, 0, size, h).data;
+      var r = 0, g = 0, b = 0, a = 0, count = 0;
+      [top, bottom, left, right].forEach(function (d) {
+        for (var i = 0; i < d.length; i += 4) {
+          r += d[i]; g += d[i+1]; b += d[i+2]; a += d[i+3]; count++;
+        }
+      });
+      if (count === 0) return;
+      r = Math.round(r / count); g = Math.round(g / count);
+      b = Math.round(b / count); a = Math.round(a / count);
+      container.style.background = (a < 30) ? '#fff' : 'rgb(' + r + ',' + g + ',' + b + ')';
+    } catch (e) { /* cross-origin or tainted canvas — leave default */ }
+  }
+
+  // Apply on initial page load
   (function () {
-    var s = document.currentScript;
-    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest(".slide")); }, 0);
+    var img = document.querySelector('.ls1-cust-img');
+    if (!img) return;
+    if (img.complete && img.naturalWidth) { ls1DetectLogoBg(img); }
+    else { img.addEventListener('load', function () { ls1DetectLogoBg(img); }); }
+  })();
+
+  // ── Customer logo upload ──────────────────────────────────────────────────
+  (function () {
+    var input = document.getElementById('ls1-logo-file');
+    if (!input) return;
+    input.addEventListener('change', function (e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      var img = document.querySelector('.ls1-cust-img');
+      img.src = URL.createObjectURL(file);
+      img.classList.remove('ls1-cust-img--missing');
+      img.addEventListener('load', function onNewLoad() {
+        ls1DetectLogoBg(img);
+        img.removeEventListener('load', onNewLoad);
+      });
+      var reader = new FileReader();
+      reader.onload = function (ev) {
+        fetch('/api/upload-image', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename: file.name, data: ev.target.result })
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data.path) {
+            img.src = data.path;
+            document.dispatchEvent(new CustomEvent('slide-image-change', {
+              detail: { editKey: 'customer-logo', src: data.path }
+            }));
+          }
+        });
+      };
+      reader.readAsDataURL(file);
+    });
   })();
   </script>
+
+
 </div>
 </div>
 <div class="fp-slide" data-slide-index="1" style="display:none;">
@@ -811,8 +1143,8 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
   <div class="slide-layout">
     <header class="slide-head">
-      <div class="section-label" data-edit="section-label"><span data-lang="en">Sensitivity Adjustment</span><span data-lang="es" hidden="">Sensitivity Adjustment</span></div>
-      <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;"><span data-lang="en">Fully automatic <span class="blue">sensitivity adjustment</span></span><span data-lang="es" hidden="">Fully automatic <span class="blue">sensitivity adjustment</span></span></h1>
+      <div class="section-label" data-edit="section-label"><span data-lang="es">Sensitivity Adjustment</span><span data-lang="en" hidden="">Sensitivity Adjustment</span></div>
+      <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;"><span data-lang="es">Fully automatic <span class="blue">sensitivity adjustment</span></span><span data-lang="en" hidden="">Fully automatic <span class="blue">sensitivity adjustment</span></span></h1>
     </header>
 
     <div class="slide-body">
@@ -839,30 +1171,30 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
       <!-- ── Steps ── -->
       <div class="ls11-steps-wrap anim-in" style="">
-        <div class="ls11-steps-label" data-edit="steps-label"><span data-lang="en">Automatic Quality Recipe Selection</span><span data-lang="es" hidden="">Automatic Quality Recipe Selection</span></div>
+        <div class="ls11-steps-label" data-edit="steps-label"><span data-lang="es">Automatic Quality Recipe Selection</span><span data-lang="en" hidden="">Automatic Quality Recipe Selection</span></div>
         <div class="ls11-steps">
           <div class="ls11-step">
             <div class="ls11-num">1</div>
-            <div data-edit="step-1"><span data-lang="en">Receives glass info via interface <span class="ls11-muted">(transfer file, PLC…)</span></span><span data-lang="es" hidden="">Receives glass info via interface <span class="ls11-muted">(transfer file, PLC…)</span></span></div>
+            <div data-edit="step-1"><span data-lang="es">Receives glass info via interface <span class="ls11-muted">(transfer file, PLC…)</span></span><span data-lang="en" hidden="">Receives glass info via interface <span class="ls11-muted">(transfer file, PLC…)</span></span></div>
           </div>
           <div class="ls11-step">
             <div class="ls11-num">2</div>
-            <div data-edit="step-2"><span data-lang="en">Logo detected → selects <strong>Tempered Glass</strong> sensitivity</span><span data-lang="es" hidden="">Logo detected → selects <strong>Tempered Glass</strong> sensitivity</span></div>
+            <div data-edit="step-2"><span data-lang="es">Logo detected → selects <strong>Tempered Glass</strong> sensitivity</span><span data-lang="en" hidden="">Logo detected → selects <strong>Tempered Glass</strong> sensitivity</span></div>
           </div>
           <div class="ls11-step">
             <div class="ls11-num">3</div>
-            <div data-edit="step-3"><span data-lang="en">GSS sensor detects laminated lite → <strong>Laminated Glass</strong> settings</span><span data-lang="es" hidden="">GSS sensor detects laminated lite → <strong>Laminated Glass</strong> settings</span></div>
+            <div data-edit="step-3"><span data-lang="es">GSS sensor detects laminated lite → <strong>Laminated Glass</strong> settings</span><span data-lang="en" hidden="">GSS sensor detects laminated lite → <strong>Laminated Glass</strong> settings</span></div>
           </div>
           <div class="ls11-step">
             <div class="ls11-num">4</div>
-            <div data-edit="step-4"><span data-lang="en">Coating detected → <strong>Coated Glass</strong> sensitivity setting</span><span data-lang="es" hidden="">Coating detected → <strong>Coated Glass</strong> sensitivity setting</span></div>
+            <div data-edit="step-4"><span data-lang="es">Coating detected → <strong>Coated Glass</strong> sensitivity setting</span><span data-lang="en" hidden="">Coating detected → <strong>Coated Glass</strong> sensitivity setting</span></div>
           </div>
           <div class="ls11-step">
             <div class="ls11-num">5</div>
-            <div data-edit="step-5"><span data-lang="en">Any other case → <strong>Default</strong> quality &amp; sensitivity settings</span><span data-lang="es" hidden="">Any other case → <strong>Default</strong> quality &amp; sensitivity settings</span></div>
+            <div data-edit="step-5"><span data-lang="es">Any other case → <strong>Default</strong> quality &amp; sensitivity settings</span><span data-lang="en" hidden="">Any other case → <strong>Default</strong> quality &amp; sensitivity settings</span></div>
           </div>
         </div>
-        <div class="ls11-tagline" data-edit="tagline"><span data-lang="en">LineScanner — as easy as a smart-phone</span><span data-lang="es" hidden="">LineScanner — as easy as a smart-phone</span></div>
+        <div class="ls11-tagline" data-edit="tagline"><span data-lang="es">LineScanner — as easy as a smart-phone</span><span data-lang="en" hidden="">LineScanner — as easy as a smart-phone</span></div>
       </div>
     </div>
   </div>
@@ -936,15 +1268,15 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     <div id="fp-nav-menu-wrap">
       <div id="fp-nav-menu">
         <div class="fp-nm-section">Slides</div>
-        <button class="fp-nm-item fp-nm-active" data-main="0">Cover-Quality Inspection 1</button>
+        <button class="fp-nm-item fp-nm-active" data-main="0">Cover Slide Test</button>
         <button class="fp-nm-item" data-main="1">Sensitivity Adjustment NUEVA</button>
 
       </div>
       <button id="fp-nav-menu-btn" title="Slide navigation"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
     </div>
-    <div id="fp-slide-name">Cover-Quality Inspection 1</div>
+    <div id="fp-slide-name">Cover Slide Test</div>
     <button class="fp-share-btn" id="fp-share-btn-ftr" title="Share presentation"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
-    <div id="fp-lang-switcher"><button class="lang-switcher-btn active" data-lang="en" onclick="switchLang('en')">EN</button><button class="lang-switcher-btn" data-lang="es" onclick="switchLang('es')">ES</button></div>
+    <div id="fp-lang-switcher"><button class="lang-switcher-btn active" data-lang="es" onclick="switchLang('es')">ES</button><button class="lang-switcher-btn" data-lang="en" onclick="switchLang('en')">EN</button></div>
   </div>
 </div>
 <button class="fp-side-arrow" id="fp-arrow-prev" disabled>&#8249;</button>
@@ -1138,6 +1470,8 @@ window.Carousel = (function () {
 
   function initOne(el) {
     if (el._lsCarouselInit) return;
+    // Defer if inside a hidden panel — Tabs.switchTo will call Carousel.init when panel becomes visible
+    if (!el.offsetWidth) return;
     el._lsCarouselInit = true;
 
     var track       = el.querySelector('.ls-carousel-track');
@@ -2827,8 +3161,8 @@ window.Tabs = (function () {
       if (tabBtn._lsClickWired) return;
       tabBtn._lsClickWired = true;
       tabBtn.addEventListener('click', function (e) {
-        // Ignore clicks on child buttons (del)
-        if (e.target !== tabBtn) return;
+        // Ignore clicks on the delete button; allow clicks on text/spans inside the tab
+        if (e.target.closest && e.target.closest('.ls-tab-del')) return;
         switchTo(tabBtn.dataset.panel);
       });
     }
@@ -3026,7 +3360,7 @@ window.Track = (function () {
 (function () {
   var mainSlides = document.querySelectorAll(".fp-slide:not(.fp-optional)");
   var optSlides  = document.querySelectorAll(".fp-slide.fp-optional");
-  var mainNames  = ["Cover-Quality Inspection 1","Sensitivity Adjustment NUEVA"];
+  var mainNames  = ["Cover Slide Test","Sensitivity Adjustment NUEVA"];
   var optNames   = [];
   var total      = mainSlides.length;
   var idx        = 0;
