@@ -41,8 +41,9 @@ app.get('/slides/deck-preview/:id', function (req, res) {
   }
   try {
     var activeDeckId = getActiveDeckId();
-    var deck     = readDeckById(activeDeckId);
-    var deckSlide = deck.slides.find(function (s) { return s.id === id; });
+    var deck       = readDeckById(activeDeckId);
+    var deckConfig = getDeckConfig(activeDeckId);
+    var deckSlide  = deck.slides.find(function (s) { return s.id === id; });
     if (!deckSlide || !deckSlide.librarySlideId) {
       return res.status(404).type('text/plain').send('Deck slide not found: ' + id);
     }
@@ -55,10 +56,11 @@ app.get('/slides/deck-preview/:id', function (req, res) {
 
     var fragment;
     if (resolved.source === 'canvas') {
-      fragment = renderLayoutToHtml(resolved.tpl, id, resolveSlideEdits(libSlide, activeDeckId));
+      fragment = renderLayoutToHtml(resolved.tpl, id, resolveSlideEdits(libSlide, activeDeckId), deckConfig);
       if (readonly) fragment = fragment.replace(/ contenteditable=""/g, '').replace(/ contenteditable=''/g, '');
     } else {
-      fragment = applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), resolveSlideEdits(libSlide, activeDeckId), !readonly);
+      fragment = applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), withLiveLogos(resolveSlideEdits(libSlide, activeDeckId)), !readonly);
+      fragment = injectDeckBranding(fragment, deckConfig);
     }
     var page = [
       '<!DOCTYPE html>',
@@ -67,6 +69,7 @@ app.get('/slides/deck-preview/:id', function (req, res) {
       '  <meta charset="UTF-8">',
       '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
       '  <link rel="stylesheet" href="/slides/style.css">',
+      deckAccentCss(deckConfig) ? '  <style>' + deckAccentCss(deckConfig) + '</style>' : '',
       readonly ? '  <script>window.PB_READONLY = true;</script>' : '',
       '  <script src="/slides/components/tracker.js"></script>',
       '  <script src="/slides/components/lightbox.js"></script>',
@@ -74,6 +77,29 @@ app.get('/slides/deck-preview/:id', function (req, res) {
       '  <script src="/slides/components/tabs.js"></script>',
       '  <script src="/slides/components/list.js"></script>',
       '  <script src="/slides/components/table.js"></script>',
+      '  <script>',
+      '    document.addEventListener("DOMContentLoaded", function () {',
+      '      if (window.Lightbox) Lightbox.init(document);',
+      '      if (window.Carousel) Carousel.init(document);',
+      '      if (window.Tabs)     Tabs.init(document);',
+      '      if (window.List)     List.init(document);',
+      '      if (window.Table)    Table.init(document);',
+      '      // Wire missing/broken image placeholders after components have initialized',
+      '      (function () {',
+      '        function markNoImg(img) {',
+      '          var slide = img.closest(".ls-carousel-slide");',
+      '          if (slide) slide.classList.add("no-img");',
+      '          else img.classList.add("no-img");',
+      '        }',
+      '        document.querySelectorAll("img").forEach(function (img) {',
+      '          var src = img.getAttribute("src");',
+      '          if (!src || src.trim() === "") { markNoImg(img); return; }',
+      '          if (img.complete && !img.naturalWidth) { markNoImg(img); return; }',
+      '          img.addEventListener("error", function () { markNoImg(this); }, { once: true });',
+      '        });',
+      '      })();',
+      '    });',
+      '  </script>',
       '  <script src="/slides/components/button.js"></script>',
       '  <script src="/slides/components/tags.js"></script>',
       '  <style>',
@@ -116,7 +142,9 @@ app.get('/slides/deck-preview/:id', function (req, res) {
         '      if (!e.target.hasAttribute || !e.target.hasAttribute("data-edit") || !e.target.hasAttribute("contenteditable")) return;',
         '      var edits = {};',
         '      document.querySelectorAll("[data-edit][contenteditable]").forEach(function (el) {',
-        '        edits[el.getAttribute("data-edit")] = el.innerHTML;',
+        '        var clone = el.cloneNode(true);',
+        '        clone.querySelectorAll("[data-builder-only]").forEach(function (n) { n.remove(); });',
+        '        edits[el.getAttribute("data-edit")] = clone.innerHTML;',
         '      });',
         '      fetch("/api/deck/slides/" + DECK_SLIDE_ID + "/edits", {',
         '        method: "POST", headers: { "Content-Type": "application/json" },',
@@ -376,16 +404,18 @@ function renderComponent(type, rowIdx, colIdx, savedEdits) {
   }
 }
 
-function renderHeroLayout(slideId, savedEdits) {
+function renderHeroLayout(slideId, savedEdits, deck) {
   savedEdits = savedEdits || {};
   // Build a stable prefix from slideId — use a hash of the full string when no digits present
   var digits = slideId.replace(/\D/g, '');
   var suffix = digits.slice(-8) || slideId.replace(/[^a-z]/gi, '').slice(-8) || 'cover';
   var p = 'h' + suffix;
   var settings    = readSettings();
-  var heroBg      = settings.heroBg || '';
-  var heroBgFocal = settings.heroBgFocal || 'center center';
-  var logos       = Array.isArray(settings.logos) ? settings.logos : [];
+  var heroBg      = (deck && deck.heroBg) || settings.heroBg || '';
+  var heroBgFocal = (deck && deck.heroBgFocal) || settings.heroBgFocal || 'center center';
+  var logos       = (deck && deck.logo)
+    ? [{ src: deck.logo, alt: deck.name || '' }]
+    : (Array.isArray(settings.logos) ? settings.logos : []);
 
   var logoRowHtml = logos.map(function (logo, i) {
     return [
@@ -419,7 +449,7 @@ function renderHeroLayout(slideId, savedEdits) {
     '  </div>',
 
     '  <!-- Hero background -->',
-    '  <img class="hero-bg" src="' + heroBg + '" alt="Hero background" data-edit="hero-bg" style="object-position:' + heroBgFocal + ';">',
+    '  <img class="hero-bg" src="' + heroBg + '" alt="Hero background" data-edit="hero-bg" style="object-position:' + heroBgFocal + ';' + (deck && deck.heroBgFit === 'contain' ? 'object-fit:contain;' : '') + '">',
     '  <div class="hero-overlay"></div>',
 
     '  <!-- Main content -->',
@@ -759,6 +789,21 @@ function applyEditsToHtml(html, edits, editable) {
     }
   });
   return $.html();
+}
+
+// Returns a copy of edits with logo-row always set from current settings.logos.
+// Call this on every non-template serve path so logos stay live.
+function withLiveLogos(edits) {
+  var settings = readSettings();
+  var logos    = Array.isArray(settings.logos) ? settings.logos : [];
+  if (!logos.length) return edits;
+  var merged = Object.assign({}, edits);
+  merged['logo-row'] = logos.map(function (logo, i) {
+    return (i > 0 ? '<span class="slide-logo-sep"></span>' : '')
+      + '<img src="' + logo.src + '" alt="' + (logo.alt || '') + '"'
+      + (i > 0 ? ' class="slide-logo-ls"' : '') + '>';
+  }).join('');
+  return merged;
 }
 
 // ── Per-template custom renderers ─────────────────────────────────────────────
@@ -2801,7 +2846,7 @@ function renderCtaLayout(slideId, savedEdits) {
   ].join('\n');
 }
 
-function renderLayoutToHtml(layout, slideId, savedEdits) {
+function renderLayoutToHtml(layout, slideId, savedEdits, deck) {
   savedEdits = savedEdits || {};
 
   // Merge template defaultContent — savedEdits (user changes) take priority
@@ -2812,7 +2857,7 @@ function renderLayoutToHtml(layout, slideId, savedEdits) {
   var defaultContent = (tpl && tpl.defaultContent) || {};
   savedEdits = Object.assign({}, defaultContent, savedEdits);
 
-  if (tplId === 'tpl-new-cover')    return renderHeroLayout(slideId, savedEdits);
+  if (tplId === 'tpl-new-cover')    return renderHeroLayout(slideId, savedEdits, deck);
   if (tplId === 'tpl-new-company')     return renderCompanyLayout(slideId, savedEdits);
   if (tplId === 'tpl-new-comparison')       return renderComparisonLayout(slideId, savedEdits);
   if (tplId === 'tpl-new-capability-matrix') return renderCapabilityLayout(slideId, savedEdits);
@@ -2898,7 +2943,7 @@ app.get('/slides/:deckSlideId.html', function (req, res, next) {
     if (resolved.source === 'canvas') {
       html = renderLayoutToHtml(resolved.tpl, deckSlideId, savedEdits);
     } else {
-      html = applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), savedEdits, true);
+      html = applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), withLiveLogos(savedEdits), true);
     }
     res.type('text/html').send(html);
   } catch (err) {
@@ -3106,6 +3151,36 @@ function readSettings() {
 function writeSettings(data) {
   fs.writeFileSync(SETTINGS_PATH, JSON.stringify(data, null, 2), 'utf8');
 }
+function hexToRgb(hex) {
+  var m = (hex || '').replace('#', '').match(/^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+  if (!m) return null;
+  return parseInt(m[1], 16) + ',' + parseInt(m[2], 16) + ',' + parseInt(m[3], 16);
+}
+function deckAccentCss(deck) {
+  var color = deck && deck.colors && deck.colors.primary;
+  if (!color) return '';
+  var rgb = hexToRgb(color);
+  if (!rgb) return ':root{--accent:' + color + ';}';
+  var parts = rgb.split(',').map(Number);
+  var r = parts[0], g = parts[1], b = parts[2];
+  var mid   = '#' + [Math.max(0,Math.round(r*.88)), Math.max(0,Math.round(g*.88)), Math.max(0,Math.round(b*.88))].map(function(c){return c.toString(16).padStart(2,'0');}).join('');
+  var light = '#' + [Math.min(255,Math.round(r+(255-r)*.42)), Math.min(255,Math.round(g+(255-g)*.42)), Math.min(255,Math.round(b+(255-b)*.42))].map(function(c){return c.toString(16).padStart(2,'0');}).join('');
+  return ':root{--accent:' + color + ';--accent-mid:' + mid + ';--accent-light:' + light + ';--accent-rgb:' + rgb + ';}';
+}
+function injectDeckBranding(html, deck) {
+  if (!deck || (!deck.heroBg && !deck.heroBgFocal && !deck.heroBgFit)) return html;
+  var $ = cheerio.load(html, { xmlMode: false });
+  var img = $('img.hero-bg');
+  if (!img.length) return html;
+  if (deck.heroBg) img.attr('src', deck.heroBg);
+  var s = (img.attr('style') || '')
+    .replace(/object-position\s*:[^;]+;?/g, '')
+    .replace(/object-fit\s*:[^;]+;?/g, '');
+  if (deck.heroBgFocal) s += ';object-position:' + deck.heroBgFocal + ';';
+  if (deck.heroBgFit === 'contain') s += 'object-fit:contain;';
+  img.attr('style', s.replace(/^;+/, '').trim());
+  return $.html('body > *') || $.html();
+}
 
 // GET /api/deck — return the current deck config, with library slide names merged in
 app.get('/api/deck', function (req, res) {
@@ -3254,6 +3329,10 @@ function writeDecks(data) {
 function makeDeckId() {
   return 'deck-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
 }
+function getDeckConfig(deckId) {
+  var store = readDecks();
+  return store.decks.find(function (d) { return d.id === deckId; }) || {};
+}
 function getDeckPath(deckId) {
   return path.join(DECKS_DIR_PATH, deckId, 'deck.json');
 }
@@ -3355,7 +3434,7 @@ app.put('/api/decks/:id', function (req, res) {
     var store = readDecks();
     var idx = store.decks.findIndex(function (d) { return d.id === id; });
     if (idx === -1) return res.status(404).json({ success: false, error: 'Deck not found' });
-    var allowed = ['name', 'theme', 'logo', 'heroBg', 'heroBgFocal', 'heroBgFocalGrid', 'colors'];
+    var allowed = ['name', 'theme', 'logo', 'heroBg', 'heroBgFocal', 'heroBgFocalGrid', 'heroBgFit', 'colors'];
     var body = req.body || {};
     allowed.forEach(function (key) {
       if (body[key] !== undefined) store.decks[idx][key] = body[key];
@@ -3534,13 +3613,14 @@ function buildFrozenPresentation(presentation) {
   fs.mkdirSync(assetDir,  { recursive: true });
 
   var library   = JSON.parse(fs.readFileSync(LIBRARY_PATH,  'utf8'));
-  var templates = JSON.parse(fs.readFileSync(TEMPLATES_PATH, 'utf8'));
   var appSettings = readSettings();
+  var presDeck  = getDeckConfig(presentation.deckId || 'default');
+  var accentCss = deckAccentCss(presDeck);
 
   // Language baking setup
   var presLanguages    = Array.isArray(presentation.languages) ? presentation.languages : [];
   var presDefaultLang  = presentation.defaultLanguage || 'en';
-  var isMultiLang      = presLanguages.length > 0;
+  var isMultiLang      = presLanguages.some(function (l) { return l !== presDefaultLang; });
   var allLangs         = isMultiLang ? [presDefaultLang].concat(presLanguages.filter(function (l) { return l !== presDefaultLang; })) : [];
   var translationsData = isMultiLang ? JSON.parse(fs.readFileSync(TRANSLATIONS_PATH, 'utf8')) : null;
 
@@ -3554,6 +3634,12 @@ function buildFrozenPresentation(presentation) {
       var editKey = el.attr('data-edit');
       if (!editKey) return;
       if (this.tagName === 'img') return;
+      // Skip complex HTML fields (carousels, tabs, structured content) — wrapping them in
+      // <span data-lang> breaks CSS layout and JS component initialization.
+      // Also skip ul/ol directly (their li children aren't in the child-tag check but <span>
+      // inside <ul> is invalid HTML — browsers strip it, breaking language switching).
+      if (/^(ul|ol)$/i.test(this.tagName)) return;
+      if (el.children('div, ul, ol, li, table, label, input').length) return;
       // Library always stores English — this is the authoritative English source
       var englishText = el.html();
       if (!englishText || !englishText.trim()) return;
@@ -3570,7 +3656,7 @@ function buildFrozenPresentation(presentation) {
             var $t = cheerio.load(sRaw, { xmlMode: false });
             $t('[contenteditable]').removeAttr('contenteditable');
             $t('[spellcheck]').removeAttr('spellcheck');
-            sRaw = $t.html('body > *') || $t.html() || sRaw;
+            sRaw = $t('body').html() || sRaw;
           }
           text = sRaw || englishText;
         }
@@ -3652,13 +3738,15 @@ function buildFrozenPresentation(presentation) {
     if (!s.visible) return;
     var libSlide = (library.slides || []).find(function (l) { return l.id === s.librarySlideId; });
     if (!libSlide) return;
-    var tpl = (templates || []).find(function (t) { return t.id === libSlide.templateId; });
-    if (!tpl) return;
+    var resolved = resolveTemplate(libSlide.templateId);
+    if (!resolved) return;
 
-    var edits = Object.assign({}, libSlide.edits || {});
+    var edits = resolveSlideEdits(libSlide, presentation.deckId || 'default');
     if (s.librarySlideId === 'lib-cover') Object.assign(edits, coverEdits);
 
-    var fragment = renderLayoutToHtml(tpl, s.id, edits);
+    var fragment = resolved.source === 'canvas'
+      ? renderLayoutToHtml(resolved.tpl, s.id, edits, presDeck)
+      : injectDeckBranding(applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), withLiveLogos(edits), false), presDeck);
 
     // Strip builder-only elements + contenteditable + logo change interactivity
     var $ = cheerio.load(fragment, { xmlMode: false });
@@ -3687,13 +3775,15 @@ function buildFrozenPresentation(presentation) {
     if (s.visible !== false) return;
     var libSlide = (library.slides || []).find(function (l) { return l.id === s.librarySlideId; });
     if (!libSlide) return;
-    var tpl = (templates || []).find(function (t) { return t.id === libSlide.templateId; });
-    if (!tpl) return;
+    var resolved = resolveTemplate(libSlide.templateId);
+    if (!resolved) return;
 
-    var edits = Object.assign({}, libSlide.edits || {});
+    var edits = resolveSlideEdits(libSlide, presentation.deckId || 'default');
     if (s.librarySlideId === 'lib-cover') Object.assign(edits, coverEdits);
 
-    var fragment = renderLayoutToHtml(tpl, s.id, edits);
+    var fragment = resolved.source === 'canvas'
+      ? renderLayoutToHtml(resolved.tpl, s.id, edits, presDeck)
+      : injectDeckBranding(applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), withLiveLogos(edits), false), presDeck);
     var $ = cheerio.load(fragment, { xmlMode: false });
     $('[data-builder-only],[data-ls-add-row],[data-ls-add],[data-ls-restore]').remove();
     $('[contenteditable]').removeAttr('contenteditable');
@@ -3722,6 +3812,7 @@ function buildFrozenPresentation(presentation) {
     '  <title>' + (presentation.customerName || 'Presentation') + '</title>',
     '  <style>',
     slidesCss,
+    accentCss || '',
     '    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }',
     '    html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0a0a; }',
     '    #fp-shell { display: flex; flex-direction: column; height: 100vh; }',
@@ -3786,11 +3877,17 @@ function buildFrozenPresentation(presentation) {
     '    .fp-nm-item:hover { background: rgba(255,255,255,0.08); color: #fff; }',
     '    .fp-nm-item.fp-nm-active { color: #fff; font-weight: 600; }',
     '    .fp-nm-item.fp-nm-active::before { content: "›"; margin-right: 6px; color: #888; }',
-    '    /* Language switcher */',
-    '    #fp-lang-switcher { display: flex; align-items: center; gap: 4px; margin-left: 6px; }',
-    '    .lang-switcher-btn { background: none; border: 1px solid #333; border-radius: 4px; color: #888; font-size: 11px; font-family: system-ui, sans-serif; padding: 2px 7px; cursor: pointer; letter-spacing: 0.04em; text-transform: uppercase; }',
-    '    .lang-switcher-btn:hover { border-color: #555; color: #ccc; }',
-    '    .lang-switcher-btn.active { border-color: #888; color: #e5e5e5; background: rgba(255,255,255,0.08); }',
+    '    /* Ensure [hidden] works even if slide CSS sets display on an element */',
+    '    [hidden] { display: none !important; }',
+    '    /* Language dropdown */',
+    '    #fp-lang-drop { position: relative; margin-left: 8px; }',
+    '    #fp-lang-btn { display: flex; align-items: center; gap: 5px; background: none; border: 1px solid #333; border-radius: 4px; color: #888; font-size: 11px; font-family: system-ui, sans-serif; padding: 3px 8px; cursor: pointer; letter-spacing: 0.04em; text-transform: uppercase; transition: border-color .15s, color .15s; line-height: 1; }',
+    '    #fp-lang-btn:hover { border-color: #555; color: #ccc; }',
+    '    #fp-lang-menu { display: none; position: absolute; top: calc(100% + 6px); right: 0; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 6px; overflow: hidden; min-width: 130px; z-index: 200; box-shadow: 0 4px 16px rgba(0,0,0,.5); }',
+    '    #fp-lang-menu.open { display: block; }',
+    '    #fp-lang-menu button { display: block; width: 100%; text-align: left; background: none; border: none; color: #aaa; font-size: 12px; font-family: system-ui, sans-serif; padding: 9px 14px; cursor: pointer; letter-spacing: .02em; transition: background .15s, color .15s; }',
+    '    #fp-lang-menu button:hover { background: rgba(255,255,255,.07); color: #fff; }',
+    '    #fp-lang-menu button.active { color: #E8711A; font-weight: 600; }',
     '  </style>',
     (umamiWebsiteId ? '  <script defer src="https://umami.wbtm.io/script.js" data-website-id="' + umamiWebsiteId + '"></script>' : ''),
     '</head>',
@@ -3802,6 +3899,14 @@ function buildFrozenPresentation(presentation) {
     '    <button class="fp-nav-btn" id="fp-prev" disabled>&#8249;</button>',
     '    <div id="fp-counter">1 / ' + totalSlides + '</div>',
     '    <button class="fp-nav-btn" id="fp-next"' + (totalSlides <= 1 ? ' disabled' : '') + '>&#8250;</button>',
+    (isMultiLang ? (function () {
+      var langNames = { en: 'English', es: 'Español', de: 'Deutsch', fr: 'Français', pt: 'Português', it: 'Italiano', zh: '中文', ja: '日本語', ar: 'العربية', ru: 'Русский' };
+      var chevron = '<svg width="8" height="8" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg>';
+      var items = allLangs.map(function (l) {
+        return '<button data-lang="' + l + '" onclick="fpLangSelect(\'' + l + '\')">' + l.toUpperCase() + ' — ' + (langNames[l] || l) + '</button>';
+      }).join('');
+      return '    <div id="fp-lang-drop"><button id="fp-lang-btn" onclick="fpLangToggle()"><span id="fp-lang-label">' + presDefaultLang.toUpperCase() + '</span>' + chevron + '</button><div id="fp-lang-menu">' + items + '</div></div>';
+    })() : ''),
     '    <div id="fp-header-spacer"></div>',
     '    <div id="fp-title">' + (presentation.customerName || '') + '</div>',
     '    <button class="fp-share-btn" id="fp-share-btn-hdr" title="Share presentation"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>',
@@ -3823,7 +3928,6 @@ function buildFrozenPresentation(presentation) {
     '    </div>',
     '    <div id="fp-slide-name">' + (slideNames[0] || '') + '</div>',
     '    <button class="fp-share-btn" id="fp-share-btn-ftr" title="Share presentation"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>',
-    (isMultiLang ? '    <div id="fp-lang-switcher">' + allLangs.map(function (l) { return '<button class="lang-switcher-btn' + (l === presDefaultLang ? ' active' : '') + '" data-lang="' + l + '" onclick="switchLang(\'' + l + '\')">' + l.toUpperCase() + '</button>'; }).join('') + '</div>' : ''),
     '  </div>',
     '</div>',
     '<button class="fp-side-arrow" id="fp-arrow-prev" disabled>&#8249;</button>',
@@ -4459,7 +4563,7 @@ app.post('/api/presentations/:id/publish', function (req, res) {
     });
   }
 
-  run('git', ['add', folderArg], repoRoot, function (err) {
+  run('git', ['add', folderArg, 'finished-presentations/shared'], repoRoot, function (err) {
     if (err) return res.status(500).json({ success: false, error: 'git add failed: ' + err.message });
     run('git', ['commit', '-m', commitMsg], repoRoot, function (err, stdout, stderr) {
       var combined = (stdout || '') + (stderr || '');
@@ -4668,6 +4772,61 @@ app.delete('/api/templates/:id', function (req, res) {
   }
 });
 
+// PATCH /api/templates/:id — update name and/or category of a template entry
+app.patch('/api/templates/:id', function (req, res) {
+  try {
+    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
+    var idx     = catalog.findIndex(function (t) { return t.id === req.params.id; });
+    if (idx === -1) return res.status(404).json({ success: false, error: 'Template not found: ' + req.params.id });
+    var body = req.body || {};
+    if (body.name       !== undefined) catalog[idx].name       = String(body.name).trim();
+    if (body.category   !== undefined) catalog[idx].category   = String(body.category).trim();
+    if (body.tags       !== undefined) catalog[idx].tags       = Array.isArray(body.tags) ? body.tags : [];
+    if (body.components !== undefined) catalog[idx].components = Array.isArray(body.components) ? body.components : [];
+    fs.writeFileSync(TEMPLATE_CATALOG_PATH, JSON.stringify(catalog, null, 2), 'utf8');
+    res.json({ success: true, data: catalog[idx] });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/templates/:id/duplicate — clone a template entry (shares the same HTML file)
+app.post('/api/templates/:id/duplicate', function (req, res) {
+  try {
+    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
+    var src = catalog.find(function (t) { return t.id === req.params.id; });
+    if (!src) return res.status(404).json({ success: false, error: 'Template not found: ' + req.params.id });
+    var baseId = src.id + '-copy';
+    var newId  = baseId;
+    var n = 1;
+    while (catalog.find(function (t) { return t.id === newId; })) { newId = baseId + '-' + (++n); }
+    var copy = Object.assign({}, src, { id: newId, name: src.name + ' (copy)', createdAt: new Date().toISOString() });
+    catalog.push(copy);
+    fs.writeFileSync(TEMPLATE_CATALOG_PATH, JSON.stringify(catalog, null, 2), 'utf8');
+    res.status(201).json({ success: true, data: copy });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// PATCH /api/slide-library/:id — update name (and/or other top-level fields) of a library slide
+app.patch('/api/slide-library/:id', function (req, res) {
+  try {
+    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var slide = library.slides.find(function (s) { return s.id === req.params.id; });
+    if (!slide) return res.status(404).json({ success: false, error: 'Slide not found' });
+    var allowed = ['name'];
+    var body = req.body || {};
+    allowed.forEach(function (key) {
+      if (body[key] !== undefined) slide[key] = String(body[key]).trim() || slide[key];
+    });
+    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    res.json({ success: true, data: slide });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
 // POST /api/slide-library/:id/duplicate — duplicate a library slide
 app.post('/api/slide-library/:id/duplicate', function (req, res) {
   try {
@@ -4741,19 +4900,215 @@ app.post('/api/library', function (req, res) {
     if (!templateId) return res.status(400).json({ success: false, error: 'templateId is required' });
 
     var resolved = resolveTemplate(templateId);
+    var catalog  = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
+    var tplEntry = catalog.find(function (t) { return t.id === templateId; });
     var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+
+    var edits = (tplEntry && tplEntry.defaultEdits) ? JSON.parse(JSON.stringify(tplEntry.defaultEdits)) : {};
+
     var newSlide = {
       id: 'lib-' + Date.now(),
       name: name,
       templateId: templateId,
       templateVersion: (resolved && resolved.source === 'canvas' && resolved.tpl.version) ? resolved.tpl.version : 1,
-      edits: {}
+      edits: edits
     };
     library.slides.push(newSlide);
     fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
     res.json({ success: true, data: newSlide });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/templates/:id/defaultEdits — save default edit values for a template
+app.post('/api/templates/:id/defaultEdits', function (req, res) {
+  var id = req.params.id;
+  if (!/^[a-z0-9-]+$/i.test(id)) {
+    return res.status(400).json({ success: false, error: 'Invalid id' });
+  }
+  try {
+    var edits = (req.body || {}).edits;
+    if (!edits || typeof edits !== 'object') {
+      return res.status(400).json({ success: false, error: 'edits object is required' });
+    }
+    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
+    var tpl = catalog.find(function (t) { return t.id === id; });
+    if (!tpl) return res.status(404).json({ success: false, error: 'Template not found' });
+    tpl.defaultEdits = edits;
+    fs.writeFileSync(TEMPLATE_CATALOG_PATH, JSON.stringify(catalog, null, 2), 'utf8');
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /slides/template-preview/:id — renders a raw template file by template id (full component shell)
+app.get('/slides/template-preview/:id', function (req, res) {
+  var id = req.params.id;
+  if (!/^[a-z0-9-]+$/i.test(id)) {
+    return res.status(400).type('text/plain').send('Invalid id');
+  }
+  var editMode = req.query.edit === '1';
+  try {
+    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
+    var tpl = catalog.find(function (t) { return t.id === id; });
+    if (!tpl) return res.status(404).type('text/plain').send('Template not found: ' + id);
+    var filePath = path.join(__dirname, tpl.file);
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).type('text/plain').send('Template file not found: ' + tpl.file);
+    }
+    var rawFragment = fs.readFileSync(filePath, 'utf8');
+    var fragment;
+    if (editMode) {
+      fragment = applyEditsToHtml(rawFragment, tpl.defaultEdits || {}, true);
+    } else {
+      fragment = applyEditsToHtml(rawFragment, tpl.defaultEdits || {}, false);
+    }
+    var modeScript = editMode
+      ? [
+          '  <script>window.PB_TEMPLATE_ID = "' + id + '";</script>',
+          '  <script src="/slides/components/tracker.js"></script>'
+        ].join('\n')
+      : '  <script>window.PB_READONLY = true;</script>';
+    var saveScript = editMode ? [
+      '  <script>',
+      '  (function () {',
+      '    var TPL_ID = "' + id + '";',
+      '    var saveTimer = null;',
+      '    var toast = null;',
+      '    function showSaved() {',
+      '      if (!toast) return;',
+      '      toast.textContent = "Saved";',
+      '      toast.style.opacity = "1";',
+      '      clearTimeout(toast._hide);',
+      '      toast._hide = setTimeout(function () { toast.style.opacity = "0"; }, 1800);',
+      '    }',
+      '    function doSave() {',
+      '      var edits = {};',
+      '      document.querySelectorAll("[data-edit][contenteditable]").forEach(function (el) {',
+      '        edits[el.getAttribute("data-edit")] = el.innerHTML;',
+      '      });',
+      '      fetch("/api/templates/" + TPL_ID + "/defaultEdits", {',
+      '        method: "POST",',
+      '        headers: { "Content-Type": "application/json" },',
+      '        body: JSON.stringify({ edits: edits })',
+      '      }).then(function (r) {',
+      '        if (r.ok) {',
+      '          showSaved();',
+      '          try { parent.postMessage({ type: "tpl-saved", id: TPL_ID }, "*"); } catch (e) {}',
+      '        }',
+      '      });',
+      '    }',
+      '    document.addEventListener("focusout", function (e) {',
+      '      if (!e.target.hasAttribute || !e.target.hasAttribute("data-edit") || !e.target.hasAttribute("contenteditable")) return;',
+      '      clearTimeout(saveTimer);',
+      '      saveTimer = setTimeout(doSave, 400);',
+      '    });',
+      '    document.addEventListener("slide-carousel-save", doSave);',
+      '    document.addEventListener("slide-list-save", doSave);',
+      '    document.addEventListener("slide-table-save", doSave);',
+      '    document.addEventListener("DOMContentLoaded", function () {',
+      '      toast = document.getElementById("tpl-edit-toast");',
+      '    });',
+      '  })();',
+      '  </script>'
+    ].join('\n') : '';
+    var toastHtml = editMode ? [
+      '<div id="tpl-edit-toast" style="',
+      '  position:fixed;bottom:16px;right:16px;z-index:9999;',
+      '  background:rgba(30,30,30,.92);color:#fff;font-size:12px;font-weight:600;',
+      '  letter-spacing:.06em;padding:7px 16px;border-radius:6px;',
+      '  opacity:0;transition:opacity .25s;pointer-events:none;',
+      '">Saved</div>'
+    ].join('') : '';
+    var editBanner = editMode ? [
+      '<div style="',
+      '  position:fixed;top:0;left:0;right:0;z-index:9998;',
+      '  background:rgba(20,20,30,.82);backdrop-filter:blur(4px);',
+      '  padding:6px 14px;font-size:11px;font-weight:600;letter-spacing:.07em;',
+      '  color:rgba(255,255,255,.55);text-transform:uppercase;text-align:center;',
+      '  border-bottom:1px solid rgba(255,255,255,.08);pointer-events:none;',
+      '">Editing template defaults — changes apply to new slides only</div>'
+    ].join('') : '';
+    var page = [
+      '<!DOCTYPE html>',
+      '<html lang="en">',
+      '<head>',
+      '  <meta charset="UTF-8">',
+      '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+      '  <link rel="stylesheet" href="/slides/style.css">',
+      modeScript,
+      '  <script src="/slides/components/lightbox.js"></script>',
+      '  <script src="/slides/components/carousel.js"></script>',
+      '  <script src="/slides/components/tabs.js"></script>',
+      '  <script src="/slides/components/list.js"></script>',
+      '  <script src="/slides/components/table.js"></script>',
+      '  <script>',
+      '    document.addEventListener("DOMContentLoaded", function () {',
+      '      if (window.Lightbox) Lightbox.init(document);',
+      '      if (window.Carousel) Carousel.init(document);',
+      '      if (window.Tabs)     Tabs.init(document);',
+      '      if (window.List)     List.init(document);',
+      '      if (window.Table)    Table.init(document);',
+      '      (function () {',
+      '        function markNoImg(img) {',
+      '          var slide = img.closest(".ls-carousel-slide");',
+      '          if (slide) slide.classList.add("no-img");',
+      '          else img.classList.add("no-img");',
+      '        }',
+      '        document.querySelectorAll("img").forEach(function (img) {',
+      '          var src = img.getAttribute("src");',
+      '          if (!src || src.trim() === "") { markNoImg(img); return; }',
+      '          if (img.complete && !img.naturalWidth) { markNoImg(img); return; }',
+      '          img.addEventListener("error", function () { markNoImg(this); }, { once: true });',
+      '        });',
+      '      })();',
+      '    });',
+      '  </script>',
+      saveScript,
+      '  <style>',
+      '    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }',
+      '    html, body { width: 100%; height: 100%; overflow: hidden; }',
+      '    .slides-container { position: relative; width: 100%; height: 100%; }',
+      '    .slide { opacity: 1 !important; transform: scale(1) !important; pointer-events: auto !important; }',
+      '    .slide-layout { height: 100% !important; }',
+      '    .slide-body { flex: 1 !important; min-height: 0 !important; overflow: hidden; }',
+      '    .ls-carousel { min-height: 200px !important; }',
+      editMode ? '' : '    [data-ls-add-row],[data-ls-add],[data-ls-restore]{ display:none !important; }',
+      /* Light theme for template preview — white bg, dark text, accent colour stays */
+      '    :root { --bg:#fff; --bg-card:rgba(0,0,0,.04); --bg-card-hover:rgba(245,166,35,.08); --text:#111; --text-muted:#555; --border:rgba(0,0,0,.10); --border-hover:rgba(245,166,35,.45); --nav-bg:rgba(255,255,255,.85); }',
+      '    html, body { background:#fff !important; }',
+      /* Invert placeholder logo so it reads on white */
+      '    .slide-logo-row img { filter: invert(1); }',
+      /* No-image placeholders adapted for light bg */
+      '    .ls-carousel-slide.no-img{background:rgba(0,0,0,.04);border:1.5px dashed rgba(0,0,0,.18);border-radius:8px;}',
+      '    .ls-carousel-slide.no-img>img{visibility:hidden;}',
+      '    .ls-carousel-slide.no-img::after{content:"No image";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:rgba(0,0,0,.3);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;pointer-events:none;white-space:nowrap;}',
+      '    img.no-img{min-height:60px;min-width:60px;background:rgba(0,0,0,.04);border:1.5px dashed rgba(0,0,0,.18);border-radius:8px;}',
+      '  </style>',
+      '</head>',
+      '<body>',
+      editBanner,
+      '<div class="slides-container">',
+      fragment,
+      '</div>',
+      toastHtml,
+      '<div id="lightbox">',
+      '  <div id="lb-inner">',
+      '    <button id="lb-close">&#10005;</button>',
+      '    <button id="lb-prev" class="lb-nav-btn">&#8249;</button>',
+      '    <div id="lb-stage"><img id="lb-img" src="" alt=""><div id="lb-cap"></div></div>',
+      '    <button id="lb-next" class="lb-nav-btn">&#8250;</button>',
+      '    <div id="lb-thumbs"></div>',
+      '  </div>',
+      '</div>',
+      '</body>',
+      '</html>'
+    ].join('\n');
+    res.type('text/html').send(page);
+  } catch (err) {
+    res.status(500).type('text/plain').send('Error: ' + err.message);
   }
 });
 
@@ -4785,7 +5140,7 @@ app.get('/slides/library-preview/:id', function (req, res) {
         fragment = renderLayoutToHtml(resolved.tpl, id, libSlide.edits || {});
         fragment = fragment.replace(/ contenteditable=""/g, '').replace(/ contenteditable=''/g, '');
       } else {
-        fragment = applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), libSlide.edits || {}, false);
+        fragment = applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), withLiveLogos(libSlide.edits || {}), false);
       }
     }
 
@@ -4802,17 +5157,58 @@ app.get('/slides/library-preview/:id', function (req, res) {
       '  <script src="/slides/components/tabs.js"></script>',
       '  <script src="/slides/components/list.js"></script>',
       '  <script src="/slides/components/table.js"></script>',
+      '  <script>',
+      '    document.addEventListener("DOMContentLoaded", function () {',
+      '      if (window.Lightbox) Lightbox.init(document);',
+      '      if (window.Carousel) Carousel.init(document);',
+      '      if (window.Tabs)     Tabs.init(document);',
+      '      if (window.List)     List.init(document);',
+      '      if (window.Table)    Table.init(document);',
+      '      // Wire missing/broken image placeholders after components have initialized',
+      '      (function () {',
+      '        function markNoImg(img) {',
+      '          var slide = img.closest(".ls-carousel-slide");',
+      '          if (slide) slide.classList.add("no-img");',
+      '          else img.classList.add("no-img");',
+      '        }',
+      '        document.querySelectorAll("img").forEach(function (img) {',
+      '          var src = img.getAttribute("src");',
+      '          if (!src || src.trim() === "") { markNoImg(img); return; }',
+      '          if (img.complete && !img.naturalWidth) { markNoImg(img); return; }',
+      '          img.addEventListener("error", function () { markNoImg(this); }, { once: true });',
+      '        });',
+      '      })();',
+      '    });',
+      '  </script>',
       '  <style>',
       '    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }',
       '    html, body { width: 100%; height: 100%; overflow: hidden; }',
       '    .slides-container { position: relative; width: 100%; height: 100%; }',
       '    .slide { opacity: 1 !important; transform: scale(1) !important; pointer-events: auto !important; }',
-      '    [data-builder-only],[data-ls-add-row],[data-ls-add],[data-ls-restore]{ display:none !important; }',
+      '    /* Force full-height layout chain so carousel height:100% always resolves */',
+      '    .slide-layout { height: 100% !important; }',
+      '    .slide-body { flex: 1 !important; min-height: 0 !important; overflow: hidden; }',
+      '    .ls-carousel { min-height: 200px !important; }',
+      '    /* PB_READONLY=true prevents editing buttons from being created; nav controls (carousel, tabs) use data-builder-only and must stay visible */',
+      '    [data-ls-add-row],[data-ls-add],[data-ls-restore]{ display:none !important; }',
+      '    .ls-carousel-slide.no-img{background:rgba(255,255,255,.04);border:1.5px dashed rgba(255,255,255,.18);border-radius:8px;}',
+      '    .ls-carousel-slide.no-img>img{visibility:hidden;}',
+      '    .ls-carousel-slide.no-img::after{content:"No image";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:rgba(255,255,255,.28);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;pointer-events:none;white-space:nowrap;}',
+      '    img.no-img{min-height:60px;min-width:60px;background:rgba(255,255,255,.04);border:1.5px dashed rgba(255,255,255,.18);border-radius:8px;}',
       '  </style>',
       '</head>',
       '<body>',
       '<div class="slides-container">',
       fragment,
+      '</div>',
+      '<div id="lightbox">',
+      '  <div id="lb-inner">',
+      '    <button id="lb-close">&#10005;</button>',
+      '    <button id="lb-prev" class="lb-nav-btn">&#8249;</button>',
+      '    <div id="lb-stage"><img id="lb-img" src="" alt=""><div id="lb-cap"></div></div>',
+      '    <button id="lb-next" class="lb-nav-btn">&#8250;</button>',
+      '    <div id="lb-thumbs"></div>',
+      '  </div>',
       '</div>',
       '</body>',
       '</html>'
@@ -4851,7 +5247,7 @@ app.get('/slides/library-edit/:id', function (req, res) {
       if (resolved.source === 'canvas') {
         fragment = renderLayoutToHtml(resolved.tpl, id, baseEdits);
       } else {
-        fragment = applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), baseEdits, true);
+        fragment = applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), withLiveLogos(baseEdits), true);
       }
     }
     var page = [
@@ -4867,6 +5263,29 @@ app.get('/slides/library-edit/:id', function (req, res) {
       '  <script src="/slides/components/tabs.js"></script>',
       '  <script src="/slides/components/list.js"></script>',
       '  <script src="/slides/components/table.js"></script>',
+      '  <script>',
+      '    document.addEventListener("DOMContentLoaded", function () {',
+      '      if (window.Lightbox) Lightbox.init(document);',
+      '      if (window.Carousel) Carousel.init(document);',
+      '      if (window.Tabs)     Tabs.init(document);',
+      '      if (window.List)     List.init(document);',
+      '      if (window.Table)    Table.init(document);',
+      '      // Wire missing/broken image placeholders after components have initialized',
+      '      (function () {',
+      '        function markNoImg(img) {',
+      '          var slide = img.closest(".ls-carousel-slide");',
+      '          if (slide) slide.classList.add("no-img");',
+      '          else img.classList.add("no-img");',
+      '        }',
+      '        document.querySelectorAll("img").forEach(function (img) {',
+      '          var src = img.getAttribute("src");',
+      '          if (!src || src.trim() === "") { markNoImg(img); return; }',
+      '          if (img.complete && !img.naturalWidth) { markNoImg(img); return; }',
+      '          img.addEventListener("error", function () { markNoImg(this); }, { once: true });',
+      '        });',
+      '      })();',
+      '    });',
+      '  </script>',
       '  <script src="/slides/components/button.js"></script>',
       '  <script src="/slides/components/tags.js"></script>',
       '  <style>',
@@ -5610,8 +6029,7 @@ app.post('/api/upload-image', function (req, res) {
 
   if (!filename || !dataUrl) return res.status(400).json({ error: 'Missing filename or data' });
 
-  // Sanitize filename — no path traversal
-  filename = path.basename(filename).replace(/[^a-zA-Z0-9._-]/g, '-');
+  var baseName = path.basename(filename);
 
   var matches = dataUrl.match(/^data:([A-Za-z-+/]+);base64,(.+)$/);
   if (!matches) return res.status(400).json({ error: 'Invalid image data' });
@@ -5619,8 +6037,19 @@ app.post('/api/upload-image', function (req, res) {
   try {
     var uploadsDir = path.join(__dirname, 'features/slides/uploads');
     if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
-    fs.writeFileSync(path.join(uploadsDir, filename), Buffer.from(matches[2], 'base64'));
-    res.json({ ok: true, path: '/slides/uploads/' + filename });
+
+    // If the exact filename already exists (e.g. re-uploading from the uploads folder), reuse it
+    if (fs.existsSync(path.join(uploadsDir, baseName))) {
+      return res.json({ ok: true, path: '/slides/uploads/' + baseName });
+    }
+
+    // Sanitize filename — no path traversal, spaces/special chars → dashes
+    var sanitized = baseName.replace(/[^a-zA-Z0-9._-]/g, '-');
+    var destPath = path.join(uploadsDir, sanitized);
+    if (!fs.existsSync(destPath)) {
+      fs.writeFileSync(destPath, Buffer.from(matches[2], 'base64'));
+    }
+    res.json({ ok: true, path: '/slides/uploads/' + sanitized });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
