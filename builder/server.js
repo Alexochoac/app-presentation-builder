@@ -3077,8 +3077,6 @@ var TEMPLATES_PATH            = path.join(__dirname, 'data', 'slide-templates.js
 var TEMPLATE_CATALOG_PATH  = path.join(__dirname, 'data', 'templates.json');
 var SETTINGS_PATH          = path.join(__dirname, 'data', 'settings.json');
 var LANGUAGES_PATH     = path.join(__dirname, 'data', 'languages.json');
-var TRANSLATIONS_PATH  = path.join(__dirname, 'data', 'translations.json'); // legacy global — kept as fallback
-
 function getTranslationsPath(deckId) {
   return path.join(__dirname, 'data', 'decks', deckId || 'default', 'translations.json');
 }
@@ -3607,12 +3605,9 @@ app.post('/api/library/:id/edits', function (req, res) {
 // Returns the translated text for a field+language from translations.json data.
 // English values are plain strings; other languages are {current, previous, dirty} objects.
 // Strips builder-only attributes (contenteditable, spellcheck, data-edit) from the returned HTML.
-// slideId: optional librarySlideId — checks per-slide store first, falls back to global fields
 function getTranslationValue(slideId, fieldKey, lang, translationsData) {
-  var fields     = (translationsData && translationsData.fields) || {};
   var slideStore = (translationsData && translationsData.slides) || {};
-  // Per-slide entry takes priority; fall back to global fields
-  var field = (slideId && slideStore[slideId] && slideStore[slideId][fieldKey]) || fields[fieldKey];
+  var field = slideId && slideStore[slideId] && slideStore[slideId][fieldKey];
   if (!field) return null;
   var raw;
   if (lang === 'en') {
@@ -5433,20 +5428,15 @@ app.get('/api/languages', function (_req, res) {
 });
 
 // ── API: translations ─────────────────────────────────────────────────────────
-// Pass deckId to read/write the per-deck file. Falls back to the legacy global
-// file when deckId is omitted (supports callers not yet migrated to Task 2).
 function readTranslations(deckId) {
-  var filePath = deckId ? getTranslationsPath(deckId) : TRANSLATIONS_PATH;
-  try { return JSON.parse(fs.readFileSync(filePath, 'utf8')); }
+  try { return JSON.parse(fs.readFileSync(getTranslationsPath(deckId), 'utf8')); }
   catch (e) {
-    // Per-deck file missing — return an empty schema (file will be created on first write)
     return { languages: ['en'], defaultLanguage: 'en', slides: {} };
   }
 }
 
 function writeTranslations(data, deckId) {
-  var filePath = deckId ? getTranslationsPath(deckId) : TRANSLATIONS_PATH;
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+  fs.writeFileSync(getTranslationsPath(deckId), JSON.stringify(data, null, 2), 'utf8');
 }
 
 // Mark per-slide translation entries dirty when English edits are saved.
@@ -6015,35 +6005,6 @@ app.post('/api/save', function (req, res) {
     });
 
     fs.writeFileSync(filePath, $.html(), 'utf8');
-
-    // Mark translation dirty flags for any changed fields (legacy endpoint)
-    // t.fields is removed in per-deck schema — this block is a no-op until Task 4 rewrites it.
-    try {
-      var _legacyDeckId = getActiveDeckId();
-      var t = readTranslations(_legacyDeckId);
-      var changed = false;
-      if (t.fields) {
-        Object.entries(edits).forEach(function (entry) {
-          var key = entry[0];
-          var newVal = entry[1];
-          if (!t.fields[key]) {
-            t.fields[key] = { en: newVal };
-            changed = true;
-          } else if (t.fields[key].en !== newVal) {
-            t.fields[key].en = newVal;
-            Object.keys(t.fields[key]).forEach(function (lang) {
-              if (lang !== 'en' && t.fields[key][lang] && t.fields[key][lang].current) {
-                t.fields[key][lang].dirty = true;
-              }
-            });
-            changed = true;
-          }
-        });
-      }
-      if (changed) writeTranslations(t, _legacyDeckId);
-    } catch (tErr) {
-      console.warn('Translation dirty-flag update failed:', tErr.message);
-    }
 
     res.json({ ok: true });
   } catch (err) {

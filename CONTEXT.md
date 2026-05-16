@@ -128,9 +128,9 @@ All content slides now use this structure:
 - [x] **Builder — Save as finished: Replace existing** — two-option modal (New / Replace), replaceId on server, replacedAt timestamp, published warning, read-only identity fields (2026-04-30)
 - [x] **Builder — Create Presentation button moved to end of flow** — removed from Slide Preview, added to preview.html header + slides ⋯ menu; dashboard entry point removed (2026-04-30)
 - [x] **Translation feature (Phase 1)** — `languages.json`, `translations.json`, `translator.js` (OpenRouter API), 5 backend endpoints, dirty-flag hook on save, Translate toolbar button + badge, per-field translation popover, Translation Settings modal (add/remove languages), builder preview language switcher (EN/ES/IT/PT/FR) with read-only mode (2026-04-30)
-- [ ] **Translation — Finished presentation** — bake `[data-lang]` spans + inject `language-switcher.js` into output HTML at Create time
-- [ ] **Translation — Badge overcount fix** — skip non-text (image) fields from badge count
-- [ ] **Translation — Dirty flag for library slides** — hook into `POST /api/deck/slides/:id/edits`
+- [x] **Translation — Finished presentation** — bake `[data-lang]` spans + inject `language-switcher.js` into output HTML at Create time (2026-05-16)
+- [x] **Translation — Badge overcount fix** — skip non-text (image) fields from badge count (2026-05-16)
+- [x] **Translation — Dirty flag for library slides** — `markSlideTranslationsDirty()` wired into deck slide save (2026-05-16)
 - [ ] **Translation — Preview navigate fix** — replace fragile `setTimeout(50)` with reliable slide-ready signal
 - [ ] **Design system refactor** (carried) — eliminate 3-layer CSS conflict; one source of truth in style.css
 - [ ] Delete old `dashboard.css`
@@ -145,7 +145,7 @@ All content slides now use this structure:
 - [x] **builder-ui — Finished Presentations redesign** — gear dropdown (Duplicate, Publish, Edit, History, Archive), filtered by active deck, search input, deckId persisted on save/duplicate, upward-opening dropdown (2026-05-14)
 - [x] **Dashboard — Finished Presentations full redesign** — grid/list toggle (⊞/☰); two-row horizontal layout (name+badge / customer·date·#ID link); status filter (Active/Archived/All); Live/Draft/Archived badges; gear ⚙ upward dropdown; click #ID = copy public URL, dblclick = open; logo dblclick filters Publication Activity chart; 38px list / 56px grid logos with hover tooltip; opaque modals (#1c1c1e dark / #fff light) (2026-05-14)
 - [x] **Presentation lifecycle** — `makePresId()` uses max(existing)+1 (no repeated IDs after delete); archive-only from active list (no accidental hard delete); permanent delete from Archived view requires typing DELETE; public GitHub Pages URL used for published links (2026-05-14)
-- [ ] **Slides — Templates tab standardization** — apply gear+3-dots card action pattern (Use Template = dblclick/primary, Edit Template = dropdown item)
+- [x] **Slides — Templates tab standardization** — gear+3-dots card action pattern applied (2026-05-14)
 - [ ] **builder-ui — fpDelete improve** — replace native confirm() with proper modal matching dashboard archive flow
 - [x] **Zone Builder — Layout Library data model** — `layout-skeletons.json` (10 skeletons), `GET /api/layout-skeletons` endpoint (2026-05-14)
 - [x] **Zone Builder — 3-panel builder shell** — layout picker screen + 3-panel builder (palette / canvas / properties) at `/zone-builder` (2026-05-14)
@@ -159,6 +159,13 @@ All content slides now use this structure:
 - [ ] **Zone Builder — Component resize** — size control (compact / default / wide) in properties panel, maps to flex/width on component wrapper
 - [ ] **Zone Builder — Properties panel Task 6** — component-specific settings (carousel config, list items, etc.)
 - [ ] **Zone Builder — Linking system Task 8** — trigger-button component for embedded slide navigation
+- [x] **Translation system — Per-deck isolation** — translations.json moved from global `builder/data/` to per-deck `builder/data/decks/[deckId]/`; all server endpoints read/write active deck's file (2026-05-16)
+- [x] **Translation system — bakeLanguageSpans per-deck** — `buildFrozenPresentation()` reads translations from `presentation.deckId` (2026-05-16)
+- [x] **Translation system — AI translator error handling** — 30s timeout on OpenRouter fetch; failure tracking per chunk; `{ translated, failed, errors }` returned from both translate endpoints; inline red error shown in Translation Settings; batch failure count shown in TC progress bar (2026-05-16)
+- [x] **Translation system — Remove dead global fields section** — `translationsData.fields` references removed from server.js and preview.html; global `builder/data/translations.json` deleted; `TRANSLATIONS_PATH` constant removed (2026-05-16)
+- [x] **Translation Settings UX** — removed redundant Translate button; "Open Translation Center" now auto-saves language selection before opening TC (2026-05-16)
+- [x] **Builder preview — per-slide translation isolation** — `applyPreviewLang()` scoped per slide element; `enSnapshot` keyed by `idx/fieldKey` to prevent cross-slide field bleeding (2026-05-16)
+- [x] **Translation Center** — HTML stripped for display; no-change detection on blur prevents overwriting HTML-formatted translations (2026-05-16)
 
 ## Phase Roadmap
 - **Phase 1** (current) — Local app, single user, build + publish
@@ -166,4 +173,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-05-14 (session 16)
+Last updated: 2026-05-16 (session 17)

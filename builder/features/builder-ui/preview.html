@@ -821,11 +821,6 @@
     if (!translationsData) { badge.style.display = 'none'; return; }
     var count = 0;
     var langs = (translationsData.languages || []).filter(function (l) { return l !== 'en'; });
-    Object.values(translationsData.fields || {}).forEach(function (field) {
-      langs.forEach(function (lang) {
-        if (!field[lang] || !field[lang].current || field[lang].dirty) count++;
-      });
-    });
     Object.values(translationsData.slides || {}).forEach(function (slideFields) {
       Object.values(slideFields).forEach(function (field) {
         langs.forEach(function (lang) {
@@ -870,7 +865,6 @@
   function openTranslationPanel(fieldKey) {
     if (!translationsData) { loadTranslations().then(function () { openTranslationPanel(fieldKey); }); return; }
     var langs = (translationsData.languages || []).filter(function (l) { return l !== 'en'; });
-    var fields = translationsData.fields || {};
     var slideId = SLIDES[current] && SLIDES[current].librarySlideId;
     var slideStore = (translationsData.slides && slideId && translationsData.slides[slideId]) || {};
     var body = document.getElementById('translationPanelBody');
@@ -883,8 +877,7 @@
 
     var html = '';
     langs.forEach(function (lang) {
-      // Per-slide entry takes priority; fall back to global
-      var entry = (slideStore[fieldKey] && slideStore[fieldKey][lang]) || (fields[fieldKey] && fields[fieldKey][lang]);
+      var entry = slideStore[fieldKey] && slideStore[fieldKey][lang];
       var current = entry && entry.current ? entry.current : '';
       var previous = entry && entry.previous ? entry.previous : null;
       var dirty = entry && entry.dirty;
@@ -1021,7 +1014,6 @@
   }
 
   function applyPreviewLang(lang) {
-    var fields = translationsData && translationsData.fields ? translationsData.fields : {};
     slideEls.forEach(function (slideEl, idx) {
       if (!slideEl) return;
       var libSlideId = SLIDES[idx] && SLIDES[idx].librarySlideId;
@@ -1035,14 +1027,6 @@
           el.contentEditable = 'true';
         } else {
           var entry = slideStore[key] && slideStore[key][lang];
-          if (!entry) {
-            var globalEntry = fields[key] && fields[key][lang];
-            var globalEn    = fields[key] && (fields[key]['en'] || '');
-            var slideEn     = enSnapshot[snapKey] !== undefined ? enSnapshot[snapKey] : el.innerHTML;
-            if (globalEntry && globalEn && slideEn.trim() === globalEn.trim()) {
-              entry = globalEntry;
-            }
-          }
           if (entry && entry.current) el.innerHTML = entry.current;
         }
       });

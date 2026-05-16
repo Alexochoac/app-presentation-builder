@@ -2,7 +2,7 @@
 title: Translation System — Remove Dead Global Fields Section
 type: Feature
 priority: M
-status: pending
+status: done
 area: builder
 ---
 
@@ -30,3 +30,23 @@ The `fields` section in `translations.json` was never read by the server's `bake
 
 ## Depends on
 Task 1 (per-deck files), Task 2 (endpoints migrated)
+
+## Implementation Summary
+
+### Problem
+`translationsData.fields` was a legacy global store of 193+ field translations keyed by field name (e.g. `hero-title`, `headline`). It was never used by `bakeLanguageSpans()` during publish, but `applyPreviewLang()` in `preview.html` fell back to it when no per-slide translation existed — causing cross-slide translation bleeding (slide 2's `headline` showing slide 1's Spanish text). The global `builder/data/translations.json` file also pointed to a dead path once per-deck files were active.
+
+### Files changed
+
+**`builder/server.js`**
+- Removed `TRANSLATIONS_PATH` constant (pointed to old global `builder/data/translations.json`)
+- Simplified `readTranslations()` and `writeTranslations()` — deckId now always required; no TRANSLATIONS_PATH fallback
+- Removed `var fields` and `|| fields[fieldKey]` fallback from `getTranslationValue()` — now only reads from `slides[slideId]`
+- Removed the entire 26-line legacy dirty-flag block (`if (t.fields) { ... }`) from the save endpoint — it was already a no-op since no per-deck file has a `fields` section
+
+**`builder/features/builder-ui/preview.html`**
+- `updateTranslateBadge()` — removed `Object.values(translationsData.fields || {})` loop; now counts only from `translationsData.slides`
+- `openTranslationPanel()` — removed `var fields = translationsData.fields || {}` and `|| (fields[fieldKey] && fields[fieldKey][lang])` fallback on `entry` lookup
+- `applyPreviewLang()` — removed `var fields = ...` and entire 7-line `if (!entry) { globalEntry / globalEn }` fallback block; lookup is now strictly per-slide
+
+**`builder/data/translations.json`** — deleted; all translation data lives in per-deck files at `builder/data/decks/[deckId]/translations.json`
