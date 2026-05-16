@@ -384,6 +384,41 @@
     }
   },
   {
+    "id": "ls27-multi-panel",
+    "name": "Multi Panel — Buttons + Carousel",
+    "category": "Interactive",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "section-label",
+      "ls27-config",
+      "ls27-default-carousel"
+    ],
+    "file": "features/slides/slide-27-multi-panel.html",
+    "createdAt": "2026-05-16T00:00:00.000Z",
+    "tags": [
+      "Interactive",
+      "Carousel",
+      "Buttons",
+      "New"
+    ],
+    "defaultEdits": {
+      "logo-row": "\n    <img src=\"/shared/brand/logo.svg\" alt=\"Your Logo\">\n  ",
+      "section-label": "Section Name",
+      "headline": "Panel Selector <span class=\"ls27-accent\">Headline</span>",
+      "ls27-config": "[{\"id\":0,\"label\":\"Topic 1\",\"icon\":null,\"carHtml\":\"&lt;div class=\\\"ls-carousel-track\\\"&gt;&lt;div class=\\\"ls-carousel-slide\\\"&gt;&lt;img src=\\\"\\\" alt=\\\"\\\" data-zoom&gt;&lt;/div&gt;&lt;/div&gt;\"},{\"id\":1,\"label\":\"Topic 2\",\"icon\":null,\"carHtml\":\"&lt;div class=\\\"ls-carousel-track\\\"&gt;&lt;div class=\\\"ls-carousel-slide\\\"&gt;&lt;img src=\\\"\\\" alt=\\\"\\\" data-zoom&gt;&lt;/div&gt;&lt;/div&gt;\"},{\"id\":2,\"label\":\"3\",\"icon\":null,\"carHtml\":\"&lt;div class=\\\"ls-carousel-track\\\"&gt;&lt;div class=\\\"ls-carousel-slide\\\"&gt;&lt;img src=\\\"\\\" alt=\\\"\\\" data-zoom&gt;&lt;/div&gt;&lt;/div&gt;\"}]",
+      "ls27-default-carousel": "\n        <div class=\"ls-carousel-track\" style=\"transform: translateX(0px);\">\n          <div class=\"ls-carousel-slide no-img\"><img src=\"\" alt=\"\"></div>\n        </div>\n      <div class=\"ls-carousel-counter\"></div>",
+      "ls27-car-0": "<div class=\"ls-carousel-track\"><div class=\"ls-carousel-slide no-img\"><img src=\"\" alt=\"\" data-zoom=\"\"></div></div>",
+      "ls27-car-1": "<div class=\"ls-carousel-track\"><div class=\"ls-carousel-slide no-img\"><img src=\"\" alt=\"\" data-zoom=\"\"></div></div>",
+      "ls27-car-2": "<div class=\"ls-carousel-track\"><div class=\"ls-carousel-slide no-img\"><img src=\"\" alt=\"\" data-zoom=\"\"></div></div>",
+      "ls27-car-3": "\n          <div class=\"ls-carousel-track\">\n            <div class=\"ls-carousel-slide no-img\"><img src=\"\" alt=\"\" data-zoom=\"\"></div>\n          </div>\n        ",
+      "ls27-car-4": "\n          <div class=\"ls-carousel-track\">\n            <div class=\"ls-carousel-slide no-img\"><img src=\"\" alt=\"\" data-zoom=\"\"></div>\n          </div>\n        ",
+      "ls27-car-5": "\n          <div class=\"ls-carousel-track\">\n            <div class=\"ls-carousel-slide no-img\"><img src=\"\" alt=\"\" data-zoom=\"\"></div>\n          </div>\n        ",
+      "ls27-car-6": "\n          <div class=\"ls-carousel-track\">\n            <div class=\"ls-carousel-slide no-img\"><img src=\"\" alt=\"\" data-zoom=\"\"></div>\n          </div>\n        ",
+      "ls27-car-7": "\n          <div class=\"ls-carousel-track\">\n            <div class=\"ls-carousel-slide no-img\"><img src=\"\" alt=\"\" data-zoom=\"\"></div>\n          </div>\n        "
+    }
+  },
+  {
     "id": "ls26-cover",
     "name": "Cover — White + Gallery",
     "category": "Cover",

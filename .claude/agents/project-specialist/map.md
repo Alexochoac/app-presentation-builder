@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-05-14 (session 16)
+Last updated: 2026-05-16 (session 17)
 
 ---
 
@@ -41,8 +41,10 @@ App-presentation-builder/
     │                                 UMAMI_USERNAME, UMAMI_PASSWORD, UMAMI_BASE_URL (not in git)
     ├── data/
     │   ├── decks.json              ← Deck registry: { decks: [{ id, name, logo, heroBg, theme, colors, ... }], activeDeckId }
-    │   ├── decks/                  ← Per-deck folders: decks/[deckId]/deck.json
-    │   │   └── [deckId]/deck.json  ← { id, name, slides: [{ id, librarySlideId, visible }] }
+    │   ├── decks/                  ← Per-deck folders
+    │   │   └── [deckId]/
+    │   │       ├── deck.json       ← { id, name, slides: [{ id, librarySlideId, visible }] }
+    │   │       └── translations.json ← Per-deck translations (see Translation System section)
     │   ├── slide-library.json      ← Library slides catalog + deckEdits per-deck overrides
     │   ├── slide-templates.json    ← Canvas-builder template definitions (id, defaultContent, rows)
     │   ├── templates.json          ← HTML template catalog (TEMPLATE_CATALOG_PATH) — wizard + zone-builder templates
@@ -50,8 +52,7 @@ App-presentation-builder/
     │   ├── layouts.json            ← User-created layout templates (Slide Builder system)
     │   ├── settings.json           ← App settings: umamiWebsiteId, logos, heroBg, defaultPrimaryColor
     │   ├── presentations.json      ← Finished presentations snapshot history
-    │   ├── languages.json          ← 103 world languages (ISO 639-1)
-    │   └── translations.json       ← Per-deck translation store
+    │   └── languages.json          ← 103 world languages (ISO 639-1)
     ├── features/
     │   ├── auth/
     │   │   ├── auth.js             ← Session auth middleware + login/logout routes
@@ -305,11 +306,13 @@ Global-only settings (per-deck settings moved to Builder deck drawer):
 |--------|------|-------------|
 | GET/POST | `/api/settings` | Read/write `settings.json` |
 | GET | `/api/languages` | List 103 languages |
-| GET | `/api/translations` | Read `translations.json` |
-| POST | `/api/translations/translate` | Translate dirty fields via OpenRouter (20 fields/chunk) |
-| PATCH | `/api/translations/field` | Save manual correction |
+| GET | `/api/translations` | Read active deck's `translations.json` |
+| POST | `/api/translations/translate` | Translate per-slide fields via OpenRouter; returns `{ success, data, translated, failed, errors }` |
+| POST | `/api/translations/translate-all` | Translate all dirty/missing fields across all deck slides; returns `{ success, data, translated, failed, errors }` |
+| PATCH | `/api/translations/field` | Save manual correction for a specific slide field |
 | POST | `/api/translations/restore` | Restore previous translation version |
-| PUT | `/api/translations/settings` | Update deck languages / default |
+| PUT | `/api/translations/settings` | Update active deck's languages / default |
+| GET | `/api/translations/fields-summary` | Return translatable rows for Translation Center (active deck slides only) |
 
 ---
 
@@ -413,19 +416,40 @@ slide-templates.json  →  slide-library.json  →  decks/[id]/deck.json
 
 ## Translation System
 
-**Store:** `builder/data/translations.json`
-- `en` is canonical (plain string); other languages have `{ current, previous, dirty }`
-- `dirty: true` set when English changes after a translation exists
+**Store:** `builder/data/decks/[deckId]/translations.json` (one file per deck, no global store)
+```json
+{
+  "languages": ["en", "es"],
+  "defaultLanguage": "en",
+  "slides": {
+    "[librarySlideId]": {
+      "[fieldKey]": {
+        "en": "English text",
+        "es": { "current": "Spanish text", "previous": null, "dirty": false }
+      }
+    }
+  }
+}
+```
+- `en` is always a plain string (canonical source)
+- Other languages: `{ current, previous, dirty }` — `dirty: true` when English changes after translation exists
+- No `fields` section — global field translations were removed; all data is per-slide
 
-**Translator:** `builder/lib/translator.js` — OpenRouter API, `anthropic/claude-haiku-4-5`, 20 fields/chunk
+**Translator:** `builder/lib/translator.js` — OpenRouter API, `anthropic/claude-haiku-4-5`, 20 fields/chunk, 30s timeout via `AbortSignal.timeout(30000)`. Returns `{ ok, fields, error }`.
 
-**Builder UI:** Language switcher in toolbar, Translate badge (dirty field count), per-field popover, Translation Settings modal
+**Builder UI:**
+- Language switcher in toolbar — switches preview between EN/other; non-English fields stay editable, `focusout` saves typed text directly to per-deck translations
+- Translate badge (dirty field count from per-slide data)
+- Per-field popover (click any `data-edit` element when in non-EN mode)
+- **Translation Settings modal** — add/remove languages; "Open Translation Center" button auto-saves language selection then opens TC
+- **Translation Center** — full-screen panel; per-slide/per-field grid; inline editable Spanish textareas; "Translate Missing & Changed" button with per-slide progress bar and failure reporting
 
-**Known gaps:**
-- Finished presentation has no language switcher yet (baking deferred — task `Feature-H-...-bake-language-spans`)
-- Badge overcounts image/non-text fields
-- Dirty flag not hooked into library slide edits
-- Language re-apply on slide navigate uses fragile `setTimeout(50)`
+**Finished presentations:** `buildFrozenPresentation()` reads translations from `presentation.deckId`'s per-deck file; `bakeLanguageSpans()` wraps `[data-edit]` elements in `<span data-lang="en">` / `<span data-lang="es" hidden="">` sibling spans; `language-switcher.js` inlined into frozen HTML.
+
+**Error handling:** Both translate endpoints return `{ translated: N, failed: M, errors: [...] }`; TC progress bar shows batch failure count; Translation Settings shows inline red error div.
+
+**Open gap:**
+- Language re-apply on slide navigate uses fragile `setTimeout(50)` — not yet replaced with reliable slide-ready signal
 
 ---
 
@@ -434,9 +458,10 @@ slide-templates.json  →  slide-library.json  →  decks/[id]/deck.json
 - **3-layer CSS conflict** — style.css, per-slide `<style>` blocks, inline styles. Design system refactor planned
 - **Tablet landscape responsive issue** — `Issue-M-2026-04-30-slides-css-responsive-layout-tablet-landscape-image-display.md`
 - **dashboard.css** — legacy file, should be deleted
-- **Translation gaps** — see Translation section above
+- **Translation — Preview navigate fix** — language re-apply on slide navigate uses `setTimeout(50)`; not yet replaced with reliable slide-ready signal
 - **Template update notifications** — when template rows change, library slides don't show an "Update available" badge yet (`Feature-L-2026-05-10-template-update-notifications-diff-and-review-flow.md`)
 - **Umami API token** — user's self-hosted Umami is v1 (no API key UI); using username/password auth. Credentials in `.env` as `UMAMI_USERNAME` + `UMAMI_PASSWORD`
+- **fpDelete modal** — Finished Presentations delete in builder-ui still uses native `confirm()` instead of proper modal
 
 ---
 
@@ -445,10 +470,8 @@ slide-templates.json  →  slide-library.json  →  decks/[id]/deck.json
 1. **Zone Builder — Component resize** — size control (compact / default / wide) in properties panel
 2. **Zone Builder — Properties panel Task 6** — component-specific settings (carousel config, list items, etc.)
 3. **Zone Builder — Linking system Task 8** — trigger-button component for embedded slide navigation
-4. **Translation — Finished presentation baking** — `[data-lang]` spans + inject `language-switcher.js` at Create time
-5. **Translation — Badge overcount fix** — skip non-text fields from badge count
-6. **Translation — Dirty flag for library slides** — hook into `POST /api/deck/slides/:id/edits`
-7. **Translation — Preview navigate fix** — replace `setTimeout(50)` with reliable slide-ready signal
-8. **Template update notifications** — "Update available" badge in My Library when template rows change
-9. **Design system refactor** — eliminate 3-layer CSS conflict
-10. **App UI icons standardise** — minimalist icon set across all pages
+4. **Translation — Preview navigate fix** — replace `setTimeout(50)` with reliable slide-ready signal
+5. **Template update notifications** — "Update available" badge in My Library when template rows change
+6. **Design system refactor** — eliminate 3-layer CSS conflict
+7. **App UI icons standardise** — minimalist icon set across all pages
+8. **fpDelete modal** — replace native `confirm()` with proper modal in builder-ui Finished Presentations

@@ -1,0 +1,594 @@
+<div class="slide content ls27-multi-panel"
+     data-slide="ls27-multi-panel"
+     data-slide-mode="sequence">
+
+  <div class="slide-logo-row" data-edit="logo-row">
+    <img src="/shared/brand/logo.svg" alt="Your Logo">
+  </div>
+
+  <div class="slide-layout">
+    <header class="slide-head">
+      <div class="section-label"
+           data-edit="section-label"
+           data-lang-key="ls27-multi-panel.section-label"
+           contenteditable spellcheck="false">Section Name</div>
+      <h1 class="slide-title"
+          data-edit="headline"
+          data-lang-key="ls27-multi-panel.headline"
+          contenteditable spellcheck="false">Panel Selector <span class="ls27-accent">Headline</span></h1>
+      <div class="divider"></div>
+    </header>
+
+    <div class="slide-body">
+
+      <!--
+        Config blob — stores button definitions as JSON.
+        contenteditable so it is picked up by the standard focusout→save pipeline.
+        Rendered visually invisible; the JS reads/writes textContent.
+      -->
+      <div id="ls27-config"
+           data-edit="ls27-config"
+           contenteditable spellcheck="false"
+           aria-hidden="true"
+           style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;left:-9999px;top:0;"></div>
+
+      <!-- Button selector strip — populated by JS -->
+      <div class="ls27-selector" id="ls27-selector"></div>
+
+      <!-- Default carousel (shown when no button is active) -->
+      <div class="ls-carousel ls27-car-default" id="ls27CarDefault"
+           data-counter="" data-edit="ls27-default-carousel"
+           style="flex:1;min-height:0;width:100%;">
+        <div class="ls-carousel-track">
+          <div class="ls-carousel-slide"><img src="" alt="Default panel image" data-zoom></div>
+        </div>
+      </div>
+
+      <!-- Static carousel slots 0–7 — matched to config items by data-slot -->
+      <div class="ls27-carousels" style="display:contents;">
+
+        <div class="ls-carousel ls27-car" data-slot="0" data-counter="" data-edit="ls27-car-0"
+             style="display:none;flex:1;min-height:0;width:100%;">
+          <div class="ls-carousel-track">
+            <div class="ls-carousel-slide"><img src="" alt="" data-zoom></div>
+          </div>
+        </div>
+
+        <div class="ls-carousel ls27-car" data-slot="1" data-counter="" data-edit="ls27-car-1"
+             style="display:none;flex:1;min-height:0;width:100%;">
+          <div class="ls-carousel-track">
+            <div class="ls-carousel-slide"><img src="" alt="" data-zoom></div>
+          </div>
+        </div>
+
+        <div class="ls-carousel ls27-car" data-slot="2" data-counter="" data-edit="ls27-car-2"
+             style="display:none;flex:1;min-height:0;width:100%;">
+          <div class="ls-carousel-track">
+            <div class="ls-carousel-slide"><img src="" alt="" data-zoom></div>
+          </div>
+        </div>
+
+        <div class="ls-carousel ls27-car" data-slot="3" data-counter="" data-edit="ls27-car-3"
+             style="display:none;flex:1;min-height:0;width:100%;">
+          <div class="ls-carousel-track">
+            <div class="ls-carousel-slide"><img src="" alt="" data-zoom></div>
+          </div>
+        </div>
+
+        <div class="ls-carousel ls27-car" data-slot="4" data-counter="" data-edit="ls27-car-4"
+             style="display:none;flex:1;min-height:0;width:100%;">
+          <div class="ls-carousel-track">
+            <div class="ls-carousel-slide"><img src="" alt="" data-zoom></div>
+          </div>
+        </div>
+
+        <div class="ls-carousel ls27-car" data-slot="5" data-counter="" data-edit="ls27-car-5"
+             style="display:none;flex:1;min-height:0;width:100%;">
+          <div class="ls-carousel-track">
+            <div class="ls-carousel-slide"><img src="" alt="" data-zoom></div>
+          </div>
+        </div>
+
+        <div class="ls-carousel ls27-car" data-slot="6" data-counter="" data-edit="ls27-car-6"
+             style="display:none;flex:1;min-height:0;width:100%;">
+          <div class="ls-carousel-track">
+            <div class="ls-carousel-slide"><img src="" alt="" data-zoom></div>
+          </div>
+        </div>
+
+        <div class="ls-carousel ls27-car" data-slot="7" data-counter="" data-edit="ls27-car-7"
+             style="display:none;flex:1;min-height:0;width:100%;">
+          <div class="ls-carousel-track">
+            <div class="ls-carousel-slide"><img src="" alt="" data-zoom></div>
+          </div>
+        </div>
+
+      </div><!-- /ls27-carousels -->
+
+    </div><!-- /slide-body -->
+  </div><!-- /slide-layout -->
+
+  <!-- ── Scoped Styles ── -->
+  <style>
+    /* ── Mobile defaults ── */
+    .ls27-multi-panel .slide-body {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 16px;
+    }
+
+    /* ── Accent helper ── */
+    .ls27-multi-panel .ls27-accent { color: var(--accent); }
+
+    /* ── Selector strip ── */
+    .ls27-selector {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    /* ── Button ── */
+    .ls27-multi-panel .ls27-btn {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 8px;
+      min-width: 60px;
+      border-radius: 12px;
+      cursor: pointer;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      font-family: inherit;
+      transition: border-color .2s, background .2s, box-shadow .2s;
+    }
+    .ls27-multi-panel .ls27-btn:hover {
+      border-color: rgba(var(--accent-rgb), .4);
+      background: var(--bg-card-hover, var(--bg-card));
+    }
+    .ls27-multi-panel .ls27-btn.active {
+      border-color: var(--accent);
+      background: rgba(var(--accent-rgb), .12);
+      box-shadow: 0 0 0 1px rgba(var(--accent-rgb), .25);
+    }
+
+    /* ── Label ── */
+    .ls27-multi-panel .ls27-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .03em;
+      color: var(--text-muted);
+      white-space: nowrap;
+      transition: color .2s;
+      outline: none;
+    }
+    .ls27-multi-panel .ls27-btn.active .ls27-label { color: var(--accent); }
+    .ls27-multi-panel .ls27-label[contenteditable="true"]:focus { color: var(--text); cursor: text; }
+
+    /* ── Icon wrapper ── */
+    .ls27-multi-panel .ls27-icon-wrap {
+      position: relative;
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+    }
+
+    /* ── Uploaded icon image ── */
+    .ls27-multi-panel .ls27-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ── Placeholder icon ── */
+    .ls27-multi-panel .ls27-icon-ph {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: rgba(var(--accent-rgb), .5);
+      background: rgba(var(--accent-rgb), .08);
+      border: 1.5px dashed rgba(var(--accent-rgb), .2);
+    }
+
+    /* ── Icon upload overlay (edit mode only) ── */
+    .ls27-multi-panel .ls27-icon-overlay {
+      position: absolute;
+      inset: 0;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, .5);
+      opacity: 0;
+      transition: opacity .15s;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #fff;
+      pointer-events: auto;
+    }
+    .ls27-multi-panel .ls27-icon-wrap:hover .ls27-icon-overlay { opacity: 1; }
+
+    /* Hidden in readonly mode */
+    .ls27-multi-panel.ls27-readonly .ls27-icon-overlay { display: none; }
+
+    /* ── Delete button (edit mode) ── */
+    .ls27-multi-panel .ls27-del {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(239, 68, 68, .85);
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 1;
+      text-align: center;
+      color: #fff;
+      font-weight: 700;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity .15s;
+    }
+    .ls27-multi-panel .ls27-btn:hover .ls27-del { opacity: 1; }
+
+    /* ── Add button (edit mode) ── */
+    .ls27-multi-panel .ls27-add-btn {
+      border-style: dashed !important;
+      border-color: rgba(var(--accent-rgb), .2) !important;
+      opacity: .65;
+    }
+    .ls27-multi-panel .ls27-add-btn:hover {
+      opacity: 1 !important;
+      border-color: rgba(var(--accent-rgb), .5) !important;
+    }
+    .ls27-multi-panel .ls27-add-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: rgba(var(--accent-rgb), .4);
+      background: rgba(var(--accent-rgb), .06);
+    }
+
+    /* ── Desktop expansion ── */
+    @media(min-width:769px) {
+      .ls27-multi-panel .ls27-btn {
+        min-width: 76px;
+        padding: 8px 10px;
+      }
+      .ls27-multi-panel .ls27-icon-wrap,
+      .ls27-multi-panel .ls27-icon,
+      .ls27-multi-panel .ls27-icon-ph,
+      .ls27-multi-panel .ls27-add-icon {
+        width: 40px;
+        height: 40px;
+      }
+      .ls27-multi-panel .ls27-label { font-size: 10px; }
+    }
+  </style>
+
+  <!-- ── Scoped Script ── -->
+  <script>
+  (function () {
+    var slide   = document.currentScript.closest('[data-slide]');
+    var slideId = slide ? slide.dataset.slide : 'ls27-multi-panel';
+
+    var EDIT = !window.PB_READONLY;
+
+    /* Add readonly class so CSS can suppress hover overlays */
+    if (!EDIT && slide) {
+      slide.classList.add('ls27-readonly');
+    }
+
+    var EMPTY_TRACK = '<div class="ls-carousel-track"><div class="ls-carousel-slide"><img src="" alt="" data-zoom></div></div>';
+
+    var DEFAULT_CONFIG = [
+      { id: 0, label: 'Topic 1', icon: null, carHtml: EMPTY_TRACK },
+      { id: 1, label: 'Topic 2', icon: null, carHtml: EMPTY_TRACK },
+      { id: 2, label: 'Topic 3', icon: null, carHtml: EMPTY_TRACK }
+    ];
+
+    var config      = [];
+    var currentIdx  = -1;
+
+    var root       = slide || document;
+    var selector   = root.querySelector('#ls27-selector');
+    var carDefault  = root.querySelector('#ls27CarDefault');
+    var configEl   = root.querySelector('#ls27-config');
+
+    /* ── Config I/O ── */
+    function loadConfig() {
+      var raw = configEl ? configEl.textContent.trim() : '';
+      try { config = raw ? JSON.parse(raw) : cloneObj(DEFAULT_CONFIG); }
+      catch (e) { config = cloneObj(DEFAULT_CONFIG); }
+    }
+
+    function persistConfig() {
+      if (!configEl) return;
+      configEl.textContent = JSON.stringify(config);
+      configEl.dispatchEvent(new Event('focusout', { bubbles: true }));
+    }
+
+    function cloneObj(obj) { return JSON.parse(JSON.stringify(obj)); }
+
+    /* ── Icon element builder ── */
+    function makeIconEl(item) {
+      if (item.icon) {
+        var img = document.createElement('img');
+        img.className = 'ls27-icon';
+        img.src = item.icon;
+        img.alt = item.label;
+        return img;
+      }
+      var ph = document.createElement('div');
+      ph.className = 'ls27-icon-ph';
+      ph.textContent = '◈'; /* ◈ */
+      return ph;
+    }
+
+    /* ── Icon upload overlay ── */
+    function attachIconOverlay(iconWrap, item) {
+      var overlay = document.createElement('div');
+      overlay.className = 'ls27-icon-overlay';
+      overlay.setAttribute('data-builder-only', '');
+      overlay.title = 'Change icon';
+      overlay.innerHTML = '&#9998;';
+      iconWrap.appendChild(overlay);
+
+      overlay.addEventListener('click', function (e) {
+        if (window.PB_READONLY) return;
+        e.stopPropagation();
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = function () {
+          var file = input.files[0];
+          if (!file) return;
+          var reader = new FileReader();
+          reader.onload = function (ev) {
+            fetch('/api/upload-image', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ filename: file.name, data: ev.target.result })
+            })
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+              if (!d.path) return;
+              item.icon = d.path;
+              var old = iconWrap.querySelector('.ls27-icon, .ls27-icon-ph');
+              var fresh = makeIconEl(item);
+              if (old) {
+                iconWrap.replaceChild(fresh, old);
+              } else {
+                iconWrap.insertBefore(fresh, overlay);
+              }
+              persistConfig();
+            });
+          };
+          reader.readAsDataURL(file);
+        };
+        input.click();
+      });
+    }
+
+    /* ── Build a single button element ── */
+    function makeBtn(item, arrayIdx) {
+      var btn = document.createElement('button');
+      btn.className = 'ls27-btn';
+
+      /* Icon wrap */
+      var iconWrap = document.createElement('div');
+      iconWrap.className = 'ls27-icon-wrap';
+      iconWrap.appendChild(makeIconEl(item));
+      if (EDIT) attachIconOverlay(iconWrap, item);
+      btn.appendChild(iconWrap);
+
+      /* Label */
+      var labelEl = document.createElement('span');
+      labelEl.className = 'ls27-label';
+      labelEl.textContent = item.label;
+      labelEl.setAttribute('data-lang-key', slideId + '.btn-' + item.id);
+      if (EDIT) {
+        labelEl.contentEditable = 'true';
+        labelEl.spellcheck = false;
+        labelEl.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') { e.preventDefault(); labelEl.blur(); }
+        });
+        labelEl.addEventListener('blur', function () {
+          var v = labelEl.textContent.trim();
+          if (v) { item.label = v; }
+          persistConfig();
+        });
+      }
+      btn.appendChild(labelEl);
+
+      /* Delete button (edit mode only) */
+      if (EDIT) {
+        var delBtn = document.createElement('button');
+        delBtn.className = 'ls27-del';
+        delBtn.setAttribute('data-builder-only', '');
+        delBtn.contentEditable = 'false';
+        delBtn.innerHTML = '&times;';
+        delBtn.title = 'Remove panel';
+        delBtn.addEventListener('click', function (e) {
+          if (window.PB_READONLY) return;
+          e.stopPropagation();
+          if (!confirm('Remove "' + item.label + '"?')) return;
+          config.splice(arrayIdx, 1);
+          currentIdx = -1;
+          renderSelector();
+          persistConfig();
+        });
+        btn.appendChild(delBtn);
+      }
+
+      /* Button click — toggle carousel or return to default */
+      btn.addEventListener('click', function () {
+        if (window.PB_READONLY === undefined && document.activeElement && document.activeElement.isContentEditable) return;
+        showSlot(arrayIdx);
+        if (window.Track) { Track.click(slideId, item.label); }
+      });
+
+      return btn;
+    }
+
+    /* ── Render the full selector strip ── */
+    function renderSelector() {
+      selector.innerHTML = '';
+
+      config.forEach(function (item, idx) {
+        selector.appendChild(makeBtn(item, idx));
+      });
+
+      /* Add button — edit mode, max 8 items */
+      if (EDIT && config.length < 8) {
+        var addBtn = document.createElement('button');
+        addBtn.className = 'ls27-btn ls27-add-btn';
+        addBtn.setAttribute('data-builder-only', '');
+        addBtn.title = 'Add panel';
+
+        var addIcon = document.createElement('div');
+        addIcon.className = 'ls27-add-icon';
+        addIcon.textContent = '+';
+        addBtn.appendChild(addIcon);
+
+        var addLabel = document.createElement('span');
+        addLabel.className = 'ls27-label';
+        addLabel.textContent = 'Add';
+        addBtn.appendChild(addLabel);
+
+        addBtn.addEventListener('click', function () {
+          if (window.PB_READONLY) return;
+          if (config.length >= 8) return;
+          /* Find lowest id 0–7 not already in use */
+          var usedIds = {};
+          config.forEach(function (c) { usedIds[c.id] = true; });
+          var nextId = -1;
+          for (var i = 0; i < 8; i++) {
+            if (!usedIds[i]) { nextId = i; break; }
+          }
+          if (nextId === -1) return;
+          config.push({ id: nextId, label: 'Topic ' + (config.length + 1), icon: null, carHtml: EMPTY_TRACK });
+          renderSelector();
+          persistConfig();
+        });
+
+        selector.appendChild(addBtn);
+      }
+
+      showDefault();
+    }
+
+    /* ── Find the static carousel slot by config item id ── */
+    function findCarSlot(itemId) {
+      return root.querySelector('.ls27-car[data-slot="' + itemId + '"]');
+    }
+
+    /* ── Show default carousel ── */
+    function showDefault() {
+      root.querySelectorAll('.ls27-car').forEach(function (c) { c.style.display = 'none'; });
+      carDefault.style.display = '';
+      currentIdx = -1;
+      updateBtnStates();
+    }
+
+    /* ── Show a slot carousel (or toggle back to default) ── */
+    function showSlot(arrayIdx) {
+      if (arrayIdx === currentIdx) {
+        showDefault();
+        return;
+      }
+      /* Hide previously active slot */
+      if (currentIdx >= 0 && config[currentIdx]) {
+        var prev = findCarSlot(config[currentIdx].id);
+        if (prev) prev.style.display = 'none';
+      }
+      carDefault.style.display = 'none';
+      currentIdx = arrayIdx;
+      var item = config[arrayIdx];
+      if (!item) return;
+      var car = findCarSlot(item.id);
+      if (car) {
+        car.style.display = '';
+        if (car._lsCarouselInit) {
+          if (car._lsGoTo) car._lsGoTo(0);
+        } else {
+          if (window.Carousel) Carousel.init(car.parentElement || root);
+          if (window.Lightbox) Lightbox.init(car);
+        }
+      }
+      updateBtnStates();
+    }
+
+    /* ── Sync active class on buttons ── */
+    function updateBtnStates() {
+      var btns = selector.querySelectorAll('.ls27-btn:not(.ls27-add-btn)');
+      btns.forEach(function (btn, i) {
+        btn.classList.toggle('active', i === currentIdx);
+      });
+    }
+
+    /* ── Restore saved carousel HTML from config into static slots ── */
+    function applyCarouselsFromConfig() {
+      config.forEach(function (item) {
+        if (!item.carHtml) return;
+        var car = findCarSlot(item.id);
+        if (car) { car.innerHTML = item.carHtml; }
+      });
+    }
+
+    /* ── Capture carousel saves in capture phase so config stays in sync ── */
+    document.addEventListener('slide-carousel-save', function (e) {
+      var detail = e.detail || {};
+      var match  = (detail.editKey || '').match(/^ls27-car-(\d+)$/);
+      if (!match) return;
+      var slotId = parseInt(match[1], 10);
+      var idx    = -1;
+      for (var i = 0; i < config.length; i++) {
+        if (config[i].id === slotId) { idx = i; break; }
+      }
+      if (idx < 0) return;
+      var car = root.querySelector('.ls27-car[data-slot="' + slotId + '"]');
+      if (!car) return;
+      var track = car.querySelector('.ls-carousel-track');
+      if (!track) return;
+      var cl = track.cloneNode(true);
+      cl.querySelectorAll('[data-builder-only]').forEach(function (n) { n.remove(); });
+      cl.querySelectorAll('[data-zoom-init]').forEach(function (n) { n.removeAttribute('data-zoom-init'); });
+      cl.querySelectorAll('.ls-carousel-counter,.ls-carousel-btn,.ls-carousel-add,.ls-carousel-del').forEach(function (n) { n.remove(); });
+      cl.style.transform = '';
+      config[idx].carHtml = cl.outerHTML;
+      if (configEl) { configEl.textContent = JSON.stringify(config); }
+    }, true);
+
+    /* ── Init ── */
+    loadConfig();
+    applyCarouselsFromConfig();
+    renderSelector();
+
+    setTimeout(function () { if (window.PE && slide) { PE.initSlide(slide); } }, 0);
+  })();
+  </script>
+
+</div>
