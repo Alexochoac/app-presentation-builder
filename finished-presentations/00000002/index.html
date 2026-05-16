@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>1</title>
+  <title>8</title>
   <style>
 /*
   Presentation Builder — Softsolution
@@ -155,6 +155,8 @@ body {
 [data-edit][contenteditable] { cursor:text; border-radius:4px; transition:outline .15s, background .15s; outline:1px solid transparent; }
 [data-edit][contenteditable]:hover { outline:1px dashed rgba(245,166,35,.35); background:rgba(245,166,35,.04); }
 [data-edit][contenteditable]:focus { outline:1px solid rgba(245,166,35,.65); background:rgba(245,166,35,.06); }
+/* slide-title uses background-clip:text — cancel gradient-as-color on focus so text stays readable */
+.slide-title[contenteditable]:focus { -webkit-text-fill-color:var(--text); background:rgba(245,166,35,.06); }
 .divider { width:36px; height:3px; background:linear-gradient(90deg,var(--accent),var(--accent-light)); border-radius:2px; margin:0 auto 24px; }
 
 h1.slide-title {
@@ -470,17 +472,17 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   </style>
   <script defer src="https://umami.wbtm.io/script.js" data-website-id="306f3c58-2e8f-487c-b68f-e53f3b2a0b5d"></script>
 </head>
-<body data-default-lang="en" data-pres-id="00000002">
+<body>
 <div id="fp-shell">
   <div id="fp-header">
     <a href="/" id="fp-dash-btn">&#8592; Dashboard</a>
     <div style="width:1px;height:20px;background:#333;flex-shrink:0;"></div>
     <button class="fp-nav-btn" id="fp-prev" disabled>&#8249;</button>
-    <div id="fp-counter">1 / 1</div>
-    <button class="fp-nav-btn" id="fp-next" disabled>&#8250;</button>
-    <div id="fp-lang-drop"><button id="fp-lang-btn" onclick="fpLangToggle()"><span id="fp-lang-label">EN</span><svg width="8" height="8" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg></button><div id="fp-lang-menu"><button data-lang="en" onclick="fpLangSelect('en')">EN — English</button><button data-lang="es" onclick="fpLangSelect('es')">ES — Español</button></div></div>
+    <div id="fp-counter">1 / 2</div>
+    <button class="fp-nav-btn" id="fp-next">&#8250;</button>
+
     <div id="fp-header-spacer"></div>
-    <div id="fp-title">1</div>
+    <div id="fp-title">8</div>
     <button class="fp-share-btn" id="fp-share-btn-hdr" title="Share presentation"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
   </div>
   <div id="fp-viewer">
@@ -491,9 +493,9 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
   <div class="slide-layout">
   <header class="slide-head">
-    <div class="section-label" data-edit="section-label" data-lang-key="ls20-multi-buttons.section-label"><span data-lang="en">Surface Quality</span><span data-lang="es" hidden="">Surface Quality</span></div>
-    <h1 class="slide-title" data-edit="headline" data-lang-key="ls20-multi-buttons.headline"><span data-lang="en">Defect detection with <span class="blue">Artificial Intelligence</span></span><span data-lang="es" hidden="">Defect detection with <span class="blue">Artificial Intelligence</span></span></h1>
-    <p class="slide-subtitle" data-edit="subtitle" data-lang-key="ls20-multi-buttons.subtitle"><span data-lang="en">Neural network trained to automatically classify every defect type.</span><span data-lang="es" hidden="">Neural network trained to automatically classify every defect type.</span></p>
+    <div class="section-label" data-edit="section-label" data-lang-key="ls20-multi-buttons.section-label">Surface Quality</div>
+    <h1 class="slide-title" data-edit="headline" data-lang-key="ls20-multi-buttons.headline">Defect detection with <span class="blue">Artificial Intelligence</span></h1>
+    <p class="slide-subtitle" data-edit="subtitle" data-lang-key="ls20-multi-buttons.subtitle">Neural network trained to automatically classify every defect type.</p>
   </header>
 
   <div class="slide-body">
@@ -503,7 +505,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
       contenteditable so it's picked up by the standard focusout→save pipeline.
       Rendered visually invisible; the JS reads/writes textContent.
     -->
-    <div id="ls20-config" data-edit="ls20-config" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;left:-9999px;top:0;"><span data-lang="en">[{"id":"item-0","label":"Button 1","spriteRow":0,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect-of-a-Coating-image-LineScanner-Raw-Image.png\" alt=\"Defect-of-a-Coating-image-LineScanner-Raw-Image\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect-of-a-Coating-image-LineScanner-Raw-Image&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"},{"id":"item-1","label":"Button 2","spriteRow":1,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect-Piece-Edge-Chip-2.PNG\" alt=\"Defect-Piece-Edge-Chip-2\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect-Piece-Edge-Chip-2&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"},{"id":"item-2","label":"Button 3","spriteRow":2,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect of a Coating Defect LineScanner Raw Image.png\" alt=\"Defect of a Coating Defect LineScanner Raw Image\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect of a Coating Defect LineScanner Raw Image&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"}]</span><span data-lang="es" hidden="">[{"id":"item-0","label":"Button 1","spriteRow":0,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect-of-a-Coating-image-LineScanner-Raw-Image.png\" alt=\"Defect-of-a-Coating-image-LineScanner-Raw-Image\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect-of-a-Coating-image-LineScanner-Raw-Image&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"},{"id":"item-1","label":"Button 2","spriteRow":1,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect-Piece-Edge-Chip-2.PNG\" alt=\"Defect-Piece-Edge-Chip-2\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect-Piece-Edge-Chip-2&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"},{"id":"item-2","label":"Button 3","spriteRow":2,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect of a Coating Defect LineScanner Raw Image.png\" alt=\"Defect of a Coating Defect LineScanner Raw Image\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect of a Coating Defect LineScanner Raw Image&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"}]</span></div>
+    <div id="ls20-config" data-edit="ls20-config" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;left:-9999px;top:0;">[{"id":"item-0","label":"Button 1","spriteRow":0,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect-of-a-Coating-image-LineScanner-Raw-Image.png\" alt=\"Defect-of-a-Coating-image-LineScanner-Raw-Image\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect-of-a-Coating-image-LineScanner-Raw-Image&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"},{"id":"item-1","label":"Button 2","spriteRow":1,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect-Piece-Edge-Chip-2.PNG\" alt=\"Defect-Piece-Edge-Chip-2\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect-Piece-Edge-Chip-2&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"},{"id":"item-2","label":"Button 3","spriteRow":2,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect of a Coating Defect LineScanner Raw Image.png\" alt=\"Defect of a Coating Defect LineScanner Raw Image\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect of a Coating Defect LineScanner Raw Image&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"}]</div>
 
     <!-- Button selector strip — populated by JS -->
     <div class="ls20-mb-selector anim-in" id="ls20-selector"></div>
@@ -923,6 +925,52 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
 </div>
 </div>
+<div class="fp-slide" data-slide-index="1" style="display:none;">
+<div class="slide content ls24-test-simple" data-slide="test-simple-carousel-3" data-slide-mode="sequence">
+
+  <div class="slide-logo-row" data-edit="logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></div>
+
+  <div class="slide-layout">
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label" data-lang-key="ls24-test-simple.section-label">Section Label</div>
+      <h1 class="slide-title" data-edit="headline" data-lang-key="ls24-test-simple.headline">Your Headline Goes Here</h1>
+      <p class="slide-subtitle" data-edit="subtitle" data-lang-key="ls24-test-simple.subtitle">A short supporting sentence that describes this slide.</p>
+    </header>
+
+    <div class="slide-body">
+      <div class="ls-carousel" data-edit="main-carousel" data-counter="" data-autoplay="4000" style="flex:1;min-height:0;width:100%;max-width:960px;"><div class="ls-carousel-track" style="transform: translateX(-960px);">
+          
+          
+        <div class="ls-carousel-slide"><img src="../shared/16_bit_tech.jpg" alt="16 bit tech" data-zoom=""></div><div class="ls-carousel-slide ls-compare ls-reveal" data-compare-mode="reveal"><img src="../shared/CulletScanner-Benefits.jpg" alt="CulletScanner-Benefits" data-zoom="" class="ls-cmp-left"><img src="../shared/Band_Conveyor_Picture.jpg" alt="Band Conveyor Picture" class="ls-cmp-right" data-zoom=""></div></div></div>
+    </div>
+  </div>
+
+  <style>
+    .ls24-test-simple { }
+    .ls24-test-simple .slide-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+    }
+    @media(min-width:769px) {
+      .ls24-test-simple .slide-body { padding: 0 80px; }
+    }
+  </style>
+
+  <script>
+  (function () {
+    var slide   = document.currentScript.closest('[data-slide]');
+    var slideId = slide ? slide.dataset.slide : 'ls24-test-simple';
+
+    setTimeout(function () { if (window.PE && slide) PE.initSlide(slide); }, 0);
+  })();
+  </script>
+
+</div>
+</div>
 
     </div>
   </div>
@@ -931,6 +979,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
       <div id="fp-nav-menu">
         <div class="fp-nm-section">Slides</div>
         <button class="fp-nm-item fp-nm-active" data-main="0">Multi-buttons New</button>
+        <button class="fp-nm-item" data-main="1">Test — Simple (Carousel) 3</button>
 
       </div>
       <button id="fp-nav-menu-btn" title="Slide navigation"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
@@ -940,7 +989,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   </div>
 </div>
 <button class="fp-side-arrow" id="fp-arrow-prev" disabled>&#8249;</button>
-<button class="fp-side-arrow" id="fp-arrow-next" disabled>&#8250;</button>
+<button class="fp-side-arrow" id="fp-arrow-next">&#8250;</button>
 <div id="fp-share-overlay">
   <div id="fp-share-modal">
     <h3>Share this presentation</h3>
@@ -1063,7 +1112,7 @@ window.Carousel = (function () {
       /* ── Compare slide base ── */
       '.ls-compare{overflow:hidden;}',
       '.ls-cmp-side{position:absolute;top:0;bottom:0;overflow:hidden;}',
-      '.ls-cmp-side img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;}',
+      '.ls-cmp-side img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}',
 
       /* ── Split mode ── */
       '.ls-compare.ls-split .ls-cmp-side-left{left:0;right:50.1%;}',
@@ -1072,7 +1121,7 @@ window.Carousel = (function () {
 
       /* ── Reveal mode ── */
       '.ls-compare.ls-reveal .ls-cmp-side-left{left:0;right:0;}',
-      '.ls-compare.ls-reveal .ls-cmp-side-right{left:0;right:0;clip-path:inset(0 50% 0 0);}',
+      '.ls-compare.ls-reveal .ls-cmp-side-right{left:0;right:0;clip-path:inset(0 0 0 50%);}',
       '.ls-cmp-handle{position:absolute;top:0;bottom:0;left:50%;width:4px;background:#fff;transform:translateX(-50%);cursor:ew-resize;z-index:10;box-shadow:0 0 10px rgba(0,0,0,.5);touch-action:none;}',
       '.ls-cmp-handle-grip{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:32px;height:32px;border-radius:50%;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:13px;color:#333;user-select:none;pointer-events:none;}',
 
@@ -1141,6 +1190,7 @@ window.Carousel = (function () {
     var showCounter = el.hasAttribute('data-counter') && el.getAttribute('data-counter') !== 'false';
     var idx         = 0;
     var timer       = null;
+    var isHovered   = false;
 
     if (!track) return;
 
@@ -1155,8 +1205,18 @@ window.Carousel = (function () {
     nextBtn.setAttribute('data-builder-only', '');
     nextBtn.textContent = '›';
 
-    // Remove any stale nav/add buttons left over from saved HTML before adding fresh ones
-    el.querySelectorAll('.ls-carousel-prev, .ls-carousel-next, .ls-carousel-add').forEach(function (n) { n.remove(); });
+    // Remove any stale controls left over from saved HTML before adding fresh ones
+    el.querySelectorAll('.ls-carousel-prev, .ls-carousel-next, .ls-carousel-add, .ls-carousel-del, .ls-carousel-move, .ls-cmp-enter, .ls-cmp-exit, .ls-cmp-mode-btn, .ls-cmp-replace').forEach(function (n) { n.remove(); });
+
+    // Unwrap any pre-built compare UI back to flat imgs — prevents duplicate handles on re-init
+    el.querySelectorAll('.ls-carousel-slide.ls-compare').forEach(function (s) {
+      var li = s.querySelector('img.ls-cmp-left');
+      var ri = s.querySelector('img.ls-cmp-right');
+      s.innerHTML = '';
+      s._lsCmpBuilt = false;
+      if (li) { li.className = 'ls-cmp-left';  s.appendChild(li); }
+      if (ri) { ri.className = 'ls-cmp-right'; s.appendChild(ri); }
+    });
 
     // ── Counter (optional) ──────────────────────────────────────────────────
     // Remove any stale counter divs left over from saved HTML before adding a fresh one
@@ -1257,7 +1317,7 @@ window.Carousel = (function () {
 
     function resetTimer() {
       clearInterval(timer);
-      if (autoplayMs > 0) {
+      if (autoplayMs > 0 && !isHovered) {
         timer = setInterval(function () {
           var slides = getSlides();
           goTo(idx >= slides.length - 1 ? 0 : idx + 1);
@@ -1522,11 +1582,16 @@ window.Carousel = (function () {
 
       function setReveal(pct) {
         revealPct = Math.max(5, Math.min(95, pct));
-        rightSide.style.clipPath = 'inset(0 ' + (100 - revealPct) + '% 0 0)';
+        rightSide.style.clipPath = 'inset(0 0 0 ' + revealPct + '%)';
         handle.style.left = revealPct + '%';
       }
 
-      handle.addEventListener('mousedown',  function (e) { e.stopPropagation(); dragging = true; });
+      // Click once to lock handle to mouse, click again to release (touch still uses hold-and-drag)
+      handle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        dragging = !dragging;
+        handle.style.cursor = dragging ? 'none' : 'ew-resize';
+      });
       handle.addEventListener('touchstart', function (e) { e.stopPropagation(); dragging = true; }, { passive: true });
       document.addEventListener('mousemove', function (e) {
         if (!dragging) return;
@@ -1538,7 +1603,6 @@ window.Carousel = (function () {
         var r = slide.getBoundingClientRect();
         setReveal(((e.touches[0].clientX - r.left) / r.width) * 100);
       }, { passive: true });
-      document.addEventListener('mouseup',  function () { dragging = false; });
       document.addEventListener('touchend', function () { dragging = false; });
 
       // ── Mode toggle button (builder-only) ─────────────────────────────────
@@ -1555,7 +1619,8 @@ window.Carousel = (function () {
           divider.style.display = m === 'split'  ? '' : 'none';
           handle.style.display  = m === 'reveal' ? '' : 'none';
           modeBtn.textContent   = m === 'split'  ? '⇔ Switch to Reveal' : '⇔ Switch to Split';
-          if (m === 'reveal') setReveal(50);
+          if (m === 'reveal') { setReveal(50); }
+          else { rightSide.style.clipPath = ''; }
           saveCarousel();
         }
 
@@ -1648,11 +1713,9 @@ window.Carousel = (function () {
       }
     });
 
-    // ── Pause autoplay on hover (builder only — not in readonly/viewer) ────
-    if (!window.PB_READONLY) {
-      el.addEventListener('mouseenter', function () { clearInterval(timer); });
-      el.addEventListener('mouseleave', resetTimer);
-    }
+    // ── Pause autoplay on hover (all modes — don't advance while user is looking) ────
+    el.addEventListener('mouseenter', function () { isHovered = true; clearInterval(timer); });
+    el.addEventListener('mouseleave', function () { isHovered = false; resetTimer(); });
 
     // ── Touch swipe ─────────────────────────────────────────────────────────
     var touchX = 0;
@@ -3043,7 +3106,7 @@ window.Track = (function () {
 (function () {
   var mainSlides = document.querySelectorAll(".fp-slide:not(.fp-optional)");
   var optSlides  = document.querySelectorAll(".fp-slide.fp-optional");
-  var mainNames  = ["Multi-buttons New"];
+  var mainNames  = ["Multi-buttons New","Test — Simple (Carousel) 3"];
   var optNames   = [];
   var total      = mainSlides.length;
   var idx        = 0;
