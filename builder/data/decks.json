@@ -6,40 +6,57 @@
       "name": "SoftSolution",
       "theme": "dark",
       "createdAt": "2026-05-09T00:00:00.000Z",
-      "updatedAt": "2026-05-10T12:05:53.083Z",
+      "updatedAt": "2026-05-15T14:08:28.849Z",
+      "logo": "/slides/uploads/LOGO-Softsolution-Black.jpg",
+      "heroBg": "/slides/uploads/Panther_Eye.jpeg",
+      "heroBgFocal": "25% 50%",
+      "colors": {
+        "primary": "#d0500b"
+      },
+      "heroBgFocalGrid": 5,
+      "heroBgFit": "cover"
+    },
+    {
+      "id": "deck-1778869312222-udndh",
+      "name": "Test",
+      "theme": "dark",
+      "createdAt": "2026-05-15T18:21:52.222Z",
+      "updatedAt": "2026-05-15T19:57:07.152Z",
       "logo": "/slides/uploads/LOGO_Softsolution_Black.jpg",
       "heroBg": "/slides/uploads/Panther_Eye.jpeg",
       "heroBgFocal": "25% 50%",
       "colors": {
         "primary": "#F5A623"
+      }
+    },
+    {
+      "id": "deck-1778880857630-ppqka",
+      "name": "TEST",
+      "theme": "dark",
+      "createdAt": "2026-05-15T21:34:17.630Z",
+      "updatedAt": "2026-05-16T14:57:49.008Z",
+      "logo": "/slides/uploads/LOGO_Benteler.jpg",
+      "heroBg": "/slides/uploads/Panther_SoftSolution.PNG",
+      "heroBgFocal": "25% 25%",
+      "colors": {
+        "primary": "#F5A623"
       },
+      "heroBgFit": "cover",
       "heroBgFocalGrid": 5
     },
     {
-      "id": "deck-1778395362103-u3os0",
-      "name": "Benteler",
-      "theme": "light",
-      "createdAt": "2026-05-10T06:42:42.103Z",
-      "updatedAt": "2026-05-10T12:18:18.601Z",
-      "logo": "/slides/uploads/LOGO_Benteler.jpg",
-      "heroBg": "/slides/uploads/Benteler_Conveyor_Picture_.jpg",
-      "heroBgFocal": "50% 50%",
-      "colors": {
-        "primary": "#022952"
-      }
-    },
-    {
-      "id": "deck-1778751042387-0rk26",
-      "name": "Alex Ochoa",
-      "theme": "light",
-      "createdAt": "2026-05-14T09:30:42.387Z",
-      "updatedAt": "2026-05-14T09:31:01.749Z",
-      "logo": "/slides/uploads/LOGO_TEST.png",
+      "id": "deck-1778938499502-go8vi",
+      "name": "New",
+      "theme": "dark",
+      "createdAt": "2026-05-16T13:34:59.501Z",
+      "updatedAt": "2026-05-16T14:59:01.456Z",
+      "logo": null,
       "heroBg": null,
-      "heroBgFocal": "50% 50%",
+      "heroBgFocal": "25% 0%",
       "colors": {
         "primary": "#F5A623"
-      }
+      },
+      "heroBgFocalGrid": 5
     }
   ]
 }

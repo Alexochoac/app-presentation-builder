@@ -2,12 +2,12 @@
   "title": "GlassQuality",
   "slides": [
     {
-      "id": "deck-lib-cover-1775977704536",
+      "id": "deck-lib-1778854157322-1778854164717",
       "visible": true,
-      "librarySlideId": "lib-cover"
+      "librarySlideId": "lib-1778854157322"
     },
     {
-      "id": "deck-company",
+      "id": "deck-lib-company-1778837870406",
       "visible": true,
       "librarySlideId": "lib-company"
     },
@@ -30,6 +30,11 @@
       "id": "deck-lib-1777096783950-1777096961176",
       "visible": true,
       "librarySlideId": "lib-1777096783950"
+    },
+    {
+      "id": "deck-lib-1778837645228-1778837655832",
+      "visible": true,
+      "librarySlideId": "lib-1778837645228"
     },
     {
       "id": "deck-surface",

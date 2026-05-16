@@ -33,11 +33,11 @@
   <script>
   (function () {
     var slide   = document.currentScript.closest('[data-slide]');
-    var slideId = Track.slideId(slide);
+    var slideId = slide ? slide.dataset.slide : '';
     var btnWa    = slide.querySelector('.cta-btn-wa');
     var btnEmail = slide.querySelector('.cta-btn-email');
-    if (btnWa)    btnWa.addEventListener('click', function () { Track.click(slideId, 'whatsapp'); });
-    if (btnEmail) btnEmail.addEventListener('click', function () { Track.click(slideId, 'email'); });
+    if (btnWa)    btnWa.addEventListener('click', function () { if (window.umami) umami.track(slideId, { component: 'cta', label: 'whatsapp', action: 'click' }); });
+    if (btnEmail) btnEmail.addEventListener('click', function () { if (window.umami) umami.track(slideId, { component: 'cta', label: 'email', action: 'click' }); });
     setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
   })();
   </script>

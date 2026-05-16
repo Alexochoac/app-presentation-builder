@@ -22,7 +22,7 @@
  *
  * Builder features (data-builder-only, stripped in final output):
  *   - Double-click a tab label to rename it
- *   - ✕ button on each tab to delete it (hidden when only 1 tab)
+ *   - x button on each tab to delete it (hidden when only 1 tab)
  *   - "+ Tab" button to add a new empty tab
  *
  * Usage:
@@ -31,7 +31,7 @@
 
 window.Tabs = (function () {
 
-  // ── Inject component styles ────────────────────────────────────────────────
+  // Inject component styles
   (function injectStyle() {
     if (document.getElementById('ls-tabs-styles')) return;
     var style = document.createElement('style');
@@ -67,7 +67,7 @@ window.Tabs = (function () {
     document.head.appendChild(style);
   })();
 
-  // ── Init a single tabs element ─────────────────────────────────────────────
+  // Init a single tabs element
   function initOne(el) {
     if (el._lsTabsInit) return;
     el._lsTabsInit = true;
@@ -79,7 +79,7 @@ window.Tabs = (function () {
     var panelsEl  = el.querySelector('.ls-tab-panels');
     if (!tabList || !panelsEl) return;
 
-    // ── Helpers ──────────────────────────────────────────────────────────────
+    // Helpers
 
     function getTabs()   { return Array.from(tabList.querySelectorAll('.ls-tab:not(.ls-tab-add)')); }
     function getPanels() { return Array.from(panelsEl.querySelectorAll('.ls-tab-panel')); }
@@ -115,7 +115,7 @@ window.Tabs = (function () {
       return String(ids.length ? Math.max.apply(null, ids) + 1 : 0);
     }
 
-    // ── Wire delete button on a tab ──────────────────────────────────────────
+    // Wire delete button on a tab
     function addDelBtn(tabBtn) {
       if (tabBtn.querySelector('.ls-tab-del')) return;
       var del = document.createElement('button');
@@ -144,7 +144,7 @@ window.Tabs = (function () {
       tabBtn.appendChild(del);
     }
 
-    // ── Show/hide delete buttons (hide when only 1 tab) ──────────────────────
+    // Show/hide delete buttons (hide when only 1 tab)
     function updateDelBtns() {
       var tabs = getTabs();
       tabs.forEach(function (t) {
@@ -154,57 +154,82 @@ window.Tabs = (function () {
       });
     }
 
-    // ── Wire rename ──────────────────────────────────────────────────────────
-    // Buttons with contenteditable="" are natively single-click editable —
-    // skip dblclick and don't reset the attribute on blur.
+    // Wire rename via floating input overlay — avoids contenteditable parent conflicts
+    // (.ls-tabs has data-edit so applyEditsToHtml adds contenteditable="" to the parent,
+    // which breaks the old approach of setting contentEditable='true' on the button itself)
     function wireRename(tabBtn) {
       if (tabBtn._lsRenameWired) return;
       tabBtn._lsRenameWired = true;
-      var nativelyEditable = tabBtn.getAttribute('contenteditable') === '';
 
-      if (!nativelyEditable) {
-        tabBtn.addEventListener('dblclick', function (e) {
-          e.stopPropagation();
-          var del = tabBtn.querySelector('.ls-tab-del');
-          if (del) del.style.opacity = '0';
-          tabBtn.contentEditable = 'true';
-          tabBtn.focus();
-          var range = document.createRange();
-          range.selectNodeContents(tabBtn);
-          var sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(range);
+      tabBtn.addEventListener('dblclick', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        // Read current label (text nodes only, skip del button child)
+        var currentText = '';
+        tabBtn.childNodes.forEach(function (n) {
+          if (n.nodeType === Node.TEXT_NODE) currentText += n.textContent;
         });
-      }
+        currentText = currentText.trim();
 
-      tabBtn.addEventListener('blur', function () {
-        if (!nativelyEditable) tabBtn.contentEditable = 'false';
-        var del = tabBtn.querySelector('.ls-tab-del');
-        if (del) del.style.opacity = '';
-        saveTabs();
-      });
-      tabBtn.addEventListener('keydown', function (e) {
-        if (!tabBtn.isContentEditable) return;
-        e.stopPropagation(); // prevent slide navigation from stealing keys
-        if (e.key === 'Enter') { e.preventDefault(); tabBtn.blur(); }
-        if (e.key === 'Escape') { e.preventDefault(); tabBtn.blur(); }
-        if (e.key === ' ') {
-          // buttons swallow space (activation key); insert manually
-          e.preventDefault();
-          var sel = window.getSelection();
-          if (sel && sel.rangeCount) {
-            var range = sel.getRangeAt(0);
-            range.deleteContents();
-            range.insertNode(document.createTextNode(' '));
-            range.collapse(false);
-            sel.removeAllRanges();
-            sel.addRange(range);
-          }
+        // Float an <input> exactly over the tab button
+        var rect = tabBtn.getBoundingClientRect();
+        var inp = document.createElement('input');
+        inp.type = 'text';
+        inp.value = currentText;
+        inp.style.cssText = [
+          'position:fixed',
+          'top:' + rect.top + 'px',
+          'left:' + rect.left + 'px',
+          'width:' + rect.width + 'px',
+          'height:' + rect.height + 'px',
+          'box-sizing:border-box',
+          'padding:0 20px',
+          'text-align:center',
+          'border:2px solid #E8711A',
+          'border-radius:100px',
+          'background:#111',
+          'color:#E8711A',
+          'font-size:12px',
+          'font-weight:600',
+          'font-family:inherit',
+          'outline:none',
+          'z-index:9999',
+        ].join(';');
+        document.body.appendChild(inp);
+        tabBtn.style.color = 'transparent'; // hide underlying text while input is open
+        inp.focus();
+        inp.select();
+
+        var done = false;
+        function commit() {
+          if (done) return;
+          done = true;
+          var newText = inp.value.trim() || currentText;
+          // Replace text node(s), preserving the del button child
+          var toRemove = [];
+          tabBtn.childNodes.forEach(function (n) {
+            if (n.nodeType === Node.TEXT_NODE) toRemove.push(n);
+          });
+          toRemove.forEach(function (n) { n.remove(); });
+          tabBtn.insertBefore(document.createTextNode(newText), tabBtn.firstChild);
+          tabBtn.style.color = ''; // restore
+          inp.remove();
+          saveTabs();
         }
+
+        inp.addEventListener('blur', commit);
+        inp.addEventListener('keydown', function (ev) {
+          ev.stopPropagation();
+          if (ev.key === 'Enter' || ev.key === 'Escape') {
+            ev.preventDefault();
+            commit();
+          }
+        });
       });
     }
 
-    // ── Wire click on a tab ──────────────────────────────────────────────────
+    // Wire click on a tab
     function wireTab(tabBtn) {
       if (!window.PB_READONLY) {
         addDelBtn(tabBtn);
@@ -213,13 +238,13 @@ window.Tabs = (function () {
       if (tabBtn._lsClickWired) return;
       tabBtn._lsClickWired = true;
       tabBtn.addEventListener('click', function (e) {
-        // Ignore clicks on child buttons (del)
-        if (e.target !== tabBtn) return;
+        // Ignore clicks on the delete button; allow clicks on text/spans inside the tab
+        if (e.target.closest && e.target.closest('.ls-tab-del')) return;
         switchTo(tabBtn.dataset.panel);
       });
     }
 
-    // ── "+ Tab" button ───────────────────────────────────────────────────────
+    // "+ Tab" button
     if (!window.PB_READONLY) {
       var addBtn = document.createElement('button');
       addBtn.className = 'ls-tab-add';
@@ -261,7 +286,7 @@ window.Tabs = (function () {
       tabList.appendChild(addBtn);
     }
 
-    // ── Init existing tabs + panels ──────────────────────────────────────────
+    // Init existing tabs + panels
     getTabs().forEach(wireTab);
     if (!window.PB_READONLY) updateDelBtns();
 
@@ -280,7 +305,7 @@ window.Tabs = (function () {
     if (initPanel && window.Carousel) Carousel.init(initPanel);
   }
 
-  // ── Public API ─────────────────────────────────────────────────────────────
+  // Public API
 
   /**
    * Scan root element for .ls-tabs elements and initialise each.

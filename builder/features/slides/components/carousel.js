@@ -57,7 +57,7 @@ window.Carousel = (function () {
       /* ── Compare slide base ── */
       '.ls-compare{overflow:hidden;}',
       '.ls-cmp-side{position:absolute;top:0;bottom:0;overflow:hidden;}',
-      '.ls-cmp-side img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;}',
+      '.ls-cmp-side img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}',
 
       /* ── Split mode ── */
       '.ls-compare.ls-split .ls-cmp-side-left{left:0;right:50.1%;}',
@@ -66,7 +66,7 @@ window.Carousel = (function () {
 
       /* ── Reveal mode ── */
       '.ls-compare.ls-reveal .ls-cmp-side-left{left:0;right:0;}',
-      '.ls-compare.ls-reveal .ls-cmp-side-right{left:0;right:0;clip-path:inset(0 50% 0 0);}',
+      '.ls-compare.ls-reveal .ls-cmp-side-right{left:0;right:0;clip-path:inset(0 0 0 50%);}',
       '.ls-cmp-handle{position:absolute;top:0;bottom:0;left:50%;width:4px;background:#fff;transform:translateX(-50%);cursor:ew-resize;z-index:10;box-shadow:0 0 10px rgba(0,0,0,.5);touch-action:none;}',
       '.ls-cmp-handle-grip{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:32px;height:32px;border-radius:50%;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:13px;color:#333;user-select:none;pointer-events:none;}',
 
@@ -87,6 +87,12 @@ window.Carousel = (function () {
       '.ls-cmp-exit{position:absolute;top:8px;right:38px;padding:3px 8px;border-radius:20px;background:rgba(0,0,0,.6);border:1px solid rgba(255,100,100,.3);color:rgba(255,100,100,.65);font-size:10px;font-weight:700;letter-spacing:.04em;cursor:pointer;font-family:inherit;z-index:8;opacity:0;transition:opacity .2s;}',
       '.ls-compare:hover .ls-cmp-exit{opacity:1;}',
       '.ls-cmp-exit:hover{background:rgba(220,40,40,.3);}',
+
+      /* ── Empty / no-image placeholder ── */
+      '.ls-carousel-slide.no-img{background:rgba(255,255,255,.04);border:1.5px dashed rgba(255,255,255,.14);border-radius:8px;}',
+      '.ls-carousel-slide.no-img img{visibility:hidden;}',
+      '.ls-carousel-slide.no-img .ls-carousel-del{display:none!important;}',
+      '.ls-carousel-slide.no-img::after{content:"No image — use + Image to add";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:rgba(255,255,255,.25);font-size:11px;font-weight:600;letter-spacing:.06em;pointer-events:none;white-space:nowrap;}',
     ].join('');
     document.head.appendChild(style);
   })();
@@ -124,6 +130,8 @@ window.Carousel = (function () {
 
   function initOne(el) {
     if (el._lsCarouselInit) return;
+    // Defer if inside a hidden panel — Tabs.switchTo will call Carousel.init when panel becomes visible
+    if (!el.offsetWidth) return;
     el._lsCarouselInit = true;
 
     var track       = el.querySelector('.ls-carousel-track');
@@ -133,6 +141,7 @@ window.Carousel = (function () {
     var showCounter = el.hasAttribute('data-counter') && el.getAttribute('data-counter') !== 'false';
     var idx         = 0;
     var timer       = null;
+    var isHovered   = false;
 
     if (!track) return;
 
@@ -146,6 +155,19 @@ window.Carousel = (function () {
     nextBtn.className = 'ls-carousel-btn ls-carousel-next';
     nextBtn.setAttribute('data-builder-only', '');
     nextBtn.textContent = '›';
+
+    // Remove any stale controls left over from saved HTML before adding fresh ones
+    el.querySelectorAll('.ls-carousel-prev, .ls-carousel-next, .ls-carousel-add, .ls-carousel-del, .ls-carousel-move, .ls-cmp-enter, .ls-cmp-exit, .ls-cmp-mode-btn, .ls-cmp-replace').forEach(function (n) { n.remove(); });
+
+    // Unwrap any pre-built compare UI back to flat imgs — prevents duplicate handles on re-init
+    el.querySelectorAll('.ls-carousel-slide.ls-compare').forEach(function (s) {
+      var li = s.querySelector('img.ls-cmp-left');
+      var ri = s.querySelector('img.ls-cmp-right');
+      s.innerHTML = '';
+      s._lsCmpBuilt = false;
+      if (li) { li.className = 'ls-cmp-left';  s.appendChild(li); }
+      if (ri) { ri.className = 'ls-cmp-right'; s.appendChild(ri); }
+    });
 
     // ── Counter (optional) ──────────────────────────────────────────────────
     // Remove any stale counter divs left over from saved HTML before adding a fresh one
@@ -246,7 +268,7 @@ window.Carousel = (function () {
 
     function resetTimer() {
       clearInterval(timer);
-      if (autoplayMs > 0) {
+      if (autoplayMs > 0 && !isHovered) {
         timer = setInterval(function () {
           var slides = getSlides();
           goTo(idx >= slides.length - 1 ? 0 : idx + 1);
@@ -287,7 +309,26 @@ window.Carousel = (function () {
       del.addEventListener('click', function (e) {
         e.stopPropagation();
         var slides = getSlides();
-        if (slides.length <= 1) return;
+        if (slides.length <= 1) {
+          // Convert to empty placeholder instead of blocking deletion
+          slide.innerHTML = '';
+          slide.classList.remove('ls-compare', 'ls-split', 'ls-reveal');
+          slide.classList.add('no-img');
+          delete slide.dataset.compareMode;
+          slide._lsCmpBuilt = false;
+          var emptyImg = document.createElement('img');
+          emptyImg.setAttribute('src', '');
+          emptyImg.setAttribute('alt', '');
+          slide.appendChild(emptyImg);
+          if (!window.PB_READONLY) {
+            ensureDelBtn(slide);
+            ensureMoveButtons(slide);
+            ensureCompareBtn(slide);
+          }
+          updateNav();
+          saveCarousel();
+          return;
+        }
         var i = slides.indexOf(slide);
         slide.remove();
         goTo(Math.min(i, getSlides().length - 1));
@@ -511,11 +552,16 @@ window.Carousel = (function () {
 
       function setReveal(pct) {
         revealPct = Math.max(5, Math.min(95, pct));
-        rightSide.style.clipPath = 'inset(0 ' + (100 - revealPct) + '% 0 0)';
+        rightSide.style.clipPath = 'inset(0 0 0 ' + revealPct + '%)';
         handle.style.left = revealPct + '%';
       }
 
-      handle.addEventListener('mousedown',  function (e) { e.stopPropagation(); dragging = true; });
+      // Click once to lock handle to mouse, click again to release (touch still uses hold-and-drag)
+      handle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        dragging = !dragging;
+        handle.style.cursor = dragging ? 'none' : 'ew-resize';
+      });
       handle.addEventListener('touchstart', function (e) { e.stopPropagation(); dragging = true; }, { passive: true });
       document.addEventListener('mousemove', function (e) {
         if (!dragging) return;
@@ -527,7 +573,6 @@ window.Carousel = (function () {
         var r = slide.getBoundingClientRect();
         setReveal(((e.touches[0].clientX - r.left) / r.width) * 100);
       }, { passive: true });
-      document.addEventListener('mouseup',  function () { dragging = false; });
       document.addEventListener('touchend', function () { dragging = false; });
 
       // ── Mode toggle button (builder-only) ─────────────────────────────────
@@ -544,7 +589,8 @@ window.Carousel = (function () {
           divider.style.display = m === 'split'  ? '' : 'none';
           handle.style.display  = m === 'reveal' ? '' : 'none';
           modeBtn.textContent   = m === 'split'  ? '⇔ Switch to Reveal' : '⇔ Switch to Split';
-          if (m === 'reveal') setReveal(50);
+          if (m === 'reveal') { setReveal(50); }
+          else { rightSide.style.clipPath = ''; }
           saveCarousel();
         }
 
@@ -582,6 +628,11 @@ window.Carousel = (function () {
     // ── Init a single carousel slide ─────────────────────────────────────────
 
     function initSlide(slide) {
+      // Auto-mark slides whose only image has an empty src as no-img placeholders
+      if (!slide.classList.contains('ls-compare')) {
+        var img = slide.querySelector('img');
+        if (img && img.getAttribute('src') === '') slide.classList.add('no-img');
+      }
       if (!window.PB_READONLY) {
         ensureDelBtn(slide);
         ensureMoveButtons(slide);
@@ -637,11 +688,9 @@ window.Carousel = (function () {
       }
     });
 
-    // ── Pause autoplay on hover (builder only — not in readonly/viewer) ────
-    if (!window.PB_READONLY) {
-      el.addEventListener('mouseenter', function () { clearInterval(timer); });
-      el.addEventListener('mouseleave', resetTimer);
-    }
+    // ── Pause autoplay on hover (all modes — don't advance while user is looking) ────
+    el.addEventListener('mouseenter', function () { isHovered = true; clearInterval(timer); });
+    el.addEventListener('mouseleave', function () { isHovered = false; resetTimer(); });
 
     // ── Touch swipe ─────────────────────────────────────────────────────────
     var touchX = 0;
@@ -661,17 +710,31 @@ window.Carousel = (function () {
     if (!window.PB_READONLY) {
       addBtn.addEventListener('click', function () {
         pickImage(function (path, name) {
-          var slide = document.createElement('div');
-          slide.className = 'ls-carousel-slide';
-          var img = document.createElement('img');
-          img.src = path;
-          img.alt = name;
-          img.setAttribute('data-zoom', '');
-          slide.appendChild(img);
-          track.appendChild(slide);
-          initSlide(slide);
-          if (window.Lightbox) Lightbox.init(slide);
-          goTo(getSlides().length - 1);
+          var slides = getSlides();
+          var noImg = slides.length === 1 && slides[0].classList.contains('no-img') ? slides[0] : null;
+          if (noImg) {
+            // Replace placeholder in-place
+            noImg.innerHTML = '';
+            noImg.classList.remove('no-img');
+            var img = document.createElement('img');
+            img.src = path; img.alt = name;
+            img.setAttribute('data-zoom', '');
+            noImg.appendChild(img);
+            initSlide(noImg);
+            if (window.Lightbox) Lightbox.init(noImg);
+            goTo(0);
+          } else {
+            var slide = document.createElement('div');
+            slide.className = 'ls-carousel-slide';
+            var img = document.createElement('img');
+            img.src = path; img.alt = name;
+            img.setAttribute('data-zoom', '');
+            slide.appendChild(img);
+            track.appendChild(slide);
+            initSlide(slide);
+            if (window.Lightbox) Lightbox.init(slide);
+            goTo(getSlides().length - 1);
+          }
           updateNav();
           saveCarousel();
         });

@@ -1,0 +1,340 @@
+{
+  "languages": [
+    "en",
+    "es",
+    "it"
+  ],
+  "defaultLanguage": "en",
+  "slides": {
+    "lib-1778854288118": {
+      "headline": {
+        "es": {
+          "current": "Inspección de Calidad<br>para <span class=\"blue\">Vidrio Plano.</span>",
+          "previous": null,
+          "dirty": false
+        },
+        "en": "Quality Inspection<br>for <span class=\"blue\">Flat Glass.</span>",
+        "it": {
+          "current": "Ispezione della Qualità<br>per <span class=\"blue\">Vetro Piatto.</span>",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "stat-3-text": {
+        "es": {
+          "current": "Al ver lo que el ojo se pierde, previene costos no planificados antes de que el producto llegue a su cliente",
+          "previous": null,
+          "dirty": false
+        },
+        "en": "By seeing what the eye misses, you prevent unplanned costs before the product ever leaves to your customer",
+        "it": {
+          "current": "Vedendo ciò che l'occhio non percepisce, previeni i costi imprevisti prima che il prodotto raggiunga il tuo cliente",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "credit": {
+        "en": "by GlassQuality.com",
+        "es": {
+          "current": "por GlassQuality.com",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "di GlassQuality.com",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "badge": {
+        "en": "GlassQuality.com · LineScanner<span style=\"letter-spacing: 1.2px;\">· Osprey</span>",
+        "es": {
+          "current": "GlassQuality.com · LineScanner<span style=\"letter-spacing: 1.2px;\">· Osprey</span>",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "GlassQuality.com · LineScanner<span style=\"letter-spacing: 1.2px;\">· Osprey</span>",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "subheadline": {
+        "en": "Proposal for [Customer] · [Name], [Title]",
+        "es": {
+          "current": "Propuesta para [Cliente] · [Nombre], [Cargo]",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Proposta per [Cliente] · [Nome], [Titolo]",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "stat-1-label": {
+        "en": "Cost of Quality Defects",
+        "es": {
+          "current": "Costo de Defectos de Calidad",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Costo dei Difetti di Qualità",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "stat-1-number": {
+        "en": "Rule 1+10+100",
+        "es": {
+          "current": "Regla 1+10+100",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Regola 1+10+100",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "stat-1-text": {
+        "en": "Catching a defect early costs 1, while letting it reach the customer can cost 100 times more in replacements and recalls",
+        "es": {
+          "current": "Detectar un defecto temprano cuesta 1, mientras que dejar que llegue al cliente puede costar 100 veces más en reemplazos y retiros del mercado",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Rilevare un difetto precocemente costa 1, mentre permettere al cliente di riceverlo può costare 100 volte di più in sostituzioni e richiami",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "gallery-caption-1": {
+        "en": "Tempering Line",
+        "es": {
+          "current": "Línea de Templado",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Linea di Tempra",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "stat-4-label": {
+        "en": "Quality as a selling factor",
+        "es": {
+          "current": "Calidad como factor de venta",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "La Qualità come fattore di vendita",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "stat-4-number": {
+        "en": "CUSTOMER SATISFACTION",
+        "es": {
+          "current": "SATISFACCIÓN DEL CLIENTE",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "SODDISFAZIONE DEL CLIENTE",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "stat-4-text": {
+        "en": "A happy customer always buys more",
+        "es": {
+          "current": "Un cliente satisfecho siempre compra más",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Un cliente soddisfatto acquista sempre di più",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "gallery-caption-2": {
+        "en": "IG Line",
+        "es": {
+          "current": "Línea IG",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Linea IG",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "stat-2-label": {
+        "en": "The Human Limit",
+        "es": {
+          "current": "El Límite Humano",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Il Limite Umano",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "stat-2-number": {
+        "en": "Ghost Zone",
+        "es": {
+          "current": "Zona Fantasma",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Zona Fantasma",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "stat-2-text": {
+        "en": "Human inspectors lose nearly all accuracy once line speeds increases",
+        "es": {
+          "current": "Los inspectores humanos pierden casi toda precisión una vez que aumenta la velocidad de la línea",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Gli ispettori umani perdono quasi tutta la precisione quando la velocità della linea aumenta",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "gallery-caption-3": {
+        "en": "Automotive Printing Line",
+        "es": {
+          "current": "Línea de Impresión Automotriz",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Linea di Stampa Automotive",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "stat-3-label": {
+        "en": "Invisible Risks",
+        "es": {
+          "current": "Riesgos Invisibles",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Rischi Invisibili",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "stat-3-number": {
+        "en": "Anisotropy &amp; Distortion",
+        "es": {
+          "current": "Anisotropía y Distorsión",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Anisotropia e Distorsione",
+          "previous": null,
+          "dirty": false
+        }
+      }
+    },
+    "lib-1778918402151": {
+      "headline": {
+        "es": {
+          "current": "Prueba en <span class=\"blue\">Español</span>",
+          "previous": null,
+          "dirty": false
+        },
+        "en": "Test in <span class=\"blue\">Spanish</span>",
+        "it": {
+          "current": "Test in <span class=\"blue\">spagnolo</span>",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "subtitle": {
+        "es": {
+          "current": "Una oración de apoyo corta para esta diapositiva.",
+          "previous": "Una pequena frase que describa la diapositiva!.",
+          "dirty": false
+        },
+        "en": "A short supporting sentence that this slide.",
+        "it": {
+          "current": "Una breve frase di supporto per questa diapositiva.",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "section-label": {
+        "es": {
+          "current": "Etiqueta de Seccion",
+          "previous": null,
+          "dirty": false
+        },
+        "en": "Section Label!",
+        "it": {
+          "current": "Etichetta Sezione!",
+          "previous": null,
+          "dirty": false
+        }
+      }
+    },
+    "lib-company": {},
+    "lib-comparison": {},
+    "lib-capability": {},
+    "lib-technology": {},
+    "lib-surface": {},
+    "lib-dimension": {},
+    "lib-screenprint": {},
+    "lib-logo-check": {},
+    "lib-database": {},
+    "lib-sensitivity": {},
+    "lib-footprint": {},
+    "lib-integrations": {},
+    "lib-cta": {},
+    "lib-1777096783950": {},
+    "lib-1778837645228": {},
+    "lib-1778854157322": {},
+    "lib-1778854425735": {},
+    "lib-1778858254546": {},
+    "lib-1778858819387": {},
+    "lib-1778858829356": {},
+    "lib-1778858839031": {},
+    "lib-1778858844433": {},
+    "lib-1778858865813": {},
+    "lib-1778859001036": {},
+    "lib-1778859014268": {},
+    "lib-1778859031811": {},
+    "lib-1778859041105": {},
+    "lib-1778859078799": {},
+    "lib-1778859090175": {},
+    "lib-1778859113076": {},
+    "lib-1778859127441": {},
+    "lib-1778859142670": {},
+    "lib-1778859154990": {},
+    "lib-1778859170386": {},
+    "lib-1778912487594": {},
+    "lib-1778941011173": {}
+  },
+  "favorites": [
+    "es",
+    "it"
+  ]
+}

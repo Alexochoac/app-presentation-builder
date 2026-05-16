@@ -254,6 +254,9 @@
     .tc-cell-lang textarea.dirty { border-color:#F5A623 !important; }
     .tc-cell-lang textarea.missing { border-color:#f87171 !important; }
     .tc-field-key { color:rgba(255,255,255,.3);font-size:11px;font-family:monospace; }
+    .slide-logo-row img { height: 28px !important; }
+    .slide-logo-ls { height: 26px !important; }
+    .slide-logo-sep { height: 26px !important; }
   </style>
 </head>
 <body>
@@ -294,7 +297,7 @@
 
   <div class="slides-container" id="slidesContainer"></div>
   <div id="saveStatus"></div>
-  <div id="previewLangBanner">Previewing in <span id="previewLangBannerName"></span> — editing disabled</div>
+  <div id="previewLangBanner">Editing in <span id="previewLangBannerName"></span> — type directly into any field, changes auto-save</div>
 
   <!-- Translation settings modal -->
   <div id="translationSettingsModal" style="
@@ -321,11 +324,9 @@
 
       <p id="tsError" style="display:none;color:#f87171;font-size:12px;margin:8px 0 0;"></p>
 
-      <button onclick="openTranslationCenter()" style="width:100%;padding:10px 18px;border-radius:8px;border:1px solid rgba(245,166,35,.3);background:transparent;color:#F5A623;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:8px;">
-        &#128196; Open Translation Center &rarr;
-      </button>
-      <button id="btnTranslateInSettings" onclick="handleTranslateClick()" style="width:100%;padding:10px 18px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:#222;color:#e5e5e5;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;">
-        &#127760; Translate <span id="translateBadge" style="background:#F5A623;color:#111;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;display:none;"></span>
+      <button id="btnOpenTC" onclick="saveAndOpenTC()" style="width:100%;padding:10px 18px;border-radius:8px;border:1px solid rgba(245,166,35,.3);background:transparent;color:#F5A623;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <span id="tcBtnLabel">&#128196; Open Translation Center &rarr;</span>
+        <span id="translateBadge" style="background:#F5A623;color:#111;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;display:none;"></span>
       </button>
       <div style="display:flex;gap:8px;margin-top:20px;">
         <button onclick="closeTranslationSettings()" style="flex:0 0 auto;padding:8px 18px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.6);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Cancel</button>
@@ -409,6 +410,11 @@
     if (!res.ok) throw new Error('GET /api/deck returned ' + res.status);
     const deck = await res.json();
     if (!deck.data || !deck.data.slides) throw new Error('Unexpected deck response: ' + JSON.stringify(deck));
+    if (deck.accentCss) {
+      var accentStyle = document.createElement('style');
+      accentStyle.textContent = deck.accentCss;
+      document.head.appendChild(accentStyle);
+    }
     return deck.data.slides
       .filter(function(s) { return s.visible; })
       .map(function(s) {
@@ -702,6 +708,15 @@
     saveTimer = setTimeout(doSave, 1500);
   }
 
+  // Flush pending save on page unload (handles Ctrl+R / close-tab)
+  window.addEventListener('beforeunload', function () {
+    if (saveTimer !== null && previewLang === 'en') {
+      clearTimeout(saveTimer);
+      saveTimer = null;
+      doSave();
+    }
+  });
+
   // Listen for edits anywhere in the slides container
   document.getElementById('slidesContainer').addEventListener('input', function (e) {
     var el = e.target;
@@ -822,32 +837,33 @@
     badge.style.display = count > 0 ? 'inline' : 'none';
   }
 
-  function handleTranslateClick() {
-    var btn = document.getElementById('btnTranslateInSettings');
-    if (!btn || btn.disabled) return;
-    var langs = translationsData && translationsData.languages
-      ? translationsData.languages.filter(function(l){ return l !== 'en'; })
-      : [];
-    if (langs.length === 0) { alert('No additional languages configured.'); return; }
-    btn.disabled = true;
-    btn.textContent = 'Translating all slides…';
-    fetch('/api/translations/translate-all', {
-      method: 'POST',
+  function saveAndOpenTC() {
+    var btn = document.getElementById('btnOpenTC');
+    var label = document.getElementById('tcBtnLabel');
+    var errEl = document.getElementById('tsError');
+    if (btn && btn.disabled) return;
+    errEl.style.display = 'none';
+    if (btn) btn.disabled = true;
+    if (label) label.textContent = 'Saving…';
+
+    if (!_tsActiveLangs.includes('en')) _tsActiveLangs.unshift('en');
+    fetch('/api/translations/settings', {
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ languages: langs })
+      body: JSON.stringify({ languages: _tsActiveLangs, defaultLanguage: 'en', favorites: _tsActiveLangs.filter(function(c){ return c !== 'en'; }) })
     })
     .then(function(r){ return r.json(); })
     .then(function(res){
-      if (!res.success) throw new Error(res.error || 'Translation failed');
+      if (!res.success) throw new Error(res.error || 'Failed to save');
       translationsData = res.data;
-      btn.disabled = false;
-      btn.innerHTML = '&#127760; Translate <span id="translateBadge" style="background:#F5A623;color:#111;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;display:none;margin-left:4px;"></span>';
-      updateTranslateBadge();
+      buildLangMenu();
+      openTranslationCenter();
     })
     .catch(function(err){
-      btn.disabled = false;
-      btn.innerHTML = '&#127760; Translate <span id="translateBadge" style="background:#F5A623;color:#111;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;display:none;margin-left:4px;"></span>';
-      alert('Translation error: ' + err.message);
+      errEl.textContent = err.message;
+      errEl.style.display = 'block';
+      if (btn) btn.disabled = false;
+      if (label) label.textContent = '&#128196; Open Translation Center →';
     });
   }
 
@@ -902,7 +918,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ fieldKey: fk, language: lg, value: ta.value, slideId: sid || undefined })
         }).then(function (r) { return r.json(); })
-          .then(function (res) { if (res.success) loadTranslations(); });
+          .then(function (res) { if (res.success) loadTranslations().then(function () { applyPreviewLang(previewLang); }); });
       });
     });
 
@@ -953,9 +969,12 @@
   function langFlag(code) { return LANG_FLAGS[code] || '🌐'; }
 
   function snapshotEnglish() {
-    document.querySelectorAll('[data-edit][contenteditable]').forEach(function (el) {
-      var key = el.getAttribute('data-edit');
-      if (!enSnapshot[key]) enSnapshot[key] = el.innerHTML;
+    slideEls.forEach(function (slideEl, idx) {
+      if (!slideEl) return;
+      slideEl.querySelectorAll('[data-edit][contenteditable]').forEach(function (el) {
+        var snapKey = idx + '/' + el.getAttribute('data-edit');
+        if (!enSnapshot[snapKey]) enSnapshot[snapKey] = el.innerHTML;
+      });
     });
   }
 
@@ -1003,23 +1022,52 @@
 
   function applyPreviewLang(lang) {
     var fields = translationsData && translationsData.fields ? translationsData.fields : {};
-    var slideId = SLIDES[current] && SLIDES[current].librarySlideId;
-    var slideStore = (translationsData && translationsData.slides && slideId && translationsData.slides[slideId]) || {};
-    document.querySelectorAll('[data-edit]').forEach(function (el) {
-      var key = el.getAttribute('data-edit');
-      var isEditable = el.hasAttribute('contenteditable');
-      if (!isEditable) return;
-      if (lang === 'en') {
-        if (enSnapshot[key] !== undefined) el.innerHTML = enSnapshot[key];
-        el.contentEditable = 'true';
-      } else {
-        // Per-slide entry first, then global fallback
-        var entry = (slideStore[key] && slideStore[key][lang]) || (fields[key] && fields[key][lang]);
-        if (entry && entry.current) el.innerHTML = entry.current;
-        el.contentEditable = 'false';
-      }
+    slideEls.forEach(function (slideEl, idx) {
+      if (!slideEl) return;
+      var libSlideId = SLIDES[idx] && SLIDES[idx].librarySlideId;
+      var slideStore = (translationsData && translationsData.slides && libSlideId && translationsData.slides[libSlideId]) || {};
+      slideEl.querySelectorAll('[data-edit]').forEach(function (el) {
+        var key     = el.getAttribute('data-edit');
+        var snapKey = idx + '/' + key;
+        if (!el.hasAttribute('contenteditable')) return;
+        if (lang === 'en') {
+          if (enSnapshot[snapKey] !== undefined) el.innerHTML = enSnapshot[snapKey];
+          el.contentEditable = 'true';
+        } else {
+          var entry = slideStore[key] && slideStore[key][lang];
+          if (!entry) {
+            var globalEntry = fields[key] && fields[key][lang];
+            var globalEn    = fields[key] && (fields[key]['en'] || '');
+            var slideEn     = enSnapshot[snapKey] !== undefined ? enSnapshot[snapKey] : el.innerHTML;
+            if (globalEntry && globalEn && slideEn.trim() === globalEn.trim()) {
+              entry = globalEntry;
+            }
+          }
+          if (entry && entry.current) el.innerHTML = entry.current;
+        }
+      });
     });
   }
+
+  // Save non-English field on blur → translations store
+  document.getElementById('slidesContainer').addEventListener('focusout', function (e) {
+    if (previewLang === 'en') return;
+    var el = e.target;
+    if (!el.hasAttribute('data-edit') || !el.hasAttribute('contenteditable')) return;
+    // Find which loaded slide owns this element (avoids wrong save if focus moves between slides)
+    var ownerIdx = slideEls.findIndex(function (se) { return se && se.contains(el); });
+    var slideId = ownerIdx >= 0 && SLIDES[ownerIdx] && SLIDES[ownerIdx].librarySlideId;
+    if (!slideId) return;
+    var fieldKey = el.getAttribute('data-edit');
+    var value = el.innerHTML;
+    fetch('/api/translations/field', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slideId: slideId, fieldKey: fieldKey, language: previewLang, value: value })
+    }).then(function (r) { return r.json(); }).then(function (res) {
+      if (res.success) loadTranslations();
+    });
+  });
 
   // Block autosave when previewing a non-English language
   var _origScheduleSave = scheduleSave;
@@ -1145,6 +1193,7 @@
       if (!res.success) throw new Error(res.error || 'Failed to save');
       translationsData = res.data;
       updateTranslateBadge();
+      buildLangMenu();
       closeTranslationSettings();
     })
     .catch(function (err) {
@@ -1228,13 +1277,15 @@
       var fk  = escHtml(row.fieldKey);
       html += '<tr>';
       html += '<td class="tc-field-key">' + fk + '</td>';
-      html += '<td class="tc-cell-en"><textarea class="tc-en-edit" data-slide-id="' + sid + '" data-field-key="' + fk + '" rows="2" style="width:100%;background:transparent;border:1px solid transparent;border-radius:6px;color:rgba(255,255,255,.8);font-size:12px;font-family:inherit;resize:vertical;min-height:36px;padding:4px 6px;line-height:1.4;">' + escHtml(row.en || '') + '</textarea></td>';
+      var enPlain = stripHtmlTags(row.en || '').trim();
+      html += '<td class="tc-cell-en"><textarea class="tc-en-edit" data-slide-id="' + sid + '" data-field-key="' + fk + '" rows="2" style="width:100%;background:transparent;border:1px solid transparent;border-radius:6px;color:rgba(255,255,255,.8);font-size:12px;font-family:inherit;resize:vertical;min-height:36px;padding:4px 6px;line-height:1.4;">' + escHtml(enPlain) + '</textarea></td>';
       activeLangs.forEach(function(lang) {
         var entry = row.langs && row.langs[lang];
         var val = entry && entry.current || '';
         var cls = !val ? 'missing' : (entry && entry.dirty ? 'dirty' : '');
         if (cls) totalDirtyMissing++;
-        html += '<td class="tc-cell-lang"><textarea class="' + cls + '" data-slide-id="' + sid + '" data-field-key="' + fk + '" data-lang="' + lang + '" rows="2">' + escHtml(val) + '</textarea></td>';
+        var valPlain = stripHtmlTags(val);
+        html += '<td class="tc-cell-lang"><textarea class="' + cls + '" data-slide-id="' + sid + '" data-field-key="' + fk + '" data-lang="' + lang + '" rows="2">' + escHtml(valPlain) + '</textarea></td>';
       });
       html += '</tr>';
     });
@@ -1254,12 +1305,14 @@
 
     // Wire non-English textarea save on blur
     tbody.querySelectorAll('textarea:not(.tc-en-edit)').forEach(function(ta) {
+      ta.dataset.originalVal = ta.value; // store displayed (stripped) value for change detection
       ta.addEventListener('blur', function() {
         var slideId  = ta.dataset.slideId;
         var fieldKey = ta.dataset.fieldKey;
         var lang     = ta.dataset.lang;
         if (!slideId || !fieldKey || !lang) return;
         var val = ta.value.trim();
+        if (val === (ta.dataset.originalVal || '').trim()) return; // no change — don't overwrite
         fetch('/api/translations/field', {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
@@ -1346,7 +1399,11 @@
           if (res.success) translationsData = res.data;
           btn.disabled = false;
           updateProgress(null);
-          progressEl.innerHTML += '<span style="color:#4ade80;font-weight:700;">&#10003; All done!</span>';
+          var doneMsg = '<span style="color:#4ade80;font-weight:700;">&#10003; All done!</span>';
+          if (failed > 0) {
+            doneMsg += ' <span style="color:#f87171;">(' + failed + ' batch(es) failed — check API key)</span>';
+          }
+          progressEl.innerHTML += doneMsg;
           loadTranslationCenter();
           updateTranslateBadge();
         });
@@ -1365,6 +1422,7 @@
       .then(function(res){
         if (res.success && res.data) { translationsData = res.data; }
         done++;
+        if (res.failed > 0) { failed += res.failed; }
       })
       .catch(function(){ failed++; })
       .finally(function(){ processNext(idx + 1); });

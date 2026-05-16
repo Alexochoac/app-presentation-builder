@@ -108,6 +108,9 @@ app.get('/slides/deck-preview/:id', function (req, res) {
       '    .slides-container { position: relative; width: 100%; height: 100%; }',
       '    .slide { opacity: 1 !important; transform: scale(1) !important; pointer-events: auto !important; }',
       readonly ? '    [data-builder-only],[data-ls-add-row],[data-ls-add],[data-ls-restore]{ display:none !important; }' : '',
+      '    .slide-logo-row img { height: 28px !important; }',
+      '    .slide-logo-ls { height: 26px !important; }',
+      '    .slide-logo-sep { height: 26px !important; }',
       '  </style>',
       '</head>',
       '<body>',
@@ -146,6 +149,16 @@ app.get('/slides/deck-preview/:id', function (req, res) {
         '        clone.querySelectorAll("[data-builder-only]").forEach(function (n) { n.remove(); });',
         '        edits[el.getAttribute("data-edit")] = clone.innerHTML;',
         '      });',
+        '      fetch("/api/deck/slides/" + DECK_SLIDE_ID + "/edits", {',
+        '        method: "POST", headers: { "Content-Type": "application/json" },',
+        '        body: JSON.stringify({ edits: edits })',
+        '      });',
+        '    });',
+        '    document.addEventListener("slide-carousel-save", function (e) {',
+        '      var key = e.detail && e.detail.editKey;',
+        '      var html = e.detail && e.detail.html;',
+        '      if (!key || html == null) return;',
+        '      var edits = {}; edits[key] = html;',
         '      fetch("/api/deck/slides/" + DECK_SLIDE_ID + "/edits", {',
         '        method: "POST", headers: { "Content-Type": "application/json" },',
         '        body: JSON.stringify({ edits: edits })',
@@ -413,6 +426,9 @@ function renderHeroLayout(slideId, savedEdits, deck) {
   var settings    = readSettings();
   var heroBg      = (deck && deck.heroBg) || settings.heroBg || '';
   var heroBgFocal = (deck && deck.heroBgFocal) || settings.heroBgFocal || 'center center';
+  var heroBgType    = (deck && deck.heroBgType) || 'image';
+  var heroBgColor   = (deck && deck.heroBgColor) || '';
+  var heroBgOpacity = (deck && deck.heroBgOpacity !== undefined && deck.heroBgOpacity !== null) ? parseInt(deck.heroBgOpacity) : 100;
   var logos       = (deck && deck.logo)
     ? [{ src: deck.logo, alt: deck.name || '' }]
     : (Array.isArray(settings.logos) ? settings.logos : []);
@@ -424,7 +440,7 @@ function renderHeroLayout(slideId, savedEdits, deck) {
     ].filter(Boolean).join('\n');
   }).join('\n');
   return [
-    '<div class="slide hero" data-slide="' + slideId + '">',
+    '<div class="slide hero" data-slide="' + slideId + '"' + (heroBgType === 'color' && heroBgColor ? ' style="background:' + heroBgColor + ';"' : '') + '>',
 
     '  <!-- Logo row -->',
     '  <div class="slide-logo-row" style="position:absolute;top:22px;left:36px;z-index:10;">',
@@ -449,8 +465,8 @@ function renderHeroLayout(slideId, savedEdits, deck) {
     '  </div>',
 
     '  <!-- Hero background -->',
-    '  <img class="hero-bg" src="' + heroBg + '" alt="Hero background" data-edit="hero-bg" style="object-position:' + heroBgFocal + ';' + (deck && deck.heroBgFit === 'contain' ? 'object-fit:contain;' : '') + '">',
-    '  <div class="hero-overlay"></div>',
+    '  <img class="hero-bg" src="' + heroBg + '" alt="Hero background" data-edit="hero-bg" style="' + (heroBgType === 'color' ? 'display:none;' : '') + 'object-position:' + heroBgFocal + ';' + (heroBgOpacity < 100 ? 'opacity:' + (heroBgOpacity / 100).toFixed(2) + ';' : '') + (deck && deck.heroBgFit === 'contain' ? 'object-fit:contain;' : '') + '">',
+    (heroBgType === 'color' ? '' : '  <div class="hero-overlay"></div>'),
 
     '  <!-- Main content -->',
     '  <div class="hero-content">',
@@ -778,13 +794,14 @@ function applyEditsToHtml(html, edits, editable) {
   edits = edits || {};
   var $ = cheerio.load(html, { decodeEntities: false }, false);
   $('[data-edit]').each(function () {
-    var key = $(this).attr('data-edit');
-    if (key && edits[key] !== undefined) {
+    var key    = $(this).attr('data-edit');
+    var isImgEdit = $(this).attr('data-edit-type') === 'image';
+    if (key && !isImgEdit && edits[key] !== undefined) {
       $(this).html(edits[key]);
     }
-    if (editable) {
+    if (editable && !isImgEdit) {
       $(this).attr('contenteditable', '').attr('spellcheck', 'false');
-    } else {
+    } else if (!editable) {
       $(this).removeAttr('contenteditable').removeAttr('spellcheck');
     }
   });
@@ -2938,12 +2955,14 @@ app.get('/slides/:deckSlideId.html', function (req, res, next) {
     var resolved = resolveTemplate(libSlide.templateId);
     if (!resolved) return next();
 
+    var deckConfig = getDeckConfig(activeDeckId);
     var savedEdits = resolveSlideEdits(libSlide, activeDeckId);
     var html;
     if (resolved.source === 'canvas') {
-      html = renderLayoutToHtml(resolved.tpl, deckSlideId, savedEdits);
+      html = renderLayoutToHtml(resolved.tpl, deckSlideId, savedEdits, deckConfig);
     } else {
       html = applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), withLiveLogos(savedEdits), true);
+      html = injectDeckBranding(html, deckConfig);
     }
     res.type('text/html').send(html);
   } catch (err) {
@@ -3058,7 +3077,11 @@ var TEMPLATES_PATH            = path.join(__dirname, 'data', 'slide-templates.js
 var TEMPLATE_CATALOG_PATH  = path.join(__dirname, 'data', 'templates.json');
 var SETTINGS_PATH          = path.join(__dirname, 'data', 'settings.json');
 var LANGUAGES_PATH     = path.join(__dirname, 'data', 'languages.json');
-var TRANSLATIONS_PATH  = path.join(__dirname, 'data', 'translations.json');
+var TRANSLATIONS_PATH  = path.join(__dirname, 'data', 'translations.json'); // legacy global — kept as fallback
+
+function getTranslationsPath(deckId) {
+  return path.join(__dirname, 'data', 'decks', deckId || 'default', 'translations.json');
+}
 
 // Resolve a template by id from either the canvas builder store or the HTML catalog.
 // Returns { source: 'canvas'|'html', tpl, filePath? } or null.
@@ -3185,7 +3208,8 @@ function injectDeckBranding(html, deck) {
 // GET /api/deck — return the current deck config, with library slide names merged in
 app.get('/api/deck', function (req, res) {
   try {
-    var deck    = readDeckById(getActiveDeckId());
+    var activeDeckId = getActiveDeckId();
+    var deck    = readDeckById(activeDeckId);
     var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
 
     deck.slides = deck.slides.map(function (slide) {
@@ -3195,7 +3219,7 @@ app.get('/api/deck', function (req, res) {
       return Object.assign({}, slide, { name: libSlide.name });
     });
 
-    res.json({ success: true, data: deck });
+    res.json({ success: true, data: deck, accentCss: deckAccentCss(getDeckConfig(activeDeckId)) });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -3310,7 +3334,7 @@ app.post('/api/deck/slides/:id/edits', function (req, res) {
     if (!libSlide.deckEdits[activeDeckId]) libSlide.deckEdits[activeDeckId] = {};
     libSlide.deckEdits[activeDeckId] = Object.assign({}, libSlide.deckEdits[activeDeckId], edits);
     fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
-    markSlideTranslationsDirty(deckSlide.librarySlideId, edits);
+    markSlideTranslationsDirty(deckSlide.librarySlideId, edits, activeDeckId);
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -3434,7 +3458,7 @@ app.put('/api/decks/:id', function (req, res) {
     var store = readDecks();
     var idx = store.decks.findIndex(function (d) { return d.id === id; });
     if (idx === -1) return res.status(404).json({ success: false, error: 'Deck not found' });
-    var allowed = ['name', 'theme', 'logo', 'heroBg', 'heroBgFocal', 'heroBgFocalGrid', 'heroBgFit', 'colors'];
+    var allowed = ['name', 'theme', 'logo', 'heroBg', 'heroBgFocal', 'heroBgFocalGrid', 'heroBgFit', 'heroBgOpacity', 'heroBgType', 'heroBgColor', 'colors'];
     var body = req.body || {};
     allowed.forEach(function (key) {
       if (body[key] !== undefined) store.decks[idx][key] = body[key];
@@ -3622,7 +3646,8 @@ function buildFrozenPresentation(presentation) {
   var presDefaultLang  = presentation.defaultLanguage || 'en';
   var isMultiLang      = presLanguages.some(function (l) { return l !== presDefaultLang; });
   var allLangs         = isMultiLang ? [presDefaultLang].concat(presLanguages.filter(function (l) { return l !== presDefaultLang; })) : [];
-  var translationsData = isMultiLang ? JSON.parse(fs.readFileSync(TRANSLATIONS_PATH, 'utf8')) : null;
+  var translationsData  = isMultiLang ? readTranslations(presentation.deckId || 'default') : null;
+  var langSwitcherCode  = isMultiLang ? fs.readFileSync(path.join(__dirname, 'features', 'slides', 'components', 'language-switcher.js'), 'utf8') : '';
 
   // Wraps all [data-edit] text elements in a cheerio-loaded slide with <span data-lang> per language.
   // librarySlideId is used for per-slide lookup; falls back to global fields. <img> elements skipped.
@@ -3742,7 +3767,9 @@ function buildFrozenPresentation(presentation) {
     if (!resolved) return;
 
     var edits = resolveSlideEdits(libSlide, presentation.deckId || 'default');
-    if (s.librarySlideId === 'lib-cover') Object.assign(edits, coverEdits);
+    var isCoverSlide = s.librarySlideId === 'lib-cover' ||
+      (resolved.tpl && resolved.tpl.category === 'Cover');
+    if (isCoverSlide) Object.assign(edits, coverEdits);
 
     var fragment = resolved.source === 'canvas'
       ? renderLayoutToHtml(resolved.tpl, s.id, edits, presDeck)
@@ -3779,7 +3806,9 @@ function buildFrozenPresentation(presentation) {
     if (!resolved) return;
 
     var edits = resolveSlideEdits(libSlide, presentation.deckId || 'default');
-    if (s.librarySlideId === 'lib-cover') Object.assign(edits, coverEdits);
+    var isCoverSlide = s.librarySlideId === 'lib-cover' ||
+      (resolved.tpl && resolved.tpl.category === 'Cover');
+    if (isCoverSlide) Object.assign(edits, coverEdits);
 
     var fragment = resolved.source === 'canvas'
       ? renderLayoutToHtml(resolved.tpl, s.id, edits, presDeck)
@@ -3890,6 +3919,7 @@ function buildFrozenPresentation(presentation) {
     '    #fp-lang-menu button.active { color: #E8711A; font-weight: 600; }',
     '  </style>',
     (umamiWebsiteId ? '  <script defer src="https://umami.wbtm.io/script.js" data-website-id="' + umamiWebsiteId + '"></script>' : ''),
+    (isMultiLang ? '<script>' + langSwitcherCode + '</script>' : ''),
     '</head>',
     (isMultiLang ? '<body data-default-lang="' + presDefaultLang + '" data-pres-id="' + presId + '">' : '<body>'),
     '<div id="fp-shell">',
@@ -4987,7 +5017,9 @@ app.get('/slides/template-preview/:id', function (req, res) {
       '    function doSave() {',
       '      var edits = {};',
       '      document.querySelectorAll("[data-edit][contenteditable]").forEach(function (el) {',
-      '        edits[el.getAttribute("data-edit")] = el.innerHTML;',
+      '        var clone = el.cloneNode(true);',
+      '        clone.querySelectorAll("[data-builder-only]").forEach(function (n) { n.remove(); });',
+      '        edits[el.getAttribute("data-edit")] = clone.innerHTML;',
       '      });',
       '      fetch("/api/templates/" + TPL_ID + "/defaultEdits", {',
       '        method: "POST",',
@@ -5195,6 +5227,9 @@ app.get('/slides/library-preview/:id', function (req, res) {
       '    .ls-carousel-slide.no-img>img{visibility:hidden;}',
       '    .ls-carousel-slide.no-img::after{content:"No image";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:rgba(255,255,255,.28);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;pointer-events:none;white-space:nowrap;}',
       '    img.no-img{min-height:60px;min-width:60px;background:rgba(255,255,255,.04);border:1.5px dashed rgba(255,255,255,.18);border-radius:8px;}',
+      '    .slide-logo-row img { height: 28px !important; }',
+      '    .slide-logo-ls { height: 26px !important; }',
+      '    .slide-logo-sep { height: 26px !important; }',
       '  </style>',
       '</head>',
       '<body>',
@@ -5325,8 +5360,20 @@ app.get('/slides/library-edit/:id', function (req, res) {
       '      if (!e.target.hasAttribute || !e.target.hasAttribute("data-edit") || !e.target.hasAttribute("contenteditable")) return;',
       '      var edits = {};',
       '      document.querySelectorAll("[data-edit][contenteditable]").forEach(function (el) {',
-      '        edits[el.getAttribute("data-edit")] = el.innerHTML;',
+      '        var clone = el.cloneNode(true);',
+      '        clone.querySelectorAll("[data-builder-only]").forEach(function (n) { n.remove(); });',
+      '        edits[el.getAttribute("data-edit")] = clone.innerHTML;',
       '      });',
+      '      fetch("/api/slide-library/" + LIB_SLIDE_ID + "/edits", {',
+      '        method: "POST", headers: { "Content-Type": "application/json" },',
+      '        body: JSON.stringify({ edits: edits })',
+      '      });',
+      '    });',
+      '    document.addEventListener("slide-carousel-save", function (e) {',
+      '      var key = e.detail && e.detail.editKey;',
+      '      var html = e.detail && e.detail.html;',
+      '      if (!key || html == null) return;',
+      '      var edits = {}; edits[key] = html;',
       '      fetch("/api/slide-library/" + LIB_SLIDE_ID + "/edits", {',
       '        method: "POST", headers: { "Content-Type": "application/json" },',
       '        body: JSON.stringify({ edits: edits })',
@@ -5386,20 +5433,27 @@ app.get('/api/languages', function (_req, res) {
 });
 
 // ── API: translations ─────────────────────────────────────────────────────────
-function readTranslations() {
-  try { return JSON.parse(fs.readFileSync(TRANSLATIONS_PATH, 'utf8')); }
-  catch (e) { return { languages: [], favorites: [], defaultLanguage: 'en', fields: {} }; }
+// Pass deckId to read/write the per-deck file. Falls back to the legacy global
+// file when deckId is omitted (supports callers not yet migrated to Task 2).
+function readTranslations(deckId) {
+  var filePath = deckId ? getTranslationsPath(deckId) : TRANSLATIONS_PATH;
+  try { return JSON.parse(fs.readFileSync(filePath, 'utf8')); }
+  catch (e) {
+    // Per-deck file missing — return an empty schema (file will be created on first write)
+    return { languages: ['en'], defaultLanguage: 'en', slides: {} };
+  }
 }
 
-function writeTranslations(data) {
-  fs.writeFileSync(TRANSLATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+function writeTranslations(data, deckId) {
+  var filePath = deckId ? getTranslationsPath(deckId) : TRANSLATIONS_PATH;
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
 }
 
 // Mark per-slide translation entries dirty when English edits are saved.
 // Called non-fatally — a failure here must never block the main save response.
-function markSlideTranslationsDirty(librarySlideId, edits) {
+function markSlideTranslationsDirty(librarySlideId, edits, deckId) {
   try {
-    var t = readTranslations();
+    var t = readTranslations(deckId || getActiveDeckId());
     var changed = false;
     var slideStore = t.slides && t.slides[librarySlideId];
     if (!slideStore) return;
@@ -5419,21 +5473,22 @@ function markSlideTranslationsDirty(librarySlideId, edits) {
         }
       });
     });
-    if (changed) writeTranslations(t);
+    if (changed) writeTranslations(t, deckId || getActiveDeckId());
   } catch (err) {
     console.warn('markSlideTranslationsDirty failed:', err.message);
   }
 }
 
 app.get('/api/translations', function (_req, res) {
-  res.json({ success: true, data: readTranslations() });
+  res.json({ success: true, data: readTranslations(getActiveDeckId()) });
 });
 
 const TRANSLATE_CHUNK_SIZE = 20;
 
 app.post('/api/translations/translate', async function (req, res) {
   try {
-    const t = readTranslations();
+    const deckId = getActiveDeckId();
+    const t = readTranslations(deckId);
     const targetLanguages = (req.body && req.body.languages) || t.languages.filter(l => l !== 'en');
     const langList = JSON.parse(fs.readFileSync(LANGUAGES_PATH, 'utf8')).languages;
 
@@ -5445,6 +5500,9 @@ app.post('/api/translations/translate', async function (req, res) {
       if (!t.slides) t.slides = {};
       if (!t.slides[slideId]) t.slides[slideId] = {};
       const slideStore = t.slides[slideId];
+
+      let translatedCount = 0, failedChunks = 0;
+      const errors = [];
 
       for (const lang of targetLanguages) {
         const dirty = {};
@@ -5462,11 +5520,14 @@ app.post('/api/translations/translate', async function (req, res) {
         for (let i = 0; i < entries.length; i += TRANSLATE_CHUNK_SIZE) {
           const chunk = Object.fromEntries(entries.slice(i, i + TRANSLATE_CHUNK_SIZE));
           const result = await translate(chunk, langName);
-          if (!result.ok) continue;
+          if (!result.ok) {
+            failedChunks++;
+            errors.push(result.error || 'Translation failed');
+            continue;
+          }
 
           for (const [key, translated] of Object.entries(result.fields)) {
             if (!slideStore[key]) slideStore[key] = {};
-            // Store English source alongside translations for future dirty-check
             slideStore[key].en = sourceFields[key];
             const prev = slideStore[key][lang];
             slideStore[key][lang] = {
@@ -5474,44 +5535,12 @@ app.post('/api/translations/translate', async function (req, res) {
               previous: prev && prev.current ? prev.current : null,
               dirty: false
             };
+            translatedCount++;
           }
-          writeTranslations(t);
+          writeTranslations(t, deckId);
         }
       }
-      return res.json({ success: true, data: t });
-    }
-
-    // Global mode (original behaviour)
-    for (const lang of targetLanguages) {
-      const dirty = {};
-      for (const [key, val] of Object.entries(t.fields)) {
-        if (!val.en) continue;
-        const langData = val[lang];
-        if (!langData || !langData.current || langData.dirty) {
-          dirty[key] = val.en;
-        }
-      }
-      if (Object.keys(dirty).length === 0) continue;
-
-      const langName = (langList.find(l => l.code === lang) || {}).name || lang;
-
-      const entries = Object.entries(dirty);
-      for (let i = 0; i < entries.length; i += TRANSLATE_CHUNK_SIZE) {
-        const chunk = Object.fromEntries(entries.slice(i, i + TRANSLATE_CHUNK_SIZE));
-        const result = await translate(chunk, langName);
-        if (!result.ok) continue;
-
-        for (const [key, translated] of Object.entries(result.fields)) {
-          if (!t.fields[key]) continue;
-          const prev = t.fields[key][lang];
-          t.fields[key][lang] = {
-            current: translated,
-            previous: prev && prev.current ? prev.current : null,
-            dirty: false
-          };
-        }
-        writeTranslations(t);
-      }
+      return res.json({ success: true, data: t, translated: translatedCount, failed: failedChunks, errors });
     }
 
     res.json({ success: true, data: t });
@@ -5526,30 +5555,21 @@ app.patch('/api/translations/field', function (req, res) {
     if (!fieldKey || !language || value === undefined) {
       return res.status(400).json({ success: false, error: 'fieldKey, language, value required' });
     }
-    const t = readTranslations();
-    var entry;
-    if (slideId) {
-      // Per-slide storage
-      if (!t.slides) t.slides = {};
-      if (!t.slides[slideId]) t.slides[slideId] = {};
-      if (!t.slides[slideId][fieldKey]) t.slides[slideId][fieldKey] = {};
-      if (!t.slides[slideId][fieldKey][language]) {
-        t.slides[slideId][fieldKey][language] = { current: value, previous: null, dirty: false };
-      } else {
-        t.slides[slideId][fieldKey][language].current = value;
-      }
-      entry = t.slides[slideId][fieldKey][language];
-    } else {
-      // Global storage (backward compat)
-      if (!t.fields[fieldKey]) t.fields[fieldKey] = {};
-      if (!t.fields[fieldKey][language]) {
-        t.fields[fieldKey][language] = { current: value, previous: null, dirty: false };
-      } else {
-        t.fields[fieldKey][language].current = value;
-      }
-      entry = t.fields[fieldKey][language];
+    if (!slideId) {
+      return res.status(400).json({ success: false, error: 'slideId required' });
     }
-    writeTranslations(t);
+    const deckId = getActiveDeckId();
+    const t = readTranslations(deckId);
+    if (!t.slides) t.slides = {};
+    if (!t.slides[slideId]) t.slides[slideId] = {};
+    if (!t.slides[slideId][fieldKey]) t.slides[slideId][fieldKey] = {};
+    if (!t.slides[slideId][fieldKey][language]) {
+      t.slides[slideId][fieldKey][language] = { current: value, previous: null, dirty: false };
+    } else {
+      t.slides[slideId][fieldKey][language].current = value;
+    }
+    var entry = t.slides[slideId][fieldKey][language];
+    writeTranslations(t, deckId);
     res.json({ success: true, data: entry });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -5559,23 +5579,19 @@ app.patch('/api/translations/field', function (req, res) {
 app.post('/api/translations/restore', function (req, res) {
   try {
     const { fieldKey, language, slideId } = req.body || {};
-    if (!fieldKey || !language) {
-      return res.status(400).json({ success: false, error: 'fieldKey and language required' });
+    if (!fieldKey || !language || !slideId) {
+      return res.status(400).json({ success: false, error: 'fieldKey, language, slideId required' });
     }
-    const t = readTranslations();
-    var entry;
-    if (slideId) {
-      entry = t.slides && t.slides[slideId] && t.slides[slideId][fieldKey] && t.slides[slideId][fieldKey][language];
-    } else {
-      entry = t.fields[fieldKey] && t.fields[fieldKey][language];
-    }
+    const deckId = getActiveDeckId();
+    const t = readTranslations(deckId);
+    var entry = t.slides && t.slides[slideId] && t.slides[slideId][fieldKey] && t.slides[slideId][fieldKey][language];
     if (!entry || !entry.previous) {
       return res.status(400).json({ success: false, error: 'No previous version to restore' });
     }
     entry.current = entry.previous;
     entry.previous = null;
     entry.dirty = false;
-    writeTranslations(t);
+    writeTranslations(t, deckId);
     res.json({ success: true, data: entry });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -5584,50 +5600,52 @@ app.post('/api/translations/restore', function (req, res) {
 
 app.get('/api/translations/fields-summary', function (req, res) {
   try {
+    var activeDeckId = getActiveDeckId();
+    var deck    = readDeckById(activeDeckId);
     var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
-    var t = readTranslations();
-    var rows = [];
+    var t       = readTranslations(activeDeckId);
+    var rows    = [];
 
-    library.slides.forEach(function (slide) {
-      var edits = slide.edits || {};
-      var slideTranslations = (t.slides && t.slides[slide.id]) || {};
+    var blobKeys = ['tabs', 'company-carousel', 'carousel-track-html', 'carousel-track', 'ben-list', 'prob-list'];
 
-      Object.keys(edits).forEach(function (fieldKey) {
-        var val = edits[fieldKey];
-        if (!val || typeof val !== 'string') return;
+    deck.slides
+      .filter(function (ds) { return ds.visible && ds.librarySlideId; })
+      .forEach(function (deckSlide) {
+        var libSlide = library.slides.find(function (s) { return s.id === deckSlide.librarySlideId; });
+        if (!libSlide) return;
 
-        // Skip image/asset references
-        if (fieldKey.endsWith('-src') || fieldKey === 'customer-logo-src') return;
+        var edits = resolveSlideEdits(libSlide, activeDeckId);
+        var slideTranslations = (t.slides && t.slides[deckSlide.librarySlideId]) || {};
 
-        // Skip known HTML blob fields (component containers, not translatable as a unit)
-        var blobKeys = ['tabs', 'company-carousel', 'carousel-track-html', 'carousel-track', 'ben-list', 'prob-list'];
-        if (blobKeys.includes(fieldKey)) return;
+        Object.keys(edits).forEach(function (fieldKey) {
+          var val = edits[fieldKey];
+          if (!val || typeof val !== 'string') return;
 
-        // Skip large HTML blobs: raw value > 400 chars is almost certainly a component blob
-        if (val.length > 400) return;
+          if (fieldKey.endsWith('-src') || fieldKey === 'customer-logo-src') return;
+          if (blobKeys.includes(fieldKey)) return;
+          if (val.length > 400) return;
+          // Skip component containers: value has nested editable children or UI elements
+          if (val.includes('data-edit=') || val.includes('<button') || val.includes('<img')) return;
 
-        // Strip HTML tags and check for meaningful text
-        var stripped = val.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
-        if (stripped.length < 3) return;
+          var stripped = val.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+          if (stripped.length < 3) return;
+          if (/^\d+[\d,+%°\.]*$/.test(stripped)) return;
 
-        // Skip purely numeric values (stats, years, counts)
-        if (/^\d+[\d,+%°\.]*$/.test(stripped)) return;
+          var fieldTranslations = slideTranslations[fieldKey] || {};
+          var langs = {};
+          Object.keys(fieldTranslations).forEach(function (lang) {
+            if (lang !== 'en') langs[lang] = fieldTranslations[lang];
+          });
 
-        var fieldTranslations = slideTranslations[fieldKey] || {};
-        var langs = {};
-        Object.keys(fieldTranslations).forEach(function (lang) {
-          if (lang !== 'en') langs[lang] = fieldTranslations[lang];
-        });
-
-        rows.push({
-          slideId: slide.id,
-          slideTitle: slide.name || slide.id,
-          fieldKey: fieldKey,
-          en: val,
-          langs: langs
+          rows.push({
+            slideId:    deckSlide.librarySlideId,
+            slideTitle: libSlide.name || libSlide.id,
+            fieldKey:   fieldKey,
+            en:         val,
+            langs:      langs
+          });
         });
       });
-    });
 
     res.json({ success: true, rows: rows });
   } catch (err) {
@@ -5642,9 +5660,14 @@ app.post('/api/translations/translate-all', async function (req, res) {
       return res.status(400).json({ success: false, error: 'No languages specified' });
     }
 
+    var deckId = getActiveDeckId();
     var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
-    var t = readTranslations();
+    var langList = JSON.parse(fs.readFileSync(LANGUAGES_PATH, 'utf8')).languages;
+    var t = readTranslations(deckId);
     if (!t.slides) t.slides = {};
+
+    var translatedCount = 0, failedChunks = 0;
+    var errors = [];
 
     for (var si = 0; si < library.slides.length; si++) {
       var slide = library.slides[si];
@@ -5655,6 +5678,8 @@ app.post('/api/translations/translate-all', async function (req, res) {
       for (var li = 0; li < targetLanguages.length; li++) {
         var lang = targetLanguages[li];
         if (lang === 'en') continue;
+
+        var langName = (langList.find(function(l){ return l.code === lang; }) || {}).name || lang;
 
         // Collect fields that need translation (missing or dirty)
         var toTranslate = {};
@@ -5695,26 +5720,33 @@ app.post('/api/translations/translate-all', async function (req, res) {
           chunkKeys.forEach(function(k){ chunkTexts[k] = toTranslate[k]; });
 
           try {
-            var translated = await translate(chunkTexts, lang);
+            var result = await translate(chunkTexts, langName);
+            if (!result.ok) {
+              failedChunks++;
+              errors.push(slideId + '/' + lang + ': ' + (result.error || 'Translation failed'));
+              continue;
+            }
             chunkKeys.forEach(function (key) {
-              if (!translated[key]) return;
+              if (!result.fields[key]) return;
               if (!t.slides[slideId][key]) t.slides[slideId][key] = {};
               var prev = t.slides[slideId][key][lang];
               t.slides[slideId][key][lang] = {
-                current: translated[key],
+                current: result.fields[key],
                 previous: prev && prev.current || null,
                 dirty: false
               };
+              translatedCount++;
             });
           } catch (chunkErr) {
-            console.warn('translate-all chunk error for', slideId, lang, chunkErr.message);
+            failedChunks++;
+            errors.push(slideId + '/' + lang + ': ' + chunkErr.message);
           }
         }
       }
     }
 
-    writeTranslations(t);
-    res.json({ success: true, data: t });
+    writeTranslations(t, deckId);
+    res.json({ success: true, data: t, translated: translatedCount, failed: failedChunks, errors: errors });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -5723,11 +5755,12 @@ app.post('/api/translations/translate-all', async function (req, res) {
 app.put('/api/translations/settings', function (req, res) {
   try {
     const { languages, favorites, defaultLanguage } = req.body || {};
-    const t = readTranslations();
+    const deckId = getActiveDeckId();
+    const t = readTranslations(deckId);
     if (Array.isArray(languages)) t.languages = languages;
     if (Array.isArray(favorites)) t.favorites = favorites;
     if (defaultLanguage) t.defaultLanguage = defaultLanguage;
-    writeTranslations(t);
+    writeTranslations(t, deckId);
     res.json({ success: true, data: t });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -5983,33 +6016,31 @@ app.post('/api/save', function (req, res) {
 
     fs.writeFileSync(filePath, $.html(), 'utf8');
 
-    // Mark translation dirty flags for any changed fields
+    // Mark translation dirty flags for any changed fields (legacy endpoint)
+    // t.fields is removed in per-deck schema — this block is a no-op until Task 4 rewrites it.
     try {
-      var t = readTranslations();
+      var _legacyDeckId = getActiveDeckId();
+      var t = readTranslations(_legacyDeckId);
       var changed = false;
-      Object.entries(edits).forEach(function (entry) {
-        var key = entry[0];
-        var newVal = entry[1];
-        if (!t.fields[key]) {
-          t.fields[key] = { en: newVal };
-          changed = true;
-        } else if (t.fields[key].en !== newVal) {
-          t.fields[key].en = newVal;
-          // Mark dirty for all languages that already have a translation
-          Object.keys(t.fields[key]).forEach(function (lang) {
-            if (lang !== 'en' && t.fields[key][lang] && t.fields[key][lang].current) {
-              t.fields[key][lang].dirty = true;
-            }
-          });
-          changed = true;
-        }
-      });
-      // TODO: also mark t.slides[librarySlideId][key] dirty here.
-      // This endpoint receives a slide filename (e.g. slide-02-company), not a
-      // librarySlideId, so we'd need to look it up from the deck. Skipping for
-      // now — the /api/deck/slides/:id/edits and /api/library/:id/edits paths
-      // above handle dirty-flagging for the primary save paths in the new arch.
-      if (changed) writeTranslations(t);
+      if (t.fields) {
+        Object.entries(edits).forEach(function (entry) {
+          var key = entry[0];
+          var newVal = entry[1];
+          if (!t.fields[key]) {
+            t.fields[key] = { en: newVal };
+            changed = true;
+          } else if (t.fields[key].en !== newVal) {
+            t.fields[key].en = newVal;
+            Object.keys(t.fields[key]).forEach(function (lang) {
+              if (lang !== 'en' && t.fields[key][lang] && t.fields[key][lang].current) {
+                t.fields[key][lang].dirty = true;
+              }
+            });
+            changed = true;
+          }
+        });
+      }
+      if (changed) writeTranslations(t, _legacyDeckId);
     } catch (tErr) {
       console.warn('Translation dirty-flag update failed:', tErr.message);
     }
@@ -6057,12 +6088,13 @@ app.post('/api/upload-image', function (req, res) {
 
 // ── API: save an image src attribute back to the slide file ───────────────────
 // POST /api/save-image-src  { slide: 'slide-01-cover', editKey: 'customer-logo', src: '/slides/uploads/logo.png' }
+// src may be '' to clear the image
 app.post('/api/save-image-src', function (req, res) {
   var slide   = req.body.slide;
   var editKey = req.body.editKey;
   var src     = req.body.src;
 
-  if (!slide || !editKey || !src) return res.status(400).json({ error: 'Missing params' });
+  if (!slide || !editKey || src === undefined || src === null) return res.status(400).json({ error: 'Missing params' });
   if (!/^slide-[\w-]+$/.test(slide)) return res.status(400).json({ error: 'Invalid slide name' });
 
   var filePath = path.join(__dirname, 'features/slides', slide + '.html');
@@ -6071,7 +6103,12 @@ app.post('/api/save-image-src', function (req, res) {
   try {
     var html = fs.readFileSync(filePath, 'utf8');
     var $    = cheerio.load(html, { decodeEntities: false }, false);
-    $('[data-edit="' + editKey + '"] img').first().attr('src', src);
+    var imgEl = $('[data-edit="' + editKey + '"] img').first();
+    if (src === '') {
+      imgEl.removeAttr('src');
+    } else {
+      imgEl.attr('src', src);
+    }
     fs.writeFileSync(filePath, $.html(), 'utf8');
     res.json({ ok: true });
   } catch (err) {
@@ -6122,7 +6159,7 @@ app.post('/api/clone-slide', function (req, res) {
     });
 
     $('img').each(function () {
-      $(this).attr('src', '/slides/shared/placeholder.png');
+      $(this).attr('src', '/shared/brand/logo.svg');
     });
 
     // --- 4. Write new slide file ---

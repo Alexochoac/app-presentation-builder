@@ -14,7 +14,10 @@ const SYSTEM_PROMPT =
   'You are a professional translation assistant. ' +
   'When given a JSON object, translate the values into the requested language. ' +
   'Return only valid JSON with the same keys and translated values. ' +
-  'Do not translate keys. Do not add explanation or markdown formatting.';
+  'Do not translate keys. Do not add explanation or markdown formatting. ' +
+  'If a value contains HTML tags (e.g. <span class="blue">text</span>, <br>, <strong>), ' +
+  'preserve the HTML tags exactly and translate only the visible text content inside them. ' +
+  'Keep all HTML attributes unchanged.';
 
 async function translate(fields, targetLanguage) {
   if (!fields || Object.keys(fields).length === 0) {
@@ -28,6 +31,7 @@ async function translate(fields, targetLanguage) {
   try {
     const res = await fetch(OPENROUTER_URL, {
       method: 'POST',
+      signal: AbortSignal.timeout(30000),
       headers: {
         'Authorization': 'Bearer ' + process.env.OPENROUTER_API_KEY,
         'Content-Type': 'application/json'

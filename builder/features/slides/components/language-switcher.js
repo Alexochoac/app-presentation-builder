@@ -27,7 +27,10 @@
     document.querySelectorAll('[data-lang]').forEach(function (el) {
       el.hidden = el.getAttribute('data-lang') !== lang;
     });
-    document.querySelectorAll('.lang-switcher-btn').forEach(function (btn) {
+    // Update dropdown label and active state
+    var label = document.getElementById('fp-lang-label');
+    if (label) label.textContent = lang.toUpperCase();
+    document.querySelectorAll('#fp-lang-menu button[data-lang]').forEach(function (btn) {
       btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
     });
     try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
@@ -40,8 +43,28 @@
     history.replaceState(null, '', url.toString());
   }
 
-  // Expose for footer buttons
+  // Expose for dropdown buttons
   window.switchLang = switchLang;
+
+  window.fpLangToggle = function () {
+    var menu = document.getElementById('fp-lang-menu');
+    if (menu) menu.classList.toggle('open');
+  };
+
+  window.fpLangSelect = function (lang) {
+    switchLang(lang);
+    var menu = document.getElementById('fp-lang-menu');
+    if (menu) menu.classList.remove('open');
+  };
+
+  // Close dropdown on outside click
+  document.addEventListener('click', function (e) {
+    var drop = document.getElementById('fp-lang-drop');
+    if (drop && !drop.contains(e.target)) {
+      var menu = document.getElementById('fp-lang-menu');
+      if (menu) menu.classList.remove('open');
+    }
+  });
 
   // Init on DOM ready
   function init() {
