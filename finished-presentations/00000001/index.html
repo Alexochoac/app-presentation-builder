@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pyramid</title>
+  <title>9</title>
   <style>
 /*
   Presentation Builder — Softsolution
@@ -155,6 +155,8 @@ body {
 [data-edit][contenteditable] { cursor:text; border-radius:4px; transition:outline .15s, background .15s; outline:1px solid transparent; }
 [data-edit][contenteditable]:hover { outline:1px dashed rgba(245,166,35,.35); background:rgba(245,166,35,.04); }
 [data-edit][contenteditable]:focus { outline:1px solid rgba(245,166,35,.65); background:rgba(245,166,35,.06); }
+/* slide-title uses background-clip:text — cancel gradient-as-color on focus so text stays readable */
+.slide-title[contenteditable]:focus { -webkit-text-fill-color:var(--text); background:rgba(245,166,35,.06); }
 .divider { width:36px; height:3px; background:linear-gradient(90deg,var(--accent),var(--accent-light)); border-radius:2px; margin:0 auto 24px; }
 
 h1.slide-title {
@@ -391,7 +393,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   -webkit-overflow-scrolling: touch;
 }
 
-:root{--accent:#f524ce;--accent-mid:#d820b5;--accent-light:#f980e3;--accent-rgb:245,36,206;}
+:root{--accent:#F5A623;--accent-mid:#d8921f;--accent-light:#f9cb7f;--accent-rgb:245,166,35;}
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0a0a; }
     #fp-shell { display: flex; flex-direction: column; height: 100vh; }
@@ -456,11 +458,17 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     .fp-nm-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
     .fp-nm-item.fp-nm-active { color: #fff; font-weight: 600; }
     .fp-nm-item.fp-nm-active::before { content: "›"; margin-right: 6px; color: #888; }
-    /* Language switcher */
-    #fp-lang-switcher { display: flex; align-items: center; gap: 4px; margin-left: 6px; }
-    .lang-switcher-btn { background: none; border: 1px solid #333; border-radius: 4px; color: #888; font-size: 11px; font-family: system-ui, sans-serif; padding: 2px 7px; cursor: pointer; letter-spacing: 0.04em; text-transform: uppercase; }
-    .lang-switcher-btn:hover { border-color: #555; color: #ccc; }
-    .lang-switcher-btn.active { border-color: #888; color: #e5e5e5; background: rgba(255,255,255,0.08); }
+    /* Ensure [hidden] works even if slide CSS sets display on an element */
+    [hidden] { display: none !important; }
+    /* Language dropdown */
+    #fp-lang-drop { position: relative; margin-left: 8px; }
+    #fp-lang-btn { display: flex; align-items: center; gap: 5px; background: none; border: 1px solid #333; border-radius: 4px; color: #888; font-size: 11px; font-family: system-ui, sans-serif; padding: 3px 8px; cursor: pointer; letter-spacing: 0.04em; text-transform: uppercase; transition: border-color .15s, color .15s; line-height: 1; }
+    #fp-lang-btn:hover { border-color: #555; color: #ccc; }
+    #fp-lang-menu { display: none; position: absolute; top: calc(100% + 6px); right: 0; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 6px; overflow: hidden; min-width: 130px; z-index: 200; box-shadow: 0 4px 16px rgba(0,0,0,.5); }
+    #fp-lang-menu.open { display: block; }
+    #fp-lang-menu button { display: block; width: 100%; text-align: left; background: none; border: none; color: #aaa; font-size: 12px; font-family: system-ui, sans-serif; padding: 9px 14px; cursor: pointer; letter-spacing: .02em; transition: background .15s, color .15s; }
+    #fp-lang-menu button:hover { background: rgba(255,255,255,.07); color: #fff; }
+    #fp-lang-menu button.active { color: #E8711A; font-weight: 600; }
   </style>
   <script defer src="https://umami.wbtm.io/script.js" data-website-id="306f3c58-2e8f-487c-b68f-e53f3b2a0b5d"></script>
 </head>
@@ -470,1303 +478,497 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     <a href="/" id="fp-dash-btn">&#8592; Dashboard</a>
     <div style="width:1px;height:20px;background:#333;flex-shrink:0;"></div>
     <button class="fp-nav-btn" id="fp-prev" disabled>&#8249;</button>
-    <div id="fp-counter">1 / 3</div>
+    <div id="fp-counter">1 / 2</div>
     <button class="fp-nav-btn" id="fp-next">&#8250;</button>
+    <div id="fp-lang-drop"><button id="fp-lang-btn" onclick="fpLangToggle()"><span id="fp-lang-label">EN</span><svg width="8" height="8" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg></button><div id="fp-lang-menu"><button data-lang="en" onclick="fpLangSelect('en')">EN — English</button><button data-lang="es" onclick="fpLangSelect('es')">ES — Español</button></div></div>
     <div id="fp-header-spacer"></div>
-    <div id="fp-title">Pyramid</div>
+    <div id="fp-title">9</div>
     <button class="fp-share-btn" id="fp-share-btn-hdr" title="Share presentation"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
   </div>
   <div id="fp-viewer">
     <div class="slides-container">
 <div class="fp-slide" data-slide-index="0" style="">
-<div class="slide hero" data-slide="cover-slide-rosa">
-
-  <!-- Softsolution + LiteSentry logo row — top left -->
-  <div class="slide-logo-row" style="position:absolute; top:22px; left:36px; z-index:10;">
-    <img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution">
-    <span class="slide-logo-sep"></span>
-    <img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls">
-  </div>
-
-  <!-- Credit line: top right -->
-  <span class="softsolution-credit" data-edit="credit"><span data-lang="en">by GlassQuality.com</span><span data-lang="es" hidden="">by GlassQuality.com</span></span>
-
-  <!-- Customer logo — centered in right half -->
-  <div class="ls1-customer-logo" data-edit="customer-logo">
-    <img class="ls1-cust-img" src="../shared/CostOfQualityDefects.png" alt="Customer Logo" onerror="this.classList.add('ls1-cust-img--missing')">
-    <label class="ls1-cust-placeholder" for="ls1-logo-file" title="Click to upload logo">
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="18" height="18" rx="3"></rect>
-        <circle cx="8.5" cy="8.5" r="1.5"></circle>
-        <polyline points="21 15 16 10 5 21"></polyline>
-      </svg>
-      <span>Customer Logo</span>
-      <small>Click to upload</small>
-    </label>
-    
-  </div>
-
-  <!-- Hero background image -->
-  <img class="hero-bg" src="../shared/CostOfQualityDefects.png" alt="Hero background" style="object-position:50% 75%;object-fit:contain;">
-  <div class="hero-overlay"></div>
-
-  <!-- Main content -->
-  <div class="hero-content">
-    <div class="brand-badge" data-edit="badge"><span data-lang="en">GlassQuality.com · LineScanner<span style="letter-spacing: 1.2px;">· Osprey</span></span><span data-lang="es" hidden="">GlassQuality.com · LineScanner<span style="letter-spacing: 1.2px;">· Osprey</span></span></div>
-    <h1 data-edit="headline"><span data-lang="en">Quality Inspection<br>for <span class="blue">Flat Glass</span></span><span data-lang="es" hidden="">Quality Inspection<br>for <span class="blue">Flat Glass</span></span></h1>
-    <h2 data-edit="subheadline"><span data-lang="en">Proposal for [Customer] · [Name], [Title]</span><span data-lang="es" hidden="">Proposal for [Customer] · [Name], [Title]</span></h2>
-    
-  </div>
-
-  <!-- Gallery button -->
-  <button class="ls1-gallery-btn" onclick="ls1OpenGallery()" title="Show installation gallery">
-    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3" y="3" width="7" height="7"></rect>
-      <rect x="14" y="3" width="7" height="7"></rect>
-      <rect x="14" y="14" width="7" height="7"></rect>
-      <rect x="3" y="14" width="7" height="7"></rect>
-    </svg>
-    Gallery
-  </button>
-
-  <!-- Gallery overlay -->
-  <div class="ls1-gallery-overlay" id="ls1GalleryOverlay" style="display:none;">
-    <div class="ls1-gallery-popup">
-      <button class="ls1-gallery-close" onclick="ls1CloseGallery()">✕</button>
-      <div class="ls1-car-wrap" id="ls1CarWrap">
-        <div class="ls1-car-track" id="ls1CarTrack" data-edit="carousel-track" data-autoplay="8">
-
-          
-
-          <div class="ls1-car-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects"><div class="ls1-car-caption">CostOfQualityDefects</div></div><div class="ls1-car-slide ls1-car-slide--text">
-            <div class="ls1-stat-block">
-              <div class="section-label" data-edit="stat-1-label"><span data-lang="en">Cost of Quality Defects</span><span data-lang="es" hidden="">Cost of Quality Defects</span></div>
-              <span class="stat-number" data-edit="stat-1-number"><span data-lang="en">Rule 1+10+100</span><span data-lang="es" hidden="">Rule 1+10+100</span></span>
-              <div class="stat-label" data-edit="stat-1-text"><span data-lang="en">Catching a defect early costs 1, while letting it reach the customer can cost 100 times more in replacements and recalls</span><span data-lang="es" hidden="">Catching a defect early costs 1, while letting it reach the customer can cost 100 times more in replacements and recalls</span></div>
-            </div>
-            
-            
-          </div><div class="ls1-car-slide" data-edit="gallery-image-1">
-            <img src="../shared/Render_Tempering_Line.png" alt="Tempering Line">
-            <div class="ls1-car-caption" data-edit="gallery-caption-1"><span data-lang="en">Tempering Line</span><span data-lang="es" hidden="">Tempering Line</span></div>
-            
-            
-            
-          </div><div class="ls1-car-slide ls1-car-slide--text"><div class="ls1-stat-block"><div class="section-label" data-edit="stat-4-label"><span data-lang="en">Quality as a selling factor</span><span data-lang="es" hidden="">Quality as a selling factor</span></div><span class="stat-number" data-edit="stat-4-number"><span data-lang="en">CUSTOMER SATISFACTION</span><span data-lang="es" hidden="">CUSTOMER SATISFACTION</span></span><div class="stat-label" data-edit="stat-4-text"><span data-lang="en">A happy customer always buys more</span><span data-lang="es" hidden="">A happy customer always buys more</span></div></div></div>
-
-          <div class="ls1-car-slide" data-edit="gallery-image-2">
-            <img src="../shared/Render_IG_LIne.png" alt="IG Line">
-            <div class="ls1-car-caption" data-edit="gallery-caption-2"><span data-lang="en">IG Line</span><span data-lang="es" hidden="">IG Line</span></div>
-            
-            
-            
-          </div><div class="ls1-car-slide ls1-car-slide--text">
-            <div class="ls1-stat-block">
-              <div class="section-label" data-edit="stat-2-label"><span data-lang="en">The Human Limit</span><span data-lang="es" hidden="">The Human Limit</span></div>
-              <span class="stat-number" data-edit="stat-2-number"><span data-lang="en">Ghost Zone</span><span data-lang="es" hidden="">Ghost Zone</span></span>
-              <div class="stat-label" data-edit="stat-2-text"><span data-lang="en">Human inspectors lose nearly all accuracy once line speeds increases</span><span data-lang="es" hidden="">Human inspectors lose nearly all accuracy once line speeds increases</span></div>
-            </div>
-            
-            
-          </div>
-
-          
-
-          <div class="ls1-car-slide" data-edit="gallery-image-3">
-            <img src="../shared/Render_Automotive_Printing_Line.png" alt="Automotive Printing Line">
-            <div class="ls1-car-caption" data-edit="gallery-caption-3"><span data-lang="en">Automotive Printing Line</span><span data-lang="es" hidden="">Automotive Printing Line</span></div>
-            
-            
-            
-          </div><div class="ls1-car-slide ls1-car-slide--text">
-            <div class="ls1-stat-block">
-              <div class="section-label" data-edit="stat-3-label"><span data-lang="en">Invisible Risks</span><span data-lang="es" hidden="">Invisible Risks</span></div>
-              <span class="stat-number" data-edit="stat-3-number"><span data-lang="en">Anisotropy &amp; Distortion</span><span data-lang="es" hidden="">Anisotropy &amp; Distortion</span></span>
-              <div class="stat-label" data-edit="stat-3-text"><span data-lang="en">By seeing what the eye misses, you prevent unplanned costs before the product ever leaves to your customer</span><span data-lang="es" hidden="">By seeing what the eye misses, you prevent unplanned costs before the product ever leaves to your customer</span></div>
-            </div>
-            
-            
-          </div>
-
-          
-
-        </div>
-        <button class="ls1-car-prev" onclick="ls1CarMove(-1)">‹</button>
-        <button class="ls1-car-next" onclick="ls1CarMove(1)">›</button>
-      </div>
-
-      <!-- Thumbnail strip — builder + final presentation -->
-      <div class="ls1-thumb-strip" id="ls1ThumbStrip"></div>
-
-      <!-- Footer — builder only -->
-      
-    </div>
-  </div>
-
-  <!-- Shared file input for carousel image swaps -->
-  
-
-  <!-- Scoped styles — slide-01 only -->
-  <style>
-    .ls1-customer-logo {
-      position: static;
-      transform: none;
-      margin: 16px auto 0;
-      z-index: 10;
-      display: flex; align-items: center; justify-content: center;
-      background: #ffffff; /* overridden by detectLogoBg at runtime */
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,.18);
-      border-radius: 24px; padding: 18px;
-      width: 160px; height: 160px;
-    }
-    .ls1-customer-logo { cursor: pointer; }
-    .ls1-customer-logo::after {
-      content: 'Change Logo';
-      position: absolute; inset: 0; border-radius: 24px;
-      background: rgba(0,0,0,.55);
-      color: #fff; font-size: 12px; font-weight: 700; letter-spacing: .06em;
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity .2s;
-    }
-    .ls1-customer-logo:hover::after { opacity: 1; }
-    .ls1-cust-img { width:90%; height:90%; object-fit:contain; }
-    .ls1-cust-img--missing { display:none; }
-    .ls1-cust-img--missing ~ .ls1-cust-placeholder { display:flex; }
-    .ls1-cust-placeholder {
-      display:none; flex-direction:column; align-items:center; justify-content:center; gap:10px;
-      width:100%; height:100%;
-      border:2px dashed rgba(255,255,255,.25); border-radius:16px;
-      cursor:pointer; color:rgba(255,255,255,.55); text-align:center;
-      transition:border-color .2s, color .2s;
-    }
-    .ls1-cust-placeholder:hover { border-color:rgba(var(--accent-rgb),.6); color:var(--accent); }
-    .ls1-cust-placeholder span { font-size:14px; font-weight:700; letter-spacing:.04em; }
-    .ls1-cust-placeholder small { font-size:11px; opacity:.65; }
-
-    .ls1-gallery-btn {
-      position:absolute; bottom:80px; right:16px; z-index:10;
-      display:flex; align-items:center; gap:6px;
-      padding:7px 14px;
-      background:rgba(0,0,0,.40); border:1px solid rgba(255,255,255,.20);
-      border-radius:20px; color:rgba(255,255,255,.70);
-      font-size:11px; font-weight:600; letter-spacing:.06em;
-      cursor:pointer; backdrop-filter:blur(8px);
-      transition:background .25s, border-color .25s, color .25s;
-      font-family:inherit; user-select:none;
-    }
-    .ls1-gallery-btn:hover { background:rgba(var(--accent-rgb),.25); border-color:var(--accent); color:#fff; }
-
-    .ls1-gallery-overlay {
-      position:fixed; inset:0; z-index:9000;
-      background:rgba(0,0,0,.70); backdrop-filter:blur(4px);
-      display:flex; align-items:center; justify-content:center;
-    }
-    .ls1-gallery-popup {
-      position:relative;
-      background:rgba(10,10,14,.92); border:1px solid rgba(255,255,255,.14);
-      border-radius:20px; padding:20px;
-      box-shadow:0 32px 96px rgba(0,0,0,.80);
-    }
-    .ls1-gallery-close {
-      position:absolute; top:-14px; right:-14px;
-      width:30px; height:30px; border-radius:50%;
-      min-width:44px; min-height:44px;
-      background:rgba(40,40,50,.95); border:1px solid rgba(255,255,255,.22);
-      color:rgba(255,255,255,.80); font-size:13px; cursor:pointer;
-      display:flex; align-items:center; justify-content:center;
-      transition:background .2s, color .2s; z-index:5;
-    }
-    .ls1-gallery-close:hover { background:rgba(255,255,255,.20); color:#fff; }
-
-    .ls1-car-wrap { position:relative; width:100%; height:auto; border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,.12); box-shadow:0 24px 80px rgba(0,0,0,.7); }
-    .ls1-car-track { display:flex; height:auto; transition:transform .55s cubic-bezier(.4,0,.2,1); }
-    .ls1-car-slide { flex:0 0 100%; width:100%; height:auto; position:relative; background:#111; }
-    .ls1-car-slide img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; user-select:none; pointer-events:none; }
-    .ls1-car-caption { position:absolute; bottom:0; left:0; right:0; padding:10px 18px; background:linear-gradient(transparent,rgba(0,0,0,.75)); color:rgba(255,255,255,.85); font-size:12px; font-weight:600; letter-spacing:.05em; text-align:center; }
-    .ls1-car-caption:focus { outline:none; }
-
-    .ls1-car-prev, .ls1-car-next { position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,.50); border:1px solid rgba(255,255,255,.20); color:#fff; font-size:26px; line-height:1; width:40px; height:40px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .2s; z-index:5; }
-    .ls1-car-prev { left:12px; }
-    .ls1-car-next { right:12px; }
-    .ls1-car-prev:hover, .ls1-car-next:hover { background:rgba(var(--accent-rgb),.60); }
-
-    /* ── Carousel builder controls ── */
-    .ls1-car-img-overlay {
-      position:absolute; inset:0; z-index:15;
-      background:rgba(0,0,0,.55);
-      display:flex; align-items:center; justify-content:center;
-      color:#fff; font-size:12px; font-weight:700; letter-spacing:.06em;
-      opacity:0; transition:opacity .2s; cursor:pointer;
-    }
-    .ls1-car-slide:hover .ls1-car-img-overlay { opacity:1; }
-    .ls1-car-move {
-      position:absolute; bottom:10px; z-index:20;
-      width:28px; height:28px; border-radius:50%;
-      background:rgba(0,0,0,.65); border:1px solid rgba(255,255,255,.30);
-      color:#fff; font-size:18px; line-height:1; cursor:pointer;
-      display:flex; align-items:center; justify-content:center;
-      opacity:0; transition:opacity .2s, background .2s;
-      font-family:inherit;
-    }
-    .ls1-car-slide:hover .ls1-car-move { opacity:1; }
-    .ls1-car-move--l { right:48px; }
-    .ls1-car-move--r { right:12px; }
-    .ls1-car-move:hover { background:rgba(var(--accent-rgb),.65); }
-
-    /* ── Delete button ── */
-    .ls1-car-del {
-      position:absolute; top:8px; left:8px; z-index:22;
-      width:24px; height:24px; border-radius:50%;
-      background:rgba(180,30,30,.75); border:1px solid rgba(255,100,100,.30);
-      color:#fff; font-size:13px; line-height:1; cursor:pointer;
-      display:flex; align-items:center; justify-content:center;
-      opacity:0; transition:opacity .2s, background .2s;
-      font-family:inherit;
-    }
-    .ls1-car-slide:hover .ls1-car-del { opacity:1; }
-    .ls1-car-del:hover { background:rgba(220,40,40,1); }
-
-    .ls1-car-slide--text { flex:0 0 100%; background:linear-gradient(135deg,#0d1117 0%,#1a1f2e 100%); display:flex; align-items:center; justify-content:center; }
-    .ls1-stat-block { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:32px; width:100%; text-align:center; }
-    .ls1-stat-block .stat-number { font-size:clamp(48px,8vw,88px); font-weight:900; letter-spacing:-.03em; line-height:1; background:linear-gradient(135deg,var(--accent),var(--accent-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; display:block; }
-    .ls1-stat-block .stat-label { font-size:15px; color:var(--text-muted); margin-top:8px; font-weight:500; }
-    [contenteditable]:focus { outline:none; }
-
-    /* ── Thumbnail strip ── */
-    .ls1-thumb-strip {
-      display:flex; gap:6px; padding:10px 0 4px;
-      overflow-x:auto; scrollbar-width:thin;
-      scrollbar-color:rgba(255,255,255,.15) transparent;
-    }
-    .ls1-thumb {
-      flex:0 0 72px; height:46px; border-radius:8px;
-      border:2px solid rgba(255,255,255,.12);
-      background:#222; background-size:cover; background-position:center;
-      cursor:pointer; transition:border-color .2s, opacity .2s;
-      position:relative; overflow:hidden; user-select:none;
-    }
-    .ls1-thumb:hover { border-color:rgba(255,255,255,.35); }
-    .ls1-thumb--active { border-color:var(--accent) !important; }
-    .ls1-thumb--dragging { opacity:.4; }
-    .ls1-thumb--text {
-      display:flex; align-items:center; justify-content:center;
-      background:linear-gradient(135deg,#0d1117,#1a1f2e);
-      font-size:9px; font-weight:700; letter-spacing:.06em;
-      color:var(--accent); text-align:center; padding:4px;
-      text-transform:uppercase;
-    }
-    .ls1-thumb-dragover { border-color:var(--accent); border-style:dashed; }
-
-    /* ── Footer: autoplay + add buttons ── */
-    .ls1-car-footer {
-      display:flex; align-items:center; justify-content:space-between;
-      padding:8px 2px 0;
-    }
-    .ls1-autoplay-ctrl {
-      font-size:11px; color:rgba(255,255,255,.40); font-weight:600;
-      letter-spacing:.06em; user-select:none;
-    }
-    .ls1-autoplay-ctrl span {
-      color:rgba(255,255,255,.65); min-width:14px; display:inline-block;
-      text-align:center; border-bottom:1px solid rgba(255,255,255,.2);
-    }
-    .ls1-autoplay-ctrl span:focus { outline:none; border-color:var(--accent); color:#fff; }
-    .ls1-add-btns { display:flex; gap:6px; }
-    .ls1-add-btn {
-      font-size:11px; font-weight:700; letter-spacing:.05em;
-      padding:5px 12px; border-radius:20px; cursor:pointer;
-      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.15);
-      color:rgba(255,255,255,.6); font-family:inherit;
-      transition:background .2s, border-color .2s, color .2s;
-    }
-    .ls1-add-btn:hover { background:rgba(var(--accent-rgb),.15); border-color:var(--accent); color:var(--accent); }
-
-    /* ── Desktop (≥769px) ── */
-    @media(min-width:769px) {
-      .ls1-customer-logo { position: absolute; left: 75%; top: 50%; transform: translate(-50%, -50%); margin: 0; width: clamp(150px,15vw,250px); height: clamp(150px,15vw,250px); padding: 28px; }
-      .ls1-gallery-btn { bottom:64px; right:32px; }
-      .ls1-car-wrap { width:760px; height:460px; }
-      .ls1-car-track { height:460px; }
-      .ls1-car-slide { flex:0 0 760px; width:760px; height:460px; }
-      .ls1-car-slide img { width:100%; height:100%; object-fit:contain; }
-      .ls1-car-slide--text { flex:0 0 760px; }
-    }
-  </style>
-
-  <!-- Gallery JS — self-contained -->
-  <script>
-  (function () {
-    var idx         = 0;
-    var autoTimer   = null;
-    var targetSlide = null;
-
-    // ── Helpers ────────────────────────────────────────────────────────────
-    function getSlides()    { return Array.from(document.querySelectorAll('#ls1CarTrack > .ls1-car-slide')); }
-    function getWrapWidth() { return document.getElementById('ls1CarWrap').offsetWidth; }
-    function getAutoplay()  { return (parseInt(document.getElementById('ls1CarTrack').getAttribute('data-autoplay')) || 7) * 1000; }
-
-    function goTo(i) {
-      var slides = getSlides();
-      idx = Math.max(0, Math.min(slides.length - 1, i));
-      document.getElementById('ls1CarTrack').style.transform = 'translateX(' + (idx * -getWrapWidth()) + 'px)';
-      ls1UpdateThumbs();
-      // Analytics
-      var caption = slides[idx] ? slides[idx].querySelector('[data-edit^="gallery-caption"]') : null;
-      var name = caption ? caption.textContent.trim().toLowerCase().replace(/\s+/g, '-') : 'item-' + (idx + 1);
-      if (window.umami) umami.track('gallery:' + name);
-    }
-
-    // ── Auto-advance ───────────────────────────────────────────────────────
-    function startAutoplay() {
-      clearInterval(autoTimer);
-      autoTimer = setInterval(function () {
-        var count = getSlides().length;
-        goTo(idx < count - 1 ? idx + 1 : 0);
-      }, getAutoplay());
-    }
-
-    function stopAutoplay() { clearInterval(autoTimer); }
-
-    // Pause on hover, resume on leave
-    var wrap = document.getElementById('ls1CarWrap');
-    wrap.addEventListener('mouseenter', stopAutoplay);
-    wrap.addEventListener('mouseleave', function () {
-      if (document.getElementById('ls1GalleryOverlay').style.display !== 'none') startAutoplay();
-    });
-
-    // ── Public API ─────────────────────────────────────────────────────────
-    window.ls1OpenGallery = function () {
-      document.getElementById('ls1GalleryOverlay').style.display = 'flex';
-      goTo(0);
-      ls1BuildThumbs(); // also calls ls1EnsureDeleteBtns internally
-      startAutoplay();
-    };
-
-    window.ls1CloseGallery = function () {
-      document.getElementById('ls1GalleryOverlay').style.display = 'none';
-      stopAutoplay();
-    };
-
-    window.ls1CarMove = function (dir) { goTo(idx + dir); };
-
-    // ── Thumbnail strip ────────────────────────────────────────────────────
-    window.ls1BuildThumbs = function () {
-      var strip  = document.getElementById('ls1ThumbStrip');
-      var slides = getSlides();
-      strip.innerHTML = '';
-
-      slides.forEach(function (slide, i) {
-        var thumb = document.createElement('div');
-        thumb.className = 'ls1-thumb' + (i === idx ? ' ls1-thumb--active' : '');
-        thumb.setAttribute('data-index', i);
-
-        var img = slide.querySelector('img');
-        if (img) {
-          thumb.style.backgroundImage = 'url(' + img.src + ')';
-        } else {
-          thumb.classList.add('ls1-thumb--text');
-          var lbl = slide.querySelector('.section-label');
-          thumb.textContent = lbl ? lbl.textContent.substring(0, 14) : 'Text';
-        }
-
-        // Click to navigate
-        thumb.addEventListener('click', function () { goTo(i); });
-
-        // Drag to reorder
-        thumb.draggable = true;
-        thumb.addEventListener('dragstart', function (e) {
-          e.dataTransfer.setData('text/plain', String(i));
-          setTimeout(function () { thumb.classList.add('ls1-thumb--dragging'); }, 0);
-        });
-        thumb.addEventListener('dragend', function () { thumb.classList.remove('ls1-thumb--dragging'); });
-        thumb.addEventListener('dragover', function (e) { e.preventDefault(); thumb.classList.add('ls1-thumb-dragover'); });
-        thumb.addEventListener('dragleave', function ()  { thumb.classList.remove('ls1-thumb-dragover'); });
-        thumb.addEventListener('drop', function (e) {
-          e.preventDefault();
-          thumb.classList.remove('ls1-thumb-dragover');
-          var from = parseInt(e.dataTransfer.getData('text/plain'));
-          var to   = i;
-          if (from === to) return;
-          var track      = document.getElementById('ls1CarTrack');
-          var allSlides  = getSlides();
-          var fromSlide  = allSlides[from];
-          var toSlide    = allSlides[to];
-          from < to ? track.insertBefore(fromSlide, toSlide.nextSibling)
-                    : track.insertBefore(fromSlide, toSlide);
-          goTo(0);
-          ls1BuildThumbs();
-          ls1SaveCarousel();
-        });
-
-        strip.appendChild(thumb);
-      });
-
-      ls1EnsureDeleteBtns();
-    };
-
-    function ls1EnsureDeleteBtns() {
-      getSlides().forEach(function (slide) {
-        if (!slide.querySelector('.ls1-car-del')) {
-          var btn = document.createElement('button');
-          btn.className = 'ls1-car-del';
-          btn.title = 'Remove';
-          btn.textContent = '✕';
-          btn.addEventListener('click', function () { ls1DeleteCarSlide(btn); });
-          slide.insertBefore(btn, slide.firstChild);
-        }
-      });
-    }
-
-    window.ls1DeleteCarSlide = function (btn) {
-      var slide = btn.closest('.ls1-car-slide');
-      var all   = getSlides();
-      if (all.length <= 1) return; // keep at least one slide
-      slide.remove();
-      goTo(0);
-      ls1BuildThumbs();
-      ls1SaveCarousel();
-    };
-
-    window.ls1UpdateThumbs = function () {
-      document.querySelectorAll('#ls1ThumbStrip .ls1-thumb').forEach(function (t, i) {
-        t.classList.toggle('ls1-thumb--active', i === idx);
-      });
-    };
-
-    // ── Autoplay value editing (builder only) ──────────────────────────────
-    var autoValEl = document.getElementById('ls1AutoVal');
-    if (autoValEl) {
-      autoValEl.addEventListener('input', function () {
-        var val = parseInt(autoValEl.textContent) || 7;
-        document.getElementById('ls1CarTrack').setAttribute('data-autoplay', val);
-        startAutoplay(); // restart with new interval
-      });
-      autoValEl.addEventListener('blur', function () { ls1SaveCarousel(); });
-    }
-
-    // ── Change carousel image ──────────────────────────────────────────────
-    window.ls1ChangeCarImage = function (overlay) {
-      targetSlide = overlay.closest('.ls1-car-slide');
-      document.getElementById('ls1-carousel-file').click();
-    };
-
-    document.getElementById('ls1-carousel-file').addEventListener('change', function (e) {
-      var file = e.target.files[0];
-      if (!file || !targetSlide) return;
-      var img = targetSlide.querySelector('img');
-      img.src = URL.createObjectURL(file);
-      var reader = new FileReader();
-      reader.onload = function (ev) {
-        fetch('/api/upload-image', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ filename: file.name, data: ev.target.result })
-        })
-        .then(function (r) { return r.json(); })
-        .then(function (data) {
-          if (data.path) { img.src = data.path; ls1BuildThumbs(); ls1SaveCarousel(); }
-        });
-      };
-      reader.readAsDataURL(file);
-      e.target.value = '';
-    });
-
-    // ── Reorder via buttons (fallback) ─────────────────────────────────────
-    window.ls1MoveCarSlide = function (btn, dir) {
-      var slide = btn.closest('.ls1-car-slide');
-      var all   = getSlides();
-      var i     = all.indexOf(slide);
-      var swap  = all[i + dir];
-      if (!swap) return;
-      var track = document.getElementById('ls1CarTrack');
-      dir === 1 ? track.insertBefore(swap, slide) : track.insertBefore(slide, swap);
-      goTo(0); ls1BuildThumbs(); ls1SaveCarousel();
-    };
-
-    // ── Add items (builder only) ───────────────────────────────────────────
-    window.ls1AddImage = function () {
-      var input = document.createElement('input');
-      input.type = 'file'; input.accept = 'image/*';
-      input.style.display = 'none';
-      document.body.appendChild(input);
-      input.addEventListener('change', function (e) {
-        document.body.removeChild(input);
-        var file = e.target.files[0];
-        if (!file) return;
-        var reader = new FileReader();
-        reader.onload = function (ev) {
-          fetch('/api/upload-image', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ filename: file.name, data: ev.target.result })
-          })
-          .then(function (r) { return r.json(); })
-          .then(function (data) {
-            if (data.path) {
-              document.getElementById('ls1CarTrack').appendChild(makeImageSlide(data.path, file.name.replace(/\.[^.]+$/, '')));
-              var newIdx = getSlides().length - 1;
-              ls1BuildThumbs();
-              ls1SaveCarousel();
-              goTo(newIdx);
-            }
-          });
-        };
-        reader.readAsDataURL(file);
-      });
-      input.click();
-    };
-
-    window.ls1AddText = function () {
-      document.getElementById('ls1CarTrack').appendChild(makeTextSlide());
-      ls1BuildThumbs(); ls1SaveCarousel();
-      goTo(getSlides().length - 1);
-    };
-
-    function makeImageSlide(src, caption) {
-      var d = document.createElement('div');
-      d.className = 'ls1-car-slide';
-      d.innerHTML = '<img src="' + src + '" alt="' + caption + '">'
-        + '<div class="ls1-car-caption" contenteditable spellcheck="false">' + caption + '</div>'
-        + '<div class="ls1-car-img-overlay" data-builder-only="" onclick="ls1ChangeCarImage(this)">Change Image</div>'
-        + '<button class="ls1-car-move ls1-car-move--l" onclick="ls1MoveCarSlide(this,-1)">&#8249;</button>'
-        + '<button class="ls1-car-move ls1-car-move--r" onclick="ls1MoveCarSlide(this,1)">&#8250;</button>';
-      return d;
-    }
-
-    function makeTextSlide() {
-      var d = document.createElement('div');
-      d.className = 'ls1-car-slide ls1-car-slide--text';
-      d.innerHTML = '<div class="ls1-stat-block">'
-        + '<div class="section-label" contenteditable spellcheck="false">Section Title</div>'
-        + '<span class="stat-number" contenteditable spellcheck="false">Key Fact</span>'
-        + '<div class="stat-label" contenteditable spellcheck="false">Description text here</div>'
-        + '</div>'
-        + '<button class="ls1-car-move ls1-car-move--l" onclick="ls1MoveCarSlide(this,-1)">&#8249;</button>'
-        + '<button class="ls1-car-move ls1-car-move--r" onclick="ls1MoveCarSlide(this,1)">&#8250;</button>';
-      return d;
-    }
-
-    // ── Save carousel state ────────────────────────────────────────────────
-    function ls1SaveCarousel() {
-      var autoVal = parseInt(document.getElementById('ls1CarTrack').getAttribute('data-autoplay')) || 7;
-      var clone   = document.getElementById('ls1CarTrack').cloneNode(true);
-      clone.querySelectorAll('.ls1-car-del').forEach(function (el) { el.remove(); });
-      document.dispatchEvent(new CustomEvent('slide-carousel-save', {
-        detail: {
-          html:    clone.innerHTML,
-          autoplay: String(autoVal)
-        }
-      }));
-    }
-
-    window.ls1SaveCarousel = ls1SaveCarousel;
-
-  })();
-
-  // ── Smart background detection for customer logo ─────────────────────────
-  function ls1DetectLogoBg(img) {
-    try {
-      var container = img.closest('.ls1-customer-logo');
-      if (!container) return;
-      var w = img.naturalWidth  || 100;
-      var h = img.naturalHeight || 100;
-      var canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      var ctx = canvas.getContext('2d', { willReadFrequently: true });
-      ctx.drawImage(img, 0, 0, w, h);
-      var size = Math.max(1, Math.round(Math.min(w, h) * 0.05));
-      var top    = ctx.getImageData(0, 0, w, size).data;
-      var bottom = ctx.getImageData(0, h - size, w, size).data;
-      var left   = ctx.getImageData(0, 0, size, h).data;
-      var right  = ctx.getImageData(w - size, 0, size, h).data;
-      var r = 0, g = 0, b = 0, a = 0, count = 0;
-      [top, bottom, left, right].forEach(function (d) {
-        for (var i = 0; i < d.length; i += 4) {
-          r += d[i]; g += d[i+1]; b += d[i+2]; a += d[i+3]; count++;
-        }
-      });
-      if (count === 0) return;
-      r = Math.round(r / count); g = Math.round(g / count);
-      b = Math.round(b / count); a = Math.round(a / count);
-      container.style.background = (a < 30) ? '#fff' : 'rgb(' + r + ',' + g + ',' + b + ')';
-    } catch (e) { /* cross-origin or tainted canvas — leave default */ }
-  }
-
-  // Apply on initial page load
-  (function () {
-    var img = document.querySelector('.ls1-cust-img');
-    if (!img) return;
-    if (img.complete && img.naturalWidth) { ls1DetectLogoBg(img); }
-    else { img.addEventListener('load', function () { ls1DetectLogoBg(img); }); }
-  })();
-
-  // ── Customer logo upload ──────────────────────────────────────────────────
-  (function () {
-    var input = document.getElementById('ls1-logo-file');
-    if (!input) return;
-    input.addEventListener('change', function (e) {
-      var file = e.target.files[0];
-      if (!file) return;
-      var img = document.querySelector('.ls1-cust-img');
-      img.src = URL.createObjectURL(file);
-      img.classList.remove('ls1-cust-img--missing');
-      img.addEventListener('load', function onNewLoad() {
-        ls1DetectLogoBg(img);
-        img.removeEventListener('load', onNewLoad);
-      });
-      var reader = new FileReader();
-      reader.onload = function (ev) {
-        fetch('/api/upload-image', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ filename: file.name, data: ev.target.result })
-        })
-        .then(function (r) { return r.json(); })
-        .then(function (data) {
-          if (data.path) {
-            img.src = data.path;
-            document.dispatchEvent(new CustomEvent('slide-image-change', {
-              detail: { editKey: 'customer-logo', src: data.path }
-            }));
-          }
-        });
-      };
-      reader.readAsDataURL(file);
-    });
-  })();
-  </script>
-
-
-</div>
-</div>
-<div class="fp-slide" data-slide-index="1" style="display:none;">
-<div class="slide content ls14" style="overflow:hidden;">
-  <img src="../shared/image112.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.06;pointer-events:none;z-index:0;">
-  <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
-  <div class="slide-layout">
-    <header class="slide-head">
-      <div class="section-label" data-edit="section-label"><span data-lang="en">Next Steps</span><span data-lang="es" hidden="">Next Steps</span></div>
-      <h1 class="slide-title" data-edit="headline"><span data-lang="en">Ready for a<br><span class="blue">live demonstration?</span></span><span data-lang="es" hidden="">Ready for a<br><span class="blue">live demonstration?</span></span></h1>
-      <div class="divider"></div>
-    </header>
-    <div class="slide-body">
-  <div class="cta-box anim-in" style="flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center; padding-bottom:72px; max-width:680px; width:100%; text-align:left;">
-    <p data-edit="intro"><span data-lang="en">We propose that your team visit our facilities in Austria so we can carry out an on-site demonstration with <strong>your own glass samples</strong> — together.</span><span data-lang="es" hidden="">We propose that your team visit our facilities in Austria so we can carry out an on-site demonstration with <strong>your own glass samples</strong> — together.</span></p>
-    <div class="cta-steps">
-      <div class="cta-step" data-umami-event="cta-step" data-umami-event-step="1-analysis"><div class="step-num">1</div><span data-edit="step1"><span data-lang="en">Analyse [Customer]'s current production line</span><span data-lang="es" hidden="">Analyse [Customer]'s current production line</span></span></div>
-      <div class="cta-step" data-umami-event="cta-step" data-umami-event-step="2-live-demo"><div class="step-num">2</div><span data-edit="step2"><span data-lang="en">Live demo with [Customer] glass samples</span><span data-lang="es" hidden="">Live demo with [Customer] glass samples</span></span></div>
-      <div class="cta-step" data-umami-event="cta-step" data-umami-event-step="3-proposal"><div class="step-num">3</div><span data-edit="step3"><span data-lang="en">Customised technical and commercial proposal</span><span data-lang="es" hidden="">Customised technical and commercial proposal</span></span></div>
-    </div>
-    <div class="cta-contact">
-      <div class="cta-contact-name">
-        <strong data-edit="contact-name"><span data-lang="en">Alex Ochoa</span><span data-lang="es" hidden="">Alex Ochoa</span></strong>
-        <span class="cta-contact-role" data-edit="contact-title"><span data-lang="en">Sales Manager</span><span data-lang="es" hidden="">Sales Manager</span></span>
-        <span class="cta-contact-addr" data-edit="contact-addr"><span data-lang="en">Im Vogelsang 18 · 3340 Waidhofen · Austria</span><span data-lang="es" hidden="">Im Vogelsang 18 · 3340 Waidhofen · Austria</span></span>
-      </div>
-      <div class="cta-contact-btns">
-        <a class="cta-btn-wa" href="#" target="_blank" data-umami-event="cta-whatsapp">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"></path><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.554 4.103 1.523 5.83L.057 23.25a.75.75 0 0 0 .918.919l5.42-1.466A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.694 9.694 0 0 1-4.946-1.355l-.354-.212-3.658.989.989-3.658-.212-.354A9.694 9.694 0 0 1 2.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"></path></svg>
-          WhatsApp
-        </a>
-        <a class="cta-btn-email" href="#" data-umami-event="cta-email">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
-          <span data-edit="contact-email"><span data-lang="en">alex.ochoa@softsolution.at</span><span data-lang="es" hidden="">alex.ochoa@softsolution.at</span></span>
-        </a>
-      </div>
-    </div>
-  </div>
-    </div><!-- /.slide-body -->
-  </div><!-- /.slide-layout -->
-
-  <!-- ── Scoped Styles ── -->
-  <style>
-    .cta-contact {
-      display:flex; align-items:center; justify-content:space-between; gap:20px;
-      margin-top:24px; padding-top:20px;
-      border-top:1px solid rgba(var(--accent-rgb),.2);
-      flex-wrap:wrap;
-    }
-    .cta-contact-name { display:flex; flex-direction:column; gap:3px; }
-    .cta-contact-name strong { font-size:15px; color:var(--text); }
-    .cta-contact-role { font-size:13px; color:var(--text-muted); }
-    .cta-contact-addr { font-size:12px; color:var(--text-muted); opacity:.7; }
-    .cta-contact-btns { display:flex; flex-direction:column; gap:10px; }
-    .cta-btn-wa, .cta-btn-email {
-      display:inline-flex; align-items:center; gap:10px;
-      padding:10px 20px; border-radius:100px;
-      font-size:13px; font-weight:600; text-decoration:none;
-      transition:all .2s; white-space:nowrap;
-    }
-    .cta-btn-wa {
-      background:rgba(37,211,102,.15); border:1px solid rgba(37,211,102,.35);
-      color:#25d366;
-    }
-    .cta-btn-wa:hover { background:rgba(37,211,102,.25); border-color:rgba(37,211,102,.6); }
-    .cta-btn-email {
-      background:rgba(var(--accent-rgb),.12); border:1px solid rgba(var(--accent-rgb),.3);
-      color:var(--accent);
-    }
-    .cta-btn-email:hover { background:rgba(var(--accent-rgb),.22); border-color:rgba(var(--accent-rgb),.55); }
-    /* ── Mobile base ── */
-    .ls14 { padding:52px 20px 80px !important; }
-    .cta-contact { flex-direction:column; align-items:flex-start; gap:14px; }
-    .cta-btn-wa, .cta-btn-email { font-size:14px; padding:14px 20px; min-height:44px; }
-
-    /* ── Desktop overrides ── */
-    @media(min-width:769px){
-      .ls14 { padding:60px 80px 0 !important; }
-      .cta-contact { flex-direction:row; align-items:center; gap:20px; }
-      .cta-btn-wa, .cta-btn-email { font-size:13px; padding:10px 20px; min-height:unset; }
-    }
-  </style>
-  <script>
-  (function () { var s = document.currentScript;
-    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
-  </script>
-
-  <script>
-  (function() {
-    function syncLinks() {
-      var emailEl = document.querySelector('[data-edit="contact-email"]');
-      var emailBtn = document.querySelector('.cta-btn-email');
-      if (emailEl && emailBtn) {
-        var email = emailEl.textContent.trim();
-        if (email) emailBtn.href = 'mailto:' + email;
-      }
-    }
-    document.addEventListener('DOMContentLoaded', syncLinks);
-    var emailEl = document.querySelector('[data-edit="contact-email"]');
-    if (emailEl) emailEl.addEventListener('input', syncLinks);
-
-    var waBtn = document.querySelector('.cta-btn-wa');
-    if (waBtn) waBtn.addEventListener('click', function() {
-      if (window.Track) Track.click(Track.slideId(waBtn), { component: 'cta', label: 'whatsapp', action: 'click' });
-    });
-    var emailBtn2 = document.querySelector('.cta-btn-email');
-    if (emailBtn2) emailBtn2.addEventListener('click', function() {
-      if (window.Track) Track.click(Track.slideId(emailBtn2), { component: 'cta', label: 'email', action: 'click' });
-    });
-  })();
-  </script>
-</div>
-</div>
-<div class="fp-slide" data-slide-index="2" style="display:none;">
-<div class="slide content t5" style="">
+<div class="slide content ls20-multi-buttons" data-slide="multi-buttons-new" data-slide-mode="sequence">
   <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
 
   <div class="slide-layout">
   <header class="slide-head">
-  <div class="section-label" data-edit="section-label"><span data-lang="en">The Technology</span><span data-lang="es" hidden="">The Technology</span></div>
-  <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;"><span data-lang="en">How LineScanner <span class="blue">sees what others miss</span></span><span data-lang="es" hidden="">How LineScanner <span class="blue">sees what others miss</span></span></h1>
+    <div class="section-label" data-edit="section-label" data-lang-key="ls20-multi-buttons.section-label"><span data-lang="en">Surface Quality</span><span data-lang="es" hidden="">Surface Quality</span></div>
+    <h1 class="slide-title" data-edit="headline" data-lang-key="ls20-multi-buttons.headline"><span data-lang="en">Defect detection with <span class="blue">Artificial Intelligence</span></span><span data-lang="es" hidden="">Defect detection with <span class="blue">Artificial Intelligence</span></span></h1>
+    <p class="slide-subtitle" data-edit="subtitle" data-lang-key="ls20-multi-buttons.subtitle"><span data-lang="en">Neural network trained to automatically classify every defect type.</span><span data-lang="es" hidden="">Neural network trained to automatically classify every defect type.</span></p>
   </header>
 
   <div class="slide-body">
 
-  <div class="ls-tabs" data-edit="tabs" data-track="t5:tabs" style="flex:1;min-height:0;width:100%;max-width:920px;flex-direction:column-reverse;">
-  <div class="ls-tab-list">
-    <button class="ls-tab" data-panel="0" data-edit="tab-howitworks"><span data-lang="en">How It Works</span><span data-lang="es" hidden="">How It Works</span></button>
-    <button class="ls-tab" data-panel="1" data-edit="tab-16bit"><span data-lang="en">16-bit Advantage</span><span data-lang="es" hidden="">16-bit Advantage</span></button>
-    <button class="ls-tab active" data-panel="2" data-edit="tab-vs"><span data-lang="en">vs Camera Systems</span><span data-lang="es" hidden="">vs Camera Systems</span></button>
+    <!--
+      Config blob — stores button definitions as JSON.
+      contenteditable so it's picked up by the standard focusout→save pipeline.
+      Rendered visually invisible; the JS reads/writes textContent.
+    -->
+    <div id="ls20-config" data-edit="ls20-config" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;left:-9999px;top:0;"><span data-lang="en">[{"id":"item-0","label":"Button 1","spriteRow":0,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect-of-a-Coating-image-LineScanner-Raw-Image.png\" alt=\"Defect-of-a-Coating-image-LineScanner-Raw-Image\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect-of-a-Coating-image-LineScanner-Raw-Image&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"},{"id":"item-1","label":"Button 2","spriteRow":1,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect-Piece-Edge-Chip-2.PNG\" alt=\"Defect-Piece-Edge-Chip-2\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect-Piece-Edge-Chip-2&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"},{"id":"item-2","label":"Button 3","spriteRow":2,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect of a Coating Defect LineScanner Raw Image.png\" alt=\"Defect of a Coating Defect LineScanner Raw Image\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect of a Coating Defect LineScanner Raw Image&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"}]</span><span data-lang="es" hidden="">[{"id":"item-0","label":"Button 1","spriteRow":0,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect-of-a-Coating-image-LineScanner-Raw-Image.png\" alt=\"Defect-of-a-Coating-image-LineScanner-Raw-Image\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect-of-a-Coating-image-LineScanner-Raw-Image&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"},{"id":"item-1","label":"Button 2","spriteRow":1,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect-Piece-Edge-Chip-2.PNG\" alt=\"Defect-Piece-Edge-Chip-2\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect-Piece-Edge-Chip-2&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"},{"id":"item-2","label":"Button 3","spriteRow":2,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect of a Coating Defect LineScanner Raw Image.png\" alt=\"Defect of a Coating Defect LineScanner Raw Image\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect of a Coating Defect LineScanner Raw Image&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"}]</span></div>
+
+    <!-- Button selector strip — populated by JS -->
+    <div class="ls20-mb-selector anim-in" id="ls20-selector"></div>
+
+    <!-- Default carousel (shown when no button selected) -->
+    <div class="ls-carousel ls20-car-default" id="ls20CarDefault" data-counter="" data-edit="ls20-default-carousel" data-track="ls20-multi-buttons:carousel:default" data-autoplay="5000" style="flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
+      <div class="ls-carousel-track" style="transform: translateX(-322px);">
+        
+      <div class="ls-carousel-slide"><img src="../shared/Defect_of_micro_edge_chips_on_a_cutout_detection_marks_2.png" alt="Defect of micro edge chips on a cutout detection marks 2" data-zoom=""><div class="ls-carousel-caption">Defect of micro edge chips on a cutout detection marks 2</div></div><div class="ls-carousel-slide"><img src="../shared/Defect_on_an_IGU_Insulated_Glass_Secondary_Seal_inside_the_unit_not_visible_with_a_camera.jpeg" alt="Defect on an IGU Insulated Glass Secondary Seal inside the unit not visible with a camera" data-zoom=""><div class="ls-carousel-caption">Defect on an IGU Insulated Glass Secondary Seal inside the unit not visible with a camera</div></div></div>
+    <div class="ls-carousel-counter">2 / 2</div></div>
+
+    <!-- Defect carousels — static slots matched to config items by data-defect-id -->
+    <div class="ls20-carousels" style="display:contents">
+      <div class="ls-carousel ls20-car" data-defect-id="item-0" data-counter="" data-edit="ls20-car-0" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track" style="transform: translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/Defect-of-a-Coating-image-LineScanner-Raw-Image.png" alt="Defect-of-a-Coating-image-LineScanner-Raw-Image" data-zoom=""><div class="ls-carousel-caption">Defect-of-a-Coating-image-LineScanner-Raw-Image</div></div></div><div class="ls-carousel-counter"></div></div>
+      <div class="ls-carousel ls20-car" data-defect-id="item-1" data-counter="" data-edit="ls20-car-1" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track" style="transform: translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-2.PNG" alt="Defect-Piece-Edge-Chip-2" data-zoom=""><div class="ls-carousel-caption">Defect-Piece-Edge-Chip-2</div></div></div><div class="ls-carousel-counter"></div></div>
+      <div class="ls-carousel ls20-car" data-defect-id="item-2" data-counter="" data-edit="ls20-car-2" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track" style="transform: translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/Defect_of_a_Coating_Defect_LineScanner_Raw_Image.png" alt="Defect of a Coating Defect LineScanner Raw Image" data-zoom=""><div class="ls-carousel-caption">Defect of a Coating Defect LineScanner Raw Image</div></div></div><div class="ls-carousel-counter"></div></div>
+      <div class="ls-carousel ls20-car" data-defect-id="item-3" data-counter="" data-edit="ls20-car-3" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"><div class="ls-carousel-slide no-img"><img src="" alt=""></div></div></div>
+      <div class="ls-carousel ls20-car" data-defect-id="item-4" data-counter="" data-edit="ls20-car-4" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track" style=""><div class="ls-carousel-slide"><img src="../shared/Defect_Arcing_on_LineScanner_Raw_Image.png" alt="Defect Arcing on LineScanner Raw Image" data-zoom=""><div class="ls-carousel-caption">Defect Arcing on LineScanner Raw Image</div></div></div></div>
+      <div class="ls-carousel ls20-car" data-defect-id="item-5" data-counter="" data-edit="ls20-car-5" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"><div class="ls-carousel-slide no-img"><img src="" alt=""></div></div></div>
+      <div class="ls-carousel ls20-car" data-defect-id="item-6" data-counter="" data-edit="ls20-car-6" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"><div class="ls-carousel-slide no-img"><img src="" alt=""></div></div></div>
+      <div class="ls-carousel ls20-car" data-defect-id="item-7" data-counter="" data-edit="ls20-car-7" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"><div class="ls-carousel-slide no-img"><img src="" alt=""></div></div></div>
+      <div class="ls-carousel ls20-car" data-defect-id="item-8" data-counter="" data-edit="ls20-car-8" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"><div class="ls-carousel-slide no-img"><img src="" alt=""></div></div></div>
+      <div class="ls-carousel ls20-car" data-defect-id="item-9" data-counter="" data-edit="ls20-car-9" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"><div class="ls-carousel-slide no-img"><img src="" alt=""></div></div></div>
+      <div class="ls-carousel ls20-car" data-defect-id="item-10" data-counter="" data-edit="ls20-car-10" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"><div class="ls-carousel-slide no-img"><img src="" alt=""></div></div></div>
+      <div class="ls-carousel ls20-car" data-defect-id="item-11" data-counter="" data-edit="ls20-car-11" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"><div class="ls-carousel-slide no-img"><img src="" alt=""></div></div></div>
+    </div>
+
+  </div><!-- slide-body -->
+  </div><!-- slide-layout -->
+
+  <!-- ── Scoped Styles ── -->
+  <style>
+    .ls20-multi-buttons { }
+
+    /* ── Selector strip ── */
+    .ls20-mb-selector {
+      display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+      width: 100%; max-width: 960px; flex-shrink: 0;
+    }
+
+    /* ── Button ── */
+    .ls20-multi-buttons .ls20-btn {
+      position: relative;
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+      padding: 8px 10px; border-radius: 12px; cursor: pointer;
+      background: var(--bg-card); border: 1px solid var(--border);
+      transition: all .2s; min-width: 76px; font-family: inherit;
+    }
+    .ls20-multi-buttons .ls20-btn:hover { border-color: rgba(var(--accent-rgb),.4); background: var(--bg-card-hover); }
+    .ls20-multi-buttons .ls20-btn.active {
+      border-color: var(--accent); background: rgba(var(--accent-rgb),.12);
+      box-shadow: 0 0 0 1px rgba(var(--accent-rgb),.25);
+    }
+    .ls20-multi-buttons .ls20-btn .ls20-label {
+      font-size: 10px; font-weight: 600; letter-spacing: .03em;
+      color: var(--text-muted); white-space: nowrap; transition: color .2s;
+    }
+    .ls20-multi-buttons .ls20-btn.active .ls20-label { color: var(--accent); }
+
+    /* ── Icon variants ── */
+    .ls20-multi-buttons .ls20-icon-wrap { position: relative; }
+    .ls20-multi-buttons .ls20-icon-sprite {
+      width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
+      background-image: url('../shared/defect-icons-sprite.png');
+      background-size: 200% 1000%; background-repeat: no-repeat;
+      transition: background-position .15s;
+    }
+    .ls20-multi-buttons .ls20-icon-img {
+      width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
+      object-fit: cover;
+    }
+    .ls20-multi-buttons .ls20-icon-placeholder {
+      width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 900; color: rgba(255,255,255,.35);
+      background: rgba(255,255,255,.06); border: 1.5px dashed rgba(255,255,255,.15);
+    }
+
+    /* ── Edit-mode icon overlay ── */
+    .ls20-multi-buttons .ls20-icon-edit {
+      position: absolute; inset: 0; border-radius: 8px;
+      background: rgba(0,0,0,.55); display: flex; align-items: center;
+      justify-content: center; opacity: 0; transition: opacity .15s;
+      cursor: pointer; font-size: 14px; color: #fff; pointer-events: auto;
+    }
+    .ls20-multi-buttons .ls20-icon-wrap:hover .ls20-icon-edit { opacity: 1; }
+
+    /* ── Delete button (edit mode) ── */
+    .ls20-multi-buttons .ls20-del {
+      position: absolute; top: -6px; right: -6px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: rgba(239,68,68,.85); border: none; cursor: pointer;
+      font-size: 12px; line-height: 18px; text-align: center;
+      color: #fff; font-weight: 700; padding: 0;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .15s;
+    }
+    .ls20-multi-buttons .ls20-btn:hover .ls20-del { opacity: 1; }
+
+    /* ── Add button (edit mode) ── */
+    .ls20-multi-buttons .ls20-add-btn {
+      border-style: dashed !important;
+      border-color: rgba(255,255,255,.2) !important;
+      opacity: .65;
+    }
+    .ls20-multi-buttons .ls20-add-btn:hover { opacity: 1 !important; border-color: rgba(var(--accent-rgb),.5) !important; }
+    .ls20-multi-buttons .ls20-add-icon {
+      width: 40px; height: 40px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; color: rgba(255,255,255,.4); background: rgba(255,255,255,.04);
+    }
+
+    /* ── Label editable ── */
+    .ls20-multi-buttons .ls20-label[contenteditable] { outline: none; cursor: text; min-width: 20px; }
+    .ls20-multi-buttons .ls20-label[contenteditable]:focus { color: var(--text); }
+
+    /* ── Mobile ── */
+    .ls20-multi-buttons .ls20-btn { min-width: 60px; padding: 6px; }
+    .ls20-multi-buttons .ls20-btn .ls20-label { font-size: 11px; }
+    .ls20-multi-buttons { padding: 52px 16px 80px !important; }
+    @media(max-width:768px) { .ls20-multi-buttons .ls-carousel { min-height: 260px; } }
+
+    /* ── Desktop ── */
+    @media(min-width:769px) {
+      .ls20-multi-buttons .ls20-btn { min-width: 76px; padding: 8px 10px; }
+      .ls20-multi-buttons .ls20-btn .ls20-label { font-size: 10px; }
+      .ls20-multi-buttons { padding: 52px 80px 0 !important; }
+    }
+  </style>
+
+  <!-- ── Scoped Script ── -->
+  <script>
+  (function () {
+    var slide   = document.currentScript.closest('[data-slide]');
+    var slideId = slide ? slide.dataset.slide : 'ls20-multi-buttons';
+
+    var EDIT_MODE   = !window.PB_READONLY;
+    var TOTAL_SLOTS = 12;
+
+    var EMPTY_TRACK = '<div class="ls-carousel-track"><div class="ls-carousel-slide"><img src="" alt=""></div></div>';
+
+    var DEFAULT_CONFIG = [
+      { id: 'item-0', label: 'Button 1', spriteRow: 0, icon: null, carouselHtml: EMPTY_TRACK },
+      { id: 'item-1', label: 'Button 2', spriteRow: 1, icon: null, carouselHtml: EMPTY_TRACK },
+      { id: 'item-2', label: 'Button 3', spriteRow: 2, icon: null, carouselHtml: EMPTY_TRACK }
+    ];
+
+    var config     = [];
+    var currentIdx = -1;
+
+    var root      = slide || document;
+    var selector  = root.querySelector('#ls20-selector');
+    var carDefault = root.querySelector('#ls20CarDefault');
+    var configEl  = root.querySelector('#ls20-config');
+
+    /* ── Config I/O ── */
+    function loadConfig() {
+      var raw = configEl ? configEl.textContent.trim() : '';
+      try { config = raw ? JSON.parse(raw) : clone(DEFAULT_CONFIG); }
+      catch (e) { config = clone(DEFAULT_CONFIG); }
+    }
+
+    function persistConfig() {
+      if (!configEl) return;
+      configEl.textContent = JSON.stringify(config);
+      configEl.dispatchEvent(new Event('focusout', { bubbles: true }));
+    }
+
+    function clone(obj) { return JSON.parse(JSON.stringify(obj)); }
+
+    /* ── Icon helpers ── */
+    function setSpritePos(el, row, active) {
+      if (row == null) return;
+      el.style.backgroundPosition = (active ? '100%' : '0%') + ' ' + (row / 9 * 100).toFixed(2) + '%';
+    }
+
+    function makeIconEl(item) {
+      if (item.icon) {
+        var img = document.createElement('img');
+        img.className = 'ls20-icon-img';
+        img.src = item.icon; img.alt = item.label;
+        return img;
+      }
+      if (item.spriteRow != null) {
+        var div = document.createElement('div');
+        div.className = 'ls20-icon-sprite';
+        setSpritePos(div, item.spriteRow, false);
+        return div;
+      }
+      var ph = document.createElement('div');
+      ph.className = 'ls20-icon-placeholder';
+      ph.textContent = '◈';
+      return ph;
+    }
+
+    function attachIconPicker(iconWrap, item) {
+      var overlay = document.createElement('div');
+      overlay.className = 'ls20-icon-edit';
+      overlay.setAttribute('data-builder-only', '');
+      overlay.title = 'Change icon';
+      overlay.innerHTML = '&#9998;';
+      iconWrap.appendChild(overlay);
+
+      overlay.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var input = document.createElement('input');
+        input.type = 'file'; input.accept = 'image/*';
+        input.onchange = function () {
+          var file = input.files[0];
+          if (!file) return;
+          var reader = new FileReader();
+          reader.onload = function (ev) {
+            fetch('/api/upload-image', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ filename: file.name, data: ev.target.result })
+            })
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+              if (!d.path) return;
+              item.icon = d.path;
+              var old = iconWrap.querySelector('.ls20-icon-sprite,.ls20-icon-img,.ls20-icon-placeholder');
+              var fresh = makeIconEl(item);
+              if (old) iconWrap.replaceChild(fresh, old); else iconWrap.insertBefore(fresh, overlay);
+              persistConfig();
+            });
+          };
+          reader.readAsDataURL(file);
+        };
+        input.click();
+      });
+    }
+
+    /* ── Build a single button ── */
+    function makeBtn(item, idx) {
+      var btn = document.createElement('button');
+      btn.className = 'ls20-btn';
+
+      var iconWrap = document.createElement('div');
+      iconWrap.className = 'ls20-icon-wrap';
+      iconWrap.appendChild(makeIconEl(item));
+      if (EDIT_MODE) attachIconPicker(iconWrap, item);
+      btn.appendChild(iconWrap);
+
+      var labelEl = document.createElement('span');
+      labelEl.className = 'ls20-label';
+      labelEl.textContent = item.label;
+      labelEl.setAttribute('data-lang-key', slideId + '.btn-' + item.id);
+      if (EDIT_MODE) {
+        labelEl.contentEditable = 'true';
+        labelEl.spellcheck = false;
+        labelEl.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') { e.preventDefault(); labelEl.blur(); }
+        });
+        labelEl.addEventListener('blur', function () {
+          var v = labelEl.textContent.trim();
+          if (v) item.label = v;
+          persistConfig();
+        });
+      }
+      btn.appendChild(labelEl);
+
+      if (EDIT_MODE) {
+        var delBtn = document.createElement('button');
+        delBtn.className = 'ls20-del';
+        delBtn.setAttribute('data-builder-only', '');
+        delBtn.innerHTML = '&times;';
+        delBtn.title = 'Remove button';
+        delBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (!confirm('Remove "' + item.label + '"?')) return;
+          config.splice(idx, 1);
+          renderSelector();
+          persistConfig();
+        });
+        btn.appendChild(delBtn);
+      }
+
+      btn.addEventListener('click', function () {
+        if (document.activeElement && document.activeElement.isContentEditable) return;
+        showDefect(idx);
+        if (window.Track) Track.click(slideId, item.label);
+      });
+
+      return btn;
+    }
+
+    /* ── Render the full selector strip ── */
+    function renderSelector() {
+      currentIdx = -1;
+      selector.innerHTML = '';
+
+      config.forEach(function (item, idx) {
+        selector.appendChild(makeBtn(item, idx));
+      });
+
+      if (EDIT_MODE) {
+        var addBtn = document.createElement('button');
+        addBtn.className = 'ls20-btn ls20-add-btn';
+        addBtn.setAttribute('data-builder-only', '');
+        addBtn.title = 'Add button';
+
+        var addIcon = document.createElement('div');
+        addIcon.className = 'ls20-add-icon';
+        addIcon.textContent = '+';
+        addBtn.appendChild(addIcon);
+
+        var addLabel = document.createElement('span');
+        addLabel.className = 'ls20-label';
+        addLabel.textContent = 'Add';
+        addBtn.appendChild(addLabel);
+
+        addBtn.addEventListener('click', function () {
+          var nextSlot = config.length;
+          config.push({
+            id: 'item-' + nextSlot,
+            label: 'Button ' + (config.length + 1),
+            spriteRow: null, icon: null,
+            carouselHtml: EMPTY_TRACK
+          });
+          renderSelector();
+          persistConfig();
+        });
+
+        selector.appendChild(addBtn);
+      }
+
+      showDefault();
+    }
+
+    function findCar(item) {
+      return root.querySelector('.ls20-car[data-defect-id="' + item.id + '"]');
+    }
+
+    function showDefault() {
+      root.querySelectorAll('.ls20-car').forEach(function (c) { c.style.display = 'none'; });
+      currentIdx = -1;
+      carDefault.style.display = '';
+      if (!carDefault._lsCarouselInit) {
+        if (window.Carousel) Carousel.init(carDefault.parentElement || document.body);
+        if (window.Lightbox) Lightbox.init(carDefault);
+      }
+      updateBtnStates();
+    }
+
+    function showDefect(idx) {
+      if (idx === currentIdx) { showDefault(); return; }
+      if (currentIdx >= 0) {
+        var prev = findCar(config[currentIdx]);
+        if (prev) prev.style.display = 'none';
+      }
+      carDefault.style.display = 'none';
+      currentIdx = idx;
+      var car = findCar(config[idx]);
+      if (car) {
+        car.style.display = '';
+        if (car._lsCarouselInit) {
+          if (car._lsGoTo) car._lsGoTo(0);
+        } else {
+          if (window.Carousel) Carousel.init(car.parentElement || document.body);
+          if (window.Lightbox) Lightbox.init(car);
+        }
+      }
+      updateBtnStates();
+    }
+
+    function updateBtnStates() {
+      var btns = selector.querySelectorAll('.ls20-btn:not(.ls20-add-btn)');
+      btns.forEach(function (btn, i) {
+        var active = i === currentIdx;
+        btn.classList.toggle('active', active);
+        var sprite = btn.querySelector('.ls20-icon-sprite');
+        if (sprite && config[i]) setSpritePos(sprite, config[i].spriteRow, active);
+      });
+    }
+
+    function applyCarouselsFromConfig() {
+      config.forEach(function (item) {
+        if (!item.carouselHtml) return;
+        var car = root.querySelector('.ls20-car[data-defect-id="' + item.id + '"]');
+        if (car) car.innerHTML = item.carouselHtml;
+      });
+    }
+
+    /* Capture carousel image changes and store in config (capture phase — runs before doSave) */
+    document.addEventListener('slide-carousel-save', function (e) {
+      var detail  = e.detail || {};
+      var editKey = detail.editKey || '';
+      var match = editKey.match(/^ls20-car-(\d+)$/);
+      if (!match) return;
+      var slotIdx  = parseInt(match[1], 10);
+      var defectId = 'item-' + slotIdx;
+      var btnIdx   = config.findIndex(function (c) { return c.id === defectId; });
+      if (btnIdx < 0) return;
+      var carEl = root.querySelector('.ls20-car[data-defect-id="' + defectId + '"]');
+      if (!carEl) return;
+      var trackEl = carEl.querySelector('.ls-carousel-track');
+      if (trackEl) {
+        var cl = trackEl.cloneNode(true);
+        cl.querySelectorAll('[data-builder-only]').forEach(function (n) { n.remove(); });
+        cl.querySelectorAll('[data-zoom-init]').forEach(function (n) { n.removeAttribute('data-zoom-init'); });
+        cl.querySelectorAll('.ls-carousel-counter,.ls-carousel-btn,.ls-carousel-add,.ls-carousel-del').forEach(function (n) { n.remove(); });
+        cl.style.transform = '';
+        config[btnIdx].carouselHtml = cl.outerHTML;
+      }
+      if (configEl) configEl.textContent = JSON.stringify(config);
+    }, true);
+
+    /* ── Init ── */
+    loadConfig();
+    applyCarouselsFromConfig();
+    renderSelector();
+
+    setTimeout(function () { if (window.PE && slide) PE.initSlide(slide); }, 0);
+  })();
+  </script>
+
+</div>
+</div>
+<div class="fp-slide" data-slide-index="1" style="display:none;">
+<div class="slide content ls24-test-simple" data-slide="test-simple-carousel-3" data-slide-mode="sequence">
+
+  <div class="slide-logo-row" data-edit="logo-row"><span data-lang="en"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span><span data-lang="es" hidden=""><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span></div>
+
+  <div class="slide-layout">
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label" data-lang-key="ls24-test-simple.section-label"><span data-lang="en">Section Label</span><span data-lang="es" hidden="">Section Label</span></div>
+      <h1 class="slide-title" data-edit="headline" data-lang-key="ls24-test-simple.headline"><span data-lang="en">Your Headline Goes Here</span><span data-lang="es" hidden="">Your Headline Goes Here</span></h1>
+      <p class="slide-subtitle" data-edit="subtitle" data-lang-key="ls24-test-simple.subtitle"><span data-lang="en">A short supporting sentence that describes this slide.</span><span data-lang="es" hidden="">A short supporting sentence that describes this slide.</span></p>
+    </header>
+
+    <div class="slide-body">
+      <div class="ls-carousel" data-edit="main-carousel" data-counter="" data-autoplay="4000" style="flex:1;min-height:0;width:100%;max-width:960px;"><div class="ls-carousel-track" style="transform: translateX(-960px);">
+          
+          
+        <div class="ls-carousel-slide"><img src="../shared/16_bit_tech.jpg" alt="16 bit tech" data-zoom=""></div><div class="ls-carousel-slide ls-compare ls-reveal" data-compare-mode="reveal"><img src="../shared/CulletScanner-Benefits.jpg" alt="CulletScanner-Benefits" data-zoom="" class="ls-cmp-left"><img src="../shared/Band_Conveyor_Picture.jpg" alt="Band Conveyor Picture" class="ls-cmp-right" data-zoom=""></div></div></div>
+    </div>
   </div>
-  <div class="ls-tab-panels">
-
-    <!-- ══ PANEL 0 · How It Works ══ -->
-    <div class="ls-tab-panel" data-panel="0">
-      <div class="t5-hiw">
-
-        <!-- Top: 2×2 component cards -->
-        <div class="t5-components anim-in" style="">
-          <div class="t5-comp-card"><span class="t5-num">1</span><span class="t5-comp-text" data-edit="comp-card-1"><span data-lang="en"><strong>Telecentric light</strong> — uniform illumination independent of glass position</span><span data-lang="es" hidden=""><strong>Telecentric light</strong> — uniform illumination independent of glass position</span></span></div>
-          <div class="t5-comp-card"><span class="t5-num">2</span><span class="t5-comp-text" data-edit="comp-card-2"><span data-lang="en"><strong>Linear image sensor</strong> — real scanning line-by-line, not a snapshot camera</span><span data-lang="es" hidden=""><strong>Linear image sensor</strong> — real scanning line-by-line, not a snapshot camera</span></span></div>
-          <div class="t5-comp-card"><span class="t5-num">3</span><span class="t5-comp-text" data-edit="comp-card-3"><span data-lang="en"><strong>Glass</strong> — inspected continuously at full production speed</span><span data-lang="es" hidden=""><strong>Glass</strong> — inspected continuously at full production speed</span></span></div>
-          <div class="t5-comp-card"><span class="t5-num">4</span><span class="t5-comp-text" data-edit="comp-card-4"><span data-lang="en"><strong>Electronic module</strong> — 16-bit processing at extreme speed</span><span data-lang="es" hidden=""><strong>Electronic module</strong> — 16-bit processing at extreme speed</span></span></div>
-        </div>
-
-        <!-- Bottom: full-width diagram -->
-        <div class="t5-diagram t5-diagram-full anim-in" style="">
-          <div class="ls-carousel" data-counter="" data-edit="t5-diagram-howitworks" data-track="t5:carousel:howitworks" style="width:100%;height:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);">
-              <div class="ls-carousel-slide">
-                <img src="../shared/Image_Explaining_the_technology_1_Telecentric_light_2_linear_image_sensor_3_glass_4_electronic_module.png" alt="Scanner technology diagram" data-zoom="" data-track="t5:zoom:scanner-technology-diagram">
-              <div class="ls-carousel-caption">Scanner technology diagram</div></div>
-            </div><div class="ls-carousel-counter"></div></div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ══ PANEL 1 · 16-bit Advantage ══ -->
-    <div class="ls-tab-panel" data-panel="1">
-      <div class="t5-hiw">
-
-        <!-- Top: 16-bit comparison image -->
-        <div class="t5-diagram t5-diagram-full anim-in" style="">
-          <div class="ls-carousel" data-counter="" data-edit="t5-diagram-16bit" data-track="t5:carousel:16bit" style="width:100%;height:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);">
-              
-            <div class="ls-carousel-slide">
-                <img src="../shared/16_bit_tech.jpg" alt="8-bit vs 16-bit technology comparison" data-zoom="" data-track="t5:zoom:16-bit-comparison">
-              <div class="ls-carousel-caption">8-bit vs 16-bit technology comparison</div></div></div><div class="ls-carousel-counter"></div></div>
-        </div>
-
-        <!-- Bottom: 2×2 feature cards -->
-        <div class="t5-components anim-in" style="">
-          <div class="t5-comp-card"><span class="t5-fnum">1</span><span class="t5-comp-text" data-edit="feat-card-1"><span data-lang="en"><strong>Low-contrast detection:</strong> Identifies defects 8-bit systems cannot see — subtle inclusions, coating variations, micro-scratches.</span><span data-lang="es" hidden=""><strong>Low-contrast detection:</strong> Identifies defects 8-bit systems cannot see — subtle inclusions, coating variations, micro-scratches.</span></span></div>
-          <div class="t5-comp-card"><span class="t5-fnum">2</span><span class="t5-comp-text" data-edit="feat-card-2"><span data-lang="en"><strong>Transmission homogenization:</strong> Glass from 15% to 99% processed with the same setup — identical results across all types.</span><span data-lang="es" hidden=""><strong>Transmission homogenization:</strong> Glass from 15% to 99% processed with the same setup — identical results across all types.</span></span></div>
-          <div class="t5-comp-card"><span class="t5-fnum">3</span><span class="t5-comp-text" data-edit="feat-card-3"><span data-lang="en"><strong>Every pixel is equal:</strong> No variation by position — always consistent, eliminating false positives and unnecessary rejections.</span><span data-lang="es" hidden=""><strong>Every pixel is equal:</strong> No variation by position — always consistent, eliminating false positives and unnecessary rejections.</span></span></div>
-          <div class="t5-comp-card"><span class="t5-fnum">4</span><span class="t5-comp-text" data-edit="feat-card-4"><span data-lang="en"><strong>Extreme processing speed:</strong> No compromise on throughput. Compatible with automotive and railway production rates.</span><span data-lang="es" hidden=""><strong>Extreme processing speed:</strong> No compromise on throughput. Compatible with automotive and railway production rates.</span></span></div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ══ PANEL 2 · vs Camera Systems ══ -->
-    <div class="ls-tab-panel active" data-panel="2">
-      <div class="t5-vc-wrap anim-in" style="">
-
-        <!-- LEFT — Camera-based -->
-        <div class="t5-cmp-col t5-cmp-bad">
-          <div class="t5-cmp-header">
-            <span class="t5-cmp-icon">📷</span>
-            <span data-edit="vc-header-bad"><span data-lang="en">Camera-based Systems</span><span data-lang="es" hidden="">Camera-based Systems</span></span>
-          </div>
-          <ul class="t5-cmp-list" id="t5-vc-bad-list" data-edit="t5-vc-bad-list" data-ls-list=""><span data-lang="en">
-            <li><strong>Snapshot coverage:</strong> Takes periodic frames — gaps between shots mean defects between frames go undetected</li>
-            <li><strong>Motion blur at speed:</strong> Fast production lines cause image blur, reducing detection accuracy</li>
-            <li><strong>8-bit depth:</strong> Only 256 grey levels — low-contrast defects are invisible</li>
-            <li class=""><strong>Position-dependent illumination:</strong> Uneven lighting across the field of view distorts results</li>
-            <li class="" draggable="false"><strong>False positives &amp; rejects:</strong> Pixel variation by position triggers unnecessary alarms</li><li class="" draggable="false"><strong>Recalibration required:</strong> Sensitivity must be re-tuned for every glass type and transmission level</li>
-            
-          </span><span data-lang="es" hidden="">
-            <li><strong>Snapshot coverage:</strong> Takes periodic frames — gaps between shots mean defects between frames go undetected</li>
-            <li><strong>Motion blur at speed:</strong> Fast production lines cause image blur, reducing detection accuracy</li>
-            <li><strong>8-bit depth:</strong> Only 256 grey levels — low-contrast defects are invisible</li>
-            <li class=""><strong>Position-dependent illumination:</strong> Uneven lighting across the field of view distorts results</li>
-            <li class="" draggable="false"><strong>False positives &amp; rejects:</strong> Pixel variation by position triggers unnecessary alarms</li><li class="" draggable="false"><strong>Recalibration required:</strong> Sensitivity must be re-tuned for every glass type and transmission level</li>
-            
-          </span></ul>
-          
-          
-        </div>
-
-        <!-- CENTER — comparison images -->
-        <div class="t5-vc-imgs" id="t5-vc-imgs">
-
-          <div class="t5-vc-card" id="t5-vc-drillhole">
-            
-            <div class="t5-diagram" style="flex:1;min-height:0;">
-              <div class="ls-carousel" data-counter="" data-no-caption="" data-edit="t5-diagram-drillhole" data-track="t5:carousel:drillhole" style="width:100%;height:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);">
-                  <div class="ls-carousel-slide">
-                    <img src="../shared/Comparison_on_image_taken_by_Camera_Above_and_LineScanner_below_of_a_drillhole_.jpg" alt="Drill hole comparison" data-zoom="" data-track="t5:zoom:drillhole-comparison">
-                  </div>
-                </div><div class="ls-carousel-counter"></div></div>
-            </div>
-            <div class="t5-vc-label" data-edit="vc-label-drillhole"><span data-lang="en">Drill Hole, Camera vs LineScanner</span><span data-lang="es" hidden="">Drill Hole, Camera vs LineScanner</span></div>
-          </div>
-
-          <div class="t5-vc-card" id="t5-vc-igunit">
-            
-            <div class="t5-diagram" style="flex:1;min-height:0;">
-              <div class="ls-carousel" data-counter="" data-no-caption="" data-edit="t5-diagram-igunit" data-track="t5:carousel:igunit" style="width:100%;height:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);">
-                  <div class="ls-carousel-slide">
-                    <img src="../shared/Comparison_on_image_taken_by_Camera_Above_and_LineScanner_below_of_a_Ig_unit_.jpg" alt="IG unit comparison" data-zoom="" data-track="t5:zoom:ig-unit-comparison">
-                  </div>
-                </div><div class="ls-carousel-counter"></div></div>
-            </div>
-            <div class="t5-vc-label" data-edit="vc-label-igunit"><span data-lang="en">IG Unit — Camera vs LineScanner</span><span data-lang="es" hidden="">IG Unit — Camera vs LineScanner</span></div>
-          </div>
-
-          <!-- Restore chips -->
-          
-
-        </div>
-
-        <!-- RIGHT — LineScanner -->
-        <div class="t5-cmp-col t5-cmp-good">
-          <div class="t5-cmp-header">
-            <span class="t5-cmp-icon">✓</span>
-            <span data-edit="vc-header-good"><span data-lang="en">LineScanner</span><span data-lang="es" hidden="">LineScanner</span></span>
-          </div>
-          <ul class="t5-cmp-list" id="t5-vc-good-list" data-edit="t5-vc-good-list" data-ls-list=""><span data-lang="en">
-            <li><strong>100% line-by-line scanning:</strong> Every millimetre of glass is inspected — zero gaps, zero blind spots</li>
-            <li><strong>No motion blur:</strong> Linear sensor reads one line at a time, perfectly synchronised with production speed</li>
-            <li><strong>16-bit depth:</strong> 65,536 grey levels — detects the subtlest inclusions, coating variations and micro-scratches</li>
-            <li><strong>Telecentric illumination:</strong> Uniform light field independent of glass position — consistent results everywhere</li>
-            <li class="" draggable="false"><strong>Every pixel is equal:</strong> No positional variation — eliminates false positives and unnecessary rejections</li><li class="" draggable="false"><strong>One setup for all glass:</strong> 15% to 99% transmission handled automatically with the same configuration</li>
-            
-          </span><span data-lang="es" hidden="">
-            <li><strong>100% line-by-line scanning:</strong> Every millimetre of glass is inspected — zero gaps, zero blind spots</li>
-            <li><strong>No motion blur:</strong> Linear sensor reads one line at a time, perfectly synchronised with production speed</li>
-            <li><strong>16-bit depth:</strong> 65,536 grey levels — detects the subtlest inclusions, coating variations and micro-scratches</li>
-            <li><strong>Telecentric illumination:</strong> Uniform light field independent of glass position — consistent results everywhere</li>
-            <li class="" draggable="false"><strong>Every pixel is equal:</strong> No positional variation — eliminates false positives and unnecessary rejections</li><li class="" draggable="false"><strong>One setup for all glass:</strong> 15% to 99% transmission handled automatically with the same configuration</li>
-            
-          </span></ul>
-          
-          
-        </div>
-
-      </div>
-    </div>
-
-  
-
-
-
-  </div><!-- /.ls-tab-panels -->
-  </div><!-- /.ls-tabs -->
-
-  </div><!-- /.slide-body -->
-  </div><!-- /.slide-layout -->
 
   <style>
-    /* ── Mobile base (default — no media query) ── */
-    .t5 { padding: 52px 16px 80px !important; }
-
-    /* Tabs at bottom — column-reverse so tab-list renders below panels */
-    .t5 .ls-tabs { flex-direction: column-reverse; }
-    .t5 .ls-tab-list { margin-bottom: 0; margin-top: 10px; }
-
-    /* Grid (16-bit panel) */
-    .t5-grid {
-      display: grid; grid-template-columns: 1fr; gap: 20px;
-      height: 100%;
+    .ls24-test-simple { }
+    .ls24-test-simple .slide-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      min-height: 0;
+      width: 100%;
     }
-
-    /* How It Works layout */
-    .t5-hiw {
-      display: flex; flex-direction: column; gap: 12px; height: 100%;
-    }
-
-    /* 2×2 component cards — single column on mobile */
-    .t5-components {
-      display: grid; grid-template-columns: 1fr; gap: 8px; flex-shrink: 0;
-    }
-    .t5-comp-card {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 8px 12px; border-radius: 10px;
-      background: var(--bg-card); border: 1px solid var(--border);
-    }
-
-    /* Full-width diagram */
-    .t5-diagram-full {
-      flex: 1; min-height: 0;
-    }
-
-    /* Left column */
-    .t5-left {
-      display: flex; flex-direction: column; gap: 0;
-      overflow-y: auto; min-height: 0;
-    }
-    .t5-section-title {
-      font-size: 10px; font-weight: 700; letter-spacing: .09em;
-      text-transform: uppercase; color: var(--text-muted); opacity: .5;
-      padding: 6px 0 4px; flex-shrink: 0;
-    }
-
-    /* Component list */
-    .t5-component-list {
-      list-style: none; margin: 0; padding: 0;
-      display: flex; flex-direction: column; gap: 6px; flex-shrink: 0;
-    }
-    .t5-component-list li {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 7px 10px; border-radius: 10px;
-      background: var(--bg-card); border: 1px solid var(--border);
-    }
-    .t5-num {
-      width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
-      background: rgba(232,113,26,.2); border: 1px solid rgba(232,113,26,.4);
-      color: #E8711A; font-size: 11px; font-weight: 800;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .t5-comp-text { font-size: clamp(11px,1.1vw,13px); color: var(--text-muted); line-height: 1.4; }
-    .t5-comp-text strong { color: var(--text); }
-
-    /* USP list */
-    .t5-usp-list {
-      list-style: none; margin: 0; padding: 0;
-      display: flex; flex-direction: column; gap: 4px; flex-shrink: 0;
-    }
-    .t5-usp-list li {
-      padding: 6px 10px 6px 22px; position: relative;
-      font-size: clamp(11px,1.1vw,13px); color: var(--text-muted); line-height: 1.4;
-      border-bottom: 1px solid rgba(255,255,255,.04);
-    }
-    .t5-usp-list li::before {
-      content: '›'; position: absolute; left: 6px; top: 6px;
-      color: #E8711A; font-weight: 800; font-size: 13px;
-    }
-    .t5-usp-list li strong { color: var(--text); }
-
-    /* Feature list */
-    .t5-feature-list { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
-    .t5-feature-item {
-      display: flex; gap: 12px; align-items: flex-start;
-      padding: 10px 12px; border-radius: 10px;
-      background: var(--bg-card); border: 1px solid var(--border);
-    }
-    .t5-fnum {
-      width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
-      background: rgba(232,113,26,.2); border: 1px solid rgba(232,113,26,.4);
-      color: #E8711A; font-size: 12px; font-weight: 800;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .t5-ftext { font-size: clamp(11px,1.1vw,13px); color: var(--text-muted); line-height: 1.45; }
-    .t5-ftext strong { color: var(--text); }
-
-    /* Diagram */
-    .t5-diagram {
-      border: 1px solid var(--border); border-radius: 14px;
-      overflow: hidden; cursor: zoom-in; background: #000;
-      display: flex; align-items: center; justify-content: center;
-      position: relative; min-height: 0;
-      transition: border-color .2s;
-    }
-    .t5-diagram:hover { border-color: rgba(232,113,26,.4); }
-    .t5-diagram img {
-      width: 100%; height: 100%; object-fit: contain; display: block;
-      transition: transform .3s;
-    }
-    .t5-diagram:hover img { transform: scale(1.03); }
-
-    .t5-img-hint {
-      position: absolute; bottom: 8px; right: 10px;
-      font-size: 10px; color: rgba(255,255,255,.3);
-      letter-spacing: .04em; pointer-events: none;
-    }
-
-    /* vs Camera Systems panel — single column on mobile */
-    .t5-vc-wrap {
-      display: grid; grid-template-columns: 1fr; gap: 14px;
-      height: auto; overflow-y: auto;
-    }
-    .t5-cmp-col {
-      display: flex; flex-direction: column;
-      border-radius: 14px; overflow: hidden;
-      border: 1px solid var(--border);
-    }
-    .t5-cmp-header {
-      display: flex; align-items: center; gap: 10px;
-      padding: 12px 16px; flex-shrink: 0;
-      font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
-    }
-    .t5-cmp-bad .t5-cmp-header {
-      background: rgba(239,68,68,.12); border-bottom: 1px solid rgba(239,68,68,.2); color: #f87171;
-    }
-    .t5-cmp-good .t5-cmp-header {
-      background: rgba(34,197,94,.10); border-bottom: 1px solid rgba(34,197,94,.2); color: #4ade80;
-    }
-    .t5-cmp-icon { font-size: 15px; }
-    .t5-cmp-list {
-      list-style: none; margin: 0; padding: 10px 16px 12px;
-      display: flex; flex-direction: column; gap: 0;
-      overflow-y: auto; flex: 1;
-    }
-    .t5-cmp-list li {
-      padding: 7px 0 7px 20px; position: relative;
-      font-size: clamp(11px,1.05vw,13px); line-height: 1.4; color: var(--text-muted);
-      border-bottom: 1px solid rgba(255,255,255,.04);
-    }
-    .t5-cmp-list li:last-child { border-bottom: none; }
-    .t5-cmp-list li strong { color: var(--text); }
-    .t5-cmp-bad .t5-cmp-list li::before {
-      content: '✕'; position: absolute; left: 0; top: 8px;
-      font-size: 10px; font-weight: 800; color: #f87171;
-    }
-    .t5-cmp-good .t5-cmp-list li::before {
-      content: '›'; position: absolute; left: 2px; top: 7px;
-      font-size: 14px; font-weight: 800; color: #4ade80;
-    }
-
-    /* List item controls / states handled by list.js — only color overrides here */
-    .t5-cmp-list li { position: relative; }
-    .t5-vc-add-bad[data-ls-add]:hover  { border-color: rgba(239,68,68,.4); color: #f87171; }
-    .t5-vc-add-good[data-ls-add]:hover { border-color: rgba(34,197,94,.4); color: #4ade80; }
-
-    /* Image column */
-    .t5-vc-imgs {
-      display: flex; flex-direction: column; gap: 10px; min-height: 0; overflow: hidden;
-    }
-    .t5-vc-card {
-      flex: 1; min-height: 180px; display: flex; flex-direction: column; gap: 0;
-      border-radius: 12px; border: 1px solid var(--border);
-      background: var(--bg-card); overflow: hidden; position: relative;
-    }
-    .t5-vc-hide {
-      position: absolute; top: 6px; right: 6px; z-index: 2;
-      width: 20px; height: 20px; border-radius: 4px; padding: 0;
-      background: rgba(0,0,0,.55); border: 1px solid rgba(255,255,255,.18);
-      color: rgba(255,255,255,.5); font-size: 13px; font-weight: 700;
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: all .2s; line-height: 1; font-family: inherit;
-    }
-    .t5-vc-hide:hover { background: rgba(239,68,68,.6); color: #fff; border-color: rgba(239,68,68,.4); }
-    .t5-vc-label {
-      padding: 5px 10px; font-size: 10px; font-weight: 600; letter-spacing: .04em;
-      color: var(--text-muted); text-align: center; flex-shrink: 0;
-      border-top: 1px solid var(--border);
-    }
-    .t5-vc-restore {
-      display: flex; flex-direction: column; gap: 4px; flex-shrink: 0;
-    }
-    .t5-vc-restore:empty { display: none; }
-    .t5-vc-restore-chip {
-      padding: 4px 10px; border-radius: 8px; cursor: pointer; text-align: center;
-      background: rgba(255,255,255,.06); border: 1px dashed rgba(255,255,255,.2);
-      color: var(--text-muted); font-size: 10px; font-weight: 600;
-      font-family: inherit; transition: all .2s;
-    }
-    .t5-vc-restore-chip:hover { background: rgba(255,255,255,.14); color: #fff; }
-
-    /* ── Tablet (769–1024px): vs Camera goes 2-col ── */
-    @media (min-width: 769px) and (max-width: 1024px) {
-      .t5 { padding: 52px 80px 0 !important; }
-      .t5-vc-wrap { grid-template-columns: 1fr 1fr; height: 100%; overflow-y: unset; }
-    }
-
-    /* ── Desktop (>1024px) ── */
-    @media (min-width: 1025px) {
-      .t5 { padding: 52px 80px 0 !important; }
-      .t5-grid { grid-template-columns: 1fr 1fr; }
-      .t5-components { grid-template-columns: 1fr 1fr; }
-      .t5-vc-wrap { grid-template-columns: 1fr 1fr 1fr; height: 100%; overflow-y: unset; }
+    @media(min-width:769px) {
+      .ls24-test-simple .slide-body { padding: 0 80px; }
     }
   </style>
 
   <script>
-  function t5VcInitList(ul, restoreArea, addBtn) {
-    return; // migrated to list.js component
-    if (!ul || ul._init) return;
-    ul._init = true;
-    var dragSrc = null;
+  (function () {
+    var slide   = document.currentScript.closest('[data-slide]');
+    var slideId = slide ? slide.dataset.slide : 'ls24-test-simple';
 
-    function initItem(li, isNew) {
-      if (li._init) return;
-      li._init = true;
-
-      var ctrl = document.createElement('div');
-      ctrl.className = 't5-vc-item-controls';
-      ctrl.setAttribute('data-builder-only', '');
-
-      var dragBtn = document.createElement('button');
-      dragBtn.className = 't5-vc-item-btn t5-vc-drag-btn';
-      dragBtn.textContent = '⠿'; dragBtn.title = 'Drag to reorder';
-      dragBtn.addEventListener('mousedown', function() { li.draggable = true; });
-      dragBtn.addEventListener('mouseup',   function() { li.draggable = false; });
-
-      var hideBtn = document.createElement('button');
-      hideBtn.className = 't5-vc-item-btn t5-vc-hide-btn';
-      hideBtn.textContent = '×';
-      hideBtn.title = isNew ? 'Delete' : 'Hide';
-      hideBtn.onclick = function(e) {
-        e.stopPropagation();
-        if (isNew) {
-          li.remove();
-        } else {
-          var text = li.innerText.replace('⠿×','').trim().substring(0, 40);
-          li.style.display = 'none';
-          if (restoreArea) {
-            var chip = document.createElement('button');
-            chip.className = 't5-vc-list-restore-chip';
-            chip.textContent = '+ ' + text;
-            chip.onclick = function(ev) { ev.stopPropagation(); li.style.display = ''; chip.remove(); };
-            restoreArea.appendChild(chip);
-          }
-        }
-      };
-
-      ctrl.appendChild(dragBtn);
-      ctrl.appendChild(hideBtn);
-      li.appendChild(ctrl);
-
-      li.addEventListener('dblclick', function(e) {
-        if (e.target.closest('.t5-vc-item-controls')) return;
-        e.stopPropagation(); e.preventDefault();
-        li.contentEditable = 'true'; li.focus();
-        li.addEventListener('blur', function done() {
-          li.contentEditable = 'false';
-          li.removeEventListener('blur', done);
-        }, { once: true });
-      });
-      li.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); li.blur(); } });
-
-      li.addEventListener('dragstart', function(ev) {
-        ev.dataTransfer.effectAllowed = 'move';
-        dragSrc = li;
-        setTimeout(function() { li.classList.add('t5-vc-dragging'); }, 0);
-      });
-      li.addEventListener('dragend', function() {
-        li.draggable = false;
-        li.classList.remove('t5-vc-dragging');
-        ul.querySelectorAll('li').forEach(function(r) { r.classList.remove('t5-vc-dragover'); });
-      });
-      li.addEventListener('dragover', function(ev) {
-        ev.preventDefault();
-        ul.querySelectorAll('li').forEach(function(r) { r.classList.remove('t5-vc-dragover'); });
-        if (li !== dragSrc) li.classList.add('t5-vc-dragover');
-      });
-      li.addEventListener('drop', function(ev) {
-        ev.stopPropagation();
-        if (dragSrc && dragSrc !== li) {
-          var items = Array.from(ul.querySelectorAll('li'));
-          var si = items.indexOf(dragSrc), ti = items.indexOf(li);
-          if (si < ti) ul.insertBefore(dragSrc, li.nextSibling);
-          else ul.insertBefore(dragSrc, li);
-        }
-        li.classList.remove('t5-vc-dragover');
-        var listClone = ul.cloneNode(true);
-        listClone.querySelectorAll('[data-builder-only]').forEach(function(n) { n.remove(); });
-        listClone.querySelectorAll('[contenteditable]').forEach(function(n) { n.removeAttribute('contenteditable'); });
-        document.dispatchEvent(new CustomEvent('slide-carousel-save', {
-          detail: { editKey: ul.getAttribute('data-edit') || ul.id, html: listClone.innerHTML }
-        }));
-      });
-    }
-
-    ul.querySelectorAll('li').forEach(function(li) { initItem(li, false); });
-
-    if (addBtn) {
-      addBtn.onclick = function(e) {
-        e.stopPropagation();
-        var li = document.createElement('li');
-        li.textContent = 'New item';
-        ul.appendChild(li);
-        initItem(li, true);
-        li.dispatchEvent(new MouseEvent('dblclick'));
-      };
-    }
-  }
-
-  setTimeout(function() {
-    t5VcInitList(
-      document.getElementById('t5-vc-bad-list'),
-      document.getElementById('t5-vc-bad-restore'),
-      document.querySelector('.t5-vc-add-bad')
-    );
-    t5VcInitList(
-      document.getElementById('t5-vc-good-list'),
-      document.getElementById('t5-vc-good-restore'),
-      document.querySelector('.t5-vc-add-good')
-    );
-  }, 0);
-
-  window.t5VcHide = function(key) {
-    var card = document.getElementById('t5-vc-' + key);
-    var restore = document.getElementById('t5-vc-restore');
-    if (!card || !restore) return;
-    card.style.display = 'none';
-    var label = card.querySelector('.t5-vc-label').textContent.trim();
-    var chip = document.createElement('button');
-    chip.className = 't5-vc-restore-chip';
-    chip.textContent = '+ ' + label;
-    chip.onclick = function() { card.style.display = ''; chip.remove(); };
-    restore.appendChild(chip);
-  };
-
-  // t5Tab removed — tab switching handled by tabs.js component
+    setTimeout(function () { if (window.PE && slide) PE.initSlide(slide); }, 0);
+  })();
   </script>
 
-  <script>
-  (function () { var s = document.currentScript;
-    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
-  </script>
 </div>
 </div>
 
@@ -1776,16 +978,14 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     <div id="fp-nav-menu-wrap">
       <div id="fp-nav-menu">
         <div class="fp-nm-section">Slides</div>
-        <button class="fp-nm-item fp-nm-active" data-main="0">Cover Slide ROSA</button>
-        <button class="fp-nm-item" data-main="1">Call to Action</button>
-        <button class="fp-nm-item" data-main="2">Technology TEST</button>
+        <button class="fp-nm-item fp-nm-active" data-main="0">Multi-buttons New</button>
+        <button class="fp-nm-item" data-main="1">Test — Simple (Carousel) 3</button>
 
       </div>
       <button id="fp-nav-menu-btn" title="Slide navigation"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
     </div>
-    <div id="fp-slide-name">Cover Slide ROSA</div>
+    <div id="fp-slide-name">Multi-buttons New</div>
     <button class="fp-share-btn" id="fp-share-btn-ftr" title="Share presentation"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
-    <div id="fp-lang-switcher"><button class="lang-switcher-btn active" data-lang="en" onclick="switchLang('en')">EN</button><button class="lang-switcher-btn" data-lang="es" onclick="switchLang('es')">ES</button></div>
   </div>
 </div>
 <button class="fp-side-arrow" id="fp-arrow-prev" disabled>&#8249;</button>
@@ -1912,7 +1112,7 @@ window.Carousel = (function () {
       /* ── Compare slide base ── */
       '.ls-compare{overflow:hidden;}',
       '.ls-cmp-side{position:absolute;top:0;bottom:0;overflow:hidden;}',
-      '.ls-cmp-side img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;}',
+      '.ls-cmp-side img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}',
 
       /* ── Split mode ── */
       '.ls-compare.ls-split .ls-cmp-side-left{left:0;right:50.1%;}',
@@ -1921,7 +1121,7 @@ window.Carousel = (function () {
 
       /* ── Reveal mode ── */
       '.ls-compare.ls-reveal .ls-cmp-side-left{left:0;right:0;}',
-      '.ls-compare.ls-reveal .ls-cmp-side-right{left:0;right:0;clip-path:inset(0 50% 0 0);}',
+      '.ls-compare.ls-reveal .ls-cmp-side-right{left:0;right:0;clip-path:inset(0 0 0 50%);}',
       '.ls-cmp-handle{position:absolute;top:0;bottom:0;left:50%;width:4px;background:#fff;transform:translateX(-50%);cursor:ew-resize;z-index:10;box-shadow:0 0 10px rgba(0,0,0,.5);touch-action:none;}',
       '.ls-cmp-handle-grip{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:32px;height:32px;border-radius:50%;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:13px;color:#333;user-select:none;pointer-events:none;}',
 
@@ -1990,6 +1190,7 @@ window.Carousel = (function () {
     var showCounter = el.hasAttribute('data-counter') && el.getAttribute('data-counter') !== 'false';
     var idx         = 0;
     var timer       = null;
+    var isHovered   = false;
 
     if (!track) return;
 
@@ -2004,8 +1205,18 @@ window.Carousel = (function () {
     nextBtn.setAttribute('data-builder-only', '');
     nextBtn.textContent = '›';
 
-    // Remove any stale nav/add buttons left over from saved HTML before adding fresh ones
-    el.querySelectorAll('.ls-carousel-prev, .ls-carousel-next, .ls-carousel-add').forEach(function (n) { n.remove(); });
+    // Remove any stale controls left over from saved HTML before adding fresh ones
+    el.querySelectorAll('.ls-carousel-prev, .ls-carousel-next, .ls-carousel-add, .ls-carousel-del, .ls-carousel-move, .ls-cmp-enter, .ls-cmp-exit, .ls-cmp-mode-btn, .ls-cmp-replace').forEach(function (n) { n.remove(); });
+
+    // Unwrap any pre-built compare UI back to flat imgs — prevents duplicate handles on re-init
+    el.querySelectorAll('.ls-carousel-slide.ls-compare').forEach(function (s) {
+      var li = s.querySelector('img.ls-cmp-left');
+      var ri = s.querySelector('img.ls-cmp-right');
+      s.innerHTML = '';
+      s._lsCmpBuilt = false;
+      if (li) { li.className = 'ls-cmp-left';  s.appendChild(li); }
+      if (ri) { ri.className = 'ls-cmp-right'; s.appendChild(ri); }
+    });
 
     // ── Counter (optional) ──────────────────────────────────────────────────
     // Remove any stale counter divs left over from saved HTML before adding a fresh one
@@ -2106,7 +1317,7 @@ window.Carousel = (function () {
 
     function resetTimer() {
       clearInterval(timer);
-      if (autoplayMs > 0) {
+      if (autoplayMs > 0 && !isHovered) {
         timer = setInterval(function () {
           var slides = getSlides();
           goTo(idx >= slides.length - 1 ? 0 : idx + 1);
@@ -2371,11 +1582,16 @@ window.Carousel = (function () {
 
       function setReveal(pct) {
         revealPct = Math.max(5, Math.min(95, pct));
-        rightSide.style.clipPath = 'inset(0 ' + (100 - revealPct) + '% 0 0)';
+        rightSide.style.clipPath = 'inset(0 0 0 ' + revealPct + '%)';
         handle.style.left = revealPct + '%';
       }
 
-      handle.addEventListener('mousedown',  function (e) { e.stopPropagation(); dragging = true; });
+      // Click once to lock handle to mouse, click again to release (touch still uses hold-and-drag)
+      handle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        dragging = !dragging;
+        handle.style.cursor = dragging ? 'none' : 'ew-resize';
+      });
       handle.addEventListener('touchstart', function (e) { e.stopPropagation(); dragging = true; }, { passive: true });
       document.addEventListener('mousemove', function (e) {
         if (!dragging) return;
@@ -2387,7 +1603,6 @@ window.Carousel = (function () {
         var r = slide.getBoundingClientRect();
         setReveal(((e.touches[0].clientX - r.left) / r.width) * 100);
       }, { passive: true });
-      document.addEventListener('mouseup',  function () { dragging = false; });
       document.addEventListener('touchend', function () { dragging = false; });
 
       // ── Mode toggle button (builder-only) ─────────────────────────────────
@@ -2404,7 +1619,8 @@ window.Carousel = (function () {
           divider.style.display = m === 'split'  ? '' : 'none';
           handle.style.display  = m === 'reveal' ? '' : 'none';
           modeBtn.textContent   = m === 'split'  ? '⇔ Switch to Reveal' : '⇔ Switch to Split';
-          if (m === 'reveal') setReveal(50);
+          if (m === 'reveal') { setReveal(50); }
+          else { rightSide.style.clipPath = ''; }
           saveCarousel();
         }
 
@@ -2497,11 +1713,9 @@ window.Carousel = (function () {
       }
     });
 
-    // ── Pause autoplay on hover (builder only — not in readonly/viewer) ────
-    if (!window.PB_READONLY) {
-      el.addEventListener('mouseenter', function () { clearInterval(timer); });
-      el.addEventListener('mouseleave', resetTimer);
-    }
+    // ── Pause autoplay on hover (all modes — don't advance while user is looking) ────
+    el.addEventListener('mouseenter', function () { isHovered = true; clearInterval(timer); });
+    el.addEventListener('mouseleave', function () { isHovered = false; resetTimer(); });
 
     // ── Touch swipe ─────────────────────────────────────────────────────────
     var touchX = 0;
@@ -2584,7 +1798,10 @@ window.Carousel = (function () {
     document.querySelectorAll('[data-lang]').forEach(function (el) {
       el.hidden = el.getAttribute('data-lang') !== lang;
     });
-    document.querySelectorAll('.lang-switcher-btn').forEach(function (btn) {
+    // Update dropdown label and active state
+    var label = document.getElementById('fp-lang-label');
+    if (label) label.textContent = lang.toUpperCase();
+    document.querySelectorAll('#fp-lang-menu button[data-lang]').forEach(function (btn) {
       btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
     });
     try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
@@ -2597,8 +1814,28 @@ window.Carousel = (function () {
     history.replaceState(null, '', url.toString());
   }
 
-  // Expose for footer buttons
+  // Expose for dropdown buttons
   window.switchLang = switchLang;
+
+  window.fpLangToggle = function () {
+    var menu = document.getElementById('fp-lang-menu');
+    if (menu) menu.classList.toggle('open');
+  };
+
+  window.fpLangSelect = function (lang) {
+    switchLang(lang);
+    var menu = document.getElementById('fp-lang-menu');
+    if (menu) menu.classList.remove('open');
+  };
+
+  // Close dropdown on outside click
+  document.addEventListener('click', function (e) {
+    var drop = document.getElementById('fp-lang-drop');
+    if (drop && !drop.contains(e.target)) {
+      var menu = document.getElementById('fp-lang-menu');
+      if (menu) menu.classList.remove('open');
+    }
+  });
 
   // Init on DOM ready
   function init() {
@@ -3869,7 +3106,7 @@ window.Track = (function () {
 (function () {
   var mainSlides = document.querySelectorAll(".fp-slide:not(.fp-optional)");
   var optSlides  = document.querySelectorAll(".fp-slide.fp-optional");
-  var mainNames  = ["Cover Slide ROSA","Call to Action","Technology TEST"];
+  var mainNames  = ["Multi-buttons New","Test — Simple (Carousel) 3"];
   var optNames   = [];
   var total      = mainSlides.length;
   var idx        = 0;
