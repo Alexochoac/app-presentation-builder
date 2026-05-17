@@ -156,6 +156,7 @@ All content slides now use this structure:
 - [x] **Zone Builder — Save to Templates catalog** — saves to `templates.json` (not library); category selector; ZB badge on template cards; "Zone Builder" edit button for ZB templates (2026-05-14)
 - [x] **Slides — New Slide modal redesign** — full-screen takeover to 860px centered popup; New Template + Import + Cancel footer (2026-05-14)
 - [x] **Slides — Templates tab New Template button** — navigates to `/zone-builder` (2026-05-14)
+- [x] **Docker + Cloudflare Tunnel** — Dockerfile, .dockerignore, docker-compose; added to n8n main stack; prod data separated into `prod/`; image published to `ghcr.io/alexochoac/app-presentation-builder:v1.0`; GitHub Release v1.0 created; README, CHANGELOG, VERSIONS.md added (2026-05-16)
 - [ ] **Zone Builder — Component resize** — size control (compact / default / wide) in properties panel, maps to flex/width on component wrapper
 - [ ] **Zone Builder — Properties panel Task 6** — component-specific settings (carousel config, list items, etc.)
 - [ ] **Zone Builder — Linking system Task 8** — trigger-button component for embedded slide navigation
@@ -173,4 +174,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-05-16 (session 17)
+Last updated: 2026-05-16 (session 18)
