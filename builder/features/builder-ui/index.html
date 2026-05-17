@@ -866,8 +866,8 @@
   <!-- Mobile Top Bar -->
   <header class="topbar-mobile">
     <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">&#9776;</button>
-    <div class="logo-icon">P</div>
-    <span class="logo-text">Presentation Builder</span>
+    <img class="logo-icon" src="/shared/brand/icon.svg" alt="PA">
+    <img class="logo-img" src="/shared/brand/logo.svg" alt="PUT.A. Presentation">
   </header>
 
   <!-- Sidebar Overlay (mobile) -->
@@ -876,8 +876,8 @@
   <!-- Sidebar -->
   <nav class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-      <div class="logo-icon">P</div>
-      <span class="logo-text">Presentation Builder</span>
+      <img class="logo-icon" src="/shared/brand/icon.svg" alt="PA">
+      <img class="logo-img" src="/shared/brand/logo.svg" alt="PUT.A. Presentation">
     </div>
 
     <ul class="sidebar-nav">
@@ -2365,6 +2365,7 @@
       drawerDeckId = deckId;
       drawerDeck   = decks.find(function (d) { return d.id === deckId; });
       if (!drawerDeck) return;
+      if (deckId !== activeDeckId) setActiveDeck(deckId);
       populateDrawer(drawerDeck);
       document.getElementById('drawerBackdrop').classList.add('open');
       document.getElementById('deckSettingsDrawer').classList.add('open');
@@ -2399,6 +2400,14 @@
       var s = document.getElementById('drawerSaveStatus');
       s.textContent = 'Saved';
       setTimeout(function () { s.textContent = ''; }, 2000);
+    }
+
+    function reloadSlideFrame() {
+      if (drawerDeckId !== activeDeckId) return;
+      var frame = document.getElementById('slideFrame');
+      if (frame && frame.style.display !== 'none' && frame.contentWindow) {
+        frame.contentWindow.location.reload();
+      }
     }
 
     function saveDeckField(patch) {
@@ -2583,6 +2592,7 @@
               var d = decks.find(function (x) { return x.id === drawerDeckId; });
               if (d) Object.assign(d, res.data);
               renderDrawerHeroBg(res.data.heroBg, res.data.heroBgFocal, res.data.heroBgFocalGrid, res.data.heroBgFit, res.data.heroBgOpacity, res.data.heroBgType, res.data.heroBgColor);
+              reloadSlideFrame();
               drawerShowSaved();
             }
           });
@@ -2594,6 +2604,7 @@
         saveDeckField({ heroBg: null }).then(function () {
           var d = decks.find(function (x) { return x.id === drawerDeckId; });
           renderDrawerHeroBg(null, null, null, null, d && d.heroBgOpacity, d && d.heroBgType, d && d.heroBgColor);
+          reloadSlideFrame();
         });
       });
 
@@ -2623,12 +2634,14 @@
         saveDeckField({ heroBgType: 'image' }).then(function () {
           var d = decks.find(function (x) { return x.id === drawerDeckId; });
           if (d) { d.heroBgType = 'image'; renderDrawerHeroBg(d.heroBg, d.heroBgFocal, d.heroBgFocalGrid, d.heroBgFit, d.heroBgOpacity, 'image', d.heroBgColor); }
+          reloadSlideFrame();
         });
       });
       document.getElementById('drawerHeroBgTypeColor').addEventListener('click', function () {
         saveDeckField({ heroBgType: 'color' }).then(function () {
           var d = decks.find(function (x) { return x.id === drawerDeckId; });
           if (d) { d.heroBgType = 'color'; renderDrawerHeroBg(d.heroBg, d.heroBgFocal, d.heroBgFocalGrid, d.heroBgFit, d.heroBgOpacity, 'color', d.heroBgColor); }
+          reloadSlideFrame();
         });
       });
 
@@ -2637,10 +2650,9 @@
       document.getElementById('drawerHeroBgOpacity').addEventListener('input', function () {
         var val = parseInt(this.value);
         document.getElementById('drawerHeroBgOpacityVal').textContent = val + '%';
-        var drawerDeckIdSnap = drawerDeckId;
         clearTimeout(heroBgOpacityTimer);
         heroBgOpacityTimer = setTimeout(function () {
-          saveDeckField({ heroBgOpacity: val });
+          saveDeckField({ heroBgOpacity: val }).then(reloadSlideFrame);
         }, 300);
       });
 
@@ -2651,7 +2663,7 @@
         document.getElementById('drawerHeroBgColorHex').textContent = color;
         clearTimeout(heroBgColorTimer);
         heroBgColorTimer = setTimeout(function () {
-          saveDeckField({ heroBgColor: color });
+          saveDeckField({ heroBgColor: color }).then(reloadSlideFrame);
         }, 300);
       });
     }

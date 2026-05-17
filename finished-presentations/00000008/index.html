@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Acme Corp</title>
+  <title>p</title>
   <style>
 /*
   Presentation Builder — Softsolution
@@ -491,6 +491,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
   function applyLang(lang) {
     document.querySelectorAll('[data-lang]').forEach(function (el) {
+      if (el.closest && el.closest('#fp-lang-menu')) return;
       el.hidden = el.getAttribute('data-lang') !== lang;
     });
     // Update dropdown label and active state
@@ -552,17 +553,17 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 })();
 </script>
 </head>
-<body data-default-lang="en" data-pres-id="00000001">
+<body data-default-lang="en" data-pres-id="00000008">
 <div id="fp-shell">
   <div id="fp-header">
-    <a href="/" id="fp-dash-btn">&#8592; Dashboard</a>
+    <a href="https://glassquality.com" id="fp-dash-btn">Go to Glassquality.com</a>
     <div style="width:1px;height:20px;background:#333;flex-shrink:0;"></div>
     <button class="fp-nav-btn" id="fp-prev" disabled>&#8249;</button>
     <div id="fp-counter">1 / 6</div>
     <button class="fp-nav-btn" id="fp-next">&#8250;</button>
     <div id="fp-lang-drop"><button id="fp-lang-btn" onclick="fpLangToggle()"><span id="fp-lang-label">EN</span><svg width="8" height="8" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg></button><div id="fp-lang-menu"><button data-lang="en" onclick="fpLangSelect('en')">EN — English</button><button data-lang="es" onclick="fpLangSelect('es')">ES — Español</button><button data-lang="it" onclick="fpLangSelect('it')">IT — Italiano</button></div></div>
     <div id="fp-header-spacer"></div>
-    <div id="fp-title">Acme Corp</div>
+    <div id="fp-title">p</div>
     <button class="fp-share-btn" id="fp-share-btn-hdr" title="Share presentation"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
   </div>
   <div id="fp-viewer">
@@ -603,7 +604,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   <div class="hero-content">
     <div class="brand-badge" data-edit="badge"><span data-lang="en">GlassQuality.com · LineScanner<span style="letter-spacing: 1.2px;">· Osprey</span></span><span data-lang="es" hidden="">GlassQuality.com · LineScanner<span style="letter-spacing: 1.2px;">· Osprey</span></span><span data-lang="it" hidden="">GlassQuality.com · LineScanner<span style="letter-spacing: 1.2px;">· Osprey</span></span></div>
     <h1 data-edit="headline"><span data-lang="en">Quality Inspection<br>for <span class="blue">Flat Glass.</span></span><span data-lang="es" hidden="">Inspección de Calidad<br>para <span class="blue">Vidrio Plano.</span></span><span data-lang="it" hidden="">Ispezione della Qualità<br>per <span class="blue">Vetro Piano.</span></span></h1>
-    <h2 data-edit="subheadline"><span data-lang="en">Proposal for Acme Corp · Alex</span><span data-lang="es" hidden="">Propuesta para [Cliente] · [Nombre], [Puesto]</span><span data-lang="it" hidden="">Proposta per [Customer] · [Name], [Title]</span></h2>
+    <h2 data-edit="subheadline"><span data-lang="en">Proposal for p · p</span><span data-lang="es" hidden="">Propuesta para p · p</span><span data-lang="it" hidden="">Proposta per p · p</span></h2>
     
   </div>
 
@@ -1321,9 +1322,9 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
 
 <div class="ls-tab-list">
-  <button class="ls-tab active" data-panel="0" data-edit="tab-howitworks"><span data-lang="en">How It Works</span><span data-lang="es" hidden="">Cómo funciona<button class="ls-tab-del" data-builder-only="" title="Delete tab">✕</button></span><span data-lang="it" hidden="">Come funziona<button class="ls-tab-del" data-builder-only="" title="Delete tab">✕</button></span></button>
-  <button class="ls-tab" data-panel="1" data-edit="tab-16bit"><span data-lang="en">16-bit Advantage</span><span data-lang="es" hidden="">Ventaja 16-bit<button class="ls-tab-del" data-builder-only="" title="Delete tab">✕</button></span><span data-lang="it" hidden="">Vantaggio 16-bit<button class="ls-tab-del" data-builder-only="" title="Delete tab">✕</button></span></button>
-  <button class="ls-tab" data-panel="2" data-edit="tab-vs"><span data-lang="en">vs Camera Systems</span><span data-lang="es" hidden="">vs Sistemas de Cámara<button class="ls-tab-del" data-builder-only="" title="Delete tab">✕</button></span><span data-lang="it" hidden="">vs Sistemi fotografici<button class="ls-tab-del" data-builder-only="" title="Delete tab">✕</button></span></button>
+  <button class="ls-tab active" data-panel="0" data-edit="tab-howitworks"><span data-lang="en">How It Works</span><span data-lang="es" hidden="">Cómo funciona</span><span data-lang="it" hidden="">Come funziona</span></button>
+  <button class="ls-tab" data-panel="1" data-edit="tab-16bit"><span data-lang="en">16-bit Advantage</span><span data-lang="es" hidden="">Ventaja 16-bit</span><span data-lang="it" hidden="">Vantaggio 16-bit</span></button>
+  <button class="ls-tab" data-panel="2" data-edit="tab-vs"><span data-lang="en">vs Camera Systems</span><span data-lang="es" hidden="">vs Sistemas de Cámara</span><span data-lang="it" hidden="">vs Sistemi fotografici</span></button>
 <button class="ls-tab" data-panel="3">Extra</button></div>
 <div class="ls-tab-panels">
 <!-- ══ PANEL 0 · How It Works ══ -->
@@ -1613,8 +1614,8 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
 
 <div class="ls-tab-list">
-  <button class="ls-tab active" data-panel="0" data-edit="tab-capability"><span data-lang="en">Capabilities Matrix</span><span data-lang="es" hidden="">Matriz de Capacidades<button class="ls-tab-del" data-builder-only="" title="Eliminar pestaña" style="">✕</button></span><span data-lang="it" hidden="">Matrice di Capacità<button class="ls-tab-del" data-builder-only="" title="Elimina scheda" style="">✕</button></span></button>
-  <button class="ls-tab" data-panel="1" data-edit="tab-process"><span data-lang="en">Where in the Process</span><span data-lang="es" hidden="">Dónde en el Proceso<button class="ls-tab-del" data-builder-only="" title="Eliminar pestaña">✕</button></span><span data-lang="it" hidden="">Dove nel Processo<button class="ls-tab-del" data-builder-only="" title="Elimina scheda">✕</button></span></button>
+  <button class="ls-tab active" data-panel="0" data-edit="tab-capability"><span data-lang="en">Capabilities Matrix</span><span data-lang="es" hidden="">Matriz de Capacidades</span><span data-lang="it" hidden="">Matrice di Capacità</span></button>
+  <button class="ls-tab" data-panel="1" data-edit="tab-process"><span data-lang="en">Where in the Process</span><span data-lang="es" hidden="">Dónde en el Proceso</span><span data-lang="it" hidden="">Dove nel Processo</span></button>
 <button class="ls-tab" data-panel="2">Extras</button></div>
 <div class="ls-tab-panels">
 <!-- ══ PANEL 0 · Capability Matrix ══ -->
@@ -1647,56 +1648,58 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
           <tr class="ls4-shaded"><td>Data Matrix Code Interpretation</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
           <tr><td>Break Pattern Check</td><td></td><td></td><td></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td></tr>
         </tbody>
-      </table><span class="ls-col-label">Osprey-25</span><span class="ls-col-label">LineScanner</span><span class="ls-col-label">White Haze</span><span class="ls-col-label">BowScanner</span><span class="ls-col-label">CulletScanner</span>
-        
-        
-          Control de Calidad<span class="ls-dot ls-dot-on">◆</span><span class="ls-dot ls-dot-on">◆</span>
-          Astillas en Bordes<span class="ls-dot ls-dot-on">◆</span><span class="ls-dot ls-dot-on">◆</span>
-          Control de Línea de Visión<span class="ls-dot ls-dot-on">◆</span>
-          Control de Dimensiones<span class="ls-dot ls-dot-on">◆</span><span class="ls-dot ls-dot-on">◆</span>
-          Control de Posición y Calidad del Logo<span class="ls-dot ls-dot-on">◆</span><span class="ls-dot ls-dot-on">◆</span>
-          Control de Distorsión<span class="ls-dot ls-dot-on">◆</span>
-          Control de Anisotropía<span class="ls-dot ls-dot-on">◆</span><span class="ls-dot ls-dot-on">◆</span>
-          Bruma Blanca<span class="ls-dot ls-dot-on">◆</span><span class="ls-dot ls-dot-on">◆</span>
-          Control de Carga<span class="ls-dot ls-dot-on">◆</span>
-          Control de Curvatura General<span class="ls-dot ls-dot-on">◆</span><span class="ls-dot ls-dot-on">◆</span>
-          Control de Espesor del Vidrio<span class="ls-dot ls-dot-on">◆</span><span class="ls-dot ls-dot-on">◆</span><span class="ls-dot ls-dot-on">◆</span>
-          Reconocimiento de Tipo de Vidrio<span class="ls-dot ls-dot-on">◆</span><span class="ls-dot ls-dot-on">◆</span>
-          Interpretación de Código Data Matrix<span class="ls-dot ls-dot-on">◆</span>
-          Control de Patrón de Rotura<span class="ls-dot ls-dot-on">◆</span><table class="ls4-table" data-ls-table="" data-lang="es" hidden="">
-        
-          
-          
-          
-          
-          
-          
-        
-      </table><span class="ls-col-label">Osprey-25</span><span class="ls-col-label">LineScanner</span><span class="ls-col-label">White Haze</span><span class="ls-col-label">BowScanner</span><span class="ls-col-label">CulletScanner</span>
-        
-        
-          Controllo Qualità<span class="ls-dot ls-dot-on">◆</span><span class="ls-dot ls-dot-on">◆</span>
-          Schegge ai Bordi<span class="ls-dot ls-dot-on">◆</span><span class="ls-dot ls-dot-on">◆</span>
-          Controllo Linea di Vista<span class="ls-dot ls-dot-on">◆</span>
-          Controllo Dimensioni<span class="ls-dot ls-dot-on">◆</span><span class="ls-dot ls-dot-on">◆</span>
-          Controllo Posizione e Qualità Logo<span class="ls-dot ls-dot-on">◆</span><span class="ls-dot ls-dot-on">◆</span>
-          Controllo Distorsione<span class="ls-dot ls-dot-on">◆</span>
-          Controllo Anisotropia<span class="ls-dot ls-dot-on">◆</span><span class="ls-dot ls-dot-on">◆</span>
-          Alone Bianco<span class="ls-dot ls-dot-on">◆</span><span class="ls-dot ls-dot-on">◆</span>
-          Controllo Carico<span class="ls-dot ls-dot-on">◆</span>
-          Controllo Flessione Generale<span class="ls-dot ls-dot-on">◆</span><span class="ls-dot ls-dot-on">◆</span>
-          Controllo Spessore del Vetro<span class="ls-dot ls-dot-on">◆</span><span class="ls-dot ls-dot-on">◆</span><span class="ls-dot ls-dot-on">◆</span>
-          Riconoscimento Tipo di Vetro<span class="ls-dot ls-dot-on">◆</span><span class="ls-dot ls-dot-on">◆</span>
-          Interpretazione Codice Data Matrix<span class="ls-dot ls-dot-on">◆</span>
-          Controllo Pattern di Rottura<span class="ls-dot ls-dot-on">◆</span><table class="ls4-table" data-ls-table="" data-lang="it" hidden="">
-        
-          
-          
-          
-          
-          
-          
-        
+      </table><table class="ls4-table" data-ls-table="" data-lang="es" hidden="">
+        <colgroup><col><col class=""><col class=""><col class=""><col class=""><col class=""></colgroup>
+        <thead><tr>
+          <th class="ls4-check-col"></th>
+          <th class="ls4-prod-col"><span class="ls-col-label">Osprey-25</span></th>
+          <th class="ls4-prod-col ls4-highlight-col"><span class="ls-col-label">LineScanner</span></th>
+          <th class="ls4-prod-col ls4-highlight-col"><span class="ls-col-label">White Haze</span></th>
+          <th class="ls4-prod-col"><span class="ls-col-label">BowScanner</span></th>
+          <th class="ls4-prod-col"><span class="ls-col-label">CulletScanner</span></th>
+        </tr></thead>
+        <tbody>
+          <tr class="ls4-shaded"><td>Control de Calidad</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr><td>Astillas en Bordes</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr class="ls4-shaded"><td>Control de Línea de Visión</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr><td>Control de Dimensiones</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr class="ls4-shaded"><td>Control de Posición y Calidad del Logo</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr><td>Control de Distorsión</td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td><td></td></tr>
+          <tr class="ls4-shaded"><td>Control de Anisotropía</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr><td>Bruma Blanca</td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td></tr>
+          <tr class="ls4-shaded"><td>Control de Carga</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr><td>Control de Curvatura General</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td></tr>
+          <tr class="ls4-shaded"><td>Control de Espesor del Vidrio</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td></tr>
+          <tr><td>Reconocimiento de Tipo de Vidrio</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr class="ls4-shaded"><td>Interpretación de Código Data Matrix</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr><td>Control de Patrón de Rotura</td><td></td><td></td><td></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td></tr>
+        </tbody>
+      </table><table class="ls4-table" data-ls-table="" data-lang="it" hidden="">
+        <colgroup><col><col class=""><col class=""><col class=""><col class=""><col class=""></colgroup>
+        <thead><tr>
+          <th class="ls4-check-col"></th>
+          <th class="ls4-prod-col"><span class="ls-col-label">Osprey-25</span></th>
+          <th class="ls4-prod-col ls4-highlight-col"><span class="ls-col-label">LineScanner</span></th>
+          <th class="ls4-prod-col ls4-highlight-col"><span class="ls-col-label">White Haze</span></th>
+          <th class="ls4-prod-col"><span class="ls-col-label">BowScanner</span></th>
+          <th class="ls4-prod-col"><span class="ls-col-label">CulletScanner</span></th>
+        </tr></thead>
+        <tbody>
+          <tr class="ls4-shaded"><td>Controllo Qualità</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr><td>Schegge ai Bordi</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr class="ls4-shaded"><td>Controllo Linea di Vista</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr><td>Controllo Dimensioni</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr class="ls4-shaded"><td>Controllo Posizione e Qualità Logo</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr><td>Controllo Distorsione</td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td><td></td></tr>
+          <tr class="ls4-shaded"><td>Controllo Anisotropia</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr><td>Alone Bianco</td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td></tr>
+          <tr class="ls4-shaded"><td>Controllo Carico</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr><td>Controllo Flessione Generale</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td></tr>
+          <tr class="ls4-shaded"><td>Controllo Spessore del Vetro</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td></tr>
+          <tr><td>Riconoscimento Tipo di Vetro</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr class="ls4-shaded"><td>Interpretazione Codice Data Matrix</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
+          <tr><td>Controllo Pattern di Rottura</td><td></td><td></td><td></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td></tr>
+        </tbody>
       </table>
       <div data-ls-col-restore=""></div>
       <div data-ls-row-restore=""></div>
@@ -2827,6 +2830,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   </div>
 <script>
 window.PB_READONLY = true;
+(function(){var h=window.location.hostname;if(h==="localhost"||h==="127.0.0.1"){var b=document.getElementById("fp-dash-btn");if(b){b.href="/";b.textContent="← Dashboard";b.target="_top";}}})();
 /**
  * button.js — Presentation Builder Button Component
  *
@@ -3648,6 +3652,7 @@ window.Carousel = (function () {
 
   function applyLang(lang) {
     document.querySelectorAll('[data-lang]').forEach(function (el) {
+      if (el.closest && el.closest('#fp-lang-menu')) return;
       el.hidden = el.getAttribute('data-lang') !== lang;
     });
     // Update dropdown label and active state
@@ -5100,7 +5105,7 @@ window.Track = (function () {
   arrowNext.addEventListener("click", function () { if (inOptional) goToOptional(optIdx + 1); else goTo(idx + 1); });
 
   /* ── Share modal ── */
-  var presId    = "00000001";
+  var presId    = "00000008";
   var baseUrl   = "https://app-presentation-builder.pages.dev/finished-presentations/" + presId + "/";
   var overlay   = document.getElementById("fp-share-overlay");
   var shareBtns = [document.getElementById("fp-share-btn-hdr"), document.getElementById("fp-share-btn-ftr")];

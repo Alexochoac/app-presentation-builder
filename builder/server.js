@@ -25,6 +25,9 @@ app.use(session({
   cookie: { httpOnly: true, maxAge: 1000 * 60 * 60 * 8 } // 8 hours
 }));
 
+// ── Public assets (no auth required) ─────────────────────────────────────────
+app.use('/shared/brand', express.static(path.join(__dirname, 'shared/brand')));
+
 // ── Auth routes (login / logout) ──────────────────────────────────────────────
 registerAuthRoutes(app);
 
@@ -3385,6 +3388,30 @@ function resolveSlideEdits(libSlide, deckId) {
   return libSlide.edits || {};
 }
 
+// Returns default field values for a slide by rendering it with no saved edits.
+// This lets the translation system see fields that were never explicitly edited by the user.
+function extractSlideDefaultFields(libSlide, deckId) {
+  var defaults = {};
+  var resolved = resolveTemplate(libSlide.templateId);
+  if (!resolved) return defaults;
+  try {
+    var html;
+    if (resolved.source === 'canvas') {
+      var deckConfig = getDeckConfig(deckId);
+      html = renderLayoutToHtml(resolved.tpl, libSlide.id, {}, deckConfig);
+    } else if (resolved.source === 'html' && resolved.filePath && fs.existsSync(resolved.filePath)) {
+      html = fs.readFileSync(resolved.filePath, 'utf8');
+    }
+    if (!html) return defaults;
+    var $d = cheerio.load(html, { decodeEntities: false }, false);
+    $d('[data-edit]').each(function () {
+      var key = $d(this).attr('data-edit');
+      if (key) defaults[key] = $d(this).html() || '';
+    });
+  } catch (e) { /* ignore — fall back to saved edits only */ }
+  return defaults;
+}
+
 // GET /api/decks — list all decks + active deck id
 app.get('/api/decks', function (_req, res) {
   try {
@@ -3645,20 +3672,66 @@ function buildFrozenPresentation(presentation) {
   var langSwitcherCode  = isMultiLang ? fs.readFileSync(path.join(__dirname, 'features', 'slides', 'components', 'language-switcher.js'), 'utf8') : '';
 
   // Wraps all [data-edit] text elements in a cheerio-loaded slide with <span data-lang> per language.
-  // librarySlideId is used for per-slide lookup; falls back to global fields. <img> elements skipped.
+  // ul/ol/table containers cannot use <span> wrappers (invalid HTML), so they are duplicated per
+  // language instead. Detection is by tag name — no hardcoded field name list needed.
+  // librarySlideId is used for per-slide lookup. <img> elements are always skipped.
+  function bakeContainerElement($el, editKey, slideStore, outerHtml) {
+    var englishHtml = $el.html();
+    if (!englishHtml || !englishHtml.trim()) return null;
+    // Detect outer element tag to handle table inner content correctly
+    var elTag = ((outerHtml.match(/^<(\w+)/i) || [])[1] || '').toLowerCase();
+    return allLangs.map(function (lang) {
+      var translatedHtml;
+      if (lang === 'en') {
+        translatedHtml = englishHtml;
+      } else {
+        var sField = slideStore[editKey] && slideStore[editKey][lang];
+        var sRaw   = sField && (typeof sField === 'object' ? sField.current : sField);
+        if (sRaw) {
+          // Table inner content (colgroup/thead/tbody) is invalid outside a <table> context —
+          // HTML5 foster-parenting discards the structure and $t('body').html() returns only
+          // text. Wrap in a temporary <table> so structure is preserved after parsing.
+          if (elTag === 'table' && !sRaw.trimStart().startsWith('<table')) {
+            var $t = cheerio.load('<table>' + sRaw + '</table>', { xmlMode: false });
+            $t('[contenteditable]').removeAttr('contenteditable');
+            $t('[spellcheck]').removeAttr('spellcheck');
+            sRaw = $t('body table').html() || sRaw;
+          } else {
+            var $t = cheerio.load(sRaw, { xmlMode: false });
+            $t('[contenteditable]').removeAttr('contenteditable');
+            $t('[spellcheck]').removeAttr('spellcheck');
+            sRaw = $t('body').html() || sRaw;
+          }
+        }
+        translatedHtml = sRaw || englishHtml;
+      }
+      var $$ = cheerio.load(outerHtml, { xmlMode: false });
+      var $clone = $$('body > *').first();
+      $clone.attr('data-lang', lang);
+      if (lang !== presDefaultLang) $clone.attr('hidden', '');
+      $clone.removeAttr('data-edit').removeAttr('contenteditable').removeAttr('spellcheck');
+      $clone.html(translatedHtml);
+      return $$('body').html();
+    }).join('');
+  }
+
   function bakeLanguageSpans($, librarySlideId) {
     if (!isMultiLang || !translationsData) return;
     var slideStore = (translationsData.slides && translationsData.slides[librarySlideId]) || {};
+
     $('[data-edit]').each(function () {
       var el      = $(this);
       var editKey = el.attr('data-edit');
       if (!editKey) return;
       if (this.tagName === 'img') return;
-      // Skip complex HTML fields (carousels, tabs, structured content) — wrapping them in
-      // <span data-lang> breaks CSS layout and JS component initialization.
-      // Also skip ul/ol directly (their li children aren't in the child-tag check but <span>
-      // inside <ul> is invalid HTML — browsers strip it, breaking language switching).
-      if (/^(ul|ol)$/i.test(this.tagName)) return;
+
+      // ul/ol/table: duplicate element per language (span wrappers are invalid inside these)
+      if (/^(ul|ol|table)$/i.test(this.tagName)) {
+        if (!slideStore[editKey]) return;
+        var replaced = bakeContainerElement(el, editKey, slideStore, $.html(el));
+        if (replaced) el.replaceWith(replaced);
+        return;
+      }
       if (el.children('div, ul, ol, li, table, label, input').length) return;
       // Library always stores English — this is the authoritative English source
       var englishText = el.html();
@@ -3676,6 +3749,7 @@ function buildFrozenPresentation(presentation) {
             var $t = cheerio.load(sRaw, { xmlMode: false });
             $t('[contenteditable]').removeAttr('contenteditable');
             $t('[spellcheck]').removeAttr('spellcheck');
+            $t('[data-builder-only]').remove();
             sRaw = $t('body').html() || sRaw;
           }
           text = sRaw || englishText;
@@ -3765,6 +3839,29 @@ function buildFrozenPresentation(presentation) {
     var isCoverSlide = s.librarySlideId === 'lib-cover' ||
       (resolved.tpl && resolved.tpl.category === 'Cover');
     if (isCoverSlide) Object.assign(edits, coverEdits);
+
+    // For cover slides in multi-lang presentations, replace subheadline placeholders
+    // ([Cliente], [Nombre], etc.) in each translation with actual customer data.
+    if (isCoverSlide && isMultiLang && translationsData && translationsData.slides && presentation.customerName) {
+      var coverSlideStore = translationsData.slides[s.librarySlideId];
+      if (coverSlideStore && coverSlideStore.subheadline) {
+        var coverTokens = [presentation.customerName, presentation.contactName, presentation.contactTitle].filter(Boolean);
+        allLangs.forEach(function (lang) {
+          if (lang === 'en') return;
+          var field = coverSlideStore.subheadline[lang];
+          if (!field) return;
+          var template = typeof field === 'object' ? field.current : field;
+          if (!template) return;
+          var ti = 0;
+          var filled = template.replace(/\[[^\]]+\]/g, function () {
+            return ti < coverTokens.length ? coverTokens[ti++] : '';
+          }).replace(/\s*[·,]\s*$/, '').trim();
+          coverSlideStore.subheadline[lang] = typeof field === 'object'
+            ? Object.assign({}, field, { current: filled })
+            : filled;
+        });
+      }
+    }
 
     var fragment = resolved.source === 'canvas'
       ? renderLayoutToHtml(resolved.tpl, s.id, edits, presDeck)
@@ -3919,7 +4016,7 @@ function buildFrozenPresentation(presentation) {
     (isMultiLang ? '<body data-default-lang="' + presDefaultLang + '" data-pres-id="' + presId + '">' : '<body>'),
     '<div id="fp-shell">',
     '  <div id="fp-header">',
-    '    <a href="/" id="fp-dash-btn">&#8592; Dashboard</a>',
+    '    <a href="' + (appSettings.homepageUrl || '/') + '" id="fp-dash-btn">' + (appSettings.homepageLabel ? appSettings.homepageLabel : '&#8592; Dashboard') + '</a>',
     '    <div style="width:1px;height:20px;background:#333;flex-shrink:0;"></div>',
     '    <button class="fp-nav-btn" id="fp-prev" disabled>&#8249;</button>',
     '    <div id="fp-counter">1 / ' + totalSlides + '</div>',
@@ -3986,6 +4083,7 @@ function buildFrozenPresentation(presentation) {
     '  </div>',
     '<script>',
     'window.PB_READONLY = true;',
+    '(function(){var h=window.location.hostname;if(h==="localhost"||h==="127.0.0.1"){var b=document.getElementById("fp-dash-btn");if(b){b.href="/";b.textContent="← Dashboard";b.target="_top";}}})();',
     inlineJs,
     '(function () {',
     '  var mainSlides = document.querySelectorAll(".fp-slide:not(.fp-optional)");',
@@ -4284,6 +4382,52 @@ app.get('/api/analytics/pageviews', function (req, res) {
     umamiGet(apiPath, function (err, data) {
       if (err) return res.status(500).json({ success: false, error: err.message });
       res.json({ success: true, data: data });
+    });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// GET /api/analytics/pageviews-by-pres?startAt=<ms>&endAt=<ms>&presId=<id>
+// Reconstructs a day-by-day time series using /stats per day (supports URL filtering)
+app.get('/api/analytics/pageviews-by-pres', function (req, res) {
+  if (!UMAMI_USER) return res.json({ success: false, error: 'Umami not configured' });
+  try {
+    var settings  = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8'));
+    var websiteId = settings.umamiWebsiteId;
+    var startAt   = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
+    var endAt     = parseInt(req.query.endAt)   || Date.now();
+    var presId    = req.query.presId;
+    var urlParam  = presId ? encodeURIComponent('/finished/' + presId + '/') : null;
+
+    var DAY  = 86400000;
+    var days = [];
+    var cur  = new Date(startAt);
+    cur.setHours(0, 0, 0, 0);
+    while (cur.getTime() < endAt) {
+      var dayStart = cur.getTime();
+      days.push({ t: dayStart, start: dayStart, end: Math.min(dayStart + DAY, endAt) });
+      cur = new Date(dayStart + DAY);
+    }
+
+    if (days.length === 0) return res.json({ success: true, data: { pageviews: [], sessions: [] } });
+
+    var results = new Array(days.length);
+    var pending = days.length;
+
+    days.forEach(function (day, i) {
+      var apiPath = '/api/websites/' + websiteId + '/stats?startAt=' + day.start + '&endAt=' + day.end;
+      if (urlParam) apiPath += '&url=' + urlParam;
+      umamiGet(apiPath, function (err, data) {
+        results[i] = err ? null : data;
+        if (--pending === 0) {
+          var pageviews = results.map(function (d, j) {
+            return { x: days[j].t, y: d && d.pageviews ? (d.pageviews.value || 0) : 0 };
+          });
+          var sessions = results.map(function (d, j) {
+            return { x: days[j].t, y: d && d.visitors ? (d.visitors.value || 0) : 0 };
+          });
+          res.json({ success: true, data: { pageviews: pageviews, sessions: sessions } });
+        }
+      });
     });
   } catch (e) { res.status(500).json({ success: false, error: e.message }); }
 });
@@ -4588,11 +4732,18 @@ app.post('/api/presentations/:id/publish', function (req, res) {
     });
   }
 
+  // Rebuild the frozen HTML with current code/settings before committing
+  try {
+    buildFrozenPresentation(pres);
+  } catch (buildErr) {
+    return res.status(500).json({ success: false, error: 'Build failed: ' + buildErr.message });
+  }
+
   run('git', ['add', folderArg, 'finished-presentations/shared'], repoRoot, function (err) {
     if (err) return res.status(500).json({ success: false, error: 'git add failed: ' + err.message });
     run('git', ['commit', '-m', commitMsg], repoRoot, function (err, stdout, stderr) {
       var combined = (stdout || '') + (stderr || '');
-      var nothingToCommit = combined.includes('nothing to commit') || combined.includes('nothing added to commit');
+      var nothingToCommit = combined.includes('nothing to commit') || combined.includes('nothing added to commit') || combined.includes('no changes added to commit');
       if (err && !nothingToCommit) return res.status(500).json({ success: false, error: 'git commit failed: ' + err.message });
       run('git', ['push'], repoRoot, function (err) {
         if (err) return res.status(500).json({ success: false, error: 'git push failed: ' + err.message });
@@ -5596,7 +5747,8 @@ app.get('/api/translations/fields-summary', function (req, res) {
     var t       = readTranslations(activeDeckId);
     var rows    = [];
 
-    var blobKeys = ['tabs', 'company-carousel', 'carousel-track-html', 'carousel-track', 'ben-list', 'prob-list'];
+    // Hard exclusions: complex JS components that cannot be translated as a unit
+    var blobKeys = ['tabs', 'company-carousel', 'carousel-track-html', 'carousel-track'];
 
     deck.slides
       .filter(function (ds) { return ds.visible && ds.librarySlideId; })
@@ -5605,17 +5757,19 @@ app.get('/api/translations/fields-summary', function (req, res) {
         if (!libSlide) return;
 
         var edits = resolveSlideEdits(libSlide, activeDeckId);
+        var defaults = extractSlideDefaultFields(libSlide, activeDeckId);
+        // Merge: template defaults first, then saved edits override them
+        var allFields = Object.assign({}, defaults, edits);
         var slideTranslations = (t.slides && t.slides[deckSlide.librarySlideId]) || {};
 
-        Object.keys(edits).forEach(function (fieldKey) {
-          var val = edits[fieldKey];
+        Object.keys(allFields).forEach(function (fieldKey) {
+          var val = allFields[fieldKey];
           if (!val || typeof val !== 'string') return;
 
           if (fieldKey.endsWith('-src') || fieldKey === 'customer-logo-src') return;
+          if (fieldKey.startsWith('__attr:')) return;
           if (blobKeys.includes(fieldKey)) return;
-          if (val.length > 400) return;
-          // Skip component containers: value has nested editable children or UI elements
-          if (val.includes('data-edit=') || val.includes('<button') || val.includes('<img')) return;
+          if (val.includes('<img')) return;
 
           var stripped = val.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
           if (stripped.length < 3) return;
@@ -5661,7 +5815,9 @@ app.post('/api/translations/translate-all', async function (req, res) {
 
     for (var si = 0; si < library.slides.length; si++) {
       var slide = library.slides[si];
-      var edits = slide.edits || {};
+      var edits = resolveSlideEdits(slide, deckId);
+      var defaults = extractSlideDefaultFields(slide, deckId);
+      var allFields = Object.assign({}, defaults, edits);
       var slideId = slide.id;
       if (!t.slides[slideId]) t.slides[slideId] = {};
 
@@ -5672,26 +5828,19 @@ app.post('/api/translations/translate-all', async function (req, res) {
         var langName = (langList.find(function(l){ return l.code === lang; }) || {}).name || lang;
 
         // Collect fields that need translation (missing or dirty)
+        var blobKeys = ['tabs', 'company-carousel', 'carousel-track-html', 'carousel-track'];
         var toTranslate = {};
-        Object.keys(edits).forEach(function (fieldKey) {
-          var val = edits[fieldKey];
+        Object.keys(allFields).forEach(function (fieldKey) {
+          var val = allFields[fieldKey];
           if (!val || typeof val !== 'string') return;
 
-          // Skip image/asset references
           if (fieldKey.endsWith('-src') || fieldKey === 'customer-logo-src') return;
-
-          // Skip known HTML blob fields (component containers, not translatable as a unit)
-          var blobKeys = ['tabs', 'company-carousel', 'carousel-track-html', 'carousel-track', 'ben-list', 'prob-list'];
+          if (fieldKey.startsWith('__attr:')) return;
           if (blobKeys.includes(fieldKey)) return;
+          if (val.includes('<img')) return;
 
-          // Skip large HTML blobs: raw value > 400 chars is almost certainly a component blob
-          if (val.length > 400) return;
-
-          // Strip HTML tags and check for meaningful text
           var stripped = val.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
           if (stripped.length < 3) return;
-
-          // Skip purely numeric values (stats, years, counts)
           if (/^\d+[\d,+%°\.]*$/.test(stripped)) return;
 
           var existing = t.slides[slideId][fieldKey] && t.slides[slideId][fieldKey][lang];
@@ -5719,6 +5868,8 @@ app.post('/api/translations/translate-all', async function (req, res) {
             chunkKeys.forEach(function (key) {
               if (!result.fields[key]) return;
               if (!t.slides[slideId][key]) t.slides[slideId][key] = {};
+              // Store en source if not already tracked (enables dirty detection for default-value fields)
+              if (!t.slides[slideId][key].en) t.slides[slideId][key].en = toTranslate[key];
               var prev = t.slides[slideId][key][lang];
               t.slides[slideId][key][lang] = {
                 current: result.fields[key],

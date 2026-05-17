@@ -951,6 +951,7 @@
   // ── Preview language switcher ─────────────────────────────────────────────
   var previewLang = 'en';
   var enSnapshot = {};
+  var PREVIEW_LANG_KEY = 'builder-preview-lang';
 
   var LANG_FLAGS = {
     en: '🇬🇧', es: '🇪🇸', fr: '🇫🇷', de: '🇩🇪', it: '🇮🇹',
@@ -964,7 +965,7 @@
   function snapshotEnglish() {
     slideEls.forEach(function (slideEl, idx) {
       if (!slideEl) return;
-      slideEl.querySelectorAll('[data-edit][contenteditable]').forEach(function (el) {
+      slideEl.querySelectorAll('[data-edit]').forEach(function (el) {
         var snapKey = idx + '/' + el.getAttribute('data-edit');
         if (!enSnapshot[snapKey]) enSnapshot[snapKey] = el.innerHTML;
       });
@@ -991,6 +992,7 @@
   function setPreviewLang(lang) {
     if (previewLang === 'en' && lang !== 'en') snapshotEnglish();
     previewLang = lang;
+    try { localStorage.setItem(PREVIEW_LANG_KEY, lang); } catch(e) {}
     var isEn = lang === 'en';
 
     // Update button label + flag + style
@@ -1021,10 +1023,10 @@
       slideEl.querySelectorAll('[data-edit]').forEach(function (el) {
         var key     = el.getAttribute('data-edit');
         var snapKey = idx + '/' + key;
-        if (!el.hasAttribute('contenteditable')) return;
+        var hasEditable = el.hasAttribute('contenteditable');
         if (lang === 'en') {
           if (enSnapshot[snapKey] !== undefined) el.innerHTML = enSnapshot[snapKey];
-          el.contentEditable = 'true';
+          if (hasEditable) el.contentEditable = 'true';
         } else {
           var entry = slideStore[key] && slideStore[key][lang];
           if (entry && entry.current) el.innerHTML = entry.current;
@@ -1068,8 +1070,16 @@
     }
   });
 
-  // Load translations on init
-  loadTranslations();
+  // Load translations on init, then restore last selected language
+  loadTranslations().then(function () {
+    try {
+      var saved = localStorage.getItem(PREVIEW_LANG_KEY);
+      var available = translationsData && translationsData.languages || [];
+      if (saved && saved !== 'en' && available.includes(saved)) {
+        setPreviewLang(saved);
+      }
+    } catch(e) {}
+  });
 
   // ── Translation Settings modal ────────────────────────────────────────────
   var _tsAllLangs = [];
@@ -1378,9 +1388,8 @@
 
     function processNext(idx) {
       if (idx >= slides.length) {
-        // All done
-        return fetch('/api/translations').then(function(r){ return r.json(); }).then(function(res){
-          if (res.success) translationsData = res.data;
+        // All done — reload translations and re-apply current language so changes are visible immediately
+        return loadTranslations().then(function(){
           btn.disabled = false;
           updateProgress(null);
           var doneMsg = '<span style="color:#4ade80;font-weight:700;">&#10003; All done!</span>';
@@ -1390,6 +1399,7 @@
           progressEl.innerHTML += doneMsg;
           loadTranslationCenter();
           updateTranslateBadge();
+          if (previewLang !== 'en') applyPreviewLang(previewLang);
         });
       }
       var slide = slides[idx];

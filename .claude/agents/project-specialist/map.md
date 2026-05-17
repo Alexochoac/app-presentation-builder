@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-05-16 (session 17)
+Last updated: 2026-05-16 (session 18)
 
 ---
 
@@ -11,6 +11,7 @@ A local web app for building customized sales presentations for Softsolution's L
 **Status:** Active — Phase 1 in development
 **Runs locally at:** `http://localhost:3000`
 **Start command:** `cd builder && node server.js`
+**Prod URL:** `https://put-a-presentation.wbtm.io` (Docker + Cloudflare Tunnel)
 **Flow:** Login → Dashboard → Builder (`/builder`) → Slides (`/slides`) → Settings (`/settings`)
 
 ---
@@ -21,8 +22,16 @@ A local web app for building customized sales presentations for Softsolution's L
 App-presentation-builder/
 ├── PLAN.md                         ← Full product roadmap + TODO
 ├── CONTEXT.md                      ← Project context + completed history
+├── README.md                       ← Install instructions (Docker + from source)
+├── CHANGELOG.md                    ← Release history (Keep a Changelog format)
+├── VERSIONS.md                     ← Docker image registry + deploy workflow
+├── docker-compose.yml              ← Local/dev compose (builds from source)
 ├── tasks/                          ← Pending task specs
 │   └── done/                       ← Completed task specs
+├── prod/                           ← Prod runtime data (gitignored)
+│   ├── data/                       ← Prod JSON data (separate from dev)
+│   ├── uploads/                    ← Prod uploaded images
+│   └── finished-presentations/     ← Prod frozen presentation outputs
 ├── scripts/
 │   ├── build.js                    ← CLI to rebuild frozen presentations (no server needed)
 │   └── deploy.js                   ← git add→commit→push for one or all presentations
@@ -462,6 +471,24 @@ slide-templates.json  →  slide-library.json  →  decks/[id]/deck.json
 - **Template update notifications** — when template rows change, library slides don't show an "Update available" badge yet (`Feature-L-2026-05-10-template-update-notifications-diff-and-review-flow.md`)
 - **Umami API token** — user's self-hosted Umami is v1 (no API key UI); using username/password auth. Credentials in `.env` as `UMAMI_USERNAME` + `UMAMI_PASSWORD`
 - **fpDelete modal** — Finished Presentations delete in builder-ui still uses native `confirm()` instead of proper modal
+
+---
+
+## Docker & Deployment
+
+- **Dockerfile:** `builder/Dockerfile` — Node 20 Alpine, `npm install --omit=dev`, `node server.js`
+- **Dev compose:** `docker-compose.yml` (project root) — builds from source, mounts `builder/data/` + `builder/.../uploads/` + `finished-presentations/`
+- **Prod compose:** `C:/Users/Alex/n8n-projects/docker-compose.yml` — `presentation-builder` service using `ghcr.io/alexochoac/app-presentation-builder:latest`, mounts `prod/` folders
+- **Image registry:** `ghcr.io/alexochoac/app-presentation-builder` — v1.0 + latest published
+- **GitHub Release:** `github.com/Alexochoac/app-presentation-builder/releases/tag/v1.0`
+- **Deploy workflow:** build → tag → push to ghcr.io → `docker compose pull` + `up -d` in n8n-projects
+
+**Volume mounts (prod):**
+| Host | Container |
+|------|-----------|
+| `prod/data/` | `/app/data` |
+| `prod/uploads/` | `/app/features/slides/uploads` |
+| `prod/finished-presentations/` | `/finished-presentations` |
 
 ---
 

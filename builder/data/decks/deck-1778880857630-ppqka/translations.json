@@ -10,26 +10,26 @@
       "headline": {
         "es": {
           "current": "Inspección de Calidad<br>para <span class=\"blue\">Vidrio Plano.</span>",
-          "previous": null,
+          "previous": "Inspección de Calidad<br>para <span class=\"blue\">Vidrio Plano.</span>",
           "dirty": false
         },
         "en": "Quality Inspection<br>for <span class=\"blue\">Flat Glass.</span>",
         "it": {
-          "current": "Ispezione della Qualità<br>per <span class=\"blue\">Vetro Piatto.</span>",
-          "previous": null,
+          "current": "Ispezione della Qualità<br>per <span class=\"blue\">Vetro Piano.</span>",
+          "previous": "Ispezione della Qualità<br>per <span class=\"blue\">Vetro Piatto.</span>",
           "dirty": false
         }
       },
       "stat-3-text": {
         "es": {
           "current": "Al ver lo que el ojo se pierde, previene costos no planificados antes de que el producto llegue a su cliente",
-          "previous": null,
+          "previous": "Al ver lo que el ojo se pierde, previene costos no planificados antes de que el producto llegue a su cliente",
           "dirty": false
         },
         "en": "By seeing what the eye misses, you prevent unplanned costs before the product ever leaves to your customer",
         "it": {
-          "current": "Vedendo ciò che l'occhio non percepisce, previeni i costi imprevisti prima che il prodotto raggiunga il tuo cliente",
-          "previous": null,
+          "current": "Vedendo ciò che l'occhio non vede, previeni costi imprevisti prima che il prodotto raggiunga il cliente",
+          "previous": "Vedendo ciò che l'occhio non percepisce, previeni i costi imprevisti prima che il prodotto raggiunga il tuo cliente",
           "dirty": false
         }
       },
@@ -37,12 +37,12 @@
         "en": "by GlassQuality.com",
         "es": {
           "current": "por GlassQuality.com",
-          "previous": null,
+          "previous": "por GlassQuality.com",
           "dirty": false
         },
         "it": {
           "current": "di GlassQuality.com",
-          "previous": null,
+          "previous": "di GlassQuality.com",
           "dirty": false
         }
       },
@@ -50,25 +50,25 @@
         "en": "GlassQuality.com · LineScanner<span style=\"letter-spacing: 1.2px;\">· Osprey</span>",
         "es": {
           "current": "GlassQuality.com · LineScanner<span style=\"letter-spacing: 1.2px;\">· Osprey</span>",
-          "previous": null,
+          "previous": "GlassQuality.com · LineScanner<span style=\"letter-spacing: 1.2px;\">· Osprey</span>",
           "dirty": false
         },
         "it": {
           "current": "GlassQuality.com · LineScanner<span style=\"letter-spacing: 1.2px;\">· Osprey</span>",
-          "previous": null,
+          "previous": "GlassQuality.com · LineScanner<span style=\"letter-spacing: 1.2px;\">· Osprey</span>",
           "dirty": false
         }
       },
       "subheadline": {
         "en": "Proposal for [Customer] · [Name], [Title]",
         "es": {
-          "current": "Propuesta para [Cliente] · [Nombre], [Cargo]",
-          "previous": null,
+          "current": "Propuesta para [Cliente] · [Nombre], [Puesto]",
+          "previous": "Propuesta para [Cliente] · [Nombre], [Cargo]",
           "dirty": false
         },
         "it": {
-          "current": "Proposta per [Cliente] · [Nome], [Titolo]",
-          "previous": null,
+          "current": "Proposta per [Customer] · [Name], [Title]",
+          "previous": "Proposta per [Cliente] · [Nome], [Titolo]",
           "dirty": false
         }
       },
@@ -76,12 +76,12 @@
         "en": "Cost of Quality Defects",
         "es": {
           "current": "Costo de Defectos de Calidad",
-          "previous": null,
+          "previous": "Costo de Defectos de Calidad",
           "dirty": false
         },
         "it": {
           "current": "Costo dei Difetti di Qualità",
-          "previous": null,
+          "previous": "Costo dei Difetti di Qualità",
           "dirty": false
         }
       },
@@ -89,25 +89,25 @@
         "en": "Rule 1+10+100",
         "es": {
           "current": "Regla 1+10+100",
-          "previous": null,
+          "previous": "Regla 1+10+100",
           "dirty": false
         },
         "it": {
           "current": "Regola 1+10+100",
-          "previous": null,
+          "previous": "Regola 1+10+100",
           "dirty": false
         }
       },
       "stat-1-text": {
         "en": "Catching a defect early costs 1, while letting it reach the customer can cost 100 times more in replacements and recalls",
         "es": {
-          "current": "Detectar un defecto temprano cuesta 1, mientras que dejar que llegue al cliente puede costar 100 veces más en reemplazos y retiros del mercado",
-          "previous": null,
+          "current": "Detectar un defecto temprano cuesta 1, mientras que dejar que llegue al cliente puede costar 100 veces más en reemplazos y retiros",
+          "previous": "Detectar un defecto temprano cuesta 1, mientras que dejar que llegue al cliente puede costar 100 veces más en reemplazos y retiros del mercado",
           "dirty": false
         },
         "it": {
-          "current": "Rilevare un difetto precocemente costa 1, mentre permettere al cliente di riceverlo può costare 100 volte di più in sostituzioni e richiami",
-          "previous": null,
+          "current": "Rilevare un difetto precocemente costa 1, mentre lasciarlo raggiungere il cliente può costare 100 volte di più in sostituzioni e richiami",
+          "previous": "Rilevare un difetto precocemente costa 1, mentre permettere al cliente di riceverlo può costare 100 volte di più in sostituzioni e richiami",
           "dirty": false
         }
       },
@@ -115,12 +115,12 @@
         "en": "Tempering Line",
         "es": {
           "current": "Línea de Templado",
-          "previous": null,
+          "previous": "Línea de Templado",
           "dirty": false
         },
         "it": {
           "current": "Linea di Tempra",
-          "previous": null,
+          "previous": "Linea di Tempra",
           "dirty": false
         }
       },
@@ -128,12 +128,12 @@
         "en": "Quality as a selling factor",
         "es": {
           "current": "Calidad como factor de venta",
-          "previous": null,
+          "previous": "Calidad como factor de venta",
           "dirty": false
         },
         "it": {
-          "current": "La Qualità come fattore di vendita",
-          "previous": null,
+          "current": "Qualità come fattore di vendita",
+          "previous": "La Qualità come fattore di vendita",
           "dirty": false
         }
       },
@@ -141,25 +141,25 @@
         "en": "CUSTOMER SATISFACTION",
         "es": {
           "current": "SATISFACCIÓN DEL CLIENTE",
-          "previous": null,
+          "previous": "SATISFACCIÓN DEL CLIENTE",
           "dirty": false
         },
         "it": {
           "current": "SODDISFAZIONE DEL CLIENTE",
-          "previous": null,
+          "previous": "SODDISFAZIONE DEL CLIENTE",
           "dirty": false
         }
       },
       "stat-4-text": {
         "en": "A happy customer always buys more",
         "es": {
-          "current": "Un cliente satisfecho siempre compra más",
-          "previous": null,
+          "current": "Un cliente feliz siempre compra más",
+          "previous": "Un cliente satisfecho siempre compra más",
           "dirty": false
         },
         "it": {
-          "current": "Un cliente soddisfatto acquista sempre di più",
-          "previous": null,
+          "current": "Un cliente felice compra sempre di più",
+          "previous": "Un cliente soddisfatto acquista sempre di più",
           "dirty": false
         }
       },
@@ -167,12 +167,12 @@
         "en": "IG Line",
         "es": {
           "current": "Línea IG",
-          "previous": null,
+          "previous": "Línea IG",
           "dirty": false
         },
         "it": {
           "current": "Linea IG",
-          "previous": null,
+          "previous": "Linea IG",
           "dirty": false
         }
       },
@@ -180,12 +180,12 @@
         "en": "The Human Limit",
         "es": {
           "current": "El Límite Humano",
-          "previous": null,
+          "previous": "El Límite Humano",
           "dirty": false
         },
         "it": {
           "current": "Il Limite Umano",
-          "previous": null,
+          "previous": "Il Limite Umano",
           "dirty": false
         }
       },
@@ -193,25 +193,25 @@
         "en": "Ghost Zone",
         "es": {
           "current": "Zona Fantasma",
-          "previous": null,
+          "previous": "Zona Fantasma",
           "dirty": false
         },
         "it": {
           "current": "Zona Fantasma",
-          "previous": null,
+          "previous": "Zona Fantasma",
           "dirty": false
         }
       },
       "stat-2-text": {
         "en": "Human inspectors lose nearly all accuracy once line speeds increases",
         "es": {
-          "current": "Los inspectores humanos pierden casi toda precisión una vez que aumenta la velocidad de la línea",
-          "previous": null,
+          "current": "Los inspectores humanos pierden casi toda la precisión una vez que la velocidad de la línea aumenta",
+          "previous": "Los inspectores humanos pierden casi toda precisión una vez que aumenta la velocidad de la línea",
           "dirty": false
         },
         "it": {
-          "current": "Gli ispettori umani perdono quasi tutta la precisione quando la velocità della linea aumenta",
-          "previous": null,
+          "current": "Gli ispettori umani perdono quasi tutta la precisione quando aumenta la velocità della linea",
+          "previous": "Gli ispettori umani perdono quasi tutta la precisione quando la velocità della linea aumenta",
           "dirty": false
         }
       },
@@ -219,12 +219,12 @@
         "en": "Automotive Printing Line",
         "es": {
           "current": "Línea de Impresión Automotriz",
-          "previous": null,
+          "previous": "Línea de Impresión Automotriz",
           "dirty": false
         },
         "it": {
-          "current": "Linea di Stampa Automotive",
-          "previous": null,
+          "current": "Linea di Stampa Automobilistica",
+          "previous": "Linea di Stampa Automotive",
           "dirty": false
         }
       },
@@ -232,12 +232,12 @@
         "en": "Invisible Risks",
         "es": {
           "current": "Riesgos Invisibles",
-          "previous": null,
+          "previous": "Riesgos Invisibles",
           "dirty": false
         },
         "it": {
           "current": "Rischi Invisibili",
-          "previous": null,
+          "previous": "Rischi Invisibili",
           "dirty": false
         }
       },
@@ -245,12 +245,12 @@
         "en": "Anisotropy &amp; Distortion",
         "es": {
           "current": "Anisotropía y Distorsión",
-          "previous": null,
+          "previous": "Anisotropía y Distorsión",
           "dirty": false
         },
         "it": {
-          "current": "Anisotropia e Distorsione",
-          "previous": null,
+          "current": "Anisotropia &amp; Distorsione",
+          "previous": "Anisotropia e Distorsione",
           "dirty": false
         }
       }
@@ -297,10 +297,749 @@
       }
     },
     "lib-company": {},
-    "lib-comparison": {},
-    "lib-capability": {},
-    "lib-technology": {},
-    "lib-surface": {},
+    "lib-comparison": {
+      "section-label": {
+        "en": "Why-LINESCANNER",
+        "es": {
+          "current": "Por-qué-LINESCANNER",
+          "previous": "Por-qué-LINESCANNER",
+          "dirty": false
+        },
+        "it": {
+          "current": "Perché-LINESCANNER",
+          "previous": "Perché-LINESCANNER",
+          "dirty": false
+        }
+      },
+      "title": {
+        "en": "Slide Title",
+        "es": {
+          "current": "Título de la diapositiva",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Titolo della diapositiva",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "subtitle": {
+        "en": "Supporting subtitle goes here",
+        "es": {
+          "current": "El subtítulo de apoyo va aquí",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Sottotitolo di supporto va qui",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "title-0-0": {
+        "en": "Section Title",
+        "es": {
+          "current": "Título de la sección",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Titolo della sezione",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "subtitle-0-0": {
+        "en": ".Supporting text goes here",
+        "es": {
+          "current": "El texto de apoyo va aquí",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": ".Il testo di supporto va qui",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "list-1-0": {
+        "en": "<li spellcheck=\"false\">Human limitations at high line speed</li><li spellcheck=\"false\">Inconsistent results across shifts</li><li spellcheck=\"false\">Defects reach the customer undetected</li><li spellcheck=\"false\">No data trail for quality audits</li><li spellcheck=\"false\">High cost of late defect discovery</li>",
+        "es": {
+          "current": "<li spellcheck=\"false\">Limitaciones humanas a alta velocidad de línea</li><li spellcheck=\"false\">Resultados inconsistentes entre turnos</li><li spellcheck=\"false\">Los defectos llegan al cliente sin detectarse</li><li spellcheck=\"false\">Sin registro de datos para auditorías de calidad</li><li spellcheck=\"false\">Alto costo del descubrimiento tardío de defectos</li>",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "<li spellcheck=\"false\">Limitazioni umane ad alta velocità di linea</li><li spellcheck=\"false\">Risultati incoerenti tra i turni</li><li spellcheck=\"false\">I difetti raggiungono il cliente senza essere rilevati</li><li spellcheck=\"false\">Nessuna traccia dei dati per i controlli di qualità</li><li spellcheck=\"false\">Alto costo della scoperta tardiva dei difetti</li>",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "headline": {
+        "en": "Why automate&nbsp; Quality Inspection<br>for <span class=\"blue\">Flat Glass Processing</span>",
+        "es": {
+          "current": "Por qué automatizar&nbsp; Inspección de Calidad<br>para <span class=\"blue\">Procesamiento de Vidrio Plano</span>",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Perché automatizzare&nbsp; l'Ispezione della Qualità<br>per <span class=\"blue\">l'Elaborazione del Vetro Piano</span>",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "col-header-prob": {
+        "en": "Without Inspection Automation",
+        "es": {
+          "current": "Sin automatización de inspección",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Senza Automazione dell'Ispezione",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "tier-label-1": {
+        "en": "Human Limitations",
+        "es": {
+          "current": "Limitaciones humanas",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Limitazioni Umane",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "tier-label-2": {
+        "en": "Business Impact",
+        "es": {
+          "current": "Impacto empresarial",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Impatto Commerciale",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "col-header-ben": {
+        "en": "LineScanner &amp; Osprey",
+        "es": {
+          "current": "LineScanner y Osprey",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "LineScanner e Osprey",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "ben-list": {
+        "en": "\n\n\n\n\n\n\n\n\n\n\n\n\n<li class=\"ben-item\">100% inspection of every glass, every shift — no fatigue, no blind spots</li>\n<li class=\"ben-item\">Real-time process control &amp; quality feedback</li>\n<li class=\"ben-item\">Prove quality to customers — a documented defense against claims</li>\n<li class=\"ben-item\">Database &amp; archive for shift accountability and CpK analysis</li><li class=\"ben-item ls-list-dragging\" draggable=\"true\">Mandatory as per industry standards</li>\n<li class=\"ben-item\" draggable=\"false\">Detects distortion, anisotropy &amp; surface defects <strong>invisible to the human eye</strong></li><li class=\"ben-item\">Acceptance procedures for new machinery (e.g. furnaces)</li>\n<li class=\"ben-item\">Increase throughput &amp; reduce costly downstream rejects</li>\n\n\n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      ",
+        "es": {
+          "current": "\n\n\n\n\n\n\n\n\n\n\n\n\n<li class=\"ben-item\">Inspección del 100% de cada vidrio, cada turno — sin fatiga, sin puntos ciegos</li>\n<li class=\"ben-item\">Control de proceso en tiempo real y retroalimentación de calidad</li>\n<li class=\"ben-item\">Compruebe la calidad a los clientes — una defensa documentada contra reclamaciones</li>\n<li class=\"ben-item\">Base de datos y archivo para responsabilidad de turno y análisis de CpK</li><li class=\"ben-item ls-list-dragging\" draggable=\"true\">Obligatorio según normas industriales</li>\n<li class=\"ben-item\" draggable=\"false\">Detecta distorsión, anisotropía y defectos de superficie <strong>invisibles al ojo humano</strong></li><li class=\"ben-item\">Procedimientos de aceptación para maquinaria nueva (p. ej. hornos)</li>\n<li class=\"ben-item\">Aumentar el rendimiento y reducir costosos rechazos aguas abajo</li>\n\n\n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      ",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "\n\n\n\n\n\n\n\n\n\n\n\n\n<li class=\"ben-item\">Ispezione al 100% di ogni vetro, ogni turno — nessuna stanchezza, nessun punto cieco</li>\n<li class=\"ben-item\">Controllo del processo in tempo reale e feedback sulla qualità</li>\n<li class=\"ben-item\">Provare la qualità ai clienti — una difesa documentata contro i reclami</li>\n<li class=\"ben-item\">Database e archivio per la responsabilità dei turni e l'analisi CpK</li><li class=\"ben-item ls-list-dragging\" draggable=\"true\">Obbligatorio secondo gli standard del settore</li>\n<li class=\"ben-item\" draggable=\"false\">Rileva distorsione, anisotropia e difetti di superficie <strong>invisibili all'occhio umano</strong></li><li class=\"ben-item\">Procedure di accettazione per i nuovi macchinari (ad es. forni)</li>\n<li class=\"ben-item\">Aumenta la velocità effettiva e riduci i costosi rifiuti a valle</li>\n\n\n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      ",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "prob-list": {
+        "en": "\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"why3-tier-label\" data-edit=\"tier-label-1\" spellcheck=\"false\">Human Limitations</div>\n<li class=\"prob-item\">Operator fatigue — detection rates drop significantly over long shifts</li>\n<li class=\"prob-item prob-clickable\" title=\"Click to view chart\">As line speed increases, operator effectiveness declines — higher throughput means more defects slip through undetected <span class=\"prob-img-hint\">📈</span></li>\n<li class=\"prob-item\">100% manual inspection is impossible at production speed</li>\n<li class=\"prob-item\" draggable=\"false\">Distortion &amp; anisotropy are <strong>invisible to the naked eye</strong> — no matter how skilled the operator</li>\n<div class=\"why3-tier-label\" data-edit=\"tier-label-2\" spellcheck=\"false\" style=\"margin-top:8px;\">Business Impact</div>\n<li class=\"prob-item\">Inconsistent quality &amp; frequent customer complaints</li>\n<li class=\"prob-item prob-clickable\" title=\"Click to view chart\">Construction site rejections — glass already delivered &amp; installed means transport, rework &amp; project delays <span class=\"prob-img-hint\">💰</span></li><li class=\"prob-item prob-clickable ls-list-dragging\" title=\"Click to view chart\" draggable=\"true\">Automotive: one defect triggers a full batch return — shipping &amp; material costs on the entire load <span class=\"prob-img-hint\">💰</span></li>\n<li class=\"prob-item\" draggable=\"false\">Increased liability risks &amp; reputational damage</li>\n\n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      ",
+        "es": {
+          "current": "\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"why3-tier-label\" data-edit=\"tier-label-1\" spellcheck=\"false\">Limitaciones Humanas</div>\n<li class=\"prob-item\">Fatiga del operador — las tasas de detección disminuyen significativamente durante turnos prolongados</li>\n<li class=\"prob-item prob-clickable\" title=\"Click to view chart\">A medida que aumenta la velocidad de línea, la efectividad del operador disminuye — mayor rendimiento significa más defectos sin detectar <span class=\"prob-img-hint\">📈</span></li>\n<li class=\"prob-item\">La inspección 100% manual es imposible a velocidad de producción</li>\n<li class=\"prob-item\" draggable=\"false\">La distorsión y la anisotropía son <strong>invisibles al ojo desnudo</strong> — sin importar la experiencia del operador</li>\n<div class=\"why3-tier-label\" data-edit=\"tier-label-2\" spellcheck=\"false\" style=\"margin-top:8px;\">Impacto Empresarial</div>\n<li class=\"prob-item\">Calidad inconsistente y quejas frecuentes de clientes</li>\n<li class=\"prob-item prob-clickable\" title=\"Click to view chart\">Rechazos en el sitio de construcción — vidrio ya entregado e instalado significa transporte, retrabajo y retrasos en el proyecto <span class=\"prob-img-hint\">💰</span></li><li class=\"prob-item prob-clickable ls-list-dragging\" title=\"Click to view chart\" draggable=\"true\">Automoción: un defecto desencadena la devolución de todo el lote — costos de envío y material en toda la carga <span class=\"prob-img-hint\">💰</span></li>\n<li class=\"prob-item\" draggable=\"false\">Mayor riesgo de responsabilidad y daño reputacional</li>\n\n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      ",
+          "previous": "\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"why3-tier-label\" data-edit=\"tier-label-1\" spellcheck=\"false\">Limitaciones humanas</div>\n<li class=\"prob-item\">Fatiga del operador — las tasas de detección caen significativamente durante turnos largos</li>\n<li class=\"prob-item prob-clickable\" title=\"Click to view chart\">A medida que aumenta la velocidad de línea, la efectividad del operador disminuye — mayor rendimiento significa más defectos que pasan desapercibidos <span class=\"prob-img-hint\">📈</span></li>\n<li class=\"prob-item\">La inspección manual del 100% es imposible a velocidad de producción</li>\n<li class=\"prob-item\" draggable=\"false\">La distorsión y anisotropía son <strong>invisibles a simple vista</strong> — sin importar cuán hábil sea el operador</li>\n<div class=\"why3-tier-label\" data-edit=\"tier-label-2\" spellcheck=\"false\" style=\"margin-top:8px;\">Impacto empresarial</div>\n<li class=\"prob-item\">Calidad inconsistente y quejas frecuentes de clientes</li>\n<li class=\"prob-item prob-clickable\" title=\"Click to view chart\">Rechazos en obra — vidrio ya entregado e instalado significa transporte, reparación y retrasos del proyecto <span class=\"prob-img-hint\">💰</span></li><li class=\"prob-item prob-clickable ls-list-dragging\" title=\"Click to view chart\" draggable=\"true\">Automoción: un defecto desencadena la devolución de todo el lote — costos de envío y material de toda la carga <span class=\"prob-img-hint\">💰</span></li>\n<li class=\"prob-item\" draggable=\"false\">Aumento de riesgos de responsabilidad civil y daño reputacional</li>\n\n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      ",
+          "dirty": false
+        },
+        "it": {
+          "current": "\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"why3-tier-label\" data-edit=\"tier-label-1\" spellcheck=\"false\">Limitazioni Umane</div>\n<li class=\"prob-item\">Affaticamento dell'operatore — i tassi di rilevamento diminuiscono significativamente durante i turni lunghi</li>\n<li class=\"prob-item prob-clickable\" title=\"Click to view chart\">Con l'aumento della velocità della linea, l'efficacia dell'operatore diminuisce — una velocità di produzione più elevata significa che più difetti passano inosservati <span class=\"prob-img-hint\">📈</span></li>\n<li class=\"prob-item\">L'ispezione manuale al 100% è impossibile alla velocità di produzione</li>\n<li class=\"prob-item\" draggable=\"false\">Distorsione e anisotropia sono <strong>invisibili all'occhio nudo</strong> — indipendentemente dalle competenze dell'operatore</li>\n<div class=\"why3-tier-label\" data-edit=\"tier-label-2\" spellcheck=\"false\" style=\"margin-top:8px;\">Impatto Commerciale</div>\n<li class=\"prob-item\">Qualità incoerente e frequenti reclami dei clienti</li>\n<li class=\"prob-item prob-clickable\" title=\"Click to view chart\">Rigetti nei cantieri — il vetro già consegnato e installato significa trasporto, rielaborazione e ritardi nei progetti <span class=\"prob-img-hint\">💰</span></li><li class=\"prob-item prob-clickable ls-list-dragging\" title=\"Click to view chart\" draggable=\"true\">Automotive: un difetto provoca un reso dell'intero lotto — costi di spedizione e materiali sull'intero carico <span class=\"prob-img-hint\">💰</span></li>\n<li class=\"prob-item\" draggable=\"false\">Aumentati rischi di responsabilità e danni reputazionali</li>\n\n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      ",
+          "previous": "\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"why3-tier-label\" data-edit=\"tier-label-1\" spellcheck=\"false\">Limitazioni Umane</div>\n<li class=\"prob-item\">Stanchezza dell'operatore — i tassi di rilevamento calano significativamente durante i turni lunghi</li>\n<li class=\"prob-item prob-clickable\" title=\"Click to view chart\">All'aumentare della velocità della linea, l'efficienza dell'operatore diminuisce — una maggiore velocità effettiva significa più difetti che passano inosservati <span class=\"prob-img-hint\">📈</span></li>\n<li class=\"prob-item\">L'ispezione manuale al 100% è impossibile alla velocità di produzione</li>\n<li class=\"prob-item\" draggable=\"false\">La distorsione e l'anisotropia sono <strong>invisibili a occhio nudo</strong> — indipendentemente da quanto sia abile l'operatore</li>\n<div class=\"why3-tier-label\" data-edit=\"tier-label-2\" spellcheck=\"false\" style=\"margin-top:8px;\">Impatto Commerciale</div>\n<li class=\"prob-item\">Qualità incoerente e frequenti reclami dai clienti</li>\n<li class=\"prob-item prob-clickable\" title=\"Click to view chart\">Rifiuti nei cantieri — il vetro già consegnato e installato significa trasporto, rilavorazione e ritardi nei progetti <span class=\"prob-img-hint\">💰</span></li><li class=\"prob-item prob-clickable ls-list-dragging\" title=\"Click to view chart\" draggable=\"true\">Automotive: un difetto fa scattare il ritorno dell'intero lotto — costi di spedizione e materiali dell'intero carico <span class=\"prob-img-hint\">💰</span></li>\n<li class=\"prob-item\" draggable=\"false\">Aumento dei rischi di responsabilità e danno reputazionale</li>\n\n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      ",
+          "dirty": false
+        }
+      },
+      "list-1-1": {
+        "en": "<li contenteditable=\"\" spellcheck=\"false\">24 / 7 automated inspection at full line speed</li><li contenteditable=\"\" spellcheck=\"false\">Consistent, shift-independent quality</li><li contenteditable=\"\" spellcheck=\"false\">Every defect caught before shipment</li><li contenteditable=\"\" spellcheck=\"false\">Full traceability — every piece, <b>every scan</b></li><li contenteditable=\"false\" spellcheck=\"false\">Cost of quality reduced by up to 10× in&nbsp;</li>",
+        "es": {
+          "current": "<li contenteditable=\"\" spellcheck=\"false\">Inspección automatizada 24/7 a velocidad de línea completa</li><li contenteditable=\"\" spellcheck=\"false\">Calidad consistente, independiente del turno</li><li contenteditable=\"\" spellcheck=\"false\">Cada defecto detectado antes del envío</li><li contenteditable=\"false\" spellcheck=\"false\">Trazabilidad completa — cada pieza, <b>cada escaneo</b></li><li contenteditable=\"false\" spellcheck=\"false\">Costo de calidad reducido hasta 10× en&nbsp;</li>",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "<li contenteditable=\"\" spellcheck=\"false\">Ispezione automatizzata 24/7 a velocità di linea completa</li><li contenteditable=\"\" spellcheck=\"false\">Qualità coerente e indipendente dal turno</li><li contenteditable=\"\" spellcheck=\"false\">Ogni difetto individuato prima della spedizione</li><li contenteditable=\"false\" spellcheck=\"false\">Tracciabilità completa — ogni pezzo, <b>ogni scansione</b></li><li contenteditable=\"false\" spellcheck=\"false\">Costo della qualità ridotto fino a 10× in&nbsp;</li>",
+          "previous": null,
+          "dirty": false
+        }
+      }
+    },
+    "lib-capability": {
+      "tab-process": {
+        "es": {
+          "current": "Dónde en el Proceso<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Eliminar pestaña\">✕</button>",
+          "previous": "Where in the Process<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
+          "dirty": false
+        },
+        "it": {
+          "current": "Dove nel Processo<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Elimina scheda\">✕</button>",
+          "previous": "Where in the Process<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
+          "dirty": false
+        },
+        "en": "Where in the Process<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\">✕</button>"
+      },
+      "section-label": {
+        "en": "The Product",
+        "es": {
+          "current": "El Producto",
+          "previous": "El Producto",
+          "dirty": false
+        },
+        "it": {
+          "current": "Il Prodotto",
+          "previous": "Il Prodotto",
+          "dirty": false
+        }
+      },
+      "headline": {
+        "en": "LineScanner <span class=\"blue\">Capability Overview</span>",
+        "es": {
+          "current": "LineScanner <span class=\"blue\">Descripción General de Capacidades</span>",
+          "previous": "LineScanner <span class=\"blue\">Descripción General de Capacidades</span>",
+          "dirty": false
+        },
+        "it": {
+          "current": "LineScanner <span class=\"blue\">Panoramica delle Capacità</span>",
+          "previous": "LineScanner <span class=\"blue\">Panoramica delle Capacità</span>",
+          "dirty": false
+        }
+      },
+      "legend-standard": {
+        "en": "Standard",
+        "es": {
+          "current": "Estándar",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Standard",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "legend-optional": {
+        "en": "Optional",
+        "es": {
+          "current": "Opcional",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Opzionale",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "car-label-1": {
+        "en": "Vertical LineScanner",
+        "es": {
+          "current": "LineScanner Vertical",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "LineScanner Verticale",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "car-label-2": {
+        "en": "Horizontal LineScanner",
+        "es": {
+          "current": "LineScanner Horizontal",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "LineScanner Orizzontale",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "car-label-3": {
+        "en": "Osprey",
+        "es": {
+          "current": "Osprey",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Osprey",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "proc-legend-1": {
+        "en": "LineScanner Vertical",
+        "es": {
+          "current": "LineScanner Vertical",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "LineScanner Verticale",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "proc-legend-2": {
+        "en": "LineScanner Horizontal",
+        "es": {
+          "current": "LineScanner Horizontal",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "LineScanner Orizzontale",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "proc-legend-3": {
+        "en": "Osprey-25",
+        "es": {
+          "current": "Osprey-25",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Osprey-25",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "proc-label-1": {
+        "en": "Tempering",
+        "es": {
+          "current": "Templado",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Tempra",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "proc-label-3": {
+        "en": "Lamination",
+        "es": {
+          "current": "Laminación",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Laminazione",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "proc-label-2": {
+        "en": "IG Line",
+        "es": {
+          "current": "Línea IG",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Linea IG",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "proc-label-4": {
+        "en": "Grinding",
+        "es": {
+          "current": "Rectificado",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Molatura",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "proc-label-5": {
+        "en": "Coating",
+        "es": {
+          "current": "Revestimiento",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Rivestimento",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "proc-label-6": {
+        "en": "Automotive Printing",
+        "es": {
+          "current": "Impresión Automotriz",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Stampa Automobilistica",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "tab-capability": {
+        "es": {
+          "current": "Matriz de Capacidades<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Eliminar pestaña\" style=\"\">✕</button>",
+          "previous": "Capabilities Matrix<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
+          "dirty": false
+        },
+        "it": {
+          "current": "Matrice di Capacità<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Elimina scheda\" style=\"\">✕</button>",
+          "previous": "Capabilities Matrix<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
+          "dirty": false
+        },
+        "en": "Capabilities Matrix<button class=\"ls-tab-del\" data-builder-only=\"\" title=\"Delete tab\" style=\"\">✕</button>"
+      },
+      "capability-matrix": {
+        "en": "\n        <colgroup><col><col class=\"\"><col class=\"\"><col class=\"\"><col class=\"\"><col class=\"\"></colgroup>\n        <thead><tr>\n          <th class=\"ls4-check-col\"></th>\n          <th class=\"ls4-prod-col\"><span class=\"ls-col-label\">Osprey-25</span></th>\n          <th class=\"ls4-prod-col ls4-highlight-col\"><span class=\"ls-col-label\">LineScanner</span></th>\n          <th class=\"ls4-prod-col ls4-highlight-col\"><span class=\"ls-col-label\">White Haze</span></th>\n          <th class=\"ls4-prod-col\"><span class=\"ls-col-label\">BowScanner</span></th>\n          <th class=\"ls4-prod-col\"><span class=\"ls-col-label\">CulletScanner</span></th>\n        </tr></thead>\n        <tbody>\n          <tr class=\"ls4-shaded\"><td>Quality Check</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td contenteditable=\"false\">Edge Chips</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Sight Line Check</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Dimension Check</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Logo Position &amp; Quality Check</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Distortion Check</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Anisotropy Check</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>WhiteHaze</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td contenteditable=\"true\">Load Control</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Overall Bending Check</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Glass Thickness Check</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n          <tr><td>Glass Type Recognition</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Data Matrix Code Interpretation</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Break Pattern Check</td><td></td><td></td><td></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n        </tbody>\n      ",
+        "es": {
+          "current": "\n        <colgroup><col><col class=\"\"><col class=\"\"><col class=\"\"><col class=\"\"><col class=\"\"></colgroup>\n        <thead><tr>\n          <th class=\"ls4-check-col\"></th>\n          <th class=\"ls4-prod-col\"><span class=\"ls-col-label\">Osprey-25</span></th>\n          <th class=\"ls4-prod-col ls4-highlight-col\"><span class=\"ls-col-label\">LineScanner</span></th>\n          <th class=\"ls4-prod-col ls4-highlight-col\"><span class=\"ls-col-label\">White Haze</span></th>\n          <th class=\"ls4-prod-col\"><span class=\"ls-col-label\">BowScanner</span></th>\n          <th class=\"ls4-prod-col\"><span class=\"ls-col-label\">CulletScanner</span></th>\n        </tr></thead>\n        <tbody>\n          <tr class=\"ls4-shaded\"><td>Control de Calidad</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td contenteditable=\"false\">Astillas en Bordes</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Control de Línea de Visión</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Control de Dimensiones</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Control de Posición y Calidad del Logo</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Control de Distorsión</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Control de Anisotropía</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Bruma Blanca</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td contenteditable=\"true\">Control de Carga</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Control de Curvatura General</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Control de Espesor del Vidrio</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n          <tr><td>Reconocimiento de Tipo de Vidrio</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Interpretación de Código Data Matrix</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Control de Patrón de Rotura</td><td></td><td></td><td></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n        </tbody>\n      ",
+          "previous": "\n        <colgroup><col><col class=\"\"><col class=\"\"><col class=\"\"><col class=\"\"><col class=\"\"></colgroup>\n        <thead><tr>\n          <th class=\"ls4-check-col\"></th>\n          <th class=\"ls4-prod-col\"><span class=\"ls-col-label\">Osprey-25</span></th>\n          <th class=\"ls4-prod-col ls4-highlight-col\"><span class=\"ls-col-label\">LineScanner</span></th>\n          <th class=\"ls4-prod-col ls4-highlight-col\"><span class=\"ls-col-label\">White Haze</span></th>\n          <th class=\"ls4-prod-col\"><span class=\"ls-col-label\">BowScanner</span></th>\n          <th class=\"ls4-prod-col\"><span class=\"ls-col-label\">CulletScanner</span></th>\n        </tr></thead>\n        <tbody>\n          <tr class=\"ls4-shaded\"><td>Control de Calidad</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td contenteditable=\"false\">Astillas de Borde</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Control de Línea de Vista</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Control de Dimensiones</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Control de Posición y Calidad del Logo</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Control de Distorsión</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Control de Anisotropía</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Neblina Blanca</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Control de Carga</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Control General de Curvatura</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Control de Espesor de Vidrio</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n          <tr><td>Reconocimiento de Tipo de Vidrio</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Interpretación de Código de Matriz de Datos</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Control de Patrón de Rotura</td><td></td><td></td><td></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n        </tbody>\n      ",
+          "dirty": false
+        },
+        "it": {
+          "current": "\n        <colgroup><col><col class=\"\"><col class=\"\"><col class=\"\"><col class=\"\"><col class=\"\"></colgroup>\n        <thead><tr>\n          <th class=\"ls4-check-col\"></th>\n          <th class=\"ls4-prod-col\"><span class=\"ls-col-label\">Osprey-25</span></th>\n          <th class=\"ls4-prod-col ls4-highlight-col\"><span class=\"ls-col-label\">LineScanner</span></th>\n          <th class=\"ls4-prod-col ls4-highlight-col\"><span class=\"ls-col-label\">White Haze</span></th>\n          <th class=\"ls4-prod-col\"><span class=\"ls-col-label\">BowScanner</span></th>\n          <th class=\"ls4-prod-col\"><span class=\"ls-col-label\">CulletScanner</span></th>\n        </tr></thead>\n        <tbody>\n          <tr class=\"ls4-shaded\"><td>Controllo Qualità</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td contenteditable=\"false\">Schegge ai Bordi</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Controllo Linea di Vista</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Controllo Dimensioni</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Controllo Posizione e Qualità Logo</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Controllo Distorsione</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Controllo Anisotropia</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Alone Bianco</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td contenteditable=\"true\">Controllo Carico</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Controllo Flessione Generale</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Controllo Spessore del Vetro</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n          <tr><td>Riconoscimento Tipo di Vetro</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Interpretazione Codice Data Matrix</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Controllo Pattern di Rottura</td><td></td><td></td><td></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n        </tbody>\n      ",
+          "previous": "\n        <colgroup><col><col class=\"\"><col class=\"\"><col class=\"\"><col class=\"\"><col class=\"\"></colgroup>\n        <thead><tr>\n          <th class=\"ls4-check-col\"></th>\n          <th class=\"ls4-prod-col\"><span class=\"ls-col-label\">Osprey-25</span></th>\n          <th class=\"ls4-prod-col ls4-highlight-col\"><span class=\"ls-col-label\">LineScanner</span></th>\n          <th class=\"ls4-prod-col ls4-highlight-col\"><span class=\"ls-col-label\">White Haze</span></th>\n          <th class=\"ls4-prod-col\"><span class=\"ls-col-label\">BowScanner</span></th>\n          <th class=\"ls4-prod-col\"><span class=\"ls-col-label\">CulletScanner</span></th>\n        </tr></thead>\n        <tbody>\n          <tr class=\"ls4-shaded\"><td>Controllo Qualità</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td contenteditable=\"false\">Schegge ai Bordi</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Controllo Linea di Visione</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Controllo Dimensioni</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Controllo Posizione &amp; Qualità Logo</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Controllo Distorsione</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Controllo Anisotropia</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>WhiteHaze</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Controllo Carico</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Controllo Piegatura Complessiva</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Controllo Spessore Vetro</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n          <tr><td>Riconoscimento Tipo Vetro</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Interpretazione Codice Data Matrix</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n          <tr><td>Controllo Modello di Frattura</td><td></td><td></td><td></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n        </tbody>\n      ",
+          "dirty": false
+        }
+      },
+      "proc-matrix": {
+        "en": "<table class=\"ls4-table ls4-proc-table\" data-ls-table=\"\" data-edit=\"proc-matrix\">\n        <colgroup><col><col class=\"\"><col class=\"\"><col class=\"ls-col-collapsed\"></colgroup>\n        <thead><tr>\n          <th class=\"ls4-check-col\"></th>\n          <th class=\"ls4-prod-col ls4-col-orange\"><span class=\"ls-col-label\">LSC-V</span></th>\n          <th class=\"ls4-prod-col ls4-col-red\"><span class=\"ls-col-label\">LSC-H</span></th>\n          <th class=\"ls4-prod-col ls4-col-blue\"><span class=\"ls-col-label\">Osprey-25</span></th>\n        </tr></thead>\n        <tbody>\n          <tr class=\"ls4-shaded\"><td>Quality Check (Scratches, Inclusions, Finger Prints, Dirt, Coating Voids, Automotive)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr><td>Edge Chips</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr class=\"ls4-shaded\"><td>Sight Line Check for IG Unit, Butyl Defects, Grid Alignement</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n          <tr><td>Dimension Check (Overall Dimension, Position of Drill Holes, Diameter of Drill Holes, Cut Outs)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr class=\"ls4-shaded\"><td>Logo Quality Check (Existence and Position of Logo, Quality of Logo)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr><td>Distortion Check (Rollerwave, EdgeLift, Pocket Distortion, Center Kink, Picture Framing)</td><td></td><td></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr class=\"ls4-shaded\"><td>Anisotropy Check (Retardation, Isotropy Values)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr><td>WhiteHaze (Prediction, Real Optical effect)</td><td></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr class=\"ls4-shaded\"><td>Load Control (Location of Glasses, Distance, Long and Wide Load, Broken Corners)</td><td></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td></td></tr>\n          <tr><td>Overall Bending Check (6 Measurement for all Edges)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Glass Thickness Check (Thickness, Side of Coating)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr><td>Glass Type Recognition / Coating Type and Thickness Recognition</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr class=\"ls4-shaded\"><td>Data Matrix Code Interpretation</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n        </tbody>\n      </table>",
+        "es": {
+          "current": "<table class=\"ls4-table ls4-proc-table\" data-ls-table=\"\" data-edit=\"proc-matrix\">\n        <colgroup><col><col class=\"\"><col class=\"\"><col class=\"ls-col-collapsed\"></colgroup>\n        <thead><tr>\n          <th class=\"ls4-check-col\"></th>\n          <th class=\"ls4-prod-col ls4-col-orange\"><span class=\"ls-col-label\">LSC-V</span></th>\n          <th class=\"ls4-prod-col ls4-col-red\"><span class=\"ls-col-label\">LSC-H</span></th>\n          <th class=\"ls4-prod-col ls4-col-blue\"><span class=\"ls-col-label\">Osprey-25</span></th>\n        </tr></thead>\n        <tbody>\n          <tr class=\"ls4-shaded\"><td>Control de Calidad (Arañazos, Inclusiones, Huellas Dactilares, Suciedad, Vacíos de Revestimiento, Automotriz)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr><td>Astillas de Borde</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr class=\"ls4-shaded\"><td>Control de Línea de Vista para Unidad IG, Defectos de Butilo, Alineación de Rejilla</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n          <tr><td>Control de Dimensiones (Dimensión General, Posición de Orificios de Perforación, Diámetro de Orificios de Perforación, Recortes)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr class=\"ls4-shaded\"><td>Control de Calidad del Logo (Existencia y Posición del Logo, Calidad del Logo)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr><td>Control de Distorsión (Onda de Rodillo, Elevación de Borde, Distorsión de Bolsillo, Pliegue Central, Encuadre de Imagen)</td><td></td><td></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr class=\"ls4-shaded\"><td>Control de Anisotropía (Retardo, Valores de Isotropía)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr><td>Neblina Blanca (Predicción, Efecto Óptico Real)</td><td></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr class=\"ls4-shaded\"><td>Control de Carga (Ubicación de Vidrios, Distancia, Carga Larga y Ancha, Esquinas Rotas)</td><td></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td></td></tr>\n          <tr><td>Control General de Curvatura (6 Mediciones para Todos los Bordes)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Control de Espesor de Vidrio (Espesor, Lado del Revestimiento)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr><td>Reconocimiento de Tipo de Vidrio / Reconocimiento de Tipo y Espesor de Revestimiento</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr class=\"ls4-shaded\"><td>Interpretación de Código de Matriz de Datos</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n        </tbody>\n      </table>",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "<table class=\"ls4-table ls4-proc-table\" data-ls-table=\"\" data-edit=\"proc-matrix\">\n        <colgroup><col><col class=\"\"><col class=\"\"><col class=\"ls-col-collapsed\"></colgroup>\n        <thead><tr>\n          <th class=\"ls4-check-col\"></th>\n          <th class=\"ls4-prod-col ls4-col-orange\"><span class=\"ls-col-label\">LSC-V</span></th>\n          <th class=\"ls4-prod-col ls4-col-red\"><span class=\"ls-col-label\">LSC-H</span></th>\n          <th class=\"ls4-prod-col ls4-col-blue\"><span class=\"ls-col-label\">Osprey-25</span></th>\n        </tr></thead>\n        <tbody>\n          <tr class=\"ls4-shaded\"><td>Controllo Qualità (Graffi, Inclusioni, Impronte Digitali, Sporco, Vuoti di Rivestimento, Automotive)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr><td>Schegge ai Bordi</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr class=\"ls4-shaded\"><td>Controllo Linea di Visione per Unità IG, Difetti di Butile, Allineamento Griglia</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n          <tr><td>Controllo Dimensioni (Dimensione Complessiva, Posizione Fori di Foratura, Diametro Fori di Foratura, Ritagli)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr class=\"ls4-shaded\"><td>Controllo Qualità Logo (Esistenza e Posizione del Logo, Qualità del Logo)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr><td>Controllo Distorsione (Rollerwave, EdgeLift, Distorsione Tasca, Piega al Centro, Picture Framing)</td><td></td><td></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr class=\"ls4-shaded\"><td>Controllo Anisotropia (Ritardo, Valori di Isotropia)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr><td>WhiteHaze (Previsione, Effetto Ottico Reale)</td><td></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr class=\"ls4-shaded\"><td>Controllo Carico (Posizione dei Vetri, Distanza, Carico Lungo e Largo, Angoli Rotti)</td><td></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td></td></tr>\n          <tr><td>Controllo Piegatura Complessiva (6 Misurazioni per Tutti i Bordi)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n          <tr class=\"ls4-shaded\"><td>Controllo Spessore Vetro (Spessore, Lato del Rivestimento)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr><td>Riconoscimento Tipo Vetro / Riconoscimento Tipo e Spessore Rivestimento</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n          <tr class=\"ls4-shaded\"><td>Interpretazione Codice Data Matrix</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-red\">◆</span></td><td><span class=\"ls-dot ls-dot-blue\">◆</span></td></tr>\n        </tbody>\n      </table>",
+          "previous": null,
+          "dirty": false
+        }
+      }
+    },
+    "lib-technology": {
+      "tab-16bit": {
+        "es": {
+          "current": "Ventaja 16-bit<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
+          "previous": "16-bit Advantage<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
+          "dirty": false
+        },
+        "it": {
+          "current": "Vantaggio 16-bit<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
+          "previous": "16-bit Advantage<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
+          "dirty": false
+        },
+        "en": "16-bit Advantage<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>"
+      },
+      "tab-vs": {
+        "es": {
+          "current": "vs Sistemas de Cámara<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
+          "previous": "vs Camera Systems<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
+          "dirty": false
+        },
+        "it": {
+          "current": "vs Sistemi fotografici<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
+          "previous": "vs Camera Systems<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
+          "dirty": false
+        },
+        "en": "vs Camera Systems<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>"
+      },
+      "section-label": {
+        "en": "The Technology - Linescanner",
+        "es": {
+          "current": "La Tecnología - Linescanner",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "La Tecnologia - Linescanner",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "headline": {
+        "en": "How LineScanner <span class=\"blue\">sees what others miss</span>",
+        "es": {
+          "current": "Cómo LineScanner <span class=\"blue\">ve lo que otros pierden</span>",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Come LineScanner <span class=\"blue\">vede quello che altri perdono</span>",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "comp-card-1": {
+        "en": "<strong>Telecentric light:</strong>&nbsp;uniform illumination independent of glass position",
+        "es": {
+          "current": "<strong>Luz telecéntrica:</strong>&nbsp;iluminación uniforme independiente de la posición del vidrio",
+          "previous": "<strong>Luz telecéntrica:</strong>&nbsp;iluminación uniforme independiente de la posición del vidrio",
+          "dirty": false
+        },
+        "it": {
+          "current": "<strong>Illuminazione telecentric:</strong>&nbsp;illuminazione uniforme indipendente dalla posizione del vetro",
+          "previous": "<strong>Illuminazione telecentrica:</strong>&nbsp;illuminazione uniforme indipendente dalla posizione del vetro",
+          "dirty": false
+        }
+      },
+      "comp-card-2": {
+        "en": "<strong>Linear image sensor</strong> — real line-by-line scanning, not a snapshot camera",
+        "es": {
+          "current": "<strong>Sensor de imagen lineal</strong> — escaneo real línea por línea, no una cámara de captura instantánea",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "<strong>Sensore di immagine lineare</strong> — scansione reale riga per riga, non una fotocamera istantanea",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "comp-card-3": {
+        "en": "<strong>Glass</strong>&nbsp;inspected continuously at full production speed",
+        "es": {
+          "current": "<strong>Vidrio</strong>&nbsp;inspeccionado continuamente a la velocidad de producción completa",
+          "previous": "<strong>Vidrio</strong>&nbsp;inspeccionado continuamente a velocidad de producción completa",
+          "dirty": false
+        },
+        "it": {
+          "current": "<strong>Vetro</strong>&nbsp;ispezionato continuamente a velocità di produzione completa",
+          "previous": "<strong>Vetro</strong>&nbsp;ispezionato continuamente alla velocità di produzione massima",
+          "dirty": false
+        }
+      },
+      "comp-card-4": {
+        "en": "<strong>Electronic module</strong> — 16-bit processing at extreme speed",
+        "es": {
+          "current": "<strong>Módulo electrónico</strong> — procesamiento de 16 bits a velocidad extrema",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "<strong>Modulo elettronico</strong> — elaborazione a 16 bit a velocità estrema",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "feat-card-1": {
+        "en": "<strong>Low-contrast detection:</strong> Identifies defects 8-bit systems cannot see — subtle inclusions, coating variations, micro-scratches.",
+        "es": {
+          "current": "<strong>Detección de bajo contraste:</strong> Identifica defectos que los sistemas de 8 bits no pueden ver — inclusiones sutiles, variaciones de recubrimiento, microrrayaduras.",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "<strong>Rilevamento a basso contrasto:</strong> Identifica difetti che i sistemi a 8 bit non possono vedere — inclusioni sottili, variazioni di rivestimento, micro-graffi.",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "feat-card-2": {
+        "en": "<strong>Transmission homogenization:</strong> Glass from 15% to 99% processed with the same setup — identical results across all types.",
+        "es": {
+          "current": "<strong>Homogeneización de transmisión:</strong> Vidrio del 15% al 99% procesado con la misma configuración — resultados idénticos en todos los tipos.",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "<strong>Omogeneizzazione della trasmissione:</strong> Vetro dal 15% al 99% elaborato con la stessa configurazione — risultati identici su tutti i tipi.",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "feat-card-3": {
+        "en": "<strong>Every pixel is equal:</strong> No variation by position — always consistent, eliminating false positives and unnecessary rejections.",
+        "es": {
+          "current": "<strong>Cada píxel es igual:</strong> Sin variación por posición — siempre consistente, eliminando falsos positivos y rechazos innecesarios.",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "<strong>Ogni pixel è uguale:</strong> Nessuna variazione per posizione — sempre coerente, eliminando falsi positivi e rifiuti non necessari.",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "feat-card-4": {
+        "en": "<strong>Extreme processing speed:</strong> No compromise on throughput. Compatible with automotive and railway production rates.",
+        "es": {
+          "current": "<strong>Velocidad de procesamiento extrema:</strong> Sin compromiso en el rendimiento. Compatible con tasas de producción automotriz y ferroviaria.",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "<strong>Velocità di elaborazione estrema:</strong> Nessun compromesso sulla capacità di produzione. Compatibile con i tassi di produzione automotive e ferroviario.",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "vc-header-bad": {
+        "en": "Camera-based Systems",
+        "es": {
+          "current": "Sistemas Basados en Cámara",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Sistemi basati su fotocamera",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "vc-label-drillhole": {
+        "en": "Drill Hole, Camera vs LineScanner",
+        "es": {
+          "current": "Orificio de Perforación, Cámara vs LineScanner",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Foro di perforazione, Fotocamera vs LineScanner",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "vc-label-igunit": {
+        "en": "IG Unit — Camera vs LineScanner",
+        "es": {
+          "current": "Unidad IG — Cámara vs LineScanner",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Unità IG — Fotocamera vs LineScanner",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "vc-header-good": {
+        "en": "LineScanner",
+        "es": {
+          "current": "LineScanner",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "LineScanner",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "tab-howitworks": {
+        "it": {
+          "current": "Come funziona<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
+          "previous": "How It Works<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
+          "dirty": false
+        },
+        "en": "How It Works<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
+        "es": {
+          "current": "Cómo funciona<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
+          "previous": "Cómo funciona<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Eliminar pestaña\">✕</button>",
+          "dirty": false
+        }
+      },
+      "t5-vc-good-list": {
+        "en": "\n<li><strong>100% line-by-line scanning:</strong> Every millimetre of glass is inspected — zero gaps, zero blind spots</li>\n<li><strong>No motion blur:</strong> Linear sensor reads one line at a time, perfectly synchronised with production speed</li>\n<li><strong>16-bit depth:</strong> 65,536 grey levels — detects the subtlest inclusions, coating variations and micro-scratches</li>\n<li><strong>Telecentric illumination:</strong> Uniform light field independent of glass position — consistent results everywhere</li>\n<li><strong>Every pixel is equal:</strong> No positional variation — eliminates false positives and unnecessary rejections</li>\n<li contenteditable=\"false\"><strong>One setup for all glass:</strong> 15% to 99% transmission handled automatically with the same configuration .....</li>\n      ",
+        "es": {
+          "current": "\n<li><strong>Escaneo línea por línea al 100%:</strong> Cada milímetro de vidrio se inspecciona — sin espacios, sin puntos ciegos</li>\n<li><strong>Sin desenfoque de movimiento:</strong> El sensor lineal lee una línea a la vez, perfectamente sincronizado con la velocidad de producción</li>\n<li><strong>Profundidad de 16 bits:</strong> 65.536 niveles de gris — detecta las inclusiones más sutiles, variaciones de recubrimiento y microarañazos</li>\n<li><strong>Iluminación telecéntrica:</strong> Campo de luz uniforme independiente de la posición del vidrio — resultados consistentes en todas partes</li>\n<li><strong>Cada píxel es igual:</strong> Sin variación de posición — elimina falsos positivos y rechazos innecesarios</li>\n<li contenteditable=\"false\"><strong>Una configuración para todo el vidrio:</strong> Transmisión del 15% al 99% manejada automáticamente con la misma configuración .....</li>\n      ",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "\n<li><strong>Scansione 100% linea per linea:</strong> Ogni millimetro di vetro viene ispezionato — zero spazi vuoti, zero punti ciechi</li>\n<li><strong>Nessuna sfocatura di movimento:</strong> Il sensore lineare legge una linea alla volta, perfettamente sincronizzato con la velocità di produzione</li>\n<li><strong>Profondità 16-bit:</strong> 65.536 livelli di grigio — rileva le inclusioni più sottili, le variazioni di rivestimento e i micro-graffi</li>\n<li><strong>Illuminazione telecentrica:</strong> Campo di luce uniforme indipendente dalla posizione del vetro — risultati coerenti ovunque</li>\n<li><strong>Ogni pixel è uguale:</strong> Nessuna variazione posizionale — elimina i falsi positivi e i rifiuti non necessari</li>\n<li contenteditable=\"false\"><strong>Una configurazione per tutto il vetro:</strong> Trasmissione dal 15% al 99% gestita automaticamente con la stessa configurazione .....</li>\n      ",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "t5-vc-bad-list": {
+        "en": "\n<li><strong>Snapshot coverage:</strong> Takes periodic frames — gaps between shots mean defects between frames go undetected</li>\n<li><strong>Motion blur at speed:</strong> Fast production lines cause image blur, reducing detection accuracy</li>\n<li><strong>8-bit depth:</strong> Only 256 grey levels — low-contrast defects are invisible</li>\n<li><strong>Position-dependent illumination:</strong> Uneven lighting across the field of view distorts results</li>\n<li><strong>False positives &amp; rejects:</strong> Pixel variation by position triggers unnecessary alarms</li>\n<li><strong>Recalibration required:</strong> Sensitivity must be re-tuned for every glass type and transmission level</li>\n      ",
+        "es": {
+          "current": "\n<li><strong>Cobertura de instantánea:</strong> Captura fotogramas periódicos — los espacios entre disparos significan que los defectos entre fotogramas pasan desapercibidos</li>\n<li><strong>Desenfoque de movimiento a velocidad:</strong> Las líneas de producción rápidas causan desenfoque de imagen, reduciendo la precisión de detección</li>\n<li><strong>Profundidad de 8 bits:</strong> Solo 256 niveles de gris — los defectos de bajo contraste son invisibles</li>\n<li><strong>Iluminación dependiente de la posición:</strong> La iluminación desigual en el campo de visión distorsiona los resultados</li>\n<li><strong>Falsos positivos y rechazos:</strong> La variación de píxeles por posición desencadena alarmas innecesarias</li>\n<li><strong>Recalibración requerida:</strong> La sensibilidad debe reajustarse para cada tipo de vidrio y nivel de transmisión</li>\n      ",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "\n<li><strong>Copertura tramite snapshot:</strong> Acquisisce fotogrammi periodici — gli spazi tra gli scatti significano che i difetti tra i fotogrammi non vengono rilevati</li>\n<li><strong>Sfocatura di movimento ad alta velocità:</strong> Le linee di produzione veloce causano sfocatura dell'immagine, riducendo la precisione di rilevamento</li>\n<li><strong>Profondità 8-bit:</strong> Solo 256 livelli di grigio — i difetti a basso contrasto sono invisibili</li>\n<li><strong>Illuminazione dipendente dalla posizione:</strong> L'illuminazione irregolare nel campo visivo distorce i risultati</li>\n<li><strong>Falsi positivi e rifiuti:</strong> La variazione dei pixel per posizione attiva allarmi non necessari</li>\n<li><strong>Ricalibratura richiesta:</strong> La sensibilità deve essere riadattata per ogni tipo di vetro e livello di trasmissione</li>\n      ",
+          "previous": null,
+          "dirty": false
+        }
+      }
+    },
+    "lib-surface": {
+      "s6-label-0": {
+        "es": {
+          "current": "Scratches",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "section-label": {
+        "en": "Surface Quality",
+        "es": {
+          "current": "Calidad de Superficie",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Qualità della Superficie",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "headline": {
+        "en": "Defect detection with <span class=\"blue\">Artificial Intelligence</span>",
+        "es": {
+          "current": "Detección de defectos con <span class=\"blue\">Inteligencia Artificial</span>",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Rilevamento dei difetti con <span class=\"blue\">Intelligenza Artificiale</span>",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "subtitle": {
+        "en": "Neural network trained to automatically classify every defect type.",
+        "es": {
+          "current": "Red neuronal entrenada para clasificar automáticamente cada tipo de defecto.",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Rete neurale addestrata per classificare automaticamente ogni tipo di difetto.",
+          "previous": null,
+          "dirty": false
+        }
+      }
+    },
     "lib-dimension": {},
     "lib-screenprint": {},
     "lib-logo-check": {},
@@ -330,7 +1069,60 @@
     "lib-1778859142670": {},
     "lib-1778859154990": {},
     "lib-1778859170386": {},
-    "lib-1778912487594": {},
+    "lib-1778912487594": {
+      "ls20-config": {
+        "it": {
+          "current": "[{\"id\":\"item-0\",\"label\":\"Scratches\",\"spriteRow\":0,\"icon\":null,\"carouselHtml\":\"&lt;div class=\\\"ls-carousel-track\\\" style=\\\"\\\"&gt;&lt;div class=\\\"ls-carousel-slide\\\"&gt;&lt;img src=\\\"/slides/uploads/Defect-of-a-Coating-image-LineScanner-Raw-Image.png\\\" alt=\\\"Defect-of-a-Coating-image-LineScanner-Raw-Image\\\" data-zoom=\\\"\\\"&gt;&lt;div class=\\\"ls-carousel-caption\\\"&gt;Defect-of-a-Coating-image-LineScanner-Raw-Image&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;\"},{\"id\":\"item-1\",\"label\":\"Button 2\",\"spriteRow\":1,\"icon\":null,\"carouselHtml\":\"&lt;div class=\\\"ls-carousel-track\\\" style=\\\"\\\"&gt;&lt;div class=\\\"ls-carousel-slide\\\"&gt;&lt;img src=\\\"/slides/uploads/Defect-Piece-Edge-Chip-2.PNG\\\" alt=\\\"Defect-Piece-Edge-Chip-2\\\" data-zoom=\\\"\\\"&gt;&lt;div class=\\\"ls-carousel-caption\\\"&gt;Defect-Piece-Edge-Chip-2&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;\"},{\"id\":\"item-2\",\"label\":\"Button 3\",\"spriteRow\":2,\"icon\":null,\"carouselHtml\":\"&lt;div class=\\\"ls-carousel-track\\\" style=\\\"\\\"&gt;&lt;div class=\\\"ls-carousel-slide\\\"&gt;&lt;img src=\\\"/slides/uploads/Defect of a Coating Defect LineScanner Raw Image.png\\\" alt=\\\"Defect of a Coating Defect LineScanner Raw Image\\\" data-zoom=\\\"\\\"&gt;&lt;div class=\\\"ls-carousel-caption\\\"&gt;Defect of a Coating Defect LineScanner Raw Image&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;\"}]",
+          "previous": null,
+          "dirty": false
+        },
+        "en": "[{\"id\":\"item-0\",\"label\":\"Button 1\",\"spriteRow\":0,\"icon\":null,\"carouselHtml\":\"&lt;div class=\\\"ls-carousel-track\\\" style=\\\"\\\"&gt;&lt;div class=\\\"ls-carousel-slide\\\"&gt;&lt;img src=\\\"/slides/uploads/Defect-of-a-Coating-image-LineScanner-Raw-Image.png\\\" alt=\\\"Defect-of-a-Coating-image-LineScanner-Raw-Image\\\" data-zoom=\\\"\\\"&gt;&lt;div class=\\\"ls-carousel-caption\\\"&gt;Defect-of-a-Coating-image-LineScanner-Raw-Image&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;\"},{\"id\":\"item-1\",\"label\":\"Button 2\",\"spriteRow\":1,\"icon\":null,\"carouselHtml\":\"&lt;div class=\\\"ls-carousel-track\\\" style=\\\"\\\"&gt;&lt;div class=\\\"ls-carousel-slide\\\"&gt;&lt;img src=\\\"/slides/uploads/Defect-Piece-Edge-Chip-2.PNG\\\" alt=\\\"Defect-Piece-Edge-Chip-2\\\" data-zoom=\\\"\\\"&gt;&lt;div class=\\\"ls-carousel-caption\\\"&gt;Defect-Piece-Edge-Chip-2&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;\"},{\"id\":\"item-2\",\"label\":\"Button 3\",\"spriteRow\":2,\"icon\":null,\"carouselHtml\":\"&lt;div class=\\\"ls-carousel-track\\\" style=\\\"\\\"&gt;&lt;div class=\\\"ls-carousel-slide\\\"&gt;&lt;img src=\\\"/slides/uploads/Defect of a Coating Defect LineScanner Raw Image.png\\\" alt=\\\"Defect of a Coating Defect LineScanner Raw Image\\\" data-zoom=\\\"\\\"&gt;&lt;div class=\\\"ls-carousel-caption\\\"&gt;Defect of a Coating Defect LineScanner Raw Image&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;\"}]",
+        "es": {
+          "current": "[{\"id\":\"item-0\",\"label\":\"Botón 1\",\"spriteRow\":0,\"icon\":null,\"carouselHtml\":\"&lt;div class=\\\"ls-carousel-track\\\" style=\\\"\\\"&gt;&lt;div class=\\\"ls-carousel-slide\\\"&gt;&lt;img src=\\\"/slides/uploads/Defect-of-a-Coating-image-LineScanner-Raw-Image.png\\\" alt=\\\"Defect-of-a-Coating-image-LineScanner-Raw-Image\\\" data-zoom=\\\"\\\"&gt;&lt;div class=\\\"ls-carousel-caption\\\"&gt;Defect-of-a-Coating-image-LineScanner-Raw-Image&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;\"},{\"id\":\"item-1\",\"label\":\"Botón 2\",\"spriteRow\":1,\"icon\":null,\"carouselHtml\":\"&lt;div class=\\\"ls-carousel-track\\\" style=\\\"\\\"&gt;&lt;div class=\\\"ls-carousel-slide\\\"&gt;&lt;img src=\\\"/slides/uploads/Defect-Piece-Edge-Chip-2.PNG\\\" alt=\\\"Defect-Piece-Edge-Chip-2\\\" data-zoom=\\\"\\\"&gt;&lt;div class=\\\"ls-carousel-caption\\\"&gt;Defect-Piece-Edge-Chip-2&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;\"},{\"id\":\"item-2\",\"label\":\"Botón 3\",\"spriteRow\":2,\"icon\":null,\"carouselHtml\":\"&lt;div class=\\\"ls-carousel-track\\\" style=\\\"\\\"&gt;&lt;div class=\\\"ls-carousel-slide\\\"&gt;&lt;img src=\\\"/slides/uploads/Defect of a Coating Defect LineScanner Raw Image.png\\\" alt=\\\"Defect of a Coating Defect LineScanner Raw Image\\\" data-zoom=\\\"\\\"&gt;&lt;div class=\\\"ls-carousel-caption\\\"&gt;Defect of a Coating Defect LineScanner Raw Image&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;\"}]",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "section-label": {
+        "en": "Surface Quality",
+        "es": {
+          "current": "Calidad de Superficie",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Qualità della Superficie",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "headline": {
+        "en": "Defect detection with <span class=\"blue\">Artificial Intelligence</span>",
+        "es": {
+          "current": "Detección de defectos con <span class=\"blue\">Inteligencia Artificial</span>",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Rilevamento dei difetti con <span class=\"blue\">Intelligenza Artificiale</span>",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "subtitle": {
+        "en": "Neural network trained to automatically classify every defect type.",
+        "es": {
+          "current": "Red neuronal entrenada para clasificar automáticamente cada tipo de defecto.",
+          "previous": null,
+          "dirty": false
+        },
+        "it": {
+          "current": "Rete neurale addestrata per classificare automaticamente ogni tipo di difetto.",
+          "previous": null,
+          "dirty": false
+        }
+      }
+    },
     "lib-1778941011173": {}
   },
   "favorites": [

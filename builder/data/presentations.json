@@ -1,243 +1,15 @@
 {
   "presentations": [
     {
-      "id": "00000003",
-      "createdAt": "2026-05-16",
-      "deckId": "default",
-      "presentationName": "a",
-      "customerName": "a",
-      "contactName": "a",
-      "contactTitle": "",
-      "customerLogoSrc": "/slides/uploads/LOGO-Softsolution-Black.jpg",
-      "slideCount": 15,
-      "slides": [
-        {
-          "id": "deck-lib-1778854157322-1778854164717",
-          "librarySlideId": "lib-1778854157322",
-          "name": "Cover SoftSolution Logo",
-          "visible": true
-        },
-        {
-          "id": "deck-lib-company-1778837870406",
-          "librarySlideId": "lib-company",
-          "name": "Company Intro",
-          "visible": true
-        },
-        {
-          "id": "deck-comparison",
-          "librarySlideId": "lib-comparison",
-          "name": "Why Us",
-          "visible": true
-        },
-        {
-          "id": "deck-capability",
-          "librarySlideId": "lib-capability",
-          "name": "Products Overview",
-          "visible": true
-        },
-        {
-          "id": "deck-technology",
-          "librarySlideId": "lib-technology",
-          "name": "LineScanner-Technology",
-          "visible": true
-        },
-        {
-          "id": "deck-lib-1777096783950-1777096961176",
-          "librarySlideId": "lib-1777096783950",
-          "name": "Osprey-Technology",
-          "visible": true
-        },
-        {
-          "id": "deck-lib-1778837645228-1778837655832",
-          "librarySlideId": "lib-1778837645228",
-          "name": "CulletScanner-Technology",
-          "visible": true
-        },
-        {
-          "id": "deck-surface",
-          "librarySlideId": "lib-surface",
-          "name": "Surface Types",
-          "visible": true
-        },
-        {
-          "id": "deck-dimension",
-          "librarySlideId": "lib-dimension",
-          "name": "Dimensions",
-          "visible": true
-        },
-        {
-          "id": "deck-screenprint",
-          "librarySlideId": "lib-screenprint",
-          "name": "Screen Printing",
-          "visible": true
-        },
-        {
-          "id": "deck-logo-check",
-          "librarySlideId": "lib-logo-check",
-          "name": "Logo Check",
-          "visible": true
-        },
-        {
-          "id": "deck-database",
-          "librarySlideId": "lib-database",
-          "name": "Traceability",
-          "visible": true
-        },
-        {
-          "id": "deck-sensitivity",
-          "librarySlideId": "lib-sensitivity",
-          "name": "Sensitivity",
-          "visible": true
-        },
-        {
-          "id": "deck-footprint",
-          "librarySlideId": "lib-footprint",
-          "name": "Installation",
-          "visible": true
-        },
-        {
-          "id": "deck-integrations",
-          "librarySlideId": "lib-integrations",
-          "name": "Integrations",
-          "visible": false
-        },
-        {
-          "id": "deck-cta",
-          "librarySlideId": "lib-cta",
-          "name": "Call to Action",
-          "visible": true
-        }
-      ],
-      "defaultLanguage": "it",
-      "languages": [
-        "it",
-        "es"
-      ]
-    },
-    {
-      "id": "00000002",
-      "createdAt": "2026-05-16",
-      "deckId": "deck-1778938499502-go8vi",
-      "presentationName": "1",
-      "customerName": "TEST",
-      "contactName": "1",
-      "contactTitle": "",
-      "customerLogoSrc": "/slides/uploads/LOGO_Vidreira-Algarvia-Portugal.png",
-      "slideCount": 15,
-      "slides": [
-        {
-          "id": "deck-lib-1778854157322-1778854164717",
-          "librarySlideId": "lib-1778854157322",
-          "name": "Cover SoftSolution Logo",
-          "visible": true
-        },
-        {
-          "id": "deck-lib-company-1778837870406",
-          "librarySlideId": "lib-company",
-          "name": "Company Intro",
-          "visible": true
-        },
-        {
-          "id": "deck-comparison",
-          "librarySlideId": "lib-comparison",
-          "name": "Why Us",
-          "visible": true
-        },
-        {
-          "id": "deck-capability",
-          "librarySlideId": "lib-capability",
-          "name": "Products Overview",
-          "visible": true
-        },
-        {
-          "id": "deck-technology",
-          "librarySlideId": "lib-technology",
-          "name": "LineScanner-Technology",
-          "visible": true
-        },
-        {
-          "id": "deck-lib-1777096783950-1777096961176",
-          "librarySlideId": "lib-1777096783950",
-          "name": "Osprey-Technology",
-          "visible": true
-        },
-        {
-          "id": "deck-lib-1778837645228-1778837655832",
-          "librarySlideId": "lib-1778837645228",
-          "name": "CulletScanner-Technology",
-          "visible": true
-        },
-        {
-          "id": "deck-surface",
-          "librarySlideId": "lib-surface",
-          "name": "Surface Types",
-          "visible": true
-        },
-        {
-          "id": "deck-dimension",
-          "librarySlideId": "lib-dimension",
-          "name": "Dimensions",
-          "visible": true
-        },
-        {
-          "id": "deck-screenprint",
-          "librarySlideId": "lib-screenprint",
-          "name": "Screen Printing",
-          "visible": true
-        },
-        {
-          "id": "deck-logo-check",
-          "librarySlideId": "lib-logo-check",
-          "name": "Logo Check",
-          "visible": true
-        },
-        {
-          "id": "deck-database",
-          "librarySlideId": "lib-database",
-          "name": "Traceability",
-          "visible": true
-        },
-        {
-          "id": "deck-sensitivity",
-          "librarySlideId": "lib-sensitivity",
-          "name": "Sensitivity",
-          "visible": true
-        },
-        {
-          "id": "deck-footprint",
-          "librarySlideId": "lib-footprint",
-          "name": "Installation",
-          "visible": true
-        },
-        {
-          "id": "deck-integrations",
-          "librarySlideId": "lib-integrations",
-          "name": "Integrations",
-          "visible": false
-        },
-        {
-          "id": "deck-cta",
-          "librarySlideId": "lib-cta",
-          "name": "Call to Action",
-          "visible": true
-        }
-      ],
-      "defaultLanguage": "es",
-      "languages": [
-        "es",
-        "en"
-      ]
-    },
-    {
-      "id": "00000001",
-      "createdAt": "2026-05-16",
+      "id": "00000008",
+      "createdAt": "2026-05-17",
       "deckId": "deck-1778880857630-ppqka",
-      "presentationName": "a",
-      "customerName": "a",
-      "contactName": "a",
+      "presentationName": "p",
+      "customerName": "p",
+      "contactName": "p",
       "contactTitle": "",
       "customerLogoSrc": "/slides/uploads/LOGO_Benteler.jpg",
-      "slideCount": 2,
+      "slideCount": 6,
       "slides": [
         {
           "id": "deck-lib-1778854288118-1778937544023",
@@ -250,13 +22,369 @@
           "librarySlideId": "lib-1778918402151",
           "name": "Test — Simple (Carousel) 3",
           "visible": true
+        },
+        {
+          "id": "deck-lib-technology-1779006657676",
+          "librarySlideId": "lib-technology",
+          "name": "LineScanner-Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-capability-1779006836832",
+          "librarySlideId": "lib-capability",
+          "name": "Products Overview",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-comparison-1779008175564",
+          "librarySlideId": "lib-comparison",
+          "name": "Why Us",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1778912487594-1779012694825",
+          "librarySlideId": "lib-1778912487594",
+          "name": "Multi-buttons New",
+          "visible": true
+        }
+      ],
+      "defaultLanguage": "en",
+      "languages": [
+        "en",
+        "es",
+        "it"
+      ]
+    },
+    {
+      "id": "00000007",
+      "createdAt": "2026-05-17",
+      "deckId": "deck-1778880857630-ppqka",
+      "presentationName": "y",
+      "customerName": "y",
+      "contactName": "y",
+      "contactTitle": "",
+      "customerLogoSrc": "/slides/uploads/LOGO_Benteler.jpg",
+      "slideCount": 6,
+      "slides": [
+        {
+          "id": "deck-lib-1778854288118-1778937544023",
+          "librarySlideId": "lib-1778854288118",
+          "name": "Cover SoftSolution New",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1778918402151-1778918559593",
+          "librarySlideId": "lib-1778918402151",
+          "name": "Test — Simple (Carousel) 3",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-technology-1779006657676",
+          "librarySlideId": "lib-technology",
+          "name": "LineScanner-Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-capability-1779006836832",
+          "librarySlideId": "lib-capability",
+          "name": "Products Overview",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-comparison-1779008175564",
+          "librarySlideId": "lib-comparison",
+          "name": "Why Us",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1778912487594-1779012694825",
+          "librarySlideId": "lib-1778912487594",
+          "name": "Multi-buttons New",
+          "visible": true
+        }
+      ],
+      "defaultLanguage": "en",
+      "languages": [
+        "en",
+        "es",
+        "it"
+      ]
+    },
+    {
+      "id": "00000006",
+      "createdAt": "2026-05-17",
+      "deckId": "deck-1778880857630-ppqka",
+      "presentationName": "r",
+      "customerName": "r",
+      "contactName": "r",
+      "contactTitle": "",
+      "customerLogoSrc": "/slides/uploads/LOGO_Benteler.jpg",
+      "slideCount": 6,
+      "slides": [
+        {
+          "id": "deck-lib-1778854288118-1778937544023",
+          "librarySlideId": "lib-1778854288118",
+          "name": "Cover SoftSolution New",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1778918402151-1778918559593",
+          "librarySlideId": "lib-1778918402151",
+          "name": "Test — Simple (Carousel) 3",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-technology-1779006657676",
+          "librarySlideId": "lib-technology",
+          "name": "LineScanner-Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-capability-1779006836832",
+          "librarySlideId": "lib-capability",
+          "name": "Products Overview",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-comparison-1779008175564",
+          "librarySlideId": "lib-comparison",
+          "name": "Why Us",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1778912487594-1779012694825",
+          "librarySlideId": "lib-1778912487594",
+          "name": "Multi-buttons New",
+          "visible": true
+        }
+      ],
+      "defaultLanguage": "en",
+      "languages": [
+        "en",
+        "es",
+        "it"
+      ]
+    },
+    {
+      "id": "00000005",
+      "createdAt": "2026-05-17",
+      "deckId": "deck-1778880857630-ppqka",
+      "presentationName": "a",
+      "customerName": "NEWWWWWWWWWWW",
+      "contactName": "a",
+      "contactTitle": "",
+      "customerLogoSrc": "/slides/uploads/LOGO_Benteler.jpg",
+      "slideCount": 6,
+      "slides": [
+        {
+          "id": "deck-lib-1778854288118-1778937544023",
+          "librarySlideId": "lib-1778854288118",
+          "name": "Cover SoftSolution New",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1778918402151-1778918559593",
+          "librarySlideId": "lib-1778918402151",
+          "name": "Test — Simple (Carousel) 3",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-technology-1779006657676",
+          "librarySlideId": "lib-technology",
+          "name": "LineScanner-Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-capability-1779006836832",
+          "librarySlideId": "lib-capability",
+          "name": "Products Overview",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-comparison-1779008175564",
+          "librarySlideId": "lib-comparison",
+          "name": "Why Us",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1778912487594-1779012694825",
+          "librarySlideId": "lib-1778912487594",
+          "name": "Multi-buttons New",
+          "visible": true
+        }
+      ],
+      "defaultLanguage": "en",
+      "languages": [
+        "en",
+        "es",
+        "it"
+      ]
+    },
+    {
+      "id": "00000004",
+      "createdAt": "2026-05-17",
+      "deckId": "deck-1778880857630-ppqka",
+      "presentationName": "New",
+      "customerName": "New",
+      "contactName": "New",
+      "contactTitle": "",
+      "customerLogoSrc": "/slides/uploads/LOGO_Benteler.jpg",
+      "slideCount": 6,
+      "slides": [
+        {
+          "id": "deck-lib-1778854288118-1778937544023",
+          "librarySlideId": "lib-1778854288118",
+          "name": "Cover SoftSolution New",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1778918402151-1778918559593",
+          "librarySlideId": "lib-1778918402151",
+          "name": "Test — Simple (Carousel) 3",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-technology-1779006657676",
+          "librarySlideId": "lib-technology",
+          "name": "LineScanner-Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-capability-1779006836832",
+          "librarySlideId": "lib-capability",
+          "name": "Products Overview",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-comparison-1779008175564",
+          "librarySlideId": "lib-comparison",
+          "name": "Why Us",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1778912487594-1779012694825",
+          "librarySlideId": "lib-1778912487594",
+          "name": "Multi-buttons New",
+          "visible": true
+        }
+      ],
+      "defaultLanguage": "en",
+      "languages": [
+        "en",
+        "it"
+      ],
+      "publishedAt": "2026-05-17T11:23:41.440Z"
+    },
+    {
+      "id": "00000003",
+      "createdAt": "2026-05-17",
+      "deckId": "deck-1778880857630-ppqka",
+      "presentationName": "e",
+      "customerName": "e",
+      "contactName": "e",
+      "contactTitle": "",
+      "customerLogoSrc": "/slides/uploads/LOGO_Benteler.jpg",
+      "slideCount": 6,
+      "slides": [
+        {
+          "id": "deck-lib-1778854288118-1778937544023",
+          "librarySlideId": "lib-1778854288118",
+          "name": "Cover SoftSolution New",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1778918402151-1778918559593",
+          "librarySlideId": "lib-1778918402151",
+          "name": "Test — Simple (Carousel) 3",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-technology-1779006657676",
+          "librarySlideId": "lib-technology",
+          "name": "LineScanner-Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-capability-1779006836832",
+          "librarySlideId": "lib-capability",
+          "name": "Products Overview",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-comparison-1779008175564",
+          "librarySlideId": "lib-comparison",
+          "name": "Why Us",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1778912487594-1779012694825",
+          "librarySlideId": "lib-1778912487594",
+          "name": "Multi-buttons New",
+          "visible": true
         }
       ],
       "defaultLanguage": "es",
       "languages": [
         "es",
-        "en"
-      ]
+        "it"
+      ],
+      "publishedAt": "2026-05-17T11:25:19.655Z"
+    },
+    {
+      "id": "00000002",
+      "createdAt": "2026-05-17",
+      "deckId": "deck-1778880857630-ppqka",
+      "presentationName": "a",
+      "customerName": "a",
+      "contactName": "a",
+      "contactTitle": "",
+      "customerLogoSrc": "/slides/uploads/LOGO_Benteler.jpg",
+      "slideCount": 6,
+      "slides": [
+        {
+          "id": "deck-lib-1778854288118-1778937544023",
+          "librarySlideId": "lib-1778854288118",
+          "name": "Cover SoftSolution New",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1778918402151-1778918559593",
+          "librarySlideId": "lib-1778918402151",
+          "name": "Test — Simple (Carousel) 3",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-technology-1779006657676",
+          "librarySlideId": "lib-technology",
+          "name": "LineScanner-Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-capability-1779006836832",
+          "librarySlideId": "lib-capability",
+          "name": "Products Overview",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-comparison-1779008175564",
+          "librarySlideId": "lib-comparison",
+          "name": "Why Us",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1778912487594-1779012694825",
+          "librarySlideId": "lib-1778912487594",
+          "name": "Multi-buttons New",
+          "visible": true
+        }
+      ],
+      "defaultLanguage": "en",
+      "languages": [
+        "en",
+        "es",
+        "it"
+      ],
+      "publishedAt": "2026-05-17T11:13:35.256Z"
     }
   ]
 }

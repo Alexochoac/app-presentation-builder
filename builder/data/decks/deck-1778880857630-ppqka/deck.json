@@ -10,6 +10,26 @@
       "id": "deck-lib-1778918402151-1778918559593",
       "visible": true,
       "librarySlideId": "lib-1778918402151"
+    },
+    {
+      "id": "deck-lib-technology-1779006657676",
+      "librarySlideId": "lib-technology",
+      "visible": true
+    },
+    {
+      "id": "deck-lib-capability-1779006836832",
+      "librarySlideId": "lib-capability",
+      "visible": true
+    },
+    {
+      "id": "deck-lib-comparison-1779008175564",
+      "librarySlideId": "lib-comparison",
+      "visible": true
+    },
+    {
+      "id": "deck-lib-1778912487594-1779012694825",
+      "librarySlideId": "lib-1778912487594",
+      "visible": true
     }
   ]
 }

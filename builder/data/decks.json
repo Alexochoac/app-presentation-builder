@@ -1,5 +1,5 @@
 {
-  "activeDeckId": "deck-1778869312222-udndh",
+  "activeDeckId": "default",
   "decks": [
     {
       "id": "default",
@@ -21,20 +21,21 @@
       "name": "Test",
       "theme": "dark",
       "createdAt": "2026-05-15T18:21:52.222Z",
-      "updatedAt": "2026-05-15T19:57:07.152Z",
+      "updatedAt": "2026-05-17T10:54:17.156Z",
       "logo": "/slides/uploads/LOGO_Softsolution_Black.jpg",
       "heroBg": "/slides/uploads/Panther_Eye.jpeg",
       "heroBgFocal": "25% 50%",
       "colors": {
         "primary": "#F5A623"
-      }
+      },
+      "heroBgOpacity": 47
     },
     {
       "id": "deck-1778880857630-ppqka",
-      "name": "TEST",
+      "name": "TEST1",
       "theme": "dark",
       "createdAt": "2026-05-15T21:34:17.630Z",
-      "updatedAt": "2026-05-16T14:57:49.008Z",
+      "updatedAt": "2026-05-17T10:48:17.686Z",
       "logo": "/slides/uploads/LOGO_Benteler.jpg",
       "heroBg": "/slides/uploads/Panther_SoftSolution.PNG",
       "heroBgFocal": "25% 25%",
@@ -42,21 +43,25 @@
         "primary": "#F5A623"
       },
       "heroBgFit": "cover",
-      "heroBgFocalGrid": 5
+      "heroBgFocalGrid": 5,
+      "heroBgOpacity": 49
     },
     {
       "id": "deck-1778938499502-go8vi",
-      "name": "New",
+      "name": "New 1",
       "theme": "dark",
       "createdAt": "2026-05-16T13:34:59.501Z",
-      "updatedAt": "2026-05-16T14:59:01.456Z",
+      "updatedAt": "2026-05-17T10:57:43.699Z",
       "logo": null,
       "heroBg": null,
       "heroBgFocal": "25% 0%",
       "colors": {
         "primary": "#F5A623"
       },
-      "heroBgFocalGrid": 5
+      "heroBgFocalGrid": 5,
+      "heroBgType": "color",
+      "heroBgColor": "#4a5387",
+      "heroBgOpacity": 44
     }
   ]
 }

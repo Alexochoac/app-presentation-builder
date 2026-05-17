@@ -192,7 +192,7 @@
       color: var(--accent);
       background: color-mix(in srgb, var(--accent) 10%, var(--bg));
     }
-    #viewsPresDropdown { position: relative; }
+    #viewsPresDropdown, #engPresDropdown, #engDateDropdown { position: relative; }
     #viewsPresTrigger { cursor: pointer; user-select: none; }
     #viewsPresTrigger .chevron { font-size: 10px; opacity: .5; transition: transform .15s; }
     #viewsPresTrigger.open .chevron { transform: rotate(180deg); }
@@ -219,6 +219,20 @@
     [data-theme="light"] .views-pres-row:hover { background: rgba(0,0,0,.05); }
     .views-pres-row input[type="checkbox"] { accent-color: #F5A623; width: 14px; height: 14px; cursor: pointer; flex-shrink: 0; }
     #viewsCustomDateBtn {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      margin-left: 4px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--accent);
+      background: color-mix(in srgb, var(--accent) 10%, var(--bg));
+      color: var(--accent);
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    #engCustomDateBtn {
       display: none;
       align-items: center;
       gap: 6px;
@@ -451,8 +465,8 @@
   <!-- Mobile Top Bar -->
   <header class="topbar-mobile">
     <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu">&#9776;</button>
-    <div class="logo-icon">P</div>
-    <span class="logo-text">Presentation Builder</span>
+    <img class="logo-icon" src="/shared/brand/icon.svg" alt="PA">
+    <img class="logo-img" src="/shared/brand/logo.svg" alt="PUT.A. Presentation">
   </header>
 
   <!-- Sidebar Overlay (mobile) -->
@@ -461,8 +475,8 @@
   <!-- Sidebar -->
   <nav class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-      <div class="logo-icon">P</div>
-      <span class="logo-text">Presentation Builder</span>
+      <img class="logo-icon" src="/shared/brand/icon.svg" alt="PA">
+      <img class="logo-img" src="/shared/brand/logo.svg" alt="PUT.A. Presentation">
     </div>
 
     <ul class="sidebar-nav">
@@ -509,6 +523,64 @@
 
   <!-- Main Content -->
   <main class="main">
+
+    <!-- Engagement Activity (collapsible, starts collapsed) -->
+    <section class="panel" style="margin-bottom:16px;overflow:visible;position:relative;z-index:10;">
+      <div class="panel-header" style="cursor:pointer;" id="engActHeader">
+        <div>
+          <h2 class="panel-title">Engagement Activity</h2>
+          <p class="panel-subtitle">Pageviews and visitors · Umami</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div id="engDateDropdown">
+            <button id="engDateTrigger" class="filter-pill" type="button">
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5;flex-shrink:0;"><rect x="2" y="4" width="16" height="14" rx="2"/><line x1="2" y1="8" x2="18" y2="8"/><line x1="6" y1="2" x2="6" y2="6"/><line x1="14" y1="2" x2="14" y2="6"/></svg>
+              <span id="engDateLabel">Last 30 days</span>
+              <span class="chevron">&#9660;</span>
+            </button>
+            <div id="engDateMenu" class="views-floating-menu">
+              <div class="sort-option" data-value="7d">Last 7 days</div>
+              <div class="sort-option" data-value="24h">Last 24 hours</div>
+              <div class="sort-option selected" data-value="30d">Last 30 days</div>
+              <div class="sort-option" data-value="custom">Custom…</div>
+            </div>
+            <input id="engDateInput" type="text" readonly style="position:absolute;bottom:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none;">
+          </div>
+          <span id="engActChevron" style="font-size:12px;opacity:.5;transition:transform .2s;transform:rotate(-90deg);">&#9660;</span>
+        </div>
+      </div>
+      <div id="engActBody" style="display:none;">
+        <!-- Legend -->
+        <div style="display:flex;gap:14px;font-size:11px;color:var(--muted);margin-bottom:12px;">
+          <span style="display:flex;align-items:center;gap:5px;">
+            <span style="width:12px;height:12px;background:#F5A623;border-radius:2px;display:inline-block;"></span>Pageviews
+          </span>
+          <span style="display:flex;align-items:center;gap:5px;">
+            <span style="width:12px;height:12px;background:rgba(99,179,237,.8);border-radius:2px;display:inline-block;"></span>Visitors
+          </span>
+        </div>
+        <!-- Bar chart -->
+        <div style="position:relative;height:240px;">
+          <canvas id="engBarChart"></canvas>
+        </div>
+        <!-- Filters row -->
+        <div style="display:flex;gap:6px;margin-top:16px;flex-wrap:wrap;align-items:center;">
+          <button class="views-tab active" id="engPresAllBtn">All presentations</button>
+          <div id="engPresDropdown">
+            <button id="engPresTrigger" class="views-tab" type="button">
+              <span id="engPresLabel">Filter by presentation</span>
+              <span class="chevron" style="margin-left:4px;">&#9660;</span>
+            </button>
+            <div id="engPresMenu" class="views-floating-menu"></div>
+          </div>
+          <button id="engCustomDateBtn" type="button">
+            <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.7;flex-shrink:0;"><rect x="2" y="4" width="16" height="14" rx="2"/><line x1="2" y1="8" x2="18" y2="8"/><line x1="6" y1="2" x2="6" y2="6"/><line x1="14" y1="2" x2="14" y2="6"/></svg>
+            <span id="engCustomDateLabel">Pick dates</span>
+            <span style="opacity:.5;cursor:pointer;" id="engCustomDateClear" title="Clear">×</span>
+          </button>
+        </div>
+      </div>
+    </section>
 
     <!-- Finished Presentations -->
     <section class="panel">
@@ -620,23 +692,6 @@
           </button>
         </div>
 
-        <!-- Engagement chart -->
-        <div style="margin-top:24px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-            <div>
-              <span style="font-size:13px;font-weight:600;color:var(--text);">Engagement</span>
-              <span style="font-size:12px;color:var(--muted);margin-left:8px;">Umami · last 30 days</span>
-            </div>
-            <div style="display:flex;gap:10px;font-size:11px;color:var(--muted);">
-              <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:3px;background:#F5A623;border-radius:2px;display:inline-block;"></span>Pageviews</span>
-              <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:3px;background:rgba(99,179,237,.8);border-radius:2px;display:inline-block;"></span>Visitors</span>
-            </div>
-          </div>
-          <div style="position:relative;height:180px;">
-            <canvas id="engagementChart"></canvas>
-          </div>
-        </div>
-
         <!-- Recent Activity (collapsible subsection) -->
         <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px;">
           <div id="recentActHeader" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:0;">
@@ -650,6 +705,7 @@
 
       </div><!-- /#pubActBody -->
     </section>
+
 
   </main>
 
@@ -1116,6 +1172,7 @@
         presentations = items;
         checkedIds = items.map(function (p) { return p.id; });
         buildPresMenu();
+        document.dispatchEvent(new CustomEvent('engPresentationsReady', { detail: presentations }));
         buildChart();
         buildSummaryCards(items, deckCount);
         buildRecentActivity(items);
@@ -1155,16 +1212,40 @@
   </script>
 
   <script>
-    // ── Engagement chart (Umami pageviews over time) ──────────────
+    // ── Engagement Activity card ───────────────────────────────────
     (function () {
-      var engChart = null;
-      function buildEngagementChart(pageviews, sessions) {
-        var canvas = document.getElementById('engagementChart');
+      var engChart      = null;
+      var engRange      = '30d';
+      var engCustom     = null;  // [Date, Date] when custom range active
+      var engPresId     = null;  // null = all presentations
+
+      // ── Collapse ─────────────────────────────────────────────────
+      var header  = document.getElementById('engActHeader');
+      var body    = document.getElementById('engActBody');
+      var chevron = document.getElementById('engActChevron');
+      var STORAGE_KEY = 'pb-engact-collapsed';
+
+      function setOpen(open) {
+        body.style.display = open ? '' : 'none';
+        chevron.style.transform = open ? 'rotate(0deg)' : 'rotate(-90deg)';
+        localStorage.setItem(STORAGE_KEY, open ? '0' : '1');
+        if (open && !engChart) loadEngagement();
+      }
+      var saved = localStorage.getItem(STORAGE_KEY);
+      setOpen(saved === '0'); // default collapsed
+      header.addEventListener('click', function (e) {
+        if (e.target.closest('#engDateDropdown')) return;
+        setOpen(body.style.display === 'none');
+      });
+
+      // ── Build chart ───────────────────────────────────────────────
+      function buildEngBarChart(pageviews, sessions) {
+        var canvas = document.getElementById('engBarChart');
         if (!canvas) return;
         var dark = document.documentElement.getAttribute('data-theme') !== 'light';
-        if (engChart) engChart.destroy();
+        if (engChart) { engChart.destroy(); engChart = null; }
         engChart = new Chart(canvas, {
-          type: 'line',
+          type: 'bar',
           data: {
             labels: pageviews.map(function (p) {
               var d = new Date(p.x || p.t);
@@ -1174,67 +1255,206 @@
               {
                 label: 'Pageviews',
                 data: pageviews.map(function (p) { return p.y; }),
-                borderColor: '#F5A623', backgroundColor: 'rgba(245,166,35,0.12)',
-                borderWidth: 2, fill: true, tension: 0.3, pointRadius: 2
+                backgroundColor: 'rgba(245,166,35,0.75)',
+                borderColor: '#F5A623',
+                borderWidth: 0,
+                borderRadius: 3,
+                borderSkipped: false
               },
               {
                 label: 'Visitors',
                 data: sessions.map(function (p) { return p.y; }),
-                borderColor: 'rgba(99,179,237,.8)', backgroundColor: 'transparent',
-                borderWidth: 2, fill: false, tension: 0.3, pointRadius: 2
+                backgroundColor: 'rgba(99,179,237,0.65)',
+                borderColor: 'rgba(99,179,237,.8)',
+                borderWidth: 0,
+                borderRadius: 3,
+                borderSkipped: false
               }
             ]
           },
           options: {
-            responsive: true, maintainAspectRatio: false,
+            responsive: true,
+            maintainAspectRatio: false,
             plugins: {
               legend: { display: false },
               tooltip: {
                 backgroundColor: dark ? '#1c1c1e' : '#fff',
                 titleColor: dark ? '#fff' : '#000',
                 bodyColor: dark ? 'rgba(255,255,255,.6)' : 'rgba(0,0,0,.6)',
-                borderColor: dark ? 'rgba(255,255,255,.12)' : 'rgba(0,0,0,.12)',
+                borderColor: dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)',
                 borderWidth: 1, padding: 10, cornerRadius: 8
               }
             },
             scales: {
-              x: { grid: { color: dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)', drawBorder: false },
-                   ticks: { color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 } },
-                   border: { display: false } },
-              y: { beginAtZero: true,
-                   grid: { color: dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)', drawBorder: false },
-                   ticks: { color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 } },
-                   border: { display: false } }
+              x: {
+                grid: { color: dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)', drawBorder: false },
+                ticks: { color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 }, maxRotation: 0 },
+                border: { display: false }
+              },
+              y: {
+                beginAtZero: true,
+                grid: { color: dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)', drawBorder: false },
+                ticks: { color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 } },
+                border: { display: false }
+              }
             }
           }
         });
       }
 
+      // ── Load data ─────────────────────────────────────────────────
+      function getEngDates() {
+        if (engCustom) {
+          return { startAt: engCustom[0].getTime(), endAt: engCustom[1].getTime() };
+        }
+        var now = Date.now();
+        var ms  = { '24h': 86400000, '7d': 7 * 86400000, '30d': 30 * 86400000 };
+        return { startAt: now - (ms[engRange] || ms['30d']), endAt: now };
+      }
+
       function loadEngagement() {
-        var startAt = Date.now() - 30 * 86400000;
-        var endAt   = Date.now();
-        fetch('/api/analytics/pageviews?startAt=' + startAt + '&endAt=' + endAt)
+        var dates = getEngDates();
+        var url = engPresId
+          ? '/api/analytics/pageviews-by-pres?startAt=' + dates.startAt + '&endAt=' + dates.endAt + '&presId=' + encodeURIComponent(engPresId)
+          : '/api/analytics/pageviews?startAt=' + dates.startAt + '&endAt=' + dates.endAt;
+        fetch(url)
           .then(function (r) { return r.json(); })
           .then(function (r) {
             if (!r.success || !r.data) return;
-            buildEngagementChart(r.data.pageviews || [], r.data.sessions || []);
+            buildEngBarChart(r.data.pageviews || [], r.data.sessions || []);
           })
           .catch(function () {});
       }
 
-      // Load when Publication Activity panel opens
-      var pubActHeader = document.getElementById('pubActHeader');
-      if (pubActHeader) {
-        pubActHeader.addEventListener('click', function () {
-          setTimeout(function () {
-            if (!engChart) loadEngagement();
-          }, 50);
+      // ── Date range dropdown ───────────────────────────────────────
+      var dateTrigger = document.getElementById('engDateTrigger');
+      var dateMenu    = document.getElementById('engDateMenu');
+      dateTrigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        dateMenu.classList.toggle('open');
+        dateTrigger.classList.toggle('open', dateMenu.classList.contains('open'));
+      });
+
+      var fpEng = flatpickr(document.getElementById('engDateInput'), {
+        mode: 'range',
+        dateFormat: 'Y-m-d',
+        onClose: function (selectedDates) {
+          if (selectedDates.length < 2) return;
+          engCustom = selectedDates;
+          engRange  = 'custom';
+          var btn = document.getElementById('engCustomDateBtn');
+          btn.style.display = 'flex';
+          function fmt(d) { return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); }
+          document.getElementById('engCustomDateLabel').textContent = fmt(selectedDates[0]) + ' → ' + fmt(selectedDates[1]);
+          document.getElementById('engDateLabel').textContent = fmt(selectedDates[0]) + ' → ' + fmt(selectedDates[1]);
+          dateMenu.querySelectorAll('.sort-option').forEach(function (o) { o.classList.remove('selected'); });
+          loadEngagement();
+        }
+      });
+
+      dateMenu.querySelectorAll('.sort-option').forEach(function (opt) {
+        opt.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var val = opt.dataset.value;
+          if (val === 'custom') { fpEng.open(); return; }
+          engRange  = val;
+          engCustom = null;
+          document.getElementById('engCustomDateBtn').style.display = 'none';
+          document.getElementById('engDateLabel').textContent =
+            { '7d': 'Last 7 days', '24h': 'Last 24 hours', '30d': 'Last 30 days' }[val];
+          dateMenu.querySelectorAll('.sort-option').forEach(function (o) {
+            o.classList.toggle('selected', o.dataset.value === val);
+          });
+          dateMenu.classList.remove('open');
+          dateTrigger.classList.remove('open');
+          loadEngagement();
         });
-      }
-      // Also try on page load if panel starts open
-      if (localStorage.getItem('pb-pubact-collapsed') === '0') {
+      });
+
+      document.getElementById('engCustomDateClear').addEventListener('click', function (e) {
+        e.stopPropagation();
+        fpEng.clear();
+        engCustom = null; engRange = '30d';
+        document.getElementById('engCustomDateBtn').style.display = 'none';
+        document.getElementById('engDateLabel').textContent = 'Last 30 days';
+        dateMenu.querySelectorAll('.sort-option').forEach(function (o) {
+          o.classList.toggle('selected', o.dataset.value === '30d');
+        });
         loadEngagement();
+      });
+
+      // ── Presentation filter ───────────────────────────────────────
+      function buildEngPresMenu(presentations) {
+        var menu = document.getElementById('engPresMenu');
+        menu.innerHTML = '';
+        var searchWrap = document.createElement('div');
+        searchWrap.style.cssText = 'padding:6px 8px 4px;';
+        var searchInput = document.createElement('input');
+        searchInput.type = 'search';
+        searchInput.placeholder = 'Search presentations…';
+        searchInput.style.cssText = 'width:100%;box-sizing:border-box;padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:12px;outline:none;';
+        searchWrap.appendChild(searchInput);
+        menu.appendChild(searchWrap);
+        var listWrap = document.createElement('div');
+        listWrap.style.cssText = 'max-height:200px;overflow-y:auto;';
+        menu.appendChild(listWrap);
+
+        function renderRows(filter) {
+          listWrap.innerHTML = '';
+          var q = (filter || '').toLowerCase();
+          presentations.forEach(function (p) {
+            var name = (p.presentationName ? p.customerName + ' — ' + p.presentationName : p.customerName) || p.id;
+            if (q && name.toLowerCase().indexOf(q) === -1) return;
+            var row = document.createElement('div');
+            row.className = 'sort-option' + (engPresId === p.id ? ' selected' : '');
+            row.textContent = name;
+            row.addEventListener('click', function (e) {
+              e.stopPropagation();
+              engPresId = p.id;
+              document.getElementById('engPresLabel').textContent = name;
+              document.getElementById('engPresAllBtn').classList.remove('active');
+              menu.querySelectorAll('.sort-option').forEach(function (r) { r.classList.remove('selected'); });
+              row.classList.add('selected');
+              menu.classList.remove('open');
+              document.getElementById('engPresTrigger').classList.remove('open');
+              loadEngagement();
+            });
+            listWrap.appendChild(row);
+          });
+        }
+        searchInput.addEventListener('input', function () { renderRows(this.value); });
+        searchInput.addEventListener('click', function (e) { e.stopPropagation(); });
+        renderRows('');
       }
+
+      var presTrigger = document.getElementById('engPresTrigger');
+      var presMenu    = document.getElementById('engPresMenu');
+      presTrigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var open = presMenu.classList.toggle('open');
+        presTrigger.classList.toggle('open', open);
+      });
+
+      document.getElementById('engPresAllBtn').addEventListener('click', function () {
+        engPresId = null;
+        document.getElementById('engPresLabel').textContent = 'Filter by presentation';
+        this.classList.add('active');
+        presMenu.querySelectorAll('.sort-option').forEach(function (r) { r.classList.remove('selected'); });
+        loadEngagement();
+      });
+
+      // Wire up presentations list once it's available from the pub-activity script
+      document.addEventListener('engPresentationsReady', function (e) {
+        buildEngPresMenu(e.detail || []);
+      });
+
+      // Close dropdowns on outside click
+      document.addEventListener('click', function () {
+        dateMenu.classList.remove('open');
+        dateTrigger.classList.remove('open');
+        presMenu.classList.remove('open');
+        presTrigger.classList.remove('open');
+      });
     })();
   </script>
 
@@ -1654,6 +1874,11 @@
             var nameEl = document.createElement('div');
             nameEl.className = 'fp-card-name';
             nameEl.textContent = p.presentationName || 'Untitled';
+            nameEl.title = 'Double-click to open';
+            nameEl.style.cursor = 'pointer';
+            nameEl.addEventListener('dblclick', function () {
+              window.location.href = '/view/' + p.id;
+            });
             var badge = document.createElement('span');
             if (p.archivedAt) {
               badge.className = 'fp-status-badge fp-status-badge--archived';

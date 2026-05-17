@@ -32,16 +32,17 @@
     }
 
     .logo {
-      display: flex; align-items: center; gap: 10px;
-      margin-bottom: 28px;
+      display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 12px;
+      margin-bottom: 32px;
     }
     .logo-icon {
-      width: 36px; height: 36px; border-radius: 10px;
-      background: linear-gradient(135deg, #f5a623, #e8711a);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; font-weight: 900; color: #000;
+      width: 52px; height: 52px;
+      display: block; flex-shrink: 0;
     }
-    .logo-text { font-size: 15px; font-weight: 700; color: rgba(255,255,255,.85); }
+    .logo-img {
+      height: 80px; width: auto; display: block;
+      filter: brightness(0) invert(1);
+    }
 
     h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
     .subtitle { font-size: 13px; color: rgba(255,255,255,.45); margin-bottom: 28px; }
@@ -85,8 +86,8 @@
 
   <div class="card">
     <div class="logo">
-      <div class="logo-icon">P</div>
-      <div class="logo-text">Presentation Builder</div>
+      <img class="logo-icon" src="/shared/brand/icon.svg" alt="PA">
+      <img class="logo-img" src="/shared/brand/logo.svg" alt="PUT.A. Presentation">
     </div>
 
     <h1>Welcome back</h1>

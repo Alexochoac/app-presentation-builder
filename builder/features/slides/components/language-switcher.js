@@ -25,6 +25,7 @@
 
   function applyLang(lang) {
     document.querySelectorAll('[data-lang]').forEach(function (el) {
+      if (el.closest && el.closest('#fp-lang-menu')) return;
       el.hidden = el.getAttribute('data-lang') !== lang;
     });
     // Update dropdown label and active state
