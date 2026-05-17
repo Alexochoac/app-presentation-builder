@@ -4,6 +4,7 @@ node_modules/
 
 # secrets
 .env
+.env.prod
 .env.local
 .env.*.local
 
@@ -18,3 +19,6 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# Prod data (runtime only, not source code)
+prod/

@@ -1,0 +1,11 @@
+services:
+  builder:
+    build: ./builder
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./builder/.env.prod
+    volumes:
+      - ./builder/data:/app/data
+      - ./builder/features/slides/uploads:/app/features/slides/uploads
+      - ./finished-presentations:/finished-presentations
