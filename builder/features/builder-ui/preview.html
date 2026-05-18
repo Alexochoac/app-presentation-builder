@@ -11,6 +11,17 @@
   <script src="/slides/components/tabs.js"></script>
   <script src="/slides/components/list.js"></script>
   <script src="/slides/components/table.js"></script>
+  <script>
+    fetch('/api/settings').then(function(r){ return r.json(); }).then(function(res){
+      var s = res.data;
+      if (!s.umamiWebsiteId || !s.umamiBaseUrl) return;
+      var el = document.createElement('script');
+      el.defer = true;
+      el.src = s.umamiBaseUrl + '/script.js';
+      el.setAttribute('data-website-id', s.umamiWebsiteId);
+      document.head.appendChild(el);
+    });
+  </script>
   <style>
     #header {
       position: fixed; top: 0; left: 0; right: 0;

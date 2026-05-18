@@ -2990,7 +2990,9 @@ app.use('/builder', express.static(path.join(__dirname, 'features/builder-ui')))
 
 // ── API: settings ─────────────────────────────────────────────────────────────
 app.get('/api/settings', function (_req, res) {
-  res.json({ success: true, data: readSettings() });
+  var data = readSettings();
+  data.umamiBaseUrl = UMAMI_BASE_URL;
+  res.json({ success: true, data: data });
 });
 
 app.put('/api/settings', function (req, res) {
@@ -4010,7 +4012,7 @@ function buildFrozenPresentation(presentation) {
     '    #fp-lang-menu button:hover { background: rgba(255,255,255,.07); color: #fff; }',
     '    #fp-lang-menu button.active { color: #E8711A; font-weight: 600; }',
     '  </style>',
-    (umamiWebsiteId ? '  <script defer src="https://umami.wbtm.io/script.js" data-website-id="' + umamiWebsiteId + '"></script>' : ''),
+    (umamiWebsiteId ? '  <script defer src="' + UMAMI_BASE_URL + '/script.js" data-website-id="' + umamiWebsiteId + '"></script>' : ''),
     (isMultiLang ? '<script>' + langSwitcherCode + '</script>' : ''),
     '</head>',
     (isMultiLang ? '<body data-default-lang="' + presDefaultLang + '" data-pres-id="' + presId + '">' : '<body>'),
