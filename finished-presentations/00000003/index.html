@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>e</title>
+  <title>C</title>
   <style>
 /*
   Presentation Builder — Softsolution
@@ -13,23 +13,25 @@
 
 /* ── Brand Variables ── */
 :root {
-  --accent:        #F5A623;
-  --accent-mid:    #E8890C;
-  --accent-light:  #FFD27F;
-  --accent-rgb:    245,166,35;
-  --bg:            #000;
-  --bg-card:       rgba(255,255,255,.03);
-  --bg-card-hover: rgba(245,166,35,.06);
-  --text:          #ffffff;
-  --text-muted:    #aaa;
-  --border:        rgba(255,255,255,.07);
-  --border-hover:  rgba(245,166,35,.32);
-  --nav-bg:        rgba(0,0,0,.65);
-  --nav-border:    rgba(255,255,255,.07);
-  --dot-inactive:  rgba(255,255,255,.18);
-  --counter:       #333;
-  --orb-a:         rgba(245,166,35,.10);
-  --orb-b:         rgba(232,137,12,.07);
+  --accent:          #F5A623;
+  --accent-mid:      #E8890C;
+  --accent-light:    #FFD27F;
+  --accent-rgb:      245,166,35;
+  --bg:              #000;
+  --bg-card:         rgba(255,255,255,.03);
+  --bg-card-hover:   rgba(245,166,35,.06);
+  --text:            #ffffff;
+  --text-muted:      #aaa;
+  --border:          rgba(255,255,255,.07);
+  --border-hover:    rgba(245,166,35,.32);
+  --nav-bg:          rgba(0,0,0,.65);
+  --nav-border:      rgba(255,255,255,.07);
+  --dot-inactive:    rgba(255,255,255,.18);
+  --counter:         #333;
+  --orb-a:           rgba(245,166,35,.10);
+  --orb-b:           rgba(232,137,12,.07);
+  --slide-hero-bg:   #070B1A;
+  --slide-hero-rgb:  7,11,26;
 }
 
 /* ── Reset ── */
@@ -75,12 +77,12 @@ body {
   justify-content:flex-end; align-items:flex-start;
   padding:0 80px 80px 80px;
   overflow:hidden;
-  background:#070B1A;
+  background:var(--slide-hero-bg);
 }
 .hero-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; }
 .hero-overlay {
   position:absolute; inset:0; z-index:1;
-  background:linear-gradient(to top, rgba(7,11,26,.97) 0%, rgba(7,11,26,.55) 55%, rgba(7,11,26,.15) 100%);
+  background:linear-gradient(to top, rgba(var(--slide-hero-rgb),.97) 0%, rgba(var(--slide-hero-rgb),.55) 55%, rgba(var(--slide-hero-rgb),.15) 100%);
 }
 .hero-content { position:relative; z-index:2; }
 .softsolution-credit { position:absolute; top:42px; right:80px; z-index:3; font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,.30); }
@@ -386,7 +388,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   -webkit-overflow-scrolling: touch;
 }
 
-:root{--accent:#F5A623;--accent-mid:#d8921f;--accent-light:#f9cb7f;--accent-rgb:245,166,35;}
+:root{--accent:#b324f5;--accent-mid:#9e20d8;--accent-light:#d380f9;--accent-rgb:179,36,245;}
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0a0a; }
     #fp-shell { display: flex; flex-direction: column; height: 100vh; }
@@ -463,129 +465,39 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     #fp-lang-menu button:hover { background: rgba(255,255,255,.07); color: #fff; }
     #fp-lang-menu button.active { color: #E8711A; font-weight: 600; }
   </style>
-  <script defer src="https://umami.wbtm.io/script.js" data-website-id="306f3c58-2e8f-487c-b68f-e53f3b2a0b5d"></script>
-<script>/**
- * language-switcher.js
- * Client-side language switcher for finished presentations.
- * Reads [data-lang] spans and shows only the active language.
- * Active language is resolved from: ?lang= URL param → per-presentation localStorage → data-default-lang on <body>
- */
-(function () {
-  'use strict';
+  <script defer src="http://localhost:3003/script.js" data-website-id="48fb959a-0f0f-4d0e-b89c-4a29b61db99e"></script>
 
-  // Use a per-presentation key so each presentation starts in its own default language
-  var presId = document.body.getAttribute('data-pres-id') || 'default';
-  var STORAGE_KEY = 'pres-lang-' + presId;
-
-  function getDefaultLang() {
-    return document.body.getAttribute('data-default-lang') || 'en';
-  }
-
-  function resolveActiveLang() {
-    var params = new URLSearchParams(window.location.search);
-    var fromUrl = params.get('lang');
-    if (fromUrl) return fromUrl;
-    try { var stored = localStorage.getItem(STORAGE_KEY); if (stored) return stored; } catch (e) {}
-    return getDefaultLang();
-  }
-
-  function applyLang(lang) {
-    document.querySelectorAll('[data-lang]').forEach(function (el) {
-      if (el.closest && el.closest('#fp-lang-menu')) return;
-      el.hidden = el.getAttribute('data-lang') !== lang;
-    });
-    // Update dropdown label and active state
-    var label = document.getElementById('fp-lang-label');
-    if (label) label.textContent = lang.toUpperCase();
-    document.querySelectorAll('#fp-lang-menu button[data-lang]').forEach(function (btn) {
-      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
-    });
-    try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
-  }
-
-  function switchLang(lang) {
-    applyLang(lang);
-    var url = new URL(window.location.href);
-    url.searchParams.set('lang', lang);
-    history.replaceState(null, '', url.toString());
-  }
-
-  // Expose for dropdown buttons
-  window.switchLang = switchLang;
-
-  window.fpLangToggle = function () {
-    var menu = document.getElementById('fp-lang-menu');
-    if (menu) menu.classList.toggle('open');
-  };
-
-  window.fpLangSelect = function (lang) {
-    switchLang(lang);
-    var menu = document.getElementById('fp-lang-menu');
-    if (menu) menu.classList.remove('open');
-  };
-
-  // Close dropdown on outside click
-  document.addEventListener('click', function (e) {
-    var drop = document.getElementById('fp-lang-drop');
-    if (drop && !drop.contains(e.target)) {
-      var menu = document.getElementById('fp-lang-menu');
-      if (menu) menu.classList.remove('open');
-    }
-  });
-
-  // Init on DOM ready
-  function init() {
-    var lang = resolveActiveLang();
-    // Validate: if resolved lang has no spans in this presentation, fall back to default
-    var available = Array.from(document.querySelectorAll('[data-lang]')).map(function (el) {
-      return el.getAttribute('data-lang');
-    });
-    var unique = Array.from(new Set(available));
-    if (unique.length > 0 && !unique.includes(lang)) lang = getDefaultLang();
-    applyLang(lang);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-})();
-</script>
 </head>
-<body data-default-lang="es" data-pres-id="00000003">
+<body>
 <div id="fp-shell">
   <div id="fp-header">
     <a href="https://glassquality.com" id="fp-dash-btn">Go to Glassquality.com</a>
     <div style="width:1px;height:20px;background:#333;flex-shrink:0;"></div>
     <button class="fp-nav-btn" id="fp-prev" disabled>&#8249;</button>
-    <div id="fp-counter">1 / 6</div>
-    <button class="fp-nav-btn" id="fp-next">&#8250;</button>
-    <div id="fp-lang-drop"><button id="fp-lang-btn" onclick="fpLangToggle()"><span id="fp-lang-label">ES</span><svg width="8" height="8" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg></button><div id="fp-lang-menu"><button data-lang="es" onclick="fpLangSelect('es')">ES — Español</button><button data-lang="it" onclick="fpLangSelect('it')">IT — Italiano</button></div></div>
+    <div id="fp-counter">1 / 1</div>
+    <button class="fp-nav-btn" id="fp-next" disabled>&#8250;</button>
+
     <div id="fp-header-spacer"></div>
-    <div id="fp-title">e</div>
+    <div id="fp-title">C</div>
     <button class="fp-share-btn" id="fp-share-btn-hdr" title="Share presentation"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
   </div>
   <div id="fp-viewer">
     <div class="slides-container">
 <div class="fp-slide" data-slide-index="0" style="">
-<div class="slide hero" data-slide="cover-softsolution-new">
+<div class="slide content ls26-cover" data-slide="cover-white-gallery" data-slide-mode="sequence">
 
-  <!-- Softsolution + LiteSentry logo row — top left -->
-  <div class="slide-logo-row" style="position:absolute; top:22px; left:36px; z-index:10;">
-    <img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution">
-    <span class="slide-logo-sep"></span>
-    <img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls">
-  </div>
+  <!-- Hero background — full bleed, server injects deck.heroBg -->
+  <img class="hero-bg" src="" alt="Hero background" style="object-position:25% 0%;">
 
-  <!-- Credit line: top right -->
-  <span class="softsolution-credit" data-edit="credit"><span data-lang="es">por GlassQuality.com</span><span data-lang="it" hidden="">di GlassQuality.com</span></span>
+  <!-- Company logo row — top left -->
+  <div class="slide-logo-row ls26-logos" data-edit="logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></div>
 
   <!-- Customer logo — centered in right half -->
-  <div class="ls1-customer-logo" data-edit="customer-logo" data-edit-type="image">
-    <img class="ls1-cust-img" src="../shared/LOGO-StrainOptics.png" alt="Customer Logo" onerror="this.classList.add('ls1-cust-img--missing')">
-    <label class="ls1-cust-placeholder" for="ls1-logo-file" title="Click to upload logo">
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <div class="ls26-customer-logo" data-edit="customer-logo" data-edit-type="image">
+    
+    <img class="ls26-cust-img" src="../shared/Panther_Eye.jpg" alt="Customer Logo" onerror="this.classList.add('ls26-cust-img--missing')">
+    <label class="ls26-cust-placeholder" for="ls26-logo-file" title="Click to upload logo">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="3"></rect>
         <circle cx="8.5" cy="8.5" r="1.5"></circle>
         <polyline points="21 15 16 10 5 21"></polyline>
@@ -596,20 +508,15 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     
   </div>
 
-  <!-- Hero background image -->
-  <img class="hero-bg" src="../shared/Panther_SoftSolution.PNG" alt="Hero background" style="object-position:25% 25%;">
-  <div class="hero-overlay"></div>
-
-  <!-- Main content -->
-  <div class="hero-content">
-    <div class="brand-badge" data-edit="badge"><span data-lang="es">GlassQuality.com · LineScanner<span style="letter-spacing: 1.2px;">· Osprey</span></span><span data-lang="it" hidden="">GlassQuality.com · LineScanner<span style="letter-spacing: 1.2px;">· Osprey</span></span></div>
-    <h1 data-edit="headline"><span data-lang="es">Inspección de Calidad<br>para <span class="blue">Vidrio Plano.</span></span><span data-lang="it" hidden="">Ispezione della Qualità<br>per <span class="blue">Vetro Piano.</span></span></h1>
-    <h2 data-edit="subheadline"><span data-lang="es">Propuesta para e · e</span><span data-lang="it" hidden="">Proposta per e · e</span></h2>
-    
+  <!-- Main content — left half -->
+  <div class="ls26-content">
+    <div class="ls26-badge" data-edit="badge" data-lang-key="ls26-cover.badge">Product · Solution</div>
+    <h1 class="ls26-headline" data-edit="headline" data-lang-key="ls26-cover.headline"><span class="ls26-accent">Headline Your Presentation</span></h1>
+    <p class="ls26-subheadline" data-edit="subheadline" data-lang-key="ls26-cover.subheadline">Proposal for C · C</p>
   </div>
 
   <!-- Gallery button -->
-  <button class="ls1-gallery-btn" onclick="ls1OpenGallery()" title="Show installation gallery">
+  <button class="ls26-gallery-btn" onclick="ls26OpenGallery()" title="Show installation gallery">
     <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <rect x="3" y="3" width="7" height="7"></rect>
       <rect x="14" y="3" width="7" height="7"></rect>
@@ -620,73 +527,21 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   </button>
 
   <!-- Gallery overlay -->
-  <div class="ls1-gallery-overlay" id="ls1GalleryOverlay" style="display:none;">
-    <div class="ls1-gallery-popup">
-      <button class="ls1-gallery-close" onclick="ls1CloseGallery()">✕</button>
-      <div class="ls1-car-wrap" id="ls1CarWrap">
-        <div class="ls1-car-track" id="ls1CarTrack" data-edit="carousel-track" data-autoplay="8">
+  <div class="ls26-gallery-overlay" id="ls26GalleryOverlay" style="display:none;">
+    <div class="ls26-gallery-popup">
+      <button class="ls26-gallery-close" onclick="ls26CloseGallery()">✕</button>
+      <div class="ls26-car-wrap" id="ls26CarWrap">
+        <div class="ls26-car-track" id="ls26CarTrack" data-edit="carousel-track" data-autoplay="7">
 
-          
+          <div class="ls26-car-slide ls26-car-slide--text"><div class="ls26-stat-block"><div class="section-label">Section Title</div><span class="stat-number">Key Fact</span><div class="stat-label">Description text here</div></div></div><div class="ls26-car-slide"><button class="ls26-car-del" title="Remove">✕</button><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects"><div class="ls26-car-caption">CostOfQualityDefects</div></div>
 
-          <div class="ls1-car-slide ls1-car-slide--text"><button class="ls1-car-del" title="Remove">✕</button>
-            <div class="ls1-stat-block">
-              <div class="section-label" data-edit="stat-1-label"><span data-lang="es">Costo de Defectos de Calidad</span><span data-lang="it" hidden="">Costo dei Difetti di Qualità</span></div>
-              <span class="stat-number" data-edit="stat-1-number"><span data-lang="es">Regla 1+10+100</span><span data-lang="it" hidden="">Regola 1+10+100</span></span>
-              <div class="stat-label" data-edit="stat-1-text"><span data-lang="es">Detectar un defecto temprano cuesta 1, mientras que dejar que llegue al cliente puede costar 100 veces más en reemplazos y retiros</span><span data-lang="it" hidden="">Rilevare un difetto precocemente costa 1, mentre lasciarlo raggiungere il cliente può costare 100 volte di più in sostituzioni e richiami</span></div>
-            </div>
-            
-            
-          </div><div class="ls1-car-slide"><button class="ls1-car-del" title="Remove">✕</button><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects"><div class="ls1-car-caption">CostOfQualityDefects</div></div><div class="ls1-car-slide" data-edit="gallery-image-1"><button class="ls1-car-del" title="Remove">✕</button>
-            <img src="../shared/Render_Tempering_Line.png" alt="Tempering Line">
-            <div class="ls1-car-caption" data-edit="gallery-caption-1"><span data-lang="es">Línea de Templado</span><span data-lang="it" hidden="">Linea di Tempra</span></div>
-            
-            
-            
-          </div><div class="ls1-car-slide ls1-car-slide--text"><button class="ls1-car-del" title="Remove">✕</button><div class="ls1-stat-block"><div class="section-label" data-edit="stat-4-label"><span data-lang="es">Calidad como factor de venta</span><span data-lang="it" hidden="">Qualità come fattore di vendita</span></div><span class="stat-number" data-edit="stat-4-number"><span data-lang="es">SATISFACCIÓN DEL CLIENTE</span><span data-lang="it" hidden="">SODDISFAZIONE DEL CLIENTE</span></span><div class="stat-label" data-edit="stat-4-text"><span data-lang="es">Un cliente feliz siempre compra más</span><span data-lang="it" hidden="">Un cliente felice compra sempre di più</span></div></div></div>
-
-          <div class="ls1-car-slide" data-edit="gallery-image-2"><button class="ls1-car-del" title="Remove">✕</button>
-            <img src="../shared/Render_IG_LIne.png" alt="IG Line">
-            <div class="ls1-car-caption" data-edit="gallery-caption-2"><span data-lang="es">Línea IG</span><span data-lang="it" hidden="">Linea IG</span></div>
-            
-            
-            
-          </div><div class="ls1-car-slide ls1-car-slide--text"><button class="ls1-car-del" title="Remove">✕</button>
-            <div class="ls1-stat-block">
-              <div class="section-label" data-edit="stat-2-label"><span data-lang="es">El Límite Humano</span><span data-lang="it" hidden="">Il Limite Umano</span></div>
-              <span class="stat-number" data-edit="stat-2-number"><span data-lang="es">Zona Fantasma</span><span data-lang="it" hidden="">Zona Fantasma</span></span>
-              <div class="stat-label" data-edit="stat-2-text"><span data-lang="es">Los inspectores humanos pierden casi toda la precisión una vez que la velocidad de la línea aumenta</span><span data-lang="it" hidden="">Gli ispettori umani perdono quasi tutta la precisione quando aumenta la velocità della linea</span></div>
-            </div>
-            
-            
-          </div>
-
-          
-
-          <div class="ls1-car-slide" data-edit="gallery-image-3"><button class="ls1-car-del" title="Remove">✕</button>
-            <img src="../shared/Render_Automotive_Printing_Line.png" alt="Automotive Printing Line">
-            <div class="ls1-car-caption" data-edit="gallery-caption-3"><span data-lang="es">Línea de Impresión Automotriz</span><span data-lang="it" hidden="">Linea di Stampa Automobilistica</span></div>
-            
-            
-            
-          </div><div class="ls1-car-slide ls1-car-slide--text"><button class="ls1-car-del" title="Remove">✕</button>
-            <div class="ls1-stat-block">
-              <div class="section-label" data-edit="stat-3-label"><span data-lang="es">Riesgos Invisibles</span><span data-lang="it" hidden="">Rischi Invisibili</span></div>
-              <span class="stat-number" data-edit="stat-3-number"><span data-lang="es">Anisotropía y Distorsión</span><span data-lang="it" hidden="">Anisotropia &amp; Distorsione</span></span>
-              <div class="stat-label" data-edit="stat-3-text"><span data-lang="es">Al ver lo que el ojo se pierde, previene costos no planificados antes de que el producto llegue a su cliente</span><span data-lang="it" hidden="">Vedendo ciò che l'occhio non vede, previeni costi imprevisti prima che il prodotto raggiunga il cliente</span></div>
-            </div>
-            
-            
-          </div>
-
-          
-
-        </div>
-        <button class="ls1-car-prev" onclick="ls1CarMove(-1)">‹</button>
-        <button class="ls1-car-next" onclick="ls1CarMove(1)">›</button>
+        <div class="ls26-car-slide ls26-car-slide--text"><button class="ls26-car-del" title="Remove">✕</button><div class="ls26-stat-block"><div class="section-label">Section Title</div><span class="stat-number">Key Fact</span><div class="stat-label">Description text here</div></div></div><div class="ls26-car-slide"><img src="../shared/EfficiencyCliff.png" alt="EfficiencyCliff"><div class="ls26-car-caption">EfficiencyCliff</div></div><div class="ls26-car-slide ls26-car-slide--text"><div class="ls26-stat-block"><div class="section-label">Section Title</div><span class="stat-number">Key Fact</span><div class="stat-label">Description text here</div></div></div></div>
+        <button class="ls26-car-prev" onclick="ls26CarMove(-1)">‹</button>
+        <button class="ls26-car-next" onclick="ls26CarMove(1)">›</button>
       </div>
 
-      <!-- Thumbnail strip — builder + final presentation -->
-      <div class="ls1-thumb-strip" id="ls1ThumbStrip"></div>
+      <!-- Thumbnail strip -->
+      <div class="ls26-thumb-strip" id="ls26ThumbStrip"></div>
 
       <!-- Footer — builder only -->
       
@@ -696,218 +551,224 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   <!-- Shared file input for carousel image swaps -->
   
 
-  <!-- Scoped styles — slide-01 only -->
   <style>
-    .ls1-customer-logo {
-      position: static;
-      transform: none;
-      margin: 16px auto 0;
+    /* ── Layout ── */
+    .ls26-cover {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Hero bg — full bleed */
+    .ls26-cover .hero-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    /* Company logo row — inherits absolute top-left from style.css */
+    .ls26-cover .slide-logo-row {
+      z-index: 2;
+    }
+
+    /* ── Customer logo box ── */
+    .ls26-customer-logo {
+      position: absolute;
+      left: 74%; top: 50%;
+      transform: translate(-50%, -50%);
       z-index: 10;
       display: flex; align-items: center; justify-content: center;
-      background: #ffffff; /* overridden by detectLogoBg at runtime */
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,.18);
-      border-radius: 24px; padding: 18px;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.09);
+      border-radius: 20px;
+      padding: 20px;
       width: 160px; height: 160px;
+      cursor: pointer;
+      box-shadow: 0 8px 32px rgba(0,0,0,.14);
     }
-    .ls1-customer-logo { cursor: pointer; }
-    .ls1-customer-logo::after {
+    .ls26-customer-logo::after {
       content: 'Change Logo';
-      position: absolute; inset: 0; border-radius: 24px;
-      background: rgba(0,0,0,.55);
+      position: absolute; inset: 0; border-radius: 20px;
+      background: rgba(0,0,0,.52);
       color: #fff; font-size: 12px; font-weight: 700; letter-spacing: .06em;
       display: flex; align-items: center; justify-content: center;
       opacity: 0; transition: opacity .2s;
     }
-    .ls1-customer-logo:hover::after { opacity: 1; }
-    .ls1-cust-img { width:90%; height:90%; object-fit:contain; }
-    .ls1-cust-img--missing { display:none; }
-    .ls1-cust-img--missing ~ .ls1-cust-placeholder { display:flex; }
-    .ls1-cust-placeholder {
-      display:none; flex-direction:column; align-items:center; justify-content:center; gap:10px;
-      width:100%; height:100%;
-      border:2px dashed rgba(255,255,255,.25); border-radius:16px;
-      cursor:pointer; color:rgba(255,255,255,.55); text-align:center;
-      transition:border-color .2s, color .2s;
+    .ls26-customer-logo:hover::after { opacity: 1; }
+    /* hide change-logo hover and pointer in readonly/preview */
+    .ls26-cover.ls26-readonly .ls26-customer-logo { cursor: default; pointer-events: none; }
+    .ls26-cover.ls26-readonly .ls26-customer-logo::after { display: none; }
+    .ls26-cust-img { width: 90%; height: 90%; object-fit: contain; }
+    .ls26-cust-img--missing { display: none; }
+    .ls26-cust-img--missing ~ .ls26-cust-placeholder { display: flex; }
+    .ls26-cust-placeholder {
+      display: none; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; height: 100%;
+      border: 2px dashed rgba(0,0,0,.14); border-radius: 14px;
+      cursor: pointer; color: rgba(0,0,0,.38); text-align: center;
+      transition: border-color .2s, color .2s;
     }
-    .ls1-cust-placeholder:hover { border-color:rgba(var(--accent-rgb),.6); color:var(--accent); }
-    .ls1-cust-placeholder span { font-size:14px; font-weight:700; letter-spacing:.04em; }
-    .ls1-cust-placeholder small { font-size:11px; opacity:.65; }
+    .ls26-cust-placeholder:hover { border-color: var(--accent); color: var(--accent); }
+    .ls26-cust-placeholder span { font-size: 13px; font-weight: 700; letter-spacing: .04em; }
+    .ls26-cust-placeholder small { font-size: 11px; opacity: .65; }
+    .ls26-logo-del {
+      position: absolute; top: -8px; right: -8px; z-index: 20;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(180,30,30,.88); border: 1px solid rgba(255,100,100,.35);
+      color: #fff; font-size: 11px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-family: inherit; transition: background .2s;
+    }
+    .ls26-logo-del:hover { background: rgba(220,40,40,1); }
+    .ls26-cover.ls26-readonly .ls26-logo-del { display: none; }
 
-    .ls1-gallery-btn {
-      position:absolute; bottom:80px; right:16px; z-index:10;
-      display:flex; align-items:center; gap:6px;
-      padding:7px 14px;
-      background:rgba(0,0,0,.40); border:1px solid rgba(255,255,255,.20);
-      border-radius:20px; color:rgba(255,255,255,.70);
-      font-size:11px; font-weight:600; letter-spacing:.06em;
-      cursor:pointer; backdrop-filter:blur(8px);
-      transition:background .25s, border-color .25s, color .25s;
-      font-family:inherit; user-select:none;
+    /* ── Text content ── */
+    .ls26-content {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 48px 56px;
+      max-width: 52%;
     }
-    .ls1-gallery-btn:hover { background:rgba(var(--accent-rgb),.25); border-color:var(--accent); color:#fff; }
+    .ls26-badge {
+      font-size: 11px; font-weight: 700; letter-spacing: .16em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 16px;
+    }
+    .ls26-headline {
+      font-size: clamp(1.8rem, 3.5vw, 3rem); font-weight: 700; line-height: 1.1;
+      color: #0d1117; margin: 0 0 20px; max-width: 580px;
+    }
+    .ls26-accent { color: var(--accent); }
+    .ls26-subheadline {
+      font-size: 1rem; font-weight: 400;
+      color: rgba(0,0,0,.50); margin: 0;
+    }
 
-    .ls1-gallery-overlay {
-      position:fixed; inset:0; z-index:9000;
-      background:rgba(0,0,0,.70); backdrop-filter:blur(4px);
-      display:flex; align-items:center; justify-content:center;
+    /* ── Gallery button ── */
+    .ls26-gallery-btn {
+      position: absolute; bottom: 80px; right: 16px; z-index: 10;
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 14px;
+      background: rgba(0,0,0,.38); border: 1px solid rgba(255,255,255,.22);
+      border-radius: 20px; color: rgba(255,255,255,.80);
+      font-size: 11px; font-weight: 600; letter-spacing: .06em;
+      cursor: pointer; backdrop-filter: blur(8px);
+      transition: background .25s, border-color .25s, color .25s;
+      font-family: inherit; user-select: none;
     }
-    .ls1-gallery-popup {
-      position:relative;
-      background:rgba(10,10,14,.92); border:1px solid rgba(255,255,255,.14);
-      border-radius:20px; padding:20px;
-      box-shadow:0 32px 96px rgba(0,0,0,.80);
-    }
-    .ls1-gallery-close {
-      position:absolute; top:-14px; right:-14px;
-      width:30px; height:30px; border-radius:50%;
-      min-width:44px; min-height:44px;
-      background:rgba(40,40,50,.95); border:1px solid rgba(255,255,255,.22);
-      color:rgba(255,255,255,.80); font-size:13px; cursor:pointer;
-      display:flex; align-items:center; justify-content:center;
-      transition:background .2s, color .2s; z-index:5;
-    }
-    .ls1-gallery-close:hover { background:rgba(255,255,255,.20); color:#fff; }
+    .ls26-gallery-btn:hover { background: rgba(var(--accent-rgb),.35); border-color: var(--accent); color: #fff; }
 
-    .ls1-car-wrap { position:relative; width:100%; height:auto; border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,.12); box-shadow:0 24px 80px rgba(0,0,0,.7); }
-    .ls1-car-track { display:flex; height:auto; transition:transform .55s cubic-bezier(.4,0,.2,1); }
-    .ls1-car-slide { flex:0 0 100%; width:100%; height:auto; position:relative; background:#111; }
-    .ls1-car-slide img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; user-select:none; pointer-events:none; }
-    .ls1-car-caption { position:absolute; bottom:0; left:0; right:0; padding:10px 18px; background:linear-gradient(transparent,rgba(0,0,0,.75)); color:rgba(255,255,255,.85); font-size:12px; font-weight:600; letter-spacing:.05em; text-align:center; }
-    .ls1-car-caption:focus { outline:none; }
+    /* ── Gallery overlay ── */
+    .ls26-gallery-overlay {
+      position: fixed; inset: 0; z-index: 9000;
+      background: rgba(0,0,0,.68); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ls26-gallery-popup {
+      position: relative;
+      background: rgba(10,10,14,.92); border: 1px solid rgba(255,255,255,.14);
+      border-radius: 20px; padding: 20px;
+      box-shadow: 0 32px 96px rgba(0,0,0,.80);
+    }
+    .ls26-gallery-close {
+      position: absolute; top: -14px; right: -14px;
+      min-width: 44px; min-height: 44px; width: 30px; height: 30px; border-radius: 50%;
+      background: rgba(40,40,50,.95); border: 1px solid rgba(255,255,255,.22);
+      color: rgba(255,255,255,.80); font-size: 13px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s, color .2s; z-index: 5;
+    }
+    .ls26-gallery-close:hover { background: rgba(255,255,255,.20); color: #fff; }
 
-    .ls1-car-prev, .ls1-car-next { position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,.50); border:1px solid rgba(255,255,255,.20); color:#fff; font-size:26px; line-height:1; width:40px; height:40px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .2s; z-index:5; }
-    .ls1-car-prev { left:12px; }
-    .ls1-car-next { right:12px; }
-    .ls1-car-prev:hover, .ls1-car-next:hover { background:rgba(var(--accent-rgb),.60); }
+    /* ── Carousel ── */
+    .ls26-car-wrap { position: relative; width: 100%; height: auto; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,.12); box-shadow: 0 24px 80px rgba(0,0,0,.7); }
+    .ls26-car-track { display: flex; height: auto; transition: transform .55s cubic-bezier(.4,0,.2,1); }
+    .ls26-car-slide { flex: 0 0 100%; width: 100%; height: auto; position: relative; background: #111; }
+    .ls26-car-slide img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; user-select: none; pointer-events: none; }
+    .ls26-car-caption { position: absolute; bottom: 0; left: 0; right: 0; padding: 10px 18px; background: linear-gradient(transparent,rgba(0,0,0,.75)); color: rgba(255,255,255,.85); font-size: 12px; font-weight: 600; letter-spacing: .05em; text-align: center; }
+    .ls26-car-caption:focus { outline: none; }
 
-    /* ── Carousel builder controls ── */
-    .ls1-car-img-overlay {
-      position:absolute; inset:0; z-index:15;
-      background:rgba(0,0,0,.55);
-      display:flex; align-items:center; justify-content:center;
-      color:#fff; font-size:12px; font-weight:700; letter-spacing:.06em;
-      opacity:0; transition:opacity .2s; cursor:pointer;
-    }
-    .ls1-car-slide:hover .ls1-car-img-overlay { opacity:1; }
-    .ls1-car-move {
-      position:absolute; bottom:10px; z-index:20;
-      width:28px; height:28px; border-radius:50%;
-      background:rgba(0,0,0,.65); border:1px solid rgba(255,255,255,.30);
-      color:#fff; font-size:18px; line-height:1; cursor:pointer;
-      display:flex; align-items:center; justify-content:center;
-      opacity:0; transition:opacity .2s, background .2s;
-      font-family:inherit;
-    }
-    .ls1-car-slide:hover .ls1-car-move { opacity:1; }
-    .ls1-car-move--l { right:48px; }
-    .ls1-car-move--r { right:12px; }
-    .ls1-car-move:hover { background:rgba(var(--accent-rgb),.65); }
+    .ls26-car-prev, .ls26-car-next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,.50); border: 1px solid rgba(255,255,255,.20); color: #fff; font-size: 26px; line-height: 1; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s; z-index: 5; }
+    .ls26-car-prev { left: 12px; }
+    .ls26-car-next { right: 12px; }
+    .ls26-car-prev:hover, .ls26-car-next:hover { background: rgba(var(--accent-rgb),.60); }
 
-    /* ── Delete button ── */
-    .ls1-car-del {
-      position:absolute; top:8px; left:8px; z-index:22;
-      width:24px; height:24px; border-radius:50%;
-      background:rgba(180,30,30,.75); border:1px solid rgba(255,100,100,.30);
-      color:#fff; font-size:13px; line-height:1; cursor:pointer;
-      display:flex; align-items:center; justify-content:center;
-      opacity:0; transition:opacity .2s, background .2s;
-      font-family:inherit;
-    }
-    .ls1-car-slide:hover .ls1-car-del { opacity:1; }
-    .ls1-car-del:hover { background:rgba(220,40,40,1); }
+    /* Builder controls */
+    .ls26-car-img-overlay { position: absolute; inset: 0; z-index: 15; background: rgba(0,0,0,.55); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 700; letter-spacing: .06em; opacity: 0; transition: opacity .2s; cursor: pointer; }
+    .ls26-car-slide:hover .ls26-car-img-overlay { opacity: 1; }
+    .ls26-car-move { position: absolute; bottom: 10px; z-index: 20; width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,.65); border: 1px solid rgba(255,255,255,.30); color: #fff; font-size: 18px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .2s, background .2s; font-family: inherit; }
+    .ls26-car-slide:hover .ls26-car-move { opacity: 1; }
+    .ls26-car-move--l { right: 48px; }
+    .ls26-car-move--r { right: 12px; }
+    .ls26-car-move:hover { background: rgba(var(--accent-rgb),.65); }
 
-    .ls1-car-slide--text { flex:0 0 100%; background:linear-gradient(135deg,#0d1117 0%,#1a1f2e 100%); display:flex; align-items:center; justify-content:center; }
-    .ls1-stat-block { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:32px; width:100%; text-align:center; }
-    .ls1-stat-block .stat-number { font-size:clamp(48px,8vw,88px); font-weight:900; letter-spacing:-.03em; line-height:1; background:linear-gradient(135deg,var(--accent),var(--accent-light)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; display:block; }
-    .ls1-stat-block .stat-label { font-size:15px; color:var(--text-muted); margin-top:8px; font-weight:500; }
-    [contenteditable]:focus { outline:none; }
+    .ls26-car-del { position: absolute; top: 8px; left: 8px; z-index: 22; width: 22px; height: 22px; border-radius: 50%; background: rgba(180,30,30,.85); border: 1px solid rgba(255,100,100,.35); color: #fff; font-size: 11px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: inherit; transition: background .2s; }
+    .ls26-car-del:hover { background: rgba(220,40,40,1); }
 
-    /* ── Thumbnail strip ── */
-    .ls1-thumb-strip {
-      display:flex; gap:6px; padding:10px 0 4px;
-      overflow-x:auto; scrollbar-width:thin;
-      scrollbar-color:rgba(255,255,255,.15) transparent;
-    }
-    .ls1-thumb {
-      flex:0 0 72px; height:46px; border-radius:8px;
-      border:2px solid rgba(255,255,255,.12);
-      background:#222; background-size:cover; background-position:center;
-      cursor:pointer; transition:border-color .2s, opacity .2s;
-      position:relative; overflow:hidden; user-select:none;
-    }
-    .ls1-thumb:hover { border-color:rgba(255,255,255,.35); }
-    .ls1-thumb--active { border-color:var(--accent) !important; }
-    .ls1-thumb--dragging { opacity:.4; }
-    .ls1-thumb--text {
-      display:flex; align-items:center; justify-content:center;
-      background:linear-gradient(135deg,#0d1117,#1a1f2e);
-      font-size:9px; font-weight:700; letter-spacing:.06em;
-      color:var(--accent); text-align:center; padding:4px;
-      text-transform:uppercase;
-    }
-    .ls1-thumb-dragover { border-color:var(--accent); border-style:dashed; }
+    /* Text slide */
+    .ls26-car-slide--text { flex: 0 0 100%; background: linear-gradient(135deg,#0d1117 0%,#1a1f2e 100%); display: flex; align-items: center; justify-content: center; }
+    .ls26-stat-block { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 32px; width: 100%; text-align: center; }
+    .ls26-stat-block .stat-number { font-size: clamp(48px,8vw,88px); font-weight: 900; letter-spacing: -.03em; line-height: 1; background: linear-gradient(135deg,var(--accent),var(--accent-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; }
+    .ls26-stat-block .stat-label { font-size: 15px; color: var(--text-muted); margin-top: 8px; font-weight: 500; }
+    [contenteditable]:focus { outline: none; }
 
-    /* ── Footer: autoplay + add buttons ── */
-    .ls1-car-footer {
-      display:flex; align-items:center; justify-content:space-between;
-      padding:8px 2px 0;
-    }
-    .ls1-autoplay-ctrl {
-      font-size:11px; color:rgba(255,255,255,.40); font-weight:600;
-      letter-spacing:.06em; user-select:none;
-    }
-    .ls1-autoplay-ctrl span {
-      color:rgba(255,255,255,.65); min-width:14px; display:inline-block;
-      text-align:center; border-bottom:1px solid rgba(255,255,255,.2);
-    }
-    .ls1-autoplay-ctrl span:focus { outline:none; border-color:var(--accent); color:#fff; }
-    .ls1-add-btns { display:flex; gap:6px; }
-    .ls1-add-btn {
-      font-size:11px; font-weight:700; letter-spacing:.05em;
-      padding:5px 12px; border-radius:20px; cursor:pointer;
-      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.15);
-      color:rgba(255,255,255,.6); font-family:inherit;
-      transition:background .2s, border-color .2s, color .2s;
-    }
-    .ls1-add-btn:hover { background:rgba(var(--accent-rgb),.15); border-color:var(--accent); color:var(--accent); }
+    /* Thumbnail strip */
+    .ls26-thumb-strip { display: flex; gap: 6px; padding: 10px 0 4px; overflow-x: auto; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.15) transparent; }
+    .ls26-thumb { flex: 0 0 72px; height: 46px; border-radius: 8px; border: 2px solid rgba(255,255,255,.12); background: #222; background-size: cover; background-position: center; cursor: pointer; transition: border-color .2s, opacity .2s; position: relative; overflow: hidden; user-select: none; }
+    .ls26-thumb:hover { border-color: rgba(255,255,255,.35); }
+    .ls26-thumb--active { border-color: var(--accent) !important; }
+    .ls26-thumb--dragging { opacity: .4; }
+    .ls26-thumb--text { display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg,#0d1117,#1a1f2e); font-size: 9px; font-weight: 700; letter-spacing: .06em; color: var(--accent); text-align: center; padding: 4px; text-transform: uppercase; }
+    .ls26-thumb-dragover { border-color: var(--accent); border-style: dashed; }
 
-    /* ── Desktop (≥769px) ── */
+    /* Footer */
+    .ls26-car-footer { display: flex; align-items: center; justify-content: space-between; padding: 8px 2px 0; }
+    .ls26-autoplay-ctrl { font-size: 11px; color: rgba(255,255,255,.40); font-weight: 600; letter-spacing: .06em; user-select: none; }
+    .ls26-autoplay-ctrl span { color: rgba(255,255,255,.65); min-width: 14px; display: inline-block; text-align: center; border-bottom: 1px solid rgba(255,255,255,.2); }
+    .ls26-autoplay-ctrl span:focus { outline: none; border-color: var(--accent); color: #fff; }
+    .ls26-add-btns { display: flex; gap: 6px; }
+    .ls26-add-btn { font-size: 11px; font-weight: 700; letter-spacing: .05em; padding: 5px 12px; border-radius: 20px; cursor: pointer; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.15); color: rgba(255,255,255,.6); font-family: inherit; transition: background .2s, border-color .2s, color .2s; }
+    .ls26-add-btn:hover { background: rgba(var(--accent-rgb),.15); border-color: var(--accent); color: var(--accent); }
+
+    /* ── Desktop ── */
     @media(min-width:769px) {
-      .ls1-customer-logo { position: absolute; left: 75%; top: 50%; transform: translate(-50%, -50%); margin: 0; width: clamp(150px,15vw,250px); height: clamp(150px,15vw,250px); padding: 28px; }
-      .ls1-gallery-btn { bottom:64px; right:32px; }
-      .ls1-car-wrap { width:760px; height:460px; }
-      .ls1-car-track { height:460px; }
-      .ls1-car-slide { flex:0 0 760px; width:760px; height:460px; }
-      .ls1-car-slide img { width:100%; height:100%; object-fit:contain; }
-      .ls1-car-slide--text { flex:0 0 760px; }
+      .ls26-customer-logo { width: clamp(150px,15vw,240px); height: clamp(150px,15vw,240px); padding: 28px; }
+      .ls26-gallery-btn { bottom: 64px; right: 32px; }
+      .ls26-car-wrap { width: 760px; height: 460px; }
+      .ls26-car-track { height: 460px; }
+      .ls26-car-slide { flex: 0 0 760px; width: 760px; height: 460px; }
+      .ls26-car-slide img { object-fit: contain; }
+      .ls26-car-slide--text { flex: 0 0 760px; }
     }
   </style>
 
   <!-- Gallery JS — self-contained -->
   <script>
   (function () {
-    var idx         = 0;
-    var autoTimer   = null;
+    var idx       = 0;
+    var autoTimer = null;
     var targetSlide = null;
 
-    // ── Helpers ────────────────────────────────────────────────────────────
-    function getSlides()    { return Array.from(document.querySelectorAll('#ls1CarTrack > .ls1-car-slide')); }
-    function getWrapWidth() { return document.getElementById('ls1CarWrap').offsetWidth; }
-    function getAutoplay()  { return (parseInt(document.getElementById('ls1CarTrack').getAttribute('data-autoplay')) || 7) * 1000; }
+    function getSlides()    { return Array.from(document.querySelectorAll('#ls26CarTrack > .ls26-car-slide')); }
+    function getWrapWidth() { return document.getElementById('ls26CarWrap').offsetWidth; }
+    function getAutoplay()  { return (parseInt(document.getElementById('ls26CarTrack').getAttribute('data-autoplay')) || 7) * 1000; }
 
     function goTo(i) {
       var slides = getSlides();
       idx = Math.max(0, Math.min(slides.length - 1, i));
-      document.getElementById('ls1CarTrack').style.transform = 'translateX(' + (idx * -getWrapWidth()) + 'px)';
-      ls1UpdateThumbs();
-      // Analytics
-      var caption = slides[idx] ? slides[idx].querySelector('[data-edit^="gallery-caption"]') : null;
+      document.getElementById('ls26CarTrack').style.transform = 'translateX(' + (idx * -getWrapWidth()) + 'px)';
+      ls26UpdateThumbs();
+      var caption = slides[idx] ? slides[idx].querySelector('.ls26-car-caption') : null;
       var name = caption ? caption.textContent.trim().toLowerCase().replace(/\s+/g, '-') : 'item-' + (idx + 1);
-      if (window.umami) umami.track('gallery:' + name);
+      if (window.umami) umami.track('cover-gallery:' + name);
     }
 
-    // ── Auto-advance ───────────────────────────────────────────────────────
     function startAutoplay() {
       clearInterval(autoTimer);
       autoTimer = setInterval(function () {
@@ -918,130 +779,133 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 
     function stopAutoplay() { clearInterval(autoTimer); }
 
-    // Pause on hover, resume on leave
-    var wrap = document.getElementById('ls1CarWrap');
+    var wrap = document.getElementById('ls26CarWrap');
     wrap.addEventListener('mouseenter', stopAutoplay);
     wrap.addEventListener('mouseleave', function () {
-      if (document.getElementById('ls1GalleryOverlay').style.display !== 'none') startAutoplay();
+      if (document.getElementById('ls26GalleryOverlay').style.display !== 'none') startAutoplay();
     });
 
-    // ── Public API ─────────────────────────────────────────────────────────
-    window.ls1OpenGallery = function () {
-      document.getElementById('ls1GalleryOverlay').style.display = 'flex';
+    window.ls26OpenGallery = function () {
+      var overlay = document.getElementById('ls26GalleryOverlay');
+      overlay.style.display = 'flex';
+      if (window.PB_READONLY) {
+        overlay.querySelectorAll('[data-builder-only]').forEach(function (el) { el.style.display = 'none'; });
+      }
       goTo(0);
-      ls1BuildThumbs(); // also calls ls1EnsureDeleteBtns internally
+      ls26BuildThumbs();
       startAutoplay();
+      if (window.umami) umami.track(document.querySelector('[data-slide="ls26-cover"]') ? 'ls26-cover' : 'cover', { component: 'gallery', action: 'open' });
     };
 
-    window.ls1CloseGallery = function () {
-      document.getElementById('ls1GalleryOverlay').style.display = 'none';
+    window.ls26CloseGallery = function () {
+      document.getElementById('ls26GalleryOverlay').style.display = 'none';
       stopAutoplay();
     };
 
-    window.ls1CarMove = function (dir) { goTo(idx + dir); };
+    window.ls26CarMove = function (dir) { goTo(idx + dir); };
 
     // ── Thumbnail strip ────────────────────────────────────────────────────
-    window.ls1BuildThumbs = function () {
-      var strip  = document.getElementById('ls1ThumbStrip');
+    window.ls26BuildThumbs = function () {
+      var strip  = document.getElementById('ls26ThumbStrip');
       var slides = getSlides();
       strip.innerHTML = '';
-
       slides.forEach(function (slide, i) {
         var thumb = document.createElement('div');
-        thumb.className = 'ls1-thumb' + (i === idx ? ' ls1-thumb--active' : '');
+        thumb.className = 'ls26-thumb' + (i === idx ? ' ls26-thumb--active' : '');
         thumb.setAttribute('data-index', i);
-
         var img = slide.querySelector('img');
-        if (img) {
+        if (img && img.src) {
           thumb.style.backgroundImage = 'url(' + img.src + ')';
         } else {
-          thumb.classList.add('ls1-thumb--text');
+          thumb.classList.add('ls26-thumb--text');
           var lbl = slide.querySelector('.section-label');
           thumb.textContent = lbl ? lbl.textContent.substring(0, 14) : 'Text';
         }
-
-        // Click to navigate
         thumb.addEventListener('click', function () { goTo(i); });
-
-        // Drag to reorder
         thumb.draggable = true;
         thumb.addEventListener('dragstart', function (e) {
           e.dataTransfer.setData('text/plain', String(i));
-          setTimeout(function () { thumb.classList.add('ls1-thumb--dragging'); }, 0);
+          setTimeout(function () { thumb.classList.add('ls26-thumb--dragging'); }, 0);
         });
-        thumb.addEventListener('dragend', function () { thumb.classList.remove('ls1-thumb--dragging'); });
-        thumb.addEventListener('dragover', function (e) { e.preventDefault(); thumb.classList.add('ls1-thumb-dragover'); });
-        thumb.addEventListener('dragleave', function ()  { thumb.classList.remove('ls1-thumb-dragover'); });
+        thumb.addEventListener('dragend', function () { thumb.classList.remove('ls26-thumb--dragging'); });
+        thumb.addEventListener('dragover', function (e) { e.preventDefault(); thumb.classList.add('ls26-thumb-dragover'); });
+        thumb.addEventListener('dragleave', function () { thumb.classList.remove('ls26-thumb-dragover'); });
         thumb.addEventListener('drop', function (e) {
           e.preventDefault();
-          thumb.classList.remove('ls1-thumb-dragover');
+          thumb.classList.remove('ls26-thumb-dragover');
           var from = parseInt(e.dataTransfer.getData('text/plain'));
           var to   = i;
           if (from === to) return;
-          var track      = document.getElementById('ls1CarTrack');
-          var allSlides  = getSlides();
-          var fromSlide  = allSlides[from];
-          var toSlide    = allSlides[to];
+          var track     = document.getElementById('ls26CarTrack');
+          var allSlides = getSlides();
+          var fromSlide = allSlides[from];
+          var toSlide   = allSlides[to];
           from < to ? track.insertBefore(fromSlide, toSlide.nextSibling)
                     : track.insertBefore(fromSlide, toSlide);
-          goTo(0);
-          ls1BuildThumbs();
-          ls1SaveCarousel();
+          goTo(0); ls26BuildThumbs(); ls26SaveCarousel();
         });
-
         strip.appendChild(thumb);
       });
-
-      ls1EnsureDeleteBtns();
+      ls26EnsureDeleteBtns();
     };
 
-    function ls1EnsureDeleteBtns() {
+    function ls26EnsureDeleteBtns() {
+      if (window.PB_READONLY) return;
       getSlides().forEach(function (slide) {
-        if (!slide.querySelector('.ls1-car-del')) {
+        if (!slide.querySelector('.ls26-car-del')) {
           var btn = document.createElement('button');
-          btn.className = 'ls1-car-del';
+          btn.className = 'ls26-car-del';
           btn.title = 'Remove';
+          btn.setAttribute('data-builder-only', '');
+          btn.setAttribute('contenteditable', 'false');
+          btn.setAttribute('onclick', 'ls26DeleteCarSlide(this)');
           btn.textContent = '✕';
-          btn.addEventListener('click', function () { ls1DeleteCarSlide(btn); });
           slide.insertBefore(btn, slide.firstChild);
         }
       });
     }
 
-    window.ls1DeleteCarSlide = function (btn) {
-      var slide = btn.closest('.ls1-car-slide');
-      var all   = getSlides();
-      if (all.length <= 1) return; // keep at least one slide
+    window.ls26DeleteCarSlide = function (btn) {
+      var slide = btn.closest('.ls26-car-slide');
+      if (!slide) return;
+      var all = getSlides();
+      if (all.length <= 1) {
+        slide.innerHTML = '<button class="ls26-car-del" data-builder-only="" contenteditable="false">&#x2715;</button>'
+          + '<img src="" alt="">'
+          + '<div class="ls26-car-caption" contenteditable spellcheck="false">Image caption</div>'
+          + '<div class="ls26-car-img-overlay" data-builder-only="" onclick="ls26ChangeCarImage(this)">Change Image</div>'
+          + '<button class="ls26-car-move ls26-car-move--l" data-builder-only="" contenteditable="false" onclick="ls26MoveCarSlide(this,-1)">&#8249;</button>'
+          + '<button class="ls26-car-move ls26-car-move--r" data-builder-only="" contenteditable="false" onclick="ls26MoveCarSlide(this,1)">&#8250;</button>';
+        ls26BuildThumbs(); ls26SaveCarousel(); goTo(0); return;
+      }
       slide.remove();
-      goTo(0);
-      ls1BuildThumbs();
-      ls1SaveCarousel();
+      goTo(0); ls26BuildThumbs(); ls26SaveCarousel();
     };
 
-    window.ls1UpdateThumbs = function () {
-      document.querySelectorAll('#ls1ThumbStrip .ls1-thumb').forEach(function (t, i) {
-        t.classList.toggle('ls1-thumb--active', i === idx);
+    window.ls26UpdateThumbs = function () {
+      document.querySelectorAll('#ls26ThumbStrip .ls26-thumb').forEach(function (t, i) {
+        t.classList.toggle('ls26-thumb--active', i === idx);
       });
     };
 
-    // ── Autoplay value editing (builder only) ──────────────────────────────
-    var autoValEl = document.getElementById('ls1AutoVal');
+    // ── Autoplay value (builder only) ────────────────────────────────────
+    var autoValEl = document.getElementById('ls26AutoVal');
     if (autoValEl) {
       autoValEl.addEventListener('input', function () {
         var val = parseInt(autoValEl.textContent) || 7;
-        document.getElementById('ls1CarTrack').setAttribute('data-autoplay', val);
-        startAutoplay(); // restart with new interval
+        document.getElementById('ls26CarTrack').setAttribute('data-autoplay', val);
+        startAutoplay();
       });
-      autoValEl.addEventListener('blur', function () { ls1SaveCarousel(); });
+      autoValEl.addEventListener('blur', function () { ls26SaveCarousel(); });
     }
 
-    // ── Change carousel image ──────────────────────────────────────────────
-    window.ls1ChangeCarImage = function (overlay) {
-      targetSlide = overlay.closest('.ls1-car-slide');
-      document.getElementById('ls1-carousel-file').click();
+    // ── Change carousel image ─────────────────────────────────────────────
+    window.ls26ChangeCarImage = function (overlay) {
+      targetSlide = overlay.closest('.ls26-car-slide');
+      document.getElementById('ls26-carousel-file').click();
     };
 
-    document.getElementById('ls1-carousel-file').addEventListener('change', function (e) {
+    document.getElementById('ls26-carousel-file').addEventListener('change', function (e) {
       var file = e.target.files[0];
       if (!file || !targetSlide) return;
       var img = targetSlide.querySelector('img');
@@ -1054,27 +918,28 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
         })
         .then(function (r) { return r.json(); })
         .then(function (data) {
-          if (data.path) { img.src = data.path; ls1BuildThumbs(); ls1SaveCarousel(); }
+          if (data.path) { img.src = data.path; ls26BuildThumbs(); ls26SaveCarousel(); }
         });
       };
       reader.readAsDataURL(file);
       e.target.value = '';
     });
 
-    // ── Reorder via buttons (fallback) ─────────────────────────────────────
-    window.ls1MoveCarSlide = function (btn, dir) {
-      var slide = btn.closest('.ls1-car-slide');
+    // ── Reorder via buttons ───────────────────────────────────────────────
+    window.ls26MoveCarSlide = function (btn, dir) {
+      var slide = btn.closest('.ls26-car-slide');
       var all   = getSlides();
       var i     = all.indexOf(slide);
       var swap  = all[i + dir];
       if (!swap) return;
-      var track = document.getElementById('ls1CarTrack');
+      var track = document.getElementById('ls26CarTrack');
       dir === 1 ? track.insertBefore(swap, slide) : track.insertBefore(slide, swap);
-      goTo(0); ls1BuildThumbs(); ls1SaveCarousel();
+      goTo(0); ls26BuildThumbs(); ls26SaveCarousel();
     };
 
-    // ── Add items (builder only) ───────────────────────────────────────────
-    window.ls1AddImage = function () {
+    // ── Add items ─────────────────────────────────────────────────────────
+    window.ls26AddImage = function () {
+      if (window.PB_READONLY) return;
       var input = document.createElement('input');
       input.type = 'file'; input.accept = 'image/*';
       input.style.display = 'none';
@@ -1092,11 +957,9 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
           .then(function (r) { return r.json(); })
           .then(function (data) {
             if (data.path) {
-              document.getElementById('ls1CarTrack').appendChild(makeImageSlide(data.path, file.name.replace(/\.[^.]+$/, '')));
+              document.getElementById('ls26CarTrack').appendChild(ls26MakeImageSlide(data.path, file.name.replace(/\.[^.]+$/, '')));
               var newIdx = getSlides().length - 1;
-              ls1BuildThumbs();
-              ls1SaveCarousel();
-              goTo(newIdx);
+              ls26BuildThumbs(); ls26SaveCarousel(); goTo(newIdx);
             }
           });
         };
@@ -1105,57 +968,92 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
       input.click();
     };
 
-    window.ls1AddText = function () {
-      document.getElementById('ls1CarTrack').appendChild(makeTextSlide());
-      ls1BuildThumbs(); ls1SaveCarousel();
+    window.ls26AddText = function () {
+      if (window.PB_READONLY) return;
+      document.getElementById('ls26CarTrack').appendChild(ls26MakeTextSlide());
+      ls26BuildThumbs(); ls26SaveCarousel();
       goTo(getSlides().length - 1);
     };
 
-    function makeImageSlide(src, caption) {
+    function ls26MakeImageSlide(src, caption) {
       var d = document.createElement('div');
-      d.className = 'ls1-car-slide';
-      d.innerHTML = '<img src="' + src + '" alt="' + caption + '">'
-        + '<div class="ls1-car-caption" contenteditable spellcheck="false">' + caption + '</div>'
-        + '<div class="ls1-car-img-overlay" data-builder-only="" onclick="ls1ChangeCarImage(this)">Change Image</div>'
-        + '<button class="ls1-car-move ls1-car-move--l" onclick="ls1MoveCarSlide(this,-1)">&#8249;</button>'
-        + '<button class="ls1-car-move ls1-car-move--r" onclick="ls1MoveCarSlide(this,1)">&#8250;</button>';
+      d.className = 'ls26-car-slide';
+      d.innerHTML = '<button class="ls26-car-del" data-builder-only="" contenteditable="false" onclick="ls26DeleteCarSlide(this)">&#x2715;</button>'
+        + '<img src="' + src + '" alt="' + caption + '">'
+        + '<div class="ls26-car-caption" contenteditable spellcheck="false">' + caption + '</div>'
+        + '<div class="ls26-car-img-overlay" data-builder-only="" onclick="ls26ChangeCarImage(this)">Change Image</div>'
+        + '<button class="ls26-car-move ls26-car-move--l" data-builder-only="" contenteditable="false" onclick="ls26MoveCarSlide(this,-1)">&#8249;</button>'
+        + '<button class="ls26-car-move ls26-car-move--r" data-builder-only="" contenteditable="false" onclick="ls26MoveCarSlide(this,1)">&#8250;</button>';
       return d;
     }
 
-    function makeTextSlide() {
+    function ls26MakeTextSlide() {
       var d = document.createElement('div');
-      d.className = 'ls1-car-slide ls1-car-slide--text';
-      d.innerHTML = '<div class="ls1-stat-block">'
+      d.className = 'ls26-car-slide ls26-car-slide--text';
+      d.innerHTML = '<button class="ls26-car-del" data-builder-only="" contenteditable="false" onclick="ls26DeleteCarSlide(this)">&#x2715;</button>'
+        + '<div class="ls26-stat-block">'
         + '<div class="section-label" contenteditable spellcheck="false">Section Title</div>'
         + '<span class="stat-number" contenteditable spellcheck="false">Key Fact</span>'
         + '<div class="stat-label" contenteditable spellcheck="false">Description text here</div>'
         + '</div>'
-        + '<button class="ls1-car-move ls1-car-move--l" onclick="ls1MoveCarSlide(this,-1)">&#8249;</button>'
-        + '<button class="ls1-car-move ls1-car-move--r" onclick="ls1MoveCarSlide(this,1)">&#8250;</button>';
+        + '<button class="ls26-car-move ls26-car-move--l" data-builder-only="" contenteditable="false" onclick="ls26MoveCarSlide(this,-1)">&#8249;</button>'
+        + '<button class="ls26-car-move ls26-car-move--r" data-builder-only="" contenteditable="false" onclick="ls26MoveCarSlide(this,1)">&#8250;</button>';
       return d;
     }
 
-    // ── Save carousel state ────────────────────────────────────────────────
-    function ls1SaveCarousel() {
-      var autoVal = parseInt(document.getElementById('ls1CarTrack').getAttribute('data-autoplay')) || 7;
-      var clone   = document.getElementById('ls1CarTrack').cloneNode(true);
-      clone.querySelectorAll('.ls1-car-del').forEach(function (el) { el.remove(); });
+    // ── Save carousel ─────────────────────────────────────────────────────
+    function ls26SaveCarousel() {
+      var autoVal = parseInt(document.getElementById('ls26CarTrack').getAttribute('data-autoplay')) || 7;
+      var clone   = document.getElementById('ls26CarTrack').cloneNode(true);
+      clone.querySelectorAll('.ls26-car-del').forEach(function (el) { el.remove(); });
       document.dispatchEvent(new CustomEvent('slide-carousel-save', {
         detail: {
-          html:    clone.innerHTML,
+          editKey:  'carousel-track',
+          html:     clone.innerHTML,
           autoplay: String(autoVal)
         }
       }));
     }
 
-    window.ls1SaveCarousel = ls1SaveCarousel;
+    window.ls26SaveCarousel = ls26SaveCarousel;
+
+    // ── Delete delegation — on the overlay (outside contenteditable track) ──
+    document.getElementById('ls26GalleryOverlay').addEventListener('click', function (e) {
+      if (window.PB_READONLY) return;
+      var btn = e.target.closest('.ls26-car-del');
+      if (!btn) return;
+      e.stopPropagation();
+      ls26DeleteCarSlide(btn);
+    });
 
   })();
 
-  // ── Smart background detection for customer logo ─────────────────────────
-  function ls1DetectLogoBg(img) {
+  // ── Mark logo as missing on init if src is empty ─────────────────────
+  (function () {
+    var img       = document.querySelector('.ls26-cust-img');
+    if (img && !img.getAttribute('src')) {
+      img.classList.add('ls26-cust-img--missing');
+    }
+  })();
+
+  // ── Clear logo (called by inline onclick on delete button) ────────────
+  window.ls26ClearLogo = function () {
+    if (window.PB_READONLY) return;
+    var container = document.querySelector('.ls26-customer-logo');
+    var img       = container && container.querySelector('.ls26-cust-img');
+    if (!img) return;
+    img.removeAttribute('src');
+    img.classList.add('ls26-cust-img--missing');
+    container.style.background = '#fff';
+    document.dispatchEvent(new CustomEvent('slide-image-change', {
+      detail: { editKey: 'customer-logo', src: '' }
+    }));
+  };
+
+  // ── Smart background detection for customer logo ──────────────────────
+  function ls26DetectLogoBg(img) {
     try {
-      var container = img.closest('.ls1-customer-logo');
+      var container = img.closest('.ls26-customer-logo');
       if (!container) return;
       var w = img.naturalWidth  || 100;
       var h = img.naturalHeight || 100;
@@ -1178,29 +1076,36 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
       r = Math.round(r / count); g = Math.round(g / count);
       b = Math.round(b / count); a = Math.round(a / count);
       container.style.background = (a < 30) ? '#fff' : 'rgb(' + r + ',' + g + ',' + b + ')';
-    } catch (e) { /* cross-origin or tainted canvas — leave default */ }
+    } catch (e) { /* cross-origin or tainted canvas */ }
   }
 
-  // Apply on initial page load
   (function () {
-    var img = document.querySelector('.ls1-cust-img');
+    var img = document.querySelector('.ls26-cust-img');
     if (!img) return;
-    if (img.complete && img.naturalWidth) { ls1DetectLogoBg(img); }
-    else { img.addEventListener('load', function () { ls1DetectLogoBg(img); }); }
+    if (img.complete && img.naturalWidth) { ls26DetectLogoBg(img); }
+    else { img.addEventListener('load', function () { ls26DetectLogoBg(img); }); }
   })();
 
-  // ── Customer logo upload ──────────────────────────────────────────────────
+  // ── Customer logo upload ───────────────────────────────────────────────
   (function () {
-    var input = document.getElementById('ls1-logo-file');
-    if (!input) return;
+    var input     = document.getElementById('ls26-logo-file');
+    var container = document.querySelector('.ls26-customer-logo');
+    if (!input || !container) return;
+
+    container.addEventListener('click', function (e) {
+      if (window.PB_READONLY) return;
+      if (e.target.closest('.ls26-logo-del')) return; // handled by inline onclick
+      input.click();
+    });
+
     input.addEventListener('change', function (e) {
       var file = e.target.files[0];
       if (!file) return;
-      var img = document.querySelector('.ls1-cust-img');
+      var img = document.querySelector('.ls26-cust-img');
       img.src = URL.createObjectURL(file);
-      img.classList.remove('ls1-cust-img--missing');
+      img.classList.remove('ls26-cust-img--missing');
       img.addEventListener('load', function onNewLoad() {
-        ls1DetectLogoBg(img);
+        ls26DetectLogoBg(img);
         img.removeEventListener('load', onNewLoad);
       });
       var reader = new FileReader();
@@ -1222,1422 +1127,12 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
       reader.readAsDataURL(file);
     });
   })();
-  </script>
 
-
-</div>
-</div>
-<div class="fp-slide" data-slide-index="1" style="display:none;">
-<div class="slide content ls24-test-simple" data-slide="test-simple-carousel-3" data-slide-mode="sequence">
-
-  <div class="slide-logo-row" data-edit="logo-row"><span data-lang="es"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span><span data-lang="it" hidden=""><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span></div>
-
-  <div class="slide-layout">
-    <header class="slide-head">
-      <div class="section-label" data-edit="section-label" data-lang-key="ls24-test-simple.section-label"><span data-lang="es">Etiqueta de Seccion</span><span data-lang="it" hidden="">Etichetta Sezione!</span></div>
-      <h1 class="slide-title" data-edit="headline" data-lang-key="ls24-test-simple.headline"><span data-lang="es">Prueba en <span class="blue">Español</span></span><span data-lang="it" hidden="">Test in <span class="blue">spagnolo</span></span></h1>
-      <p class="slide-subtitle" data-edit="subtitle" data-lang-key="ls24-test-simple.subtitle"><span data-lang="es">Una oración de apoyo corta para esta diapositiva.</span><span data-lang="it" hidden="">Una breve frase di supporto per questa diapositiva.</span></p>
-    </header>
-
-    <div class="slide-body">
-      <div class="ls-carousel" data-edit="main-carousel" data-counter="" data-autoplay="4000" style="flex:1;min-height:0;width:100%;max-width:960px;"><div class="ls-carousel-track" style="transform: translateX(-960px);">
-          
-          
-        <div class="ls-carousel-slide"><img src="../shared/16_bit_tech.jpg" alt="16 bit tech" data-zoom=""><div class="ls-carousel-caption">16 bit tech</div></div><div class="ls-carousel-slide ls-compare ls-reveal" data-compare-mode="reveal"><div class="ls-cmp-side ls-cmp-side-left"><img src="../shared/CulletScanner-Benefits.jpg" alt="CulletScanner-Benefits" data-zoom="" class="ls-cmp-left"></div><div class="ls-cmp-side ls-cmp-side-right" style="clip-path: inset(0px 0px 0px 50%);"><img src="../shared/Band_Conveyor_Picture.jpg" alt="Band Conveyor Picture" class="ls-cmp-right" data-zoom=""></div><div class="ls-cmp-handle" style="left: 50%;"><div class="ls-cmp-handle-grip">⇔</div></div></div><div class="ls-carousel-slide"><img src="../shared/Customers_Thumbs_Up__2_.jpg" alt="Customers_Thumbs_Up__2_" data-zoom=""><div class="ls-carousel-caption">Customers_Thumbs_Up__2_</div></div></div><div class="ls-carousel-counter">2 / 3</div></div>
-    </div>
-  </div>
-
-  <style>
-    .ls24-test-simple { }
-    .ls24-test-simple .slide-body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex: 1;
-      min-height: 0;
-      width: 100%;
-    }
-    @media(min-width:769px) {
-      .ls24-test-simple .slide-body { padding: 0 80px; }
-    }
-  </style>
-
-  <script>
+  // ── Slide init ────────────────────────────────────────────────────────
   (function () {
-    var slide   = document.currentScript.closest('[data-slide]');
-    var slideId = slide ? slide.dataset.slide : 'ls24-test-simple';
-
-    setTimeout(function () { if (window.PE && slide) PE.initSlide(slide); }, 0);
-  })();
-  </script>
-
-</div>
-</div>
-<div class="fp-slide" data-slide-index="2" style="display:none;">
-<div class="slide content t5" data-slide="linescanner-technology">
-  <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
-
-  <div class="slide-layout">
-  <header class="slide-head">
-    <div class="section-label" data-edit="section-label"><span data-lang="es">La Tecnología - Linescanner</span><span data-lang="it" hidden="">La Tecnologia - Linescanner</span></div>
-    <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;"><span data-lang="es">Cómo LineScanner <span class="blue">ve lo que otros pierden</span></span><span data-lang="it" hidden="">Come LineScanner <span class="blue">vede quello che altri perdono</span></span></h1>
-  </header>
-  <div class="slide-body">
-  <div class="ls-tabs" data-edit="tabs" data-track="t5:tabs" style="flex:1;min-height:0;width:100%;max-width:920px;flex-direction:column-reverse;">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="ls-tab-list">
-  <button class="ls-tab active" data-panel="0" data-edit="tab-howitworks"><span data-lang="es">Cómo funciona<button class="ls-tab-del" data-builder-only="" title="Delete tab">✕</button></span><span data-lang="it" hidden="">Come funziona<button class="ls-tab-del" data-builder-only="" title="Delete tab">✕</button></span></button>
-  <button class="ls-tab" data-panel="1" data-edit="tab-16bit"><span data-lang="es">Ventaja 16-bit<button class="ls-tab-del" data-builder-only="" title="Delete tab">✕</button></span><span data-lang="it" hidden="">Vantaggio 16-bit<button class="ls-tab-del" data-builder-only="" title="Delete tab">✕</button></span></button>
-  <button class="ls-tab" data-panel="2" data-edit="tab-vs"><span data-lang="es">vs Sistemas de Cámara<button class="ls-tab-del" data-builder-only="" title="Delete tab">✕</button></span><span data-lang="it" hidden="">vs Sistemi fotografici<button class="ls-tab-del" data-builder-only="" title="Delete tab">✕</button></span></button>
-<button class="ls-tab" data-panel="3">Extra</button></div>
-<div class="ls-tab-panels">
-<!-- ══ PANEL 0 · How It Works ══ -->
-<div class="ls-tab-panel active" data-panel="0">
-  <div class="t5-hiw">
-    <div class="t5-components anim-in" style="">
-      <div class="t5-comp-card"><span class="t5-num">1</span><span class="t5-comp-text" data-edit="comp-card-1"><span data-lang="es"><strong>Luz telecéntrica:</strong>&nbsp;iluminación uniforme independiente de la posición del vidrio</span><span data-lang="it" hidden=""><strong>Illuminazione telecentric:</strong>&nbsp;illuminazione uniforme indipendente dalla posizione del vetro</span></span></div>
-      <div class="t5-comp-card"><span class="t5-num">2</span><span class="t5-comp-text" data-edit="comp-card-2"><span data-lang="es"><strong>Sensor de imagen lineal</strong> — escaneo real línea por línea, no una cámara de captura instantánea</span><span data-lang="it" hidden=""><strong>Sensore di immagine lineare</strong> — scansione reale riga per riga, non una fotocamera istantanea</span></span></div>
-      <div class="t5-comp-card"><span class="t5-num">3</span><span class="t5-comp-text" data-edit="comp-card-3"><span data-lang="es"><strong>Vidrio</strong>&nbsp;inspeccionado continuamente a la velocidad de producción completa</span><span data-lang="it" hidden=""><strong>Vetro</strong>&nbsp;ispezionato continuamente a velocità di produzione completa</span></span></div>
-      <div class="t5-comp-card"><span class="t5-num">4</span><span class="t5-comp-text" data-edit="comp-card-4"><span data-lang="es"><strong>Módulo electrónico</strong> — procesamiento de 16 bits a velocidad extrema</span><span data-lang="it" hidden=""><strong>Modulo elettronico</strong> — elaborazione a 16 bit a velocità estrema</span></span></div>
-    </div>
-    <div class="t5-diagram t5-diagram-full anim-in" style="">
-      <div class="ls-carousel" data-counter="" data-edit="t5-diagram-howitworks" style="width:100%;height:100%;" data-autoplay="0"><div class="ls-carousel-track" style="transform: translateX(0px);">
-          <div class="ls-carousel-slide">
-            <img src="../shared/Image_Explaining_the_technology_1_Telecentric_light_2_linear_image_sensor_3_glass_4_electronic_module.png" alt="Scanner technology diagram" data-zoom="">
-          </div>
-        </div></div>
-    </div>
-  </div>
-</div>
-<!-- ══ PANEL 1 · 16-bit Advantage ══ -->
-<div class="ls-tab-panel" data-panel="1">
-  <div class="t5-hiw">
-    <div class="t5-diagram t5-diagram-full anim-in" style="">
-      <div class="ls-carousel" data-counter="" data-edit="t5-diagram-16bit" style="width:100%;height:100%;" data-autoplay="0">
-        <div class="ls-carousel-track" style="transform:translateX(0px);">
-          <div class="ls-carousel-slide">
-            <img src="../shared/16_bit_tech.jpg" alt="8-bit vs 16-bit technology comparison" data-zoom="">
-          <div class="ls-carousel-caption">8-bit vs 16-bit technology comparison</div></div>
-        </div>
-        
-      <div class="ls-carousel-counter"></div></div>
-    </div>
-    <div class="t5-components anim-in" style="">
-      <div class="t5-comp-card"><span class="t5-fnum">1</span><span class="t5-comp-text" data-edit="feat-card-1"><span data-lang="es"><strong>Detección de bajo contraste:</strong> Identifica defectos que los sistemas de 8 bits no pueden ver — inclusiones sutiles, variaciones de recubrimiento, microrrayaduras.</span><span data-lang="it" hidden=""><strong>Rilevamento a basso contrasto:</strong> Identifica difetti che i sistemi a 8 bit non possono vedere — inclusioni sottili, variazioni di rivestimento, micro-graffi.</span></span></div>
-      <div class="t5-comp-card"><span class="t5-fnum">2</span><span class="t5-comp-text" data-edit="feat-card-2"><span data-lang="es"><strong>Homogeneización de transmisión:</strong> Vidrio del 15% al 99% procesado con la misma configuración — resultados idénticos en todos los tipos.</span><span data-lang="it" hidden=""><strong>Omogeneizzazione della trasmissione:</strong> Vetro dal 15% al 99% elaborato con la stessa configurazione — risultati identici su tutti i tipi.</span></span></div>
-      <div class="t5-comp-card"><span class="t5-fnum">3</span><span class="t5-comp-text" data-edit="feat-card-3"><span data-lang="es"><strong>Cada píxel es igual:</strong> Sin variación por posición — siempre consistente, eliminando falsos positivos y rechazos innecesarios.</span><span data-lang="it" hidden=""><strong>Ogni pixel è uguale:</strong> Nessuna variazione per posizione — sempre coerente, eliminando falsi positivi e rifiuti non necessari.</span></span></div>
-      <div class="t5-comp-card"><span class="t5-fnum">4</span><span class="t5-comp-text" data-edit="feat-card-4"><span data-lang="es"><strong>Velocidad de procesamiento extrema:</strong> Sin compromiso en el rendimiento. Compatible con tasas de producción automotriz y ferroviaria.</span><span data-lang="it" hidden=""><strong>Velocità di elaborazione estrema:</strong> Nessun compromesso sulla capacità di produzione. Compatibile con i tassi di produzione automotive e ferroviario.</span></span></div>
-    </div>
-  </div>
-</div>
-<!-- ══ PANEL 2 · vs Camera Systems ══ -->
-<div class="ls-tab-panel" data-panel="2">
-  <div class="t5-vc-wrap anim-in" style="">
-    <div class="t5-cmp-col t5-cmp-bad">
-      <div class="t5-cmp-header"><span class="t5-cmp-icon">📷</span><span data-edit="vc-header-bad"><span data-lang="es">Sistemas Basados en Cámara</span><span data-lang="it" hidden="">Sistemi basati su fotocamera</span></span></div>
-      <ul class="t5-cmp-list" id="t5-vc-bad-list" data-ls-list="" data-lang="es"><li><strong>Cobertura de instantánea:</strong> Captura fotogramas periódicos — los espacios entre disparos significan que los defectos entre fotogramas pasan desapercibidos</li>
-<li><strong>Desenfoque de movimiento a velocidad:</strong> Las líneas de producción rápidas causan desenfoque de imagen, reduciendo la precisión de detección</li>
-<li><strong>Profundidad de 8 bits:</strong> Solo 256 niveles de gris — los defectos de bajo contraste son invisibles</li>
-<li><strong>Iluminación dependiente de la posición:</strong> La iluminación desigual en el campo de visión distorsiona los resultados</li>
-<li><strong>Falsos positivos y rechazos:</strong> La variación de píxeles por posición desencadena alarmas innecesarias</li>
-<li><strong>Recalibración requerida:</strong> La sensibilidad debe reajustarse para cada tipo de vidrio y nivel de transmisión</li>
-      </ul><ul class="t5-cmp-list" id="t5-vc-bad-list" data-ls-list="" data-lang="it" hidden=""><li><strong>Copertura tramite snapshot:</strong> Acquisisce fotogrammi periodici — gli spazi tra gli scatti significano che i difetti tra i fotogrammi non vengono rilevati</li>
-<li><strong>Sfocatura di movimento ad alta velocità:</strong> Le linee di produzione veloce causano sfocatura dell'immagine, riducendo la precisione di rilevamento</li>
-<li><strong>Profondità 8-bit:</strong> Solo 256 livelli di grigio — i difetti a basso contrasto sono invisibili</li>
-<li><strong>Illuminazione dipendente dalla posizione:</strong> L'illuminazione irregolare nel campo visivo distorce i risultati</li>
-<li><strong>Falsi positivi e rifiuti:</strong> La variazione dei pixel per posizione attiva allarmi non necessari</li>
-<li><strong>Ricalibratura richiesta:</strong> La sensibilità deve essere riadattata per ogni tipo di vetro e livello di trasmissione</li>
-      </ul>
-      
-      
-    </div>
-    <div class="t5-vc-imgs">
-      <div class="t5-vc-card">
-        <div class="t5-diagram" style="flex:1;min-height:0;">
-          <div class="ls-carousel" data-counter="" data-no-caption="" data-edit="t5-diagram-drillhole" style="width:100%;height:100%;" data-autoplay="0">
-            <div class="ls-carousel-track" style="transform:translateX(0px);">
-              <div class="ls-carousel-slide"><img src="../shared/Comparison_on_image_taken_by_Camera_Above_and_LineScanner_below_of_a_drillhole_.jpg" alt="Drill hole comparison" data-zoom=""></div>
-            </div>
-            
-          <div class="ls-carousel-counter"></div></div>
-        </div>
-        <div class="t5-vc-label" data-edit="vc-label-drillhole"><span data-lang="es">Orificio de Perforación, Cámara vs LineScanner</span><span data-lang="it" hidden="">Foro di perforazione, Fotocamera vs LineScanner</span></div>
-      </div>
-      <div class="t5-vc-card">
-        <div class="t5-diagram" style="flex:1;min-height:0;">
-          <div class="ls-carousel" data-counter="" data-no-caption="" data-edit="t5-diagram-igunit" style="width:100%;height:100%;" data-autoplay="0">
-            <div class="ls-carousel-track" style="transform:translateX(0px);">
-              <div class="ls-carousel-slide"><img src="../shared/Comparison_on_image_taken_by_Camera_Above_and_LineScanner_below_of_a_Ig_unit_.jpg" alt="IG unit comparison" data-zoom=""></div>
-            </div>
-            
-          <div class="ls-carousel-counter"></div></div>
-        </div>
-        <div class="t5-vc-label" data-edit="vc-label-igunit"><span data-lang="es">Unidad IG — Cámara vs LineScanner</span><span data-lang="it" hidden="">Unità IG — Fotocamera vs LineScanner</span></div>
-      </div>
-    </div>
-    <div class="t5-cmp-col t5-cmp-good">
-      <div class="t5-cmp-header"><span class="t5-cmp-icon">✓</span><span data-edit="vc-header-good"><span data-lang="es">LineScanner</span><span data-lang="it" hidden="">LineScanner</span></span></div>
-      <ul class="t5-cmp-list" id="t5-vc-good-list" data-ls-list="" data-lang="es"><li><strong>Escaneo línea por línea al 100%:</strong> Cada milímetro de vidrio se inspecciona — sin espacios, sin puntos ciegos</li>
-<li><strong>Sin desenfoque de movimiento:</strong> El sensor lineal lee una línea a la vez, perfectamente sincronizado con la velocidad de producción</li>
-<li><strong>Profundidad de 16 bits:</strong> 65.536 niveles de gris — detecta las inclusiones más sutiles, variaciones de recubrimiento y microarañazos</li>
-<li><strong>Iluminación telecéntrica:</strong> Campo de luz uniforme independiente de la posición del vidrio — resultados consistentes en todas partes</li>
-<li><strong>Cada píxel es igual:</strong> Sin variación de posición — elimina falsos positivos y rechazos innecesarios</li>
-<li><strong>Una configuración para todo el vidrio:</strong> Transmisión del 15% al 99% manejada automáticamente con la misma configuración .....</li>
-      </ul><ul class="t5-cmp-list" id="t5-vc-good-list" data-ls-list="" data-lang="it" hidden=""><li><strong>Scansione 100% linea per linea:</strong> Ogni millimetro di vetro viene ispezionato — zero spazi vuoti, zero punti ciechi</li>
-<li><strong>Nessuna sfocatura di movimento:</strong> Il sensore lineare legge una linea alla volta, perfettamente sincronizzato con la velocità di produzione</li>
-<li><strong>Profondità 16-bit:</strong> 65.536 livelli di grigio — rileva le inclusioni più sottili, le variazioni di rivestimento e i micro-graffi</li>
-<li><strong>Illuminazione telecentrica:</strong> Campo di luce uniforme indipendente dalla posizione del vetro — risultati coerenti ovunque</li>
-<li><strong>Ogni pixel è uguale:</strong> Nessuna variazione posizionale — elimina i falsi positivi e i rifiuti non necessari</li>
-<li><strong>Una configurazione per tutto il vetro:</strong> Trasmissione dal 15% al 99% gestita automaticamente con la stessa configurazione .....</li>
-      </ul>
-      
-      
-    </div>
-  </div>
-</div>
-<div class="ls-tab-panel" data-panel="3"><div class="ls-carousel" data-counter="" data-zoom-group="" style="flex:1;min-height:0;width:100%;" data-autoplay="">  <div class="ls-carousel-track" style="transform: translateX(0px);">      <div class="ls-carousel-slide"><img src="../shared/Slide42.jpg" alt="Slide42" data-zoom=""><div class="ls-carousel-caption">Slide42</div></div></div><div class="ls-carousel-counter"></div></div></div></div><!-- ls-tab-panels -->
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </div>
-  </div><!-- slide-body -->
-  </div><!-- slide-layout -->
-
-  <style>
-    .t5 .slide-body { width: 100%; align-items: center; }
-    .t5 .ls-carousel { min-height: 260px !important; height: 260px !important; }
-    .t5 { padding: 52px 16px 80px !important; }
-    .t5 .ls-tabs { flex-direction: column-reverse; }
-    .t5 .ls-tab-list { margin-bottom: 0; margin-top: 10px; }
-    .t5-hiw { display:flex; flex-direction:column; gap:12px; height:100%; }
-    .t5-components { display:grid; grid-template-columns:1fr; gap:8px; flex-shrink:0; }
-    .t5-comp-card { display:flex; align-items:flex-start; gap:10px; padding:8px 12px; border-radius:10px; background:var(--bg-card); border:1px solid var(--border); }
-    .t5-diagram-full { flex:1; min-height:180px; }
-    .t5-num { width:20px; height:20px; border-radius:50%; flex-shrink:0; background:rgba(232,113,26,.2); border:1px solid rgba(232,113,26,.4); color:#E8711A; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; }
-    .t5-fnum { width:24px; height:24px; border-radius:50%; flex-shrink:0; background:rgba(232,113,26,.2); border:1px solid rgba(232,113,26,.4); color:#E8711A; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; }
-    .t5-comp-text { font-size:clamp(11px,1.1vw,13px); color:var(--text-muted); line-height:1.4; }
-    .t5-comp-text strong { color:var(--text); }
-    .t5-diagram { border:1px solid var(--border); border-radius:14px; overflow:hidden; cursor:zoom-in; background:#000; display:flex; align-items:center; justify-content:center; position:relative; min-height:0; transition:border-color .2s; }
-    .t5-diagram:hover { border-color:rgba(232,113,26,.4); }
-    .t5-diagram img { width:100%; height:100%; object-fit:contain; display:block; transition:transform .3s; }
-    .t5-diagram:hover img { transform:scale(1.03); }
-    .t5-vc-wrap { display:grid; grid-template-columns:1fr; gap:14px; height:auto; overflow-y:auto; }
-    .t5-cmp-col { display:flex; flex-direction:column; border-radius:14px; overflow:hidden; border:1px solid var(--border); }
-    .t5-cmp-header { display:flex; align-items:center; gap:10px; padding:12px 16px; flex-shrink:0; font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
-    .t5-cmp-bad .t5-cmp-header { background:rgba(239,68,68,.12); border-bottom:1px solid rgba(239,68,68,.2); color:#f87171; }
-    .t5-cmp-good .t5-cmp-header { background:rgba(34,197,94,.10); border-bottom:1px solid rgba(34,197,94,.2); color:#4ade80; }
-    .t5-cmp-icon { font-size:15px; }
-    .t5-cmp-list { list-style:none; margin:0; padding:10px 16px 12px; display:flex; flex-direction:column; gap:0; overflow-y:auto; flex:1; }
-    .t5-cmp-list li { padding:7px 0 7px 20px; position:relative; font-size:clamp(11px,1.05vw,13px); line-height:1.4; color:var(--text-muted); border-bottom:1px solid rgba(255,255,255,.04); }
-    .t5-cmp-list li:last-child { border-bottom:none; }
-    .t5-cmp-list li strong { color:var(--text); }
-    .t5-cmp-bad .t5-cmp-list li::before { content:"✕"; position:absolute; left:0; top:8px; font-size:10px; font-weight:800; color:#f87171; }
-    .t5-cmp-good .t5-cmp-list li::before { content:"›"; position:absolute; left:2px; top:7px; font-size:14px; font-weight:800; color:#4ade80; }
-    .t5-vc-add-bad[data-ls-add]:hover { border-color:rgba(239,68,68,.4); color:#f87171; }
-    .t5-vc-add-good[data-ls-add]:hover { border-color:rgba(34,197,94,.4); color:#4ade80; }
-    .t5-vc-imgs { display:flex; flex-direction:column; gap:10px; min-height:0; overflow:hidden; }
-    .t5-vc-card { flex:1; min-height:180px; display:flex; flex-direction:column; gap:0; border-radius:12px; border:1px solid var(--border); background:var(--bg-card); overflow:hidden; position:relative; }
-    .t5-vc-label { padding:5px 10px; font-size:10px; font-weight:600; letter-spacing:.04em; color:var(--text-muted); text-align:center; flex-shrink:0; border-top:1px solid var(--border); }
-    @media(min-width:769px) and (max-width:1024px) {
-      .t5 .ls-carousel { min-height: 0 !important; height: 100% !important; }
-      .t5 { padding: 52px 80px 0 !important; }
-      .t5-vc-wrap { grid-template-columns:1fr 1fr; height:100%; overflow-y:unset; }
-    }
-    @media(min-width:1025px) {
-      .t5 .ls-carousel { min-height: 0 !important; height: 100% !important; }
-      .t5 { padding: 52px 80px 0 !important; }
-      .t5-components { grid-template-columns:1fr 1fr; }
-      .t5-vc-wrap { grid-template-columns:1fr 1fr 1fr; height:100%; overflow-y:unset; }
-    }
-  </style>
-
-  <script>
-  setTimeout(function() {
-    window.t5VcHide = function(key) {
-      var card = document.getElementById("t5-vc-" + key);
-      if (card) card.style.display = "none";
-    };
-  }, 0);
-  </script>
-
-  <script>
-  (function () { var s = document.currentScript;
-    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
-  </script>
-</div>
-</div>
-<div class="fp-slide" data-slide-index="3" style="display:none;">
-<div class="slide content ls4" data-slide="products-overview">
-  <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
-
-  <div class="slide-layout">
-  <header class="slide-head">
-    <div class="section-label" data-edit="section-label"><span data-lang="es">El Producto</span><span data-lang="it" hidden="">Il Prodotto</span></div>
-    <h1 class="slide-title" data-edit="headline" style="margin-bottom:14px;"><span data-lang="es">LineScanner <span class="blue">Descripción General de Capacidades</span></span><span data-lang="it" hidden="">LineScanner <span class="blue">Panoramica delle Capacità</span></span></h1>
-  </header>
-  <div class="slide-body">
-  <div class="ls-tabs" data-edit="tabs" data-track="ls4:tabs" style="flex:1;min-height:0;width:100%;max-width:960px;">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="ls-tab-list">
-  <button class="ls-tab active" data-panel="0" data-edit="tab-capability"><span data-lang="es">Matriz de Capacidades<button class="ls-tab-del" data-builder-only="" title="Eliminar pestaña" style="">✕</button></span><span data-lang="it" hidden="">Matrice di Capacità<button class="ls-tab-del" data-builder-only="" title="Elimina scheda" style="">✕</button></span></button>
-  <button class="ls-tab" data-panel="1" data-edit="tab-process"><span data-lang="es">Dónde en el Proceso<button class="ls-tab-del" data-builder-only="" title="Eliminar pestaña">✕</button></span><span data-lang="it" hidden="">Dove nel Processo<button class="ls-tab-del" data-builder-only="" title="Elimina scheda">✕</button></span></button>
-<button class="ls-tab" data-panel="2">Extras</button></div>
-<div class="ls-tab-panels">
-<!-- ══ PANEL 0 · Capability Matrix ══ -->
-<div class="ls-tab-panel active" data-panel="0">
-  <div class="ls4-grid">
-    <div class="ls4-table-wrap anim-in" style="">
-      <table class="ls4-table" data-ls-table="" data-lang="es">
-        <colgroup><col><col class=""><col class=""><col class=""><col class=""><col class=""></colgroup>
-        <thead><tr>
-          <th class="ls4-check-col"></th>
-          <th class="ls4-prod-col"><span class="ls-col-label">Osprey-25</span></th>
-          <th class="ls4-prod-col ls4-highlight-col"><span class="ls-col-label">LineScanner</span></th>
-          <th class="ls4-prod-col ls4-highlight-col"><span class="ls-col-label">White Haze</span></th>
-          <th class="ls4-prod-col"><span class="ls-col-label">BowScanner</span></th>
-          <th class="ls4-prod-col"><span class="ls-col-label">CulletScanner</span></th>
-        </tr></thead>
-        <tbody>
-          <tr class="ls4-shaded"><td>Control de Calidad</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
-          <tr><td>Astillas en Bordes</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
-          <tr class="ls4-shaded"><td>Control de Línea de Visión</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
-          <tr><td>Control de Dimensiones</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
-          <tr class="ls4-shaded"><td>Control de Posición y Calidad del Logo</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
-          <tr><td>Control de Distorsión</td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td><td></td></tr>
-          <tr class="ls4-shaded"><td>Control de Anisotropía</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
-          <tr><td>Bruma Blanca</td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td></tr>
-          <tr class="ls4-shaded"><td>Control de Carga</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
-          <tr><td>Control de Curvatura General</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td></tr>
-          <tr class="ls4-shaded"><td>Control de Espesor del Vidrio</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td></tr>
-          <tr><td>Reconocimiento de Tipo de Vidrio</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
-          <tr class="ls4-shaded"><td>Interpretación de Código Data Matrix</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
-          <tr><td>Control de Patrón de Rotura</td><td></td><td></td><td></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td></tr>
-        </tbody>
-      </table><table class="ls4-table" data-ls-table="" data-lang="it" hidden="">
-        <colgroup><col><col class=""><col class=""><col class=""><col class=""><col class=""></colgroup>
-        <thead><tr>
-          <th class="ls4-check-col"></th>
-          <th class="ls4-prod-col"><span class="ls-col-label">Osprey-25</span></th>
-          <th class="ls4-prod-col ls4-highlight-col"><span class="ls-col-label">LineScanner</span></th>
-          <th class="ls4-prod-col ls4-highlight-col"><span class="ls-col-label">White Haze</span></th>
-          <th class="ls4-prod-col"><span class="ls-col-label">BowScanner</span></th>
-          <th class="ls4-prod-col"><span class="ls-col-label">CulletScanner</span></th>
-        </tr></thead>
-        <tbody>
-          <tr class="ls4-shaded"><td>Controllo Qualità</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
-          <tr><td>Schegge ai Bordi</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
-          <tr class="ls4-shaded"><td>Controllo Linea di Vista</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
-          <tr><td>Controllo Dimensioni</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
-          <tr class="ls4-shaded"><td>Controllo Posizione e Qualità Logo</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
-          <tr><td>Controllo Distorsione</td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td><td></td></tr>
-          <tr class="ls4-shaded"><td>Controllo Anisotropia</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
-          <tr><td>Alone Bianco</td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td></tr>
-          <tr class="ls4-shaded"><td>Controllo Carico</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
-          <tr><td>Controllo Flessione Generale</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td></tr>
-          <tr class="ls4-shaded"><td>Controllo Spessore del Vetro</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td></tr>
-          <tr><td>Riconoscimento Tipo di Vetro</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
-          <tr class="ls4-shaded"><td>Interpretazione Codice Data Matrix</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td><td></td></tr>
-          <tr><td>Controllo Pattern di Rottura</td><td></td><td></td><td></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td></tr>
-        </tbody>
-      </table>
-      <div data-ls-col-restore=""></div>
-      <div data-ls-row-restore=""></div>
-      
-      <div class="ls4-legend">
-        <span class="ls4-leg-item"><span class="ls-dot ls-dot-on">◆</span> <span data-edit="legend-standard"><span data-lang="es">Estándar</span><span data-lang="it" hidden="">Standard</span></span></span>
-        <span class="ls4-leg-item"><span class="ls4-dot ls4-dot-off">◇</span> <span data-edit="legend-optional"><span data-lang="es">Opcional</span><span data-lang="it" hidden="">Opzionale</span></span></span>
-      </div>
-    </div>
-    <div class="ls-carousel anim-in" data-counter="" data-edit="capability-carousel" data-zoom-group="" style="padding-bottom: 10px;" data-autoplay="3000"><div class="ls-carousel-track" style="transform: translateX(-1179px);">
-        <div class="ls-carousel-slide" style="flex-direction:column;">
-          <img src="../shared/Vertical_LineScanner.png" alt="Escáner de Línea Vertical" data-zoom="" style="flex:1;min-height:0;">
-          <div class="ls4-car-label" data-edit="car-label-1"><span data-lang="es">LineScanner Vertical</span><span data-lang="it" hidden="">LineScanner Verticale</span></div>
-        </div>
-        <div class="ls-carousel-slide" style="flex-direction:column;">
-          <img src="../shared/Horizontal_LineScanner.png" alt="Escáner de Línea Horizontal" data-zoom="" style="flex:1;min-height:0;">
-          <div class="ls4-car-label" data-edit="car-label-2"><span data-lang="es">LineScanner Horizontal</span><span data-lang="it" hidden="">LineScanner Orizzontale</span></div>
-        </div>
-        
-      <div class="ls-carousel-slide"><img src="../shared/Osprey-Only.png" alt="Osprey-Only" data-zoom=""></div><div class="ls-carousel-slide"><img src="../shared/Cullet_Scanner_Picture.png" alt="Cullet_Scanner_Picture" data-zoom=""></div></div></div>
-  </div>
-</div>
-<!-- ══ PANEL 1 · Where in Your Process ══ -->
-<div class="ls-tab-panel" data-panel="1">
-  <div class="ls4-proc-grid" style="grid-template-columns:1.4fr 1fr;">
-    <div class="ls4-proc-table-wrap anim-in" style="">
-      <table class="ls4-table ls4-proc-table" data-ls-table="" data-lang="es">
-        <colgroup><col><col class=""><col class=""><col class="ls-col-collapsed"></colgroup>
-        <thead><tr>
-          <th class="ls4-check-col"></th>
-          <th class="ls4-prod-col ls4-col-orange"><span class="ls-col-label">LSC-V</span></th>
-          <th class="ls4-prod-col ls4-col-red"><span class="ls-col-label">LSC-H</span></th>
-          <th class="ls4-prod-col ls4-col-blue"><span class="ls-col-label">Osprey-25</span></th>
-        </tr></thead>
-        <tbody>
-          <tr class="ls4-shaded"><td>Control de Calidad (Arañazos, Inclusiones, Huellas Dactilares, Suciedad, Vacíos de Revestimiento, Automotriz)</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
-          <tr><td>Astillas de Borde</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
-          <tr class="ls4-shaded"><td>Control de Línea de Vista para Unidad IG, Defectos de Butilo, Alineación de Rejilla</td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td></tr>
-          <tr><td>Control de Dimensiones (Dimensión General, Posición de Orificios de Perforación, Diámetro de Orificios de Perforación, Recortes)</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
-          <tr class="ls4-shaded"><td>Control de Calidad del Logo (Existencia y Posición del Logo, Calidad del Logo)</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
-          <tr><td>Control de Distorsión (Onda de Rodillo, Elevación de Borde, Distorsión de Bolsillo, Pliegue Central, Encuadre de Imagen)</td><td></td><td></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
-          <tr class="ls4-shaded"><td>Control de Anisotropía (Retardo, Valores de Isotropía)</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
-          <tr><td>Neblina Blanca (Predicción, Efecto Óptico Real)</td><td></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
-          <tr class="ls4-shaded"><td>Control de Carga (Ubicación de Vidrios, Distancia, Carga Larga y Ancha, Esquinas Rotas)</td><td></td><td><span class="ls-dot ls-dot-red">◆</span></td><td></td></tr>
-          <tr><td>Control General de Curvatura (6 Mediciones para Todos los Bordes)</td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td></tr>
-          <tr class="ls4-shaded"><td>Control de Espesor de Vidrio (Espesor, Lado del Revestimiento)</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
-          <tr><td>Reconocimiento de Tipo de Vidrio / Reconocimiento de Tipo y Espesor de Revestimiento</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
-          <tr class="ls4-shaded"><td>Interpretación de Código de Matriz de Datos</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
-        </tbody>
-      </table><table class="ls4-table ls4-proc-table" data-ls-table="" data-lang="it" hidden="">
-        <colgroup><col><col class=""><col class=""><col class="ls-col-collapsed"></colgroup>
-        <thead><tr>
-          <th class="ls4-check-col"></th>
-          <th class="ls4-prod-col ls4-col-orange"><span class="ls-col-label">LSC-V</span></th>
-          <th class="ls4-prod-col ls4-col-red"><span class="ls-col-label">LSC-H</span></th>
-          <th class="ls4-prod-col ls4-col-blue"><span class="ls-col-label">Osprey-25</span></th>
-        </tr></thead>
-        <tbody>
-          <tr class="ls4-shaded"><td>Controllo Qualità (Graffi, Inclusioni, Impronte Digitali, Sporco, Vuoti di Rivestimento, Automotive)</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
-          <tr><td>Schegge ai Bordi</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
-          <tr class="ls4-shaded"><td>Controllo Linea di Visione per Unità IG, Difetti di Butile, Allineamento Griglia</td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td></tr>
-          <tr><td>Controllo Dimensioni (Dimensione Complessiva, Posizione Fori di Foratura, Diametro Fori di Foratura, Ritagli)</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
-          <tr class="ls4-shaded"><td>Controllo Qualità Logo (Esistenza e Posizione del Logo, Qualità del Logo)</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
-          <tr><td>Controllo Distorsione (Rollerwave, EdgeLift, Distorsione Tasca, Piega al Centro, Picture Framing)</td><td></td><td></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
-          <tr class="ls4-shaded"><td>Controllo Anisotropia (Ritardo, Valori di Isotropia)</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
-          <tr><td>WhiteHaze (Previsione, Effetto Ottico Reale)</td><td></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
-          <tr class="ls4-shaded"><td>Controllo Carico (Posizione dei Vetri, Distanza, Carico Lungo e Largo, Angoli Rotti)</td><td></td><td><span class="ls-dot ls-dot-red">◆</span></td><td></td></tr>
-          <tr><td>Controllo Piegatura Complessiva (6 Misurazioni per Tutti i Bordi)</td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td></tr>
-          <tr class="ls4-shaded"><td>Controllo Spessore Vetro (Spessore, Lato del Rivestimento)</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
-          <tr><td>Riconoscimento Tipo Vetro / Riconoscimento Tipo e Spessore Rivestimento</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
-          <tr class="ls4-shaded"><td>Interpretazione Codice Data Matrix</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-red">◆</span></td><td><span class="ls-dot ls-dot-blue">◆</span></td></tr>
-        </tbody>
-      </table>
-      <div data-ls-col-restore=""><button class="ls-table-restore-chip">+ Osprey-25</button></div>
-      <div data-ls-row-restore=""></div>
-      
-      <div class="ls4-legend">
-        <span class="ls4-leg-item"><span class="ls-dot ls-dot-on">◆</span> <span data-edit="proc-legend-1"><span data-lang="es">LineScanner Vertical</span><span data-lang="it" hidden="">LineScanner Verticale</span></span></span>
-        <span class="ls4-leg-item"><span class="ls-dot ls-dot-red">◆</span> <span data-edit="proc-legend-2"><span data-lang="es">LineScanner Horizontal</span><span data-lang="it" hidden="">LineScanner Orizzontale</span></span></span>
-        <span class="ls4-leg-item"><span class="ls-dot ls-dot-blue">◆</span> <span data-edit="proc-legend-3"><span data-lang="es">Osprey-25</span><span data-lang="it" hidden="">Osprey-25</span></span></span>
-      </div>
-    </div>
-    <div class="ls4-proc-cards anim-in" style="">
-      <div class="ls4-proc-card"><img src="../shared/Render_Tempering_Line.png" alt="Tempering Line" data-zoom=""><div class="ls4-proc-card-label" data-edit="proc-label-1"><span data-lang="es">Templado</span><span data-lang="it" hidden="">Tempra</span></div><button class="ls4-card-toggle" onclick="ls4ToggleCard(this,event)" title="Hide">✕</button><div class="ls4-card-move"><button onclick="ls4MoveCard(this,-1,event)" title="Move up">▲</button><button onclick="ls4MoveCard(this,1,event)" title="Move down">▼</button></div></div>
-      <div class="ls4-proc-card"><img src="../shared/Render_Lamination_Line.png" alt="Lamination Line" data-zoom=""><div class="ls4-proc-card-label" data-edit="proc-label-3"><span data-lang="es">Laminación</span><span data-lang="it" hidden="">Laminazione</span></div><button class="ls4-card-toggle" onclick="ls4ToggleCard(this,event)" title="Hide">✕</button><div class="ls4-card-move"><button onclick="ls4MoveCard(this,-1,event)" title="Move up">▲</button><button onclick="ls4MoveCard(this,1,event)" title="Move down">▼</button></div></div><div class="ls4-proc-card"><img src="../shared/Render_of_a_Vertical_IG_Line_with_LineScanners_on_Orange_to_show_the_position.png" alt="IG Line" data-zoom=""><div class="ls4-proc-card-label" data-edit="proc-label-2"><span data-lang="es">Línea IG</span><span data-lang="it" hidden="">Linea IG</span></div><button class="ls4-card-toggle" onclick="ls4ToggleCard(this,event)" title="Hide">✕</button><div class="ls4-card-move"><button onclick="ls4MoveCard(this,-1,event)" title="Move up">▲</button><button onclick="ls4MoveCard(this,1,event)" title="Move down">▼</button></div></div>
-      
-      <div class="ls4-proc-card"><img src="../shared/Render_Grinding_Line.png" alt="Grinding Line" data-zoom=""><div class="ls4-proc-card-label" data-edit="proc-label-4"><span data-lang="es">Rectificado</span><span data-lang="it" hidden="">Molatura</span></div><button class="ls4-card-toggle" onclick="ls4ToggleCard(this,event)" title="Hide">✕</button><div class="ls4-card-move"><button onclick="ls4MoveCard(this,-1,event)" title="Move up">▲</button><button onclick="ls4MoveCard(this,1,event)" title="Move down">▼</button></div></div>
-      <div class="ls4-proc-card"><img src="../shared/Render_Coating_line.png" alt="Coating Line" data-zoom=""><div class="ls4-proc-card-label" data-edit="proc-label-5"><span data-lang="es">Revestimiento</span><span data-lang="it" hidden="">Rivestimento</span></div><button class="ls4-card-toggle" onclick="ls4ToggleCard(this,event)" title="Hide">✕</button><div class="ls4-card-move"><button onclick="ls4MoveCard(this,-1,event)" title="Move up">▲</button><button onclick="ls4MoveCard(this,1,event)" title="Move down">▼</button></div></div><div class="ls4-proc-card"><img src="../shared/Render_Automotive_Printing_Line.png" alt="Automotive Printing Line" data-zoom=""><div class="ls4-proc-card-label" data-edit="proc-label-6"><span data-lang="es">Impresión Automotriz</span><span data-lang="it" hidden="">Stampa Automobilistica</span></div><div class="ls4-table-hint" onclick="ls4OpenAutoModal(event)">⊞ view data</div><button class="ls4-card-toggle" onclick="ls4ToggleCard(this,event)" title="Hide">✕</button><div class="ls4-card-move"><button onclick="ls4MoveCard(this,-1,event)" title="Move up">▲</button><button onclick="ls4MoveCard(this,1,event)" title="Move down">▼</button></div></div>
-      
-    </div>
-  </div>
-</div>
-<div class="ls-tab-panel" data-panel="2"><div class="ls-carousel" data-counter="" data-zoom-group="" style="flex:1;min-height:0;width:100%;" data-autoplay="">  <div class="ls-carousel-track" style="transform: translateX(0px);">      <div class="ls-carousel-slide"><img src="../shared/Slide14.jpg" alt="Slide14" data-zoom=""><div class="ls-carousel-caption">Slide14</div></div></div><div class="ls-carousel-counter"></div></div></div></div><!-- ls-tab-panels -->
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  </div><!-- ls-tabs -->
-  </div><!-- slide-body -->
-  </div><!-- slide-layout -->
-
-  <style>
-    .ls4 { }
-    .ls4-grid { display:grid; grid-template-columns:1fr; gap:16px; height:auto; }
-    .ls4-table-wrap { display:flex; flex-direction:column; gap:6px; min-height:0; overflow:auto; }
-    .ls4-table { width:100%; border-collapse:collapse; font-size:clamp(10px,1.05vw,12px); }
-    .ls4-table thead tr { border-bottom:2px solid rgba(232,113,26,.4); }
-    .ls4-table th { padding:7px 6px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; font-size:10px; color:var(--text-muted); text-align:center; }
-    .ls4-check-col { text-align:left !important; width:38%; }
-    .ls4-prod-col  { width:12%; }
-    .ls4-highlight-col { color:#E8711A !important; background:rgba(232,113,26,.07); border-left:1px solid rgba(232,113,26,.2); border-right:1px solid rgba(232,113,26,.2); }
-    .ls4-table tbody tr td { padding:4px 6px; color:var(--text-muted); border-bottom:1px solid rgba(255,255,255,.04); text-align:center; }
-    .ls4-table tbody tr td:first-child { text-align:left; color:var(--text); }
-    .ls4-shaded td { background:rgba(255,255,255,.02); }
-    .ls4-table tbody tr td:nth-child(2) { background:rgba(99,179,237,.03); border-left:1px solid rgba(99,179,237,.1); border-right:1px solid rgba(99,179,237,.1); }
-    .ls4-table tbody tr td:nth-child(3) { background:rgba(232,113,26,.04); border-left:1px solid rgba(232,113,26,.15); border-right:1px solid rgba(232,113,26,.15); }
-    .ls4-table tbody tr td:nth-child(4) { background:rgba(239,68,68,.03); border-left:1px solid rgba(239,68,68,.1); border-right:1px solid rgba(239,68,68,.1); }
-    .ls4-table tbody tr td:nth-child(5) { background:rgba(239,68,68,.03); border-left:1px solid rgba(239,68,68,.1); border-right:1px solid rgba(239,68,68,.1); }
-    .ls4-table tbody tr td:nth-child(6) { background:rgba(239,68,68,.03); border-left:1px solid rgba(239,68,68,.1); border-right:1px solid rgba(239,68,68,.1); }
-    .ls4-dot { font-size:12px; } .ls4-dot-on { color:#E8711A; } .ls4-dot-red { color:#f87171; } .ls4-dot-blue { color:#63b3ed; } .ls4-dot-off { color:rgba(255,255,255,.25); }
-    .ls4-col-orange { color:#E8711A !important; background:rgba(232,113,26,.07); border-left:1px solid rgba(232,113,26,.2); border-right:1px solid rgba(232,113,26,.2); }
-    .ls4-col-red    { color:#f87171 !important; background:rgba(239,68,68,.07);  border-left:1px solid rgba(239,68,68,.2);  border-right:1px solid rgba(239,68,68,.2); }
-    .ls4-col-blue   { color:#63b3ed !important; background:rgba(99,179,237,.07); border-left:1px solid rgba(99,179,237,.2); border-right:1px solid rgba(99,179,237,.2); }
-    .ls4-proc-table tbody tr td:nth-child(2) { background:rgba(232,113,26,.03); border-left:1px solid rgba(232,113,26,.1); border-right:1px solid rgba(232,113,26,.1); }
-    .ls4-proc-table tbody tr td:nth-child(3) { background:rgba(239,68,68,.03);  border-left:1px solid rgba(239,68,68,.1);  border-right:1px solid rgba(239,68,68,.1); }
-    .ls4-proc-table tbody tr td:nth-child(4) { background:rgba(99,179,237,.03); border-left:1px solid rgba(99,179,237,.1); border-right:1px solid rgba(99,179,237,.1); }
-    .ls4-legend { display:flex; gap:20px; padding:5px 0; border-top:1px solid var(--border); flex-shrink:0; }
-    .ls4-leg-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-muted); }
-    .ls4-car-label { padding:8px 12px; font-size:11px; font-weight:600; flex-shrink:0; color:var(--text-muted); text-align:center; letter-spacing:.04em; background:var(--bg-card); }
-    .ls4-proc-grid { display:grid; grid-template-columns:1fr; gap:16px; height:auto; overflow-y:auto; }
-    .ls4-proc-table-wrap { display:flex; flex-direction:column; gap:6px; min-height:0; overflow:hidden; padding-bottom:16px; }
-    .ls4-proc-table { font-size:clamp(8.5px,0.82vw,10px); }
-    .ls4-proc-table th { padding:4px 5px; }
-    .ls4-proc-table tbody tr td { padding:2px 5px; line-height:1.3; }
-    .ls4-proc-cards { display:flex; flex-direction:column; gap:6px; min-height:0; overflow-y:auto; padding-bottom:72px; }
-    .ls4-proc-card { flex:1; min-height:0; border-radius:10px; overflow:hidden; border:1px solid var(--border); background:var(--bg-card); position:relative; cursor:zoom-in; display:flex; align-items:center; justify-content:center; transition:border-color .2s; }
-    .ls4-proc-card:hover { border-color:rgba(232,113,26,.4); }
-    .ls4-proc-card img { width:100%; height:100%; object-fit:contain; display:block; transition:transform .3s; }
-    .ls4-proc-card:hover img { transform:scale(1.04); }
-    .ls4-proc-card-label { position:absolute; bottom:4px; right:8px; font-size:10px; font-weight:600; letter-spacing:.05em; color:rgba(255,255,255,.3); pointer-events:none; text-transform:uppercase; }
-    .ls4-col-label { display:block; }
-    .ls4-col-toggle { opacity:0; width:14px; height:14px; border-radius:3px; padding:0; background:rgba(0,0,0,.5); border:1px solid rgba(255,255,255,.2); color:rgba(255,255,255,.5); font-size:9px; font-weight:900; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:all .2s; font-family:inherit; line-height:1; margin-top:2px; }
-    th:hover .ls4-col-toggle { opacity:1; }
-    .ls4-col-toggle:hover { background:rgba(239,68,68,.4); color:#fff; border-color:rgba(239,68,68,.4); }
-    .ls4-restore-chip { padding:3px 10px; border-radius:20px; cursor:pointer; background:rgba(34,197,94,.12); border:1px solid rgba(34,197,94,.3); color:#4ade80; font-size:10px; font-weight:700; letter-spacing:.04em; font-family:inherit; transition:all .2s; }
-    .ls4-restore-chip:hover { background:rgba(34,197,94,.25); color:#fff; }
-    .ls4-add-row-btn { align-self:flex-start; padding:3px 10px; border-radius:20px; cursor:pointer; background:transparent; border:1px dashed rgba(255,255,255,.15); color:rgba(255,255,255,.25); font-size:10px; font-weight:600; letter-spacing:.04em; font-family:inherit; margin-top:2px; transition:all .2s; }
-    .ls4-add-row-btn:hover { border-color:rgba(232,113,26,.4); color:#E8711A; }
-    .ls4-row-drag { opacity:0; cursor:grab; font-size:11px; color:rgba(255,255,255,.3); margin-right:4px; vertical-align:middle; user-select:none; transition:opacity .2s; }
-    tr:hover .ls4-row-drag { opacity:1; }
-    .ls4-row-dragging { opacity:.4; background:rgba(232,113,26,.08) !important; }
-    .ls4-row-dragover td { border-top:2px solid #E8711A !important; }
-    tr.ls4-row-hidden { display:none; }
-    .ls4-row-hide-btn { opacity:0; width:13px; height:13px; border-radius:3px; padding:0; background:rgba(0,0,0,.5); border:1px solid rgba(255,255,255,.18); color:rgba(255,255,255,.45); font-size:8px; font-weight:900; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:all .2s; font-family:inherit; line-height:1; margin-right:5px; flex-shrink:0; vertical-align:middle; }
-    tr:hover .ls4-row-hide-btn { opacity:1; }
-    .ls4-row-hide-btn:hover { background:rgba(239,68,68,.45); color:#fff; border-color:rgba(239,68,68,.4); }
-    td[contenteditable="true"] { outline:1px solid rgba(232,113,26,.5); border-radius:3px; background:rgba(232,113,26,.05); padding-left:4px; }
-    .ls4-table tbody td:not(:first-child) { cursor:pointer; }
-    .ls4-table tbody td:not(:first-child):hover { background:rgba(255,255,255,.05) !important; }
-    .ls4-card-move { position:absolute; top:5px; left:5px; z-index:3; display:flex; flex-direction:column; gap:2px; opacity:0; transition:opacity .2s; }
-    .ls4-proc-card:hover .ls4-card-move { opacity:1; }
-    .ls4-card-move button { width:16px; height:14px; border-radius:3px; padding:0; background:rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.18); color:rgba(255,255,255,.45); font-size:8px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; font-family:inherit; line-height:1; }
-    .ls4-card-move button:hover { background:rgba(232,113,26,.5); color:#fff; border-color:rgba(232,113,26,.4); }
-    .ls4-proc-card.ls4-collapsed .ls4-card-move { display:none; }
-    .ls4-table-hint { position:absolute; top:6px; left:50%; transform:translateX(-50%); background:rgba(99,179,237,.15); border:1px solid rgba(99,179,237,.3); color:#63b3ed; font-size:9px; font-weight:700; letter-spacing:.06em; padding:3px 8px; border-radius:20px; pointer-events:auto; cursor:pointer; text-transform:uppercase; white-space:nowrap; }
-    .ls4-table-hint:hover { background:rgba(99,179,237,.3); color:#fff; }
-    .ls4-proc-card.ls4-collapsed .ls4-table-hint { display:none; }
-    #ls4-auto-modal { display:none; position:fixed; inset:0; z-index:9995; align-items:center; justify-content:center; background:rgba(0,0,0,.6); backdrop-filter:blur(8px); cursor:pointer; }
-    #ls4-auto-modal.on { display:flex; }
-    .ls4-am-card { background:#111; border:1px solid rgba(255,255,255,.12); border-radius:20px; padding:28px 32px; cursor:default; box-shadow:0 24px 80px rgba(0,0,0,.7); max-width:480px; width:92vw; position:relative; }
-    .ls4-am-close { position:absolute; top:12px; right:14px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12); color:rgba(255,255,255,.5); width:28px; height:28px; border-radius:50%; cursor:pointer; font-size:11px; display:flex; align-items:center; justify-content:center; transition:all .2s; }
-    .ls4-am-close:hover { background:rgba(239,68,68,.3); color:#fff; }
-    .ls4-am-title { font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-muted); margin-bottom:14px; opacity:.6; }
-    .ls4-card-toggle { position:absolute; top:5px; right:5px; z-index:3; width:16px; height:16px; border-radius:50%; padding:0; background:rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.18); color:rgba(255,255,255,.4); font-size:8px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; font-family:inherit; line-height:1; opacity:0; }
-    .ls4-proc-card:hover .ls4-card-toggle { opacity:1; }
-    .ls4-card-toggle:hover { background:rgba(239,68,68,.5); color:#fff; border-color:rgba(239,68,68,.4); }
-    .ls4-proc-card.ls4-collapsed { flex:none; height:26px; cursor:default; }
-    .ls4-proc-card.ls4-collapsed img { display:none; }
-    .ls4-proc-card.ls4-collapsed .ls4-proc-card-label { bottom:auto; top:50%; right:auto; left:10px; transform:translateY(-50%); color:var(--text-muted); opacity:.5; }
-    .ls4-proc-card.ls4-collapsed .ls4-card-toggle { opacity:1; top:50%; transform:translateY(-50%); background:rgba(34,197,94,.15); color:#4ade80; border-color:rgba(34,197,94,.3); font-size:10px; }
-    .ls4-proc-card.ls4-collapsed .ls4-card-toggle:hover { background:rgba(34,197,94,.35); color:#fff; }
-    .ls4-abbr-note { display:flex; gap:20px; padding:4px 0; border-top:1px solid var(--border); flex-shrink:0; }
-    .ls4-abbr-note span { font-size:10px; color:var(--text-muted); opacity:.6; }
-    .ls4-abbr-note strong { color:var(--text); font-weight:700; }
-    .ls4-badge { padding:3px 8px; border-radius:20px; font-size:10px; font-weight:700; letter-spacing:.04em; }
-    .ls4-badge-ls { background:rgba(232,113,26,.15); color:#E8711A; border:1px solid rgba(232,113,26,.3); }
-    .ls4-badge-op { background:rgba(99,179,237,.12); color:#63b3ed; border:1px solid rgba(99,179,237,.25); }
-    /* ── Mobile base ── */
-    .ls4 .slide-body { width:100%; align-items:center; }
-    .ls4 { padding: 52px 16px 80px !important; overflow-y:auto; }
-    /* Tab 1 — Capability Matrix */
-    .ls4-grid { grid-template-columns:1fr; height:auto; display:flex; flex-direction:column; }
-    /* Carousel below the table */
-    .ls4-grid .ls-carousel { order:1; min-height:260px !important; height:260px !important; flex:none; }
-    .ls4-table-wrap { overflow-x:auto; max-height:45vh; order:0; }
-    /* Vertical column headers so table fits on mobile */
-    .ls4-table th.ls4-prod-col .ls-col-label { writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap; padding:4px 2px; display:inline-block; }
-    .ls4-table { font-size:11px; }
-    .ls4-check-col { width:55%; }
-    .ls4-prod-col { width:auto; }
-    .ls4-table tbody tr td:first-child { position:sticky; left:0; z-index:1; background:var(--bg); }
-    .ls4-shaded td:first-child { background:#0d0d0d; }
-    /* Tab 2 — Where in Your Process */
-    .ls4-proc-grid { display:grid !important; grid-template-columns:1fr !important; height:auto !important; }
-    .ls4-proc-table { font-size:10px; }
-    .ls4-proc-table-wrap { overflow-x:auto; max-height:none; }
-    /* Vertical headers on proc table too */
-    .ls4-proc-table th.ls4-prod-col .ls-col-label { writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap; padding:4px 2px; display:inline-block; }
-    .ls4-proc-cards { flex-direction:column; overflow-y:visible; padding-bottom:16px; }
-    .ls4-proc-card { flex:none; height:220px; }
-    /* ── Desktop overrides ── */
-    @media(min-width:769px) {
-      .ls4 { padding: 52px 80px 0 !important; overflow-y:unset; }
-      .ls4-grid { grid-template-columns:1.4fr 1fr; height:100%; display:grid; flex-direction:unset; }
-      .ls4-grid .ls-carousel { order:0; min-height:0 !important; height:auto !important; flex:1; }
-      .ls4-table-wrap { overflow-x:unset; max-height:none; order:0; }
-      .ls4-table { font-size:inherit; }
-      .ls4-check-col { width:38%; }
-      .ls4-prod-col { width:12%; }
-      .ls4-table th.ls4-prod-col .ls-col-label { writing-mode:unset; transform:none; padding:0; }
-      .ls4-proc-table th.ls4-prod-col .ls-col-label { writing-mode:unset; transform:none; padding:0; }
-      .ls4-table tbody tr td:first-child { position:static; z-index:auto; background:transparent; }
-      .ls4-shaded td:first-child { background:transparent; }
-      .ls4-proc-grid { display:grid; grid-template-columns:1.4fr 1fr; height:100%; overflow-y:unset; }
-      .ls4-proc-table { font-size:inherit; }
-      .ls4-proc-table-wrap { overflow-x:unset; overflow-y:auto; max-height:none; }
-      .ls4-proc-table { min-width:unset; }
-      .ls4-proc-cards { flex-direction:column; overflow-y:auto; padding-bottom:72px; }
-      .ls4-proc-card { flex:1; height:auto; }
-    }
-  </style>
-
-  <script>
-  function ls4InitCards(container) { }
-  setTimeout(function() { document.querySelectorAll('.ls4-proc-cards').forEach(ls4InitCards); }, 0);
-  window.ls4OpenAutoModal = function(e) { e.stopPropagation(); var modal = document.getElementById('ls4-auto-modal'); if (modal && modal.parentNode !== document.body) document.body.appendChild(modal); if (modal) modal.classList.add('on'); };
-  window.ls4CloseAutoModal = function(e, force) { if (force || e.target === document.getElementById('ls4-auto-modal')) { document.getElementById('ls4-auto-modal').classList.remove('on'); } };
-  window.ls4MoveCard = function(btn, dir, e) { e.stopPropagation(); var card = btn.closest('.ls4-proc-card'); var list = card.parentElement; var cards = Array.from(list.children); var idx = cards.indexOf(card); var target = cards[idx + dir]; if (!target) return; if (dir === -1) list.insertBefore(card, target); else list.insertBefore(target, card); };
-  window.ls4ToggleCard = function(btn, e) { e.stopPropagation(); var card = btn.closest('.ls4-proc-card'); var collapsed = card.classList.toggle('ls4-collapsed'); btn.textContent = collapsed ? '+' : '✕'; btn.title = collapsed ? 'Show' : 'Hide'; };
-  </script>
-
-  <script>
-  (function () { var s = document.currentScript;
-    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
-  </script>
-</div>
-</div>
-<div class="fp-slide" data-slide-index="4" style="display:none;">
-<div class="slide content why3" data-slide="why-us">
-  <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
-
-  <div class="slide-layout">
-  <header class="slide-head">
-    <div class="section-label" data-edit="section-label"><span data-lang="es">Por-qué-LINESCANNER</span><span data-lang="it" hidden="">Perché-LINESCANNER</span></div>
-    <h1 class="slide-title" data-edit="headline" style="margin-bottom:18px;"><span data-lang="es">Por qué automatizar&nbsp; Inspección de Calidad<br>para <span class="blue">Procesamiento de Vidrio Plano</span></span><span data-lang="it" hidden="">Perché automatizzare&nbsp; l'Ispezione della Qualità<br>per <span class="blue">l'Elaborazione del Vetro Piano</span></span></h1>
-  </header>
-  <div class="slide-body">
-  <div class="why3-grid">
-
-    <div class="why3-col prob-col anim-in" style="" draggable="false">
-      <div class="why3-col-header">
-        <span class="why3-col-icon">⚠️</span>
-        <span class="why3-col-label" data-edit="col-header-prob"><span data-lang="es">Sin automatización de inspección</span><span data-lang="it" hidden="">Senza Automazione dell'Ispezione</span></span>
-      </div>
-      <ul class="why3-list" id="why3-prob-list" data-ls-list="" data-lang="es"><div class="why3-tier-label" data-edit="tier-label-1">Limitaciones Humanas</div>
-<li class="prob-item">Fatiga del operador — las tasas de detección disminuyen significativamente durante turnos prolongados</li>
-<li class="prob-item prob-clickable" title="Click to view chart">A medida que aumenta la velocidad de línea, la efectividad del operador disminuye — mayor rendimiento significa más defectos sin detectar <span class="prob-img-hint">📈</span></li>
-<li class="prob-item">La inspección 100% manual es imposible a velocidad de producción</li>
-<li class="prob-item" draggable="false">La distorsión y la anisotropía son <strong>invisibles al ojo desnudo</strong> — sin importar la experiencia del operador</li>
-<div class="why3-tier-label" data-edit="tier-label-2" style="margin-top:8px;">Impacto Empresarial</div>
-<li class="prob-item">Calidad inconsistente y quejas frecuentes de clientes</li>
-<li class="prob-item prob-clickable" title="Click to view chart">Rechazos en el sitio de construcción — vidrio ya entregado e instalado significa transporte, retrabajo y retrasos en el proyecto <span class="prob-img-hint">💰</span></li><li class="prob-item prob-clickable ls-list-dragging" title="Click to view chart" draggable="true">Automoción: un defecto desencadena la devolución de todo el lote — costos de envío y material en toda la carga <span class="prob-img-hint">💰</span></li>
-<li class="prob-item" draggable="false">Mayor riesgo de responsabilidad y daño reputacional</li>
-
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      </ul><ul class="why3-list" id="why3-prob-list" data-ls-list="" data-lang="it" hidden=""><div class="why3-tier-label" data-edit="tier-label-1">Limitazioni Umane</div>
-<li class="prob-item">Affaticamento dell'operatore — i tassi di rilevamento diminuiscono significativamente durante i turni lunghi</li>
-<li class="prob-item prob-clickable" title="Click to view chart">Con l'aumento della velocità della linea, l'efficacia dell'operatore diminuisce — una velocità di produzione più elevata significa che più difetti passano inosservati <span class="prob-img-hint">📈</span></li>
-<li class="prob-item">L'ispezione manuale al 100% è impossibile alla velocità di produzione</li>
-<li class="prob-item" draggable="false">Distorsione e anisotropia sono <strong>invisibili all'occhio nudo</strong> — indipendentemente dalle competenze dell'operatore</li>
-<div class="why3-tier-label" data-edit="tier-label-2" style="margin-top:8px;">Impatto Commerciale</div>
-<li class="prob-item">Qualità incoerente e frequenti reclami dei clienti</li>
-<li class="prob-item prob-clickable" title="Click to view chart">Rigetti nei cantieri — il vetro già consegnato e installato significa trasporto, rielaborazione e ritardi nei progetti <span class="prob-img-hint">💰</span></li><li class="prob-item prob-clickable ls-list-dragging" title="Click to view chart" draggable="true">Automotive: un difetto provoca un reso dell'intero lotto — costi di spedizione e materiali sull'intero carico <span class="prob-img-hint">💰</span></li>
-<li class="prob-item" draggable="false">Aumentati rischi di responsabilità e danni reputazionali</li>
-
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      </ul>
-      
-      
-    </div>
-
-    <div class="why3-col ben-col anim-in" style="" draggable="false">
-      <div class="why3-col-header">
-        <span class="why3-col-icon">✓</span>
-        <span class="why3-col-label" data-edit="col-header-ben"><span data-lang="es">LineScanner y Osprey</span><span data-lang="it" hidden="">LineScanner e Osprey</span></span>
-      </div>
-      <ul class="why3-list" id="why3-ben-list" data-ls-list="" data-lang="es"><li class="ben-item">Inspección del 100% de cada vidrio, cada turno — sin fatiga, sin puntos ciegos</li>
-<li class="ben-item">Control de proceso en tiempo real y retroalimentación de calidad</li>
-<li class="ben-item">Compruebe la calidad a los clientes — una defensa documentada contra reclamaciones</li>
-<li class="ben-item">Base de datos y archivo para responsabilidad de turno y análisis de CpK</li><li class="ben-item ls-list-dragging" draggable="true">Obligatorio según normas industriales</li>
-<li class="ben-item" draggable="false">Detecta distorsión, anisotropía y defectos de superficie <strong>invisibles al ojo humano</strong></li><li class="ben-item">Procedimientos de aceptación para maquinaria nueva (p. ej. hornos)</li>
-<li class="ben-item">Aumentar el rendimiento y reducir costosos rechazos aguas abajo</li>
-
-
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      </ul><ul class="why3-list" id="why3-ben-list" data-ls-list="" data-lang="it" hidden=""><li class="ben-item">Ispezione al 100% di ogni vetro, ogni turno — nessuna stanchezza, nessun punto cieco</li>
-<li class="ben-item">Controllo del processo in tempo reale e feedback sulla qualità</li>
-<li class="ben-item">Provare la qualità ai clienti — una difesa documentata contro i reclami</li>
-<li class="ben-item">Database e archivio per la responsabilità dei turni e l'analisi CpK</li><li class="ben-item ls-list-dragging" draggable="true">Obbligatorio secondo gli standard del settore</li>
-<li class="ben-item" draggable="false">Rileva distorsione, anisotropia e difetti di superficie <strong>invisibili all'occhio umano</strong></li><li class="ben-item">Procedure di accettazione per i nuovi macchinari (ad es. forni)</li>
-<li class="ben-item">Aumenta la velocità effettiva e riduci i costosi rifiuti a valle</li>
-
-
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      </ul>
-      
-      
-    </div>
-
-  </div><!-- why3-grid -->
-  </div><!-- slide-body -->
-  </div><!-- slide-layout -->
-
-  <style>
-    .why3 {  }
-
-    .why3-grid {
-      display:grid; grid-template-columns:1fr 1fr; gap:20px;
-      width:100%; max-width:920px; flex:1; min-height:0;
-      padding-bottom:0;
-    }
-
-    .why3-col {
-      display:flex; flex-direction:column;
-      border-radius:16px; overflow:hidden;
-      border:1px solid var(--border);
-      background:var(--bg-card);
-    }
-
-    /* Column headers */
-    .why3-col-header {
-      display:flex; align-items:center; gap:10px;
-      padding:14px 20px;
-      font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
-      flex-shrink:0;
-    }
-    .prob-col .why3-col-header {
-      background:rgba(239,68,68,.12);
-      border-bottom:1px solid rgba(239,68,68,.2);
-      color:#f87171;
-    }
-    .ben-col .why3-col-header {
-      background:rgba(34,197,94,.10);
-      border-bottom:1px solid rgba(34,197,94,.2);
-      color:#4ade80;
-    }
-    .why3-col-icon { font-size:16px; }
-    .why3-col-label { flex:1; }
-
-    /* Tier labels */
-    .why3-tier-label {
-      font-size:clamp(12px,1.2vw,14px); font-weight:700; letter-spacing:.09em;
-      text-transform:uppercase; color:var(--text-muted);
-      opacity:.5; padding:8px 0 4px 22px;
-    }
-
-    /* Lists */
-    .why3-list {
-      list-style:none; margin:0; padding:10px 20px 14px;
-      display:flex; flex-direction:column; gap:0;
-      overflow-y:auto; flex:1;
-    }
-
-    .prob-item, .ben-item {
-      padding:8px 0 8px 22px;
-      position:relative;
-      font-size:clamp(12px,1.2vw,14px); line-height:1.45;
-      border-bottom:1px solid rgba(255,255,255,.04);
-      color:var(--text-muted);
-    }
-    .prob-item:last-child, .ben-item:last-child { border-bottom:none; }
-    .prob-item strong, .ben-item strong { color:var(--text); font-weight:700; }
-
-    .prob-clickable {
-      cursor:pointer;
-      transition:color .2s, background .2s;
-    }
-    .prob-clickable:hover {
-      color:var(--text);
-      background:rgba(239,68,68,.06);
-      border-radius:6px;
-    }
-    .prob-img-hint {
-      font-size:11px; margin-left:6px; opacity:.6;
-      vertical-align:middle;
-    }
-    .prob-clickable:hover .prob-img-hint { opacity:1; }
-
-    .prob-item::before {
-      content:'✕';
-      position:absolute; left:0; top:8px;
-      font-size:11px; font-weight:800;
-      color:#f87171;
-    }
-    .ben-item::before {
-      content:'›';
-      position:absolute; left:2px; top:8px;
-      font-size:14px; font-weight:800;
-      color:#4ade80;
-    }
-
-    /* Add button color overrides (item-controls/states are in list.js) */
-    .why3-add-prob[data-ls-add]:hover { border-color:rgba(239,68,68,.4); color:#f87171; }
-    .why3-add-ben[data-ls-add]:hover  { border-color:rgba(34,197,94,.4);  color:#4ade80; }
-
-    /* ── Mobile base ── */
-    .why3-grid { grid-template-columns:1fr; gap:12px; }
-
-    .why3 { padding: 52px 16px 80px !important; }
-
-    /* ── Desktop overrides ── */
-    @media(min-width:769px) {
-      .why3-grid { grid-template-columns:1fr 1fr; gap:20px; }
-      .why3-col  { max-height:none; }
-      .why3 { padding: 52px 80px 0 !important; }
-    }
-  </style>
-
-  <script>
-  function why3InitList(ul) { return; // migrated to list.js component
-    if (!ul || ul._init) return;
-    ul._init = true;
-
-    var col = ul.closest('.why3-col');
-    var restoreArea = col ? col.querySelector('.why3-restore') : null;
-    var addBtn = col ? col.querySelector('.why3-add-btn') : null;
-    var isProb = ul.id === 'why3-prob-list';
-    var itemClass = isProb ? 'prob-item' : 'ben-item';
-    var dragSrc = null;
-  }
-
-  setTimeout(function() {
-    why3InitList(document.getElementById('why3-prob-list'));
-    why3InitList(document.getElementById('why3-ben-list'));
-  }, 0);
-  </script>
-
-  <script>
-  (function () { var s = document.currentScript;
-    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
-  </script>
-</div>
-</div>
-<div class="fp-slide" data-slide-index="5" style="display:none;">
-<div class="slide content ls20-multi-buttons" data-slide="multi-buttons-new" data-slide-mode="sequence">
-  <div class="slide-logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>
-
-  <div class="slide-layout">
-  <header class="slide-head">
-    <div class="section-label" data-edit="section-label" data-lang-key="ls20-multi-buttons.section-label"><span data-lang="es">Calidad de Superficie</span><span data-lang="it" hidden="">Qualità della Superficie</span></div>
-    <h1 class="slide-title" data-edit="headline" data-lang-key="ls20-multi-buttons.headline"><span data-lang="es">Detección de defectos con <span class="blue">Inteligencia Artificial</span></span><span data-lang="it" hidden="">Rilevamento dei difetti con <span class="blue">Intelligenza Artificiale</span></span></h1>
-    <p class="slide-subtitle" data-edit="subtitle" data-lang-key="ls20-multi-buttons.subtitle"><span data-lang="es">Red neuronal entrenada para clasificar automáticamente cada tipo de defecto.</span><span data-lang="it" hidden="">Rete neurale addestrata per classificare automaticamente ogni tipo di difetto.</span></p>
-  </header>
-
-  <div class="slide-body">
-
-    <!--
-      Config blob — stores button definitions as JSON.
-      contenteditable so it's picked up by the standard focusout→save pipeline.
-      Rendered visually invisible; the JS reads/writes textContent.
-    -->
-    <div id="ls20-config" data-edit="ls20-config" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;left:-9999px;top:0;"><span data-lang="es">[{"id":"item-0","label":"Botón 1","spriteRow":0,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect-of-a-Coating-image-LineScanner-Raw-Image.png\" alt=\"Defect-of-a-Coating-image-LineScanner-Raw-Image\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect-of-a-Coating-image-LineScanner-Raw-Image&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"},{"id":"item-1","label":"Botón 2","spriteRow":1,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect-Piece-Edge-Chip-2.PNG\" alt=\"Defect-Piece-Edge-Chip-2\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect-Piece-Edge-Chip-2&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"},{"id":"item-2","label":"Botón 3","spriteRow":2,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect of a Coating Defect LineScanner Raw Image.png\" alt=\"Defect of a Coating Defect LineScanner Raw Image\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect of a Coating Defect LineScanner Raw Image&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"}]</span><span data-lang="it" hidden="">[{"id":"item-0","label":"Scratches","spriteRow":0,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect-of-a-Coating-image-LineScanner-Raw-Image.png\" alt=\"Defect-of-a-Coating-image-LineScanner-Raw-Image\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect-of-a-Coating-image-LineScanner-Raw-Image&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"},{"id":"item-1","label":"Button 2","spriteRow":1,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect-Piece-Edge-Chip-2.PNG\" alt=\"Defect-Piece-Edge-Chip-2\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect-Piece-Edge-Chip-2&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"},{"id":"item-2","label":"Button 3","spriteRow":2,"icon":null,"carouselHtml":"&lt;div class=\"ls-carousel-track\" style=\"\"&gt;&lt;div class=\"ls-carousel-slide\"&gt;&lt;img src=\"/slides/uploads/Defect of a Coating Defect LineScanner Raw Image.png\" alt=\"Defect of a Coating Defect LineScanner Raw Image\" data-zoom=\"\"&gt;&lt;div class=\"ls-carousel-caption\"&gt;Defect of a Coating Defect LineScanner Raw Image&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"}]</span></div>
-
-    <!-- Button selector strip — populated by JS -->
-    <div class="ls20-mb-selector anim-in" id="ls20-selector"></div>
-
-    <!-- Default carousel (shown when no button selected) -->
-    <div class="ls-carousel ls20-car-default" id="ls20CarDefault" data-counter="" data-edit="ls20-default-carousel" data-track="ls20-multi-buttons:carousel:default" data-autoplay="5000" style="flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">
-      <div class="ls-carousel-track" style="transform: translateX(-322px);">
-        
-      <div class="ls-carousel-slide"><img src="../shared/Defect_of_micro_edge_chips_on_a_cutout_detection_marks_2.png" alt="Defect of micro edge chips on a cutout detection marks 2" data-zoom=""><div class="ls-carousel-caption">Defect of micro edge chips on a cutout detection marks 2</div></div><div class="ls-carousel-slide"><img src="../shared/Defect_on_an_IGU_Insulated_Glass_Secondary_Seal_inside_the_unit_not_visible_with_a_camera.jpeg" alt="Defect on an IGU Insulated Glass Secondary Seal inside the unit not visible with a camera" data-zoom=""><div class="ls-carousel-caption">Defect on an IGU Insulated Glass Secondary Seal inside the unit not visible with a camera</div></div></div>
-    <div class="ls-carousel-counter">2 / 2</div></div>
-
-    <!-- Defect carousels — static slots matched to config items by data-defect-id -->
-    <div class="ls20-carousels" style="display:contents">
-      <div class="ls-carousel ls20-car" data-defect-id="item-0" data-counter="" data-edit="ls20-car-0" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track" style="transform: translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/Defect-of-a-Coating-image-LineScanner-Raw-Image.png" alt="Defect-of-a-Coating-image-LineScanner-Raw-Image" data-zoom=""><div class="ls-carousel-caption">Defect-of-a-Coating-image-LineScanner-Raw-Image</div></div></div><div class="ls-carousel-counter"></div></div>
-      <div class="ls-carousel ls20-car" data-defect-id="item-1" data-counter="" data-edit="ls20-car-1" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track" style="transform: translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-2.PNG" alt="Defect-Piece-Edge-Chip-2" data-zoom=""><div class="ls-carousel-caption">Defect-Piece-Edge-Chip-2</div></div></div><div class="ls-carousel-counter"></div></div>
-      <div class="ls-carousel ls20-car" data-defect-id="item-2" data-counter="" data-edit="ls20-car-2" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track" style="transform: translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/Defect_of_a_Coating_Defect_LineScanner_Raw_Image.png" alt="Defect of a Coating Defect LineScanner Raw Image" data-zoom=""><div class="ls-carousel-caption">Defect of a Coating Defect LineScanner Raw Image</div></div></div><div class="ls-carousel-counter"></div></div>
-      <div class="ls-carousel ls20-car" data-defect-id="item-3" data-counter="" data-edit="ls20-car-3" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"><div class="ls-carousel-slide no-img"><img src="" alt=""></div></div></div>
-      <div class="ls-carousel ls20-car" data-defect-id="item-4" data-counter="" data-edit="ls20-car-4" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track" style=""><div class="ls-carousel-slide"><img src="../shared/Defect_Arcing_on_LineScanner_Raw_Image.png" alt="Defect Arcing on LineScanner Raw Image" data-zoom=""><div class="ls-carousel-caption">Defect Arcing on LineScanner Raw Image</div></div></div></div>
-      <div class="ls-carousel ls20-car" data-defect-id="item-5" data-counter="" data-edit="ls20-car-5" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"><div class="ls-carousel-slide no-img"><img src="" alt=""></div></div></div>
-      <div class="ls-carousel ls20-car" data-defect-id="item-6" data-counter="" data-edit="ls20-car-6" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"><div class="ls-carousel-slide no-img"><img src="" alt=""></div></div></div>
-      <div class="ls-carousel ls20-car" data-defect-id="item-7" data-counter="" data-edit="ls20-car-7" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"><div class="ls-carousel-slide no-img"><img src="" alt=""></div></div></div>
-      <div class="ls-carousel ls20-car" data-defect-id="item-8" data-counter="" data-edit="ls20-car-8" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"><div class="ls-carousel-slide no-img"><img src="" alt=""></div></div></div>
-      <div class="ls-carousel ls20-car" data-defect-id="item-9" data-counter="" data-edit="ls20-car-9" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"><div class="ls-carousel-slide no-img"><img src="" alt=""></div></div></div>
-      <div class="ls-carousel ls20-car" data-defect-id="item-10" data-counter="" data-edit="ls20-car-10" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"><div class="ls-carousel-slide no-img"><img src="" alt=""></div></div></div>
-      <div class="ls-carousel ls20-car" data-defect-id="item-11" data-counter="" data-edit="ls20-car-11" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"><div class="ls-carousel-slide no-img"><img src="" alt=""></div></div></div>
-    </div>
-
-  </div><!-- slide-body -->
-  </div><!-- slide-layout -->
-
-  <!-- ── Scoped Styles ── -->
-  <style>
-    .ls20-multi-buttons { }
-
-    /* ── Selector strip ── */
-    .ls20-mb-selector {
-      display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
-      width: 100%; max-width: 960px; flex-shrink: 0;
-    }
-
-    /* ── Button ── */
-    .ls20-multi-buttons .ls20-btn {
-      position: relative;
-      display: flex; flex-direction: column; align-items: center; gap: 5px;
-      padding: 8px 10px; border-radius: 12px; cursor: pointer;
-      background: var(--bg-card); border: 1px solid var(--border);
-      transition: all .2s; min-width: 76px; font-family: inherit;
-    }
-    .ls20-multi-buttons .ls20-btn:hover { border-color: rgba(var(--accent-rgb),.4); background: var(--bg-card-hover); }
-    .ls20-multi-buttons .ls20-btn.active {
-      border-color: var(--accent); background: rgba(var(--accent-rgb),.12);
-      box-shadow: 0 0 0 1px rgba(var(--accent-rgb),.25);
-    }
-    .ls20-multi-buttons .ls20-btn .ls20-label {
-      font-size: 10px; font-weight: 600; letter-spacing: .03em;
-      color: var(--text-muted); white-space: nowrap; transition: color .2s;
-    }
-    .ls20-multi-buttons .ls20-btn.active .ls20-label { color: var(--accent); }
-
-    /* ── Icon variants ── */
-    .ls20-multi-buttons .ls20-icon-wrap { position: relative; }
-    .ls20-multi-buttons .ls20-icon-sprite {
-      width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
-      background-image: url('../shared/defect-icons-sprite.png');
-      background-size: 200% 1000%; background-repeat: no-repeat;
-      transition: background-position .15s;
-    }
-    .ls20-multi-buttons .ls20-icon-img {
-      width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
-      object-fit: cover;
-    }
-    .ls20-multi-buttons .ls20-icon-placeholder {
-      width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px; font-weight: 900; color: rgba(255,255,255,.35);
-      background: rgba(255,255,255,.06); border: 1.5px dashed rgba(255,255,255,.15);
-    }
-
-    /* ── Edit-mode icon overlay ── */
-    .ls20-multi-buttons .ls20-icon-edit {
-      position: absolute; inset: 0; border-radius: 8px;
-      background: rgba(0,0,0,.55); display: flex; align-items: center;
-      justify-content: center; opacity: 0; transition: opacity .15s;
-      cursor: pointer; font-size: 14px; color: #fff; pointer-events: auto;
-    }
-    .ls20-multi-buttons .ls20-icon-wrap:hover .ls20-icon-edit { opacity: 1; }
-
-    /* ── Delete button (edit mode) ── */
-    .ls20-multi-buttons .ls20-del {
-      position: absolute; top: -6px; right: -6px;
-      width: 18px; height: 18px; border-radius: 50%;
-      background: rgba(239,68,68,.85); border: none; cursor: pointer;
-      font-size: 12px; line-height: 18px; text-align: center;
-      color: #fff; font-weight: 700; padding: 0;
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity .15s;
-    }
-    .ls20-multi-buttons .ls20-btn:hover .ls20-del { opacity: 1; }
-
-    /* ── Add button (edit mode) ── */
-    .ls20-multi-buttons .ls20-add-btn {
-      border-style: dashed !important;
-      border-color: rgba(255,255,255,.2) !important;
-      opacity: .65;
-    }
-    .ls20-multi-buttons .ls20-add-btn:hover { opacity: 1 !important; border-color: rgba(var(--accent-rgb),.5) !important; }
-    .ls20-multi-buttons .ls20-add-icon {
-      width: 40px; height: 40px; border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px; color: rgba(255,255,255,.4); background: rgba(255,255,255,.04);
-    }
-
-    /* ── Label editable ── */
-    .ls20-multi-buttons .ls20-label[contenteditable] { outline: none; cursor: text; min-width: 20px; }
-    .ls20-multi-buttons .ls20-label[contenteditable]:focus { color: var(--text); }
-
-    /* ── Mobile ── */
-    .ls20-multi-buttons .ls20-btn { min-width: 60px; padding: 6px; }
-    .ls20-multi-buttons .ls20-btn .ls20-label { font-size: 11px; }
-    .ls20-multi-buttons { padding: 52px 16px 80px !important; }
-    @media(max-width:768px) { .ls20-multi-buttons .ls-carousel { min-height: 260px; } }
-
-    /* ── Desktop ── */
-    @media(min-width:769px) {
-      .ls20-multi-buttons .ls20-btn { min-width: 76px; padding: 8px 10px; }
-      .ls20-multi-buttons .ls20-btn .ls20-label { font-size: 10px; }
-      .ls20-multi-buttons { padding: 52px 80px 0 !important; }
-    }
-  </style>
-
-  <!-- ── Scoped Script ── -->
-  <script>
-  (function () {
-    var slide   = document.currentScript.closest('[data-slide]');
-    var slideId = slide ? slide.dataset.slide : 'ls20-multi-buttons';
-
-    var EDIT_MODE   = !window.PB_READONLY;
-    var TOTAL_SLOTS = 12;
-
-    var EMPTY_TRACK = '<div class="ls-carousel-track"><div class="ls-carousel-slide"><img src="" alt=""></div></div>';
-
-    var DEFAULT_CONFIG = [
-      { id: 'item-0', label: 'Button 1', spriteRow: 0, icon: null, carouselHtml: EMPTY_TRACK },
-      { id: 'item-1', label: 'Button 2', spriteRow: 1, icon: null, carouselHtml: EMPTY_TRACK },
-      { id: 'item-2', label: 'Button 3', spriteRow: 2, icon: null, carouselHtml: EMPTY_TRACK }
-    ];
-
-    var config     = [];
-    var currentIdx = -1;
-
-    var root      = slide || document;
-    var selector  = root.querySelector('#ls20-selector');
-    var carDefault = root.querySelector('#ls20CarDefault');
-    var configEl  = root.querySelector('#ls20-config');
-
-    /* ── Config I/O ── */
-    function loadConfig() {
-      var raw = configEl ? configEl.textContent.trim() : '';
-      try { config = raw ? JSON.parse(raw) : clone(DEFAULT_CONFIG); }
-      catch (e) { config = clone(DEFAULT_CONFIG); }
-    }
-
-    function persistConfig() {
-      if (!configEl) return;
-      configEl.textContent = JSON.stringify(config);
-      configEl.dispatchEvent(new Event('focusout', { bubbles: true }));
-    }
-
-    function clone(obj) { return JSON.parse(JSON.stringify(obj)); }
-
-    /* ── Icon helpers ── */
-    function setSpritePos(el, row, active) {
-      if (row == null) return;
-      el.style.backgroundPosition = (active ? '100%' : '0%') + ' ' + (row / 9 * 100).toFixed(2) + '%';
-    }
-
-    function makeIconEl(item) {
-      if (item.icon) {
-        var img = document.createElement('img');
-        img.className = 'ls20-icon-img';
-        img.src = item.icon; img.alt = item.label;
-        return img;
-      }
-      if (item.spriteRow != null) {
-        var div = document.createElement('div');
-        div.className = 'ls20-icon-sprite';
-        setSpritePos(div, item.spriteRow, false);
-        return div;
-      }
-      var ph = document.createElement('div');
-      ph.className = 'ls20-icon-placeholder';
-      ph.textContent = '◈';
-      return ph;
-    }
-
-    function attachIconPicker(iconWrap, item) {
-      var overlay = document.createElement('div');
-      overlay.className = 'ls20-icon-edit';
-      overlay.setAttribute('data-builder-only', '');
-      overlay.title = 'Change icon';
-      overlay.innerHTML = '&#9998;';
-      iconWrap.appendChild(overlay);
-
-      overlay.addEventListener('click', function (e) {
-        e.stopPropagation();
-        var input = document.createElement('input');
-        input.type = 'file'; input.accept = 'image/*';
-        input.onchange = function () {
-          var file = input.files[0];
-          if (!file) return;
-          var reader = new FileReader();
-          reader.onload = function (ev) {
-            fetch('/api/upload-image', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ filename: file.name, data: ev.target.result })
-            })
-            .then(function (r) { return r.json(); })
-            .then(function (d) {
-              if (!d.path) return;
-              item.icon = d.path;
-              var old = iconWrap.querySelector('.ls20-icon-sprite,.ls20-icon-img,.ls20-icon-placeholder');
-              var fresh = makeIconEl(item);
-              if (old) iconWrap.replaceChild(fresh, old); else iconWrap.insertBefore(fresh, overlay);
-              persistConfig();
-            });
-          };
-          reader.readAsDataURL(file);
-        };
-        input.click();
-      });
-    }
-
-    /* ── Build a single button ── */
-    function makeBtn(item, idx) {
-      var btn = document.createElement('button');
-      btn.className = 'ls20-btn';
-
-      var iconWrap = document.createElement('div');
-      iconWrap.className = 'ls20-icon-wrap';
-      iconWrap.appendChild(makeIconEl(item));
-      if (EDIT_MODE) attachIconPicker(iconWrap, item);
-      btn.appendChild(iconWrap);
-
-      var labelEl = document.createElement('span');
-      labelEl.className = 'ls20-label';
-      labelEl.textContent = item.label;
-      labelEl.setAttribute('data-lang-key', slideId + '.btn-' + item.id);
-      if (EDIT_MODE) {
-        labelEl.contentEditable = 'true';
-        labelEl.spellcheck = false;
-        labelEl.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter') { e.preventDefault(); labelEl.blur(); }
-        });
-        labelEl.addEventListener('blur', function () {
-          var v = labelEl.textContent.trim();
-          if (v) item.label = v;
-          persistConfig();
-        });
-      }
-      btn.appendChild(labelEl);
-
-      if (EDIT_MODE) {
-        var delBtn = document.createElement('button');
-        delBtn.className = 'ls20-del';
-        delBtn.setAttribute('data-builder-only', '');
-        delBtn.innerHTML = '&times;';
-        delBtn.title = 'Remove button';
-        delBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          if (!confirm('Remove "' + item.label + '"?')) return;
-          config.splice(idx, 1);
-          renderSelector();
-          persistConfig();
-        });
-        btn.appendChild(delBtn);
-      }
-
-      btn.addEventListener('click', function () {
-        if (document.activeElement && document.activeElement.isContentEditable) return;
-        showDefect(idx);
-        if (window.Track) Track.click(slideId, item.label);
-      });
-
-      return btn;
-    }
-
-    /* ── Render the full selector strip ── */
-    function renderSelector() {
-      currentIdx = -1;
-      selector.innerHTML = '';
-
-      config.forEach(function (item, idx) {
-        selector.appendChild(makeBtn(item, idx));
-      });
-
-      if (EDIT_MODE) {
-        var addBtn = document.createElement('button');
-        addBtn.className = 'ls20-btn ls20-add-btn';
-        addBtn.setAttribute('data-builder-only', '');
-        addBtn.title = 'Add button';
-
-        var addIcon = document.createElement('div');
-        addIcon.className = 'ls20-add-icon';
-        addIcon.textContent = '+';
-        addBtn.appendChild(addIcon);
-
-        var addLabel = document.createElement('span');
-        addLabel.className = 'ls20-label';
-        addLabel.textContent = 'Add';
-        addBtn.appendChild(addLabel);
-
-        addBtn.addEventListener('click', function () {
-          var nextSlot = config.length;
-          config.push({
-            id: 'item-' + nextSlot,
-            label: 'Button ' + (config.length + 1),
-            spriteRow: null, icon: null,
-            carouselHtml: EMPTY_TRACK
-          });
-          renderSelector();
-          persistConfig();
-        });
-
-        selector.appendChild(addBtn);
-      }
-
-      showDefault();
-    }
-
-    function findCar(item) {
-      return root.querySelector('.ls20-car[data-defect-id="' + item.id + '"]');
-    }
-
-    function showDefault() {
-      root.querySelectorAll('.ls20-car').forEach(function (c) { c.style.display = 'none'; });
-      currentIdx = -1;
-      carDefault.style.display = '';
-      if (!carDefault._lsCarouselInit) {
-        if (window.Carousel) Carousel.init(carDefault.parentElement || document.body);
-        if (window.Lightbox) Lightbox.init(carDefault);
-      }
-      updateBtnStates();
-    }
-
-    function showDefect(idx) {
-      if (idx === currentIdx) { showDefault(); return; }
-      if (currentIdx >= 0) {
-        var prev = findCar(config[currentIdx]);
-        if (prev) prev.style.display = 'none';
-      }
-      carDefault.style.display = 'none';
-      currentIdx = idx;
-      var car = findCar(config[idx]);
-      if (car) {
-        car.style.display = '';
-        if (car._lsCarouselInit) {
-          if (car._lsGoTo) car._lsGoTo(0);
-        } else {
-          if (window.Carousel) Carousel.init(car.parentElement || document.body);
-          if (window.Lightbox) Lightbox.init(car);
-        }
-      }
-      updateBtnStates();
-    }
-
-    function updateBtnStates() {
-      var btns = selector.querySelectorAll('.ls20-btn:not(.ls20-add-btn)');
-      btns.forEach(function (btn, i) {
-        var active = i === currentIdx;
-        btn.classList.toggle('active', active);
-        var sprite = btn.querySelector('.ls20-icon-sprite');
-        if (sprite && config[i]) setSpritePos(sprite, config[i].spriteRow, active);
-      });
-    }
-
-    function applyCarouselsFromConfig() {
-      config.forEach(function (item) {
-        if (!item.carouselHtml) return;
-        var car = root.querySelector('.ls20-car[data-defect-id="' + item.id + '"]');
-        if (car) car.innerHTML = item.carouselHtml;
-      });
-    }
-
-    /* Capture carousel image changes and store in config (capture phase — runs before doSave) */
-    document.addEventListener('slide-carousel-save', function (e) {
-      var detail  = e.detail || {};
-      var editKey = detail.editKey || '';
-      var match = editKey.match(/^ls20-car-(\d+)$/);
-      if (!match) return;
-      var slotIdx  = parseInt(match[1], 10);
-      var defectId = 'item-' + slotIdx;
-      var btnIdx   = config.findIndex(function (c) { return c.id === defectId; });
-      if (btnIdx < 0) return;
-      var carEl = root.querySelector('.ls20-car[data-defect-id="' + defectId + '"]');
-      if (!carEl) return;
-      var trackEl = carEl.querySelector('.ls-carousel-track');
-      if (trackEl) {
-        var cl = trackEl.cloneNode(true);
-        cl.querySelectorAll('[data-builder-only]').forEach(function (n) { n.remove(); });
-        cl.querySelectorAll('[data-zoom-init]').forEach(function (n) { n.removeAttribute('data-zoom-init'); });
-        cl.querySelectorAll('.ls-carousel-counter,.ls-carousel-btn,.ls-carousel-add,.ls-carousel-del').forEach(function (n) { n.remove(); });
-        cl.style.transform = '';
-        config[btnIdx].carouselHtml = cl.outerHTML;
-      }
-      if (configEl) configEl.textContent = JSON.stringify(config);
-    }, true);
-
-    /* ── Init ── */
-    loadConfig();
-    applyCarouselsFromConfig();
-    renderSelector();
-
-    setTimeout(function () { if (window.PE && slide) PE.initSlide(slide); }, 0);
+    var slide = document.currentScript.closest('[data-slide]');
+    if (window.PB_READONLY) slide.classList.add('ls26-readonly');
+    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
   })();
   </script>
 
@@ -2650,22 +1145,17 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     <div id="fp-nav-menu-wrap">
       <div id="fp-nav-menu">
         <div class="fp-nm-section">Slides</div>
-        <button class="fp-nm-item fp-nm-active" data-main="0">Cover SoftSolution New</button>
-        <button class="fp-nm-item" data-main="1">Test — Simple (Carousel) 3</button>
-        <button class="fp-nm-item" data-main="2">LineScanner-Technology</button>
-        <button class="fp-nm-item" data-main="3">Products Overview</button>
-        <button class="fp-nm-item" data-main="4">Why Us</button>
-        <button class="fp-nm-item" data-main="5">Multi-buttons New</button>
+        <button class="fp-nm-item fp-nm-active" data-main="0">Cover — White + Gallery</button>
 
       </div>
       <button id="fp-nav-menu-btn" title="Slide navigation"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
     </div>
-    <div id="fp-slide-name">Cover SoftSolution New</div>
+    <div id="fp-slide-name">Cover — White + Gallery</div>
     <button class="fp-share-btn" id="fp-share-btn-ftr" title="Share presentation"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
   </div>
 </div>
 <button class="fp-side-arrow" id="fp-arrow-prev" disabled>&#8249;</button>
-<button class="fp-side-arrow" id="fp-arrow-next">&#8250;</button>
+<button class="fp-side-arrow" id="fp-arrow-next" disabled>&#8250;</button>
 <div id="fp-share-overlay">
   <div id="fp-share-modal">
     <h3>Share this presentation</h3>
@@ -2695,6 +1185,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   </div>
 <script>
 window.PB_READONLY = true;
+(function(){var h=window.location.hostname;if(h==="localhost"||h==="127.0.0.1"){var b=document.getElementById("fp-dash-btn");if(b){b.href="/";b.textContent="← Dashboard";b.target="_top";}}})();
 /**
  * button.js — Presentation Builder Button Component
  *
@@ -4852,7 +3343,7 @@ window.Track = (function () {
 (function () {
   var mainSlides = document.querySelectorAll(".fp-slide:not(.fp-optional)");
   var optSlides  = document.querySelectorAll(".fp-slide.fp-optional");
-  var mainNames  = ["Cover SoftSolution New","Test — Simple (Carousel) 3","LineScanner-Technology","Products Overview","Why Us","Multi-buttons New"];
+  var mainNames  = ["Cover — White + Gallery"];
   var optNames   = [];
   var total      = mainSlides.length;
   var idx        = 0;
