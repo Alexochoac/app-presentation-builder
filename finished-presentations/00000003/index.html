@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>C</title>
+  <title>u</title>
   <style>
 /*
   Presentation Builder — Softsolution
@@ -19,17 +19,17 @@
   --accent-rgb:      245,166,35;
   --bg:              #000;
   --bg-card:         rgba(255,255,255,.03);
-  --bg-card-hover:   rgba(245,166,35,.06);
+  --bg-card-hover:   rgba(var(--accent-rgb),.06);
   --text:            #ffffff;
   --text-muted:      #aaa;
   --border:          rgba(255,255,255,.07);
-  --border-hover:    rgba(245,166,35,.32);
+  --border-hover:    rgba(var(--accent-rgb),.32);
   --nav-bg:          rgba(0,0,0,.65);
   --nav-border:      rgba(255,255,255,.07);
   --dot-inactive:    rgba(255,255,255,.18);
   --counter:         #333;
-  --orb-a:           rgba(245,166,35,.10);
-  --orb-b:           rgba(232,137,12,.07);
+  --orb-a:           rgba(var(--accent-rgb),.10);
+  --orb-b:           rgba(var(--accent-rgb),.07);
   --slide-hero-bg:   #070B1A;
   --slide-hero-rgb:  7,11,26;
 }
@@ -98,10 +98,10 @@ body {
 
 .hero-content h1 {
   font-size:clamp(38px,5.5vw,72px);
-  font-weight:700; letter-spacing:-.02em; line-height:1.06; margin-bottom:16px; color:#fff;
+  font-weight:700; letter-spacing:-.02em; line-height:1.06; margin-bottom:16px; color:var(--text);
 }
-.hero-content h2 { font-size:clamp(16px,1.8vw,22px); font-weight:400; color:rgba(255,255,255,.60); line-height:1.5; }
-.click-hint { margin-top:36px; font-size:13px; color:rgba(255,255,255,.22); letter-spacing:.10em; text-transform:uppercase; font-weight:600; animation:blink 2s ease-in-out infinite; }
+.hero-content h2 { font-size:clamp(16px,1.8vw,22px); font-weight:400; color:var(--text-muted); line-height:1.5; }
+.click-hint { margin-top:36px; font-size:13px; color:var(--text-muted); opacity:.4; letter-spacing:.10em; text-transform:uppercase; font-weight:600; animation:blink 2s ease-in-out infinite; }
 
 /* ── Gradient text ── */
 .blue {
@@ -120,17 +120,17 @@ body {
   gap: 10px;
 }
 .slide-logo-row img {
-  height: 56px;
+  height: 28px;
   width: auto;
 }
 .slide-logo-sep {
   width: 1px;
-  height: 52px;
-  background: rgba(255,255,255,.25);
+  height: 26px;
+  background: var(--border);
   flex-shrink: 0;
 }
 .slide-logo-ls {
-  height: 52px !important;
+  height: 26px !important;
 }
 
 /* ── Content Slides ── */
@@ -313,8 +313,8 @@ body, .slides-container { height:100dvh; }
 
 /* Logo row: smaller on mobile */
 .slide-logo-row { top:14px; left:16px; }
-.slide-logo-row img { height:44px; }
-.slide-logo-ls { height:36px !important; }
+.slide-logo-row img { height:24px; }
+.slide-logo-ls { height:22px !important; }
 
 .cards-row { grid-template-columns:1fr; }
 .kpi-row { grid-template-columns:repeat(2,1fr); gap:10px; }
@@ -355,8 +355,8 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   .slide-body   { flex: 1; min-height: 0; overflow: hidden; }
 
   .slide-logo-row { top:22px; left:36px; }
-  .slide-logo-row img { height:60px; }
-  .slide-logo-ls { height:52px !important; }
+  .slide-logo-row img { height:32px; }
+  .slide-logo-ls { height:28px !important; }
 
   .cards-row { grid-template-columns:repeat(3,1fr); }
   .kpi-row { grid-template-columns:repeat(4,1fr); gap:14px; }
@@ -388,7 +388,33 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   -webkit-overflow-scrolling: touch;
 }
 
-:root{--accent:#b324f5;--accent-mid:#9e20d8;--accent-light:#d380f9;--accent-rgb:179,36,245;}
+/* ── Carousel: mobile base ──
+   On mobile, .slide-body has height:auto and flex:1 resolves to 0.
+   Give carousels a min-height so they are always visible. */
+.ls-carousel {
+  min-height: 240px;
+}
+
+/* ── Tab panel: mobile base ──
+   height:100% collapses when the parent has no fixed height.
+   Use auto on mobile so the panel expands to its content. */
+.ls-tab-panel {
+  height: auto;
+  overflow: visible;
+}
+
+/* ── Desktop overrides for carousel and tab-panel ── */
+@media(min-width:769px){
+  .ls-carousel {
+    min-height: 0;
+  }
+  .ls-tab-panel {
+    height: 100%;
+    overflow: hidden;
+  }
+}
+
+:root{--accent:#e15e3d;--accent-mid:#c65336;--accent-light:#eea28e;--accent-rgb:225,94,61;}
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0a0a; }
     #fp-shell { display: flex; flex-direction: column; height: 100vh; }
@@ -466,9 +492,96 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     #fp-lang-menu button.active { color: #E8711A; font-weight: 600; }
   </style>
   <script defer src="http://localhost:3003/script.js" data-website-id="48fb959a-0f0f-4d0e-b89c-4a29b61db99e"></script>
+<script>/**
+ * language-switcher.js
+ * Client-side language switcher for finished presentations.
+ * Reads [data-lang] spans and shows only the active language.
+ * Active language is resolved from: ?lang= URL param → per-presentation localStorage → data-default-lang on <body>
+ */
+(function () {
+  'use strict';
 
+  // Use a per-presentation key so each presentation starts in its own default language
+  var presId = document.body.getAttribute('data-pres-id') || 'default';
+  var STORAGE_KEY = 'pres-lang-' + presId;
+
+  function getDefaultLang() {
+    return document.body.getAttribute('data-default-lang') || 'en';
+  }
+
+  function resolveActiveLang() {
+    var params = new URLSearchParams(window.location.search);
+    var fromUrl = params.get('lang');
+    if (fromUrl) return fromUrl;
+    try { var stored = localStorage.getItem(STORAGE_KEY); if (stored) return stored; } catch (e) {}
+    return getDefaultLang();
+  }
+
+  function applyLang(lang) {
+    document.querySelectorAll('[data-lang]').forEach(function (el) {
+      if (el.closest && el.closest('#fp-lang-menu')) return;
+      el.hidden = el.getAttribute('data-lang') !== lang;
+    });
+    // Update dropdown label and active state
+    var label = document.getElementById('fp-lang-label');
+    if (label) label.textContent = lang.toUpperCase();
+    document.querySelectorAll('#fp-lang-menu button[data-lang]').forEach(function (btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+    });
+    try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
+  }
+
+  function switchLang(lang) {
+    applyLang(lang);
+    var url = new URL(window.location.href);
+    url.searchParams.set('lang', lang);
+    history.replaceState(null, '', url.toString());
+  }
+
+  // Expose for dropdown buttons
+  window.switchLang = switchLang;
+
+  window.fpLangToggle = function () {
+    var menu = document.getElementById('fp-lang-menu');
+    if (menu) menu.classList.toggle('open');
+  };
+
+  window.fpLangSelect = function (lang) {
+    switchLang(lang);
+    var menu = document.getElementById('fp-lang-menu');
+    if (menu) menu.classList.remove('open');
+  };
+
+  // Close dropdown on outside click
+  document.addEventListener('click', function (e) {
+    var drop = document.getElementById('fp-lang-drop');
+    if (drop && !drop.contains(e.target)) {
+      var menu = document.getElementById('fp-lang-menu');
+      if (menu) menu.classList.remove('open');
+    }
+  });
+
+  // Init on DOM ready
+  function init() {
+    var lang = resolveActiveLang();
+    // Validate: if resolved lang has no spans in this presentation, fall back to default
+    var available = Array.from(document.querySelectorAll('[data-lang]')).map(function (el) {
+      return el.getAttribute('data-lang');
+    });
+    var unique = Array.from(new Set(available));
+    if (unique.length > 0 && !unique.includes(lang)) lang = getDefaultLang();
+    applyLang(lang);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
 </head>
-<body>
+<body data-default-lang="en" data-pres-id="00000003">
 <div id="fp-shell">
   <div id="fp-header">
     <a href="https://glassquality.com" id="fp-dash-btn">Go to Glassquality.com</a>
@@ -476,27 +589,31 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     <button class="fp-nav-btn" id="fp-prev" disabled>&#8249;</button>
     <div id="fp-counter">1 / 1</div>
     <button class="fp-nav-btn" id="fp-next" disabled>&#8250;</button>
-
+    <div id="fp-lang-drop"><button id="fp-lang-btn" onclick="fpLangToggle()"><span id="fp-lang-label">EN</span><svg width="8" height="8" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg></button><div id="fp-lang-menu"><button data-lang="en" onclick="fpLangSelect('en')">EN — English</button><button data-lang="es" onclick="fpLangSelect('es')">ES — Español</button></div></div>
     <div id="fp-header-spacer"></div>
-    <div id="fp-title">C</div>
+    <div id="fp-title">u</div>
     <button class="fp-share-btn" id="fp-share-btn-hdr" title="Share presentation"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
   </div>
   <div id="fp-viewer">
     <div class="slides-container">
 <div class="fp-slide" data-slide-index="0" style="">
-<div class="slide content ls26-cover" data-slide="cover-white-gallery" data-slide-mode="sequence">
+<div class="slide hero ls01" data-slide="new-cover" data-slide-mode="sequence">
 
-  <!-- Hero background — full bleed, server injects deck.heroBg -->
-  <img class="hero-bg" src="" alt="Hero background" style="object-position:25% 0%;">
+  <!-- Full-bleed background — server injects deck.heroBg at serve time -->
+  <img class="hero-bg" src="../shared/Panther_Eye.jpeg" alt="Hero background" style="object-position:33% 33%;;opacity:0.22;">
+  <div class="ls01-overlay"></div>
 
-  <!-- Company logo row — top left -->
-  <div class="slide-logo-row ls26-logos" data-edit="logo-row"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></div>
+  <!-- Logo row — server injects live logos -->
+  <div class="slide-logo-row" data-edit="logo-row"><span data-lang="en"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span><span data-lang="es" hidden=""><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span></div>
 
-  <!-- Customer logo — centered in right half -->
-  <div class="ls26-customer-logo" data-edit="customer-logo" data-edit-type="image">
+  <!-- Credit line top-right -->
+  <span class="ls01-credit" data-edit="credit" data-lang-key="ls01.credit"><span data-lang="en">by wbtm.io</span><span data-lang="es" hidden="">por YourBrand.com</span></span>
+
+  <!-- Customer logo — right half on desktop, above content on mobile -->
+  <div class="ls01-customer-logo" data-edit="customer-logo" data-edit-type="image">
     
-    <img class="ls26-cust-img" src="../shared/Panther_Eye.jpg" alt="Customer Logo" onerror="this.classList.add('ls26-cust-img--missing')">
-    <label class="ls26-cust-placeholder" for="ls26-logo-file" title="Click to upload logo">
+    <img class="ls01-cust-img" src="../shared/LOGO_Benteler.jpg" alt="Customer Logo" onerror="this.classList.add('ls01-cust-img--missing')">
+    <label class="ls01-cust-placeholder" for="ls01-logo-file">
       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="3"></rect>
         <circle cx="8.5" cy="8.5" r="1.5"></circle>
@@ -508,16 +625,17 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     
   </div>
 
-  <!-- Main content — left half -->
-  <div class="ls26-content">
-    <div class="ls26-badge" data-edit="badge" data-lang-key="ls26-cover.badge">Product · Solution</div>
-    <h1 class="ls26-headline" data-edit="headline" data-lang-key="ls26-cover.headline"><span class="ls26-accent">Headline Your Presentation</span></h1>
-    <p class="ls26-subheadline" data-edit="subheadline" data-lang-key="ls26-cover.subheadline">Proposal for C · C</p>
+  <!-- Main hero content -->
+  <div class="ls01-content">
+    <div class="ls01-badge" data-edit="badge" data-lang-key="ls01.badge"><span data-lang="en">Product · Solution!</span><span data-lang="es" hidden="">Producto · ¡Solución!</span></div>
+    <h1 class="ls01-headline" data-edit="headline" data-lang-key="ls01.headline"><span data-lang="en">My Presentation&nbsp;<span class="ls01-accent">Headline</span></span><span data-lang="es" hidden="">Mi Presentación&nbsp;<span class="ls01-accent">Titular</span></span></h1>
+    <p class="ls01-subheadline" data-edit="subheadline" data-lang-key="ls01.subheadline"><span data-lang="en">Proposal for u · u</span><span data-lang="es" hidden="">Propuesta para u · u</span></p>
+    
   </div>
 
-  <!-- Gallery button -->
-  <button class="ls26-gallery-btn" onclick="ls26OpenGallery()" title="Show installation gallery">
-    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Gallery button — opens the gallery overlay -->
+  <button class="ls01-gallery-btn" data-ls-gallery-open="" title="Open gallery">
+    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <rect x="3" y="3" width="7" height="7"></rect>
       <rect x="14" y="3" width="7" height="7"></rect>
       <rect x="14" y="14" width="7" height="7"></rect>
@@ -526,613 +644,285 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     Gallery
   </button>
 
-  <!-- Gallery overlay -->
-  <div class="ls26-gallery-overlay" id="ls26GalleryOverlay" style="display:none;">
-    <div class="ls26-gallery-popup">
-      <button class="ls26-gallery-close" onclick="ls26CloseGallery()">✕</button>
-      <div class="ls26-car-wrap" id="ls26CarWrap">
-        <div class="ls26-car-track" id="ls26CarTrack" data-edit="carousel-track" data-autoplay="7">
-
-          <div class="ls26-car-slide ls26-car-slide--text"><div class="ls26-stat-block"><div class="section-label">Section Title</div><span class="stat-number">Key Fact</span><div class="stat-label">Description text here</div></div></div><div class="ls26-car-slide"><button class="ls26-car-del" title="Remove">✕</button><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects"><div class="ls26-car-caption">CostOfQualityDefects</div></div>
-
-        <div class="ls26-car-slide ls26-car-slide--text"><button class="ls26-car-del" title="Remove">✕</button><div class="ls26-stat-block"><div class="section-label">Section Title</div><span class="stat-number">Key Fact</span><div class="stat-label">Description text here</div></div></div><div class="ls26-car-slide"><img src="../shared/EfficiencyCliff.png" alt="EfficiencyCliff"><div class="ls26-car-caption">EfficiencyCliff</div></div><div class="ls26-car-slide ls26-car-slide--text"><div class="ls26-stat-block"><div class="section-label">Section Title</div><span class="stat-number">Key Fact</span><div class="stat-label">Description text here</div></div></div></div>
-        <button class="ls26-car-prev" onclick="ls26CarMove(-1)">‹</button>
-        <button class="ls26-car-next" onclick="ls26CarMove(1)">›</button>
+  <!-- Gallery data store — hidden inside slide for save/restore via applyEditsToHtml -->
+  <div data-ls-gallery="" data-edit="gallery-track" data-autoplay="8" style="display:none;">
+    <div class="ls-gallery-slide ls-gallery-slide--text">
+      <div class="ls-gallery-stat">
+        <span class="ls-gallery-label" data-lang-key="ls01.stat-1-label">Section Title</span>
+        <span class="ls-gallery-number" data-lang-key="ls01.stat-1-number">Key Fact</span>
+        <span class="ls-gallery-body-text" data-lang-key="ls01.stat-1-text">Description text here</span>
       </div>
-
-      <!-- Thumbnail strip -->
-      <div class="ls26-thumb-strip" id="ls26ThumbStrip"></div>
-
-      <!-- Footer — builder only -->
-      
+    </div>
+    <div class="ls-gallery-slide">
+      <img src="" alt="Gallery image">
+      <div class="ls-gallery-caption" data-lang-key="ls01.gallery-caption-1">Image caption</div>
     </div>
   </div>
 
-  <!-- Shared file input for carousel image swaps -->
-  
-
   <style>
-    /* ── Layout ── */
-    .ls26-cover {
+    /* ── Mobile defaults ── */
+    .ls01 {
       position: relative;
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
-
-    /* Hero bg — full bleed */
-    .ls26-cover .hero-bg {
+    .ls01 .hero-bg {
       position: absolute;
       inset: 0;
-      width: 100%; height: 100%;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
       z-index: 0;
     }
-
-    /* Company logo row — inherits absolute top-left from style.css */
-    .ls26-cover .slide-logo-row {
+    .ls01-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg,
+        rgba(var(--slide-hero-rgb), .72) 0%,
+        rgba(var(--slide-hero-rgb), .38) 100%);
+      z-index: 1;
+    }
+    .ls01 .slide-logo-row {
+      position: relative;
       z-index: 2;
     }
-
-    /* ── Customer logo box ── */
-    .ls26-customer-logo {
+    .ls01-credit {
       position: absolute;
-      left: 74%; top: 50%;
-      transform: translate(-50%, -50%);
+      top: 18px;
+      right: 16px;
       z-index: 10;
-      display: flex; align-items: center; justify-content: center;
-      background: #fff;
-      border: 1px solid rgba(0,0,0,.09);
-      border-radius: 20px;
-      padding: 20px;
-      width: 160px; height: 160px;
-      cursor: pointer;
-      box-shadow: 0 8px 32px rgba(0,0,0,.14);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      color: rgba(255,255,255,.4);
     }
-    .ls26-customer-logo::after {
-      content: 'Change Logo';
-      position: absolute; inset: 0; border-radius: 20px;
-      background: rgba(0,0,0,.52);
-      color: #fff; font-size: 12px; font-weight: 700; letter-spacing: .06em;
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity .2s;
-    }
-    .ls26-customer-logo:hover::after { opacity: 1; }
-    /* hide change-logo hover and pointer in readonly/preview */
-    .ls26-cover.ls26-readonly .ls26-customer-logo { cursor: default; pointer-events: none; }
-    .ls26-cover.ls26-readonly .ls26-customer-logo::after { display: none; }
-    .ls26-cust-img { width: 90%; height: 90%; object-fit: contain; }
-    .ls26-cust-img--missing { display: none; }
-    .ls26-cust-img--missing ~ .ls26-cust-placeholder { display: flex; }
-    .ls26-cust-placeholder {
-      display: none; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-      width: 100%; height: 100%;
-      border: 2px dashed rgba(0,0,0,.14); border-radius: 14px;
-      cursor: pointer; color: rgba(0,0,0,.38); text-align: center;
-      transition: border-color .2s, color .2s;
-    }
-    .ls26-cust-placeholder:hover { border-color: var(--accent); color: var(--accent); }
-    .ls26-cust-placeholder span { font-size: 13px; font-weight: 700; letter-spacing: .04em; }
-    .ls26-cust-placeholder small { font-size: 11px; opacity: .65; }
-    .ls26-logo-del {
-      position: absolute; top: -8px; right: -8px; z-index: 20;
-      width: 22px; height: 22px; border-radius: 50%;
-      background: rgba(180,30,30,.88); border: 1px solid rgba(255,100,100,.35);
-      color: #fff; font-size: 11px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-family: inherit; transition: background .2s;
-    }
-    .ls26-logo-del:hover { background: rgba(220,40,40,1); }
-    .ls26-cover.ls26-readonly .ls26-logo-del { display: none; }
 
-    /* ── Text content ── */
-    .ls26-content {
+    /* Customer logo — stacked on mobile */
+    .ls01-customer-logo {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 20px;
+      padding: 16px;
+      width: 100px;
+      height: 100px;
+      margin: 8px auto 0;
+      cursor: pointer;
+    }
+    .ls01-cust-img {
+      width: 90%;
+      height: 90%;
+      object-fit: contain;
+    }
+    .ls01-cust-img--missing { display: none; }
+    .ls01-cust-img--missing ~ .ls01-cust-placeholder { display: flex; }
+    .ls01-cust-placeholder {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      height: 100%;
+      border: 2px dashed rgba(255,255,255,.25);
+      border-radius: 14px;
+      color: rgba(255,255,255,.5);
+      text-align: center;
+      cursor: pointer;
+    }
+    .ls01-cust-placeholder span { font-size: 11px; font-weight: 700; }
+    .ls01-cust-placeholder small { font-size: 9px; opacity: .65; }
+    .ls01-logo-del {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(180,30,30,.85);
+      border: none;
+      color: #fff;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+    }
+    /* Hover overlay — hidden in readonly via JS class */
+    .ls01-customer-logo::after {
+      content: 'Change Logo';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      background: rgba(0,0,0,.55);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .ls01-customer-logo:hover::after { opacity: 1; }
+    .ls01-readonly .ls01-customer-logo::after { display: none; }
+    .ls01-readonly .ls01-customer-logo { cursor: default; }
+
+    /* Hero content */
+    .ls01-content {
       position: relative;
       z-index: 2;
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 48px 56px;
-      max-width: 52%;
+      padding: 24px 20px;
     }
-    .ls26-badge {
-      font-size: 11px; font-weight: 700; letter-spacing: .16em;
-      text-transform: uppercase; color: var(--accent); margin-bottom: 16px;
+    .ls01-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
     }
-    .ls26-headline {
-      font-size: clamp(1.8rem, 3.5vw, 3rem); font-weight: 700; line-height: 1.1;
-      color: #0d1117; margin: 0 0 20px; max-width: 580px;
+    .ls01-headline {
+      font-size: clamp(1.6rem, 5vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      color: #fff;
+      margin: 0 0 16px;
     }
-    .ls26-accent { color: var(--accent); }
-    .ls26-subheadline {
-      font-size: 1rem; font-weight: 400;
-      color: rgba(0,0,0,.50); margin: 0;
+    .ls01-accent { color: var(--accent); }
+    .ls01-subheadline {
+      font-size: clamp(.9rem, 2vw, 1rem);
+      color: rgba(255,255,255,.6);
+      margin: 0;
+    }
+    .ls01-nav-hint {
+      margin-top: 24px;
+      font-size: 11px;
+      color: rgba(255,255,255,.40);
+      letter-spacing: .04em;
     }
 
-    /* ── Gallery button ── */
-    .ls26-gallery-btn {
-      position: absolute; bottom: 80px; right: 16px; z-index: 10;
-      display: flex; align-items: center; gap: 6px;
+    /* Gallery button */
+    .ls01-gallery-btn {
+      position: absolute;
+      bottom: 64px;
+      right: 16px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 6px;
       padding: 7px 14px;
-      background: rgba(0,0,0,.38); border: 1px solid rgba(255,255,255,.22);
-      border-radius: 20px; color: rgba(255,255,255,.80);
-      font-size: 11px; font-weight: 600; letter-spacing: .06em;
-      cursor: pointer; backdrop-filter: blur(8px);
+      background: rgba(0,0,0,.40);
+      border: 1px solid rgba(255,255,255,.20);
+      border-radius: 20px;
+      color: rgba(255,255,255,.70);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      cursor: pointer;
+      font-family: inherit;
       transition: background .25s, border-color .25s, color .25s;
-      font-family: inherit; user-select: none;
     }
-    .ls26-gallery-btn:hover { background: rgba(var(--accent-rgb),.35); border-color: var(--accent); color: #fff; }
-
-    /* ── Gallery overlay ── */
-    .ls26-gallery-overlay {
-      position: fixed; inset: 0; z-index: 9000;
-      background: rgba(0,0,0,.68); backdrop-filter: blur(4px);
-      display: flex; align-items: center; justify-content: center;
+    .ls01-gallery-btn:hover {
+      background: rgba(var(--accent-rgb), .25);
+      border-color: var(--accent);
+      color: #fff;
     }
-    .ls26-gallery-popup {
-      position: relative;
-      background: rgba(10,10,14,.92); border: 1px solid rgba(255,255,255,.14);
-      border-radius: 20px; padding: 20px;
-      box-shadow: 0 32px 96px rgba(0,0,0,.80);
-    }
-    .ls26-gallery-close {
-      position: absolute; top: -14px; right: -14px;
-      min-width: 44px; min-height: 44px; width: 30px; height: 30px; border-radius: 50%;
-      background: rgba(40,40,50,.95); border: 1px solid rgba(255,255,255,.22);
-      color: rgba(255,255,255,.80); font-size: 13px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background .2s, color .2s; z-index: 5;
-    }
-    .ls26-gallery-close:hover { background: rgba(255,255,255,.20); color: #fff; }
 
-    /* ── Carousel ── */
-    .ls26-car-wrap { position: relative; width: 100%; height: auto; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,.12); box-shadow: 0 24px 80px rgba(0,0,0,.7); }
-    .ls26-car-track { display: flex; height: auto; transition: transform .55s cubic-bezier(.4,0,.2,1); }
-    .ls26-car-slide { flex: 0 0 100%; width: 100%; height: auto; position: relative; background: #111; }
-    .ls26-car-slide img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; user-select: none; pointer-events: none; }
-    .ls26-car-caption { position: absolute; bottom: 0; left: 0; right: 0; padding: 10px 18px; background: linear-gradient(transparent,rgba(0,0,0,.75)); color: rgba(255,255,255,.85); font-size: 12px; font-weight: 600; letter-spacing: .05em; text-align: center; }
-    .ls26-car-caption:focus { outline: none; }
-
-    .ls26-car-prev, .ls26-car-next { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,.50); border: 1px solid rgba(255,255,255,.20); color: #fff; font-size: 26px; line-height: 1; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s; z-index: 5; }
-    .ls26-car-prev { left: 12px; }
-    .ls26-car-next { right: 12px; }
-    .ls26-car-prev:hover, .ls26-car-next:hover { background: rgba(var(--accent-rgb),.60); }
-
-    /* Builder controls */
-    .ls26-car-img-overlay { position: absolute; inset: 0; z-index: 15; background: rgba(0,0,0,.55); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 700; letter-spacing: .06em; opacity: 0; transition: opacity .2s; cursor: pointer; }
-    .ls26-car-slide:hover .ls26-car-img-overlay { opacity: 1; }
-    .ls26-car-move { position: absolute; bottom: 10px; z-index: 20; width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,.65); border: 1px solid rgba(255,255,255,.30); color: #fff; font-size: 18px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .2s, background .2s; font-family: inherit; }
-    .ls26-car-slide:hover .ls26-car-move { opacity: 1; }
-    .ls26-car-move--l { right: 48px; }
-    .ls26-car-move--r { right: 12px; }
-    .ls26-car-move:hover { background: rgba(var(--accent-rgb),.65); }
-
-    .ls26-car-del { position: absolute; top: 8px; left: 8px; z-index: 22; width: 22px; height: 22px; border-radius: 50%; background: rgba(180,30,30,.85); border: 1px solid rgba(255,100,100,.35); color: #fff; font-size: 11px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: inherit; transition: background .2s; }
-    .ls26-car-del:hover { background: rgba(220,40,40,1); }
-
-    /* Text slide */
-    .ls26-car-slide--text { flex: 0 0 100%; background: linear-gradient(135deg,#0d1117 0%,#1a1f2e 100%); display: flex; align-items: center; justify-content: center; }
-    .ls26-stat-block { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 32px; width: 100%; text-align: center; }
-    .ls26-stat-block .stat-number { font-size: clamp(48px,8vw,88px); font-weight: 900; letter-spacing: -.03em; line-height: 1; background: linear-gradient(135deg,var(--accent),var(--accent-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; }
-    .ls26-stat-block .stat-label { font-size: 15px; color: var(--text-muted); margin-top: 8px; font-weight: 500; }
-    [contenteditable]:focus { outline: none; }
-
-    /* Thumbnail strip */
-    .ls26-thumb-strip { display: flex; gap: 6px; padding: 10px 0 4px; overflow-x: auto; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.15) transparent; }
-    .ls26-thumb { flex: 0 0 72px; height: 46px; border-radius: 8px; border: 2px solid rgba(255,255,255,.12); background: #222; background-size: cover; background-position: center; cursor: pointer; transition: border-color .2s, opacity .2s; position: relative; overflow: hidden; user-select: none; }
-    .ls26-thumb:hover { border-color: rgba(255,255,255,.35); }
-    .ls26-thumb--active { border-color: var(--accent) !important; }
-    .ls26-thumb--dragging { opacity: .4; }
-    .ls26-thumb--text { display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg,#0d1117,#1a1f2e); font-size: 9px; font-weight: 700; letter-spacing: .06em; color: var(--accent); text-align: center; padding: 4px; text-transform: uppercase; }
-    .ls26-thumb-dragover { border-color: var(--accent); border-style: dashed; }
-
-    /* Footer */
-    .ls26-car-footer { display: flex; align-items: center; justify-content: space-between; padding: 8px 2px 0; }
-    .ls26-autoplay-ctrl { font-size: 11px; color: rgba(255,255,255,.40); font-weight: 600; letter-spacing: .06em; user-select: none; }
-    .ls26-autoplay-ctrl span { color: rgba(255,255,255,.65); min-width: 14px; display: inline-block; text-align: center; border-bottom: 1px solid rgba(255,255,255,.2); }
-    .ls26-autoplay-ctrl span:focus { outline: none; border-color: var(--accent); color: #fff; }
-    .ls26-add-btns { display: flex; gap: 6px; }
-    .ls26-add-btn { font-size: 11px; font-weight: 700; letter-spacing: .05em; padding: 5px 12px; border-radius: 20px; cursor: pointer; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.15); color: rgba(255,255,255,.6); font-family: inherit; transition: background .2s, border-color .2s, color .2s; }
-    .ls26-add-btn:hover { background: rgba(var(--accent-rgb),.15); border-color: var(--accent); color: var(--accent); }
-
-    /* ── Desktop ── */
+    /* ── Desktop expansion ── */
     @media(min-width:769px) {
-      .ls26-customer-logo { width: clamp(150px,15vw,240px); height: clamp(150px,15vw,240px); padding: 28px; }
-      .ls26-gallery-btn { bottom: 64px; right: 32px; }
-      .ls26-car-wrap { width: 760px; height: 460px; }
-      .ls26-car-track { height: 460px; }
-      .ls26-car-slide { flex: 0 0 760px; width: 760px; height: 460px; }
-      .ls26-car-slide img { object-fit: contain; }
-      .ls26-car-slide--text { flex: 0 0 760px; }
+      .ls01-customer-logo {
+        position: absolute;
+        left: 75%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        margin: 0;
+        width: clamp(140px, 15vw, 240px);
+        height: clamp(140px, 15vw, 240px);
+        padding: 24px;
+        border-radius: 24px;
+      }
+      .ls01-content {
+        padding: 48px 56px;
+        max-width: 60%;
+      }
+      .ls01-credit { top: 22px; right: 36px; }
+      .ls01-gallery-btn { bottom: 64px; right: 32px; }
     }
   </style>
 
-  <!-- Gallery JS — self-contained -->
   <script>
   (function () {
-    var idx       = 0;
-    var autoTimer = null;
-    var targetSlide = null;
+    var slide   = document.currentScript.closest('[data-slide]');
+    var slideId = Track.slideId(slide);
 
-    function getSlides()    { return Array.from(document.querySelectorAll('#ls26CarTrack > .ls26-car-slide')); }
-    function getWrapWidth() { return document.getElementById('ls26CarWrap').offsetWidth; }
-    function getAutoplay()  { return (parseInt(document.getElementById('ls26CarTrack').getAttribute('data-autoplay')) || 7) * 1000; }
+    /* ── Readonly setup ── */
+    if (window.PB_READONLY) slide.classList.add('ls01-readonly');
 
-    function goTo(i) {
-      var slides = getSlides();
-      idx = Math.max(0, Math.min(slides.length - 1, i));
-      document.getElementById('ls26CarTrack').style.transform = 'translateX(' + (idx * -getWrapWidth()) + 'px)';
-      ls26UpdateThumbs();
-      var caption = slides[idx] ? slides[idx].querySelector('.ls26-car-caption') : null;
-      var name = caption ? caption.textContent.trim().toLowerCase().replace(/\s+/g, '-') : 'item-' + (idx + 1);
-      if (window.umami) umami.track('cover-gallery:' + name);
-    }
+    /* ── Customer logo upload ── */
+    var logoContainer = slide.querySelector('.ls01-customer-logo');
+    var logoInput     = slide.querySelector('#ls01-logo-file');
 
-    function startAutoplay() {
-      clearInterval(autoTimer);
-      autoTimer = setInterval(function () {
-        var count = getSlides().length;
-        goTo(idx < count - 1 ? idx + 1 : 0);
-      }, getAutoplay());
-    }
-
-    function stopAutoplay() { clearInterval(autoTimer); }
-
-    var wrap = document.getElementById('ls26CarWrap');
-    wrap.addEventListener('mouseenter', stopAutoplay);
-    wrap.addEventListener('mouseleave', function () {
-      if (document.getElementById('ls26GalleryOverlay').style.display !== 'none') startAutoplay();
-    });
-
-    window.ls26OpenGallery = function () {
-      var overlay = document.getElementById('ls26GalleryOverlay');
-      overlay.style.display = 'flex';
-      if (window.PB_READONLY) {
-        overlay.querySelectorAll('[data-builder-only]').forEach(function (el) { el.style.display = 'none'; });
-      }
-      goTo(0);
-      ls26BuildThumbs();
-      startAutoplay();
-      if (window.umami) umami.track(document.querySelector('[data-slide="ls26-cover"]') ? 'ls26-cover' : 'cover', { component: 'gallery', action: 'open' });
-    };
-
-    window.ls26CloseGallery = function () {
-      document.getElementById('ls26GalleryOverlay').style.display = 'none';
-      stopAutoplay();
-    };
-
-    window.ls26CarMove = function (dir) { goTo(idx + dir); };
-
-    // ── Thumbnail strip ────────────────────────────────────────────────────
-    window.ls26BuildThumbs = function () {
-      var strip  = document.getElementById('ls26ThumbStrip');
-      var slides = getSlides();
-      strip.innerHTML = '';
-      slides.forEach(function (slide, i) {
-        var thumb = document.createElement('div');
-        thumb.className = 'ls26-thumb' + (i === idx ? ' ls26-thumb--active' : '');
-        thumb.setAttribute('data-index', i);
-        var img = slide.querySelector('img');
-        if (img && img.src) {
-          thumb.style.backgroundImage = 'url(' + img.src + ')';
-        } else {
-          thumb.classList.add('ls26-thumb--text');
-          var lbl = slide.querySelector('.section-label');
-          thumb.textContent = lbl ? lbl.textContent.substring(0, 14) : 'Text';
-        }
-        thumb.addEventListener('click', function () { goTo(i); });
-        thumb.draggable = true;
-        thumb.addEventListener('dragstart', function (e) {
-          e.dataTransfer.setData('text/plain', String(i));
-          setTimeout(function () { thumb.classList.add('ls26-thumb--dragging'); }, 0);
-        });
-        thumb.addEventListener('dragend', function () { thumb.classList.remove('ls26-thumb--dragging'); });
-        thumb.addEventListener('dragover', function (e) { e.preventDefault(); thumb.classList.add('ls26-thumb-dragover'); });
-        thumb.addEventListener('dragleave', function () { thumb.classList.remove('ls26-thumb-dragover'); });
-        thumb.addEventListener('drop', function (e) {
-          e.preventDefault();
-          thumb.classList.remove('ls26-thumb-dragover');
-          var from = parseInt(e.dataTransfer.getData('text/plain'));
-          var to   = i;
-          if (from === to) return;
-          var track     = document.getElementById('ls26CarTrack');
-          var allSlides = getSlides();
-          var fromSlide = allSlides[from];
-          var toSlide   = allSlides[to];
-          from < to ? track.insertBefore(fromSlide, toSlide.nextSibling)
-                    : track.insertBefore(fromSlide, toSlide);
-          goTo(0); ls26BuildThumbs(); ls26SaveCarousel();
-        });
-        strip.appendChild(thumb);
+    if (logoContainer && logoInput) {
+      logoContainer.addEventListener('click', function () {
+        if (window.PB_READONLY) return;
+        logoInput.click();
       });
-      ls26EnsureDeleteBtns();
-    };
 
-    function ls26EnsureDeleteBtns() {
-      if (window.PB_READONLY) return;
-      getSlides().forEach(function (slide) {
-        if (!slide.querySelector('.ls26-car-del')) {
-          var btn = document.createElement('button');
-          btn.className = 'ls26-car-del';
-          btn.title = 'Remove';
-          btn.setAttribute('data-builder-only', '');
-          btn.setAttribute('contenteditable', 'false');
-          btn.setAttribute('onclick', 'ls26DeleteCarSlide(this)');
-          btn.textContent = '✕';
-          slide.insertBefore(btn, slide.firstChild);
-        }
-      });
-    }
-
-    window.ls26DeleteCarSlide = function (btn) {
-      var slide = btn.closest('.ls26-car-slide');
-      if (!slide) return;
-      var all = getSlides();
-      if (all.length <= 1) {
-        slide.innerHTML = '<button class="ls26-car-del" data-builder-only="" contenteditable="false">&#x2715;</button>'
-          + '<img src="" alt="">'
-          + '<div class="ls26-car-caption" contenteditable spellcheck="false">Image caption</div>'
-          + '<div class="ls26-car-img-overlay" data-builder-only="" onclick="ls26ChangeCarImage(this)">Change Image</div>'
-          + '<button class="ls26-car-move ls26-car-move--l" data-builder-only="" contenteditable="false" onclick="ls26MoveCarSlide(this,-1)">&#8249;</button>'
-          + '<button class="ls26-car-move ls26-car-move--r" data-builder-only="" contenteditable="false" onclick="ls26MoveCarSlide(this,1)">&#8250;</button>';
-        ls26BuildThumbs(); ls26SaveCarousel(); goTo(0); return;
-      }
-      slide.remove();
-      goTo(0); ls26BuildThumbs(); ls26SaveCarousel();
-    };
-
-    window.ls26UpdateThumbs = function () {
-      document.querySelectorAll('#ls26ThumbStrip .ls26-thumb').forEach(function (t, i) {
-        t.classList.toggle('ls26-thumb--active', i === idx);
-      });
-    };
-
-    // ── Autoplay value (builder only) ────────────────────────────────────
-    var autoValEl = document.getElementById('ls26AutoVal');
-    if (autoValEl) {
-      autoValEl.addEventListener('input', function () {
-        var val = parseInt(autoValEl.textContent) || 7;
-        document.getElementById('ls26CarTrack').setAttribute('data-autoplay', val);
-        startAutoplay();
-      });
-      autoValEl.addEventListener('blur', function () { ls26SaveCarousel(); });
-    }
-
-    // ── Change carousel image ─────────────────────────────────────────────
-    window.ls26ChangeCarImage = function (overlay) {
-      targetSlide = overlay.closest('.ls26-car-slide');
-      document.getElementById('ls26-carousel-file').click();
-    };
-
-    document.getElementById('ls26-carousel-file').addEventListener('change', function (e) {
-      var file = e.target.files[0];
-      if (!file || !targetSlide) return;
-      var img = targetSlide.querySelector('img');
-      img.src = URL.createObjectURL(file);
-      var reader = new FileReader();
-      reader.onload = function (ev) {
-        fetch('/api/upload-image', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ filename: file.name, data: ev.target.result })
-        })
-        .then(function (r) { return r.json(); })
-        .then(function (data) {
-          if (data.path) { img.src = data.path; ls26BuildThumbs(); ls26SaveCarousel(); }
-        });
-      };
-      reader.readAsDataURL(file);
-      e.target.value = '';
-    });
-
-    // ── Reorder via buttons ───────────────────────────────────────────────
-    window.ls26MoveCarSlide = function (btn, dir) {
-      var slide = btn.closest('.ls26-car-slide');
-      var all   = getSlides();
-      var i     = all.indexOf(slide);
-      var swap  = all[i + dir];
-      if (!swap) return;
-      var track = document.getElementById('ls26CarTrack');
-      dir === 1 ? track.insertBefore(swap, slide) : track.insertBefore(slide, swap);
-      goTo(0); ls26BuildThumbs(); ls26SaveCarousel();
-    };
-
-    // ── Add items ─────────────────────────────────────────────────────────
-    window.ls26AddImage = function () {
-      if (window.PB_READONLY) return;
-      var input = document.createElement('input');
-      input.type = 'file'; input.accept = 'image/*';
-      input.style.display = 'none';
-      document.body.appendChild(input);
-      input.addEventListener('change', function (e) {
-        document.body.removeChild(input);
+      logoInput.addEventListener('change', function (e) {
+        if (window.PB_READONLY) return;
         var file = e.target.files[0];
         if (!file) return;
+        var img = slide.querySelector('.ls01-cust-img');
+        img.src = URL.createObjectURL(file);
+        img.classList.remove('ls01-cust-img--missing');
         var reader = new FileReader();
         reader.onload = function (ev) {
           fetch('/api/upload-image', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ filename: file.name, data: ev.target.result })
           })
           .then(function (r) { return r.json(); })
           .then(function (data) {
             if (data.path) {
-              document.getElementById('ls26CarTrack').appendChild(ls26MakeImageSlide(data.path, file.name.replace(/\.[^.]+$/, '')));
-              var newIdx = getSlides().length - 1;
-              ls26BuildThumbs(); ls26SaveCarousel(); goTo(newIdx);
+              img.src = data.path;
+              document.dispatchEvent(new CustomEvent('slide-image-change', {
+                detail: { editKey: 'customer-logo', src: data.path }
+              }));
             }
           });
         };
         reader.readAsDataURL(file);
+        e.target.value = '';
       });
-      input.click();
-    };
+    }
 
-    window.ls26AddText = function () {
+    window.ls01DeleteLogo = function () {
       if (window.PB_READONLY) return;
-      document.getElementById('ls26CarTrack').appendChild(ls26MakeTextSlide());
-      ls26BuildThumbs(); ls26SaveCarousel();
-      goTo(getSlides().length - 1);
-    };
-
-    function ls26MakeImageSlide(src, caption) {
-      var d = document.createElement('div');
-      d.className = 'ls26-car-slide';
-      d.innerHTML = '<button class="ls26-car-del" data-builder-only="" contenteditable="false" onclick="ls26DeleteCarSlide(this)">&#x2715;</button>'
-        + '<img src="' + src + '" alt="' + caption + '">'
-        + '<div class="ls26-car-caption" contenteditable spellcheck="false">' + caption + '</div>'
-        + '<div class="ls26-car-img-overlay" data-builder-only="" onclick="ls26ChangeCarImage(this)">Change Image</div>'
-        + '<button class="ls26-car-move ls26-car-move--l" data-builder-only="" contenteditable="false" onclick="ls26MoveCarSlide(this,-1)">&#8249;</button>'
-        + '<button class="ls26-car-move ls26-car-move--r" data-builder-only="" contenteditable="false" onclick="ls26MoveCarSlide(this,1)">&#8250;</button>';
-      return d;
-    }
-
-    function ls26MakeTextSlide() {
-      var d = document.createElement('div');
-      d.className = 'ls26-car-slide ls26-car-slide--text';
-      d.innerHTML = '<button class="ls26-car-del" data-builder-only="" contenteditable="false" onclick="ls26DeleteCarSlide(this)">&#x2715;</button>'
-        + '<div class="ls26-stat-block">'
-        + '<div class="section-label" contenteditable spellcheck="false">Section Title</div>'
-        + '<span class="stat-number" contenteditable spellcheck="false">Key Fact</span>'
-        + '<div class="stat-label" contenteditable spellcheck="false">Description text here</div>'
-        + '</div>'
-        + '<button class="ls26-car-move ls26-car-move--l" data-builder-only="" contenteditable="false" onclick="ls26MoveCarSlide(this,-1)">&#8249;</button>'
-        + '<button class="ls26-car-move ls26-car-move--r" data-builder-only="" contenteditable="false" onclick="ls26MoveCarSlide(this,1)">&#8250;</button>';
-      return d;
-    }
-
-    // ── Save carousel ─────────────────────────────────────────────────────
-    function ls26SaveCarousel() {
-      var autoVal = parseInt(document.getElementById('ls26CarTrack').getAttribute('data-autoplay')) || 7;
-      var clone   = document.getElementById('ls26CarTrack').cloneNode(true);
-      clone.querySelectorAll('.ls26-car-del').forEach(function (el) { el.remove(); });
-      document.dispatchEvent(new CustomEvent('slide-carousel-save', {
-        detail: {
-          editKey:  'carousel-track',
-          html:     clone.innerHTML,
-          autoplay: String(autoVal)
-        }
+      var img = slide.querySelector('.ls01-cust-img');
+      img.src = '';
+      img.classList.add('ls01-cust-img--missing');
+      document.dispatchEvent(new CustomEvent('slide-image-change', {
+        detail: { editKey: 'customer-logo', src: '' }
       }));
-    }
+    };
 
-    window.ls26SaveCarousel = ls26SaveCarousel;
-
-    // ── Delete delegation — on the overlay (outside contenteditable track) ──
-    document.getElementById('ls26GalleryOverlay').addEventListener('click', function (e) {
-      if (window.PB_READONLY) return;
-      var btn = e.target.closest('.ls26-car-del');
-      if (!btn) return;
-      e.stopPropagation();
-      ls26DeleteCarSlide(btn);
-    });
-
-  })();
-
-  // ── Mark logo as missing on init if src is empty ─────────────────────
-  (function () {
-    var img       = document.querySelector('.ls26-cust-img');
-    if (img && !img.getAttribute('src')) {
-      img.classList.add('ls26-cust-img--missing');
-    }
-  })();
-
-  // ── Clear logo (called by inline onclick on delete button) ────────────
-  window.ls26ClearLogo = function () {
-    if (window.PB_READONLY) return;
-    var container = document.querySelector('.ls26-customer-logo');
-    var img       = container && container.querySelector('.ls26-cust-img');
-    if (!img) return;
-    img.removeAttribute('src');
-    img.classList.add('ls26-cust-img--missing');
-    container.style.background = '#fff';
-    document.dispatchEvent(new CustomEvent('slide-image-change', {
-      detail: { editKey: 'customer-logo', src: '' }
-    }));
-  };
-
-  // ── Smart background detection for customer logo ──────────────────────
-  function ls26DetectLogoBg(img) {
-    try {
-      var container = img.closest('.ls26-customer-logo');
-      if (!container) return;
-      var w = img.naturalWidth  || 100;
-      var h = img.naturalHeight || 100;
-      var canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      var ctx = canvas.getContext('2d', { willReadFrequently: true });
-      ctx.drawImage(img, 0, 0, w, h);
-      var size = Math.max(1, Math.round(Math.min(w, h) * 0.05));
-      var top    = ctx.getImageData(0, 0, w, size).data;
-      var bottom = ctx.getImageData(0, h - size, w, size).data;
-      var left   = ctx.getImageData(0, 0, size, h).data;
-      var right  = ctx.getImageData(w - size, 0, size, h).data;
-      var r = 0, g = 0, b = 0, a = 0, count = 0;
-      [top, bottom, left, right].forEach(function (d) {
-        for (var i = 0; i < d.length; i += 4) {
-          r += d[i]; g += d[i+1]; b += d[i+2]; a += d[i+3]; count++;
-        }
-      });
-      if (count === 0) return;
-      r = Math.round(r / count); g = Math.round(g / count);
-      b = Math.round(b / count); a = Math.round(a / count);
-      container.style.background = (a < 30) ? '#fff' : 'rgb(' + r + ',' + g + ',' + b + ')';
-    } catch (e) { /* cross-origin or tainted canvas */ }
-  }
-
-  (function () {
-    var img = document.querySelector('.ls26-cust-img');
-    if (!img) return;
-    if (img.complete && img.naturalWidth) { ls26DetectLogoBg(img); }
-    else { img.addEventListener('load', function () { ls26DetectLogoBg(img); }); }
-  })();
-
-  // ── Customer logo upload ───────────────────────────────────────────────
-  (function () {
-    var input     = document.getElementById('ls26-logo-file');
-    var container = document.querySelector('.ls26-customer-logo');
-    if (!input || !container) return;
-
-    container.addEventListener('click', function (e) {
-      if (window.PB_READONLY) return;
-      if (e.target.closest('.ls26-logo-del')) return; // handled by inline onclick
-      input.click();
-    });
-
-    input.addEventListener('change', function (e) {
-      var file = e.target.files[0];
-      if (!file) return;
-      var img = document.querySelector('.ls26-cust-img');
-      img.src = URL.createObjectURL(file);
-      img.classList.remove('ls26-cust-img--missing');
-      img.addEventListener('load', function onNewLoad() {
-        ls26DetectLogoBg(img);
-        img.removeEventListener('load', onNewLoad);
-      });
-      var reader = new FileReader();
-      reader.onload = function (ev) {
-        fetch('/api/upload-image', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ filename: file.name, data: ev.target.result })
-        })
-        .then(function (r) { return r.json(); })
-        .then(function (data) {
-          if (data.path) {
-            img.src = data.path;
-            document.dispatchEvent(new CustomEvent('slide-image-change', {
-              detail: { editKey: 'customer-logo', src: data.path }
-            }));
-          }
-        });
-      };
-      reader.readAsDataURL(file);
-    });
-  })();
-
-  // ── Slide init ────────────────────────────────────────────────────────
-  (function () {
-    var slide = document.currentScript.closest('[data-slide]');
-    if (window.PB_READONLY) slide.classList.add('ls26-readonly');
-    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
+    setTimeout(function () {
+      if (window.Gallery) Gallery.init(slide);
+      if (window.PE) PE.initSlide(slide);
+    }, 0);
   })();
   </script>
 
@@ -1145,12 +935,12 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     <div id="fp-nav-menu-wrap">
       <div id="fp-nav-menu">
         <div class="fp-nm-section">Slides</div>
-        <button class="fp-nm-item fp-nm-active" data-main="0">Cover — White + Gallery</button>
+        <button class="fp-nm-item fp-nm-active" data-main="0">New-Cover</button>
 
       </div>
       <button id="fp-nav-menu-btn" title="Slide navigation"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
     </div>
-    <div id="fp-slide-name">Cover — White + Gallery</div>
+    <div id="fp-slide-name">New-Cover</div>
     <button class="fp-share-btn" id="fp-share-btn-ftr" title="Share presentation"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
   </div>
 </div>
@@ -1974,6 +1764,374 @@ window.Carousel = (function () {
   function init(root) {
     if (!root) root = document;
     root.querySelectorAll('.ls-carousel').forEach(initOne);
+  }
+
+  return { init: init };
+
+})();
+
+/**
+ * gallery.js — Presentation Builder Gallery Component
+ *
+ * Activated when a slide contains:
+ *   <div data-ls-gallery data-edit="gallery-track" data-autoplay="8" style="display:none;">
+ *     <div class="ls-gallery-slide">...</div>
+ *   </div>
+ *   <button data-ls-gallery-open>Gallery</button>
+ *
+ * Usage:
+ *   Gallery.init(slideEl)  — call from slide IIFE inside setTimeout
+ *
+ * Overlay is created as a sibling of the [data-slide] root so position:fixed
+ * is not clipped by the slide's CSS transform stacking context.
+ *
+ * Save mechanism: dispatches 'slide-carousel-save' with editKey = data-edit value.
+ * The server's injected save script handles persistence (same event as ls-carousel).
+ */
+
+window.Gallery = (function () {
+
+  // ── Inject component styles ───────────────────────────────────────────────
+  function injectStyles() {
+    if (document.getElementById('ls-gallery-styles')) return;
+    var s = document.createElement('style');
+    s.id = 'ls-gallery-styles';
+    s.textContent = [
+      /* Overlay */
+      '.ls-gallery-overlay{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.70);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;}',
+      /* Popup */
+      '.ls-gallery-popup{position:relative;background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:20px;box-shadow:0 32px 96px rgba(0,0,0,.80);width:min(90vw,800px);}',
+      /* Close button */
+      '.ls-gallery-close{position:absolute;top:-14px;right:-14px;width:30px;height:30px;min-width:44px;min-height:44px;border-radius:50%;background:var(--bg-card);border:1px solid var(--border);color:var(--text);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;font-family:inherit;}',
+      '.ls-gallery-close:hover{background:var(--bg-card-hover);}',
+      /* Carousel wrap */
+      '.ls-gallery-wrap{position:relative;width:100%;height:260px;border-radius:12px;overflow:hidden;border:1px solid var(--border);}',
+      '.ls-gallery-track{display:flex;height:100%;transition:transform .55s cubic-bezier(.4,0,.2,1);}',
+      /* Slides */
+      '.ls-gallery-slide{flex:0 0 100%;width:100%;height:100%;position:relative;background:var(--bg);}',
+      '.ls-gallery-slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;}',
+      '.ls-gallery-caption{position:absolute;bottom:0;left:0;right:0;padding:8px 16px;background:linear-gradient(transparent,rgba(0,0,0,.75));color:rgba(255,255,255,.85);font-size:11px;font-weight:600;text-align:center;}',
+      /* Nav buttons */
+      '.ls-gallery-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.50);border:1px solid rgba(255,255,255,.20);color:#fff;font-size:24px;width:38px;height:38px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;font-family:inherit;}',
+      '.ls-gallery-nav:hover{background:rgba(var(--accent-rgb),.60);}',
+      '.ls-gallery-prev{left:10px;}',
+      '.ls-gallery-next{right:10px;}',
+      /* Text slide */
+      '.ls-gallery-slide--text{display:flex;align-items:center;justify-content:center;background:var(--bg);}',
+      '.ls-gallery-stat{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:32px;width:100%;text-align:center;}',
+      '.ls-gallery-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}',
+      '.ls-gallery-number{font-size:clamp(2.5rem,7vw,5rem);font-weight:900;letter-spacing:-.03em;line-height:1;color:var(--accent);}',
+      '.ls-gallery-body-text{font-size:14px;color:var(--text-muted);margin-top:6px;max-width:480px;}',
+      /* Builder controls */
+      '.ls-gallery-del{position:absolute;top:8px;left:8px;z-index:22;width:22px;height:22px;border-radius:50%;background:rgba(180,30,30,.75);border:1px solid rgba(255,100,100,.30);color:#fff;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;font-family:inherit;}',
+      '.ls-gallery-slide:hover .ls-gallery-del{opacity:1;}',
+      '.ls-gallery-change{position:absolute;inset:0;z-index:15;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;letter-spacing:.06em;opacity:0;transition:opacity .2s;cursor:pointer;}',
+      '.ls-gallery-slide:hover .ls-gallery-change{opacity:1;}',
+      '.ls-gallery-move{position:absolute;bottom:10px;z-index:20;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.30);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;font-family:inherit;}',
+      '.ls-gallery-slide:hover .ls-gallery-move{opacity:1;}',
+      '.ls-gallery-move-l{right:46px;}',
+      '.ls-gallery-move-r{right:12px;}',
+      /* Thumbnail strip */
+      '.ls-gallery-thumbs{display:flex;gap:6px;padding:10px 0 4px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}',
+      '.ls-gallery-thumb{flex:0 0 68px;height:44px;border-radius:8px;border:2px solid var(--border);background:var(--bg-card);background-size:cover;background-position:center;cursor:pointer;transition:border-color .2s;}',
+      '.ls-gallery-thumb:hover{border-color:var(--border-hover);}',
+      '.ls-gallery-thumb--active{border-color:var(--accent) !important;}',
+      '.ls-gallery-thumb--text{display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;letter-spacing:.06em;color:var(--accent);text-transform:uppercase;padding:4px;text-align:center;}',
+      /* Footer */
+      '.ls-gallery-footer{display:flex;align-items:center;justify-content:space-between;padding:8px 2px 0;}',
+      '.ls-gallery-auto-label{font-size:11px;color:var(--text-muted);font-weight:600;letter-spacing:.06em;}',
+      '.ls-gallery-auto-val{color:var(--text);min-width:14px;display:inline-block;text-align:center;border-bottom:1px solid var(--border);}',
+      '.ls-gallery-add-btns{display:flex;gap:6px;}',
+      '.ls-gallery-add{font-size:11px;font-weight:700;letter-spacing:.05em;padding:5px 12px;border-radius:20px;cursor:pointer;background:rgba(var(--accent-rgb),.08);border:1px solid var(--border);color:var(--text-muted);font-family:inherit;transition:background .2s,border-color .2s,color .2s;}',
+      '.ls-gallery-add:hover{background:rgba(var(--accent-rgb),.15);border-color:var(--accent);color:var(--accent);}',
+      /* Desktop */
+      '@media(min-width:769px){.ls-gallery-wrap{height:420px;}}',
+    ].join('');
+    document.head.appendChild(s);
+  }
+
+  // ── Build overlay DOM ─────────────────────────────────────────────────────
+  function buildOverlay(overlayId) {
+    var d = document.createElement('div');
+    d.className = 'ls-gallery-overlay';
+    d.id = overlayId;
+    d.style.display = 'none';
+    d.innerHTML = [
+      '<div class="ls-gallery-popup">',
+      '  <button class="ls-gallery-close" data-gallery-close contenteditable="false">✕</button>',
+      '  <div class="ls-gallery-wrap">',
+      '    <div class="ls-gallery-track"></div>',
+      '    <button class="ls-gallery-nav ls-gallery-prev" data-gallery-prev contenteditable="false">‹</button>',
+      '    <button class="ls-gallery-nav ls-gallery-next" data-gallery-next contenteditable="false">›</button>',
+      '  </div>',
+      '  <div class="ls-gallery-thumbs"></div>',
+      '  <div class="ls-gallery-footer" data-builder-only="">',
+      '    <span class="ls-gallery-auto-label">Auto <span class="ls-gallery-auto-val" contenteditable spellcheck="false">8</span>s</span>',
+      '    <div class="ls-gallery-add-btns">',
+      '      <button class="ls-gallery-add" data-gallery-add="image" contenteditable="false">+ Image</button>',
+      '      <button class="ls-gallery-add" data-gallery-add="text" contenteditable="false">+ Text</button>',
+      '    </div>',
+      '  </div>',
+      '</div>',
+    ].join('');
+    return d;
+  }
+
+  // ── Create an instance per slide ──────────────────────────────────────────
+  function createInstance(overlay, store, slideId) {
+    var popup    = overlay.querySelector('.ls-gallery-popup');
+    var track    = overlay.querySelector('.ls-gallery-track');
+    var thumbEl  = overlay.querySelector('.ls-gallery-thumbs');
+    var autoValEl = overlay.querySelector('.ls-gallery-auto-val');
+    var idx      = 0;
+    var autoTimer = null;
+
+    function slides() { return Array.from(track.querySelectorAll(':scope > .ls-gallery-slide')); }
+    function wrapW()  { return overlay.querySelector('.ls-gallery-wrap').offsetWidth || 760; }
+    function autoMs() { return (parseInt(store.getAttribute('data-autoplay')) || 8) * 1000; }
+
+    function goTo(i) {
+      var all = slides();
+      idx = Math.max(0, Math.min(all.length - 1, i));
+      track.style.transform = 'translateX(' + (idx * -wrapW()) + 'px)';
+      refreshThumbs();
+    }
+
+    function startAuto() {
+      clearInterval(autoTimer);
+      autoTimer = setInterval(function () {
+        var all = slides();
+        goTo(idx < all.length - 1 ? idx + 1 : 0);
+      }, autoMs());
+    }
+    function stopAuto() { clearInterval(autoTimer); }
+
+    function refreshThumbs() {
+      var all = slides();
+      thumbEl.innerHTML = '';
+      all.forEach(function (s, i) {
+        var t = document.createElement('div');
+        t.className = 'ls-gallery-thumb' + (i === idx ? ' ls-gallery-thumb--active' : '');
+        var img = s.querySelector('img');
+        if (img && img.src && img.src !== window.location.href) {
+          t.style.backgroundImage = 'url(' + img.src + ')';
+        } else {
+          t.classList.add('ls-gallery-thumb--text');
+          t.textContent = ((s.querySelector('.ls-gallery-label') || {}).textContent || 'Text').slice(0, 14);
+        }
+        t.addEventListener('click', function () { goTo(i); });
+        thumbEl.appendChild(t);
+      });
+    }
+
+    function ensureBuilderControls() {
+      if (window.PB_READONLY) return;
+      slides().forEach(function (s) {
+        /* Delete */
+        if (!s.querySelector('.ls-gallery-del')) {
+          var del = document.createElement('button');
+          del.className = 'ls-gallery-del';
+          del.textContent = '✕';
+          del.title = 'Remove';
+          del.setAttribute('data-builder-only', '');
+          del.setAttribute('contenteditable', 'false');
+          del.addEventListener('click', function () {
+            if (slides().length <= 1) return;
+            s.remove();
+            goTo(0);
+            save();
+          });
+          s.insertBefore(del, s.firstChild);
+        }
+        /* Change image overlay (image slides only) */
+        if (s.querySelector('img') && !s.querySelector('.ls-gallery-change')) {
+          var ch = document.createElement('div');
+          ch.className = 'ls-gallery-change';
+          ch.textContent = 'Change Image';
+          ch.setAttribute('data-builder-only', '');
+          ch.addEventListener('click', function () {
+            if (window.PB_READONLY) return;
+            pickFile(function (file) {
+              uploadImage(file, function (path) {
+                s.querySelector('img').src = path;
+                refreshThumbs();
+                save();
+              });
+            });
+          });
+          s.appendChild(ch);
+        }
+        /* Move L / Move R */
+        if (!s.querySelector('.ls-gallery-move')) {
+          [['‹', 'l', -1], ['›', 'r', 1]].forEach(function (cfg) {
+            var btn = document.createElement('button');
+            btn.className = 'ls-gallery-move ls-gallery-move-' + cfg[1];
+            btn.textContent = cfg[0];
+            btn.title = cfg[2] < 0 ? 'Move left' : 'Move right';
+            btn.setAttribute('data-builder-only', '');
+            btn.setAttribute('contenteditable', 'false');
+            btn.addEventListener('click', function () {
+              var all = slides(), i = all.indexOf(s), swap = all[i + cfg[2]];
+              if (!swap) return;
+              cfg[2] === 1 ? track.insertBefore(swap, s) : track.insertBefore(s, swap);
+              goTo(0);
+              save();
+            });
+            s.appendChild(btn);
+          });
+        }
+      });
+    }
+
+    function save() {
+      var clone = track.cloneNode(true);
+      clone.querySelectorAll('[data-builder-only]').forEach(function (el) { el.remove(); });
+      var html = clone.innerHTML;
+      store.innerHTML = html;
+      document.dispatchEvent(new CustomEvent('slide-carousel-save', {
+        detail: { editKey: store.getAttribute('data-edit') || 'gallery-track', html: html }
+      }));
+    }
+
+    function open() {
+      /* Populate display track from data store */
+      track.innerHTML = store.innerHTML;
+      track.style.transform = 'translateX(0px)';
+      idx = 0;
+      overlay.style.display = 'flex';
+      if (autoValEl) autoValEl.textContent = store.getAttribute('data-autoplay') || '8';
+      if (window.PB_READONLY) {
+        overlay.querySelectorAll('[data-builder-only]').forEach(function (el) {
+          el.style.display = 'none';
+        });
+      } else {
+        ensureBuilderControls();
+      }
+      refreshThumbs();
+      startAuto();
+    }
+
+    function close() {
+      if (!window.PB_READONLY) save();
+      stopAuto();
+      overlay.style.display = 'none';
+    }
+
+    /* Wire static overlay controls */
+    overlay.querySelector('[data-gallery-close]').addEventListener('click', close);
+    overlay.querySelector('[data-gallery-prev]').addEventListener('click', function () { goTo(idx - 1); });
+    overlay.querySelector('[data-gallery-next]').addEventListener('click', function () { goTo(idx + 1); });
+
+    overlay.querySelector('[data-gallery-add="image"]').addEventListener('click', function () {
+      if (window.PB_READONLY) return;
+      pickFile(function (file) {
+        uploadImage(file, function (path) {
+          var s = makeImageSlide(path, file.name.replace(/\.[^.]+$/, ''));
+          track.appendChild(s);
+          ensureBuilderControls();
+          refreshThumbs();
+          save();
+          goTo(slides().length - 1);
+        });
+      });
+    });
+
+    overlay.querySelector('[data-gallery-add="text"]').addEventListener('click', function () {
+      if (window.PB_READONLY) return;
+      track.appendChild(makeTextSlide());
+      ensureBuilderControls();
+      refreshThumbs();
+      save();
+      goTo(slides().length - 1);
+    });
+
+    if (autoValEl && !window.PB_READONLY) {
+      autoValEl.addEventListener('input', function () {
+        var val = parseInt(autoValEl.textContent) || 8;
+        store.setAttribute('data-autoplay', val);
+        startAuto();
+      });
+      autoValEl.addEventListener('blur', save);
+    }
+
+    var wrap = overlay.querySelector('.ls-gallery-wrap');
+    wrap.addEventListener('mouseenter', stopAuto);
+    wrap.addEventListener('mouseleave', function () {
+      if (overlay.style.display !== 'none') startAuto();
+    });
+
+    return { open: open, close: close };
+  }
+
+  // ── Slide factory helpers ─────────────────────────────────────────────────
+  function makeImageSlide(src, caption) {
+    var d = document.createElement('div');
+    d.className = 'ls-gallery-slide';
+    d.innerHTML = '<img src="' + src + '" alt="' + caption + '">'
+      + '<div class="ls-gallery-caption" contenteditable spellcheck="false">' + caption + '</div>';
+    return d;
+  }
+
+  function makeTextSlide() {
+    var d = document.createElement('div');
+    d.className = 'ls-gallery-slide ls-gallery-slide--text';
+    d.innerHTML = '<div class="ls-gallery-stat">'
+      + '<span class="ls-gallery-label" contenteditable spellcheck="false">Section Title</span>'
+      + '<span class="ls-gallery-number" contenteditable spellcheck="false">Key Fact</span>'
+      + '<span class="ls-gallery-body-text" contenteditable spellcheck="false">Description text here</span>'
+      + '</div>';
+    return d;
+  }
+
+  // ── File / upload helpers ─────────────────────────────────────────────────
+  function pickFile(cb) {
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.style.display = 'none';
+    document.body.appendChild(input);
+    input.addEventListener('change', function (e) {
+      document.body.removeChild(input);
+      if (e.target.files[0]) cb(e.target.files[0]);
+    });
+    input.click();
+  }
+
+  function uploadImage(file, cb) {
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      fetch('/api/upload-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: file.name, data: ev.target.result })
+      })
+      .then(function (r) { return r.json(); })
+      .then(function (data) { if (data.path) cb(data.path); });
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ── Public API ────────────────────────────────────────────────────────────
+  function init(slideEl) {
+    injectStyles();
+    var store = slideEl.querySelector('[data-ls-gallery]');
+    if (!store) return;
+    var trigger = slideEl.querySelector('[data-ls-gallery-open]');
+    if (!trigger) return;
+
+    var root = slideEl.closest('[data-slide]') || slideEl;
+    var slideId = (root.getAttribute('data-slide') || 'gallery').replace(/[^a-z0-9]/gi, '');
+    var overlayId = slideId + 'GalleryOverlay';
+
+    if (!document.getElementById(overlayId)) {
+      var overlay = buildOverlay(overlayId);
+      root.insertAdjacentElement('afterend', overlay);
+    }
+
+    var overlay = document.getElementById(overlayId);
+    var inst = createInstance(overlay, store, slideId);
+
+    trigger.addEventListener('click', function () { inst.open(); });
   }
 
   return { init: init };
@@ -3343,7 +3501,7 @@ window.Track = (function () {
 (function () {
   var mainSlides = document.querySelectorAll(".fp-slide:not(.fp-optional)");
   var optSlides  = document.querySelectorAll(".fp-slide.fp-optional");
-  var mainNames  = ["Cover — White + Gallery"];
+  var mainNames  = ["New-Cover"];
   var optNames   = [];
   var total      = mainSlides.length;
   var idx        = 0;
