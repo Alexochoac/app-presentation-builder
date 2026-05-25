@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Bitcoin Taught Me — Brand Style</title>
+<!--
+  ════════════════════════════════════════════════════════
+  STYLE: What Bitcoin Taught Me — Brand
+  ════════════════════════════════════════════════════════
+  Brand identity for the "What Bitcoin Taught Me" project.
+  Source of truth: Alex-Projects/active/what-bitcoin-taught-me/style.css
+
+  KEY DECISIONS:
+  - True black background: #000000 (matches logo background exactly)
+  - Section alternates: #111111 (bg2) and #1a1a1a (bg3) — pure gray, no blue
+  - Primary accent: #F7931A (Bitcoin orange)
+  - Secondary accent: #E8691A (deeper orange)
+  - Gold highlight: #FFD700 (for numbers, stats, gradient ends)
+  - Body text: #e8e8e8 (near-white, no blue tint)
+  - Font: Segoe UI / system-ui (no Google Fonts dependency)
+  - Hero logo: 360px, edges fade via mask-image radial-gradient
+    · -webkit-mask-image: radial-gradient(ellipse 55% 55% at center, black 55%, transparent 80%)
+    · filter: drop-shadow(0 0 30px rgba(247,147,26,0.45))
+  - Hero: radial-gradient(ellipse at center, #000000 0%, #1a1a1a 100%)
+  - Fund section: linear-gradient(135deg, #000000 0%, #1a1a1a 100%)
+  - About section: radial-gradient(ellipse at bottom, #000000 0%, #1a1a1a 100%)
+  - Nav: rgba(0,0,0,0.92) — pure black, no blue
+  - Progress bars: linear-gradient orange2 → orange → gold
+  - Cards: bg3 background + 1px orange border at low opacity
+  - Social icons: native brand colors (not orange-ified)
+  - Buttons: solid orange (primary) / outlined orange (secondary)
+
+  CSS VARIABLES:
+  --bg:        #000000   ← true black
+  --bg2:       #111111   ← alternate section background
+  --bg3:       #1a1a1a   ← card backgrounds
+  --orange:    #F7931A   ← Bitcoin orange (primary accent)
+  --orange2:   #E8691A   ← deeper orange (gradients, hover)
+  --gold:      #FFD700   ← gold (numbers, stats, gradient ends)
+  --white:     #ffffff
+  --muted:     #e8e8e8   ← body text
+  --radius:    12px
+
+  WHEN TO USE:
+  - Any content for the What Bitcoin Taught Me project
+  - Bitcoin-themed presentations or landing pages
+  - Stats/metrics with gold numbers
+  - Lightning ⚡ / community / fund sections
+
+  TO USE:
+  1. Copy :root variables and base styles from what-bitcoin-taught-me/style.css
+  2. Set body background to var(--bg)
+  3. Alternate sections between bg (default) and bg2
+  4. Cards use bg3 + orange border at 0.1–0.2 opacity
+  5. Headlines in var(--orange), stats in var(--gold)
+  ════════════════════════════════════════════════════════
+-->
+<style>
+  /* ── Reset ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ── Theme Variables ── */
+  :root {
+    --bg:        #000000;
+    --bg2:       #111111;
+    --bg3:       #1a1a1a;
+    --orange:    #F7931A;
+    --orange2:   #E8691A;
+    --gold:      #FFD700;
+    --white:     #ffffff;
+    --muted:     #e8e8e8;
+    --radius:    12px;
+    --transition: 0.25s ease;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+
+  /* ── Typography ── */
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--orange), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 800;
+    color: var(--orange);
+    margin-bottom: 0.5rem;
+  }
+
+  h3 {
+    color: var(--orange);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  p { color: var(--muted); font-size: 0.95rem; }
+
+  /* ── Buttons ── */
+  .btn {
+    padding: 0.75rem 1.75rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all var(--transition);
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+  }
+
+  .btn-primary { background: var(--orange); color: var(--bg); }
+  .btn-primary:hover { background: var(--gold); transform: translateY(-2px); }
+
+  .btn-outline { border: 2px solid var(--orange); color: var(--orange); }
+  .btn-outline:hover { background: var(--orange); color: var(--bg); transform: translateY(-2px); }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--bg3);
+    border: 1px solid rgba(247, 147, 26, 0.15);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    transition: all var(--transition);
+  }
+  .card:hover { border-color: var(--orange); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(247, 147, 26, 0.15); }
+
+  /* ── Stat Box ── */
+  .stat-box {
+    background: rgba(247, 147, 26, 0.07);
+    border: 1px solid rgba(247, 147, 26, 0.2);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    text-align: center;
+  }
+  .stat-label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.3rem; }
+  .stat-number { font-size: 2rem; font-weight: 800; color: var(--gold); display: block; }
+  .stat-note { font-size: 0.75rem; color: var(--muted); display: block; margin-top: 0.2rem; }
+
+  /* ── Progress Bar ── */
+  .progress-bar { background: rgba(255,255,255,0.1); border-radius: 999px; height: 12px; overflow: hidden; margin: 0.5rem 0; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--orange2), var(--orange), var(--gold)); border-radius: 999px; }
+
+  /* ── Logo (hero — fade effect) ── */
+  .logo-hero {
+    width: 360px; height: 360px; object-fit: contain;
+    -webkit-mask-image: radial-gradient(ellipse 55% 55% at center, black 55%, transparent 80%);
+    mask-image: radial-gradient(ellipse 55% 55% at center, black 55%, transparent 80%);
+    filter: drop-shadow(0 0 30px rgba(247, 147, 26, 0.45));
+    margin-bottom: -0.5rem;
+  }
+
+  /* ── Hero Background ── */
+  .hero-bg { background: radial-gradient(ellipse at center, #000000 0%, #1a1a1a 100%); padding: 4rem 2rem; text-align: center; border-radius: var(--radius); }
+
+  /* ── Section Alternating ── */
+  .section-alt { background: var(--bg2); }
+  .section-fund { background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); }
+  .section-about { background: radial-gradient(ellipse at bottom, #000000 0%, #1a1a1a 100%); }
+
+  /* ── Badges ── */
+  .badge { display: inline-block; padding: 0.3rem 0.8rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+  .badge-orange { background: rgba(247, 147, 26, 0.15); color: var(--orange); border: 1px solid rgba(247, 147, 26, 0.3); }
+  .badge-gold   { background: rgba(255, 215, 0, 0.12);  color: var(--gold);   border: 1px solid rgba(255, 215, 0, 0.25); }
+
+  /* ── Nav ── */
+  .nav-demo {
+    background: rgba(0, 0, 0, 0.92); backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(247, 147, 26, 0.2);
+    padding: 0.75rem 1.5rem; display: flex; align-items: center; gap: 1rem;
+    border-radius: var(--radius); margin-bottom: 1rem;
+  }
+  .nav-title { font-weight: 700; color: var(--orange); flex: 1; }
+  .nav-link { color: var(--muted); font-size: 0.9rem; text-decoration: none; transition: color var(--transition); }
+  .nav-link:hover { color: var(--orange); }
+
+  /* ── Social Cards ── */
+  .social-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+  .social-card { background: var(--bg3); border: 1px solid rgba(247, 147, 26, 0.1); border-radius: var(--radius); padding: 1.25rem; display: flex; align-items: center; gap: 1rem; transition: all var(--transition); text-decoration: none; }
+  .social-card:hover { border-color: var(--orange); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(247, 147, 26, 0.15); }
+  .social-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+  .social-info { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+  .social-name { font-weight: 700; font-size: 0.9rem; color: var(--white); }
+  .social-handle { font-size: 0.75rem; color: var(--orange); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .social-note { font-size: 0.75rem; color: var(--muted); }
+
+  /* Social icon brand colors */
+  .x-icon       { background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+  .nostr-icon   { background: #7c3aed; color: #fff; }
+  .yt-icon      { background: #FF0000; color: #fff; }
+  .spotify-icon { background: #1DB954; color: #fff; }
+  .tg-icon      { background: #2CA5E0; color: #fff; }
+  .li-icon      { background: #0077B5; color: #fff; }
+  .bsky-icon    { background: #0085ff; color: #fff; }
+  .fountain-icon { background: #ff6b35; color: #fff; }
+
+  /* ── QR / Wallet Box ── */
+  .qr-box { background: var(--bg2); border: 2px dashed rgba(247, 147, 26, 0.4); border-radius: var(--radius); padding: 2rem; text-align: center; width: 200px; display: flex; flex-direction: column; gap: 0.5rem; }
+  .qr-icon { font-size: 2.5rem; display: block; }
+
+  /* ── About logo ── */
+  .about-logo { width: 160px; height: 160px; border-radius: 50%; object-fit: cover; border: 3px solid var(--orange); box-shadow: 0 0 40px rgba(247, 147, 26, 0.3); }
+
+  /* ── Divider ── */
+  .divider { border: none; border-top: 1px solid rgba(247, 147, 26, 0.15); margin: 2rem 0; }
+
+  /* ── Footer ── */
+  .footer-demo { background: var(--bg2); border-top: 1px solid rgba(247, 147, 26, 0.2); padding: 2rem; text-align: center; border-radius: var(--radius); }
+  .footer-note { font-size: 0.75rem !important; opacity: 0.5; }
+
+  /* ── Showcase Layout ── */
+  .showcase { max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem; }
+  .showcase-title { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; }
+  .row { display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-start; }
+</style>
+</head>
+<body>
+
+<div class="showcase">
+
+  <!-- Header -->
+  <div style="text-align:center; padding: 2rem 0;">
+    <span class="badge badge-orange">⚡ What Bitcoin Taught Me</span>
+    <h1 style="margin-top: 1rem;">What Bitcoin Taught Me</h1>
+    <p style="color: var(--muted); font-size: 1.1rem;">True black · Bitcoin orange · Gold stats · Segoe UI · No blue</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Colors -->
+  <div>
+    <p class="showcase-title">Color Palette</p>
+    <div class="row">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:0.4rem;">
+        <div style="width:64px;height:64px;border-radius:10px;background:#000000;border:1px solid rgba(255,255,255,0.1);"></div>
+        <span style="font-size:0.7rem;color:var(--muted);">--bg<br>#000000</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:0.4rem;">
+        <div style="width:64px;height:64px;border-radius:10px;background:#111111;border:1px solid rgba(255,255,255,0.1);"></div>
+        <span style="font-size:0.7rem;color:var(--muted);">--bg2<br>#111111</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:0.4rem;">
+        <div style="width:64px;height:64px;border-radius:10px;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);"></div>
+        <span style="font-size:0.7rem;color:var(--muted);">--bg3<br>#1a1a1a</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:0.4rem;">
+        <div style="width:64px;height:64px;border-radius:10px;background:#F7931A;"></div>
+        <span style="font-size:0.7rem;color:var(--muted);">--orange<br>#F7931A</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:0.4rem;">
+        <div style="width:64px;height:64px;border-radius:10px;background:#E8691A;"></div>
+        <span style="font-size:0.7rem;color:var(--muted);">--orange2<br>#E8691A</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:0.4rem;">
+        <div style="width:64px;height:64px;border-radius:10px;background:#FFD700;"></div>
+        <span style="font-size:0.7rem;color:var(--muted);">--gold<br>#FFD700</span>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:0.4rem;">
+        <div style="width:64px;height:64px;border-radius:10px;background:#e8e8e8;"></div>
+        <span style="font-size:0.7rem;color:var(--muted);">--muted<br>#e8e8e8</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Nav -->
+  <div>
+    <p class="showcase-title">Navigation Bar</p>
+    <div class="nav-demo">
+      <span style="font-size:1.5rem;">₿</span>
+      <span class="nav-title">What Bitcoin Taught Me</span>
+      <a href="#" class="nav-link">The Book</a>
+      <a href="#" class="nav-link">Fund Us</a>
+      <a href="#" class="nav-link">Community</a>
+      <a href="#" class="nav-link">About</a>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Typography -->
+  <div>
+    <p class="showcase-title">Typography</p>
+    <h1>What Bitcoin Taught Me</h1>
+    <h2>The Book — Chapter 15 of 21</h2>
+    <h3>Fund a Page ⚡</h3>
+    <p>We share what we have learned while learning about Bitcoin. Every chapter written, every sat raised, brings us closer to a complete guide for the next generation of Bitcoiners.</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Buttons -->
+  <div>
+    <p class="showcase-title">Buttons</p>
+    <div class="row">
+      <a href="#" class="btn btn-primary">Read the Book</a>
+      <a href="#" class="btn btn-outline">Support Us ⚡</a>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Badges -->
+  <div>
+    <p class="showcase-title">Badges</p>
+    <div class="row">
+      <span class="badge badge-orange">⚡ Lightning</span>
+      <span class="badge badge-gold">₿ Bitcoin Only</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Hero Background -->
+  <div>
+    <p class="showcase-title">Hero Background (radial gradient, logo with mask-image fade)</p>
+    <div class="hero-bg">
+      <!-- In real site: <img class="logo-hero" src="LOGO WBTM.png"> -->
+      <div style="width:120px;height:120px;background:rgba(247,147,26,0.15);border-radius:50%;margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:3rem;filter:drop-shadow(0 0 30px rgba(247,147,26,0.45));">₿</div>
+      <h1>What Bitcoin Taught Me</h1>
+      <p style="font-size:1.1rem; margin-bottom:1.5rem;">We share what we have learned while learning about Bitcoin.</p>
+      <div class="row" style="justify-content:center;">
+        <a href="#" class="btn btn-primary">Read the Book</a>
+        <a href="#" class="btn btn-outline">Support Us ⚡</a>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Stat Boxes (gold numbers) -->
+  <div>
+    <p class="showcase-title">Stat Boxes — gold numbers</p>
+    <div class="row">
+      <div class="stat-box" style="flex:1; min-width:160px;">
+        <span class="stat-label">Pages Funded</span>
+        <span class="stat-number">142</span>
+        <span class="stat-note">21 sats = 1 page</span>
+      </div>
+      <div class="stat-box" style="flex:1; min-width:160px;">
+        <span class="stat-label">Total Sats Raised</span>
+        <span class="stat-number">2,982</span>
+        <span class="stat-note">⚡ Lightning Network</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Progress Bar -->
+  <div>
+    <p class="showcase-title">Progress Bar (orange → gold gradient)</p>
+    <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--muted); margin-bottom:0.4rem;">
+      <span>Chapter Progress</span>
+      <span style="color:var(--orange); font-weight:700;">15 / 21</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: 71.4%"></div>
+    </div>
+    <p style="font-size:0.8rem; margin-top:0.3rem;">71% complete</p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Cards -->
+  <div>
+    <p class="showcase-title">Cards (bg3 + orange border)</p>
+    <div class="row">
+      <div class="card" style="flex:1; min-width:200px;">
+        <h3>Book Fund</h3>
+        <p>Every sat funds one more page. Help us finish the 21 chapters.</p>
+      </div>
+      <div class="card" style="flex:1; min-width:200px;">
+        <h3>Community Fund</h3>
+        <p>Support free Bitcoin education for everyone — no middlemen.</p>
+      </div>
+      <div class="card" style="flex:1; min-width:200px;">
+        <h3>Social Hub</h3>
+        <p>Multiple platforms, one mission. Follow along wherever you are.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Social Grid -->
+  <div>
+    <p class="showcase-title">Social Grid (native brand colors)</p>
+    <div class="social-grid">
+      <div class="social-card">
+        <div class="social-icon nostr-icon">⚡</div>
+        <div class="social-info">
+          <span class="social-name">Nostr</span>
+          <span class="social-handle">npub1japy…vzrsl</span>
+          <span class="social-note">Main source</span>
+        </div>
+      </div>
+      <div class="social-card">
+        <div class="social-icon yt-icon">▶</div>
+        <div class="social-info">
+          <span class="social-name">YouTube</span>
+          <span class="social-handle">@WBTM21</span>
+          <span class="social-note">— subscribers</span>
+        </div>
+      </div>
+      <div class="social-card">
+        <div class="social-icon spotify-icon">♪</div>
+        <div class="social-info">
+          <span class="social-name">Spotify</span>
+          <span class="social-handle">WBTM Podcast</span>
+          <span class="social-note">— listeners</span>
+        </div>
+      </div>
+      <div class="social-card">
+        <div class="social-icon fountain-icon">🎙</div>
+        <div class="social-info">
+          <span class="social-name">Fountain</span>
+          <span class="social-handle">WBTM Podcast ⚡</span>
+          <span class="social-note">Lightning-enabled</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- QR / Wallet Placeholder -->
+  <div>
+    <p class="showcase-title">QR / Wallet Placeholder</p>
+    <div class="row">
+      <div class="qr-box">
+        <span class="qr-icon">⚡</span>
+        <p style="font-size:0.85rem;">Book Fund Wallet</p>
+        <p style="font-size:0.7rem; word-break:break-all; color:rgba(160,160,192,0.6);">wbtm@coinos.io</p>
+      </div>
+      <div class="qr-box">
+        <span class="qr-icon">₿</span>
+        <p style="font-size:0.85rem;">Community Fund</p>
+        <p style="font-size:0.7rem; word-break:break-all; color:rgba(160,160,192,0.6);">wbtm@coinos.io</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- About layout -->
+  <div>
+    <p class="showcase-title">About Layout (logo + text grid)</p>
+    <div style="display:grid; grid-template-columns:auto 1fr; gap:2rem; align-items:center;" class="section-about" style="padding:2rem; border-radius:var(--radius);">
+      <div class="about-logo" style="width:100px;height:100px;background:rgba(247,147,26,0.15);border-radius:50%;border:3px solid var(--orange);box-shadow:0 0 40px rgba(247,147,26,0.3);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">₿</div>
+      <div>
+        <h2 style="margin-bottom:0.5rem;">About This Project</h2>
+        <p>What Bitcoin Taught Me started as a personal journey — one person trying to understand Bitcoin and realizing that the best way to learn is to share.</p>
+        <a href="#" class="btn btn-primary" style="margin-top:1rem;display:inline-block;">Start Reading ⚡</a>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Footer -->
+  <div>
+    <p class="showcase-title">Footer</p>
+    <div class="footer-demo">
+      <div style="font-size:2rem;margin-bottom:0.5rem;">₿</div>
+      <p>What Bitcoin Taught Me &copy; 2026 · Built on Bitcoin ⚡</p>
+      <p class="footer-note">Not financial advice. Just what Bitcoin taught us.</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Footer note -->
+  <div style="text-align:center; padding:1rem 0; opacity:0.4;">
+    <p style="font-size:0.8rem;">What Bitcoin Taught Me · Brand Style · #000000 · #F7931A · #FFD700 · Segoe UI</p>
+    <p style="font-size:0.75rem; margin-top:0.3rem;">Source: Alex-Projects/active/what-bitcoin-taught-me/style.css</p>
+  </div>
+
+</div>
+
+</body>
+</html>

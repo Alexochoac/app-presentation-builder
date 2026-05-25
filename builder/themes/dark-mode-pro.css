@@ -1,0 +1,40 @@
+/* auto-generated */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* Identity */
+  --bg:                 #0a0a0f;
+  --slide-hero-bg:      #0a0a0f;
+  --slide-hero-rgb:     10,10,15;
+  --text:               #ffffff;
+  --text-muted:         rgba(255,255,255,.55);
+  --accent:             #6366f1;
+  --accent-rgb:         99,102,241;
+  --accent-mid:         #6366f1;
+  --accent-light:       #a9abf7;
+  --font-body:          'Inter', sans-serif;
+  --font-heading:       'Inter', sans-serif;
+
+  /* Hero overlay */
+  --hero-overlay-angle: 135deg;
+  --hero-overlay-start: .72;
+  --hero-overlay-end:   .38;
+
+  /* Cards */
+  --card-bg:            rgba(255,255,255,.05);
+  --card-border:        rgba(255,255,255,.10);
+  --card-radius:        12px;
+  --card-shadow:        0 4px 20px rgba(0,0,0,.35);
+
+  /* Badge */
+  --badge-bg:           rgba(99,102,241,.15);
+  --badge-border:       rgba(99,102,241,.35);
+  --badge-radius:       6px;
+  --badge-color:        #6366f1;
+
+  /* Logo container */
+  --logo-bg:            rgba(255,255,255,.05);
+  --logo-border:        rgba(255,255,255,.10);
+  --logo-radius:        20px;
+}
+body, .slide { font-family: var(--font-body); }

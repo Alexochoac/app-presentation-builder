@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>How I Closed a $15,000 Client — Side-Scroll Deck (Interactive)</title>
+  <style>
+    :root{
+      --bg:#f4f2ee; --paper:#ffffff; --ink:#0e1116; --muted:#64728a;
+      --line:rgba(10,14,20,.06);
+      --shadow:0 30px 80px rgba(0,0,0,.12);
+      --shadow-soft:0 12px 30px rgba(0,0,0,.10);
+      --accentA:#6aa8ff; --accentB:#9ff4ff; --accentC:#8b5cf6; --accentD:#22d3ee;
+      --good:#15b886; --warn:#ffb020; --bad:#ff6b6b;
+      --radius:28px; --radius-xl:36px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg); color:var(--ink);
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Inter,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      overflow:hidden; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    }
+
+    /* Deck */
+    .viewport{position:relative;width:100vw;height:100vh;overflow:hidden}
+    .track{display:flex;height:100%;width:max-content;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+    section.slide{
+      width:100vw;height:100vh;padding:clamp(20px,3vw,48px);
+      display:flex;align-items:center;justify-content:center;position:relative;
+      opacity:0; transform:translateY(24px) scale(.985);
+      transition:opacity .7s ease, transform .7s ease;
+    }
+    .slide.active{opacity:1;transform:none}
+
+    .card{
+      width:min(1120px,92vw); background:var(--paper);
+      border-radius:var(--radius-xl); box-shadow:var(--shadow);
+      padding:clamp(28px,4vw,52px); border:1px solid var(--line);
+      position:relative; overflow:hidden; text-align:left;
+    }
+
+    /* Type */
+    h1{margin:0 0 .2em;font-weight:900;letter-spacing:-.02em;line-height:1.02;font-size:clamp(36px,6.8vw,74px)}
+    h2{margin:.2em 0 .2em;font-weight:800;letter-spacing:-.01em;line-height:1.08;font-size:clamp(26px,3.6vw,44px)}
+    p.sub{margin:.2em 0 0;color:var(--muted);font-size:clamp(16px,2vw,22px);line-height:1.5}
+
+    /* Pills */
+    .pills{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+    .pill{
+      --gradA:var(--accentA);--gradB:var(--accentB);
+      padding:10px 16px;border-radius:9999px;font-weight:700;font-size:clamp(12px,1.6vw,16px);
+      color:#0a0f14;background:linear-gradient(135deg,var(--gradA),var(--gradB));
+      box-shadow:0 10px 24px rgba(0,0,0,.16),0 0 0 1px rgba(255,255,255,.5) inset,0 0 40px rgba(154,244,255,.28);
+      white-space:nowrap;letter-spacing:.2px
+    }
+    .pill.violet{--gradA:#a78bfa;--gradB:#60a5fa}
+    .pill.cyan{--gradA:#22d3ee;--gradB:#a5f3fc}
+    .pill.green{--gradA:#34d399;--gradB:#bbf7d0}
+    .pill.gray {--gradA:#e5e7eb;--gradB:#ffffff;color:#111}
+
+    /* Layout helpers */
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,3vw,28px);align-items:center}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,2.4vw,24px);margin-top:22px}
+    .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(14px,2.4vw,24px);margin-top:22px}
+    .tile{background:#fff;border:1px solid var(--line);border-radius:24px;padding:20px 24px;box-shadow:var(--shadow-soft)}
+    .tile h3{margin:0 0 6px;font-size:clamp(18px,2.2vw,24px)}
+    .tile p{margin:4px 0 0;color:var(--muted);font-size:clamp(13px,1.6vw,16px)}
+
+    /* Chips + Monolith */
+    .chip-cloud{display:flex;flex-wrap:wrap;gap:10px}
+    .chip{padding:8px 12px;border-radius:9999px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-soft);font-weight:700;font-size:14px}
+    .monolith{
+      min-height:280px;display:flex;align-items:center;justify-content:center;text-align:center;
+      background:radial-gradient(1200px 400px at 50% -20%,rgba(138,245,255,.35),transparent 60%),linear-gradient(160deg,#ffffff,#f7f9ff);
+      border-radius:28px;border:1px solid rgba(99,102,241,.18);
+      box-shadow:0 30px 80px rgba(34,211,238,.35),0 8px 24px rgba(0,0,0,.08);
+      padding:clamp(24px,3.5vw,48px) clamp(28px,4vw,60px);
+    }
+    .monolith h2{margin:0;font-weight:800}
+    .monolith p.sub{margin:.6em 0 0}
+
+    /* Bars (Cost) */
+    .bars{display:grid;grid-template-columns:1fr 1fr;align-items:end;gap:24px;height:260px;padding:6px 12px}
+    .bar{position:relative;border-radius:20px 20px 6px 6px;background:linear-gradient(180deg,#a5b4fc,#6366f1);box-shadow:var(--shadow-soft);overflow:hidden}
+    .bar .label{position:absolute;inset:auto 0 -34px 0;text-align:center;font-weight:800;font-size:14px}
+    .bar .tag{position:absolute;top:-36px;left:50%;transform:translateX(-50%);padding:6px 10px;border-radius:9999px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-soft);font-weight:800;font-size:12px}
+
+    /* The Shift: panel + chips */
+    .panel{width:100%;max-width:980px;padding:clamp(16px,2.4vw,28px);border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,255,255,.9));border:1px solid var(--line);box-shadow:var(--shadow-soft)}
+    .glass-chips{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:12px}
+    .glass-chip{padding:10px 14px;border-radius:999px;background:rgba(0,0,0,.04);border:1px solid var(--line);box-shadow:0 8px 24px rgba(0,0,0,.06) inset, var(--shadow-soft);font-weight:800;color:#0b1017}
+
+    /* Flip cards */
+    .flip{perspective:1200px}
+    .flip-inner{position:relative;width:100%;height:120px;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+    .flip.flipped .flip-inner{transform:rotateY(180deg)}
+    .flip .front,.flip .back{
+      position:absolute;inset:0;border-radius:16px;
+      padding:18px 20px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-soft);
+      backface-visibility:hidden;display:flex;align-items:center;justify-content:center;gap:10px;text-align:center;
+    }
+    .flip .front .emoji{font-size:40px;line-height:1}
+    .flip .front .label{font-weight:900;font-size:16px}
+    .flip .back{transform:rotateY(180deg);flex-direction:column}
+    .flip:hover .front,.flip:hover .back{box-shadow:0 18px 48px rgba(34,211,238,.15),0 8px 18px rgba(0,0,0,.08)}
+
+    /* Coin pop + clickable affordance */
+    .tile.coin-target{position:relative;overflow:visible;cursor:pointer;transition:box-shadow .22s ease, border-color .22s ease, transform .06s ease}
+    .tile.coin-target:hover{box-shadow:0 18px 48px rgba(255,215,0,.22),0 8px 18px rgba(0,0,0,.08)}
+    .tile.coin-target:active{transform:translateY(1px)}
+    .tile.coin-target.gold{border-color:rgba(240,180,0,.55);box-shadow:0 22px 56px rgba(255,215,0,.34),0 10px 22px rgba(0,0,0,.10),0 0 0 2px rgba(255,200,0,.22) inset}
+    .coin{
+      position:absolute;left:50%;bottom:18px;width:26px;height:26px;border-radius:50%;
+      background:radial-gradient(circle at 35% 35%, #fff 0 22%, #ffd54a 22% 60%, #f4b400 60% 100%);
+      border:1px solid rgba(0,0,0,.12);transform:translate(-50%,10px) scale(.6);
+      filter:drop-shadow(0 6px 10px rgba(0,0,0,.15));opacity:0;
+      animation:coinPop .8s cubic-bezier(.2,.9,.2,1) forwards
+    }
+    @keyframes coinPop{
+      0%{opacity:0;transform:translate(-50%,10px) scale(.6)}
+      30%{opacity:1}
+      60%{transform:translate(-50%,-70px) scale(1)}
+      100%{opacity:0;transform:translate(-50%,-90px) scale(.9)}
+    }
+
+    /* Progress + hint */
+    .progress{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;display:flex;align-items:center;gap:10px;z-index:50}
+    .progress .dots{display:flex;gap:6px}
+    .dots span{width:8px;height:8px;border-radius:999px;background:#d7dbe2;transition:all .3s ease}
+    .dots span.active{width:28px;background:linear-gradient(90deg,var(--accentA),var(--accentB));box-shadow:0 6px 18px rgba(0,0,0,.18)}
+    .pager{font-weight:700;color:#8a93a4;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+    .hint{position:fixed;right:20px;bottom:20px;font-size:12px;color:#8a93a4;background:#fff;border:1px solid var(--line);padding:8px 10px;border-radius:12px;box-shadow:var(--shadow-soft)}
+
+    /* Glows + reveal */
+    .glow{position:absolute;filter:blur(80px);opacity:.35;pointer-events:none}
+    .glow.a{width:60vmax;height:60vmax;background:radial-gradient(circle,#9ff4ff 0%,transparent 60%);top:-20vmax;left:-10vmax}
+    .glow.b{width:56vmax;height:56vmax;background:radial-gradient(circle,#c7b5ff 0%,transparent 60%);bottom:-22vmax;right:-10vmax}
+    .reveal{opacity:0;transform:translateY(16px)}
+    .active .reveal{animation:rise .7s cubic-bezier(.2,.8,.2,1) forwards}
+    .active .reveal:nth-child(2){animation-delay:.06s}
+    .active .reveal:nth-child(3){animation-delay:.12s}
+    .active .reveal:nth-child(4){animation-delay:.18s}
+    @keyframes rise{to{opacity:1;transform:none}}
+
+    @media (max-width:880px){
+      .split{grid-template-columns:1fr}
+      .grid-3{grid-template-columns:1fr}
+      .grid-2{grid-template-columns:1fr}
+      .bars{grid-template-columns:1fr;height:220px}
+      .flip .front .emoji{font-size:34px}
+    }
+  </style>
+</head>
+<body>
+  <div class="viewport" id="deck">
+    <div class="track" id="track">
+
+      <!-- 1. Title -->
+      <section class="slide active" data-title="Title">
+        <div class="glow a"></div><div class="glow b"></div>
+        <div class="card">
+          <h1 class="reveal">How I Closed a $15,000 Client</h1>
+          <h2 class="reveal">Replacing Their $55K Employee with Custom Software</h2>
+          <p class="sub reveal">Built end-to-end with Claude Code. No traditional coding. 24/7. Tailored to the business.</p>
+          <div class="pills reveal">
+            <span class="pill">$15K Project</span>
+            <span class="pill violet">Claude Code</span>
+            <span class="pill cyan">No Dev Team</span>
+            <span class="pill green">Works 24/7</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Cold Open -->
+      <section class="slide" data-title="Cold Open">
+        <div class="card">
+          <h2 class="reveal">“One project. $15,000. Zero code.”</h2>
+          <h1 class="reveal">They almost hired a $55,000 employee.</h1>
+          <p class="sub reveal">Instead, they got custom software that never sleeps. Here’s how it happened.</p>
+        </div>
+      </section>
+
+      <!-- 3. Opportunity -->
+      <section class="slide" data-title="Opportunity">
+        <div class="card">
+          <h1 class="reveal">The Opportunity Nobody Sees</h1>
+          <div class="split reveal">
+            <div>
+              <div class="grid-3">
+                <div class="tile"><h3>Opus 4.1</h3><p>74.5% on SWE benchmark → senior-level coding capability.</p></div>
+                <div class="tile"><h3>115,000</h3><p>Estimated global Claude Code users right now.</p></div>
+                <div class="tile"><h3>30,000,000</h3><p>Small businesses in the U.S. with solvable problems.</p></div>
+              </div>
+              <div class="pills" style="margin-top:22px">
+                <span class="pill">Lottery Tickets for Builders</span>
+                <span class="pill violet">Greenfield Demand</span>
+                <span class="pill cyan">Near-Zero Competition</span>
+              </div>
+            </div>
+            <div class="tile">
+              <svg viewBox="0 0 520 320" width="100%" height="100%" aria-hidden="true">
+                <defs>
+                  <linearGradient id="gA" x1="0" x2="1">
+                    <stop offset="0%" stop-color="#a5f3fc"/><stop offset="100%" stop-color="#60a5fa"/>
+                  </linearGradient>
+                </defs>
+                <rect x="0" y="0" width="520" height="320" rx="24" fill="#fbfdff" />
+                <rect x="40" y="120" width="440" height="120" rx="20" fill="url(#gA)"/>
+                <rect x="80" y="80" width="180" height="60" rx="14" fill="#fff" stroke="rgba(0,0,0,.08)"/>
+                <circle cx="380" cy="100" r="30" fill="#fff" stroke="rgba(0,0,0,.08)"/>
+                <rect x="120" y="160" width="120" height="40" rx="12" fill="#fff" stroke="rgba(0,0,0,.08)"/>
+                <rect x="280" y="160" width="160" height="40" rx="12" fill="#fff" stroke="rgba(0,0,0,.08)"/>
+                <text x="90" y="115" font-size="16" font-weight="800" fill="#0e1116">Claude Code</text>
+                <text x="300" y="185" font-size="14" font-weight="700" fill="#0e1116">Compile → Ship</text>
+              </svg>
+              <p class="sub" style="margin-top:12px">Claude Code is the sewing machine. You bring the measurements and taste.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. What I'm Doing -->
+      <section class="slide" data-title="Tailored vs Automations">
+        <div class="card">
+          <h1 class="reveal">What I Actually Build</h1>
+          <div class="grid-2 reveal">
+            <div class="tile">
+              <h3>Tailored Software</h3>
+              <p>Map their real workflow → one clean system → hand them the keys.</p>
+              <div class="pills" style="margin-top:10px">
+                <span class="pill green">Ownable</span><span class="pill">Durable</span><span class="pill cyan">Repeatable</span>
+              </div>
+            </div>
+            <div class="tile">
+              <h3>Fragile Automations</h3>
+              <p>You become the system. Breaks at 2am. Babysitting forever.</p>
+              <div class="pills" style="margin-top:10px">
+                <span class="pill gray">Reactive</span><span class="pill gray">Brittle</span><span class="pill gray">Unscalable</span>
+              </div>
+            </div>
+          </div>
+          <p class="sub reveal">Build once → sell variations forever. Freelancer → Software Tailor.</p>
+        </div>
+      </section>
+
+      <!-- 5. Mindset -->
+      <section class="slide" data-title="Mindset">
+        <div class="card">
+          <h1 class="reveal">You’re Not a Dev. You’re a Problem Solver.</h1>
+          <p class="sub reveal">Businesses don’t buy code. They buy outcomes. Claude handles the how — you own the what.</p>
+          <div class="pills reveal">
+            <span class="pill">Measure Pain</span><span class="pill violet">Describe Solution</span><span class="pill cyan">Ship Software</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. The Shift (Prompt -> App) -->
+      <section class="slide" data-title="The Shift">
+        <div class="card">
+          <h1 class="reveal">The Shift</h1>
+          <p class="sub reveal">One clear prompt → a working app.</p>
+          <div class="panel reveal">
+            <svg class="viz" viewBox="0 0 900 380" role="img" aria-label="Prompt to App pipeline" style="width:100%;height:auto">
+              <defs>
+                <linearGradient id="pipeLight" x1="0" x2="1">
+                  <stop offset="0%" stop-color="#6aa8ff"/><stop offset="100%" stop-color="#8af5ff"/>
+                </linearGradient>
+              </defs>
+              <g transform="translate(40,40)" fill="none" stroke="url(#pipeLight)" stroke-width="8" stroke-linecap="round">
+                <path d="M40,240 C180,180 300,180 440,240" opacity=".35"/>
+                <path d="M440,240 C600,300 700,140 820,200" opacity=".7">
+                  <animate attributeName="stroke-dasharray" from="0,1000" to="600,1000" dur="1.6s" repeatCount="indefinite"/>
+                </path>
+              </g>
+              <g transform="translate(60,80)">
+                <rect x="0" y="0" width="320" height="190" rx="16" fill="#ffffff" stroke="rgba(10,14,20,.08)"/>
+                <text x="16" y="34" fill="#3a4353" font-size="22" font-weight="800">Prompt</text>
+                <text x="16" y="70" fill="#50607a" font-size="20">“Build booking for mobile dog groomers:</text>
+                <text x="16" y="96" fill="#7a8497" font-size="20">• route optimization • SMS reminders</text>
+                <text x="16" y="122" fill="#7a8497" font-size="20">• weather reschedule • tips • rewards”</text>
+              </g>
+              <g transform="translate(520,60)">
+                <rect x="0" y="0" width="340" height="230" rx="20" fill="#f7fbff" stroke="rgba(10,14,20,.08)"/>
+                <rect x="20" y="26" width="300" height="22" rx="8" fill="#e9f2ff"/>
+                <rect x="20" y="60" width="200" height="18" rx="9" fill="#edf4ff"/>
+                <rect x="20" y="86" width="160" height="18" rx="9" fill="#edf4ff"/>
+                <rect x="20" y="120" width="300" height="84" rx="12" fill="#eaf6ff"/>
+                <circle cx="290" cy="192" r="12" fill="#8af5ff"/>
+                <text x="170" y="270" fill="#6b7280" text-anchor="middle" font-size="20">Working prototype in minutes</text>
+              </g>
+            </svg>
+          </div>
+          <div class="glass-chips reveal">
+            <span class="glass-chip">Simple words → Complex output</span>
+            <span class="glass-chip">Design + Logic + CRUD</span>
+            <span class="glass-chip">Iterate live</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. Problem Space (coin pop) -->
+      <section class="slide" data-title="Problem Space">
+        <div class="card">
+          <h1 class="reveal">Where the Money Hides</h1>
+          <div class="grid-3 reveal">
+            <div class="tile coin-target"><h3>Manual Tracking</h3><p>Paper, spreadsheets, sticky notes → $10k+ per fix.</p></div>
+            <div class="tile coin-target"><h3>App Sprawl</h3><p>5–8 tools to do one job → one tailored system wins.</p></div>
+            <div class="tile coin-target"><h3>Hire vs Software</h3><p>Employee cost vs a build that works 24/7.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. Before / After -->
+      <section class="slide" data-title="Before → After">
+        <div class="card">
+          <h1 class="reveal">From Chaos → Clarity</h1>
+          <div class="split reveal">
+            <div class="tile">
+              <h3>Before</h3>
+              <div class="chip-cloud" style="margin-top:8px">
+                <span class="chip">Calendly</span><span class="chip">Zoom</span><span class="chip">Slack</span>
+                <span class="chip">Trello</span><span class="chip">QuickBooks</span><span class="chip">G-Sheets</span>
+                <span class="chip">Typeform</span><span class="chip">Airtable</span><span class="chip">Email</span>
+              </div>
+              <p class="sub" style="margin-top:10px">Subscriptions, logins, leaks, errors, context-switching.</p>
+            </div>
+            <div class="monolith">
+              <div>
+                <h2>After: One Tailored System</h2>
+                <p class="sub">Your workflows. Your data. One glowingly simple app.</p>
+                <div class="pills" style="justify-content:center;margin-top:14px">
+                  <span class="pill green">Fewer Clicks</span>
+                  <span class="pill cyan">Single Source of Truth</span>
+                  <span class="pill violet">Delight to Use</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. $15K Math -->
+      <section class="slide" data-title="$15K Math">
+        <div class="card">
+          <h1 class="reveal">Why $15K Is a No-Brainer</h1>
+          <div class="split reveal">
+            <div>
+              <div class="bars" aria-label="Cost comparison bars">
+                <div class="bar" style="height:88%">
+                  <div class="tag">Employee</div>
+                  <div class="label">$70k+/yr</div>
+                </div>
+                <div class="bar" style="height:26%;background:linear-gradient(180deg,#5eead4,#10b981)">
+                  <div class="tag">Your Software</div>
+                  <div class="label">$21k yr-1</div>
+                </div>
+              </div>
+              <p class="sub" style="margin-top:40px">Year-1 savings ≈ $49k. Then it keeps compounding.</p>
+            </div>
+            <div class="tile">
+              <h3>Expansion = LTV</h3>
+              <p>Add-ons when they’re ready:</p>
+              <div class="pills" style="margin-top:10px">
+                <span class="pill">AI Chatbot +$10k</span>
+                <span class="pill">Mobile App +$15k</span>
+                <span class="pill">Analytics +$8k</span>
+                <span class="pill">Integrations +$5k ea</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10. Claude Does Everything -->
+      <section class="slide" data-title="Claude Builds">
+        <div class="card">
+          <h1 class="reveal">Claude Code Does the Heavy Lifting</h1>
+          <div class="grid-3 reveal">
+            <div class="tile"><h3>Full App</h3><p>Auth, DB, UI, logic.</p></div>
+            <div class="tile"><h3>Branding</h3><p>Logo, theme, polish.</p></div>
+            <div class="tile"><h3>Payments</h3><p>Invoices, receipts.</p></div>
+            <div class="tile"><h3>Email & Alerts</h3><p>Ops-ready comms.</p></div>
+            <div class="tile"><h3>Dashboards</h3><p>See what matters.</p></div>
+            <div class="tile"><h3>APIs</h3><p>Integrate tools.</p></div>
+          </div>
+          <p class="sub reveal" style="margin-top:10px">You describe the outcome. Claude handles the how.</p>
+        </div>
+      </section>
+
+      <!-- 11. Offer -->
+      <section class="slide" data-title="Offer">
+        <div class="card">
+          <h1 class="reveal">The Easiest Offer to Sell</h1>
+          <p class="sub reveal">“I’ll build you custom software that solves <b>that exact problem</b>.”</p>
+          <div class="pills reveal">
+            <span class="pill">Restaurant Ordering</span>
+            <span class="pill">Dental Portal</span>
+            <span class="pill">Construction Bids</span>
+            <span class="pill">Showing Scheduler</span>
+            <span class="pill">Class Booking</span>
+            <span class="pill">Case Management</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 12. Market Math -->
+      <section class="slide" data-title="Market Math">
+        <div class="card">
+          <h1 class="reveal">The Math That Ends Debate</h1>
+          <div class="grid-3 reveal">
+            <div class="tile"><h3>30M</h3><p>U.S. small businesses</p></div>
+            <div class="tile"><h3>$10–25k</h3><p>Your price per build</p></div>
+            <div class="tile"><h3>10 Clients</h3><p>$150k+ year one</p></div>
+          </div>
+          <p class="sub reveal" style="margin-top:10px">Spot the problem → describe the fix → ship the app.</p>
+        </div>
+      </section>
+
+      <!-- 13. Real-World Offers (flip cards) -->
+      <section class="slide" data-title="Examples">
+        <div class="card">
+          <h1 class="reveal">Real-World Offers (Everywhere)</h1>
+          <div class="grid-3 reveal">
+            <div class="flip">
+              <div class="flip-inner">
+                <div class="front"><span class="emoji">🦷</span><span class="label">Dentist</span></div>
+                <div class="back"><h3>Dentist</h3><p>Auto-populate forms — <b>$12k</b></p></div>
+              </div>
+            </div>
+            <div class="flip">
+              <div class="flip-inner">
+                <div class="front"><span class="emoji">🏋️</span><span class="label">Gym</span></div>
+                <div class="back"><h3>Gym</h3><p>Client tracking — <b>$8k</b></p></div>
+              </div>
+            </div>
+            <div class="flip">
+              <div class="flip-inner">
+                <div class="front"><span class="emoji">🏠</span><span class="label">Landlord</span></div>
+                <div class="back"><h3>Landlord</h3><p>Requests portal — <b>$15k</b></p></div>
+              </div>
+            </div>
+            <div class="flip">
+              <div class="flip-inner">
+                <div class="front"><span class="emoji">🍽️</span><span class="label">Restaurant</span></div>
+                <div class="back"><h3>Restaurant</h3><p>Ordering + invoices — <b>$20k</b></p></div>
+              </div>
+            </div>
+            <div class="flip">
+              <div class="flip-inner">
+                <div class="front"><span class="emoji">🏊</span><span class="label">Pool Route</span></div>
+                <div class="back"><h3>Pool Route</h3><p>Optimize & portal — <b>$10k</b></p></div>
+              </div>
+            </div>
+            <div class="flip">
+              <div class="flip-inner">
+                <div class="front"><span class="emoji">🧾</span><span class="label">Accountant</span></div>
+                <div class="back"><h3>Accountant</h3><p>Client document hub — <b>$18k</b></p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 14. Playbook -->
+      <section class="slide" data-title="Playbook">
+        <div class="card">
+          <h1 class="reveal">The Software Tailor Playbook</h1>
+          <div class="grid-3 reveal">
+            <div class="tile"><h3>1 · Find Pain</h3><p>Listen for “we still do it manually”.</p></div>
+            <div class="tile"><h3>2 · Magic Q</h3><p>“Walk me through how you do it now.”</p></div>
+            <div class="tile"><h3>3 · Offer</h3><p>Describe <b>their</b> exact solution.</p></div>
+            <div class="tile"><h3>4 · Value Price</h3><p>Charge by outcome, not hours.</p></div>
+            <div class="tile"><h3>5 · Build</h3><p>Claude Code ships fast.</p></div>
+            <div class="tile"><h3>6 · Maintain</h3><p>+$1k/mo → durable MRR.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 15. Urgency -->
+      <section class="slide" data-title="Urgency">
+        <div class="card">
+          <h1 class="reveal">This Window Is Closing Fast</h1>
+          <p class="sub reveal">Today the offer feels like magic. Soon it will be normal. Move now.</p>
+          <div class="pills reveal">
+            <span class="pill">Greenfield Advantage</span>
+            <span class="pill violet">Zero Competition</span>
+            <span class="pill cyan">First Mover Wins</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 16. Challenge -->
+      <section class="slide" data-title="Challenge">
+        <div class="card">
+          <h1 class="reveal">Your 30-Day Challenge</h1>
+          <div class="grid-2 reveal">
+            <div class="tile"><h3>Tonight</h3><p>Sign up. Build anything in Claude.</p></div>
+            <div class="tile"><h3>Tomorrow</h3><p>3 conversations: “What’s your biggest headache?”</p></div>
+            <div class="tile"><h3>This Week</h3><p>Make your first offer.</p></div>
+            <div class="tile"><h3>Next Month</h3><p>Land your first $10k+ client.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 17. Demo placeholder -->
+      <section class="slide" data-title="Demo Placeholder">
+        <div class="card">
+          <h1 class="reveal">Insert Your Screen Recording Here</h1>
+          <p class="sub reveal">Show Claude Code building: auth → DB → UI → emails → integrations.</p>
+          <div class="tile reveal" style="height:50vh;display:flex;align-items:center;justify-content:center">
+            <video id="demoVideo" controls style="max-width:100%;max-height:100%;border-radius:16px;box-shadow:var(--shadow-soft);background:#000">
+              <!-- <source src="demo.mp4" type="video/mp4" /> -->
+            </video>
+          </div>
+        </div>
+      </section>
+
+      <!-- 18. Close -->
+      <section class="slide" data-title="Close">
+        <div class="card">
+          <h1 class="reveal">Be the Software Tailor.</h1>
+          <p class="sub reveal">Subscribe and follow the journey. Comment <b>“SOFTWARE TAILOR”</b> if you’re in.</p>
+          <div class="pills reveal">
+            <span class="pill">Build Once</span><span class="pill">Sell Forever</span><span class="pill">Own the Outcome</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Progress + hint -->
+  <div class="progress" aria-hidden="true">
+    <div class="dots" id="dots"></div>
+    <div class="pager" id="pager"></div>
+  </div>
+  <div class="hint">Use ← / → or click to advance</div>
+
+  <script>
+    const track = document.getElementById('track');
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    let index = 0;
+
+    // dots
+    const dotsEl = document.getElementById('dots');
+    slides.forEach((_, i)=>{ const s=document.createElement('span'); if(i===0) s.classList.add('active'); dotsEl.appendChild(s); });
+    const pager = document.getElementById('pager');
+
+    function updateUI(){
+      track.style.transform = `translateX(-${index*100}vw)`;
+      slides.forEach((s,i)=> s.classList.toggle('active', i===index));
+      [...dotsEl.children].forEach((d,i)=> d.classList.toggle('active', i===index));
+      pager.textContent = `${String(index+1).padStart(2,'0')} / ${String(slides.length).padStart(2,'0')}`;
+      try { history.replaceState(null, '', `#${index+1}`); } catch(e) {}
+      afterRender();
+    }
+    function next(){ if(index < slides.length-1){ index++; updateUI(); } }
+    function prev(){ if(index > 0){ index--; updateUI(); } }
+
+    document.addEventListener('keydown', (e)=>{
+      const k = e.key;
+      if(['ArrowRight','PageDown',' '].includes(k)) { e.preventDefault(); next(); }
+      if(['ArrowLeft','PageUp','Backspace'].includes(k)) { e.preventDefault(); prev(); }
+      if(k==='Home'){ index=0; updateUI(); }
+      if(k==='End'){ index=slides.length-1; updateUI(); }
+    });
+
+    document.addEventListener('click', (e)=>{
+      if(e.target.closest('video,a,button,input,textarea,select')) return;
+      next();
+    });
+
+    function initFromHash(){
+      const n = parseInt((location.hash||'').replace('#',''),10);
+      if(!isNaN(n) && n>=1 && n<=slides.length){ index = n-1; }
+      updateUI();
+    }
+    window.addEventListener('hashchange', initFromHash);
+    initFromHash();
+
+    /* --- Interactions --- */
+    function bindFlips(){
+      document.querySelectorAll('.flip').forEach(card=>{
+        if(card.__bound) return; card.__bound=true;
+        card.addEventListener('click', ev=>{ card.classList.toggle('flipped'); ev.stopPropagation(); });
+      });
+    }
+    function bindCoins(){
+      document.querySelectorAll('.coin-target').forEach(box=>{
+        if(box.__bound) return; box.__bound=true;
+        box.setAttribute('role','button');
+        box.setAttribute('tabindex','0');
+        box.addEventListener('click', ev=>{
+          box.classList.add('gold');
+          setTimeout(()=> box.classList.remove('gold'), 480);
+          const coin=document.createElement('div');
+          coin.className='coin';
+          box.appendChild(coin);
+          setTimeout(()=> coin.remove(), 900);
+          ev.stopPropagation();
+        });
+        box.addEventListener('keydown', e=>{
+          if(e.key==='Enter' || e.key===' '){ e.preventDefault(); box.click(); }
+        });
+      });
+    }
+    function afterRender(){ bindFlips(); bindCoins(); }
+
+    // keep layout on resize
+    let resizeTO;
+    window.addEventListener('resize', ()=>{ clearTimeout(resizeTO); resizeTO=setTimeout(updateUI,60); });
+  </script>
+</body>
+</html>

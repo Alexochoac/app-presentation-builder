@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The Software Tailor Revolution</title>
+    <style>
+        :root {
+            --bg1: #0e1016;
+            --bg2: #121826;
+            --bg3: #0c1424;
+            --glass: rgba(255,255,255,.08);
+            --ink: #e9eefb;
+            --muted: #b7c0d9;
+            --accent: #6aa8ff;
+            --accent2: #8af5ff;
+            --ok: #58d68d;
+            --warn: #ffd66a;
+            --bad: #ff8a8a;
+            --shadow: 0 20px 60px rgba(0,0,0,.45);
+            --radius: 28px;
+        }
+
+        * { box-sizing: border-box; }
+        html, body { height: 100%; }
+        
+        body {
+            margin: 0;
+            color: var(--ink);
+            font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+            background: radial-gradient(1200px 800px at 20% -10%, #13335a 0%, transparent 60%),
+                        radial-gradient(1000px 700px at 120% 20%, #1f2c52 0%, transparent 70%),
+                        linear-gradient(120deg, var(--bg1), var(--bg2) 40%, var(--bg3));
+            overflow: hidden;
+        }
+
+        /* Floating blobs */
+        .blob {
+            position: fixed;
+            width: 44vmax;
+            height: 44vmax;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: .25;
+            pointer-events: none;
+            mix-blend-mode: screen;
+            animation: float 22s ease-in-out infinite;
+            background: radial-gradient(circle at 30% 30%, #3aa0ff 0%, transparent 60%),
+                        radial-gradient(circle at 70% 70%, #00ffe5 0%, transparent 60%);
+        }
+        
+        .blob.b2 {
+            width: 50vmax;
+            height: 50vmax;
+            left: -10vmax;
+            top: 40vh;
+            animation-duration: 28s;
+        }
+        
+        .blob.b3 {
+            width: 46vmax;
+            height: 46vmax;
+            right: -12vmax;
+            top: -8vmax;
+            animation-duration: 32s;
+        }
+        
+        @keyframes float {
+            50% { transform: translate3d(0, -2vmax, 0) scale(1.03); }
+        }
+
+        /* Deck and stage */
+        .deck {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+        }
+
+        .stage {
+            width: min(1200px, calc(100vw - 48px));
+            height: min(700px, calc(100vh - 120px));
+            border-radius: var(--radius);
+            background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+            backdrop-filter: blur(18px) saturate(120%);
+            -webkit-backdrop-filter: blur(18px) saturate(120%);
+            box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Slides */
+        .slide {
+            position: absolute;
+            inset: 0;
+            padding: 56px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            opacity: 0;
+            transform: translateY(24px) scale(.985);
+            transition: opacity .7s ease, transform .7s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .slide .content {
+            max-width: 980px;
+            text-align: center;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: clamp(42px, 6vw, 76px);
+            line-height: 1.04;
+            margin: 0;
+            letter-spacing: -.02em;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 6px 30px rgba(106,168,255,.25));
+        }
+
+        h2 {
+            font-size: clamp(22px, 2.4vw, 28px);
+            font-weight: 500;
+            color: var(--muted);
+            margin: 10px 0 6px;
+        }
+
+        .big {
+            font-size: clamp(24px, 3vw, 32px);
+            color: #eaf1ff;
+            font-weight: 700;
+        }
+
+        /* Chips and badges */
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        .chip {
+            padding: 12px 16px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.10);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 10px 30px rgba(0,0,0,.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            font-weight: 700;
+            letter-spacing: .01em;
+            color: #ebf3ff;
+            transition: transform .25s ease, background .25s ease;
+        }
+
+        .chip:hover {
+            transform: translateY(-2px);
+            background: rgba(255,255,255,.16);
+        }
+
+        .badge {
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-weight: 800;
+            letter-spacing: .02em;
+        }
+
+        .badge.good {
+            background: rgba(88,214,141,.18);
+            color: #ccffde;
+            border: 1px solid rgba(88,214,141,.35);
+        }
+
+        .badge.warn {
+            background: rgba(255,214,106,.15);
+            color: #fff2c0;
+            border: 1px solid rgba(255,214,106,.35);
+        }
+
+        .badge.bad {
+            background: rgba(255,138,138,.16);
+            color: #ffd6d6;
+            border: 1px solid rgba(255,138,138,.35);
+        }
+
+        /* Reveal animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(16px);
+            filter: blur(4px);
+            transition: all .7s ease;
+        }
+
+        .slide.active .reveal {
+            opacity: 1;
+            transform: none;
+            filter: none;
+        }
+
+        .reveal.d100 { transition-delay: .10s; }
+        .reveal.d200 { transition-delay: .20s; }
+        .reveal.d300 { transition-delay: .30s; }
+        .reveal.d400 { transition-delay: .40s; }
+        .reveal.d500 { transition-delay: .50s; }
+        .reveal.d600 { transition-delay: .60s; }
+
+        /* Panel */
+        .panel {
+            width: min(1000px, 95%);
+            padding: 22px;
+            border-radius: 22px;
+            background: rgba(255,255,255,.06);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 10px 40px rgba(0,0,0,.35);
+            backdrop-filter: blur(12px);
+        }
+
+        .viz {
+            width: min(980px, 95%);
+            height: auto;
+            margin-top: 8px;
+        }
+
+        /* Controls */
+        .controls {
+            position: fixed;
+            left: 50%;
+            bottom: 22px;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            user-select: none;
+        }
+
+        .progress {
+            width: min(720px, 70vw);
+            height: 6px;
+            background: rgba(255,255,255,.08);
+            border-radius: 999px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+        }
+
+        .bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            transition: width .5s cubic-bezier(.2,.8,.2,1);
+        }
+
+        .nav {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        button.navbtn {
+            cursor: pointer;
+            border: 0;
+            background: rgba(255,255,255,.10);
+            color: #e8f0ff;
+            padding: 10px 14px;
+            border-radius: 14px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 8px 24px rgba(0,0,0,.3);
+            transition: transform .2s ease, background .2s ease;
+        }
+
+        button.navbtn:hover {
+            transform: translateY(-2px);
+            background: rgba(255,255,255,.16);
+        }
+
+        .count {
+            color: #cbd7f1;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: .02em;
+        }
+
+        .hint {
+            position: fixed;
+            right: 16px;
+            bottom: 16px;
+            color: #9fb3dc;
+            font-size: 12px;
+            opacity: .8;
+        }
+
+        .kbd {
+            border: 1px solid rgba(255,255,255,.25);
+            border-bottom-width: 2px;
+            border-radius: 8px;
+            padding: 2px 6px;
+            background: rgba(255,255,255,.08);
+        }
+
+        /* Code block */
+        .code-block {
+            background: rgba(106, 168, 255, 0.1);
+            border: 1px solid rgba(106, 168, 255, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 24px auto;
+            max-width: 650px;
+            text-align: left;
+        }
+
+        .code-text {
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #8af5ff;
+        }
+
+        /* Special grid for industries */
+        .pillgrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            justify-items: center;
+            padding: 20px;
+        }
+
+        .pill {
+            padding: 14px 18px;
+            border-radius: 999px;
+            font-weight: 800;
+            letter-spacing: .01em;
+            color: #09101f;
+            position: relative;
+        }
+
+        .pill.blue {
+            background: linear-gradient(180deg, #b8eeff, #5fd0ff);
+            box-shadow: 0 0 30px rgba(55,200,255,.35);
+        }
+
+        .pill.gold {
+            background: linear-gradient(180deg, #ffe6a6, #ffc861);
+            box-shadow: 0 0 30px rgba(255,200,97,.35);
+        }
+
+        .pill.teal {
+            background: linear-gradient(180deg, #bffcf1, #7fe6d8);
+            box-shadow: 0 0 30px rgba(127,230,216,.35);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .slide { transition: none; }
+            .reveal { transition: none; }
+            .blob { animation: none; }
+        }
+
+        @media (max-width: 768px) {
+            .slide { padding: 32px; }
+            h1 { font-size: clamp(32px, 8vw, 56px); }
+            h2 { font-size: clamp(18px, 3vw, 24px); }
+            .pillgrid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+        }
+    </style>
+</head>
+<body>
+    <div class="blob b1" style="left:-6vmax; top:-4vmax"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+
+    <div class="deck">
+        <div class="stage" id="stage">
+            <!-- Slide 1: Opening -->
+            <section class="slide active">
+                <div class="content">
+                    <h1 class="reveal">The $1 Trillion Revolution</h1>
+                    <h2 class="reveal d200">Regular people are about to destroy the entire software industry</h2>
+                    <div class="chips reveal d400">
+                        <span class="chip">30M Businesses suffering</span>
+                        <span class="chip">$20 To get started</span>
+                        <span class="chip">4hrs To first solution</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 2: The Teaser -->
+            <section class="slide">
+                <div class="content">
+                    <h1 class="reveal">The Greatest AI Opportunity</h1>
+                    <h2 class="reveal d200">...is NOT what you think</h2>
+                    <div class="panel reveal d400">
+                        <div style="font-size: 22px; line-height: 1.8; color: #eaf1ff; text-align: left; max-width: 600px; margin: 0 auto;">
+                            <div style="margin-bottom: 12px;">
+                                <span style="color: #ff8a8a; font-size: 24px;">✗</span> NOT in content generation
+                            </div>
+                            <div style="margin-bottom: 12px;">
+                                <span style="color: #ff8a8a; font-size: 24px;">✗</span> NOT in script writing
+                            </div>
+                            <div style="margin-bottom: 12px;">
+                                <span style="color: #ff8a8a; font-size: 24px;">✗</span> NOT in book writing
+                            </div>
+                            <div style="margin-bottom: 12px;">
+                                <span style="color: #ff8a8a; font-size: 24px;">✗</span> NOT in AI agents
+                            </div>
+                            <div style="margin-bottom: 12px;">
+                                <span style="color: #ff8a8a; font-size: 24px;">✗</span> NOT even in AI automation
+                            </div>
+                        </div>
+                    </div>
+                    <div class="big reveal d600" style="margin-top: 24px;">
+                        It's in something <strong style="color: #8af5ff;">much bigger</strong>...
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 3: The Gap -->
+            <section class="slide">
+                <div class="content">
+                    <h1 class="reveal">Software is Broken</h1>
+                    <h2 class="reveal d200">The gap between what businesses have vs. what they need</h2>
+                    <div class="panel reveal d400">
+                        <svg class="viz" viewBox="0 0 900 380">
+                            <defs>
+                                <linearGradient id="barBlue" x1="0" x2="0" y1="0" y2="1">
+                                    <stop offset="0%" stop-color="#90c5ff"/><stop offset="100%" stop-color="#3a7bff"/>
+                                </linearGradient>
+                                <linearGradient id="barGreen" x1="0" x2="0" y1="0" y2="1">
+                                    <stop offset="0%" stop-color="#a6ffe9"/><stop offset="100%" stop-color="#35d1c8"/>
+                                </linearGradient>
+                            </defs>
+                            <g transform="translate(60,12)" font-size="28" fill="#dfe8ff" font-weight="700">
+                                <text x="120" y="340">Generic Software</text>
+                                <text x="560" y="340">Custom Solution</text>
+                            </g>
+                            <g transform="translate(60,0)">
+                                <rect x="120" y="190" width="180" height="130" rx="16" fill="url(#barBlue)">
+                                    <animate attributeName="height" from="0" to="130" dur="700ms" fill="freeze" />
+                                    <animate attributeName="y" from="320" to="190" dur="700ms" fill="freeze" />
+                                </rect>
+                                <rect x="560" y="50" width="180" height="270" rx="16" fill="url(#barGreen)">
+                                    <animate attributeName="height" from="0" to="270" dur="800ms" fill="freeze" />
+                                    <animate attributeName="y" from="320" to="50" dur="800ms" fill="freeze" />
+                                </rect>
+                                <text x="210" y="170" text-anchor="middle" fill="#fff" font-size="28" font-weight="700">20% fit</text>
+                                <text x="650" y="30" text-anchor="middle" fill="#fff" font-size="28" font-weight="700">100% fit</text>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="big reveal d600">This gap is worth <strong>trillions</strong></div>
+                </div>
+            </section>
+
+            <!-- Slide 4: Claude Code Solution -->
+            <section class="slide">
+                <div class="content">
+                    <h1 class="reveal">Claude Code</h1>
+                    <h2 class="reveal d200">One paragraph. Complete solution. 4 hours.</h2>
+                    <div class="code-block reveal d400">
+                        <div class="code-text">
+                            "Build a booking system for mobile dog groomers with route optimization,<br>
+                            weather-based rescheduling, and real-time photo updates for pet owners..."
+                        </div>
+                    </div>
+                    
+                    <!-- Animated prompt to prototype graphic -->
+                    <div class="reveal d500" style="margin: 30px 0;">
+                        <!-- Center label moved to top -->
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <span style="color: #d6e6ff; font-size: 18px; font-weight: 600;">Working prototype in minutes</span>
+                        </div>
+                        
+                        <svg viewBox="0 0 900 160" style="width: 100%; max-width: 700px; height: auto;">
+                            <defs>
+                                <linearGradient id="waveLine" x1="0" x2="1">
+                                    <stop offset="0%" stop-color="#6aa8ff"/><stop offset="100%" stop-color="#8af5ff"/>
+                                </linearGradient>
+                                <filter id="glow">
+                                    <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                                    <feMerge>
+                                        <feMergeNode in="coloredBlur"/>
+                                        <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                </filter>
+                            </defs>
+                            
+                            <!-- Left box: Prompt -->
+                            <g transform="translate(50, 30)">
+                                <rect x="0" y="0" width="250" height="100" rx="16" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.18)" stroke-width="1"/>
+                                <text x="125" y="35" text-anchor="middle" fill="#eaf3ff" font-size="20" font-weight="700">Prompt</text>
+                                <text x="125" y="60" text-anchor="middle" fill="#b7c0d9" font-size="16">Simple words</text>
+                                <text x="125" y="80" text-anchor="middle" fill="#b7c0d9" font-size="16">Clear intent</text>
+                            </g>
+                            
+                            <!-- Animated wave line -->
+                            <path d="M300,80 C380,50 450,110 550,80" stroke="url(#waveLine)" stroke-width="4" fill="none" opacity=".8" filter="url(#glow)">
+                                <animate attributeName="stroke-dasharray" from="0,1000" to="250,1000" dur="2s" repeatCount="indefinite"/>
+                            </path>
+                            
+                            <!-- Animated arrow -->
+                            <circle r="6" fill="#8af5ff" filter="url(#glow)">
+                                <animateMotion dur="2s" repeatCount="indefinite">
+                                    <mpath href="#flowPath"/>
+                                </animateMotion>
+                            </circle>
+                            <path id="flowPath" d="M300,80 C380,50 450,110 550,80" fill="none"/>
+                            
+                            <!-- Right box: Working App -->
+                            <g transform="translate(550, 30)">
+                                <rect x="0" y="0" width="300" height="100" rx="16" fill="rgba(106,168,255,.1)" stroke="rgba(106,168,255,.3)" stroke-width="1">
+                                    <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+                                </rect>
+                                <!-- Mock app interface -->
+                                <rect x="20" y="25" width="260" height="8" rx="4" fill="rgba(255,255,255,.2)"/>
+                                <rect x="20" y="42" width="180" height="6" rx="3" fill="rgba(255,255,255,.15)"/>
+                                <rect x="20" y="56" width="140" height="6" rx="3" fill="rgba(255,255,255,.15)"/>
+                                <rect x="20" y="70" width="200" height="20" rx="8" fill="rgba(138,245,255,.2)"/>
+                                <circle cx="260" cy="80" r="8" fill="#8af5ff" filter="url(#glow)">
+                                    <animate attributeName="r" values="8;10;8" dur="2s" repeatCount="indefinite"/>
+                                </circle>
+                            </g>
+                        </svg>
+                    </div>
+                    
+                    <div class="chips reveal d600">
+                        <span class="badge good">✓ $20 total cost</span>
+                        <span class="badge good">✓ 4 hours to build</span>
+                        <span class="badge good">✓ No coding required</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 5: Cost Revolution Chart -->
+            <section class="slide">
+                <div class="content">
+                    <h1 class="reveal">The Cost Revolution</h1>
+                    <h2 class="reveal d200">Traditional development vs. Claude Code</h2>
+                    <div class="panel reveal d400">
+                        <svg class="viz" viewBox="0 0 900 380">
+                            <defs>
+                                <linearGradient id="costBar" x1="0" x2="0" y1="0" y2="1">
+                                    <stop offset="0%" stop-color="#ff9999"/><stop offset="100%" stop-color="#ff6666"/>
+                                </linearGradient>
+                                <linearGradient id="claudeBar" x1="0" x2="0" y1="0" y2="1">
+                                    <stop offset="0%" stop-color="#a6ffe9"/><stop offset="100%" stop-color="#35d1c8"/>
+                                </linearGradient>
+                            </defs>
+                            <g transform="translate(100,40)">
+                                <rect x="50" y="40" width="120" height="260" rx="12" fill="url(#costBar)">
+                                    <animate attributeName="height" from="0" to="260" dur="700ms" fill="freeze"/>
+                                    <animate attributeName="y" from="300" to="40" dur="700ms" fill="freeze"/>
+                                </rect>
+                                <rect x="250" y="120" width="120" height="180" rx="12" fill="url(#costBar)">
+                                    <animate attributeName="height" from="0" to="180" dur="700ms" begin="200ms" fill="freeze"/>
+                                    <animate attributeName="y" from="300" to="120" dur="700ms" begin="200ms" fill="freeze"/>
+                                </rect>
+                                <rect x="450" y="180" width="120" height="120" rx="12" fill="url(#costBar)">
+                                    <animate attributeName="height" from="0" to="120" dur="700ms" begin="400ms" fill="freeze"/>
+                                    <animate attributeName="y" from="300" to="180" dur="700ms" begin="400ms" fill="freeze"/>
+                                </rect>
+                                <rect x="650" y="290" width="120" height="10" rx="12" fill="url(#claudeBar)">
+                                    <animate attributeName="height" from="0" to="10" dur="700ms" begin="600ms" fill="freeze"/>
+                                    <animate attributeName="y" from="300" to="290" dur="700ms" begin="600ms" fill="freeze"/>
+                                </rect>
+                                <text x="110" y="25" text-anchor="middle" fill="#fff" font-size="28" font-weight="700">$100K</text>
+                                <text x="310" y="105" text-anchor="middle" fill="#fff" font-size="28" font-weight="700">$50K</text>
+                                <text x="510" y="165" text-anchor="middle" fill="#fff" font-size="28" font-weight="700">$10K</text>
+                                <text x="710" y="275" text-anchor="middle" fill="#35d1c8" font-size="28" font-weight="700">$20</text>
+                                <text x="110" y="330" text-anchor="middle" fill="#dfe8ff" font-size="22" font-weight="600">Traditional</text>
+                                <text x="310" y="330" text-anchor="middle" fill="#dfe8ff" font-size="22" font-weight="600">Freelancer</text>
+                                <text x="510" y="330" text-anchor="middle" fill="#dfe8ff" font-size="22" font-weight="600">Offshore</text>
+                                <text x="710" y="330" text-anchor="middle" fill="#dfe8ff" font-size="22" font-weight="600">Claude Code</text>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 6: Software Tailors -->
+            <section class="slide">
+                <div class="content">
+                    <h1 class="reveal">Become a Software Tailor</h1>
+                    <h2 class="reveal d200">The new millionaire class is being born right now</h2>
+                    <div class="panel reveal d400">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 900px; margin: 0 auto;">
+                            <!-- Traditional Developer - Left Side -->
+                            <div style="text-align: center;">
+                                <h3 style="color: #ff8a8a; margin-bottom: 24px; font-size: 24px; font-weight: 600;">Traditional Developer</h3>
+                                <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+                                    <div style="background: rgba(255,138,138,.16); border: 1px solid rgba(255,138,138,.35); color: #ffd6d6; padding: 14px 32px; border-radius: 100px; font-weight: 600; font-size: 18px;">
+                                        Thinks in code
+                                    </div>
+                                    <div style="background: rgba(255,138,138,.16); border: 1px solid rgba(255,138,138,.35); color: #ffd6d6; padding: 14px 32px; border-radius: 100px; font-weight: 600; font-size: 18px;">
+                                        6 months to ship
+                                    </div>
+                                    <div style="background: rgba(255,138,138,.16); border: 1px solid rgba(255,138,138,.35); color: #ffd6d6; padding: 14px 32px; border-radius: 100px; font-weight: 600; font-size: 18px;">
+                                        $100/hour
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Software Tailor - Right Side -->
+                            <div style="text-align: center;">
+                                <h3 style="color: #58d68d; margin-bottom: 24px; font-size: 24px; font-weight: 600;">You (Software Tailor)</h3>
+                                <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+                                    <div style="background: rgba(88,214,141,.18); border: 1px solid rgba(88,214,141,.35); color: #ccffde; padding: 14px 32px; border-radius: 100px; font-weight: 600; font-size: 18px;">
+                                        Thinks in solutions
+                                    </div>
+                                    <div style="background: rgba(88,214,141,.18); border: 1px solid rgba(88,214,141,.35); color: #ccffde; padding: 14px 32px; border-radius: 100px; font-weight: 600; font-size: 18px;">
+                                        Ships in 2 days
+                                    </div>
+                                    <div style="background: rgba(88,214,141,.18); border: 1px solid rgba(88,214,141,.35); color: #ccffde; padding: 14px 32px; border-radius: 100px; font-weight: 600; font-size: 18px;">
+                                        $2K/month recurring
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 7: The Math -->
+            <section class="slide">
+                <div class="content">
+                    <h1 class="reveal">Your Path to $10K/Month</h1>
+                    <h2 class="reveal d200">Simple math that changes everything</h2>
+                    <div class="panel reveal d400">
+                        <div class="big" style="margin: 20px 0;">
+                            10 clients × $1K/month = <strong style="background: linear-gradient(90deg, #6aa8ff, #8af5ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">$10,000 MRR</strong>
+                        </div>
+                        <div class="chips">
+                            <span class="chip">20 hrs/month work</span>
+                            <span class="chip">Work from anywhere</span>
+                            <span class="chip">Infinite demand</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 8: Pick Your Empire -->
+            <section class="slide">
+                <div class="content">
+                    <h1 class="reveal">Pick Your Empire</h1>
+                    <h2 class="reveal d200">Every industry is begging for custom solutions</h2>
+                    <div class="panel reveal d400">
+                        <div class="pillgrid">
+                            <div class="pill blue">🍕 Food Trucks</div>
+                            <div class="pill blue">🏠 Home Cleaners</div>
+                            <div class="pill gold">💪 Personal Trainers</div>
+                            <div class="pill blue">📸 Photographers</div>
+                            <div class="pill blue">🐕 Dog Daycares</div>
+                            <div class="pill gold">🔓 Escape Rooms</div>
+                            <div class="pill teal">🌽 Farmers Markets</div>
+                            <div class="pill blue">🚗 Auto Detailers</div>
+                            <div class="pill gold">☕ Coffee Shops</div>
+                            <div class="pill teal">🦷 Dental Offices</div>
+                        </div>
+                        <div class="big" style="margin-top: 20px;">
+                            30 million businesses. Zero custom solutions. 
+                            <strong style="background: linear-gradient(90deg, #6aa8ff, #8af5ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Infinite opportunity.</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 9: You're NOT Technical -->
+            <section class="slide">
+                <div class="content">
+                    <h1 class="reveal">You're NOT Technical?</h1>
+                    <h2 class="reveal d200">Perfect. That's exactly why you'll win.</h2>
+                    <div class="panel reveal d400">
+                        <div style="font-size: 24px; line-height: 2; color: #eaf1ff;">
+                            <div>You understand <strong style="color: #8af5ff;">problems</strong>, not code</div>
+                            <div>You speak <strong style="color: #8af5ff;">business</strong>, not technical</div>
+                            <div>You ship <strong style="color: #8af5ff;">solutions</strong>, not perfection</div>
+                            <div>You think like <strong style="color: #8af5ff;">customers</strong>, not engineers</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 10: The #1 Skill -->
+            <section class="slide">
+                <div class="content">
+                    <h1 class="reveal">The #1 Skill of 2025</h1>
+                    <h2 class="reveal d200">Master the art of commanding Claude Code</h2>
+                    <div class="panel reveal d400">
+                        <div class="big" style="color: #8af5ff; margin-bottom: 20px;">Claude Code can do ANYTHING</div>
+                        <div style="font-size: 20px; line-height: 1.8; margin-bottom: 20px;">
+                            <div>Build a $10K app? <strong style="color: #8af5ff;">Yes.</strong></div>
+                            <div>Create a SaaS business? <strong style="color: #8af5ff;">Yes.</strong></div>
+                            <div>Automate an entire company? <strong style="color: #8af5ff;">Yes.</strong></div>
+                            <div>Replace a dev team? <strong style="color: #8af5ff;">Yes.</strong></div>
+                        </div>
+                        <div class="big" style="margin-top: 20px;">
+                            It's not about knowing code.<br>
+                            It's about knowing <strong style="color: #8af5ff;">what to ask</strong>.
+                        </div>
+                    </div>
+                    <div class="chips reveal d600">
+                        <span class="chip">🎯 Be specific</span>
+                        <span class="chip">🎨 Think in outcomes</span>
+                        <span class="chip">⚡ Iterate fast</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 11: Timeline -->
+            <section class="slide">
+                <div class="content">
+                    <h1 class="reveal">Your Next 90 Days</h1>
+                    <h2 class="reveal d200">The exact roadmap to freedom</h2>
+                    <div class="panel reveal d400">
+                        <svg class="viz" viewBox="0 0 900 380">
+                            <defs>
+                                <linearGradient id="timeline" x1="0" x2="1">
+                                    <stop offset="0%" stop-color="#6aa8ff"/><stop offset="100%" stop-color="#8af5ff"/>
+                                </linearGradient>
+                            </defs>
+                            <g transform="translate(20,140)">
+                                <line x1="20" y1="80" x2="840" y2="80" stroke="url(#timeline)" stroke-width="4" opacity=".4"/>
+                                <g fill="#eaf3ff">
+                                    <circle cx="40" cy="80" r="16" fill="url(#timeline)"/>
+                                    <text x="40" y="135" text-anchor="middle" font-size="24" font-weight="600">Day 1</text>
+                                    <text x="40" y="35" text-anchor="middle" font-size="30" font-weight="700">Learn</text>
+                                    
+                                    <circle cx="230" cy="80" r="16" fill="url(#timeline)"/>
+                                    <text x="230" y="135" text-anchor="middle" font-size="24" font-weight="600">Day 7</text>
+                                    <text x="230" y="35" text-anchor="middle" font-size="30" font-weight="700">First App</text>
+                                    
+                                    <circle cx="420" cy="80" r="16" fill="url(#timeline)"/>
+                                    <text x="420" y="135" text-anchor="middle" font-size="24" font-weight="600">Day 30</text>
+                                    <text x="420" y="35" text-anchor="middle" font-size="30" font-weight="700">First Client</text>
+                                    
+                                    <circle cx="610" cy="80" r="16" fill="url(#timeline)"/>
+                                    <text x="610" y="135" text-anchor="middle" font-size="24" font-weight="600">Day 60</text>
+                                    <text x="610" y="35" text-anchor="middle" font-size="30" font-weight="700">$5K MRR</text>
+                                    
+                                    <circle cx="800" cy="80" r="16" fill="url(#timeline)"/>
+                                    <text x="800" y="135" text-anchor="middle" font-size="24" font-weight="600">Day 90</text>
+                                    <text x="800" y="35" text-anchor="middle" font-size="30" font-weight="700">$10K MRR</text>
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 12: Urgency -->
+            <section class="slide">
+                <div class="content">
+                    <h1 class="reveal">The Clock is Ticking</h1>
+                    <h2 class="reveal d200">Every single day you wait</h2>
+                    <div class="chips reveal d400">
+                        <div class="badge warn">100 people discover Claude Code</div>
+                        <div class="badge warn">10 land their first client</div>
+                        <div class="badge bad">1 takes YOUR opportunity</div>
+                    </div>
+                    <div class="big reveal d600" style="margin-top: 30px;">
+                        The revolution doesn't wait
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 13: Choice -->
+            <section class="slide">
+                <div class="content">
+                    <h1 class="reveal">Your Choice</h1>
+                    <h2 class="reveal d200">Which person will you be?</h2>
+                    <div class="panel reveal d400">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                            <div style="padding: 20px; background: rgba(255,138,138,.1); border-radius: 16px;">
+                                <h3 style="color: #ff8a8a; margin-bottom: 16px;">The Watcher</h3>
+                                <div class="chips" style="flex-direction: column; align-items: flex-start;">
+                                    <span class="badge bad">Thinks "interesting"</span>
+                                    <span class="badge bad">Watches another video</span>
+                                    <span class="badge bad">Stays where they are</span>
+                                </div>
+                            </div>
+                            <div style="padding: 20px; background: rgba(88,214,141,.1); border-radius: 16px;">
+                                <h3 style="color: #58d68d; margin-bottom: 16px;">The Builder</h3>
+                                <div class="chips" style="flex-direction: column; align-items: flex-start;">
+                                    <span class="badge good">Opens Claude Code today</span>
+                                    <span class="badge good">Ships first app tonight</span>
+                                    <span class="badge good">Changes their life</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chips reveal d600">
+                        <span class="chip" style="font-size: 18px; padding: 16px 24px;">Start Building Today →</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 14: Final -->
+            <section class="slide">
+                <div class="content">
+                    <h1 class="reveal">Welcome to the Revolution</h1>
+                    <h2 class="reveal d200">The future belongs to Software Tailors</h2>
+                    <div class="panel reveal d400">
+                        <div style="font-size: 20px; line-height: 1.8; font-weight: 400;">
+                            <div style="margin-bottom: 24px;">
+                                Not because you're technical.<br>
+                                Because you're <strong style="color: #8af5ff;">NOT</strong>.
+                            </div>
+                            
+                            <div style="margin-bottom: 24px;">
+                                Not because you know code.<br>
+                                Because you know <strong style="color: #8af5ff;">PROBLEMS</strong>.
+                            </div>
+                            
+                            <div>
+                                Not because you're a developer.<br>
+                                Because you're <strong style="color: #8af5ff;">HUMAN</strong>.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="big reveal d600" style="margin-top: 24px; color: #8af5ff;">
+                        Your legacy starts NOW
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="progress"><div class="bar" id="bar"></div></div>
+        <div class="nav">
+            <button class="navbtn" id="prev">◀</button>
+            <span class="count" id="count">1 / 14</span>
+            <button class="navbtn" id="next">▶</button>
+        </div>
+    </div>
+    
+    <div class="hint">
+        Keys: <span class="kbd">→</span> / <span class="kbd">Space</span> next • 
+        <span class="kbd">←</span> back • 
+        <span class="kbd">F</span> fullscreen
+    </div>
+
+    <script>
+    (function(){
+        const slides = Array.from(document.querySelectorAll('.slide'));
+        const bar = document.getElementById('bar');
+        const count = document.getElementById('count');
+        let i = 0;
+        
+        function setActive(idx){
+            i = Math.max(0, Math.min(idx, slides.length-1));
+            slides.forEach((s,j) => { 
+                s.classList.toggle('active', j === i); 
+            });
+            bar.style.width = ((i+1)/slides.length*100).toFixed(2) + '%';
+            count.textContent = (i+1) + ' / ' + slides.length;
+        }
+        
+        function next(){ setActive(i+1); }
+        function prev(){ setActive(i-1); }
+
+        document.getElementById('next').addEventListener('click', next);
+        document.getElementById('prev').addEventListener('click', prev);
+        
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'ArrowRight' || e.key === ' '){ 
+                e.preventDefault(); 
+                next(); 
+            }
+            if(e.key === 'ArrowLeft'){ 
+                e.preventDefault(); 
+                prev(); 
+            }
+            if(e.key === 'f' || e.key === 'F'){ 
+                const de = document.documentElement; 
+                if(!document.fullscreenElement){ 
+                    de.requestFullscreen?.(); 
+                } else { 
+                    document.exitFullscreen?.(); 
+                }
+            }
+        });
+        
+        document.getElementById('stage').addEventListener('click', (e) => { 
+            if(e.target.closest('button')) return; 
+            next(); 
+        });
+
+        setActive(0);
+    })();
+    </script>
+</body>
+</html>

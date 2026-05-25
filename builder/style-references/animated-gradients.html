@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Future of AI - Animated Gradients Style</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --gradient-5: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --gradient-6: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            --white: #ffffff;
+            --black: #000000;
+            --light-gray: #f8f9fa;
+            --dark-gray: #2d3748;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            background: var(--black);
+        }
+        
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe);
+            background-size: 600% 600%;
+            animation: gradientShift 12s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Gradient Orbs */
+        .gradient-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.7;
+            z-index: -1;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .orb-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--gradient-2);
+            top: 10%;
+            left: 10%;
+            animation-delay: -2s;
+        }
+        
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--gradient-3);
+            top: 60%;
+            right: 20%;
+            animation-delay: -4s;
+        }
+        
+        .orb-3 {
+            width: 250px;
+            height: 250px;
+            background: var(--gradient-4);
+            bottom: 20%;
+            left: 30%;
+            animation-delay: -1s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .slide .content {
+            width: 100%;
+            max-width: 1200px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            text-align: center;
+        }
+        
+        /* Typography */
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: clamp(48px, 8vw, 120px);
+            line-height: 1.1;
+            margin: 0 0 30px 0;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+        }
+        
+        h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: clamp(32px, 6vw, 72px);
+            line-height: 1.2;
+            margin: 0 0 20px 0;
+            background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-weight: 400;
+            font-size: clamp(18px, 3vw, 28px);
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0 0 40px 0;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .big-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: clamp(24px, 4vw, 48px);
+            line-height: 1.3;
+            color: var(--white);
+            margin: 20px 0;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* Gradient Cards */
+        .gradient-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .gradient-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .gradient-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .gradient-card:hover::before {
+            left: 100%;
+        }
+        
+        .gradient-card h3 {
+            font-size: clamp(18px, 2.5vw, 28px);
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 15px;
+        }
+        
+        .gradient-card p {
+            font-size: clamp(14px, 1.5vw, 18px);
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+        }
+        
+        /* Grid Layouts */
+        .gradient-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            width: 100%;
+            margin: 40px 0;
+        }
+        
+        .three-col-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            width: 100%;
+            margin: 40px 0;
+        }
+        
+        /* Stats Display */
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin: 60px 0;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+            position: relative;
+        }
+        
+        .stat-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(48px, 8vw, 96px);
+            font-weight: 700;
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            text-shadow: 0 0 30px rgba(67, 233, 123, 0.5);
+        }
+        
+        .stat-label {
+            font-size: clamp(14px, 1.5vw, 18px);
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        /* Gradient Buttons */
+        .gradient-btn {
+            background: var(--gradient-2);
+            border: none;
+            padding: 20px 40px;
+            border-radius: 50px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: clamp(16px, 2vw, 20px);
+            color: var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 8px 25px rgba(240, 147, 251, 0.3);
+            margin: 20px 10px;
+        }
+        
+        .gradient-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(240, 147, 251, 0.4);
+        }
+        
+        /* Quote Block */
+        .gradient-quote {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(30px);
+            border-left: 5px solid;
+            border-image: var(--gradient-4);
+            border-image-slice: 1;
+            padding: 40px;
+            margin: 40px 0;
+            border-radius: 0 15px 15px 0;
+            position: relative;
+        }
+        
+        .gradient-quote::before {
+            content: '"';
+            font-size: 80px;
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: var(--gradient-4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0.3;
+        }
+        
+        .gradient-quote h3 {
+            font-size: clamp(24px, 4vw, 48px);
+            font-weight: 600;
+            color: var(--white);
+            line-height: 1.3;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        
+        .gradient-quote p {
+            font-size: clamp(16px, 2vw, 20px);
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 400;
+        }
+        
+        /* Progress Bar */
+        .gradient-progress {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 30px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-3);
+            width: 0%;
+            border-radius: 4px;
+            transition: width 2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+        
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* Slide Indicator */
+        .slide-indicator {
+            position: fixed;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .slide-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .slide-dot.active {
+            background: var(--gradient-3);
+            transform: scale(1.3);
+        }
+        
+        /* Animations */
+        .slide.active .gradient-card {
+            animation: slideInUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: calc(var(--delay) * 0.1s);
+            opacity: 0;
+        }
+        
+        .slide.active .stat-item {
+            animation: bounceIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: calc(var(--delay) * 0.2s);
+            opacity: 0;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3) translateY(50px);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05) translateY(-10px);
+            }
+            70% {
+                transform: scale(0.9) translateY(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .three-col-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-container {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            .slide {
+                padding: 40px 20px;
+            }
+            
+            .gradient-card {
+                margin: 10px;
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    
+    <!-- Gradient Orbs -->
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+    
+    <div class="presentation-container">
+        <div class="slide-indicator">
+            <div class="slide-dot active" onclick="goToSlide(0)"></div>
+            <div class="slide-dot" onclick="goToSlide(1)"></div>
+            <div class="slide-dot" onclick="goToSlide(2)"></div>
+            <div class="slide-dot" onclick="goToSlide(3)"></div>
+            <div class="slide-dot" onclick="goToSlide(4)"></div>
+            <div class="slide-dot" onclick="goToSlide(5)"></div>
+            <div class="slide-dot" onclick="goToSlide(6)"></div>
+            <div class="slide-dot" onclick="goToSlide(7)"></div>
+            <div class="slide-dot" onclick="goToSlide(8)"></div>
+            <div class="slide-dot" onclick="goToSlide(9)"></div>
+            <div class="slide-dot" onclick="goToSlide(10)"></div>
+        </div>
+        
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <div class="content">
+                <h1>The Future of AI</h1>
+                <div class="subtitle">Where Technology Meets Opportunity</div>
+                <div class="gradient-progress">
+                    <div class="progress-fill" style="width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 2: Current Reality -->
+        <div class="slide">
+            <div class="content">
+                <h2>The Current Reality</h2>
+                <div class="gradient-quote">
+                    <h3>The old world of manual processes and expensive employees is rapidly becoming obsolete</h3>
+                    <p>While most businesses struggle with outdated systems, a new opportunity emerges</p>
+                </div>
+                <div class="big-text">Change is accelerating faster than ever</div>
+            </div>
+        </div>
+        
+        <!-- Slide 3: The Numbers -->
+        <div class="slide">
+            <div class="content">
+                <h2>Revolutionary Benchmarks</h2>
+                <div class="stats-container">
+                    <div class="stat-item" style="--delay: 1;">
+                        <div class="stat-number">74.5%</div>
+                        <div class="stat-label">SWE Benchmark Score</div>
+                    </div>
+                    <div class="stat-item" style="--delay: 2;">
+                        <div class="stat-number">115K</div>
+                        <div class="stat-label">Current Users</div>
+                    </div>
+                    <div class="stat-item" style="--delay: 3;">
+                        <div class="stat-number">30M</div>
+                        <div class="stat-label">Market Opportunities</div>
+                    </div>
+                </div>
+                <div class="subtitle">AI has reached senior developer capability</div>
+            </div>
+        </div>
+        
+        <!-- Slide 4: Three Categories -->
+        <div class="slide">
+            <div class="content">
+                <h2>Three Critical Categories</h2>
+                <div class="three-col-grid">
+                    <div class="gradient-card" style="--delay: 1;">
+                        <h3>Manual Tracking</h3>
+                        <p>Businesses drowning in Excel spreadsheets and paper forms represent massive opportunities for custom automation</p>
+                    </div>
+                    <div class="gradient-card" style="--delay: 2;">
+                        <h3>Fragmented Systems</h3>
+                        <p>Companies using multiple apps for single workflows need unified solutions that work seamlessly</p>
+                    </div>
+                    <div class="gradient-card" style="--delay: 3;">
+                        <h3>Hiring Challenges</h3>
+                        <p>Expensive employees working 40 hours can be replaced by AI solutions working 24/7</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 5: The Economics -->
+        <div class="slide">
+            <div class="content">
+                <h2>The Economics Are Clear</h2>
+                <div class="gradient-grid">
+                    <div class="gradient-card">
+                        <h3>Traditional Employee</h3>
+                        <p>$55,000 salary + $15,000 benefits + training costs</p>
+                        <div class="big-text" style="color: #ff6b6b;">$70,000+/year</div>
+                    </div>
+                    <div class="gradient-card">
+                        <h3>AI Solution</h3>
+                        <p>$15,000 development + $500/month maintenance</p>
+                        <div class="big-text" style="color: #51cf66;">$21,000/year</div>
+                    </div>
+                </div>
+                <div class="big-text">$49,000 saved in year one alone</div>
+            </div>
+        </div>
+        
+        <!-- Slide 6: AI Capabilities -->
+        <div class="slide">
+            <div class="content">
+                <h2>What AI Can Build Today</h2>
+                <div class="gradient-grid">
+                    <div class="gradient-card" style="--delay: 1;">
+                        <h3>Full Applications</h3>
+                        <p>Complete web applications with databases, user authentication, and responsive design</p>
+                    </div>
+                    <div class="gradient-card" style="--delay: 2;">
+                        <h3>Payment Systems</h3>
+                        <p>Integrated payment processing, invoicing, and financial reporting capabilities</p>
+                    </div>
+                    <div class="gradient-card" style="--delay: 3;">
+                        <h3>API Integrations</h3>
+                        <p>Seamless connections to existing business tools and third-party services</p>
+                    </div>
+                    <div class="gradient-card" style="--delay: 4;">
+                        <h3>Admin Dashboards</h3>
+                        <p>Powerful management interfaces with analytics and reporting features</p>
+                    </div>
+                </div>
+                <div class="subtitle">All built through natural language conversations</div>
+            </div>
+        </div>
+        
+        <!-- Slide 7: Market Barriers -->
+        <div class="slide">
+            <div class="content">
+                <h2>Why They Need You</h2>
+                <div class="gradient-quote">
+                    <h3>Business owners don't have the time, knowledge, or patience to learn AI tools themselves</h3>
+                </div>
+                <div class="three-col-grid">
+                    <div class="gradient-card" style="--delay: 1;">
+                        <h3>Time Constraints</h3>
+                        <p>Focused on running their business, not learning new technology</p>
+                    </div>
+                    <div class="gradient-card" style="--delay: 2;">
+                        <h3>Knowledge Gap</h3>
+                        <p>Don't understand AI capabilities or how to structure requirements</p>
+                    </div>
+                    <div class="gradient-card" style="--delay: 3;">
+                        <h3>Delegation Mindset</h3>
+                        <p>Prefer paying experts to solve problems rather than DIY approaches</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 8: Perfect Offer -->
+        <div class="slide">
+            <div class="content">
+                <h2>The Perfect Value Proposition</h2>
+                <div class="gradient-quote">
+                    <h3>"I'll build you custom software that solves your exact problem"</h3>
+                    <p>Not find. Not configure. Build.</p>
+                </div>
+                <div class="big-text">The offer that doesn't exist anywhere else</div>
+                <button class="gradient-btn">Custom Solutions Only</button>
+            </div>
+        </div>
+        
+        <!-- Slide 9: Real Examples -->
+        <div class="slide">
+            <div class="content">
+                <h2>Success Stories</h2>
+                <div class="three-col-grid">
+                    <div class="gradient-card" style="--delay: 1;">
+                        <h3>Dental Practice</h3>
+                        <p>Digital forms that auto-populate from patient history</p>
+                        <div class="big-text" style="font-size: clamp(20px, 3vw, 36px);">$12,000</div>
+                    </div>
+                    <div class="gradient-card" style="--delay: 2;">
+                        <h3>Fitness Studio</h3>
+                        <p>Custom workout tracking app for 50+ clients</p>
+                        <div class="big-text" style="font-size: clamp(20px, 3vw, 36px);">$8,000</div>
+                    </div>
+                    <div class="gradient-card" style="--delay: 3;">
+                        <h3>Property Management</h3>
+                        <p>Unified maintenance request and tenant portal</p>
+                        <div class="big-text" style="font-size: clamp(20px, 3vw, 36px);">$15,000</div>
+                    </div>
+                </div>
+                <div class="subtitle">Every business has problems worth $10,000+ to solve</div>
+            </div>
+        </div>
+        
+        <!-- Slide 10: The System -->
+        <div class="slide">
+            <div class="content">
+                <h2>The Six-Step System</h2>
+                <div class="gradient-grid">
+                    <div class="gradient-card" style="--delay: 1;">
+                        <h3>1. Find Problems</h3>
+                        <p>Listen for manual processes and operational friction</p>
+                    </div>
+                    <div class="gradient-card" style="--delay: 2;">
+                        <h3>2. Ask Questions</h3>
+                        <p>"Walk me through your current process"</p>
+                    </div>
+                    <div class="gradient-card" style="--delay: 3;">
+                        <h3>3. Design Solution</h3>
+                        <p>Custom software for their exact workflow</p>
+                    </div>
+                    <div class="gradient-card" style="--delay: 4;">
+                        <h3>4. Value Pricing</h3>
+                        <p>Price based on problems solved, not hours</p>
+                    </div>
+                    <div class="gradient-card" style="--delay: 5;">
+                        <h3>5. Build & Deliver</h3>
+                        <p>Use AI to build while providing progress updates</p>
+                    </div>
+                    <div class="gradient-card" style="--delay: 6;">
+                        <h3>6. Recurring Revenue</h3>
+                        <p>Maintenance and feature expansion contracts</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 11: Call to Action -->
+        <div class="slide">
+            <div class="content">
+                <h1>Your Time Is Now</h1>
+                <div class="gradient-quote">
+                    <h3>The window of opportunity is closing fast</h3>
+                    <p>Every day you wait, someone else discovers this advantage</p>
+                </div>
+                <div class="big-text">The tools are free. The opportunities are everywhere.</div>
+                <div class="subtitle">The only question is: Will you seize it?</div>
+            </div>
+        </div>
+        
+        <div class="nav">
+            <button class="nav-btn" onclick="previousSlide()">← Previous</button>
+            <button class="nav-btn" onclick="nextSlide()">Next →</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const slideDots = document.querySelectorAll('.slide-dot');
+        const totalSlides = slides.length;
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slideDots.forEach(dot => dot.classList.remove('active'));
+            
+            slides[index].classList.add('active');
+            slideDots[index].classList.add('active');
+        }
+        
+        function nextSlide() {
+            currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+            showSlide(currentSlideIndex);
+        }
+        
+        function previousSlide() {
+            currentSlideIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
+            showSlide(currentSlideIndex);
+        }
+        
+        function goToSlide(index) {
+            currentSlideIndex = index;
+            showSlide(currentSlideIndex);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowRight') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.code === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+        
+        // Initialize animations and delays
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.gradient-card');
+            const stats = document.querySelectorAll('.stat-item');
+            
+            cards.forEach((card, index) => {
+                if (!card.style.getPropertyValue('--delay')) {
+                    card.style.setProperty('--delay', index + 1);
+                }
+            });
+            
+            stats.forEach((stat, index) => {
+                if (!stat.style.getPropertyValue('--delay')) {
+                    stat.style.setProperty('--delay', index + 1);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

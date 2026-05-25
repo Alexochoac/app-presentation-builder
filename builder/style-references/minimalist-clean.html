@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Future of AI - Minimalist Clean Style</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Crimson+Text:wght@400;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --white: #ffffff;
+            --off-white: #fafafa;
+            --light-gray: #f5f5f5;
+            --gray: #e5e5e5;
+            --medium-gray: #9ca3af;
+            --dark-gray: #6b7280;
+            --black: #111827;
+            --accent: #3b82f6;
+            --accent-light: #dbeafe;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--white);
+            color: var(--black);
+            line-height: 1.6;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background: var(--white);
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 80px;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .slide .content {
+            width: 100%;
+            max-width: 900px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            text-align: center;
+        }
+        
+        /* Typography */
+        h1 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: clamp(48px, 8vw, 96px);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin: 0 0 40px 0;
+            color: var(--black);
+        }
+        
+        h2 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: clamp(36px, 6vw, 64px);
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+            margin: 0 0 30px 0;
+            color: var(--black);
+        }
+        
+        h3 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: clamp(24px, 4vw, 36px);
+            line-height: 1.3;
+            margin: 0 0 20px 0;
+            color: var(--black);
+        }
+        
+        .subtitle {
+            font-family: 'Crimson Text', serif;
+            font-weight: 400;
+            font-size: clamp(20px, 3vw, 28px);
+            color: var(--dark-gray);
+            margin: 0 0 60px 0;
+            font-style: italic;
+            max-width: 600px;
+        }
+        
+        .body-text {
+            font-size: clamp(16px, 2vw, 20px);
+            line-height: 1.8;
+            color: var(--dark-gray);
+            max-width: 700px;
+            margin: 20px 0;
+        }
+        
+        .big-number {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: clamp(72px, 12vw, 144px);
+            line-height: 1;
+            color: var(--black);
+            margin: 40px 0 20px 0;
+        }
+        
+        .accent-text {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        /* Layout Components */
+        .simple-card {
+            background: var(--off-white);
+            padding: 60px 40px;
+            margin: 20px 0;
+            border-radius: 2px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+        }
+        
+        .simple-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .simple-card:hover {
+            background: var(--light-gray);
+            transform: translateY(-2px);
+        }
+        
+        .simple-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .simple-card h4 {
+            font-size: clamp(18px, 2.5vw, 24px);
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--black);
+        }
+        
+        .simple-card p {
+            font-size: clamp(14px, 1.5vw, 16px);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+        
+        /* Grid Layouts */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            width: 100%;
+            margin: 60px 0;
+            align-items: center;
+        }
+        
+        .three-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+            width: 100%;
+            margin: 60px 0;
+        }
+        
+        /* Stats Display */
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 120px;
+            margin: 80px 0;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+            min-width: 200px;
+        }
+        
+        .stat-number {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(48px, 8vw, 80px);
+            font-weight: 700;
+            line-height: 1;
+            color: var(--black);
+            margin-bottom: 15px;
+        }
+        
+        .stat-label {
+            font-size: clamp(14px, 1.5vw, 16px);
+            font-weight: 500;
+            color: var(--medium-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        /* Quote Block */
+        .quote-block {
+            margin: 80px 0;
+            padding: 0 40px;
+            position: relative;
+        }
+        
+        .quote-text {
+            font-family: 'Crimson Text', serif;
+            font-size: clamp(28px, 5vw, 48px);
+            font-weight: 400;
+            line-height: 1.4;
+            color: var(--black);
+            font-style: italic;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .quote-attribution {
+            font-size: clamp(14px, 1.5vw, 16px);
+            color: var(--medium-gray);
+            text-align: center;
+            margin-top: 30px;
+            font-style: normal;
+        }
+        
+        /* Dividers */
+        .simple-divider {
+            width: 60px;
+            height: 2px;
+            background: var(--gray);
+            margin: 60px auto;
+            position: relative;
+        }
+        
+        .simple-divider.accent {
+            background: var(--accent);
+        }
+        
+        /* Lists */
+        .clean-list {
+            list-style: none;
+            max-width: 600px;
+            margin: 40px auto;
+            text-align: left;
+        }
+        
+        .clean-list li {
+            font-size: clamp(16px, 2vw, 20px);
+            line-height: 1.8;
+            color: var(--dark-gray);
+            margin-bottom: 20px;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .clean-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        /* Simple Button */
+        .simple-btn {
+            background: var(--black);
+            color: var(--white);
+            border: none;
+            padding: 20px 40px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 1.5vw, 16px);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 40px 10px;
+        }
+        
+        .simple-btn:hover {
+            background: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        /* Progress Indicator */
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 60px 0;
+        }
+        
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--gray);
+            transition: all 0.3s ease;
+        }
+        
+        .progress-dot.active {
+            background: var(--accent);
+            transform: scale(1.5);
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 40px;
+            z-index: 1000;
+        }
+        
+        .nav-btn {
+            background: transparent;
+            color: var(--medium-gray);
+            border: 1px solid var(--gray);
+            padding: 15px 30px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .nav-btn:hover {
+            background: var(--black);
+            color: var(--white);
+            border-color: var(--black);
+        }
+        
+        /* Slide Counter */
+        .slide-counter {
+            position: fixed;
+            top: 60px;
+            right: 60px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--medium-gray);
+            z-index: 1000;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .slide-counter .current {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        /* Animations */
+        .slide.active .simple-card {
+            animation: slideInUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: calc(var(--delay) * 0.1s);
+            opacity: 0;
+        }
+        
+        .slide.active .stat-item {
+            animation: fadeInUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: calc(var(--delay) * 0.2s);
+            opacity: 0;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 80px 40px;
+            }
+            
+            .two-column,
+            .three-column {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .stats-row {
+                flex-direction: column;
+                gap: 40px;
+            }
+            
+            .nav {
+                bottom: 40px;
+            }
+            
+            .slide-counter {
+                top: 40px;
+                right: 40px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .slide {
+                padding: 60px 20px;
+            }
+            
+            .simple-card {
+                padding: 40px 20px;
+                margin: 10px 0;
+            }
+            
+            .quote-block {
+                padding: 0 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="slide-counter">
+            <span class="current" id="currentSlide">01</span> / <span id="totalSlides">11</span>
+        </div>
+        
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <div class="content">
+                <h1>The Future of AI</h1>
+                <div class="subtitle">A quiet revolution reshaping how we build and solve problems</div>
+                <div class="simple-divider accent"></div>
+            </div>
+        </div>
+        
+        <!-- Slide 2: Current State -->
+        <div class="slide">
+            <div class="content">
+                <h2>The Current State</h2>
+                <div class="quote-block">
+                    <div class="quote-text">While businesses struggle with manual processes and outdated systems, a new opportunity emerges quietly</div>
+                </div>
+                <div class="body-text">Most organizations haven't realized what's now possible with artificial intelligence</div>
+            </div>
+        </div>
+        
+        <!-- Slide 3: The Numbers -->
+        <div class="slide">
+            <div class="content">
+                <h2>Key Metrics</h2>
+                <div class="stats-row">
+                    <div class="stat-item" style="--delay: 1;">
+                        <div class="stat-number">74.5<span style="font-size: 0.6em;">%</span></div>
+                        <div class="stat-label">SWE Benchmark</div>
+                    </div>
+                    <div class="stat-item" style="--delay: 2;">
+                        <div class="stat-number">115<span style="font-size: 0.6em;">K</span></div>
+                        <div class="stat-label">Current Users</div>
+                    </div>
+                    <div class="stat-item" style="--delay: 3;">
+                        <div class="stat-number">30<span style="font-size: 0.6em;">M</span></div>
+                        <div class="stat-label">Opportunities</div>
+                    </div>
+                </div>
+                <div class="body-text">AI has quietly achieved senior-level development capability</div>
+            </div>
+        </div>
+        
+        <!-- Slide 4: Three Categories -->
+        <div class="slide">
+            <div class="content">
+                <h2>Three Core Categories</h2>
+                <div class="three-column">
+                    <div class="simple-card" style="--delay: 1;">
+                        <h4>Manual Systems</h4>
+                        <p>Businesses relying on spreadsheets, paper forms, and manual tracking processes</p>
+                    </div>
+                    <div class="simple-card" style="--delay: 2;">
+                        <h4>Fragmented Tools</h4>
+                        <p>Organizations using multiple disconnected applications for single workflows</p>
+                    </div>
+                    <div class="simple-card" style="--delay: 3;">
+                        <h4>Hiring Challenges</h4>
+                        <p>Companies seeking alternatives to expensive, limited-hour employee solutions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 5: Economics -->
+        <div class="slide">
+            <div class="content">
+                <h2>Simple Economics</h2>
+                <div class="two-column">
+                    <div>
+                        <h3>Traditional Employee</h3>
+                        <div class="big-number">$70K<span style="font-size: 0.4em;">/year</span></div>
+                        <div class="body-text">Salary, benefits, training, and management overhead</div>
+                    </div>
+                    <div>
+                        <h3>Custom Software</h3>
+                        <div class="big-number">$21K<span style="font-size: 0.4em;">/year</span></div>
+                        <div class="body-text">One-time development plus minimal maintenance</div>
+                    </div>
+                </div>
+                <div class="simple-divider"></div>
+                <div class="accent-text" style="font-size: clamp(20px, 3vw, 28px); font-weight: 600;">$49,000 saved annually</div>
+            </div>
+        </div>
+        
+        <!-- Slide 6: AI Capabilities -->
+        <div class="slide">
+            <div class="content">
+                <h2>What AI Builds Today</h2>
+                <ul class="clean-list">
+                    <li>Complete web applications with databases and user authentication</li>
+                    <li>Mobile-responsive interfaces optimized for any device</li>
+                    <li>Payment processing and automated invoicing systems</li>
+                    <li>Email notifications and workflow automation</li>
+                    <li>Admin dashboards with analytics and reporting</li>
+                    <li>API integrations with existing business tools</li>
+                </ul>
+                <div class="simple-divider accent"></div>
+                <div class="body-text">Built through natural language conversation, no coding required</div>
+            </div>
+        </div>
+        
+        <!-- Slide 7: Market Gap -->
+        <div class="slide">
+            <div class="content">
+                <h2>Why They Need You</h2>
+                <div class="quote-block">
+                    <div class="quote-text">Business owners focus on running their business, not learning new technology</div>
+                </div>
+                <div class="three-column">
+                    <div class="simple-card" style="--delay: 1;">
+                        <h4>Time</h4>
+                        <p>No bandwidth to learn AI tools while managing daily operations</p>
+                    </div>
+                    <div class="simple-card" style="--delay: 2;">
+                        <h4>Knowledge</h4>
+                        <p>Unaware of current AI capabilities and how to apply them</p>
+                    </div>
+                    <div class="simple-card" style="--delay: 3;">
+                        <h4>Preference</h4>
+                        <p>Rather pay experts to solve problems than DIY approaches</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 8: Value Proposition -->
+        <div class="slide">
+            <div class="content">
+                <h2>The Unique Offer</h2>
+                <div class="quote-block">
+                    <div class="quote-text">"I'll build you custom software that solves your exact problem"</div>
+                </div>
+                <div class="body-text">Not finding existing solutions. Not configuring complex tools. Building exactly what they need.</div>
+                <div class="simple-divider accent"></div>
+                <div class="body-text">An offer that didn't exist before and won't be unique forever</div>
+            </div>
+        </div>
+        
+        <!-- Slide 9: Examples -->
+        <div class="slide">
+            <div class="content">
+                <h2>Real Applications</h2>
+                <div class="three-column">
+                    <div class="simple-card" style="--delay: 1;">
+                        <h4>Dental Practice</h4>
+                        <p>Auto-populating patient forms from visit history</p>
+                        <div style="margin-top: 20px; font-size: 20px; font-weight: 600; color: var(--accent);">$12,000</div>
+                    </div>
+                    <div class="simple-card" style="--delay: 2;">
+                        <h4>Fitness Studio</h4>
+                        <p>Custom workout tracking for 50+ individual clients</p>
+                        <div style="margin-top: 20px; font-size: 20px; font-weight: 600; color: var(--accent);">$8,000</div>
+                    </div>
+                    <div class="simple-card" style="--delay: 3;">
+                        <h4>Property Management</h4>
+                        <p>Unified portal for maintenance and tenant communication</p>
+                        <div style="margin-top: 20px; font-size: 20px; font-weight: 600; color: var(--accent);">$15,000</div>
+                    </div>
+                </div>
+                <div class="body-text">Every business has processes worth thousands to optimize</div>
+            </div>
+        </div>
+        
+        <!-- Slide 10: The Method -->
+        <div class="slide">
+            <div class="content">
+                <h2>Simple Process</h2>
+                <div class="two-column">
+                    <div>
+                        <div class="simple-card" style="--delay: 1;">
+                            <h4>01. Listen</h4>
+                            <p>Identify manual processes and operational friction points</p>
+                        </div>
+                        <div class="simple-card" style="--delay: 3;">
+                            <h4>03. Design</h4>
+                            <p>Create custom software specifications for their workflow</p>
+                        </div>
+                        <div class="simple-card" style="--delay: 5;">
+                            <h4>05. Build</h4>
+                            <p>Develop solution using AI while providing regular updates</p>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="simple-card" style="--delay: 2;">
+                            <h4>02. Ask</h4>
+                            <p>"Walk me through your current process step by step"</p>
+                        </div>
+                        <div class="simple-card" style="--delay: 4;">
+                            <h4>04. Price</h4>
+                            <p>Value-based pricing focused on problems solved</p>
+                        </div>
+                        <div class="simple-card" style="--delay: 6;">
+                            <h4>06. Maintain</h4>
+                            <p>Ongoing support and feature development contracts</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 11: Timing -->
+        <div class="slide">
+            <div class="content">
+                <h2>A Brief Window</h2>
+                <div class="quote-block">
+                    <div class="quote-text">Today you can offer something that didn't exist yesterday and may be commonplace tomorrow</div>
+                </div>
+                <div class="body-text">The competitive advantage won't last forever, but it exists today</div>
+                <div class="simple-divider accent"></div>
+                <div class="body-text">The question is whether you'll use it</div>
+            </div>
+        </div>
+        
+        <div class="nav">
+            <button class="nav-btn" onclick="previousSlide()">Previous</button>
+            <button class="nav-btn" onclick="nextSlide()">Next</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('totalSlides').textContent = totalSlides.toString().padStart(2, '0');
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            document.getElementById('currentSlide').textContent = (index + 1).toString().padStart(2, '0');
+        }
+        
+        function nextSlide() {
+            currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+            showSlide(currentSlideIndex);
+        }
+        
+        function previousSlide() {
+            currentSlideIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
+            showSlide(currentSlideIndex);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowRight') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.code === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+        
+        // Initialize animation delays
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.simple-card');
+            const stats = document.querySelectorAll('.stat-item');
+            
+            cards.forEach((card, index) => {
+                if (!card.style.getPropertyValue('--delay')) {
+                    card.style.setProperty('--delay', index + 1);
+                }
+            });
+            
+            stats.forEach((stat, index) => {
+                if (!stat.style.getPropertyValue('--delay')) {
+                    stat.style.setProperty('--delay', index + 1);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Future of AI - Terminal Code Style</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --terminal-bg: #0d1117;
+            --terminal-dark: #161b22;
+            --green: #39ff14;
+            --cyan: #00ffff;
+            --yellow: #ffff00;
+            --purple: #ff00ff;
+            --orange: #ff8c00;
+            --red: #ff0040;
+            --white: #ffffff;
+            --gray: #8b949e;
+            --light-gray: #c9d1d9;
+        }
+        
+        body {
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
+            background: var(--terminal-bg);
+            color: var(--green);
+            overflow: hidden;
+            cursor: text;
+        }
+        
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background: var(--terminal-bg);
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .slide .content {
+            width: 100%;
+            max-width: 1200px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        /* Terminal Window */
+        .terminal-window {
+            background: var(--terminal-dark);
+            border: 2px solid var(--gray);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 1000px;
+            min-height: 600px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 0 30px rgba(57, 255, 20, 0.3);
+        }
+        
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .terminal-controls {
+            display: flex;
+            gap: 8px;
+            margin-right: 20px;
+        }
+        
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .terminal-dot.close { background: var(--red); }
+        .terminal-dot.minimize { background: var(--yellow); }
+        .terminal-dot.maximize { background: var(--green); }
+        
+        .terminal-title {
+            font-size: 14px;
+            color: var(--light-gray);
+            font-weight: 400;
+        }
+        
+        /* Typography */
+        h1 {
+            font-family: 'Fira Code', monospace;
+            font-weight: 700;
+            font-size: clamp(24px, 5vw, 48px);
+            line-height: 1.2;
+            margin: 20px 0;
+            color: var(--cyan);
+            text-align: center;
+        }
+        
+        h2 {
+            font-family: 'Fira Code', monospace;
+            font-weight: 600;
+            font-size: clamp(20px, 4vw, 36px);
+            line-height: 1.3;
+            margin: 15px 0;
+            color: var(--green);
+            text-align: center;
+        }
+        
+        .command-prompt {
+            font-size: clamp(14px, 2vw, 20px);
+            color: var(--yellow);
+            margin: 10px 0;
+            position: relative;
+        }
+        
+        .command-prompt::before {
+            content: '$ ';
+            color: var(--green);
+        }
+        
+        .command-output {
+            font-size: clamp(14px, 1.8vw, 18px);
+            color: var(--light-gray);
+            margin: 10px 0 20px 20px;
+            line-height: 1.6;
+        }
+        
+        /* Typewriter Effect */
+        .typewriter {
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid var(--green);
+            animation: typing 3s steps(40, end), blink-cursor 0.75s step-end infinite;
+        }
+        
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        @keyframes blink-cursor {
+            from, to { border-color: transparent; }
+            50% { border-color: var(--green); }
+        }
+        
+        /* Code Blocks */
+        .code-block {
+            background: #0d1117;
+            border: 1px solid var(--gray);
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+            font-size: clamp(12px, 1.5vw, 16px);
+            color: var(--light-gray);
+            position: relative;
+            overflow-x: auto;
+        }
+        
+        .code-block::before {
+            content: attr(data-lang);
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 10px;
+            color: var(--gray);
+            text-transform: uppercase;
+        }
+        
+        /* Syntax Highlighting */
+        .keyword { color: var(--purple); }
+        .string { color: var(--green); }
+        .number { color: var(--cyan); }
+        .comment { color: var(--gray); font-style: italic; }
+        .function { color: var(--yellow); }
+        .variable { color: var(--orange); }
+        
+        /* ASCII Art */
+        .ascii-art {
+            font-family: 'Fira Code', monospace;
+            font-size: clamp(8px, 1.2vw, 14px);
+            color: var(--cyan);
+            white-space: pre;
+            text-align: center;
+            margin: 20px 0;
+            line-height: 1.2;
+        }
+        
+        /* Stats Display */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 100%;
+            margin: 30px 0;
+        }
+        
+        .stat-terminal {
+            background: var(--terminal-dark);
+            border: 1px solid var(--green);
+            border-radius: 4px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .stat-terminal::before {
+            content: '> ';
+            color: var(--green);
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            font-size: 12px;
+        }
+        
+        .stat-number {
+            font-size: clamp(24px, 4vw, 48px);
+            font-weight: 700;
+            color: var(--cyan);
+            margin: 10px 0;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .stat-label {
+            font-size: clamp(10px, 1.2vw, 14px);
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        /* Command List */
+        .command-list {
+            background: var(--terminal-dark);
+            border-left: 3px solid var(--green);
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .command-item {
+            margin: 15px 0;
+            font-size: clamp(14px, 1.5vw, 18px);
+        }
+        
+        .command-item .cmd {
+            color: var(--yellow);
+        }
+        
+        .command-item .desc {
+            color: var(--light-gray);
+            margin-left: 20px;
+        }
+        
+        /* Matrix Effect */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        .matrix-char {
+            position: absolute;
+            color: var(--green);
+            font-family: 'Fira Code', monospace;
+            animation: matrix-fall 3s linear infinite;
+        }
+        
+        @keyframes matrix-fall {
+            0% { 
+                transform: translateY(-100vh); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translateY(100vh); 
+                opacity: 0; 
+            }
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: var(--terminal-dark);
+            border: 1px solid var(--green);
+            border-radius: 2px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--green), var(--cyan));
+            width: 0%;
+            transition: width 2s ease-out;
+            position: relative;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: progress-shine 2s ease-out;
+        }
+        
+        @keyframes progress-shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+        
+        .nav-btn {
+            background: var(--terminal-dark);
+            color: var(--green);
+            border: 2px solid var(--green);
+            padding: 10px 20px;
+            font-family: 'Fira Code', monospace;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+        
+        .nav-btn:hover {
+            background: var(--green);
+            color: var(--terminal-bg);
+            box-shadow: 0 0 10px var(--green);
+        }
+        
+        /* Terminal Info */
+        .terminal-info {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            color: var(--gray);
+            z-index: 1000;
+        }
+        
+        .terminal-info .user {
+            color: var(--green);
+        }
+        
+        .terminal-info .host {
+            color: var(--cyan);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .terminal-window {
+                min-height: 500px;
+                padding: 15px;
+            }
+            
+            .slide {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="matrix-bg" id="matrixBg"></div>
+    
+    <div class="presentation-container">
+        <div class="terminal-info">
+            <span class="user">claude</span>@<span class="host">ai-future</span> ~/presentation/<span id="slideFile">slide-01</span>
+        </div>
+        
+        <!-- Slide 1: Boot Screen -->
+        <div class="slide active">
+            <div class="content">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-controls">
+                            <div class="terminal-dot close"></div>
+                            <div class="terminal-dot minimize"></div>
+                            <div class="terminal-dot maximize"></div>
+                        </div>
+                        <div class="terminal-title">claude-ai-future v1.0.0</div>
+                    </div>
+                    <div class="ascii-art">
+ _____ _   _ _____   _____ _   _ _____ _   _ _____ _____ 
+|_   _| | | | ____| |  ___| | | |_   _| | | |  __ | ____|
+  | | | |_| |  _|   | |_  | | | | | | | | | | |__| |  _| 
+  | | |  _  | |___  |  _| | |_| | | | | |_| |  _  | |___
+  |_| |_| |_|_____|_|_|   |_____|_|_| |_____|_| |_|_____|
+                                                        
+   ___  _____     ___    _____ 
+  / _ \|  ___|   /   |  |_   _|
+ | | | | |_     / /| |    | |  
+ | |_| |  _|   / ___ |   _| |_ 
+  \___/|_|    /_/   |_| |_____|
+                    </div>
+                    <div class="command-prompt typewriter">./initialize_ai_future.sh</div>
+                    <div class="command-output">
+                        <div>Loading AI capabilities... [<span style="color: var(--green);">OK</span>]</div>
+                        <div>Connecting to future... [<span style="color: var(--green);">OK</span>]</div>
+                        <div>Initializing presentation... [<span style="color: var(--green);">OK</span>]</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 2: System Status -->
+        <div class="slide">
+            <div class="content">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-controls">
+                            <div class="terminal-dot close"></div>
+                            <div class="terminal-dot minimize"></div>
+                            <div class="terminal-dot maximize"></div>
+                        </div>
+                        <div class="terminal-title">system-status.log</div>
+                    </div>
+                    <div class="command-prompt">cat /proc/ai_revolution/status</div>
+                    <div class="code-block" data-lang="JSON">
+{
+  "<span class="keyword">status</span>": "<span class="string">ACTIVE</span>",
+  "<span class="keyword">old_world</span>": {
+    "<span class="variable">manual_processes</span>": <span class="number">true</span>,
+    "<span class="variable">expensive_employees</span>": <span class="number">true</span>,
+    "<span class="variable">broken_systems</span>": <span class="number">true</span>
+  },
+  "<span class="keyword">opportunity_window</span>": "<span class="string">CLOSING_FAST</span>"
+}
+                    </div>
+                    <div class="command-output">
+                        <span style="color: var(--red);">WARNING:</span> Traditional business models deprecated
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 3: Benchmark Results -->
+        <div class="slide">
+            <div class="content">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-controls">
+                            <div class="terminal-dot close"></div>
+                            <div class="terminal-dot minimize"></div>
+                            <div class="terminal-dot maximize"></div>
+                        </div>
+                        <div class="terminal-title">ai-benchmarks.sh</div>
+                    </div>
+                    <div class="command-prompt">./run_swe_benchmark.sh --model opus-4.1</div>
+                    <div class="stats-grid">
+                        <div class="stat-terminal">
+                            <div class="stat-number">74.5%</div>
+                            <div class="stat-label">SWE_BENCHMARK</div>
+                        </div>
+                        <div class="stat-terminal">
+                            <div class="stat-number">115K</div>
+                            <div class="stat-label">GLOBAL_USERS</div>
+                        </div>
+                        <div class="stat-terminal">
+                            <div class="stat-number">30M</div>
+                            <div class="stat-label">OPPORTUNITIES</div>
+                        </div>
+                    </div>
+                    <div class="command-output">
+                        <div><span style="color: var(--green);">[INFO]</span> AI performance = Senior Developer level</div>
+                        <div><span style="color: var(--yellow);">[WARN]</span> Market penetration < 0.01%</div>
+                        <div><span style="color: var(--cyan);">[NOTE]</span> First-mover advantage available</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 4: Problem Categories -->
+        <div class="slide">
+            <div class="content">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-controls">
+                            <div class="terminal-dot close"></div>
+                            <div class="terminal-dot minimize"></div>
+                            <div class="terminal-dot maximize"></div>
+                        </div>
+                        <div class="terminal-title">market-analysis.py</div>
+                    </div>
+                    <div class="command-prompt">python analyze_opportunities.py --category all</div>
+                    <div class="code-block" data-lang="PYTHON">
+<span class="keyword">class</span> <span class="function">BusinessOpportunities</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="variable">self</span>):
+        <span class="variable">self</span>.categories = [
+            "<span class="string">manual_tracking_systems</span>",    <span class="comment"># Excel hell</span>
+            "<span class="string">fragmented_app_ecosystem</span>",   <span class="comment"># 5+ tools for 1 job</span>
+            "<span class="string">hiring_replacement_needs</span>"    <span class="comment"># $55k employees</span>
+        ]
+    
+    <span class="keyword">def</span> <span class="function">calculate_value</span>(<span class="variable">self</span>):
+        <span class="keyword">return</span> <span class="string">"$10k - $25k per solution"</span>
+                    </div>
+                    <div class="command-output">
+                        <div>Scanning business processes... <span style="color: var(--green);">COMPLETE</span></div>
+                        <div>Opportunities found: <span style="color: var(--cyan);">UNLIMITED</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 5: ROI Calculator -->
+        <div class="slide">
+            <div class="content">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-controls">
+                            <div class="terminal-dot close"></div>
+                            <div class="terminal-dot minimize"></div>
+                            <div class="terminal-dot maximize"></div>
+                        </div>
+                        <div class="terminal-title">roi-calculator.js</div>
+                    </div>
+                    <div class="command-prompt">node calculate_roi.js --employee vs --ai-solution</div>
+                    <div class="code-block" data-lang="JAVASCRIPT">
+<span class="keyword">const</span> <span class="variable">employee</span> = {
+  <span class="variable">salary</span>: <span class="number">55000</span>,
+  <span class="variable">benefits</span>: <span class="number">15000</span>,
+  <span class="variable">training</span>: <span class="number">5000</span>,
+  <span class="variable">total</span>: <span class="number">70000</span> <span class="comment">// per year</span>
+};
+
+<span class="keyword">const</span> <span class="variable">aiSolution</span> = {
+  <span class="variable">development</span>: <span class="number">15000</span>,
+  <span class="variable">maintenance</span>: <span class="number">6000</span>, <span class="comment">// per year</span>
+  <span class="variable">total</span>: <span class="number">21000</span> <span class="comment">// first year</span>
+};
+
+<span class="comment">// Result: $49,000 saved in year 1</span>
+                    </div>
+                    <h2 style="color: var(--green); text-align: center; margin-top: 20px;">SAVINGS: $49,000/YEAR</h2>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 6: Claude Capabilities -->
+        <div class="slide">
+            <div class="content">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-controls">
+                            <div class="terminal-dot close"></div>
+                            <div class="terminal-dot minimize"></div>
+                            <div class="terminal-dot maximize"></div>
+                        </div>
+                        <div class="terminal-title">claude-capabilities.md</div>
+                    </div>
+                    <div class="command-prompt">cat claude_can_build.txt</div>
+                    <div class="command-list">
+                        <div class="command-item">
+                            <span class="cmd">✓ full_stack_apps()</span>
+                            <div class="desc">Complete web applications with frontend & backend</div>
+                        </div>
+                        <div class="command-item">
+                            <span class="cmd">✓ database_integration()</span>
+                            <div class="desc">PostgreSQL, MySQL, SQLite connections</div>
+                        </div>
+                        <div class="command-item">
+                            <span class="cmd">✓ user_authentication()</span>
+                            <div class="desc">Secure login systems and user management</div>
+                        </div>
+                        <div class="command-item">
+                            <span class="cmd">✓ payment_processing()</span>
+                            <div class="desc">Stripe, PayPal integration</div>
+                        </div>
+                        <div class="command-item">
+                            <span class="cmd">✓ api_integrations()</span>
+                            <div class="desc">Connect to existing business tools</div>
+                        </div>
+                    </div>
+                    <div class="command-output">
+                        <span style="color: var(--cyan);">REQUIREMENT:</span> Just describe what you want in plain English
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 7: Why They Pay -->
+        <div class="slide">
+            <div class="content">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-controls">
+                            <div class="terminal-dot close"></div>
+                            <div class="terminal-dot minimize"></div>
+                            <div class="terminal-dot maximize"></div>
+                        </div>
+                        <div class="terminal-title">market-psychology.sh</div>
+                    </div>
+                    <div class="command-prompt">./analyze_customer_behavior.sh</div>
+                    <div class="code-block" data-lang="BASH">
+<span class="comment"># Why businesses don't DIY with Claude</span>
+
+<span class="keyword">if</span> [[ <span class="variable">$BUSINESS_OWNER</span> == <span class="string">"busy"</span> ]]; <span class="keyword">then</span>
+    <span class="function">echo</span> <span class="string">"No time to learn AI tools"</span>
+<span class="keyword">fi</span>
+
+<span class="keyword">if</span> [[ <span class="variable">$KNOWLEDGE_LEVEL</span> == <span class="string">"limited"</span> ]]; <span class="keyword">then</span>
+    <span class="function">echo</span> <span class="string">"Don't understand AI capabilities"</span>
+<span class="keyword">fi</span>
+
+<span class="keyword">if</span> [[ <span class="variable">$MINDSET</span> == <span class="string">"delegation"</span> ]]; <span class="keyword">then</span>
+    <span class="function">echo</span> <span class="string">"Prefer paying experts to solve problems"</span>
+<span class="keyword">fi</span>
+
+<span class="comment"># Result: They'll happily pay $15k for custom solution</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 8: The Perfect Offer -->
+        <div class="slide">
+            <div class="content">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-controls">
+                            <div class="terminal-dot close"></div>
+                            <div class="terminal-dot minimize"></div>
+                            <div class="terminal-dot maximize"></div>
+                        </div>
+                        <div class="terminal-title">perfect-offer.txt</div>
+                    </div>
+                    <div class="command-prompt">cat offer.txt | grep -i "perfect"</div>
+                    <div style="text-align: center; margin: 40px 0;">
+                        <h1 style="color: var(--green); font-size: clamp(18px, 3vw, 32px);">
+                            "I'll build you custom software<br>
+                            that solves your exact problem."
+                        </h1>
+                    </div>
+                    <div class="command-output">
+                        <div><span style="color: var(--green);">NOT</span> "I'll find you software"</div>
+                        <div><span style="color: var(--green);">NOT</span> "I'll configure existing tools"</div>
+                        <div><span style="color: var(--green);">BUT</span> "I'll BUILD custom software"</div>
+                    </div>
+                    <div class="code-block" data-lang="TEXT">
+<span class="comment"># Why this offer is unbeatable:</span>
+- Solves their <span class="string">EXACT</span> problem
+- Built specifically for <span class="string">THEIR</span> workflow  
+- No compromises or workarounds
+- They own it forever
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 9: Real Examples -->
+        <div class="slide">
+            <div class="content">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-controls">
+                            <div class="terminal-dot close"></div>
+                            <div class="terminal-dot minimize"></div>
+                            <div class="terminal-dot maximize"></div>
+                        </div>
+                        <div class="terminal-title">case-studies.json</div>
+                    </div>
+                    <div class="command-prompt">jq '.success_stories[]' case_studies.json</div>
+                    <div class="code-block" data-lang="JSON">
+[
+  {
+    "<span class="keyword">client</span>": "<span class="string">Dental Office</span>",
+    "<span class="keyword">problem</span>": "<span class="string">Patients fill same forms every visit</span>",
+    "<span class="keyword">solution</span>": "<span class="string">Auto-populating digital forms</span>",
+    "<span class="keyword">price</span>": <span class="number">12000</span>
+  },
+  {
+    "<span class="keyword">client</span>": "<span class="string">Fitness Studio</span>",
+    "<span class="keyword">problem</span>": "<span class="string">Can't track 50+ client workouts</span>",
+    "<span class="keyword">solution</span>": "<span class="string">Custom workout tracking app</span>",
+    "<span class="keyword">price</span>": <span class="number">8000</span>
+  },
+  {
+    "<span class="keyword">client</span>": "<span class="string">Property Manager</span>",
+    "<span class="keyword">problem</span>": "<span class="string">Maintenance chaos across channels</span>",
+    "<span class="keyword">solution</span>": "<span class="string">Unified request portal</span>",
+    "<span class="keyword">price</span>": <span class="number">15000</span>
+  }
+]
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 10: The System -->
+        <div class="slide">
+            <div class="content">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-controls">
+                            <div class="terminal-dot close"></div>
+                            <div class="terminal-dot minimize"></div>
+                            <div class="terminal-dot maximize"></div>
+                        </div>
+                        <div class="terminal-title">six-step-system.sh</div>
+                    </div>
+                    <div class="command-prompt">chmod +x business_system.sh && ./business_system.sh</div>
+                    <div class="command-list">
+                        <div class="command-item">
+                            <span class="cmd">step_1()</span> <span style="color: var(--gray);"># Find problems, not prospects</span>
+                        </div>
+                        <div class="command-item">
+                            <span class="cmd">step_2()</span> <span style="color: var(--gray);"># Ask: "Walk me through your process"</span>
+                        </div>
+                        <div class="command-item">
+                            <span class="cmd">step_3()</span> <span style="color: var(--gray);"># Offer custom software solution</span>
+                        </div>
+                        <div class="command-item">
+                            <span class="cmd">step_4()</span> <span style="color: var(--gray);"># Price on value, not time</span>
+                        </div>
+                        <div class="command-item">
+                            <span class="cmd">step_5()</span> <span style="color: var(--gray);"># Build with Claude, send progress</span>
+                        </div>
+                        <div class="command-item">
+                            <span class="cmd">step_6()</span> <span style="color: var(--gray);"># Upsell maintenance & features</span>
+                        </div>
+                    </div>
+                    <div class="command-output">
+                        <div>System initialized successfully</div>
+                        <div>Expected ROI: <span style="color: var(--green);">$150k+ annually</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 11: Call to Action -->
+        <div class="slide">
+            <div class="content">
+                <div class="terminal-window">
+                    <div class="terminal-header">
+                        <div class="terminal-controls">
+                            <div class="terminal-dot close"></div>
+                            <div class="terminal-dot minimize"></div>
+                            <div class="terminal-dot maximize"></div>
+                        </div>
+                        <div class="terminal-title">execute-plan.sh</div>
+                    </div>
+                    <div class="command-prompt">./start_revolution.sh --now</div>
+                    <div class="code-block" data-lang="BASH">
+<span class="comment">#!/bin/bash</span>
+<span class="comment"># The window is closing. Execute now.</span>
+
+<span class="function">echo</span> <span class="string">"Tonight: Sign up for Claude Code"</span>
+<span class="function">echo</span> <span class="string">"Tomorrow: Have 3 business conversations"</span>  
+<span class="function">echo</span> <span class="string">"This week: Make your first offer"</span>
+<span class="function">echo</span> <span string">Next month: Close your first $10k+ client"</span>
+
+<span class="keyword">if</span> [[ <span class="variable">$ACTION</span> == <span class="string">"delayed"</span> ]]; <span class="keyword">then</span>
+    <span class="function">echo</span> <span class="string">"ERROR: Someone else is closing YOUR deals"</span>
+    <span class="keyword">exit</span> <span class="number">1</span>
+<span class="keyword">fi</span>
+
+<span class="function">echo</span> <span class="string">"SUCCESS: Welcome to the AI revolution"</span>
+                    </div>
+                    <div class="command-output" style="text-align: center;">
+                        <h2 style="color: var(--cyan); margin: 20px 0;">EXECUTE OR WATCH OTHERS WIN</h2>
+                        <div style="color: var(--green);">The choice is yours. The tools are free. The opportunities are everywhere.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="nav">
+            <button class="nav-btn" onclick="previousSlide()">◀ PREV</button>
+            <button class="nav-btn" onclick="nextSlide()">NEXT ▶</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        // Matrix background effect
+        function createMatrix() {
+            const matrix = document.getElementById('matrixBg');
+            const chars = '01';
+            
+            for (let i = 0; i < 50; i++) {
+                const span = document.createElement('span');
+                span.className = 'matrix-char';
+                span.textContent = chars[Math.floor(Math.random() * chars.length)];
+                span.style.left = Math.random() * 100 + '%';
+                span.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                span.style.animationDelay = Math.random() * 2 + 's';
+                matrix.appendChild(span);
+            }
+        }
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            
+            // Update terminal info
+            document.getElementById('slideFile').textContent = `slide-${(index + 1).toString().padStart(2, '0')}`;
+        }
+        
+        function nextSlide() {
+            currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+            showSlide(currentSlideIndex);
+        }
+        
+        function previousSlide() {
+            currentSlideIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
+            showSlide(currentSlideIndex);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowRight') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.code === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+        
+        // Initialize matrix effect
+        document.addEventListener('DOMContentLoaded', () => {
+            createMatrix();
+            
+            // Animate progress bars when slides become active
+            const progressFills = document.querySelectorAll('.progress-fill');
+            progressFills.forEach(fill => {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            setTimeout(() => {
+                                entry.target.style.width = '100%';
+                            }, 500);
+                        }
+                    });
+                });
+                observer.observe(fill);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -24,6 +24,8 @@ services:
 
   umami-db:
     image: postgres:15-alpine
+    ports:
+      - "5433:5432"
     environment:
       POSTGRES_DB: umami
       POSTGRES_USER: umami

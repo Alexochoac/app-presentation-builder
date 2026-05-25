@@ -1,0 +1,35 @@
+/* auto-generated */
+:root {
+  /* Identity */
+  --bg:                 #0a0a0f;
+  --slide-hero-bg:      #0a0a0f;
+  --slide-hero-rgb:     10,10,15;
+  --text:               #ffffff;
+  --text-muted:         rgba(255,255,255,.55);
+  --accent:             #6aa8ff;
+  --accent-rgb:         106,168,255;
+  --accent-mid:         #6aa8ff;
+  --accent-light:       #adcfff;
+
+  /* Hero overlay */
+  --hero-overlay-angle: 120deg;
+  --hero-overlay-start: .72;
+  --hero-overlay-end:   .38;
+
+  /* Cards */
+  --card-bg:            rgba(255,255,255,.06);
+  --card-border:        rgba(255,255,255,.10);
+  --card-radius:        22px;
+  --card-shadow:        inset 0 1px 0 rgba(255,255,255,.12), 0 10px 40px rgba(0,0,0,.35);
+
+  /* Badge */
+  --badge-bg:           rgba(255,255,255,.10);
+  --badge-border:       rgba(106,168,255,.35);
+  --badge-radius:       999px;
+  --badge-color:        #ebf3ff;
+
+  /* Logo container */
+  --logo-bg:            rgba(255,255,255,.05);
+  --logo-border:        rgba(255,255,255,.10);
+  --logo-radius:        20px;
+}

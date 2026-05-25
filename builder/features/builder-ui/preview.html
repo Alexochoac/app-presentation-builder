@@ -11,6 +11,7 @@
   <script src="/slides/components/tabs.js"></script>
   <script src="/slides/components/list.js"></script>
   <script src="/slides/components/table.js"></script>
+  <script src="/slides/components/gallery.js"></script>
   <script>
     fetch('/api/settings').then(function(r){ return r.json(); }).then(function(res){
       var s = res.data;
@@ -421,9 +422,28 @@
     if (!res.ok) throw new Error('GET /api/deck returned ' + res.status);
     const deck = await res.json();
     if (!deck.data || !deck.data.slides) throw new Error('Unexpected deck response: ' + JSON.stringify(deck));
+    // Scope deck CSS to .slides-container so builder UI chrome is unaffected.
+    // CSS custom properties inherit down the DOM, so slides inside the container
+    // see the overrides while the header/nav outside see style.css defaults.
+    function scopeDeckCss(css) {
+      var imports = [], rest = [];
+      css.split('\n').forEach(function(line) {
+        if (/^\s*@import/.test(line)) imports.push(line);
+        else rest.push(line);
+      });
+      var body = rest.join('\n')
+        .replace(/:root\s*\{/g, '.slides-container {')
+        .replace(/\bbody\s*\{/g, '.slides-container {');
+      return (imports.length ? imports.join('\n') + '\n' : '') + body;
+    }
+    if (deck.styleCss) {
+      var themeStyle = document.createElement('style');
+      themeStyle.textContent = scopeDeckCss(deck.styleCss);
+      document.head.appendChild(themeStyle);
+    }
     if (deck.accentCss) {
       var accentStyle = document.createElement('style');
-      accentStyle.textContent = deck.accentCss;
+      accentStyle.textContent = scopeDeckCss(deck.accentCss);
       document.head.appendChild(accentStyle);
     }
     return deck.data.slides

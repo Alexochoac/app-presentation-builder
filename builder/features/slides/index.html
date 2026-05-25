@@ -1179,6 +1179,82 @@
       overflow: hidden;
     }
 
+    /* ── Template Detail Modal ───────────────────────────────────── */
+    #tplDetailModal.picker-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 2100;
+      background: rgba(0,0,0,.65);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    #tplDetailPanel {
+      display: flex;
+      width: 100%;
+      max-width: 1300px;
+      height: 88vh;
+      background: var(--bg-card);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 32px 100px rgba(0,0,0,.6);
+    }
+    #tplDetailPreviewArea {
+      flex: 1;
+      position: relative;
+      background: #0a0a0a;
+      overflow: hidden;
+      min-width: 0;
+    }
+    #tplDetailPreviewArea iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+    #tplDetailSidebar {
+      width: 260px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 18px;
+      border-left: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .tpl-detail-style-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 12px;
+      text-align: left;
+      transition: background .12s;
+      width: 100%;
+    }
+    .tpl-detail-style-row:hover { background: rgba(255,255,255,.06); }
+    .tpl-detail-style-row.active { background: rgba(255,255,255,.1); }
+    .tpl-detail-style-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,.15);
+    }
+    .tpl-detail-style-check {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--accent);
+      opacity: 0;
+    }
+    .tpl-detail-style-row.active .tpl-detail-style-check { opacity: 1; }
+
     /* ── Sidebar submenu (Slides page) ───────────────────────────── */
     .sidebar-nav-group { list-style: none; }
     .sidebar-submenu {
@@ -2255,7 +2331,7 @@
             <div class="empty-state hidden" id="libraryEmpty">
               <div class="empty-icon">&#9645;</div>
               <div class="empty-title">No slides found</div>
-              <p class="empty-desc">Start from a template or use the Slide Builder to create from scratch.</p>
+              <p class="empty-desc">Start from a template to add slides to your library.</p>
               <button class="btn-primary" onclick="openNewSlideModal()">Browse Templates</button>
             </div>
             <div class="cards-grid hidden" id="libraryGrid"></div>
@@ -2297,7 +2373,6 @@
             <button class="lib-view-btn"        id="tplViewBtnList" title="List view" onclick="setTplView('list')">&#x2630;</button>
           </div>
           <button class="btn-select-toggle hidden" id="tplSelectToggle" onclick="toggleTplSelectMode()">Select</button>
-          <button class="btn-primary" onclick="openZoneBuilder()">+ New Template</button>
           <button class="btn-dupe"    onclick="openImportModal()">&#8593; Import</button>
         </div>
 
@@ -2325,230 +2400,17 @@
       <!-- ══ Tab: Slide Builder ══════════════════════════════════ -->
       <div id="panel-builder" class="tab-panel hidden">
 
-        <div class="slide-builder-tab">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px;text-align:center;gap:16px;">
+          <div style="font-size:32px;opacity:0.3;">&#9744;</div>
+          <div style="font-size:20px;font-weight:700;color:var(--text);">Slide Builder</div>
+          <div style="font-size:14px;color:var(--muted);max-width:380px;line-height:1.6;">A visual drag-and-drop slide builder is coming soon. Stay tuned.</div>
+          <div style="font-size:12px;color:var(--dim);margin-top:4px;">Coming Soon</div>
+        </div>
 
-          <!-- Builder top bar -->
-          <div class="builder-topbar">
-            <div class="builder-mode-toggle" id="builderModeToggle">
-              <button class="viewport-btn active" id="modeWizard" onclick="setBuilderMode('wizard')">Wizard</button>
-              <button class="viewport-btn" id="modeCanvas" onclick="setBuilderMode('canvas')">Canvas</button>
-            </div>
-            <input
-              class="layout-name-input"
-              id="layoutNameInput"
-              type="text"
-              value="Untitled Slide"
-              placeholder="Slide name..."
-              aria-label="Slide name"
-              onblur="saveLayoutName(this.value)"
-            >
-            <div class="viewport-toggle" id="viewportToggle">
-              <button class="viewport-btn active" id="vpDesktop" onclick="setViewMode('desktop')">Desktop</button>
-              <button class="viewport-btn" id="vpMobile" onclick="setViewMode('mobile')">Mobile</button>
-            </div>
-            <button class="btn-save-lib" id="btnPreview" onclick="openPreviewPopup()">Preview</button>
-            <button class="btn-save-tpl" id="btnSaveAsTemplate" onclick="saveAsTemplate()">Save as Template</button>
-            <button class="btn-save-lib" id="btnSaveToLibrary" onclick="saveToLibrary()">Save to Library</button>
-            <div class="save-status" id="saveStatus"></div>
-          </div>
-
-          <!-- Builder body: canvas + preview -->
-          <div class="builder-body" id="builderBody">
-
-            <!-- Canvas (left) -->
-            <div class="builder-canvas" id="builderCanvas">
-              <div class="canvas-inner" id="canvasInner">
-                <div class="canvas-add-row">
-                  <button class="btn-add-row" onclick="addRow()">&#43; Add Row</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Preview (right) -->
-            <div class="builder-preview" id="builderPreview">
-              <div class="mobile-preview-header">
-                <div class="viewport-toggle">
-                  <button class="viewport-btn active" id="vpDesktopMobile" onclick="setViewMode('desktop')">Desktop</button>
-                  <button class="viewport-btn" id="vpMobileMobile" onclick="setViewMode('mobile')">Mobile</button>
-                </div>
-              </div>
-              <div class="preview-inner" id="previewInner">
-                <!-- Rendered by renderPreview() -->
-              </div>
-            </div>
+        <!-- Builder body: canvas + preview -->
+          <div class="builder-body" id="builderBody" style="display:none;">
 
           </div><!-- /.builder-body -->
-
-          <!-- ══ Template Creator Wizard ═════════════════════════════ -->
-          <div class="wizard-pane hidden" id="wizardPane">
-
-            <!-- Step indicator -->
-            <div class="wz-stepper" id="wzStepper">
-              <div class="wz-step-item active" id="wzDot1">
-                <div class="wz-step-dot">1</div>
-                <div class="wz-step-label">Basic Info</div>
-              </div>
-              <div class="wz-step-line"></div>
-              <div class="wz-step-item" id="wzDot2">
-                <div class="wz-step-dot">2</div>
-                <div class="wz-step-label">Layout</div>
-              </div>
-              <div class="wz-step-line"></div>
-              <div class="wz-step-item" id="wzDot3">
-                <div class="wz-step-dot">3</div>
-                <div class="wz-step-label">Blocks</div>
-              </div>
-              <div class="wz-step-line"></div>
-              <div class="wz-step-item" id="wzDot4">
-                <div class="wz-step-dot">4</div>
-                <div class="wz-step-label">Review</div>
-              </div>
-            </div>
-
-            <!-- Step 1: Basic Info -->
-            <div class="wz-step-content" id="wzStep1">
-              <div class="wz-field-group">
-                <div class="wz-field-label">Slide Name</div>
-                <input class="layout-name-input" id="wzName" type="text" placeholder="e.g. Surface Quality" style="border:1px solid var(--border);border-radius:var(--radius-btn);padding:9px 12px;width:100%;box-sizing:border-box;font-size:15px;">
-              </div>
-              <div class="wz-field-group">
-                <div class="wz-field-label">Category</div>
-                <div class="wz-category-pills" id="wzCategoryPills">
-                  <button class="wz-pill" data-val="Cover"   onclick="wzPickCategory(this)">Cover</button>
-                  <button class="wz-pill" data-val="Content" onclick="wzPickCategory(this)">Content</button>
-                  <button class="wz-pill" data-val="Stats"   onclick="wzPickCategory(this)">Stats</button>
-                  <button class="wz-pill" data-val="Visual"  onclick="wzPickCategory(this)">Visual</button>
-                  <button class="wz-pill" data-val="CTA"     onclick="wzPickCategory(this)">CTA</button>
-                  <button class="wz-pill" data-val="Data"    onclick="wzPickCategory(this)">Data</button>
-                </div>
-              </div>
-              <div class="wz-field-group">
-                <div class="wz-field-label">Slide Mode</div>
-                <div class="wz-category-pills">
-                  <button class="wz-pill active" data-val="sequence" id="wzModeSeq" onclick="wzPickMode(this)">Sequence</button>
-                  <button class="wz-pill"        data-val="embedded" id="wzModeEmb" onclick="wzPickMode(this)">Embedded</button>
-                </div>
-              </div>
-              <div class="wz-field-group">
-                <div class="wz-field-label">Slide ID (auto)</div>
-                <div id="wzIdPreview" style="font-size:14px;color:var(--muted);font-family:monospace;padding:8px 12px;background:var(--surface-hov);border-radius:var(--radius-btn);display:inline-block;">ls16-new-slide</div>
-              </div>
-            </div>
-
-            <!-- Step 2: Layout Picker -->
-            <div class="wz-step-content hidden" id="wzStep2">
-              <div class="wz-field-label" style="margin-bottom:14px;">Choose a layout</div>
-              <div class="wz-layout-grid" id="wzLayoutGrid">
-                <div class="wz-layout-card" data-layout="single-col" onclick="wzPickLayout(this)">
-                  <div class="wz-wireframe">
-                    <div class="wf-header"></div>
-                    <div class="wf-body"></div>
-                  </div>
-                  <div class="wz-layout-card-label">Single Column</div>
-                </div>
-                <div class="wz-layout-card" data-layout="two-col" onclick="wzPickLayout(this)">
-                  <div class="wz-wireframe">
-                    <div class="wf-header"></div>
-                    <div class="wf-cols"><div class="wf-col"></div><div class="wf-col wf-col-img"></div></div>
-                  </div>
-                  <div class="wz-layout-card-label">Two Column</div>
-                </div>
-                <div class="wz-layout-card" data-layout="stats-grid" onclick="wzPickLayout(this)">
-                  <div class="wz-wireframe">
-                    <div class="wf-header"></div>
-                    <div class="wf-stats"><div class="wf-stat"></div><div class="wf-stat"></div><div class="wf-stat"></div></div>
-                  </div>
-                  <div class="wz-layout-card-label">Stats Grid</div>
-                </div>
-                <div class="wz-layout-card" data-layout="hero" onclick="wzPickLayout(this)">
-                  <div class="wz-wireframe wf-hero">
-                    <div class="wf-hero-overlay"></div>
-                  </div>
-                  <div class="wz-layout-card-label">Hero</div>
-                </div>
-                <div class="wz-layout-card" data-layout="list" onclick="wzPickLayout(this)">
-                  <div class="wz-wireframe">
-                    <div class="wf-header"></div>
-                    <div class="wf-cols"><div class="wf-bullets"><div class="wf-bullet"></div><div class="wf-bullet"></div><div class="wf-bullet"></div></div><div class="wf-bullets"><div class="wf-bullet"></div><div class="wf-bullet"></div></div></div>
-                  </div>
-                  <div class="wz-layout-card-label">List</div>
-                </div>
-                <div class="wz-layout-card" data-layout="cta" onclick="wzPickLayout(this)">
-                  <div class="wz-wireframe">
-                    <div class="wf-header"></div>
-                    <div class="wf-cta-steps"><div class="wf-cta-step"></div><div class="wf-cta-step"></div><div class="wf-cta-step"></div></div>
-                  </div>
-                  <div class="wz-layout-card-label">CTA</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Step 3: Content Blocks -->
-            <div class="wz-step-content hidden" id="wzStep3">
-              <div class="wz-field-label" style="margin-bottom:14px;">Toggle content blocks</div>
-              <div class="wz-blocks-list" id="wzBlocksList"></div>
-            </div>
-
-            <!-- Step 4: Review & Generate -->
-            <div class="wz-step-content hidden" id="wzStep4">
-              <!-- Preview thumbnail — click to open full-screen popup -->
-              <div class="wz-preview-thumb" id="wzPreviewThumb" onclick="wzOpenPreviewPopup()" title="Click to preview full screen">
-                <iframe id="wzPreviewIframe" scrolling="no"></iframe>
-                <div class="wz-preview-thumb-label">Click to preview full screen</div>
-              </div>
-
-              <div class="wz-field-label" style="margin-bottom:14px;">Anatomy checklist</div>
-              <div class="wz-anatomy-list" id="wzAnatomyList">
-                <div class="wz-anatomy-item" id="waStyle">
-                  <span class="wz-check" id="wck-style">&#10003;</span>
-                  <span>Style-Ready — CSS variables only, no hardcoded colors</span>
-                </div>
-                <div class="wz-anatomy-item" id="waTrans">
-                  <span class="wz-check" id="wck-trans">&#10003;</span>
-                  <span>Translation-Ready — all text nodes have <code>data-lang-key</code></span>
-                </div>
-                <div class="wz-anatomy-item" id="waTrack">
-                  <span class="wz-check" id="wck-track">&#10003;</span>
-                  <span>Tracking-Ready — interactive elements have <code>Track.*</code> calls</span>
-                </div>
-                <div class="wz-anatomy-item" id="waMode">
-                  <span class="wz-check" id="wck-mode">&#10003;</span>
-                  <span>Slide Mode — <code>data-slide-mode</code> declared</span>
-                </div>
-                <div class="wz-anatomy-item" id="waFeed">
-                  <span class="wz-check" id="wck-feed">&#8211;</span>
-                  <span>Data Feed — <code>data-feed</code> on live-data blocks (if any)</span>
-                </div>
-              </div>
-
-              <div id="wzReviewSummary" style="margin-top:20px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card);font-size:13px;color:var(--muted);line-height:1.6;"></div>
-
-              <div id="wzResult" class="hidden" style="margin-top:16px;padding:14px 16px;background:var(--surface);border:1px solid var(--accent);border-radius:var(--radius-card);">
-                <div style="font-weight:600;color:var(--accent);margin-bottom:6px;">Template created</div>
-                <div id="wzResultPath" style="font-size:12px;color:var(--muted);font-family:monospace;"></div>
-              </div>
-            </div>
-
-            <!-- Wizard footer (Back / Next / Generate) -->
-            <div class="wz-footer">
-              <button class="btn-secondary" id="wzBackBtn" onclick="wzBack()" style="visibility:hidden;">Back</button>
-              <div style="display:flex;gap:10px;align-items:center;">
-                <span id="wzStepLabel" style="font-size:13px;color:var(--muted);">Step 1 of 4</span>
-                <button class="btn-primary" id="wzNextBtn" onclick="wzNext()">Next</button>
-              </div>
-            </div>
-
-          </div><!-- /#wizardPane -->
-
-          <!-- Mobile bottom tab bar -->
-          <div class="bottom-tabs" id="bottomTabs">
-            <div class="bottom-tabs-inner">
-              <button class="tab-btn active" id="tabEdit" onclick="setActiveTab('edit')">Edit</button>
-              <button class="tab-btn" id="tabPreview" onclick="setActiveTab('preview')">Preview</button>
-            </div>
-          </div>
-
-        </div><!-- /.slide-builder-tab -->
 
       </div><!-- /#panel-builder -->
 
@@ -2590,7 +2452,6 @@
         <!-- Footer -->
         <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-top:1px solid var(--border);flex-shrink:0;">
           <div style="display:flex;gap:8px;">
-            <button class="btn-primary" onclick="openZoneBuilder()">+ New Template</button>
             <button class="btn-secondary" onclick="closeNewSlideModal();openImportModal()">&#8593; Import</button>
           </div>
           <button class="picker-cancel" onclick="closeNewSlideModal()">Cancel</button>
@@ -2598,20 +2459,36 @@
 
       </div>
 
-      <!-- Step 2: Name the slide -->
-      <div id="newSlideStep2" class="hidden">
-        <div class="picker-title" style="margin-bottom:6px;">Name Your Slide</div>
-        <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Give this slide a name so you can find it in your library.</p>
+    </div>
+  </div>
+
+  <!-- Template Detail Modal -->
+  <div class="picker-overlay hidden" id="tplDetailModal">
+    <div id="tplDetailPanel">
+
+      <!-- Left: live preview -->
+      <div id="tplDetailPreviewArea"></div>
+
+      <!-- Right: sidebar -->
+      <div id="tplDetailSidebar">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;">
+          <div id="tplDetailTplName" style="font-size:16px;font-weight:700;line-height:1.2;"></div>
+          <button onclick="closeTplDetail()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;padding:0 0 0 8px;flex-shrink:0;" onmouseenter="this.style.color='var(--text)'" onmouseleave="this.style.color='var(--muted)'">&#x2715;</button>
+        </div>
+        <div id="tplDetailTplDesc" style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.4;"></div>
+
+        <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Style</div>
+        <div id="tplDetailStyleList" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:2px;margin-bottom:16px;min-height:0;"></div>
+
+        <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Slide Name</div>
         <input
-          id="newSlideName"
+          id="tplDetailSlideNameInput"
           type="text"
           placeholder="Slide name..."
-          style="width:100%;box-sizing:border-box;padding:10px 12px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-size:14px;font-family:var(--font);outline:none;margin-bottom:16px;"
+          style="width:100%;box-sizing:border-box;padding:9px 11px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-size:13px;font-family:var(--font);outline:none;margin-bottom:12px;"
         >
-        <div style="display:flex;gap:8px;">
-          <button class="picker-cancel" onclick="newSlideBack()" style="flex:0 0 auto;">Back</button>
-          <button class="btn-primary" onclick="createLibrarySlide()" style="flex:1;">Create Slide</button>
-        </div>
+        <button class="btn-primary" style="width:100%;margin-bottom:8px;" onclick="createSlideFromDetail()">Create Slide</button>
+        <button class="picker-cancel" style="width:100%;" onclick="closeTplDetail()">Cancel</button>
       </div>
 
     </div>
@@ -2813,10 +2690,14 @@
     // New Slide modal state
     var newSlideTemplateId   = null;
     var newSlideTemplateName = '';
+    var allThemes            = [];
+
+    // Template Detail state
+    var tplDetailTpl      = null;
+    var tplDetailThemeId  = null;
 
     // Builder state
     var currentLayout = null;
-    var viewMode      = 'desktop';
     var activeTab     = 'edit';
     var pickerTarget  = null;
     var saveTimer     = null;
@@ -2866,7 +2747,7 @@
     var SCREEN_META = {
       library:   { h1: 'My Library',    sub: 'Browse and manage your slide library' },
       templates: { h1: 'Templates',     sub: 'Browse and use slide templates' },
-      builder:   { h1: 'Slide Builder', sub: 'Create and edit slide templates' }
+      builder:   { h1: 'Slide Builder', sub: 'Coming soon' }
     };
 
     function switchTab(tab, _noPush) {
@@ -2876,9 +2757,7 @@
         var el = document.getElementById('panel-' + t);
         if (el) el.classList.toggle('hidden', t !== tab);
       });
-      if (tab === 'builder' && !currentLayout) {
-        startNewLayout();
-      }
+
       // Update sidebar submenu highlight
       var subMap = { library: 'subLibrary', templates: 'subTemplates', builder: 'subBuilder' };
       var subItems = document.querySelectorAll('.sidebar-sub-item');
@@ -3097,6 +2976,15 @@
           renderCategoryPills();
           renderHtmlCatalog();
         });
+      loadThemes();
+    }
+
+    function loadThemes() {
+      if (allThemes.length > 0) return;
+      fetch('/api/themes')
+        .then(function (r) { return r.json(); })
+        .then(function (res) { allThemes = (res && res.data) ? res.data : []; })
+        .catch(function () { allThemes = []; });
     }
 
     function renderHtmlCatalog() {
@@ -3160,15 +3048,7 @@
         var emptyDesc  = empty.querySelector('.empty-desc');
         if (htmlCatalog.length === 0) {
           if (emptyTitle) emptyTitle.textContent = 'No templates yet';
-          if (emptyDesc)  emptyDesc.textContent  = 'Use the Slide Builder wizard to create your first template.';
-          if (!empty.querySelector('.empty-catalog-btn')) {
-            var btn = document.createElement('button');
-            btn.className = 'btn-primary empty-catalog-btn';
-            btn.style.marginTop = '12px';
-            btn.textContent = 'Open Slide Builder';
-            btn.addEventListener('click', function () { setBuilderMode('wizard'); switchTab('builder'); });
-            empty.appendChild(btn);
-          }
+          if (emptyDesc)  emptyDesc.textContent  = 'Templates will appear here once added.';
         } else {
           if (emptyTitle) emptyTitle.textContent = 'No templates in this category';
           if (emptyDesc)  emptyDesc.textContent  = 'Try a different category or create a new template.';
@@ -3263,7 +3143,7 @@
       (function (url) {
         thumbWrap.addEventListener('dblclick', function (e) {
           e.stopPropagation();
-          openUrlPreviewPopup(url + '?t=' + Date.now());
+          openTplDetail(tpl);
         });
       })(previewUrl);
       card.appendChild(thumbWrap);
@@ -3319,7 +3199,7 @@
       (function (t) {
         useBtn.addEventListener('click', function (e) {
           e.stopPropagation();
-          openNewSlideModal(t);
+          openTplDetail(t);
         });
       })(tpl);
 
@@ -3339,7 +3219,7 @@
       drop.className = 'lib-card-dropdown';
 
       var previewItem = makeTplDropItem('Preview', function () {
-        closeAllTplCardMenus(); openUrlPreviewPopup(previewUrl + '?t=' + Date.now());
+        closeAllTplCardMenus(); openTplDetail(tpl);
       });
       var editItem = makeTplDropItem('Edit in Builder', function () {
         closeAllTplCardMenus(); openTplInBuilder(tpl);
@@ -3425,7 +3305,7 @@
       (function (t) {
         useBtn.addEventListener('click', function (e) {
           e.stopPropagation();
-          openNewSlideModal(t);
+          openTplDetail(t);
         });
       })(tpl);
 
@@ -3445,7 +3325,7 @@
       drop.className = 'lib-card-dropdown';
 
       var previewItem = makeTplDropItem('Preview', function () {
-        closeAllTplCardMenus(); openUrlPreviewPopup(previewUrl + '?t=' + Date.now());
+        closeAllTplCardMenus(); openTplDetail(tpl);
       });
       var editItem = makeTplDropItem('Edit in Builder', function () {
         closeAllTplCardMenus(); openTplInBuilder(tpl);
@@ -3999,12 +3879,11 @@
     function openSlideBuilder() {
       closeNewSlideModal();
       switchTab('builder');
-      startNewLayout();
     }
 
-    function openZoneBuilder() {
-      closeNewSlideModal();
-      window.location.href = '/zone-builder';
+    function openBuilderWithLibrarySlide(slide) {
+      window.location.href = '/builder?librarySlide=' + encodeURIComponent(slide.id) +
+        '&slideName=' + encodeURIComponent(slide.name || 'Untitled');
     }
 
     function buildMiniPreview(rows) {
@@ -4667,10 +4546,8 @@
     function openNewSlideModal(preselectedTemplate) {
       var modal = document.getElementById('newSlideModal');
       var step1 = document.getElementById('newSlideStep1');
-      var step2 = document.getElementById('newSlideStep2');
 
       step1.classList.remove('hidden');
-      step2.classList.add('hidden');
       newSlideTemplateId   = null;
       newSlideTemplateName = '';
 
@@ -4734,12 +4611,8 @@
         }
 
         card.addEventListener('click', function () {
-          newSlideTemplateId   = t.id;
-          newSlideTemplateName = t.name || 'Untitled';
-          document.getElementById('newSlideName').value = newSlideTemplateName;
-          step1.classList.add('hidden');
-          step2.classList.remove('hidden');
-          document.getElementById('newSlideName').focus();
+          closeNewSlideModal();
+          openTplDetail(t);
         });
 
         return card;
@@ -4753,12 +4626,8 @@
       modal.classList.remove('hidden');
 
       if (preselectedTemplate) {
-        newSlideTemplateId   = preselectedTemplate.id;
-        newSlideTemplateName = preselectedTemplate.name || 'Untitled';
-        document.getElementById('newSlideName').value = newSlideTemplateName;
-        step1.classList.add('hidden');
-        step2.classList.remove('hidden');
-        document.getElementById('newSlideName').focus();
+        closeNewSlideModal();
+        openTplDetail(preselectedTemplate);
       }
     }
 
@@ -4766,759 +4635,97 @@
       document.getElementById('newSlideModal').classList.add('hidden');
     }
 
-    function newSlideBack() {
-      document.getElementById('newSlideStep1').classList.remove('hidden');
-      document.getElementById('newSlideStep2').classList.add('hidden');
+    // ── Template Detail View ──────────────────────────────────────────
+
+    function openTplDetail(tpl) {
+      tplDetailTpl     = tpl;
+      tplDetailThemeId = tpl.defaultTheme || null;
+
+      var modal  = document.getElementById('tplDetailModal');
+      var area   = document.getElementById('tplDetailPreviewArea');
+      var list   = document.getElementById('tplDetailStyleList');
+      var nameEl = document.getElementById('tplDetailSlideNameInput');
+
+      document.getElementById('tplDetailTplName').textContent = tpl.name || 'Untitled';
+      document.getElementById('tplDetailTplDesc').textContent = tpl.description || '';
+      nameEl.value = tpl.name || 'Untitled';
+
+      // Build iframe
+      area.innerHTML = '';
+      var iframe = document.createElement('iframe');
+      iframe.id = 'tplDetailIframe';
+      iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;';
+      iframe.src = buildTplDetailUrl();
+      area.appendChild(iframe);
+
+      // Build theme list
+      list.innerHTML = '';
+      var noneRow = document.createElement('button');
+      noneRow.className = 'tpl-detail-style-row' + (!tplDetailThemeId ? ' active' : '');
+      noneRow.dataset.themeId = '';
+      noneRow.innerHTML = '<span class="tpl-detail-style-dot" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);"></span><span style="flex:1;">Default</span><span class="tpl-detail-style-check">✓</span>';
+      noneRow.addEventListener('click', function () { tplDetailSetTheme(null); });
+      list.appendChild(noneRow);
+
+      allThemes.forEach(function (th) {
+        var row = document.createElement('button');
+        row.className = 'tpl-detail-style-row' + (tplDetailThemeId === th.file ? ' active' : '');
+        row.dataset.themeId = th.file;
+        var dot = '<span class="tpl-detail-style-dot" style="background:' + th.bgColor + ';box-shadow:inset 0 0 0 3px ' + (th.accentColor || th.bgColor) + ';"></span>';
+        row.innerHTML = dot + '<span style="flex:1;">' + th.name + '</span><span class="tpl-detail-style-check">✓</span>';
+        row.addEventListener('click', function () { tplDetailSetTheme(th.file); });
+        list.appendChild(row);
+      });
+
+      if (allThemes.length === 0) {
+        list.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:8px;">No themes yet — server needs restart after first run.</div>';
+      }
+
+      modal.classList.remove('hidden');
+      nameEl.focus();
     }
 
-    function createLibrarySlide() {
-      if (!newSlideTemplateId) {
-        showToast('Please pick a template first.');
-        return;
-      }
-      var name = document.getElementById('newSlideName').value.trim() || newSlideTemplateName || 'Untitled Slide';
+    function buildTplDetailUrl() {
+      var base = '/slides/template-preview/' + (tplDetailTpl ? (tplDetailTpl.id || '') : '');
+      return tplDetailThemeId ? base + '?theme=' + tplDetailThemeId : base;
+    }
 
+    function tplDetailSetTheme(themeFile) {
+      tplDetailThemeId = themeFile || null;
+      var iframe = document.getElementById('tplDetailIframe');
+      if (iframe) iframe.src = buildTplDetailUrl();
+      var rows = document.querySelectorAll('#tplDetailStyleList .tpl-detail-style-row');
+      for (var i = 0; i < rows.length; i++) {
+        var match = themeFile ? rows[i].dataset.themeId === themeFile : rows[i].dataset.themeId === '';
+        rows[i].classList.toggle('active', match);
+      }
+    }
+
+    function closeTplDetail() {
+      document.getElementById('tplDetailModal').classList.add('hidden');
+      document.getElementById('tplDetailPreviewArea').innerHTML = '';
+      tplDetailTpl     = null;
+      tplDetailThemeId = null;
+    }
+
+    function createSlideFromDetail() {
+      if (!tplDetailTpl) return;
+      var name = (document.getElementById('tplDetailSlideNameInput').value.trim()) || tplDetailTpl.name || 'Untitled Slide';
       fetch('/api/library', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ templateId: newSlideTemplateId, name: name })
+        body: JSON.stringify({ templateId: tplDetailTpl.id, name: name, themeId: tplDetailThemeId || '' })
       })
         .then(function (r) { return r.json(); })
         .then(function (res) {
           var created = (res && res.data) ? res.data : res;
           librarySlides.push(created);
-          closeNewSlideModal();
+          closeTplDetail();
           switchTab('library');
           renderLibraryGrid();
           showToast('Slide added to library');
         })
-        .catch(function () {
-          showToast('Could not create slide. Try again.');
-        });
-    }
-
-    // ── Slide Builder ────────────────────────────────────────────────
-
-    function startNewLayout() {
-      currentLayout = {
-        id:   null,
-        name: 'Untitled Slide',
-        rows: []
-      };
-      document.getElementById('layoutNameInput').value = 'Untitled Slide';
-      setSaveStatus('');
-      renderCanvas();
-      renderPreview();
-    }
-
-    function openBuilderWithTemplate(tpl) {
-      currentLayout = {
-        id:           tpl.id,
-        name:         tpl.name || 'Untitled',
-        rows:         tpl.rows ? JSON.parse(JSON.stringify(tpl.rows)) : [],
-        isTemplate:   true
-      };
-      document.getElementById('layoutNameInput').value = currentLayout.name;
-      switchTab('builder');
-      renderCanvas();
-      renderPreview();
-    }
-
-    function openBuilderWithLibrarySlide(slide) {
-      window.location.href = '/builder?librarySlide=' + encodeURIComponent(slide.id) +
-        '&slideName=' + encodeURIComponent(slide.name || 'Untitled');
-    }
-
-    function saveLayoutName(name) {
-      if (!currentLayout) return;
-      name = name.trim() || 'Untitled Slide';
-      currentLayout.name = name;
-      document.getElementById('layoutNameInput').value = name;
-      if (currentLayout.id && currentLayout.isTemplate) scheduleSave();
-    }
-
-    function saveAsTemplate() {
-      if (!currentLayout) return;
-      var name = currentLayout.name || 'Untitled Slide';
-      if (currentLayout.id && currentLayout.isTemplate) {
-        // Update existing template
-        setSaveStatus('saving');
-        fetch('/api/layouts/' + currentLayout.id, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: name, rows: currentLayout.rows })
-        })
-          .then(function (r) { return r.json(); })
-          .then(function () {
-            setSaveStatus('saved');
-            setTimeout(function () { setSaveStatus(''); }, 2000);
-            showToast('Template saved');
-          })
-          .catch(function () {
-            setSaveStatus('');
-            showToast('Could not save. Try again.');
-          });
-      } else {
-        // Create new template
-        fetch('/api/layouts', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: name, rows: currentLayout.rows })
-        })
-          .then(function (r) { return r.json(); })
-          .then(function (res) {
-            if (res.success && res.data) {
-              currentLayout.id         = res.data.id;
-              currentLayout.isTemplate = true;
-            }
-            showToast('Saved as template: ' + name);
-          })
-          .catch(function () {
-            showToast('Could not save. Try again.');
-          });
-      }
-    }
-
-    function saveToLibrary() {
-      if (!currentLayout) return;
-      fetch('/api/library', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name:       currentLayout.name || 'Untitled Slide',
-          templateId: (currentLayout.isTemplate && currentLayout.id) ? currentLayout.id : null
-        })
-      })
-        .then(function (r) { return r.json(); })
-        .then(function (res) {
-          var saved = res.data || res;
-          librarySlides.push(saved);
-          switchTab('library');
-          renderLibraryGrid();
-          showToast('Slide saved to My Library');
-        })
-        .catch(function () {
-          showToast('Could not save. Try again.');
-        });
-    }
-
-    // ── Row / Col / Component manipulation ──────────────────────────
-
-    function addRow() {
-      if (!currentLayout) return;
-      currentLayout.rows.push({
-        id:     'row-' + Date.now(),
-        layout: 'full',
-        height: 'auto',
-        cols:   [{ components: [] }]
-      });
-      renderCanvas();
-      renderPreview();
-      scheduleSave();
-    }
-
-    function setRowLayout(rowIdx, layoutKey) {
-      if (!currentLayout) return;
-      var row = currentLayout.rows[rowIdx];
-      if (!row) return;
-      var fractions = COL_LAYOUTS[layoutKey];
-      if (!fractions) return;
-      row.layout = layoutKey;
-      var existing = row.cols || [];
-      var newCols = [];
-      for (var i = 0; i < fractions.length; i++) {
-        newCols.push(existing[i] || { components: [] });
-      }
-      row.cols = newCols;
-      renderCanvas();
-      renderPreview();
-      scheduleSave();
-    }
-
-    function setRowHeight(rowIdx, heightKey) {
-      if (!currentLayout) return;
-      var row = currentLayout.rows[rowIdx];
-      if (!row) return;
-      row.height = heightKey;
-      renderCanvas();
-      renderPreview();
-      scheduleSave();
-    }
-
-    function removeRow(rowIdx) {
-      if (!currentLayout) return;
-      currentLayout.rows.splice(rowIdx, 1);
-      renderCanvas();
-      renderPreview();
-      scheduleSave();
-    }
-
-    function addComponent(rowIdx, colIdx, type) {
-      if (!currentLayout) return;
-      var col = currentLayout.rows[rowIdx].cols[colIdx];
-      col.components.push({ type: type });
-      renderCanvas();
-      renderPreview();
-      scheduleSave();
-    }
-
-    function removeComponent(rowIdx, colIdx, compIdx) {
-      if (!currentLayout) return;
-      currentLayout.rows[rowIdx].cols[colIdx].components.splice(compIdx, 1);
-      renderCanvas();
-      renderPreview();
-      scheduleSave();
-    }
-
-    // ── Render: Canvas ───────────────────────────────────────────────
-
-    function renderCanvas() {
-      var inner = document.getElementById('canvasInner');
-      inner.innerHTML = '';
-      var rows = currentLayout ? currentLayout.rows : [];
-      for (var r = 0; r < rows.length; r++) {
-        inner.appendChild(buildRowElement(r, rows[r]));
-      }
-      var addWrap = document.createElement('div');
-      addWrap.className = 'canvas-add-row';
-      var addBtn = document.createElement('button');
-      addBtn.className = 'btn-add-row';
-      addBtn.innerHTML = '&#43; Add Row';
-      addBtn.addEventListener('click', addRow);
-      addWrap.appendChild(addBtn);
-      inner.appendChild(addWrap);
-    }
-
-    function buildRowElement(rowIdx, row) {
-      var rowEl = document.createElement('div');
-      rowEl.className = 'builder-row';
-      rowEl.draggable = true;
-      (function (ri) {
-        rowEl.addEventListener('dragstart', function (e) {
-          dragSrcRowIdx = ri;
-          e.dataTransfer.effectAllowed = 'move';
-          setTimeout(function () { rowEl.classList.add('dragging'); }, 0);
-        });
-        rowEl.addEventListener('dragend', function () {
-          rowEl.classList.remove('dragging');
-          document.querySelectorAll('.builder-row').forEach(function (r) { r.classList.remove('drag-over'); });
-          dragSrcRowIdx = null;
-        });
-        rowEl.addEventListener('dragover', function (e) {
-          e.preventDefault();
-          e.dataTransfer.dropEffect = 'move';
-          document.querySelectorAll('.builder-row').forEach(function (r) { r.classList.remove('drag-over'); });
-          if (dragSrcRowIdx !== null && dragSrcRowIdx !== ri) rowEl.classList.add('drag-over');
-        });
-        rowEl.addEventListener('drop', function (e) {
-          e.preventDefault();
-          rowEl.classList.remove('drag-over');
-          if (dragSrcRowIdx === null || dragSrcRowIdx === ri) return;
-          var moved = currentLayout.rows.splice(dragSrcRowIdx, 1)[0];
-          var targetIdx = ri > dragSrcRowIdx ? ri - 1 : ri;
-          currentLayout.rows.splice(targetIdx, 0, moved);
-          dragSrcRowIdx = null;
-          renderCanvas();
-          renderPreview();
-          scheduleSave();
-        });
-      })(rowIdx);
-
-      var currentLayoutKey = row.layout || 'full';
-      var currentHeight    = row.height || 'auto';
-      var fractions = COL_LAYOUTS[currentLayoutKey] || ['1fr'];
-
-      var header = document.createElement('div');
-      header.className = 'row-header';
-
-      var handle = document.createElement('span');
-      handle.className = 'drag-handle';
-      handle.innerHTML = '&#8942;';
-      handle.title = 'Drag to reorder';
-
-      var label = document.createElement('span');
-      label.className = 'row-label';
-      label.textContent = 'Row ' + (rowIdx + 1);
-
-      var controls = document.createElement('div');
-      controls.className = 'row-controls';
-
-      var layoutPicker = document.createElement('div');
-      layoutPicker.className = 'layout-picker';
-
-      var layoutKeys = Object.keys(COL_LAYOUTS);
-      for (var k = 0; k < layoutKeys.length; k++) {
-        var key = layoutKeys[k];
-        var pill = document.createElement('button');
-        pill.className = 'layout-pill' + (currentLayoutKey === key ? ' active' : '');
-        pill.textContent = COL_LAYOUT_LABELS[key];
-        pill.title = COL_LAYOUT_LABELS[key];
-        (function (lk) {
-          pill.addEventListener('click', function () { setRowLayout(rowIdx, lk); });
-        })(key);
-        layoutPicker.appendChild(pill);
-      }
-
-      var heightToggle = document.createElement('div');
-      heightToggle.className = 'height-toggle';
-
-      var heightKeys = ['auto', 'tall', 'short'];
-      for (var h = 0; h < heightKeys.length; h++) {
-        var hk = heightKeys[h];
-        var hBtn = document.createElement('button');
-        hBtn.className = 'height-btn' + (currentHeight === hk ? ' active' : '');
-        hBtn.textContent = hk.charAt(0).toUpperCase() + hk.slice(1);
-        (function (heightKey) {
-          hBtn.addEventListener('click', function () { setRowHeight(rowIdx, heightKey); });
-        })(hk);
-        heightToggle.appendChild(hBtn);
-      }
-
-      controls.appendChild(layoutPicker);
-      controls.appendChild(heightToggle);
-
-      var removeBtn = document.createElement('button');
-      removeBtn.className = 'btn-remove-row';
-      removeBtn.innerHTML = '&#215;';
-      removeBtn.title = 'Remove row';
-      (function (ri) {
-        removeBtn.addEventListener('click', function () { removeRow(ri); });
-      })(rowIdx);
-
-      header.appendChild(handle);
-      header.appendChild(label);
-      header.appendChild(controls);
-      header.appendChild(removeBtn);
-
-      var colsEl = document.createElement('div');
-      colsEl.className = 'row-cols';
-      colsEl.style.gridTemplateColumns = fractions.join(' ');
-
-      if (currentHeight === 'tall') {
-        colsEl.style.minHeight = '200px';
-      } else if (currentHeight === 'short') {
-        colsEl.style.minHeight = '80px';
-      }
-
-      var cols = row.cols || [];
-      for (var c = 0; c < cols.length; c++) {
-        colsEl.appendChild(buildColElement(rowIdx, c, cols[c]));
-      }
-
-      rowEl.appendChild(header);
-      rowEl.appendChild(colsEl);
-
-      return rowEl;
-    }
-
-    function buildColElement(rowIdx, colIdx, col) {
-      var colEl = document.createElement('div');
-      var components = col.components || [];
-
-      if (components.length === 0) {
-        colEl.className = 'builder-col col-empty';
-        var addBtn = document.createElement('button');
-        addBtn.className = 'col-add-btn';
-        addBtn.innerHTML = '&#43;';
-        addBtn.title = 'Add component';
-        (function (ri, ci) {
-          addBtn.addEventListener('click', function () { openPicker(ri, ci); });
-        })(rowIdx, colIdx);
-        colEl.appendChild(addBtn);
-      } else {
-        colEl.className = 'builder-col';
-        for (var i = 0; i < components.length; i++) {
-          colEl.appendChild(buildChip(rowIdx, colIdx, i, components[i].type));
-        }
-        var moreBtn = document.createElement('button');
-        moreBtn.className = 'col-add-btn';
-        moreBtn.innerHTML = '&#43;';
-        moreBtn.title = 'Add component';
-        moreBtn.style.fontSize = '14px';
-        (function (ri, ci) {
-          moreBtn.addEventListener('click', function () { openPicker(ri, ci); });
-        })(rowIdx, colIdx);
-        colEl.appendChild(moreBtn);
-      }
-
-      return colEl;
-    }
-
-    function buildChip(rowIdx, colIdx, compIdx, type) {
-      var chip = document.createElement('div');
-      chip.className = 'component-chip';
-
-      var label = document.createElement('span');
-      label.textContent = type;
-
-      var removeBtn = document.createElement('button');
-      removeBtn.className = 'chip-remove';
-      removeBtn.innerHTML = '&#215;';
-      removeBtn.title = 'Remove component';
-      (function (ri, ci, idx) {
-        removeBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          removeComponent(ri, ci, idx);
-        });
-      })(rowIdx, colIdx, compIdx);
-
-      chip.appendChild(label);
-      chip.appendChild(removeBtn);
-      return chip;
-    }
-
-    // ── Render: Preview ──────────────────────────────────────────────
-
-    function renderPreview() {
-      var inner = document.getElementById('previewInner');
-      inner.innerHTML = '';
-
-      var rows = (currentLayout && currentLayout.rows) ? currentLayout.rows : [];
-
-      if (viewMode === 'mobile') {
-        var wrapEl = document.createElement('div');
-        wrapEl.className = 'preview-phone-wrap';
-
-        var phoneEl = document.createElement('div');
-        phoneEl.className = 'preview-phone';
-
-        if (rows.length === 0) {
-          var ph = document.createElement('div');
-          ph.className = 'preview-placeholder';
-          ph.textContent = 'Add rows to see a preview';
-          phoneEl.appendChild(ph);
-        } else {
-          for (var r = 0; r < rows.length; r++) {
-            phoneEl.appendChild(buildPreviewRow(rows[r], true));
-          }
-        }
-
-        wrapEl.appendChild(phoneEl);
-        inner.appendChild(wrapEl);
-
-        requestAnimationFrame(function () {
-          var panelW = inner.offsetWidth - 40;
-          var scale  = Math.min(1, panelW / 390);
-          wrapEl.style.transform = 'scale(' + scale + ')';
-          wrapEl.style.transformOrigin = 'top center';
-          wrapEl.style.height = (844 * scale) + 'px';
-        });
-
-      } else {
-        var frameWrap = document.createElement('div');
-        frameWrap.className = 'preview-frame-wrap';
-
-        var frameEl = document.createElement('div');
-        frameEl.className = 'preview-frame';
-
-        if (rows.length === 0) {
-          var phd = document.createElement('div');
-          phd.className = 'preview-placeholder';
-          phd.textContent = 'Add rows to see a preview';
-          frameEl.appendChild(phd);
-        } else {
-          for (var rd = 0; rd < rows.length; rd++) {
-            frameEl.appendChild(buildPreviewRow(rows[rd], false));
-          }
-        }
-
-        frameWrap.appendChild(frameEl);
-        inner.appendChild(frameWrap);
-      }
-    }
-
-    function buildPreviewRow(row, isMobile) {
-      var rowEl = document.createElement('div');
-      var layoutKey = row.layout || 'full';
-      var fractions = COL_LAYOUTS[layoutKey] || ['1fr'];
-      var heightKey = row.height || 'auto';
-
-      rowEl.className = 'preview-row' + (heightKey !== 'auto' ? ' height-' + heightKey : '');
-
-      if (isMobile) {
-        rowEl.style.gridTemplateColumns = '1fr';
-      } else {
-        rowEl.style.gridTemplateColumns = fractions.join(' ');
-      }
-
-      var cols = row.cols || [];
-      for (var c = 0; c < cols.length; c++) {
-        rowEl.appendChild(buildPreviewCol(cols[c]));
-      }
-
-      return rowEl;
-    }
-
-    function buildPreviewCol(col) {
-      var colEl = document.createElement('div');
-      colEl.className = 'preview-col';
-
-      var components = col.components || [];
-      if (components.length === 0) {
-        var empty = document.createElement('div');
-        empty.className = 'pv-empty-col';
-        colEl.appendChild(empty);
-      } else {
-        for (var i = 0; i < components.length; i++) {
-          colEl.appendChild(buildPreviewComponent(components[i].type));
-        }
-      }
-
-      return colEl;
-    }
-
-    function buildPreviewComponent(type) {
-      var el;
-
-      if (type === 'Title') {
-        el = document.createElement('div');
-        el.className = 'pv-title';
-        el.textContent = 'Slide Title';
-
-      } else if (type === 'Subtitle') {
-        el = document.createElement('div');
-        el.className = 'pv-subtitle';
-        el.textContent = 'Supporting headline goes here';
-
-      } else if (type === 'Text Block') {
-        el = document.createElement('div');
-        el.className = 'pv-text';
-        el.textContent = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
-
-      } else if (type === 'Tabs') {
-        el = document.createElement('div');
-        el.className = 'pv-tabs';
-        var tabHeader = document.createElement('div');
-        tabHeader.className = 'pv-tabs-header';
-        ['Tab 1', 'Tab 2', 'Tab 3'].forEach(function (label, i) {
-          var t = document.createElement('div');
-          t.className = 'pv-tab' + (i === 0 ? ' active-tab' : '');
-          t.textContent = label;
-          tabHeader.appendChild(t);
-        });
-        var tabBody = document.createElement('div');
-        tabBody.className = 'pv-tabs-body';
-        tabBody.textContent = 'Tab content area';
-        el.appendChild(tabHeader);
-        el.appendChild(tabBody);
-
-      } else if (type === 'Carousel') {
-        el = document.createElement('div');
-        el.className = 'pv-carousel';
-        var icon = document.createElement('div');
-        icon.className = 'pv-carousel-icon';
-        icon.textContent = '▶';
-        var clabel = document.createElement('div');
-        clabel.className = 'pv-carousel-label';
-        clabel.textContent = 'Image Carousel';
-        el.appendChild(icon);
-        el.appendChild(clabel);
-
-      } else if (type === 'Table') {
-        el = document.createElement('table');
-        el.className = 'pv-table';
-        var thead = document.createElement('thead');
-        var hrow = document.createElement('tr');
-        for (var h = 0; h < 3; h++) {
-          var th = document.createElement('th');
-          th.textContent = 'Header ' + (h + 1);
-          hrow.appendChild(th);
-        }
-        thead.appendChild(hrow);
-        var tbody = document.createElement('tbody');
-        for (var tr = 0; tr < 2; tr++) {
-          var trow = document.createElement('tr');
-          for (var td = 0; td < 3; td++) {
-            var tcell = document.createElement('td');
-            tcell.textContent = 'Cell';
-            trow.appendChild(tcell);
-          }
-          tbody.appendChild(trow);
-        }
-        el.appendChild(thead);
-        el.appendChild(tbody);
-
-      } else if (type === 'List') {
-        el = document.createElement('div');
-        el.className = 'pv-list';
-        ['List item one', 'List item two', 'List item three'].forEach(function (txt) {
-          var item = document.createElement('div');
-          item.className = 'pv-list-item';
-          item.textContent = txt;
-          el.appendChild(item);
-        });
-
-      } else if (type === 'Button') {
-        el = document.createElement('div');
-        el.className = 'pv-button';
-        el.textContent = 'Call to Action';
-
-      } else if (type === 'Image') {
-        el = document.createElement('div');
-        el.className = 'pv-image';
-        el.innerHTML = '&#128444; Image';
-
-      } else if (type === 'Stat Block') {
-        el = document.createElement('div');
-        el.className = 'pv-stat';
-        el.innerHTML =
-          '<div class="pv-stat-number">2,050+</div>' +
-          '<div class="pv-stat-label">Systems Installed</div>';
-
-      } else if (type === 'Section Label') {
-        el = document.createElement('div');
-        el.className = 'pv-section-label';
-        el.textContent = 'Section Label';
-
-      } else if (type === 'Matrix') {
-        el = document.createElement('table');
-        el.className = 'pv-table';
-        var mhead = document.createElement('thead');
-        var mhrow = document.createElement('tr');
-        for (var mh = 0; mh < 3; mh++) {
-          var mth = document.createElement('th');
-          mth.textContent = 'Col ' + (mh + 1);
-          mhrow.appendChild(mth);
-        }
-        mhead.appendChild(mhrow);
-        var mtbody = document.createElement('tbody');
-        for (var mtr = 0; mtr < 2; mtr++) {
-          var mtrow = document.createElement('tr');
-          for (var mtd = 0; mtd < 3; mtd++) {
-            var mtcell = document.createElement('td');
-            mtcell.textContent = '—';
-            mtrow.appendChild(mtcell);
-          }
-          mtbody.appendChild(mtrow);
-        }
-        el.appendChild(mhead);
-        el.appendChild(mtbody);
-
-      } else {
-        el = document.createElement('div');
-        el.className = 'pv-text';
-        el.textContent = type;
-      }
-
-      return el;
-    }
-
-    // ── Component picker ─────────────────────────────────────────────
-
-    function openPicker(rowIdx, colIdx) {
-      pickerTarget = { rowIdx: rowIdx, colIdx: colIdx };
-
-      var list = document.getElementById('pickerList');
-      list.innerHTML = '';
-
-      COMPONENT_GROUPS.forEach(function (group) {
-        var groupLabel = document.createElement('div');
-        groupLabel.className = 'picker-group-label';
-        groupLabel.textContent = group.label;
-        list.appendChild(groupLabel);
-
-        group.types.forEach(function (comp) {
-          var btn = document.createElement('button');
-          btn.className = 'picker-item';
-          btn.innerHTML =
-            '<span class="picker-item-name">' + comp.name + '</span>' +
-            '<span class="picker-item-desc">' + comp.desc + '</span>';
-          btn.addEventListener('click', function () {
-            addComponent(pickerTarget.rowIdx, pickerTarget.colIdx, comp.name);
-            closePicker();
-          });
-          list.appendChild(btn);
-        });
-      });
-
-      document.getElementById('pickerOverlay').classList.remove('hidden');
-    }
-
-    function closePicker() {
-      document.getElementById('pickerOverlay').classList.add('hidden');
-      pickerTarget = null;
-    }
-
-    document.getElementById('pickerOverlay').addEventListener('click', function (e) {
-      if (e.target === this) closePicker();
-    });
-
-    // ── View mode (desktop / mobile preview) ─────────────────────────
-
-    function setViewMode(mode) {
-      viewMode = mode;
-      document.getElementById('vpDesktop').classList.toggle('active', mode === 'desktop');
-      document.getElementById('vpMobile').classList.toggle('active', mode === 'mobile');
-      var vpdm = document.getElementById('vpDesktopMobile');
-      var vpmm = document.getElementById('vpMobileMobile');
-      if (vpdm) vpdm.classList.toggle('active', mode === 'desktop');
-      if (vpmm) vpmm.classList.toggle('active', mode === 'mobile');
-      renderPreview();
-    }
-
-    // ── Builder mobile tab switching ──────────────────────────────────
-
-    function setActiveTab(tab) {
-      activeTab = tab;
-      applyTabClasses();
-    }
-
-    function applyTabClasses() {
-      var canvas  = document.getElementById('builderCanvas');
-      var preview = document.getElementById('builderPreview');
-      var tabEdit    = document.getElementById('tabEdit');
-      var tabPreview = document.getElementById('tabPreview');
-
-      if (activeTab === 'edit') {
-        canvas.classList.remove('tab-hidden');
-        preview.classList.add('tab-hidden');
-        tabEdit.classList.add('active');
-        tabPreview.classList.remove('active');
-      } else {
-        canvas.classList.add('tab-hidden');
-        preview.classList.remove('tab-hidden');
-        tabEdit.classList.remove('active');
-        tabPreview.classList.add('active');
-      }
-    }
-
-    // ── Save ──────────────────────────────────────────────────────────
-
-    function setSaveStatus(state) {
-      var el = document.getElementById('saveStatus');
-      if (!el) return;
-      if (state === 'saving') {
-        el.textContent = 'Saving…';
-        el.className = 'save-status saving';
-      } else if (state === 'saved') {
-        el.textContent = 'Saved';
-        el.className = 'save-status saved';
-      } else {
-        el.textContent = '';
-        el.className = 'save-status';
-      }
-    }
-
-    function scheduleSave() {
-      if (!currentLayout || !currentLayout.id || !currentLayout.isTemplate) return;
-      setSaveStatus('saving');
-      if (saveTimer) clearTimeout(saveTimer);
-      saveTimer = setTimeout(saveTemplateLayout, 800);
-    }
-
-    function saveTemplateLayout() {
-      if (!currentLayout || !currentLayout.id || !currentLayout.isTemplate) return;
-      fetch('/api/layouts/' + currentLayout.id, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: currentLayout.name, rows: currentLayout.rows })
-      }).then(function (res) {
-        if (!res.ok) console.warn('[layouts] Save failed');
-        setSaveStatus('saved');
-        setTimeout(function () { setSaveStatus(''); }, 2000);
-      }).catch(function () {
-        setSaveStatus('');
-      });
+        .catch(function () { showToast('Could not create slide. Try again.'); });
     }
 
     // ── Preview popup ─────────────────────────────────────────────────
@@ -5728,8 +4935,8 @@
       if (e.target === this) closeImportModal();
     });
 
-    document.getElementById('newSlideName').addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') createLibrarySlide();
+    document.getElementById('tplDetailSlideNameInput').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') createSlideFromDetail();
     });
 
     // ── Init ──────────────────────────────────────────────────────────
@@ -5877,424 +5084,6 @@
       }
       switchTab(tab, true);
     });
-
-    // ── Template Creator Wizard ──────────────────────────────────────
-
-    var wzCurrentStep = 1;
-    var wzData = { name: '', category: '', slideMode: 'sequence', slideId: '', layout: '', blocks: [] };
-    var wzBuilderMode = 'wizard';
-
-    var WZ_LAYOUT_BLOCKS = {
-      'single-col':  ['headline', 'section-label', 'subtitle', 'body-text', 'image'],
-      'two-col':     ['headline', 'section-label', 'subtitle', 'body-text', 'image'],
-      'stats-grid':  ['headline', 'section-label', 'stat-number', 'stat-number', 'stat-number'],
-      'hero':        ['headline', 'section-label', 'subtitle', 'cta-button'],
-      'list':        ['headline', 'section-label', 'subtitle', 'bullet-list', 'image'],
-      'cta':         ['headline', 'section-label', 'cta-steps', 'cta-button', 'contact-block']
-    };
-
-    var WZ_BLOCK_META = {
-      'headline':      { label: 'Headline',         alwaysOn: true,  liveData: false },
-      'section-label': { label: 'Section Label',    alwaysOn: true,  liveData: false },
-      'subtitle':      { label: 'Subtitle / Intro', alwaysOn: false, liveData: false },
-      'body-text':     { label: 'Body Text',         alwaysOn: false, liveData: false },
-      'image':         { label: 'Image Slot',        alwaysOn: false, liveData: true  },
-      'stat-number':   { label: 'Stat Number',       alwaysOn: false, liveData: true  },
-      'bullet-list':   { label: 'Bullet List',       alwaysOn: false, liveData: false },
-      'cta-button':    { label: 'CTA Button',        alwaysOn: false, liveData: false },
-      'contact-block': { label: 'Contact Block',     alwaysOn: false, liveData: false },
-      'cta-steps':     { label: 'CTA Steps',         alwaysOn: false, liveData: false }
-    };
-
-    function setBuilderMode(mode) {
-      wzBuilderMode = mode;
-      var wizardPane  = document.getElementById('wizardPane');
-      var builderBody = document.getElementById('builderBody');
-      var modeWizard  = document.getElementById('modeWizard');
-      var modeCanvas  = document.getElementById('modeCanvas');
-      if (mode === 'wizard') {
-        wizardPane.classList.remove('hidden');
-        if (builderBody) builderBody.classList.add('hidden');
-        modeWizard.classList.add('active');
-        modeCanvas.classList.remove('active');
-      } else {
-        wizardPane.classList.add('hidden');
-        if (builderBody) builderBody.classList.remove('hidden');
-        modeCanvas.classList.add('active');
-        modeWizard.classList.remove('active');
-      }
-    }
-
-    function wzPickCategory(btn) {
-      document.querySelectorAll('#wzCategoryPills .wz-pill').forEach(function (b) { b.classList.remove('active'); });
-      btn.classList.add('active');
-      wzData.category = btn.dataset.val;
-    }
-
-    function wzPickMode(btn) {
-      document.querySelectorAll('#wzStep1 .wz-category-pills:last-of-type .wz-pill').forEach(function (b) { b.classList.remove('active'); });
-      btn.classList.add('active');
-      wzData.slideMode = btn.dataset.val;
-    }
-
-    function wzPickLayout(card) {
-      document.querySelectorAll('.wz-layout-card').forEach(function (c) { c.classList.remove('selected'); });
-      card.classList.add('selected');
-      wzData.layout = card.dataset.layout;
-    }
-
-    function wzComputeId() {
-      var name = (document.getElementById('wzName').value || '').trim();
-      var slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'new-slide';
-      var preview = document.getElementById('wzIdPreview');
-      fetch('/api/templates')
-        .then(function (r) { return r.json(); })
-        .then(function (res) {
-          if (!res.success) return;
-          var maxNum = 0;
-          (res.data || []).forEach(function (t) {
-            var m = (t.id || '').match(/^ls(\d+)-/);
-            if (m) maxNum = Math.max(maxNum, parseInt(m[1], 10));
-          });
-          var nextNum = String(maxNum + 1).padStart(2, '0');
-          wzData.slideId = 'ls' + nextNum + '-' + slug;
-          if (preview) preview.textContent = wzData.slideId;
-        })
-        .catch(function () { wzData.slideId = 'ls16-' + slug; if (preview) preview.textContent = wzData.slideId; });
-    }
-
-    function wzBuildBlocksList() {
-      var list = document.getElementById('wzBlocksList');
-      list.innerHTML = '';
-      var layout = wzData.layout || 'single-col';
-      var blockIds = WZ_LAYOUT_BLOCKS[layout] || WZ_LAYOUT_BLOCKS['single-col'];
-
-      // dedupe, keeping order
-      var seen = {};
-      var unique = [];
-      blockIds.forEach(function (id) { if (!seen[id]) { seen[id] = true; unique.push(id); } });
-
-      wzData.blocks = unique.map(function (id) {
-        var meta = WZ_BLOCK_META[id] || { label: id, alwaysOn: false, liveData: false };
-        return { id: id, label: meta.label, on: true, alwaysOn: meta.alwaysOn, liveData: meta.liveData, feedKey: '' };
-      });
-
-      wzData.blocks.forEach(function (block) {
-        var row = document.createElement('div');
-        row.className = 'wz-block-row';
-
-        var toggleBtn = document.createElement('button');
-        toggleBtn.className = 'wz-block-toggle' + (block.on ? ' on' : '');
-        toggleBtn.textContent = block.on ? 'ON' : 'OFF';
-        if (block.alwaysOn) { toggleBtn.disabled = true; toggleBtn.title = 'Always required'; }
-
-        var feedWrap = document.createElement('div');
-        feedWrap.className = 'wz-block-feed-wrap';
-        feedWrap.style.display = (block.on && block.liveData) ? 'flex' : 'none';
-
-        toggleBtn.addEventListener('click', function () {
-          block.on = !block.on;
-          toggleBtn.classList.toggle('on', block.on);
-          toggleBtn.textContent = block.on ? 'ON' : 'OFF';
-          feedWrap.style.display = (block.on && block.liveData) ? 'flex' : 'none';
-        });
-
-        var nameEl = document.createElement('span');
-        nameEl.className = 'wz-block-name';
-        nameEl.textContent = block.label;
-
-        if (block.liveData) {
-          var feedCheck = document.createElement('label');
-          feedCheck.style.cssText = 'font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;flex-shrink:0;';
-          var chk = document.createElement('input');
-          chk.type = 'checkbox';
-          chk.style.accentColor = 'var(--accent)';
-          feedCheck.appendChild(chk);
-          feedCheck.appendChild(document.createTextNode('Live data'));
-
-          var feedInput = document.createElement('input');
-          feedInput.type = 'text';
-          feedInput.placeholder = 'feed-key';
-          feedInput.className = 'wz-block-feed';
-          feedInput.addEventListener('input', function () { block.feedKey = feedInput.value; });
-
-          chk.addEventListener('change', function () {
-            feedInput.style.display = chk.checked ? 'block' : 'none';
-          });
-          feedInput.style.display = 'none';
-
-          feedWrap.appendChild(feedCheck);
-          feedWrap.appendChild(feedInput);
-        }
-
-        row.appendChild(toggleBtn);
-        row.appendChild(nameEl);
-        row.appendChild(feedWrap);
-        list.appendChild(row);
-      });
-    }
-
-    function wzBuildReview() {
-      var summary = document.getElementById('wzReviewSummary');
-      var hasLiveFeed = wzData.blocks.some(function (b) { return b.on && b.liveData && b.feedKey; });
-      summary.innerHTML =
-        '<strong>ID:</strong> ' + (wzData.slideId || '&#8212;') + '<br>' +
-        '<strong>Name:</strong> ' + (wzData.name || '&#8212;') + '<br>' +
-        '<strong>Category:</strong> ' + (wzData.category || '&#8212;') + '<br>' +
-        '<strong>Layout:</strong> ' + (wzData.layout || '&#8212;') + '<br>' +
-        '<strong>Mode:</strong> ' + (wzData.slideMode || 'sequence') + '<br>' +
-        '<strong>Blocks:</strong> ' + wzData.blocks.filter(function (b) { return b.on; }).map(function (b) { return b.label; }).join(', ');
-
-      // Anatomy checks
-      document.getElementById('wck-style').textContent = '✓';
-      document.getElementById('wck-style').style.color = 'var(--accent)';
-      document.getElementById('wck-trans').textContent = '✓';
-      document.getElementById('wck-trans').style.color = 'var(--accent)';
-      document.getElementById('wck-track').textContent = wzData.blocks.some(function(b){ return b.on && (b.id === 'cta-button' || b.id === 'cta-steps'); }) ? '✓' : '–';
-      document.getElementById('wck-track').style.color = 'var(--muted)';
-      document.getElementById('wck-mode').textContent = '✓';
-      document.getElementById('wck-mode').style.color = 'var(--accent)';
-      document.getElementById('wck-feed').textContent = hasLiveFeed ? '✓' : '–';
-      document.getElementById('wck-feed').style.color = hasLiveFeed ? 'var(--accent)' : 'var(--muted)';
-
-      wzRenderPreview();
-    }
-
-    function wzBuildPreviewPage(skeletonHtml) {
-      var origin = window.location.origin;
-      return '<!DOCTYPE html><html><head>' +
-        '<meta charset="UTF-8">' +
-        '<link rel="stylesheet" href="' + origin + '/slides/style.css">' +
-        '<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}' +
-        'html,body{width:100%;height:100%;overflow:hidden;background:#1a1a2e}' +
-        '.slides-container{position:relative;width:100%;height:100%}' +
-        '.slide{opacity:1!important;transform:scale(1)!important;pointer-events:none!important}' +
-        '</style></head><body>' +
-        '<div class="slides-container">' + skeletonHtml + '</div>' +
-        '</body></html>';
-    }
-
-    function wzRenderPreview() {
-      var html = wzBuildHtml();
-      var page = wzBuildPreviewPage(html);
-      var blob = new Blob([page], { type: 'text/html' });
-      var url  = URL.createObjectURL(blob);
-      var thumb = document.getElementById('wzPreviewIframe');
-      if (thumb) {
-        if (thumb._blobUrl) URL.revokeObjectURL(thumb._blobUrl);
-        thumb._blobUrl = url;
-        thumb.src = url;
-      }
-    }
-
-    function wzOpenPreviewPopup() {
-      var thumb = document.getElementById('wzPreviewIframe');
-      var frame = document.getElementById('wzPreviewPopupFrame');
-      var title = document.getElementById('wzPreviewPopupTitle');
-      if (thumb && thumb._realUrl) {
-        frame.src = thumb._realUrl;
-        if (title) title.textContent = wzData.name || 'Template Preview';
-      } else if (thumb && thumb._blobUrl) {
-        frame.src = thumb._blobUrl;
-        if (title) title.textContent = (wzData.name || 'Template Preview') + ' (preview)';
-      }
-      document.getElementById('wzPreviewPopup').classList.remove('hidden');
-    }
-
-    function wzClosePreviewPopup() {
-      document.getElementById('wzPreviewPopup').classList.add('hidden');
-    }
-
-    document.getElementById('wzPreviewPopup').addEventListener('click', function (e) {
-      if (e.target === this) wzClosePreviewPopup();
-    });
-
-    function wzBuildHtml() {
-      var id   = wzData.slideId;
-      var mode = wzData.slideMode || 'sequence';
-      var blocks = wzData.blocks.filter(function (b) { return b.on; });
-
-      var bodyParts = [];
-      blocks.forEach(function (b) {
-        var feedAttr = (b.liveData && b.feedKey) ? ' data-feed="' + b.feedKey + '" data-feed-type="' + (b.id === 'image' ? 'text' : 'number') + '"' : '';
-        if (b.id === 'subtitle') {
-          bodyParts.push('      <p class="slide-subtitle" data-edit="subtitle" data-lang-key="' + id + '.subtitle" contenteditable spellcheck="false">Subtitle placeholder</p>');
-        } else if (b.id === 'body-text') {
-          bodyParts.push('      <p class="slide-body-text" data-edit="body" data-lang-key="' + id + '.body" contenteditable spellcheck="false">Body text placeholder</p>');
-        } else if (b.id === 'image') {
-          bodyParts.push('      <div class="slide-img-slot"' + feedAttr + ' data-edit="image" data-builder-only="">[ Image ]</div>');
-        } else if (b.id === 'stat-number') {
-          bodyParts.push('      <div class="stat-block"><div class="stat-number"' + feedAttr + '>0</div><div class="stat-label" data-edit="stat-label" data-lang-key="' + id + '.stat-label" contenteditable spellcheck="false">Metric</div></div>');
-        } else if (b.id === 'bullet-list') {
-          bodyParts.push('      <ul class="slide-bullets"><li data-edit="bullet-1" data-lang-key="' + id + '.bullet-1" contenteditable spellcheck="false">Bullet item</li></ul>');
-        } else if (b.id === 'cta-steps') {
-          bodyParts.push('      <div class="cta-steps"><div class="cta-step"><div class="step-num">1</div><span data-edit="step-1" data-lang-key="' + id + '.step-1" contenteditable spellcheck="false">First step</span></div></div>');
-        } else if (b.id === 'cta-button') {
-          bodyParts.push('      <div class="cta-actions"><a class="cta-btn cta-btn-wa" href="#" data-lang-key="' + id + '.btn-wa">WhatsApp</a><a class="cta-btn cta-btn-email" href="#" data-lang-key="' + id + '.btn-email">Email</a></div>');
-        } else if (b.id === 'contact-block') {
-          bodyParts.push('      <div class="cta-contact"><strong data-edit="contact-name" data-lang-key="' + id + '.contact-name" contenteditable spellcheck="false">Contact Name</strong></div>');
-        }
-      });
-
-      var layoutClass = wzData.layout === 'hero' ? 'hero' : 'content';
-
-      return [
-        '<div class="slide ' + layoutClass + ' ' + id + '"',
-        '     data-slide="' + id + '"',
-        '     data-slide-mode="' + mode + '">',
-        '',
-        '  <div class="slide-logo-row">',
-        '    <img src="/slides/shared/LOGO SoftSolution grays.png" alt="Softsolution">',
-        '    <span class="slide-logo-sep"></span>',
-        '    <img src="/slides/shared/LOGO LiteSentry Greys.png" alt="LiteSentry" class="slide-logo-ls">',
-        '  </div>',
-        '',
-        '  <div class="slide-layout">',
-        '    <header class="slide-head">',
-        '      <div class="section-label" data-edit="section-label" data-lang-key="' + id + '.section-label" contenteditable spellcheck="false">Section Name</div>',
-        '      <h1 class="slide-title" data-edit="headline" data-lang-key="' + id + '.headline" contenteditable spellcheck="false">Headline Placeholder</h1>',
-        '      <div class="divider"></div>',
-        '    </header>',
-        '    <div class="slide-body">',
-        bodyParts.join('\n'),
-        '    </div>',
-        '  </div>',
-        '',
-        '  <style>',
-        '    .' + id + ' { /* layout */ }',
-        '  </style>',
-        '',
-        '  <script>',
-        '  (function () {',
-        '    var slide   = document.currentScript.closest(\'[data-slide]\');',
-        '    var slideId = slide ? slide.dataset.slide : \'' + id + '\';',
-        '    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);',
-        '  })();',
-        '  <\/script>',
-        '',
-        '</div>'
-      ].join('\n');
-    }
-
-    function wzValidateStep(step) {
-      if (step === 1) {
-        var name = (document.getElementById('wzName').value || '').trim();
-        if (!name) { showToast('Please enter a slide name'); return false; }
-        if (!wzData.category) { showToast('Please pick a category'); return false; }
-        wzData.name = name;
-      }
-      if (step === 2) {
-        if (!wzData.layout) { showToast('Please choose a layout'); return false; }
-      }
-      return true;
-    }
-
-    function wzShowStep(n) {
-      wzCurrentStep = n;
-      for (var i = 1; i <= 4; i++) {
-        var stepEl = document.getElementById('wzStep' + i);
-        if (stepEl) stepEl.classList.toggle('hidden', i !== n);
-        var dot = document.getElementById('wzDot' + i);
-        if (dot) dot.classList.toggle('active', i === n);
-        if (dot) dot.classList.toggle('done', i < n);
-      }
-      document.getElementById('wzStepLabel').textContent = 'Step ' + n + ' of 4';
-      document.getElementById('wzBackBtn').style.visibility = n > 1 ? 'visible' : 'hidden';
-
-      var nextBtn = document.getElementById('wzNextBtn');
-      if (n === 4) {
-        nextBtn.textContent = 'Generate Template';
-        nextBtn.onclick = wzGenerate;
-      } else {
-        nextBtn.textContent = 'Next';
-        nextBtn.onclick = wzNext;
-      }
-    }
-
-    function wzNext() {
-      if (!wzValidateStep(wzCurrentStep)) return;
-      if (wzCurrentStep === 1) {
-        wzComputeId();
-        wzShowStep(2);
-      } else if (wzCurrentStep === 2) {
-        wzBuildBlocksList();
-        wzShowStep(3);
-      } else if (wzCurrentStep === 3) {
-        wzBuildReview();
-        wzShowStep(4);
-      }
-    }
-
-    function wzBack() {
-      if (wzCurrentStep > 1) wzShowStep(wzCurrentStep - 1);
-    }
-
-    function wzReset() {
-      wzData = { name: '', category: '', slideMode: 'sequence', slideId: '', layout: '', blocks: [] };
-      wzCurrentStep = 1;
-      document.getElementById('wzName').value = '';
-      document.querySelectorAll('#wzCategoryPills .wz-pill').forEach(function (b) { b.classList.remove('active'); });
-      document.getElementById('wzModeSeq').classList.add('active');
-      document.getElementById('wzModeEmb').classList.remove('active');
-      document.querySelectorAll('.wz-layout-card').forEach(function (c) { c.classList.remove('selected'); });
-      document.getElementById('wzResult').classList.add('hidden');
-      wzShowStep(1);
-    }
-
-    function wzGenerate() {
-      var btn = document.getElementById('wzNextBtn');
-      btn.textContent = 'Generating…';
-      btn.disabled = true;
-
-      // Send layout + blocks to server — server generates anatomy-compliant HTML
-      var blocks = wzData.blocks.filter(function (b) { return b.on; }).map(function (b) {
-        var entry = { type: b.id };
-        if (b.feedKey) { entry.feedKey = b.feedKey; entry.feedType = b.id === 'image' ? 'text' : 'number'; }
-        return entry;
-      });
-
-      fetch('/api/templates', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id:        wzData.slideId,
-          name:      wzData.name,
-          category:  wzData.category,
-          slideMode: wzData.slideMode,
-          layout:    wzData.layout,
-          blocks:    blocks
-        })
-      })
-        .then(function (r) { return r.json(); })
-        .then(function (res) {
-          btn.textContent = 'Generate Template';
-          btn.disabled = false;
-          if (!res.success) { showToast('Error: ' + (res.error || 'Unknown error')); return; }
-          var result = document.getElementById('wzResult');
-          var pathEl = document.getElementById('wzResultPath');
-          result.classList.remove('hidden');
-          pathEl.textContent = res.data.file;
-          btn.textContent = 'Create Another';
-          btn.onclick = wzReset;
-          showToast('Template created: ' + res.data.id);
-          // Switch preview to real server URL now that the file exists
-          var filename = (res.data.file || '').replace('features/slides/', '').replace('.html', '');
-          var realUrl  = '/slides/preview/' + filename;
-          var thumb    = document.getElementById('wzPreviewIframe');
-          if (thumb) { thumb._realUrl = realUrl; thumb.src = realUrl; }
-        })
-        .catch(function (err) {
-          btn.textContent = 'Generate Template';
-          btn.disabled = false;
-          btn.onclick = wzGenerate;
-          showToast('Error: ' + err.message);
-        });
-    }
-
-    // Init wizard mode on load
-    setBuilderMode('wizard');
-    wzShowStep(1);
-    wzComputeId();
 
   </script>
 </body>

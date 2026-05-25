@@ -4,6 +4,7 @@ const express  = require('express');
 const path     = require('path');
 const fs       = require('fs');
 const https    = require('https');
+const http     = require('http');
 const cheerio  = require('cheerio');
 const session  = require('express-session');
 const { requireAuth, registerAuthRoutes } = require('./features/auth/auth');
@@ -57,14 +58,23 @@ app.get('/slides/deck-preview/:id', function (req, res) {
     var resolved = resolveTemplate(libSlide.templateId);
     if (!resolved) return res.status(404).type('text/plain').send('Template not found');
 
+    var isCoverSlide = libSlide.templateId === 'ls01-cover' || libSlide.templateId === 'ls26-cover';
+    var slideEdits = resolveSlideEdits(libSlide, activeDeckId);
+    if (isCoverSlide && !slideEdits['customer-logo'] && deckConfig.logo) {
+      slideEdits = Object.assign({}, slideEdits, { 'customer-logo': deckConfig.logo });
+    }
+
     var fragment;
     if (resolved.source === 'canvas') {
-      fragment = renderLayoutToHtml(resolved.tpl, id, resolveSlideEdits(libSlide, activeDeckId), deckConfig);
+      fragment = renderLayoutToHtml(resolved.tpl, id, slideEdits, deckConfig);
       if (readonly) fragment = fragment.replace(/ contenteditable=""/g, '').replace(/ contenteditable=''/g, '');
     } else {
-      fragment = applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), withLiveLogos(resolveSlideEdits(libSlide, activeDeckId)), !readonly);
+      fragment = applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), withBrandCredit(withLiveLogos(slideEdits), deckConfig), !readonly);
       fragment = injectDeckBranding(fragment, deckConfig);
     }
+    // Slide theme takes precedence; fall back to deck style for slides without a theme
+    var effectiveStyleCss = libSlide.styleCss || deckConfig.styleCss || null;
+
     var page = [
       '<!DOCTYPE html>',
       '<html lang="en">',
@@ -72,14 +82,16 @@ app.get('/slides/deck-preview/:id', function (req, res) {
       '  <meta charset="UTF-8">',
       '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
       '  <link rel="stylesheet" href="/slides/style.css">',
+      effectiveStyleCss ? '  <style>' + effectiveStyleCss + '</style>' : '',
       deckAccentCss(deckConfig) ? '  <style>' + deckAccentCss(deckConfig) + '</style>' : '',
       readonly ? '  <script>window.PB_READONLY = true;</script>' : '',
-      '  <script src="/slides/components/tracker.js"></script>',
-      '  <script src="/slides/components/lightbox.js"></script>',
-      '  <script src="/slides/components/carousel.js"></script>',
-      '  <script src="/slides/components/tabs.js"></script>',
-      '  <script src="/slides/components/list.js"></script>',
-      '  <script src="/slides/components/table.js"></script>',
+      '  <script src="/slides/components/tracker.js?v=2"></script>',
+      '  <script src="/slides/components/lightbox.js?v=2"></script>',
+      '  <script src="/slides/components/carousel.js?v=3"></script>',
+      '  <script src="/slides/components/tabs.js?v=2"></script>',
+      '  <script src="/slides/components/list.js?v=2"></script>',
+      '  <script src="/slides/components/table.js?v=2"></script>',
+      '  <script src="/slides/components/gallery.js?v=2"></script>',
       '  <script>',
       '    document.addEventListener("DOMContentLoaded", function () {',
       '      if (window.Lightbox) Lightbox.init(document);',
@@ -167,6 +179,15 @@ app.get('/slides/deck-preview/:id', function (req, res) {
         '        body: JSON.stringify({ edits: edits })',
         '      });',
         '    });',
+        '    document.addEventListener("slide-image-change", function (e) {',
+        '      if (!e.detail || !e.detail.editKey) return;',
+        '      var edits = {}; edits[e.detail.editKey] = e.detail.src || "";',
+        '      fetch("/api/deck/slides/" + DECK_SLIDE_ID + "/edits", {',
+        '        method: "POST", headers: { "Content-Type": "application/json" },',
+        '        body: JSON.stringify({ edits: edits })',
+        '      });',
+        '      window.parent.postMessage({ type: "slide-image-change", editKey: e.detail.editKey, src: e.detail.src || "" }, "*");',
+        '    });',
         '  })();',
         '  </script>',
       ].join('\n') : '',
@@ -236,6 +257,9 @@ app.use('/slides/shared', express.static(path.join(__dirname, 'shared/assets')))
 
 // ── Static: shared app styles ─────────────────────────────────────────────────
 app.use('/shared', express.static(path.join(__dirname, 'shared')));
+
+// ── Static: style reference previews ─────────────────────────────────────────
+app.use('/style-references', express.static(path.join(__dirname, 'style-references')));
 
 // ── Layout slide renderer ─────────────────────────────────────────────────────
 // GET /slides/deck-slide-:id.html — generate an HTML fragment on the fly from layout JSON.
@@ -802,6 +826,11 @@ function applyEditsToHtml(html, edits, editable) {
     if (key && !isImgEdit && edits[key] !== undefined) {
       $(this).html(edits[key]);
     }
+    if (key && isImgEdit && edits[key] !== undefined) {
+      var raw = String(edits[key] || '');
+      var src = raw.includes('<') ? (raw.match(/\bsrc="([^"]*)"/) || [])[1] || '' : raw;
+      $(this).find('img').first().attr('src', src);
+    }
     if (editable && !isImgEdit) {
       $(this).attr('contenteditable', '').attr('spellcheck', 'false');
     } else if (!editable) {
@@ -823,6 +852,14 @@ function withLiveLogos(edits) {
       + '<img src="' + logo.src + '" alt="' + (logo.alt || '') + '"'
       + (i > 0 ? ' class="slide-logo-ls"' : '') + '>';
   }).join('');
+  return merged;
+}
+
+// Returns a copy of edits with credit always set from deck.brandCredit when configured.
+function withBrandCredit(edits, deck) {
+  if (!deck || !deck.brandCredit) return edits;
+  var merged = Object.assign({}, edits);
+  merged['credit'] = 'by ' + deck.brandCredit;
   return merged;
 }
 
@@ -1797,28 +1834,36 @@ function renderDefectGalleryLayout(slideId, savedEdits) {
   // Pre-render defect selector buttons with editable label spans.
   // Labels use savedEdits['s6-label-N'] so renames persist across sessions.
   var DEFECT_DEFS = [
-    { name: 'Scratches',    row: 0 },
-    { name: 'Inclusions',   row: 1 },
-    { name: 'Dirt',         row: 2 },
-    { name: 'Dust',         row: 3 },
-    { name: 'Water',        row: 4 },
-    { name: 'Fingerprints', row: 5 },
-    { name: 'Ignore',       row: 6 },
-    { name: 'Edge defects', row: 7 },
-    { name: 'Frame & bars', row: 8 },
-    { name: 'Undefined',    row: 9 },
-    { name: 'Coating',   icon: '◈' }
+    { name: 'Scratches',    row: 0, carId: 's6-car-scratches',    editKey: 's6-defect-scratches'    },
+    { name: 'Inclusions',   row: 1, carId: 's6-car-inclusions',   editKey: 's6-defect-inclusions'   },
+    { name: 'Dirt',         row: 2, carId: 's6-car-dirt',         editKey: 's6-defect-dirt'         },
+    { name: 'Dust',         row: 3, carId: 's6-car-dust',         editKey: 's6-defect-dust'         },
+    { name: 'Water',        row: 4, carId: 's6-car-water',        editKey: 's6-defect-water'        },
+    { name: 'Fingerprints', row: 5, carId: 's6-car-fingerprints', editKey: 's6-defect-fingerprints' },
+    { name: 'Ignore',       row: 6, carId: 's6-car-ignore',       editKey: 's6-defect-ignore'       },
+    { name: 'Edge defects', row: 7, carId: 's6-car-edge-defects', editKey: 's6-defect-edge-defects' },
+    { name: 'Frame & bars', row: 8, carId: 's6-car-frame-bars',   editKey: 's6-defect-frame-bars'   },
+    { name: 'Undefined',    row: 9, carId: 's6-car-undefined',    editKey: 's6-defect-undefined'    },
+    { name: 'Coating',   icon: '◈', carId: 's6-car-coating',      editKey: 's6-defect-coating'      }
   ];
-  var selectorHtml = DEFECT_DEFS.map(function(d, i) {
+  var extraDefs = [];
+  try { if (savedEdits['s6-extra-defs']) extraDefs = JSON.parse(savedEdits['s6-extra-defs']); } catch(e) {}
+  var allDefs = DEFECT_DEFS.concat(extraDefs.map(function(d, i) {
+    return { name: d.name || ('Custom ' + (i + 1)), row: d.row != null ? d.row : null, icon: d.icon || '?',
+             carId: 's6-car-custom-' + i, editKey: 's6-defect-custom-' + i };
+  }));
+  var selectorHtml = allDefs.map(function(d, i) {
     var labelVal = savedEdits['s6-label-' + i] != null ? savedEdits['s6-label-' + i] : d.name;
     var iconHtml = d.icon
       ? '<div class="s6-emoji-icon">' + d.icon + '</div>'
-      : '<div class="s6-icon" data-defect-row="' + d.row + '"></div>';
+      : (d.row != null ? '<div class="s6-icon" data-defect-row="' + d.row + '"></div>' : '<div class="s6-emoji-icon">?</div>');
     return '  <button class="s6-defect-btn" data-defect-idx="' + i + '">'
       + iconHtml
       + '<span class="s6-defect-label" data-edit="s6-label-' + i + '" contenteditable="" spellcheck="false">' + labelVal + '</span>'
+      + '<span class="s6-btn-del" data-builder-only="" title="Remove this type">×</span>'
       + '</button>';
-  }).join('\n');
+  }).join('\n')
+  + '\n  <button class="s6-btn-add" data-builder-only="" title="Add defect type">+ Add type</button>';
 
   return [
     '<div class="slide content s6" data-slide="' + slideId + '">',
@@ -1897,6 +1942,16 @@ function renderDefectGalleryLayout(slideId, savedEdits) {
     (savedEdits['s6-defect-coating'] != null ? savedEdits['s6-defect-coating'] : defaultCoatingHtml),
     '  </div>',
     '',
+  ].concat(extraDefs.map(function(d, i) {
+    var carId = 's6-car-custom-' + i;
+    var editKey = 's6-defect-custom-' + i;
+    return [
+      '  <!-- ── Custom ' + (i + 1) + ' ── -->',
+      '  <div class="ls-carousel s6-defect-car" data-zoom-group="" id="' + carId + '" data-counter="" data-edit="' + editKey + '" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;">',
+      (savedEdits[editKey] != null ? savedEdits[editKey] : '<div class="ls-carousel-track"></div>'),
+      '  </div>',
+    ].join('\n');
+  })).concat([
     '  </div><!-- slide-body -->',
     '  </div><!-- slide-layout -->',
     '',
@@ -1929,7 +1984,7 @@ function renderDefectGalleryLayout(slideId, savedEdits) {
     '    /* ── Sprite icon ── */',
     '    .s6-icon {',
     '      width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;',
-    '      background-image: url(\'/slides/uploads/Defect Icons from top to buttom Scratches-Inclusions-dirt-dust-water-fingerprints-ignore-edge defects-dirt on fram and bars-undefined.png\');',
+    '      background-image: url(\'/slides/uploads/Defect-Icons-from-top-to-buttom-Scratches-Inclusions-dirt-dust-water-fingerprints-ignore-edge-defects-dirt-on-fram-and-bars-undefined.png\');',
     '      background-size: 200% 1000%; background-repeat: no-repeat;',
     '      transition: background-position .15s;',
     '    }',
@@ -1940,6 +1995,25 @@ function renderDefectGalleryLayout(slideId, savedEdits) {
     '      background: #F5D800; border: none; transition: background .15s;',
     '    }',
     '    .s6-defect-btn.active .s6-emoji-icon { background: #D42B2B; }',
+    '',
+    '    /* ── Builder add/delete controls ── */',
+    '    .s6-btn-del {',
+    '      position:absolute; top:-6px; right:-6px;',
+    '      width:16px; height:16px; border-radius:50%;',
+    '      background:rgba(200,50,50,.8); color:#fff;',
+    '      font-size:10px; line-height:16px; text-align:center;',
+    '      cursor:pointer; display:none; user-select:none;',
+    '    }',
+    '    .s6-defect-btn:hover .s6-btn-del { display:block; }',
+    '    .s6-defect-btn { position:relative; }',
+    '    .s6-btn-add {',
+    '      display:flex; flex-direction:column; align-items:center; justify-content:center;',
+    '      padding:8px 10px; border-radius:12px; cursor:pointer; min-width:76px;',
+    '      background:rgba(var(--accent-rgb),.08); border:1px dashed rgba(var(--accent-rgb),.4);',
+    '      color:var(--accent); font-size:11px; font-weight:600; font-family:inherit;',
+    '      transition:all .2s;',
+    '    }',
+    '    .s6-btn-add:hover { background:rgba(var(--accent-rgb),.15); border-color:rgba(var(--accent-rgb),.7); }',
     '',
     '    /* ── Mobile base ── */',
     '    .s6 .slide-body { width: 100%; align-items: center; }',
@@ -1961,19 +2035,9 @@ function renderDefectGalleryLayout(slideId, savedEdits) {
     '  <script>',
     '  (function () {',
     '',
-    '    var DEFECTS = [',
-    '      { name: \'Scratches\',    row: 0, carId: \'s6-car-scratches\'    },',
-    '      { name: \'Inclusions\',   row: 1, carId: \'s6-car-inclusions\'   },',
-    '      { name: \'Dirt\',         row: 2, carId: \'s6-car-dirt\'         },',
-    '      { name: \'Dust\',         row: 3, carId: \'s6-car-dust\'         },',
-    '      { name: \'Water\',        row: 4, carId: \'s6-car-water\'        },',
-    '      { name: \'Fingerprints\', row: 5, carId: \'s6-car-fingerprints\' },',
-    '      { name: \'Ignore\',       row: 6, carId: \'s6-car-ignore\'       },',
-    '      { name: \'Edge defects\', row: 7, carId: \'s6-car-edge-defects\' },',
-    '      { name: \'Frame & bars\', row: 8, carId: \'s6-car-frame-bars\'   },',
-    '      { name: \'Undefined\',    row: 9, carId: \'s6-car-undefined\'    },',
-    '      { name: \'Coating\',   icon: \'◈\', carId: \'s6-car-coating\'      }',
-    '    ];',
+    '    var DEFECTS = ' + JSON.stringify(allDefs.map(function(d) {
+      return { name: d.name, row: d.row != null ? d.row : -1, icon: d.icon || null, carId: d.carId };
+    })) + ';',
     '',
     '    var currentDefect = -1;',
     '    var selector = document.getElementById(\'s6-selector\');',
@@ -2009,8 +2073,10 @@ function renderDefectGalleryLayout(slideId, savedEdits) {
     '      var car = document.getElementById(DEFECTS[idx].carId);',
     '      car.style.display = \'\';',
     '      if (car._lsGoTo) car._lsGoTo(0);',
-    '      if (window.Carousel) Carousel.init(car);',
-    '      if (window.Lightbox)  Lightbox.init(car);',
+    '      requestAnimationFrame(function() { requestAnimationFrame(function() {',
+    '        if (window.Carousel) (Carousel.forceInit || function(el){ Carousel.init(el && el.parentElement); })(car);',
+    '        if (window.Lightbox) Lightbox.init(car);',
+    '      }); });',
     '      updateBtns();',
     '    }',
     '',
@@ -2029,6 +2095,81 @@ function renderDefectGalleryLayout(slideId, savedEdits) {
     '',
     '    showDefault();',
     '',
+    '    // ── Builder: add/delete defect type buttons ──',
+    '    (function() {',
+    '      var builderBase = ' + DEFECT_DEFS.length + ';',
+    '      var slideEl = selector.closest(\'.slide\');',
+    '      var slideId = slideEl ? slideEl.dataset.slide : null;',
+    '',
+    '      function getExtraDefs() {',
+    '        try { return JSON.parse(selector.dataset.extraDefs || \'[]\'); } catch(e) { return []; }',
+    '      }',
+    '      function saveExtraDefs(list) {',
+    '        selector.dataset.extraDefs = JSON.stringify(list);',
+    '        document.dispatchEvent(new CustomEvent(\'slide-carousel-save\', {',
+    '          detail: { editKey: \'s6-extra-defs\', html: JSON.stringify(list) }',
+    '        }));',
+    '      }',
+    '',
+    '      // Seed data attribute from server-rendered extra defs',
+    '      selector.dataset.extraDefs = JSON.stringify(' + JSON.stringify(extraDefs) + ');',
+    '',
+    '      // Delete handler',
+    '      selector.addEventListener(\'click\', function(e) {',
+    '        var del = e.target.closest(\'.s6-btn-del\');',
+    '        if (!del) return;',
+    '        e.stopImmediatePropagation();',
+    '        var btn = del.closest(\'.s6-defect-btn\');',
+    '        var idx = parseInt(btn.dataset.defectIdx);',
+    '        if (idx < builderBase) { alert(\'Cannot delete built-in defect types.\'); return; }',
+    '        var customIdx = idx - builderBase;',
+    '        var car = document.getElementById(\'s6-car-custom-\' + customIdx);',
+    '        if (car) car.remove();',
+    '        btn.remove();',
+    '        // Update indices on remaining custom buttons',
+    '        Array.from(selector.querySelectorAll(\'.s6-defect-btn\')).forEach(function(b, ni) {',
+    '          b.dataset.defectIdx = ni;',
+    '        });',
+    '        DEFECTS.splice(idx, 1);',
+    '        currentDefect = -1;',
+    '        carWrap.style.display = \'\';',
+    '        var extras = getExtraDefs();',
+    '        extras.splice(customIdx, 1);',
+    '        saveExtraDefs(extras);',
+    '      });',
+    '',
+    '      // Add handler',
+    '      var addBtn = selector.querySelector(\'.s6-btn-add\');',
+    '      if (addBtn) addBtn.addEventListener(\'click\', function() {',
+    '        var name = prompt(\'Name for new defect type:\', \'Custom\');',
+    '        if (!name) return;',
+    '        var extras = getExtraDefs();',
+    '        var customIdx = extras.length;',
+    '        var carId = \'s6-car-custom-\' + customIdx;',
+    '        var editKey = \'s6-defect-custom-\' + customIdx;',
+    '        extras.push({ name: name });',
+    '        DEFECTS.push({ name: name, row: -1, icon: \'?\', carId: carId });',
+    '        // Create button',
+    '        var totalIdx = DEFECTS.length - 1;',
+    '        var newBtn = document.createElement(\'button\');',
+    '        newBtn.className = \'s6-defect-btn\';',
+    '        newBtn.dataset.defectIdx = totalIdx;',
+    '        newBtn.innerHTML = \'<div class="s6-emoji-icon">?</div><span class="s6-defect-label" contenteditable="" spellcheck="false">\' + name + \'</span><span class="s6-btn-del" data-builder-only="" title="Remove this type">×</span>\';',
+    '        newBtn.addEventListener(\'click\', function() { showDefect(totalIdx); });',
+    '        selector.insertBefore(newBtn, addBtn);',
+    '        // Create carousel',
+    '        var newCar = document.createElement(\'div\');',
+    '        newCar.className = \'ls-carousel s6-defect-car\';',
+    '        newCar.id = carId;',
+    '        newCar.dataset.counter = \'\';',
+    '        newCar.dataset.edit = editKey;',
+    '        newCar.style.cssText = \'display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;\';',
+    '        newCar.innerHTML = \'<div class="ls-carousel-track"></div>\';',
+    '        carWrap.parentNode.insertBefore(newCar, carWrap.nextSibling);',
+    '        saveExtraDefs(extras);',
+    '      });',
+    '    })();',
+    '',
     '  })();',
     '  <\/script>',
     '',
@@ -2037,7 +2178,7 @@ function renderDefectGalleryLayout(slideId, savedEdits) {
     '    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest(\'.slide\')); }, 0); })();',
     '  <\/script>',
     '</div>'
-  ].join('\n');
+  ]).join('\n');
 }
 
 function renderCarouselCardsLayout(slideId, savedEdits) {
@@ -2243,103 +2384,155 @@ function renderCarouselTagsLayout(slideId, savedEdits) {
   var defaultCarouselHtml = [
     '<div class="ls-carousel-track" style="transform: translateX(0px);">',
     '    <div class="ls-carousel-slide">',
-    '      <img src="/slides/uploads/image89.png" alt="Screen printing overview" data-zoom="" data-track="ls9:zoom:overview">',
+    '      <img src="/slides/uploads/image89.png" alt="Screen printing overview" data-zoom="">',
     '    </div>',
     '    <div class="ls-carousel-slide">',
-    '      <img src="/slides/uploads/image90.png" alt="Distortion" data-zoom="" data-track="ls9:zoom:distortion">',
+    '      <img src="/slides/uploads/image90.png" alt="Distortion" data-zoom="">',
     '    </div>',
     '    <div class="ls-carousel-slide">',
-    '      <img src="/slides/uploads/image91.png" alt="Rotation" data-zoom="" data-track="ls9:zoom:rotation">',
+    '      <img src="/slides/uploads/image91.png" alt="Rotation" data-zoom="">',
     '    </div>',
     '    <div class="ls-carousel-slide">',
-    '      <img src="/slides/uploads/image92.png" alt="Out of position" data-zoom="" data-track="ls9:zoom:out-of-position">',
+    '      <img src="/slides/uploads/image92.png" alt="Out of position" data-zoom="">',
     '    </div>',
     '    <div class="ls-carousel-slide">',
-    '      <img src="/slides/uploads/image96.png" alt="Filled items" data-zoom="" data-track="ls9:zoom:filled-items">',
+    '      <img src="/slides/uploads/image96.png" alt="Filled items" data-zoom="">',
     '    </div>',
     '  </div>'
   ].join('\n');
 
+  var TAG_DEFS = [
+    { key: 'tag-1', cls: 'tag error', defaultVal: '&#10060; Missing print'           },
+    { key: 'tag-2', cls: 'tag error', defaultVal: '&#128208; Distortion'              },
+    { key: 'tag-3', cls: 'tag warn',  defaultVal: '&#128161; Shiny ink'               },
+    { key: 'tag-4', cls: 'tag warn',  defaultVal: '&#128260; Rotation'                },
+    { key: 'tag-5', cls: 'tag error', defaultVal: '&#128205; Out of position'         },
+    { key: 'tag-6', cls: 'tag',       defaultVal: '&#11035; &quot;Filled&quot; items' },
+  ];
+
+  var tagButtons = TAG_DEFS.map(function(t, i) {
+    var n = i + 1;
+    var val = applyEdit(t.key, t.defaultVal, savedEdits);
+    return '          <span class="' + t.cls + ' ls9-tag" data-tag-idx="' + n + '" data-edit="' + t.key + '" contenteditable="" spellcheck="false">' + val + '</span>';
+  }).join('\n');
+
+  var tagCarousels = TAG_DEFS.map(function(t, i) {
+    var n = i + 1;
+    var editKey = 'tag-img-' + n;
+    var saved = savedEdits[editKey];
+    var hasSlides = saved && /src="\/slides\/[^"]+\.(jpg|jpeg|png|gif|webp|svg|avif)"/i.test(saved);
+    var trackHtml = saved != null ? saved : '<div class="ls-carousel-track"></div>';
+    var hasAttr = hasSlides ? ' data-has-slides=""' : '';
+    return [
+      '  <!-- Tag ' + n + ' image -->',
+      '  <div class="ls-carousel ls9-tag-car" id="ls9-tag-car-' + n + '" data-counter="" data-edit="' + editKey + '" data-zoom-group=""' + hasAttr + ' style="display:none;flex:1;min-height:0;width:100%;max-width:860px;">',
+      trackHtml,
+      '  <div class="ls9-empty" data-builder-only="">&#43; Add images via the button below</div>',
+      '  </div>',
+    ].join('\n');
+  }).join('\n');
+
   return [
     '<div class="slide content ls9" data-slide="' + slideId + '">',
     '  <div class="slide-logo-row"><img src="/slides/shared/LOGO SoftSolution grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="/slides/shared/LOGO LiteSentry Greys.png" alt="LiteSentry" class="slide-logo-ls"></div>',
-    '',
     '  <div class="slide-layout">',
     '    <header class="slide-head">',
     '      <div class="section-label" data-edit="section-label" contenteditable="" spellcheck="false">' + applyEdit('section-label', 'Screen Printing &amp; Logo', savedEdits) + '</div>',
-    '      <h1 class="slide-title" data-edit="headline" contenteditable="" spellcheck="false" style="margin-bottom:14px;">' + applyEdit('headline', 'Position and <span class="blue">print quality control</span>', savedEdits) + '</h1>',
+    '      <h1 class="slide-title" data-edit="headline" contenteditable="" spellcheck="false" style="margin-bottom:14px;">' + applyEdit('headline', 'Position and <span class=\"blue\">print quality control</span>', savedEdits) + '</h1>',
     '    </header>',
-    '',
     '    <div class="slide-body">',
-    '      <!-- ── Carousel ── -->',
-    '      <div class="ls-carousel anim-in" id="ls9-carousel" data-edit="carousel" data-counter="" data-track="ls9:carousel" data-zoom-group="" style="flex:1;min-height:0;width:100%;max-width:860px;">',
+    '      <div class="ls-carousel anim-in" id="ls9-carousel" data-edit="carousel" data-counter="" data-zoom-group="" style="flex:1;min-height:0;width:100%;max-width:860px;">',
     (savedEdits['carousel'] != null ? savedEdits['carousel'] : defaultCarouselHtml),
     '      </div>',
-    '',
-    '      <!-- ── Tags — always above nav ── -->',
+    tagCarousels,
     '      <div class="ls9-info anim-in" style="">',
     '        <div class="tag-grid" style="justify-content:center;">',
-    '          <span class="tag error" data-edit="tag-1" contenteditable="" spellcheck="false">' + applyEdit('tag-1', '&#10060; Missing print', savedEdits) + '</span>',
-    '          <span class="tag error ls9-tag" data-img="1" data-edit="tag-2" contenteditable="" spellcheck="false">' + applyEdit('tag-2', '&#128208; Distortion', savedEdits) + '</span>',
-    '          <span class="tag warn" data-edit="tag-3" contenteditable="" spellcheck="false">' + applyEdit('tag-3', '&#128161; Shiny ink', savedEdits) + '</span>',
-    '          <span class="tag warn ls9-tag" data-img="2" data-edit="tag-4" contenteditable="" spellcheck="false">' + applyEdit('tag-4', '&#128260; Rotation', savedEdits) + '</span>',
-    '          <span class="tag error ls9-tag" data-img="3" data-edit="tag-5" contenteditable="" spellcheck="false">' + applyEdit('tag-5', '&#128205; Out of position', savedEdits) + '</span>',
-    '          <span class="tag ls9-tag" data-img="4" data-edit="tag-6" contenteditable="" spellcheck="false">' + applyEdit('tag-6', '&#11035; &quot;Filled&quot; items', savedEdits) + '</span>',
+    tagButtons,
     '        </div>',
     '      </div>',
     '    </div>',
     '  </div>',
-    '',
-    '  <!-- ── Scoped Styles ── -->',
     '  <style>',
-    '    .ls9 { }',
     '    .ls9 .slide-body { width: 100%; align-items: center; }',
     '    .ls9 .ls-carousel { min-height: 260px !important; height: 260px !important; }',
     '    .ls9 { padding: 52px 16px 80px !important; }',
-    '',
     '    @media (min-width: 769px) {',
     '      .ls9 .ls-carousel { min-height: 0 !important; height: 100% !important; }',
     '      .ls9 { padding: 52px 80px 0 !important; }',
     '    }',
-    '',
-    '    /* ── Tags strip ── */',
-    '    .ls9-info {',
-    '      flex-shrink: 0;',
-    '      width: 100%; max-width: 860px;',
-    '      margin-top: 10px;',
-    '    }',
-    '',
-    '    /* ── Clickable tags ── */',
+    '    .ls9-info { flex-shrink: 0; width: 100%; max-width: 860px; margin-top: 10px; }',
     '    .ls9-tag { cursor: pointer; transition: all .2s; }',
     '    .ls9-tag:hover { outline: 1px solid rgba(232,113,26,.5); }',
     '    .ls9-tag.active { outline: 2px solid #E8711A; opacity: 1 !important; }',
-    '  </style>',
-    '',
-    '  <!-- ── Scoped Script ── -->',
+    '    .ls9-tag-car { position: relative; }',
+    '    .ls9-tag-car:not([data-has-slides]) .ls9-empty {',
+    '      display: flex !important; }',
+    '    .ls9-empty {',
+    '      display: none; position: absolute; inset: 0; z-index: 3;',
+    '      align-items: center; justify-content: center; flex-direction: column; gap: 8px;',
+    '      border: 1.5px dashed rgba(232,113,26,.35); border-radius: 13px;',
+    '      color: rgba(232,113,26,.6); font-size: 12px; font-weight: 600; pointer-events: none;',
+    '    }',
+    '    .ls9-tag-car .ls-carousel-track { position: relative; z-index: 4; }',
+    '  <\/style>',
     '  <script>',
-    '  // Tag click → navigate carousel to matching image index',
-    '  setTimeout(function () {',
-    '    var carousel = document.getElementById(\'ls9-carousel\');',
-    '    document.querySelectorAll(\'.ls9-tag\').forEach(function (tag) {',
-    '      tag.addEventListener(\'click\', function () {',
-    '        var targetIdx = parseInt(tag.getAttribute(\'data-img\'));',
-    '        if (carousel && !isNaN(targetIdx)) {',
-    '          var track = carousel.querySelector(\'.ls-carousel-track\');',
-    '          var slides = Array.from(carousel.querySelectorAll(\'.ls-carousel-slide\'));',
-    '          if (track && slides.length > targetIdx) {',
-    '            var currentIdx = Math.round(parseFloat(track.style.transform.replace(\'translateX(\',\'\')) / -carousel.offsetWidth) || 0;',
-    '            var delta = targetIdx - currentIdx;',
-    '            var btn = delta > 0 ? carousel.querySelector(\'.ls-carousel-next\') : carousel.querySelector(\'.ls-carousel-prev\');',
-    '            for (var i = 0; i < Math.abs(delta); i++) { if (btn) btn.click(); }',
-    '          }',
-    '        }',
-    '        if (window.Track) Track.click(\'ls9\', tag.textContent.trim().toLowerCase().replace(/\\s+/g,\'-\'));',
+    '  (function () {',
+    '    var mainCar = document.getElementById(\'ls9-carousel\');',
+    '    var currentTag = -1;',
+    '    function showMain() {',
+    '      if (currentTag > 0) {',
+    '        var prev = document.getElementById(\'ls9-tag-car-\' + currentTag);',
+    '        if (prev) prev.style.display = \'none\';',
+    '      }',
+    '      currentTag = -1;',
+    '      mainCar.style.display = \'\';',
+    '      if (window.Carousel) (Carousel.forceInit || function(el){ Carousel.init(el && el.parentElement); })(mainCar);',
+    '      document.querySelectorAll(\'.ls9-tag\').forEach(function(t) { t.classList.remove(\'active\'); });',
+    '    }',
+    '    function showTag(n) {',
+    '      if (currentTag === n) { showMain(); return; }',
+    '      if (currentTag > 0) {',
+    '        var prev = document.getElementById(\'ls9-tag-car-\' + currentTag);',
+    '        if (prev) prev.style.display = \'none\';',
+    '      }',
+    '      currentTag = n;',
+    '      mainCar.style.display = \'none\';',
+    '      var car = document.getElementById(\'ls9-tag-car-\' + n);',
+    '      if (car) {',
+    '        car.style.display = \'block\';',
+    '        requestAnimationFrame(function() { requestAnimationFrame(function() {',
+    '          if (window.Carousel) (Carousel.forceInit || function(el){ Carousel.init(el && el.parentElement); })(car);',
+    '          if (window.Lightbox) Lightbox.init(car);',
+    '        }); });',
+    '      }',
+    '      document.querySelectorAll(\'.ls9-tag\').forEach(function(t) {',
+    '        t.classList.toggle(\'active\', parseInt(t.dataset.tagIdx) === n);',
     '      });',
+    '    }',
+    '    document.addEventListener(\'slide-carousel-save\', function(e) {',
+    '      var key = e.detail && e.detail.editKey;',
+    '      if (!key || !key.startsWith(\'tag-img-\')) return;',
+    '      var n = parseInt(key.replace(\'tag-img-\', \'\'), 10);',
+    '      var car = document.getElementById(\'ls9-tag-car-\' + n);',
+    '      if (!car) return;',
+    '      var hasSlides = Array.from(car.querySelectorAll(\'.ls-carousel-slide img\')).some(function(img){',
+    '        return img.src && img.src.indexOf(\'/slides/\') !== -1 && !/\\.(bmp|tiff?|ico)$/i.test(img.src);',
+    '      });',
+    '      if (hasSlides) car.setAttribute(\'data-has-slides\', \'\');',
+    '      else car.removeAttribute(\'data-has-slides\');',
     '    });',
-    '  }, 100);',
-    '',
+    '    setTimeout(function () {',
+    '      document.querySelectorAll(\'.ls9-tag\').forEach(function (tag) {',
+    '        tag.addEventListener(\'click\', function (e) {',
+    '          e.stopPropagation();',
+    '          showTag(parseInt(tag.dataset.tagIdx));',
+    '          if (window.Track) Track.click(\'ls9\', tag.textContent.trim().toLowerCase().replace(/\\s+/g,\'-\'));',
+    '        });',
+    '      });',
+    '      if (window.Carousel) (Carousel.forceInit || function(el){ Carousel.init(el && el.parentElement); })(mainCar);',
+    '    }, 100);',
+    '  })();',
     '  <\/script>',
-    '',
     '  <script>',
     '  (function () { var s = document.currentScript;',
     '    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest(\'.slide\')); }, 0); })();',
@@ -2684,26 +2877,43 @@ function renderFullCarouselLayout(slideId, savedEdits) {
 function renderCardsGridLayout(slideId, savedEdits) {
   savedEdits = savedEdits || {};
 
-  var cards = [
-    { name: 'int-name-1', nameDefault: 'LiSEC',        type: 'int-type-1', typeDefault: 'Processing lines' },
-    { name: 'int-name-2', nameDefault: 'FOREL',         type: 'int-type-2', typeDefault: 'Architectural glass' },
-    { name: 'int-name-3', nameDefault: 'Benteler',      type: 'int-type-3', typeDefault: 'Automotive glass' },
-    { name: 'int-name-4', nameDefault: 'CMS Tecglass',  type: 'int-type-4', typeDefault: 'Digital printing' },
-    { name: 'int-name-5', nameDefault: 'Bystronic',     type: 'int-type-5', typeDefault: 'Cutting and processing' },
-    { name: 'int-name-6', nameDefault: 'Hegla',         type: 'int-type-6', typeDefault: 'Cutting and storage' },
-    { name: 'int-name-7', nameDefault: 'Glaston',       type: 'int-type-7', typeDefault: 'Tempering and bending' },
-    { name: 'int-name-8', nameDefault: 'TecoFerrari',   type: 'int-type-8', typeDefault: 'Insulating glass' },
-    { name: 'int-name-9', nameDefault: 'Erdman',        type: 'int-type-9', typeDefault: 'Automated lines' },
+  var DEFAULT_CARDS = [
+    { nameDefault: 'LiSEC',        typeDefault: 'Processing lines'     },
+    { nameDefault: 'FOREL',        typeDefault: 'Architectural glass'   },
+    { nameDefault: 'Benteler',     typeDefault: 'Automotive glass'      },
+    { nameDefault: 'CMS Tecglass', typeDefault: 'Digital printing'      },
+    { nameDefault: 'Bystronic',    typeDefault: 'Cutting and processing' },
+    { nameDefault: 'Hegla',        typeDefault: 'Cutting and storage'   },
+    { nameDefault: 'Glaston',      typeDefault: 'Tempering and bending' },
+    { nameDefault: 'TecoFerrari',  typeDefault: 'Insulating glass'      },
+    { nameDefault: 'Erdman',       typeDefault: 'Automated lines'       },
   ];
 
-  var cardLines = cards.map(function (c) {
-    return [
+  var totalCards = Math.max(DEFAULT_CARDS.length, Math.min(20, parseInt(savedEdits['int-card-count'] || String(DEFAULT_CARDS.length), 10)));
+
+  var cardLines = [];
+  for (var i = 1; i <= totalCards; i++) {
+    var def = DEFAULT_CARDS[i - 1] || { nameDefault: 'Partner ' + i, typeDefault: 'Category' };
+    var nameKey  = 'int-name-' + i;
+    var typeKey  = 'int-type-' + i;
+    var logoKey  = 'int-logo-' + i;
+    var nameVal  = savedEdits[nameKey] != null ? savedEdits[nameKey] : def.nameDefault;
+    var typeVal  = savedEdits[typeKey] != null ? savedEdits[typeKey] : def.typeDefault;
+    var logoSaved = savedEdits[logoKey] != null ? savedEdits[logoKey] : '';
+    var logoUrl = (logoSaved && (logoSaved.startsWith('/') || logoSaved.startsWith('http'))) ? logoSaved : '';
+    var hasLogo = logoUrl ? '' : ' empty';
+    var imgEl = logoUrl ? '<img src="' + logoUrl + '" class="int-logo-img" alt="">' : '';
+    cardLines.push([
       '    <div class="int-card anim-in">',
-      '      <div class="int-name" data-edit="' + c.name + '" contenteditable="" spellcheck="false">' + applyEdit(c.name, c.nameDefault, savedEdits) + '</div>',
-      '      <div class="int-type" data-edit="' + c.type + '" contenteditable="" spellcheck="false">' + applyEdit(c.type, c.typeDefault, savedEdits) + '</div>',
+      '      <div class="int-logo-wrap' + hasLogo + '" id="int-logo-car-' + i + '" data-edit="' + logoKey + '">',
+      imgEl,
+      '        <button class="int-logo-btn" data-builder-only="" data-logo-idx="' + i + '">' + (logoUrl ? 'Change' : '+ Logo') + '</button>',
+      '      </div>',
+      '      <div class="int-name" data-edit="' + nameKey + '" contenteditable="" spellcheck="false">' + nameVal + '</div>',
+      '      <div class="int-type" data-edit="' + typeKey + '" contenteditable="" spellcheck="false">' + typeVal + '</div>',
       '    </div>',
-    ].join('\n');
-  });
+    ].join('\n'));
+  }
 
   return [
     '<div class="slide content ls13" data-slide="' + slideId + '">',
@@ -2711,26 +2921,88 @@ function renderCardsGridLayout(slideId, savedEdits) {
     '  <div class="slide-layout">',
     '    <header class="slide-head">',
     '      <div class="section-label" data-edit="section-label" contenteditable="" spellcheck="false">' + applyEdit('section-label', 'Integrations', savedEdits) + '</div>',
-    '      <h1 class="slide-title" data-edit="headline" contenteditable="" spellcheck="false">' + applyEdit('headline', 'Compatible with<br><span class="blue">your current machinery</span>', savedEdits) + '</h1>',
+    '      <h1 class="slide-title" data-edit="headline" contenteditable="" spellcheck="false">' + applyEdit('headline', 'Compatible with<br><span class=\"blue\">your current machinery</span>', savedEdits) + '</h1>',
     '      <div class="divider"></div>',
-    '      <p class="slide-subtitle" data-edit="subtitle" contenteditable="" spellcheck="false" style="margin-bottom:4px;">' + applyEdit('subtitle', 'LineScanner is already integrated with the leading glass machinery manufacturers \u2014 if you already run any of these lines, integration is direct.', savedEdits) + '</p>',
+    '      <p class="slide-subtitle" data-edit="subtitle" contenteditable="" spellcheck="false" style="margin-bottom:4px;">' + applyEdit('subtitle', 'LineScanner is already integrated with the leading glass machinery manufacturers — if you already run any of these lines, integration is direct.', savedEdits) + '</p>',
     '    </header>',
     '    <div class="slide-body">',
     '  <div class="integration-grid">',
   ].concat(cardLines).concat([
+    '  <button class="int-add-btn" data-builder-only="" title="Add a new integration card">+ Add card</button>',
     '  </div>',
-    '    </div><!-- /.slide-body -->',
-    '  </div><!-- /.slide-layout -->',
-    '  <!-- \u2500\u2500 Scoped Styles \u2500\u2500 -->',
+    '    </div>',
+    '  </div>',
     '  <style>',
-    '    /* Mobile base: collapse the inline 80px side padding */',
     '    .ls13 { padding: 70px 16px 80px !important; }',
-    '',
-    '    /* Desktop: restore intended layout padding */',
-    '    @media (min-width: 769px) {',
-    '      .ls13 { padding: 52px 80px 0 !important; }',
+    '    @media (min-width: 769px) { .ls13 { padding: 52px 80px 0 !important; } }',
+    '    .int-logo-wrap { height:54px; border-radius:6px; margin-bottom:6px; position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden; }',
+    '    .int-logo-wrap.empty { background:rgba(255,255,255,.04); border:1px dashed rgba(255,255,255,.18); }',
+    '    .int-logo-img { max-height:46px; max-width:100%; object-fit:contain; }',
+    '    .int-logo-btn { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.55); border:none; border-radius:6px; color:#fff; font-size:11px; font-weight:600; font-family:inherit; cursor:pointer; opacity:0; transition:opacity .15s; padding:0; }',
+    '    .int-logo-wrap:hover .int-logo-btn, .int-logo-wrap.empty .int-logo-btn { opacity:1; }',
+    '    .int-add-btn {',
+    '      display:flex; align-items:center; justify-content:center; padding:14px;',
+    '      border-radius:12px; cursor:pointer; grid-column:1/-1; width:100%;',
+    '      background:rgba(var(--accent-rgb),.06); border:1px dashed rgba(var(--accent-rgb),.3);',
+    '      color:var(--accent); font-size:13px; font-weight:600; font-family:inherit; transition:all .2s;',
     '    }',
-    '  </style>',
+    '    .int-add-btn:hover { background:rgba(var(--accent-rgb),.15); border-color:rgba(var(--accent-rgb),.6); }',
+    '  <\/style>',
+    '  <script>',
+    '  (function () {',
+    '    var slide = document.querySelector(\'.ls13\');',
+    '    if (!slide) return;',
+    '',
+    '    function attachLogoBtn(wrap) {',
+    '      var btn = wrap.querySelector(\'.int-logo-btn\');',
+    '      if (!btn) return;',
+    '      btn.addEventListener(\'click\', function(e) {',
+    '        e.stopPropagation();',
+    '        var inp = document.createElement(\'input\');',
+    '        inp.type = \'file\'; inp.accept = \'image/*\';',
+    '        inp.onchange = function() {',
+    '          var file = inp.files[0]; if (!file) return;',
+    '          var fd = new FormData(); fd.append(\'file\', file);',
+    '          fetch(\'/upload-image\', { method: \'POST\', body: fd })',
+    '            .then(function(r) { return r.json(); })',
+    '            .then(function(j) {',
+    '              var url = j.url; if (!url) return;',
+    '              var img = wrap.querySelector(\'.int-logo-img\');',
+    '              if (!img) { img = document.createElement(\'img\'); img.className = \'int-logo-img\'; img.alt = \'\'; wrap.prepend(img); }',
+    '              img.src = url;',
+    '              wrap.classList.remove(\'empty\');',
+    '              btn.textContent = \'Change\';',
+    '              document.dispatchEvent(new CustomEvent(\'slide-carousel-save\', {',
+    '                detail: { editKey: wrap.dataset.edit, html: url }',
+    '              }));',
+    '            });',
+    '        };',
+    '        inp.click();',
+    '      });',
+    '    }',
+    '',
+    '    slide.querySelectorAll(\'.int-logo-wrap\').forEach(attachLogoBtn);',
+    '',
+    '    var addBtn = slide.querySelector(\'.int-add-btn\');',
+    '    if (addBtn) addBtn.addEventListener(\'click\', function() {',
+    '      var grid = addBtn.closest(\'.integration-grid\');',
+    '      var count = grid.querySelectorAll(\'.int-card\').length;',
+    '      var n = count + 1;',
+    '      var card = document.createElement(\'div\');',
+    '      card.className = \'int-card anim-in\';',
+    '      card.innerHTML =',
+    '        \'<div class="int-logo-wrap empty" id="int-logo-car-\' + n + \'" data-edit="int-logo-\' + n + \'">\' +',
+    '        \'<button class="int-logo-btn" data-builder-only="" data-logo-idx="\' + n + \'">+ Logo</button></div>\' +',
+    '        \'<div class="int-name" data-edit="int-name-\' + n + \'" contenteditable="" spellcheck="false">New Partner</div>\' +',
+    '        \'<div class="int-type" data-edit="int-type-\' + n + \'" contenteditable="" spellcheck="false">Category</div>\';',
+    '      grid.insertBefore(card, addBtn);',
+    '      attachLogoBtn(card.querySelector(\'.int-logo-wrap\'));',
+    '      document.dispatchEvent(new CustomEvent(\'slide-carousel-save\', {',
+    '        detail: { editKey: \'int-card-count\', html: String(n) }',
+    '      }));',
+    '    });',
+    '  })();',
+    '  <\/script>',
     '  <script>',
     '  (function () { var s = document.currentScript;',
     '    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest(\'.slide\')); }, 0); })();',
@@ -2964,7 +3236,7 @@ app.get('/slides/:deckSlideId.html', function (req, res, next) {
     if (resolved.source === 'canvas') {
       html = renderLayoutToHtml(resolved.tpl, deckSlideId, savedEdits, deckConfig);
     } else {
-      html = applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), withLiveLogos(savedEdits), true);
+      html = applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), withBrandCredit(withLiveLogos(savedEdits), deckConfig), true);
       html = injectDeckBranding(html, deckConfig);
     }
     res.type('text/html').send(html);
@@ -3070,6 +3342,403 @@ app.post('/api/settings/hero-bg', function (req, res) {
   }
 });
 
+// ── API: style references ─────────────────────────────────────────────────────
+var STYLE_REFS_DIR = path.join(__dirname, 'style-references');
+
+function slugToName(slug) {
+  return slug.replace(/\.html$/, '').replace(/[-_]+/g, ' ')
+    .replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+}
+
+function extractStyleBlock(html) {
+  var m = html.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
+  return m ? m[1] : '';
+}
+
+function getBodyProp(css, prop) {
+  var b = css.match(/body\s*\{([^}]+)\}/);
+  if (!b) return null;
+  var m = b[1].match(new RegExp(prop + '\\s*:\\s*([^;\\n]+)'));
+  return m ? m[1].trim() : null;
+}
+
+function resolveCssVar(css, value, depth) {
+  if (!value || (depth || 0) > 4) return value;
+  var m = value.match(/var\((--[^),\s]+)\)/);
+  if (!m) return value;
+  var re = new RegExp(m[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*:\\s*([^;\\n}]+)');
+  var found = css.match(re);
+  if (!found) return value;
+  return resolveCssVar(css, found[1].trim(), (depth || 0) + 1);
+}
+
+function hexLuminance(hex) {
+  var h = hex.replace('#', '');
+  if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  if (h.length !== 6) return 0;
+  var r = parseInt(h.slice(0,2),16), g = parseInt(h.slice(2,4),16), b = parseInt(h.slice(4,6),16);
+  return (0.299*r + 0.587*g + 0.114*b) / 255;
+}
+
+function isLight(color) {
+  if (!color) return false;
+  color = color.trim();
+  if (color.startsWith('#')) return hexLuminance(color) > 0.5;
+  if (/^rgb/.test(color)) {
+    var nums = color.match(/[\d.]+/g);
+    if (nums && nums.length >= 3) return (0.299*+nums[0] + 0.587*+nums[1] + 0.114*+nums[2]) / 255 > 0.5;
+  }
+  return /^white|^#fff/i.test(color);
+}
+
+function hexToRgbStr(hex) {
+  var h = hex.replace('#','');
+  if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  if (h.length !== 6) return null;
+  return parseInt(h.slice(0,2),16)+','+parseInt(h.slice(2,4),16)+','+parseInt(h.slice(4,6),16);
+}
+function hexToLight(hex) {
+  var h = hex.replace('#','');
+  if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  if (h.length !== 6) return hex;
+  var r=parseInt(h.slice(0,2),16), g=parseInt(h.slice(2,4),16), b=parseInt(h.slice(4,6),16);
+  r=Math.round(r+(255-r)*0.45); g=Math.round(g+(255-g)*0.45); b=Math.round(b+(255-b)*0.45);
+  return '#'+[r,g,b].map(function(v){return ('0'+v.toString(16)).slice(-2);}).join('');
+}
+
+function buildThemeOverride(html, deckTheme) {
+  var css = extractStyleBlock(html);
+
+  // ── Extract Google Fonts imports ──
+  var imports = [];
+  var importRe = /@import\s+url\([^)]+\)[^;]*;/g;
+  var im;
+  while ((im = importRe.exec(css)) !== null) imports.push(im[0]);
+
+  // ── Extract body tokens ──
+  var rawBg   = resolveCssVar(css, getBodyProp(css, 'background(?:-color)?') || '#0a0a0f');
+  var rawText = resolveCssVar(css, getBodyProp(css, '(?<![\\w-])color'));
+  var rawFont = getBodyProp(css, 'font-family') || null;
+
+  // Grab first solid background value (ignore gradients for bg variable)
+  var bgColor = rawBg.trim().split(/\s+/)[0];
+  if (bgColor.startsWith('linear') || bgColor.startsWith('radial') || bgColor.startsWith('var(')) {
+    var fallback = rawBg.match(/#[0-9a-f]{3,8}|rgba?\([^)]+\)/i);
+    bgColor = fallback ? fallback[0] : '#0a0a0f';
+  }
+
+  // Respect deck theme: if it conflicts with extracted bg, use sensible default
+  var light;
+  if (deckTheme === 'light') {
+    light = true;
+    if (!isLight(bgColor)) bgColor = '#f5f5f7';
+  } else if (deckTheme === 'dark') {
+    light = false;
+    if (isLight(bgColor)) bgColor = '#0a0a0f';
+  } else {
+    light = isLight(bgColor);
+  }
+  var textColor = (rawText && !rawText.startsWith('var(')) ? rawText : (light ? '#1d1d1f' : '#ffffff');
+
+  // ── Derive semantic tokens from bg darkness ──
+  var textMuted    = light ? 'rgba(0,0,0,.50)'       : 'rgba(255,255,255,.55)';
+  var bgCard       = light ? 'rgba(0,0,0,.04)'        : 'rgba(255,255,255,.05)';
+  var bgCardHover  = light ? 'rgba(0,0,0,.08)'        : 'rgba(255,255,255,.09)';
+  var border       = light ? 'rgba(0,0,0,.10)'        : 'rgba(255,255,255,.10)';
+  var borderHover  = light ? 'rgba(0,0,0,.28)'        : 'rgba(255,255,255,.28)';
+  var navBg        = light ? 'rgba(255,255,255,.80)'  : 'rgba(0,0,0,.65)';
+  var navBorder    = light ? 'rgba(0,0,0,.10)'        : 'rgba(255,255,255,.08)';
+  var dotInactive  = light ? 'rgba(0,0,0,.22)'        : 'rgba(255,255,255,.18)';
+  var counter      = light ? '#888'                   : '#555';
+
+  // Try to extract card bg from a card-like rule in the reference
+  var cardRule = css.match(/\.(?:card|feature-card|gradient-card|glass-card|panel|surface)\s*\{([^}]+)\}/i);
+  if (cardRule) {
+    var cardBgMatch = cardRule[1].match(/background(?:-color)?\s*:\s*([^;]+)/);
+    if (cardBgMatch) {
+      var resolved = resolveCssVar(css, cardBgMatch[1].trim());
+      if (resolved && !resolved.startsWith('var(')) bgCard = resolved;
+    }
+  }
+
+  // hero-rgb: use bgColor if hex, otherwise keep default
+  var heroRgb = bgColor.startsWith('#') ? hexToRgbStr(bgColor) : null;
+
+  // ── Best-effort accent extraction from :root ──
+  var accentColor = null;
+  var rootMatch = css.match(/:root\s*\{([^}]+)\}/);
+  if (rootMatch) {
+    var rootCss = rootMatch[1];
+    var accentKeys = ['--accent:', '--accent-primary:', '--primary-color:', '--primary:', '--brand-color:', '--color-primary:'];
+    for (var ak = 0; ak < accentKeys.length; ak++) {
+      var re = new RegExp(accentKeys[ak].replace(/[-]/g, '\\-') + '\\s*([^;\\n]+)');
+      var am = rootCss.match(re);
+      if (am) {
+        var candidate = resolveCssVar(css, am[1].trim());
+        if (candidate && (candidate.startsWith('#') || candidate.startsWith('rgb'))) {
+          accentColor = candidate; break;
+        }
+      }
+    }
+    // Fallback: first --neon-* or --glow-* value
+    if (!accentColor) {
+      var neonMatch = rootCss.match(/--(?:neon|glow)-\w+\s*:\s*(#[0-9a-f]{3,8}|rgba?\([^)]+\))/i);
+      if (neonMatch) accentColor = neonMatch[1];
+    }
+  }
+
+  var out = '';
+  if (imports.length) out += imports.join('\n') + '\n';
+  out += ':root {\n';
+  out += '  --bg: '           + bgColor      + ';\n';
+  out += '  --slide-hero-bg: '+ bgColor      + ';\n';
+  if (heroRgb) out += '  --slide-hero-rgb: ' + heroRgb + ';\n';
+  out += '  --text: '         + textColor    + ';\n';
+  out += '  --text-muted: '   + textMuted    + ';\n';
+  out += '  --bg-card: '      + bgCard       + ';\n';
+  out += '  --bg-card-hover: '+ bgCardHover  + ';\n';
+  out += '  --border: '       + border       + ';\n';
+  out += '  --border-hover: ' + borderHover  + ';\n';
+  out += '  --nav-bg: '       + navBg        + ';\n';
+  out += '  --nav-border: '   + navBorder    + ';\n';
+  out += '  --dot-inactive: ' + dotInactive  + ';\n';
+  out += '  --counter: '      + counter      + ';\n';
+  if (accentColor) {
+    out += '  --accent: '     + accentColor  + ';\n';
+    out += '  --accent-mid: ' + accentColor  + ';\n';
+    out += '  --accent-light: '+ accentColor + ';\n';
+    var accentRgb = accentColor.startsWith('#') ? hexToRgbStr(accentColor) : null;
+    if (accentRgb) out += '  --accent-rgb: ' + accentRgb + ';\n';
+  }
+  out += '}\n';
+  if (rawFont) out += 'body { font-family: ' + rawFont + '; }\n';
+  return out;
+}
+
+function extractBgColor(css) {
+  var bodyBlock = css.match(/body\s*\{([^}]*)\}/);
+  if (!bodyBlock) return null;
+  var bg = bodyBlock[1].match(/background(?:-color)?\s*:\s*([^;]+)/);
+  if (!bg) return null;
+  var val = bg[1].trim().split(/\s+/)[0];
+  return val || null;
+}
+
+function extractStyleCss(html, theme) {
+  return buildThemeOverride(html, theme);
+}
+
+// ── Theme system ──────────────────────────────────────────────────────────────
+var THEMES_DIR = path.join(__dirname, 'themes');
+if (!fs.existsSync(THEMES_DIR)) fs.mkdirSync(THEMES_DIR);
+app.use('/themes', express.static(THEMES_DIR));
+
+function getCssRule(css, selector) {
+  var re = new RegExp(selector + '\\s*\\{([^}]+)\\}', 'i');
+  var m = css.match(re);
+  return m ? m[1] : null;
+}
+function getRuleProp(ruleBody, prop) {
+  if (!ruleBody) return null;
+  var m = ruleBody.match(new RegExp('(?<![\\w-])' + prop + '\\s*:\\s*([^;\\n]+)'));
+  return m ? m[1].trim() : null;
+}
+
+function generateThemeCss(html) {
+  var css = extractStyleBlock(html);
+
+  // ── imports ──
+  var imports = [];
+  var importRe = /@import\s+url\([^)]+\)[^;]*;/g;
+  var im;
+  while ((im = importRe.exec(css)) !== null) imports.push(im[0]);
+
+  // ── background ──
+  var rawBg = resolveCssVar(css, getBodyProp(css, 'background(?:-color)?') || '#0a0a0f');
+  var bgColor = rawBg.trim().split(/\s+/)[0];
+  if (bgColor.startsWith('linear') || bgColor.startsWith('radial') || bgColor.startsWith('var(')) {
+    var fbm = rawBg.match(/#[0-9a-f]{3,8}|rgba?\([^)]+\)/i);
+    bgColor = fbm ? fbm[0] : '#0a0a0f';
+  }
+  var light = isLight(bgColor);
+  var heroRgb = bgColor.startsWith('#') ? hexToRgbStr(bgColor) : null;
+
+  // ── text ──
+  var rawText = resolveCssVar(css, getBodyProp(css, '(?<![\\w-])color'));
+  var textColor = (rawText && !rawText.startsWith('var(')) ? rawText : (light ? '#1d1d1f' : '#ffffff');
+  var textMuted  = light ? 'rgba(0,0,0,.50)' : 'rgba(255,255,255,.55)';
+
+  // ── accent ──
+  var accentColor = null;
+  var rootMatch = css.match(/:root\s*\{([^}]+)\}/);
+  if (rootMatch) {
+    var rootCss = rootMatch[1];
+    var accentKeys = ['--accent:', '--accent-primary:', '--primary-color:', '--primary:', '--brand-color:', '--color-primary:', '--highlight:'];
+    for (var ak = 0; ak < accentKeys.length; ak++) {
+      var are = new RegExp(accentKeys[ak].replace(/[-]/g, '\\-') + '\\s*([^;\\n]+)');
+      var am2 = rootCss.match(are);
+      if (am2) {
+        var cand = resolveCssVar(css, am2[1].trim());
+        if (cand && (cand.startsWith('#') || cand.startsWith('rgb'))) { accentColor = cand; break; }
+      }
+    }
+    if (!accentColor) {
+      var neonM = rootCss.match(/--(?:neon|glow)-\w+\s*:\s*(#[0-9a-f]{3,8})/i);
+      if (neonM) accentColor = neonM[1];
+    }
+  }
+  if (!accentColor) accentColor = light ? '#0066cc' : '#F5A623';
+  var accentRgbStr2 = accentColor.startsWith('#') ? hexToRgbStr(accentColor) : null;
+
+  // ── font ──
+  var rawFont = getBodyProp(css, 'font-family') || null;
+  var headingFont = null;
+  var hRule = getCssRule(css, 'h[123]');
+  if (hRule) { var hfm = hRule.match(/font-family\s*:\s*([^;]+)/); if (hfm) headingFont = hfm[1].trim(); }
+
+  // ── hero overlay ──
+  var overlayStart = light ? '.25' : '.72';
+  var overlayEnd   = light ? '.10' : '.38';
+  var gradAngle    = '135deg';
+  var gradM = css.match(/linear-gradient\(\s*(\d+deg)/);
+  if (gradM) gradAngle = gradM[1];
+
+  // ── card ──
+  var cardBg = null, cardBorder = null, cardRadius = null, cardShadow = null;
+  var cardSelectors = '\\.(?:card|feature-card|glass-card|panel|surface|gradient-card|content-card|info-card|stat-card|metric-card)';
+  var crule = getCssRule(css, cardSelectors);
+  if (crule) {
+    var cbgm = crule.match(/background(?:-color)?\s*:\s*([^;]+)/);
+    if (cbgm) { var r = resolveCssVar(css, cbgm[1].trim()); if (r && !r.startsWith('var(')) cardBg = r; }
+    var cborm = crule.match(/border(?!\s*-radius)[^:]*:\s*([^;]+)/);
+    if (cborm) { var rb = resolveCssVar(css, cborm[1].trim()); if (rb && !rb.startsWith('var(')) cardBorder = rb; }
+    var cradm = crule.match(/border-radius\s*:\s*([^;]+)/);
+    if (cradm) cardRadius = cradm[1].trim();
+    var cshadm = crule.match(/box-shadow\s*:\s*([^;]+)/);
+    if (cshadm) cardShadow = cshadm[1].trim();
+  }
+  if (!cardBg)     cardBg     = light ? 'rgba(0,0,0,.04)'              : 'rgba(255,255,255,.05)';
+  if (!cardBorder) cardBorder = light ? 'rgba(0,0,0,.10)'              : 'rgba(255,255,255,.10)';
+  if (!cardRadius) cardRadius = '12px';
+  if (!cardShadow) cardShadow = light ? '0 2px 12px rgba(0,0,0,.08)' : '0 4px 20px rgba(0,0,0,.35)';
+
+  // ── badge ──
+  var badgeBg = null, badgeBorder = null, badgeRadius = null, badgeColor2 = null;
+  var bRule = getCssRule(css, '\\.(?:badge|chip|tag|label|pill|category-badge|category|keyword)');
+  if (bRule) {
+    var bbgm = bRule.match(/background(?:-color)?\s*:\s*([^;]+)/);
+    if (bbgm) { var rb2 = resolveCssVar(css, bbgm[1].trim()); if (rb2 && !rb2.startsWith('var(')) badgeBg = rb2; }
+    var bborm = bRule.match(/border(?!\s*-radius)[^:]*:\s*([^;]+)/);
+    if (bborm) { var rb3 = resolveCssVar(css, bborm[1].trim()); if (rb3 && !rb3.startsWith('var(')) badgeBorder = rb3; }
+    var bradm = bRule.match(/border-radius\s*:\s*([^;]+)/);
+    if (bradm) badgeRadius = bradm[1].trim();
+    var bcolm = bRule.match(/(?<![\\w-])color\s*:\s*([^;]+)/);
+    if (bcolm) { var rb4 = resolveCssVar(css, bcolm[1].trim()); if (rb4 && !rb4.startsWith('var(')) badgeColor2 = rb4; }
+  }
+  var aAlpha  = accentRgbStr2 ? 'rgba(' + accentRgbStr2 + ',.15)' : (light ? 'rgba(0,0,0,.06)' : 'rgba(255,255,255,.08)');
+  var aBorder = accentRgbStr2 ? 'rgba(' + accentRgbStr2 + ',.35)' : (light ? 'rgba(0,0,0,.20)' : 'rgba(255,255,255,.20)');
+  if (!badgeBg)     badgeBg     = aAlpha;
+  if (!badgeBorder) badgeBorder = aBorder;
+  if (!badgeRadius) badgeRadius = '6px';
+  if (!badgeColor2) badgeColor2 = accentColor;
+
+  // ── logo container (inherits card values) ──
+  var logoBg     = light ? 'rgba(0,0,0,.04)'   : 'rgba(255,255,255,.05)';
+  var logoBorder = cardBorder;
+  var logoRadius = '20px';
+
+  // ── build CSS ──
+  var out = '/* auto-generated */\n';
+  if (imports.length) out += imports.join('\n') + '\n\n';
+  out += ':root {\n';
+  out += '  /* Identity */\n';
+  out += '  --bg:                 ' + bgColor     + ';\n';
+  out += '  --slide-hero-bg:      ' + bgColor     + ';\n';
+  if (heroRgb) out += '  --slide-hero-rgb:     ' + heroRgb     + ';\n';
+  out += '  --text:               ' + textColor   + ';\n';
+  out += '  --text-muted:         ' + textMuted   + ';\n';
+  var accentLightColor = accentColor.startsWith('#') ? hexToLight(accentColor) : accentColor;
+  out += '  --accent:             ' + accentColor      + ';\n';
+  if (accentRgbStr2) out += '  --accent-rgb:         ' + accentRgbStr2 + ';\n';
+  out += '  --accent-mid:         ' + accentColor      + ';\n';
+  out += '  --accent-light:       ' + accentLightColor + ';\n';
+  if (rawFont) {
+    out += '  --font-body:          ' + rawFont              + ';\n';
+    out += '  --font-heading:       ' + (headingFont || rawFont) + ';\n';
+  }
+  out += '\n  /* Hero overlay */\n';
+  out += '  --hero-overlay-angle: ' + gradAngle    + ';\n';
+  out += '  --hero-overlay-start: ' + overlayStart + ';\n';
+  out += '  --hero-overlay-end:   ' + overlayEnd   + ';\n';
+  out += '\n  /* Cards */\n';
+  out += '  --card-bg:            ' + cardBg     + ';\n';
+  out += '  --card-border:        ' + cardBorder + ';\n';
+  out += '  --card-radius:        ' + cardRadius + ';\n';
+  out += '  --card-shadow:        ' + cardShadow + ';\n';
+  out += '\n  /* Badge */\n';
+  out += '  --badge-bg:           ' + badgeBg     + ';\n';
+  out += '  --badge-border:       ' + badgeBorder + ';\n';
+  out += '  --badge-radius:       ' + badgeRadius + ';\n';
+  out += '  --badge-color:        ' + badgeColor2 + ';\n';
+  out += '\n  /* Logo container */\n';
+  out += '  --logo-bg:            ' + logoBg     + ';\n';
+  out += '  --logo-border:        ' + logoBorder + ';\n';
+  out += '  --logo-radius:        ' + logoRadius + ';\n';
+  out += '}\n';
+  if (rawFont) out += 'body, .slide { font-family: var(--font-body); }\n';
+  if (headingFont && headingFont !== rawFont) out += 'h1, h2, h3 { font-family: var(--font-heading); }\n';
+  return out;
+}
+
+app.get('/api/themes', function (req, res) {
+  try {
+    var styleFiles = fs.existsSync(THEMES_DIR)
+      ? fs.readdirSync(THEMES_DIR).filter(function (f) { return f.endsWith('.css'); }).sort()
+      : [];
+    var list = styleFiles.map(function (file) {
+      var css = fs.readFileSync(path.join(THEMES_DIR, file), 'utf8');
+      var bgMatch  = css.match(/--bg:\s*([^;]+);/);
+      var accMatch = css.match(/--accent:\s*([^;]+);/);
+      var bgColor  = bgMatch  ? bgMatch[1].trim()  : '#0a0a0f';
+      var accColor = accMatch ? accMatch[1].trim() : '#F5A623';
+      return { id: file.replace(/\.css$/, ''), name: slugToName(file), file: file, bgColor: bgColor, accentColor: accColor };
+    });
+    res.json({ success: true, data: list });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+app.post('/api/themes/regenerate', function (req, res) {
+  try {
+    if (!fs.existsSync(THEMES_DIR)) fs.mkdirSync(THEMES_DIR);
+    var refFiles = fs.readdirSync(STYLE_REFS_DIR).filter(function (f) { return f.endsWith('.html'); });
+    var generated = [];
+    refFiles.forEach(function (file) {
+      var html  = fs.readFileSync(path.join(STYLE_REFS_DIR, file), 'utf8');
+      var css   = generateThemeCss(html);
+      var outFile = file.replace(/\.html$/, '.css');
+      fs.writeFileSync(path.join(THEMES_DIR, outFile), css, 'utf8');
+      generated.push(outFile);
+    });
+    res.json({ success: true, generated: generated });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+app.get('/api/style-references', function (req, res) {
+  try {
+    var files = fs.readdirSync(STYLE_REFS_DIR).filter(function (f) { return f.endsWith('.html'); }).sort();
+    var list = files.map(function (file) {
+      var html = fs.readFileSync(path.join(STYLE_REFS_DIR, file), 'utf8');
+      var css = extractStyleCss(html);
+      var bgColor = extractBgColor(css) || '#1a1a2e';
+      var id = file.replace(/\.html$/, '');
+      return { id: id, name: slugToName(file), file: file, bgColor: bgColor };
+    });
+    res.json({ success: true, data: list });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
 // ── API: deck config ──────────────────────────────────────────────────────────
 var DECKS_PATH         = path.join(__dirname, 'data', 'decks.json');
 var DECK_PATH          = path.join(__dirname, 'data', 'deck.json');
@@ -3077,7 +3746,6 @@ var DECKS_DIR_PATH     = path.join(__dirname, 'data', 'decks');
 var LIBRARY_PATH       = path.join(__dirname, 'data', 'slide-library.json');
 var PRESENTATIONS_PATH = path.join(__dirname, 'data', 'presentations.json');
 var LAYOUTS_PATH              = path.join(__dirname, 'data', 'layouts.json');
-var LAYOUT_SKELETONS_PATH     = path.join(__dirname, 'data', 'layout-skeletons.json');
 var TEMPLATES_PATH            = path.join(__dirname, 'data', 'slide-templates.json');
 var TEMPLATE_CATALOG_PATH  = path.join(__dirname, 'data', 'templates.json');
 var SETTINGS_PATH          = path.join(__dirname, 'data', 'settings.json');
@@ -3105,6 +3773,177 @@ function resolveTemplate(templateId) {
   return null;
 }
 
+// ── Umami DB (direct Postgres — Umami API ignores URL filters in this version) ──
+const { Pool } = require('pg');
+var _umamiDb = null;
+function getUmamiDb() {
+  if (!_umamiDb && process.env.UMAMI_DB_URL) {
+    _umamiDb = new Pool({ connectionString: process.env.UMAMI_DB_URL });
+    _umamiDb.on('error', function () {});
+  }
+  return _umamiDb;
+}
+
+// Returns per-URL pageview + visitor counts for an array of url_paths.
+// Result: { '/finished/00000001/': { pageviews: 5, visitors: 2 }, ... }
+function dbPresStats(urlPaths, startMs, endMs, cb) {
+  var db = getUmamiDb();
+  if (!db || !urlPaths.length) return cb(null, {});
+  var siteId = null;
+  try { siteId = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  if (!siteId) return cb(null, {});
+  db.query(
+    'SELECT url_path, COUNT(*) AS pageviews, COUNT(DISTINCT session_id) AS visitors ' +
+    'FROM website_event ' +
+    'WHERE website_id = $1 AND url_path = ANY($2) AND event_type = 1 ' +
+    '  AND created_at >= to_timestamp($3::bigint / 1000.0) ' +
+    '  AND created_at <  to_timestamp($4::bigint / 1000.0) ' +
+    'GROUP BY url_path',
+    [siteId, urlPaths, startMs, endMs],
+    function (err, result) {
+      if (err) return cb(err);
+      var out = {};
+      (result.rows || []).forEach(function (r) {
+        out[r.url_path] = { pageviews: parseInt(r.pageviews, 10), visitors: parseInt(r.visitors, 10) };
+      });
+      cb(null, out);
+    }
+  );
+}
+
+// Returns a day-by-day time series aggregated across multiple url_paths.
+// Result: { pageviews: [{x, y}], sessions: [{x, y}] } — zero-filled for days with no data.
+function dbPresTimeSeries(urlPaths, startMs, endMs, cb) {
+  var db = getUmamiDb();
+  if (!db || !urlPaths.length) return cb(null, { pageviews: [], sessions: [] });
+  var siteId = null;
+  try { siteId = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  if (!siteId) return cb(null, { pageviews: [], sessions: [] });
+  db.query(
+    "SELECT TO_CHAR(created_at AT TIME ZONE '" + localTzString() + "', 'YYYY-MM-DD') AS day, " +
+    '       COUNT(*) AS pageviews, COUNT(DISTINCT session_id) AS visitors ' +
+    'FROM website_event ' +
+    'WHERE website_id = $1 AND url_path = ANY($2) AND event_type = 1 ' +
+    '  AND created_at >= to_timestamp($3::bigint / 1000.0) ' +
+    '  AND created_at <  to_timestamp($4::bigint / 1000.0) ' +
+    'GROUP BY 1 ORDER BY 1',
+    [siteId, urlPaths, startMs, endMs],
+    function (err, result) {
+      if (err) return cb(err);
+      var DAY = 86400000;
+      var days = [];
+      var cur = new Date(startMs); cur.setHours(0, 0, 0, 0);
+      while (cur.getTime() < endMs) { days.push(localDate(cur)); cur = new Date(cur.getTime() + DAY); }
+      var byDay = {};
+      (result.rows || []).forEach(function (r) { byDay[r.day] = r; });
+      var pageviews = days.map(function (d) { return { x: d, y: byDay[d] ? parseInt(byDay[d].pageviews, 10) : 0 }; });
+      var sessions  = days.map(function (d) { return { x: d, y: byDay[d] ? parseInt(byDay[d].visitors,  10) : 0 }; });
+      cb(null, { pageviews: pageviews, sessions: sessions });
+    }
+  );
+}
+
+// Slug to title case (e.g. "company-intro" → "Company Intro").
+function slugToTitle(slug) {
+  return slug.replace(/-/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+}
+
+// Returns slide event counts grouped by event_name for a set of url_paths.
+// Pass eventNames array to restrict to specific events (null = all slide-* events).
+// Result: [{ event, label, count }] sorted by count desc.
+function dbSlideEvents(urlPaths, startMs, endMs, eventNames, cb) {
+  var db = getUmamiDb();
+  if (!db || !urlPaths.length) return cb(null, []);
+  var siteId = null;
+  try { siteId = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  if (!siteId) return cb(null, []);
+  var params = [siteId, urlPaths, startMs, endMs];
+  var extra = '';
+  if (eventNames && eventNames.length) { params.push(eventNames); extra = ' AND event_name = ANY($5)'; }
+  db.query(
+    'SELECT event_name, COUNT(*) AS cnt ' +
+    'FROM website_event ' +
+    "WHERE website_id = $1 AND url_path = ANY($2) AND event_type = 2 AND event_name LIKE 'slide-%'" + extra +
+    '  AND created_at >= to_timestamp($3::bigint / 1000.0) ' +
+    '  AND created_at <  to_timestamp($4::bigint / 1000.0) ' +
+    'GROUP BY event_name ORDER BY cnt DESC',
+    params,
+    function (err, result) {
+      if (err) return cb(err);
+      var out = (result.rows || []).map(function (r) {
+        return { event: r.event_name, label: slugToTitle(r.event_name.replace(/^slide-/, '')), count: parseInt(r.cnt, 10) };
+      });
+      cb(null, out);
+    }
+  );
+}
+
+// Returns day-by-day event counts per event_name.
+// Result: { days: ['2026-05-01', ...], series: [{ event, label, values: [N, ...] }] }
+function dbSlideEventSeries(urlPaths, startMs, endMs, eventNames, cb) {
+  var db = getUmamiDb();
+  if (!db || !urlPaths.length) return cb(null, { days: [], series: [] });
+  var siteId = null;
+  try { siteId = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  if (!siteId) return cb(null, { days: [], series: [] });
+  var params = [siteId, urlPaths, startMs, endMs];
+  var extra = '';
+  if (eventNames && eventNames.length) { params.push(eventNames); extra = ' AND event_name = ANY($5)'; }
+  db.query(
+    "SELECT TO_CHAR(created_at AT TIME ZONE '" + localTzString() + "', 'YYYY-MM-DD') AS day, event_name, COUNT(*) AS cnt " +
+    'FROM website_event ' +
+    "WHERE website_id = $1 AND url_path = ANY($2) AND event_type = 2 AND event_name LIKE 'slide-%'" + extra +
+    '  AND created_at >= to_timestamp($3::bigint / 1000.0) ' +
+    '  AND created_at <  to_timestamp($4::bigint / 1000.0) ' +
+    'GROUP BY 1, 2 ORDER BY 1, 2',
+    params,
+    function (err, result) {
+      if (err) return cb(err);
+      var DAY = 86400000;
+      var days = [];
+      var cur = new Date(startMs); cur.setHours(0, 0, 0, 0);
+      while (cur.getTime() < endMs) { days.push(localDate(cur)); cur = new Date(cur.getTime() + DAY); }
+      var byEvent = {};
+      (result.rows || []).forEach(function (r) {
+        if (!byEvent[r.event_name]) byEvent[r.event_name] = {};
+        byEvent[r.event_name][r.day] = parseInt(r.cnt, 10);
+      });
+      var evNames = Object.keys(byEvent).sort();
+      var series = evNames.map(function (ev) {
+        return { event: ev, label: slugToTitle(ev.replace(/^slide-/, '')), values: days.map(function (d) { return byEvent[ev][d] || 0; }) };
+      });
+      cb(null, { days: days, series: series });
+    }
+  );
+}
+
+// Returns per-presentation event counts for a specific slide event (drill-down).
+// Result: [{ label, count }] sorted by count desc.
+function dbSlideEventByPres(urlPaths, presMap, startMs, endMs, eventName, cb) {
+  var db = getUmamiDb();
+  if (!db || !urlPaths.length) return cb(null, []);
+  var siteId = null;
+  try { siteId = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  if (!siteId) return cb(null, []);
+  db.query(
+    'SELECT url_path, COUNT(*) AS cnt ' +
+    'FROM website_event ' +
+    'WHERE website_id = $1 AND url_path = ANY($2) AND event_type = 2 AND event_name = $5 ' +
+    '  AND created_at >= to_timestamp($3::bigint / 1000.0) ' +
+    '  AND created_at <  to_timestamp($4::bigint / 1000.0) ' +
+    'GROUP BY url_path ORDER BY cnt DESC',
+    [siteId, urlPaths, startMs, endMs, eventName],
+    function (err, result) {
+      if (err) return cb(err);
+      var out = (result.rows || []).map(function (r) {
+        var presId = r.url_path.replace(/^\/finished\//, '').replace(/\/$/, '');
+        return { label: presMap[presId] || presId, count: parseInt(r.cnt, 10) };
+      });
+      cb(null, out);
+    }
+  );
+}
+
 // ── Umami analytics proxy ─────────────────────────────────────────────────────
 var UMAMI_BASE_URL = process.env.UMAMI_BASE_URL || 'https://umami.wbtm.io';
 var UMAMI_USER     = process.env.UMAMI_USERNAME || '';
@@ -3113,18 +3952,35 @@ var UMAMI_PASS     = process.env.UMAMI_PASSWORD || '';
 var _umamiToken    = null;   // cached JWT
 var _umamiTokenExp = 0;      // expiry timestamp (ms)
 var _analyticsCache = {};    // path → { data, expiresAt }
+
+// Build Umami v2 URL filter query string for a finished presentation.
+// Umami v2 ignores the legacy &url= param; the correct form is &filters=[...].
+function umamiPresFilter(presId) {
+  if (!presId) return '';
+  var f = JSON.stringify([{ column: 'url_path', filter: '=', value: '/finished/' + presId + '/' }]);
+  return '&filters=' + encodeURIComponent(f);
+}
+
+// Safely extract a numeric value from Umami v2 stats fields.
+// Umami v2 returns plain numbers; older instances returned { value: N }.
+function umamiVal(field) {
+  if (field == null) return 0;
+  if (typeof field === 'object') return field.value || 0;
+  return field || 0;
+}
 var ANALYTICS_TTL  = 15 * 60 * 1000; // 15 min
 
 function getUmamiToken(cb) {
   if (_umamiToken && Date.now() < _umamiTokenExp) return cb(null, _umamiToken);
   var body   = JSON.stringify({ username: UMAMI_USER, password: UMAMI_PASS });
   var url    = new URL('/api/auth/login', UMAMI_BASE_URL);
+  var mod    = url.protocol === 'https:' ? https : http;
   var opts   = {
-    hostname: url.hostname, port: url.port || 443, path: url.pathname,
+    hostname: url.hostname, port: url.port || (url.protocol === 'https:' ? 443 : 80), path: url.pathname,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) }
   };
-  var req = https.request(opts, function (res) {
+  var req = mod.request(opts, function (res) {
     var raw = '';
     res.on('data', function (c) { raw += c; });
     res.on('end', function () {
@@ -3148,13 +4004,14 @@ function umamiGet(apiPath, cb) {
   getUmamiToken(function (err, token) {
     if (err) return cb(err);
     var url   = new URL(apiPath, UMAMI_BASE_URL);
+    var mod   = url.protocol === 'https:' ? https : http;
     var opts  = {
-      hostname: url.hostname, port: url.port || 443,
+      hostname: url.hostname, port: url.port || (url.protocol === 'https:' ? 443 : 80),
       path: url.pathname + (url.search || ''),
       method: 'GET',
       headers: { Authorization: 'Bearer ' + token }
     };
-    var req = https.request(opts, function (res) {
+    var req = mod.request(opts, function (res) {
       var raw = '';
       res.on('data', function (c) { raw += c; });
       res.on('end', function () {
@@ -3183,27 +4040,42 @@ function hexToRgb(hex) {
   return parseInt(m[1], 16) + ',' + parseInt(m[2], 16) + ',' + parseInt(m[3], 16);
 }
 function deckAccentCss(deck) {
+  var out = [];
   var color = deck && deck.colors && deck.colors.primary;
-  if (!color) return '';
-  var rgb = hexToRgb(color);
-  if (!rgb) return ':root{--accent:' + color + ';}';
-  var parts = rgb.split(',').map(Number);
-  var r = parts[0], g = parts[1], b = parts[2];
-  var mid   = '#' + [Math.max(0,Math.round(r*.88)), Math.max(0,Math.round(g*.88)), Math.max(0,Math.round(b*.88))].map(function(c){return c.toString(16).padStart(2,'0');}).join('');
-  var light = '#' + [Math.min(255,Math.round(r+(255-r)*.42)), Math.min(255,Math.round(g+(255-g)*.42)), Math.min(255,Math.round(b+(255-b)*.42))].map(function(c){return c.toString(16).padStart(2,'0');}).join('');
-  return ':root{--accent:' + color + ';--accent-mid:' + mid + ';--accent-light:' + light + ';--accent-rgb:' + rgb + ';}';
+  if (color) {
+    var rgb = hexToRgb(color);
+    if (!rgb) {
+      out.push(':root{--accent:' + color + ';}');
+    } else {
+      var parts = rgb.split(',').map(Number);
+      var r = parts[0], g = parts[1], b = parts[2];
+      var mid   = '#' + [Math.max(0,Math.round(r*.88)), Math.max(0,Math.round(g*.88)), Math.max(0,Math.round(b*.88))].map(function(c){return c.toString(16).padStart(2,'0');}).join('');
+      var light = '#' + [Math.min(255,Math.round(r+(255-r)*.42)), Math.min(255,Math.round(g+(255-g)*.42)), Math.min(255,Math.round(b+(255-b)*.42))].map(function(c){return c.toString(16).padStart(2,'0');}).join('');
+      out.push(':root{--accent:' + color + ';--accent-mid:' + mid + ';--accent-light:' + light + ';--accent-rgb:' + rgb + ';}');
+    }
+  }
+  if (deck && deck.heroBgType === 'color') {
+    var hColor = deck.heroBgColor || '#070B1A';
+    var hRgb = hexToRgb(hColor);
+    out.push(':root{--slide-hero-bg:' + hColor + (hRgb ? ';--slide-hero-rgb:' + hRgb : '') + ';}');
+    out.push('img.hero-bg{display:none!important}.hero-overlay{display:none!important}');
+  }
+  return out.join('\n');
 }
 function injectDeckBranding(html, deck) {
-  if (!deck || (!deck.heroBg && !deck.heroBgFocal && !deck.heroBgFit)) return html;
+  if (!deck) return html;
   var $ = cheerio.load(html, { xmlMode: false });
   var img = $('img.hero-bg');
   if (!img.length) return html;
   if (deck.heroBg) img.attr('src', deck.heroBg);
   var s = (img.attr('style') || '')
     .replace(/object-position\s*:[^;]+;?/g, '')
-    .replace(/object-fit\s*:[^;]+;?/g, '');
+    .replace(/object-fit\s*:[^;]+;?/g, '')
+    .replace(/opacity\s*:[^;]+;?/g, '');
   if (deck.heroBgFocal) s += ';object-position:' + deck.heroBgFocal + ';';
   if (deck.heroBgFit === 'contain') s += 'object-fit:contain;';
+  var opacity = (deck.heroBgOpacity !== undefined && deck.heroBgOpacity !== null) ? parseInt(deck.heroBgOpacity) : 100;
+  if (opacity < 100) s += ';opacity:' + (opacity / 100).toFixed(2) + ';';
   img.attr('style', s.replace(/^;+/, '').trim());
   return $.html('body > *') || $.html();
 }
@@ -3222,7 +4094,23 @@ app.get('/api/deck', function (req, res) {
       return Object.assign({}, slide, { name: libSlide.name });
     });
 
-    res.json({ success: true, data: deck, accentCss: deckAccentCss(getDeckConfig(activeDeckId)) });
+    // Resolve cover slide's customer logo for the active deck
+    var coverLogoSrc = '';
+    var coverDeckSlide = deck.slides.find(function (s) {
+      if (!s.librarySlideId) return false;
+      var lib = library.slides.find(function (l) { return l.id === s.librarySlideId; });
+      return lib && (lib.templateId === 'ls01-cover' || lib.templateId === 'ls26-cover');
+    });
+    if (coverDeckSlide) {
+      var coverLib = library.slides.find(function (l) { return l.id === coverDeckSlide.librarySlideId; });
+      if (coverLib) {
+        var raw = String(resolveSlideEdits(coverLib, activeDeckId)['customer-logo'] || '');
+        if (raw) coverLogoSrc = raw.includes('<') ? (raw.match(/\bsrc="([^"]*)"/) || [])[1] || '' : raw;
+      }
+    }
+
+    var deckCfg = getDeckConfig(activeDeckId);
+    res.json({ success: true, data: deck, accentCss: deckAccentCss(deckCfg), styleCss: deckCfg.styleCss || null, coverLogoSrc: coverLogoSrc });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -3285,7 +4173,8 @@ app.post('/api/deck/slides', function (req, res) {
     if (!libSlide) return res.status(404).json({ success: false, error: 'Library slide not found' });
 
     var activeDeckId = getActiveDeckId();
-    var deck     = readDeckById(activeDeckId);
+    var deck       = readDeckById(activeDeckId);
+    var deckConfig = getDeckConfig(activeDeckId);
     var existing = deck.slides.find(function (s) { return s.librarySlideId === librarySlideId; });
     if (existing) return res.json({ success: true, data: existing });
     var newSlide = { id: 'deck-' + librarySlideId + '-' + Date.now(), librarySlideId: librarySlideId, visible: true };
@@ -3297,6 +4186,19 @@ app.post('/api/deck/slides', function (req, res) {
       deck.slides.push(newSlide);
     }
     writeDeckById(activeDeckId, deck);
+
+    // If deck has no style and this slide brings a legacy .html styleRef, promote it to the deck
+    // (.css theme files are per-slide; don't promote them to deck level)
+    if (!deckConfig.styleRef && libSlide.styleRef && libSlide.styleCss && libSlide.styleRef.endsWith('.html')) {
+      var decksStore = JSON.parse(fs.readFileSync(DECKS_PATH, 'utf8'));
+      var deckIdx = decksStore.decks.findIndex(function (d) { return d.id === activeDeckId; });
+      if (deckIdx !== -1) {
+        decksStore.decks[deckIdx].styleRef = libSlide.styleRef;
+        decksStore.decks[deckIdx].styleCss = libSlide.styleCss;
+        fs.writeFileSync(DECKS_PATH, JSON.stringify(decksStore, null, 2), 'utf8');
+      }
+    }
+
     res.json({ success: true, data: newSlide });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -3338,6 +4240,21 @@ app.post('/api/deck/slides/:id/edits', function (req, res) {
     libSlide.deckEdits[activeDeckId] = Object.assign({}, libSlide.deckEdits[activeDeckId], edits);
     fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
     markSlideTranslationsDirty(deckSlide.librarySlideId, edits, activeDeckId);
+
+    // Propagate cover logo change to all presentations in this deck
+    var isCoverEdit = edits.hasOwnProperty('customer-logo')
+      && (libSlide.templateId === 'ls01-cover' || libSlide.templateId === 'ls26-cover');
+    if (isCoverEdit) {
+      var raw = String(edits['customer-logo'] || '');
+      var newLogoSrc = raw.includes('<') ? (raw.match(/\bsrc="([^"]*)"/) || [])[1] || '' : raw;
+      var presData = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+      var changed = false;
+      (presData.presentations || []).forEach(function (p) {
+        if (p.deckId === activeDeckId) { p.customerLogoSrc = newLogoSrc; changed = true; }
+      });
+      if (changed) fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(presData, null, 2), 'utf8');
+    }
+
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -3355,6 +4272,20 @@ function writeDecks(data) {
 }
 function makeDeckId() {
   return 'deck-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
+}
+function localDate(d) {
+  return d.getFullYear() + '-' +
+    String(d.getMonth() + 1).padStart(2, '0') + '-' +
+    String(d.getDate()).padStart(2, '0');
+}
+function localDateString() {
+  return localDate(new Date());
+}
+function localTzString() {
+  var off = new Date().getTimezoneOffset(); // minutes behind UTC (+300 = UTC-5, -300 = UTC+5)
+  var h = Math.floor(Math.abs(off) / 60);
+  var m = Math.abs(off) % 60;
+  return (off <= 0 ? '+' : '-') + String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
 }
 function getDeckConfig(deckId) {
   var store = readDecks();
@@ -3381,11 +4312,7 @@ function getActiveDeckId() {
 }
 function resolveSlideEdits(libSlide, deckId) {
   if (libSlide.deckEdits) {
-    return Object.assign(
-      {},
-      libSlide.deckEdits['default'] || {},
-      deckId !== 'default' ? (libSlide.deckEdits[deckId] || {}) : {}
-    );
+    return Object.assign({}, libSlide.deckEdits[deckId] || {});
   }
   return libSlide.edits || {};
 }
@@ -3408,7 +4335,7 @@ function extractSlideDefaultFields(libSlide, deckId) {
     var $d = cheerio.load(html, { decodeEntities: false }, false);
     $d('[data-edit]').each(function () {
       var key = $d(this).attr('data-edit');
-      if (key) defaults[key] = $d(this).html() || '';
+      if (key && $d(this).attr('data-edit-type') !== 'image') defaults[key] = $d(this).html() || '';
     });
   } catch (e) { /* ignore — fall back to saved edits only */ }
   return defaults;
@@ -3485,11 +4412,32 @@ app.put('/api/decks/:id', function (req, res) {
     var store = readDecks();
     var idx = store.decks.findIndex(function (d) { return d.id === id; });
     if (idx === -1) return res.status(404).json({ success: false, error: 'Deck not found' });
-    var allowed = ['name', 'theme', 'logo', 'heroBg', 'heroBgFocal', 'heroBgFocalGrid', 'heroBgFit', 'heroBgOpacity', 'heroBgType', 'heroBgColor', 'colors'];
+    var allowed = ['name', 'theme', 'logo', 'heroBg', 'heroBgFocal', 'heroBgFocalGrid', 'heroBgFit', 'heroBgOpacity', 'heroBgType', 'heroBgColor', 'colors', 'brandCredit'];
     var body = req.body || {};
     allowed.forEach(function (key) {
       if (body[key] !== undefined) store.decks[idx][key] = body[key];
     });
+    if (body.styleRef !== undefined) {
+      if (!body.styleRef) {
+        store.decks[idx].styleRef = null;
+        store.decks[idx].styleCss = null;
+      } else {
+        var safeFile = path.basename(body.styleRef);
+        var refPath = path.join(STYLE_REFS_DIR, safeFile);
+        if (fs.existsSync(refPath) && safeFile.endsWith('.html')) {
+          var refHtml = fs.readFileSync(refPath, 'utf8');
+          store.decks[idx].styleRef = safeFile;
+          store.decks[idx].styleCss = extractStyleCss(refHtml, store.decks[idx].theme);
+        }
+      }
+    }
+    // Re-extract styleCss when theme changes so dark/light mode is updated
+    if (body.theme !== undefined && store.decks[idx].styleRef) {
+      var tRefPath = path.join(STYLE_REFS_DIR, store.decks[idx].styleRef);
+      if (fs.existsSync(tRefPath)) {
+        store.decks[idx].styleCss = extractStyleCss(fs.readFileSync(tRefPath, 'utf8'), body.theme);
+      }
+    }
     store.decks[idx].updatedAt = new Date().toISOString();
     writeDecks(store);
     res.json({ success: true, data: store.decks[idx] });
@@ -3726,6 +4674,7 @@ function buildFrozenPresentation(presentation) {
       var editKey = el.attr('data-edit');
       if (!editKey) return;
       if (this.tagName === 'img') return;
+      if (el.attr('data-edit-type') === 'image') return;
 
       // ul/ol/table: duplicate element per language (span wrappers are invalid inside these)
       if (/^(ul|ol|table)$/i.test(this.tagName)) {
@@ -3824,7 +4773,8 @@ function buildFrozenPresentation(presentation) {
     coverEdits.subheadline = sub;
   }
   if (presentation.customerLogoSrc) {
-    coverEdits['customer-logo-src'] = presentation.customerLogoSrc;
+    coverEdits['customer-logo']     = presentation.customerLogoSrc; // HTML cover slides (ls01, ls26)
+    coverEdits['customer-logo-src'] = presentation.customerLogoSrc; // canvas cover slides
   }
 
   // Render each visible slide
@@ -3867,7 +4817,7 @@ function buildFrozenPresentation(presentation) {
 
     var fragment = resolved.source === 'canvas'
       ? renderLayoutToHtml(resolved.tpl, s.id, edits, presDeck)
-      : injectDeckBranding(applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), withLiveLogos(edits), false), presDeck);
+      : injectDeckBranding(applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), withBrandCredit(withLiveLogos(edits), presDeck), false), presDeck);
 
     // Strip builder-only elements + contenteditable + logo change interactivity
     var $ = cheerio.load(fragment, { xmlMode: false });
@@ -3906,7 +4856,7 @@ function buildFrozenPresentation(presentation) {
 
     var fragment = resolved.source === 'canvas'
       ? renderLayoutToHtml(resolved.tpl, s.id, edits, presDeck)
-      : injectDeckBranding(applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), withLiveLogos(edits), false), presDeck);
+      : injectDeckBranding(applyEditsToHtml(fs.readFileSync(resolved.filePath, 'utf8'), withBrandCredit(withLiveLogos(edits), presDeck), false), presDeck);
     var $ = cheerio.load(fragment, { xmlMode: false });
     $('[data-builder-only],[data-ls-add-row],[data-ls-add],[data-ls-restore]').remove();
     $('[contenteditable]').removeAttr('contenteditable');
@@ -4348,25 +5298,23 @@ app.get('/api/analytics/presentation/:id', function (req, res) {
 });
 
 // GET /api/analytics/batch?startAt=<ms>&endAt=<ms>
+// Uses direct Postgres query — Umami API ignores URL filters in this version.
 app.get('/api/analytics/batch', function (req, res) {
-  if (!UMAMI_USER) return res.json({ success: false, error: 'Umami not configured' });
   try {
-    var settings  = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8'));
-    var websiteId = settings.umamiWebsiteId;
-    var pdata     = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
-    var ids       = (pdata.presentations || []).map(function (p) { return p.id; });
+    var pdata   = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var ids     = (pdata.presentations || []).map(function (p) { return p.id; });
     if (ids.length === 0) return res.json({ success: true, data: {} });
-    var startAt = req.query.startAt || String(Date.now() - 30 * 86400000);
-    var endAt   = req.query.endAt   || String(Date.now());
-    var result  = {};
-    var pending = ids.length;
-    ids.forEach(function (id) {
-      var url     = encodeURIComponent('/finished/' + id + '/');
-      var apiPath = '/api/websites/' + websiteId + '/stats?startAt=' + startAt + '&endAt=' + endAt + '&url=' + url;
-      umamiGet(apiPath, function (err, data) {
-        result[id] = err ? null : data;
-        if (--pending === 0) res.json({ success: true, data: result });
+    var startMs = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
+    var endMs   = parseInt(req.query.endAt)   || Date.now();
+    var urlPaths = ids.map(function (id) { return '/finished/' + id + '/'; });
+    dbPresStats(urlPaths, startMs, endMs, function (err, statsMap) {
+      if (err) return res.status(500).json({ success: false, error: err.message });
+      var result = {};
+      ids.forEach(function (id) {
+        var s = statsMap['/finished/' + id + '/'] || { pageviews: 0, visitors: 0 };
+        result[id] = { pageviews: s.pageviews, visitors: s.visitors };
       });
+      res.json({ success: true, data: result });
     });
   } catch (e) { res.status(500).json({ success: false, error: e.message }); }
 });
@@ -4398,7 +5346,7 @@ app.get('/api/analytics/pageviews-by-pres', function (req, res) {
     var startAt   = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
     var endAt     = parseInt(req.query.endAt)   || Date.now();
     var presId    = req.query.presId;
-    var urlParam  = presId ? encodeURIComponent('/finished/' + presId + '/') : null;
+    var presFilter = umamiPresFilter(presId);
 
     var DAY  = 86400000;
     var days = [];
@@ -4416,20 +5364,163 @@ app.get('/api/analytics/pageviews-by-pres', function (req, res) {
     var pending = days.length;
 
     days.forEach(function (day, i) {
-      var apiPath = '/api/websites/' + websiteId + '/stats?startAt=' + day.start + '&endAt=' + day.end;
-      if (urlParam) apiPath += '&url=' + urlParam;
+      var apiPath = '/api/websites/' + websiteId + '/stats?startAt=' + day.start + '&endAt=' + day.end + presFilter;
       umamiGet(apiPath, function (err, data) {
         results[i] = err ? null : data;
         if (--pending === 0) {
           var pageviews = results.map(function (d, j) {
-            return { x: days[j].t, y: d && d.pageviews ? (d.pageviews.value || 0) : 0 };
+            return { x: days[j].t, y: umamiVal(d && d.pageviews) };
           });
           var sessions = results.map(function (d, j) {
-            return { x: days[j].t, y: d && d.visitors ? (d.visitors.value || 0) : 0 };
+            return { x: days[j].t, y: umamiVal(d && d.visitors) };
           });
           res.json({ success: true, data: { pageviews: pageviews, sessions: sessions } });
         }
       });
+    });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// Returns aggregated time series AND per-presentation breakdown in one query.
+// Result: { pageviews: [{x,y}], sessions: [{x,y}], breakdown: [{ id, name, pageviews, sessions }] }
+function dbPresTimeSeriesWithBreakdown(urlPaths, presMap, startMs, endMs, cb) {
+  var db = getUmamiDb();
+  if (!db || !urlPaths.length) return cb(null, { pageviews: [], sessions: [], breakdown: [] });
+  var siteId = null;
+  try { siteId = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  if (!siteId) return cb(null, { pageviews: [], sessions: [], breakdown: [] });
+  db.query(
+    "SELECT url_path, TO_CHAR(created_at AT TIME ZONE '" + localTzString() + "', 'YYYY-MM-DD') AS day, " +
+    '       COUNT(*) AS pageviews, COUNT(DISTINCT session_id) AS visitors ' +
+    'FROM website_event ' +
+    'WHERE website_id = $1 AND url_path = ANY($2) AND event_type = 1 ' +
+    '  AND created_at >= to_timestamp($3::bigint / 1000.0) ' +
+    '  AND created_at <  to_timestamp($4::bigint / 1000.0) ' +
+    'GROUP BY 1, 2 ORDER BY 2, 1',
+    [siteId, urlPaths, startMs, endMs],
+    function (err, result) {
+      if (err) return cb(err);
+      var DAY  = 86400000;
+      var days = [];
+      var cur  = new Date(startMs); cur.setHours(0, 0, 0, 0);
+      while (cur.getTime() < endMs) { days.push(localDate(cur)); cur = new Date(cur.getTime() + DAY); }
+      var byDay    = {};
+      var byUrlDay = {};
+      (result.rows || []).forEach(function (r) {
+        var pv = parseInt(r.pageviews, 10);
+        var vs = parseInt(r.visitors,  10);
+        if (!byDay[r.day]) byDay[r.day] = { pv: 0, vs: 0 };
+        byDay[r.day].pv += pv;
+        byDay[r.day].vs += vs;
+        if (!byUrlDay[r.url_path]) byUrlDay[r.url_path] = {};
+        byUrlDay[r.url_path][r.day] = { pv: pv, vs: vs };
+      });
+      var pageviews = days.map(function (d) { return { x: d, y: byDay[d] ? byDay[d].pv : 0 }; });
+      var sessions  = days.map(function (d) { return { x: d, y: byDay[d] ? byDay[d].vs : 0 }; });
+      var breakdown = urlPaths.map(function (url) {
+        var presId = url.replace(/^\/finished\//, '').replace(/\/$/, '');
+        return {
+          id: presId,
+          name: presMap[presId] || presId,
+          pageviews: days.map(function (d) { return { x: d, y: byUrlDay[url] && byUrlDay[url][d] ? byUrlDay[url][d].pv : 0 }; }),
+          sessions:  days.map(function (d) { return { x: d, y: byUrlDay[url] && byUrlDay[url][d] ? byUrlDay[url][d].vs : 0 }; })
+        };
+      });
+      cb(null, { pageviews: pageviews, sessions: sessions, breakdown: breakdown });
+    }
+  );
+}
+
+// GET /api/analytics/pageviews-multi?startAt=<ms>&endAt=<ms>&presIds=<id1,id2,...>
+// Uses direct Postgres — Umami API ignores URL filters in this version.
+app.get('/api/analytics/pageviews-multi', function (req, res) {
+  try {
+    var pdata   = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var startAt = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
+    var endAt   = parseInt(req.query.endAt)   || Date.now();
+
+    var livePres  = (pdata.presentations || []).filter(function (p) { return p.publishedAt && !p.archivedAt; });
+    var requested = req.query.presIds ? req.query.presIds.split(',').map(function (s) { return s.trim(); }) : null;
+    var targets   = requested ? livePres.filter(function (p) { return requested.indexOf(p.id) !== -1; }) : livePres;
+
+    if (targets.length === 0) return res.json({ success: true, data: { pageviews: [], sessions: [], breakdown: [] } });
+
+    var urlPaths = targets.map(function (p) { return '/finished/' + p.id + '/'; });
+    var presMap  = {};
+    targets.forEach(function (p) {
+      presMap[p.id] = p.presentationName
+        ? ((p.customerName || '') + (p.customerName ? ' — ' : '') + p.presentationName)
+        : (p.customerName || p.id);
+    });
+    dbPresTimeSeriesWithBreakdown(urlPaths, presMap, startAt, endAt, function (err, data) {
+      if (err) return res.status(500).json({ success: false, error: err.message });
+      res.json({ success: true, data: data });
+    });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// GET /api/analytics/events?startAt=<ms>&endAt=<ms>&presIds=<id1,id2,...>
+// Returns slide event counts per event_name, aggregated across selected Live presentations.
+app.get('/api/analytics/events', function (req, res) {
+  try {
+    var pdata   = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var startAt = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
+    var endAt   = parseInt(req.query.endAt)   || Date.now();
+    var livePres  = (pdata.presentations || []).filter(function (p) { return p.publishedAt && !p.archivedAt; });
+    var requested = req.query.presIds ? req.query.presIds.split(',').map(function (s) { return s.trim(); }) : null;
+    var targets   = requested ? livePres.filter(function (p) { return requested.indexOf(p.id) !== -1; }) : livePres;
+    if (targets.length === 0) return res.json({ success: true, data: [] });
+    var urlPaths = targets.map(function (p) { return '/finished/' + p.id + '/'; });
+    dbSlideEvents(urlPaths, startAt, endAt, null, function (err, data) {
+      if (err) return res.status(500).json({ success: false, error: err.message });
+      res.json({ success: true, data: data });
+    });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// GET /api/analytics/event-series?startAt=<ms>&endAt=<ms>&presIds=&eventNames=
+// Returns day-by-day event counts per event_name for time-series view.
+app.get('/api/analytics/event-series', function (req, res) {
+  try {
+    var pdata   = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var startAt = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
+    var endAt   = parseInt(req.query.endAt)   || Date.now();
+    var livePres  = (pdata.presentations || []).filter(function (p) { return p.publishedAt && !p.archivedAt; });
+    var requested = req.query.presIds ? req.query.presIds.split(',').map(function (s) { return s.trim(); }) : null;
+    var targets   = requested ? livePres.filter(function (p) { return requested.indexOf(p.id) !== -1; }) : livePres;
+    if (targets.length === 0) return res.json({ success: true, data: { days: [], series: [] } });
+    var urlPaths = targets.map(function (p) { return '/finished/' + p.id + '/'; });
+    var evNames  = req.query.eventNames ? req.query.eventNames.split(',').map(function (s) { return s.trim(); }) : null;
+    dbSlideEventSeries(urlPaths, startAt, endAt, evNames, function (err, data) {
+      if (err) return res.status(500).json({ success: false, error: err.message });
+      res.json({ success: true, data: data });
+    });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// GET /api/analytics/slide-events?startAt=<ms>&endAt=<ms>&presIds=&eventName=<event>
+// Drill-down: returns per-presentation event counts for a specific slide event.
+app.get('/api/analytics/slide-events', function (req, res) {
+  try {
+    var pdata     = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var startAt   = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
+    var endAt     = parseInt(req.query.endAt)   || Date.now();
+    var eventName = (req.query.eventName || '').trim();
+    if (!eventName) return res.json({ success: true, data: [] });
+    var livePres  = (pdata.presentations || []).filter(function (p) { return p.publishedAt && !p.archivedAt; });
+    var requested = req.query.presIds ? req.query.presIds.split(',').map(function (s) { return s.trim(); }) : null;
+    var targets   = requested ? livePres.filter(function (p) { return requested.indexOf(p.id) !== -1; }) : livePres;
+    if (targets.length === 0) return res.json({ success: true, data: [] });
+    var urlPaths = targets.map(function (p) { return '/finished/' + p.id + '/'; });
+    var presMap  = {};
+    targets.forEach(function (p) {
+      presMap[p.id] = p.presentationName
+        ? ((p.customerName || '') + (p.customerName ? ' — ' : '') + p.presentationName)
+        : (p.customerName || p.id);
+    });
+    dbSlideEventByPres(urlPaths, presMap, startAt, endAt, eventName, function (err, data) {
+      if (err) return res.status(500).json({ success: false, error: err.message });
+      res.json({ success: true, data: data });
     });
   } catch (e) { res.status(500).json({ success: false, error: e.message }); }
 });
@@ -4521,7 +5612,7 @@ app.post('/api/presentations', function (req, res) {
 
     var presentation = {
       id:              makePresId(),
-      createdAt:       new Date().toISOString().slice(0, 10),
+      createdAt:       localDateString(),
       deckId:          (body.deckId || '').trim(),
       presentationName: presentationName,
       customerName:    customerName,
@@ -4684,7 +5775,7 @@ app.post('/api/presentations/:id/duplicate', function (req, res) {
 
     var presentation = {
       id:              makePresId(),
-      createdAt:       new Date().toISOString().slice(0, 10),
+      createdAt:       localDateString(),
       deckId:          src.deckId || '',
       presentationName: src.presentationName || '',
       customerName:    customerName,
@@ -5077,6 +6168,25 @@ app.post('/api/library', function (req, res) {
     var name       = body.name || 'Untitled Slide';
     if (!templateId) return res.status(400).json({ success: false, error: 'templateId is required' });
 
+    // Resolve optional theme (new system) or legacy style ref
+    var slideStyleRef = null;
+    var slideStyleCss = null;
+    var rawThemeId  = (body.themeId  || '').replace(/[^a-z0-9._-]/gi, '');
+    var rawStyleRef = (body.styleRef || '').replace(/[^a-z0-9._-]/gi, '');
+    if (rawThemeId && rawThemeId.endsWith('.css')) {
+      var tPath = path.join(THEMES_DIR, path.basename(rawThemeId));
+      if (fs.existsSync(tPath)) {
+        slideStyleRef = rawThemeId;
+        slideStyleCss = fs.readFileSync(tPath, 'utf8');
+      }
+    } else if (rawStyleRef && rawStyleRef.endsWith('.html')) {
+      var sPath = path.join(STYLE_REFS_DIR, path.basename(rawStyleRef));
+      if (fs.existsSync(sPath)) {
+        slideStyleRef = rawStyleRef;
+        slideStyleCss = extractStyleCss(fs.readFileSync(sPath, 'utf8'), 'dark');
+      }
+    }
+
     var resolved = resolveTemplate(templateId);
     var catalog  = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
     var tplEntry = catalog.find(function (t) { return t.id === templateId; });
@@ -5091,6 +6201,8 @@ app.post('/api/library', function (req, res) {
       templateVersion: (resolved && resolved.source === 'canvas' && resolved.tpl.version) ? resolved.tpl.version : 1,
       edits: edits
     };
+    if (slideStyleRef) { newSlide.styleRef = slideStyleRef; newSlide.styleCss = slideStyleCss; }
+    if (rawThemeId && rawThemeId.endsWith('.css')) newSlide.themeId = rawThemeId;
     library.slides.push(newSlide);
     fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
     res.json({ success: true, data: newSlide });
@@ -5127,11 +6239,27 @@ app.get('/slides/template-preview/:id', function (req, res) {
   if (!/^[a-z0-9-]+$/i.test(id)) {
     return res.status(400).type('text/plain').send('Invalid id');
   }
-  var editMode = req.query.edit === '1';
+  var editMode   = req.query.edit === '1';
+  var styleQuery = (req.query.style || '').replace(/[^a-z0-9._-]/gi, '');
+  var themeQuery = (req.query.theme || '').replace(/[^a-z0-9._-]/gi, '');
   try {
     var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
     var tpl = catalog.find(function (t) { return t.id === id; });
     if (!tpl) return res.status(404).type('text/plain').send('Template not found: ' + id);
+
+    var tplStyleCss = null;
+    // Theme takes priority over legacy ?style=
+    if (themeQuery && themeQuery.endsWith('.css')) {
+      var tPath = path.join(THEMES_DIR, path.basename(themeQuery));
+      if (fs.existsSync(tPath)) tplStyleCss = fs.readFileSync(tPath, 'utf8');
+    } else if (styleQuery && styleQuery.endsWith('.html')) {
+      var sRefPath = path.join(STYLE_REFS_DIR, path.basename(styleQuery));
+      if (fs.existsSync(sRefPath)) tplStyleCss = extractStyleCss(fs.readFileSync(sRefPath, 'utf8'), null);
+    } else if (tpl.defaultTheme && tpl.defaultTheme.endsWith('.css')) {
+      var dtPath = path.join(THEMES_DIR, path.basename(tpl.defaultTheme));
+      if (fs.existsSync(dtPath)) tplStyleCss = fs.readFileSync(dtPath, 'utf8');
+    }
+
     var filePath = path.join(__dirname, tpl.file);
     if (!fs.existsSync(filePath)) {
       return res.status(404).type('text/plain').send('Template file not found: ' + tpl.file);
@@ -5218,12 +6346,16 @@ app.get('/slides/template-preview/:id', function (req, res) {
       '  <meta charset="UTF-8">',
       '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
       '  <link rel="stylesheet" href="/slides/style.css">',
+      tplStyleCss ? '  <style>' + tplStyleCss + '</style>' : '',
       modeScript,
       '  <script src="/slides/components/lightbox.js"></script>',
       '  <script src="/slides/components/carousel.js"></script>',
       '  <script src="/slides/components/tabs.js"></script>',
       '  <script src="/slides/components/list.js"></script>',
       '  <script src="/slides/components/table.js"></script>',
+      '  <script src="/slides/components/gallery.js"></script>',
+      '  <script src="/slides/components/button.js"></script>',
+      '  <script src="/slides/components/tags.js"></script>',
       '  <script>',
       '    document.addEventListener("DOMContentLoaded", function () {',
       '      if (window.Lightbox) Lightbox.init(document);',
@@ -5256,16 +6388,20 @@ app.get('/slides/template-preview/:id', function (req, res) {
       '    .slide-body { flex: 1 !important; min-height: 0 !important; overflow: hidden; }',
       '    .ls-carousel { min-height: 200px !important; }',
       editMode ? '' : '    [data-ls-add-row],[data-ls-add],[data-ls-restore]{ display:none !important; }',
-      /* Light theme for template preview — white bg, dark text, accent colour stays */
-      '    :root { --bg:#fff; --bg-card:rgba(0,0,0,.04); --bg-card-hover:rgba(245,166,35,.08); --text:#111; --text-muted:#555; --border:rgba(0,0,0,.10); --border-hover:rgba(245,166,35,.45); --nav-bg:rgba(255,255,255,.85); }',
-      '    html, body { background:#fff !important; }',
-      /* Invert placeholder logo so it reads on white */
-      '    .slide-logo-row img { filter: invert(1); }',
-      /* No-image placeholders adapted for light bg */
-      '    .ls-carousel-slide.no-img{background:rgba(0,0,0,.04);border:1.5px dashed rgba(0,0,0,.18);border-radius:8px;}',
+      /* Only force light theme when no style is selected — a selected style brings its own colours */
+      tplStyleCss ? '' : '    :root { --bg:#fff; --text:#111; --text-muted:#555; --card-bg:rgba(0,0,0,.04); --card-border:rgba(0,0,0,.10); --card-radius:12px; --card-shadow:0 2px 12px rgba(0,0,0,.08); --bg-card:rgba(0,0,0,.04); --bg-card-hover:rgba(0,0,0,.07); --border:rgba(0,0,0,.10); --border-hover:rgba(0,0,0,.25); --nav-bg:rgba(255,255,255,.85); --slide-hero-rgb:255,255,255; --hero-overlay-start:.25; --hero-overlay-end:.10; --badge-bg:rgba(0,0,0,.06); --badge-border:rgba(0,0,0,.15); --badge-color:var(--accent); --logo-bg:rgba(0,0,0,.04); --logo-border:rgba(0,0,0,.12); }',
+      tplStyleCss ? '' : '    html, body { background:#fff !important; }',
+      /* Invert placeholder logo only for light (no-style) previews */
+      tplStyleCss ? '' : '    .slide-logo-row img { filter: invert(1); }',
+      /* No-image placeholders */
+      tplStyleCss
+        ? '    .ls-carousel-slide.no-img{background:rgba(255,255,255,.04);border:1.5px dashed rgba(255,255,255,.18);border-radius:8px;}'
+        : '    .ls-carousel-slide.no-img{background:rgba(0,0,0,.04);border:1.5px dashed rgba(0,0,0,.18);border-radius:8px;}',
       '    .ls-carousel-slide.no-img>img{visibility:hidden;}',
-      '    .ls-carousel-slide.no-img::after{content:"No image";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:rgba(0,0,0,.3);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;pointer-events:none;white-space:nowrap;}',
-      '    img.no-img{min-height:60px;min-width:60px;background:rgba(0,0,0,.04);border:1.5px dashed rgba(0,0,0,.18);border-radius:8px;}',
+      '    .ls-carousel-slide.no-img::after{content:"No image";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:rgba(128,128,128,.6);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;pointer-events:none;white-space:nowrap;}',
+      tplStyleCss
+        ? '    img.no-img{min-height:60px;min-width:60px;background:rgba(255,255,255,.04);border:1.5px dashed rgba(255,255,255,.18);border-radius:8px;}'
+        : '    img.no-img{min-height:60px;min-width:60px;background:rgba(0,0,0,.04);border:1.5px dashed rgba(0,0,0,.18);border-radius:8px;}',
       '  </style>',
       '</head>',
       '<body>',
@@ -5331,6 +6467,7 @@ app.get('/slides/library-preview/:id', function (req, res) {
       '  <meta charset="UTF-8">',
       '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
       '  <link rel="stylesheet" href="/slides/style.css">',
+      libSlide.styleCss ? '  <style>' + libSlide.styleCss + '</style>' : '',
       '  <script>window.PB_READONLY = true;</script>',
       '  <script src="/slides/components/lightbox.js"></script>',
       '  <script src="/slides/components/carousel.js"></script>',
@@ -5440,12 +6577,14 @@ app.get('/slides/library-edit/:id', function (req, res) {
       '  <meta charset="UTF-8">',
       '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
       '  <link rel="stylesheet" href="/slides/style.css">',
+      libSlide.styleCss ? '  <style>' + libSlide.styleCss + '</style>' : '',
       '  <script src="/slides/components/tracker.js"></script>',
       '  <script src="/slides/components/lightbox.js"></script>',
       '  <script src="/slides/components/carousel.js"></script>',
       '  <script src="/slides/components/tabs.js"></script>',
       '  <script src="/slides/components/list.js"></script>',
       '  <script src="/slides/components/table.js"></script>',
+      '  <script src="/slides/components/gallery.js"></script>',
       '  <script>',
       '    document.addEventListener("DOMContentLoaded", function () {',
       '      if (window.Lightbox) Lightbox.init(document);',
@@ -5568,7 +6707,6 @@ app.get('/slides',           function (_req, res) { res.sendFile(path.join(__dir
 app.get('/slides/library',   function (_req, res) { res.sendFile(path.join(__dirname, 'features/slides/index.html')); });
 app.get('/slides/templates', function (_req, res) { res.sendFile(path.join(__dirname, 'features/slides/index.html')); });
 app.get('/slides/builder',   function (_req, res) { res.sendFile(path.join(__dirname, 'features/slides/index.html')); });
-app.get('/zone-builder',     function (_req, res) { res.sendFile(path.join(__dirname, 'features/zone-builder/index.html')); });
 
 // ── API: languages ────────────────────────────────────────────────────────────
 app.get('/api/languages', function (_req, res) {
@@ -5920,94 +7058,6 @@ app.get('/api/layouts', function (_req, res) {
   }
 });
 
-// ── API: layout skeletons (zone-based builder) ────────────────────────────────
-app.get('/api/layout-skeletons', function (_req, res) {
-  try {
-    var skeletons = JSON.parse(fs.readFileSync(LAYOUT_SKELETONS_PATH, 'utf8'));
-    res.json({ success: true, data: skeletons });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
-  }
-});
-
-// POST /api/slide-builder/save — assemble and persist a zone-builder slide as a template
-app.post('/api/slide-builder/save', function (req, res) {
-  try {
-    var body            = req.body || {};
-    var slideName       = (body.slideName       || '').trim();
-    var savedTemplateId = (body.savedTemplateId || '').trim() || null;
-    var layoutId        = (body.layoutId        || '').trim();
-    var category        = (body.category        || 'Content').trim();
-    var html            = (body.html            || '').trim();
-
-    if (!slideName || !html) {
-      return res.status(400).json({ ok: false, error: 'slideName and html are required' });
-    }
-
-    var validCategories = ['Cover', 'Content', 'Stats', 'Visual', 'CTA', 'Data'];
-    if (!validCategories.includes(category)) category = 'Content';
-
-    var slidesDir  = path.join(__dirname, 'features', 'slides');
-    var catalog    = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
-    var now        = new Date().toISOString();
-    var templateId, filePath;
-
-    if (savedTemplateId) {
-      // Re-save: overwrite existing file and bump lastModified
-      var existing = catalog.find(function (t) { return t.id === savedTemplateId; });
-      if (!existing) {
-        return res.status(404).json({ ok: false, error: 'Template not found: ' + savedTemplateId });
-      }
-      templateId = savedTemplateId;
-      filePath   = path.join(__dirname, existing.file);
-      html       = html.replace(/__SLIDE_ID__/g, templateId);
-      fs.writeFileSync(filePath, html, 'utf8');
-      existing.name         = slideName;
-      existing.category     = category;
-      existing.lastModified = now;
-
-    } else {
-      // New template: find next available NN across all slide files
-      var allFiles = fs.readdirSync(slidesDir).filter(function (f) {
-        return /^(?:slide-|ls)\d+-.+\.html$/.test(f);
-      });
-      var maxNum  = allFiles.reduce(function (max, f) {
-        var m = f.match(/^(?:slide-|ls)(\d+)-/);
-        return m ? Math.max(max, parseInt(m[1], 10)) : max;
-      }, 0);
-      var nextNum  = String(maxNum + 1).padStart(2, '0');
-      var slug     = slideName.replace(/[^a-z0-9]+/gi, '-').toLowerCase().replace(/^-+|-+$/g, '') || 'template';
-      templateId   = 'ls' + nextNum + '-' + slug;
-      var filename = 'slide-' + nextNum + '-' + slug + '.html';
-      var fileRef  = 'features/slides/' + filename;
-      filePath     = path.join(slidesDir, filename);
-
-      html = html.replace(/__SLIDE_ID__/g, templateId);
-      fs.writeFileSync(filePath, html, 'utf8');
-
-      catalog.push({
-        id:           templateId,
-        name:         slideName,
-        category:     category,
-        slideMode:    'sequence',
-        components:   [],
-        file:         fileRef,
-        layoutId:     layoutId || null,
-        builtWith:    'zone-builder',
-        createdAt:    now,
-        lastModified: now
-      });
-    }
-
-    fs.writeFileSync(TEMPLATE_CATALOG_PATH, JSON.stringify(catalog, null, 2), 'utf8');
-    res.json({ ok: true, templateId: templateId });
-
-  } catch (err) {
-    console.error('[slide-builder/save]', err.message);
-    res.status(500).json({ ok: false, error: err.message });
-  }
-});
-
 app.post('/api/layouts', function (req, res) {
   try {
     var layouts = JSON.parse(fs.readFileSync(LAYOUTS_PATH, 'utf8'));
@@ -6175,6 +7225,13 @@ app.post('/api/upload-image', function (req, res) {
   if (!filename || !dataUrl) return res.status(400).json({ error: 'Missing filename or data' });
 
   var baseName = path.basename(filename);
+
+  // Reject non-web-compatible formats
+  var ext = baseName.split('.').pop().toLowerCase();
+  var webFormats = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'avif'];
+  if (!webFormats.includes(ext)) {
+    return res.status(400).json({ error: 'Unsupported format ".' + ext + '". Please use JPG, PNG, WebP, or GIF.' });
+  }
 
   var matches = dataUrl.match(/^data:([A-Za-z-+/]+);base64,(.+)$/);
   if (!matches) return res.status(400).json({ error: 'Invalid image data' });

@@ -1,0 +1,41 @@
+/* auto-generated */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Identity */
+  --bg:                 #0d1117;
+  --slide-hero-bg:      #0d1117;
+  --slide-hero-rgb:     13,17,23;
+  --text:               #39ff14;
+  --text-muted:         rgba(255,255,255,.55);
+  --accent:             #F5A623;
+  --accent-rgb:         245,166,35;
+  --accent-mid:         #F5A623;
+  --accent-light:       #face86;
+  --font-body:          'Fira Code', 'JetBrains Mono', monospace;
+  --font-heading:       'Fira Code', monospace;
+
+  /* Hero overlay */
+  --hero-overlay-angle: 90deg;
+  --hero-overlay-start: .72;
+  --hero-overlay-end:   .38;
+
+  /* Cards */
+  --card-bg:            rgba(255,255,255,.05);
+  --card-border:        rgba(255,255,255,.10);
+  --card-radius:        12px;
+  --card-shadow:        0 4px 20px rgba(0,0,0,.35);
+
+  /* Badge */
+  --badge-bg:           rgba(245,166,35,.15);
+  --badge-border:       rgba(245,166,35,.35);
+  --badge-radius:       6px;
+  --badge-color:        #ff00ff;
+
+  /* Logo container */
+  --logo-bg:            rgba(255,255,255,.05);
+  --logo-border:        rgba(255,255,255,.10);
+  --logo-radius:        20px;
+}
+body, .slide { font-family: var(--font-body); }
+h1, h2, h3 { font-family: var(--font-heading); }

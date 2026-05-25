@@ -13,6 +13,19 @@ description: Full release — build Docker image, push to ghcr.io, restart prod,
 
 ---
 
+## Analytics Tracking — Local vs Public
+
+The Umami tracking script injected into published presentations uses `UMAMI_BASE_URL` from `.env`.
+In local dev this is `http://localhost:3003` — only accessible from your machine.
+Presentations shared via GitHub Pages will have `localhost:3003` baked in and **external viewers will not be tracked**.
+
+Before sharing presentations with real customers:
+1. Deploy the Umami Docker container to a public VPS
+2. Update `UMAMI_BASE_URL` in `.env.prod` to the public URL (e.g. `https://umami.yourdomain.com`)
+3. Rebuild and release a new version so the published HTML gets the public script URL injected
+
+---
+
 ## Step 1 — Version number
 
 If the user passed a version (e.g. `/release v1.2`), use it.

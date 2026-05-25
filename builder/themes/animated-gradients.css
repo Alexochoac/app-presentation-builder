@@ -1,0 +1,41 @@
+/* auto-generated */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Identity */
+  --bg:                 #000000;
+  --slide-hero-bg:      #000000;
+  --slide-hero-rgb:     0,0,0;
+  --text:               #ffffff;
+  --text-muted:         rgba(255,255,255,.55);
+  --accent:             #F5A623;
+  --accent-rgb:         245,166,35;
+  --accent-mid:         #F5A623;
+  --accent-light:       #face86;
+  --font-body:          'Inter', sans-serif;
+  --font-heading:       'Space Grotesk', sans-serif;
+
+  /* Hero overlay */
+  --hero-overlay-angle: 135deg;
+  --hero-overlay-start: .72;
+  --hero-overlay-end:   .38;
+
+  /* Cards */
+  --card-bg:            rgba(255, 255, 255, 0.1);
+  --card-border:        rgba(255,255,255,.10);
+  --card-radius:        20px;
+  --card-shadow:        0 8px 32px rgba(0, 0, 0, 0.2);
+
+  /* Badge */
+  --badge-bg:           rgba(245,166,35,.15);
+  --badge-border:       rgba(245,166,35,.35);
+  --badge-radius:       6px;
+  --badge-color:        #F5A623;
+
+  /* Logo container */
+  --logo-bg:            rgba(255,255,255,.05);
+  --logo-border:        rgba(255,255,255,.10);
+  --logo-radius:        20px;
+}
+body, .slide { font-family: var(--font-body); }
+h1, h2, h3 { font-family: var(--font-heading); }

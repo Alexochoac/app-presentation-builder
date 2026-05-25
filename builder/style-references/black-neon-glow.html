@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Software Tailor Revolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', sans-serif;
+            background: #000;
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Main gradient background - much darker */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: radial-gradient(ellipse at 20% 50%, rgba(120, 119, 198, 0.2) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at 50% 100%, rgba(6, 182, 212, 0.1) 0%, transparent 40%),
+                        linear-gradient(180deg, #000000 0%, #0a0a0f 50%, #000000 100%);
+        }
+
+        /* Horizontal scroll container */
+        .presentation-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            display: flex;
+            z-index: 1;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .presentation-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Slides */
+        .slide {
+            min-width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            scroll-snap-align: start;
+            padding: 240px 280px;
+            position: relative;
+        }
+
+        .slide-content {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            z-index: 2;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        /* Animate slide content when visible */
+        .slide.visible .slide-content {
+            animation: slideContentIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideContentIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Typography with staggered animations */
+        h1 {
+            font-size: clamp(36px, 5vw, 64px);
+            font-weight: 800;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+            line-height: 0.95;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .slide.visible h1 {
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .glow-text {
+            background: linear-gradient(135deg, #06b6d4 0%, #22d3ee 50%, #67e8f9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(6, 182, 212, 0.3);
+            filter: drop-shadow(0 0 15px rgba(6, 182, 212, 0.2));
+        }
+
+        h2 {
+            font-size: clamp(16px, 2vw, 22px);
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+            line-height: 1.4;
+            letter-spacing: -0.01em;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .slide.visible h2 {
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+        }
+
+        .white-text {
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Glass cards with animation */
+        .glass-card {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(40px) saturate(150%);
+            -webkit-backdrop-filter: blur(40px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 20px;
+            padding: 24px;
+            margin: 16px auto;
+            max-width: 600px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37),
+                        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        .slide.visible .glass-card {
+            animation: scaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+        }
+
+        @keyframes scaleIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.5) 50%, 
+                transparent);
+        }
+
+        /* Code block styling with animation */
+        .code-block {
+            background: linear-gradient(135deg, 
+                rgba(6, 182, 212, 0.1) 0%, 
+                rgba(34, 211, 238, 0.05) 100%);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 24px auto;
+            max-width: 550px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.15),
+                        inset 0 0 30px rgba(6, 182, 212, 0.05);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .slide.visible .code-block {
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+        }
+
+        .code-text {
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #67e8f9;
+            text-align: left;
+        }
+
+        /* Status badges with staggered animation */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 4px;
+            transition: all 0.3s ease;
+            position: relative;
+            text-transform: none;
+            letter-spacing: -0.01em;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .slide.visible .badge {
+            animation: badgeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .slide.visible .badge:nth-child(1) { animation-delay: 0.4s; }
+        .slide.visible .badge:nth-child(2) { animation-delay: 0.5s; }
+        .slide.visible .badge:nth-child(3) { animation-delay: 0.6s; }
+        .slide.visible .badge:nth-child(4) { animation-delay: 0.7s; }
+        .slide.visible .badge:nth-child(5) { animation-delay: 0.8s; }
+        .slide.visible .badge:nth-child(6) { animation-delay: 0.9s; }
+        .slide.visible .badge:nth-child(7) { animation-delay: 1.0s; }
+        .slide.visible .badge:nth-child(8) { animation-delay: 1.1s; }
+        .slide.visible .badge:nth-child(9) { animation-delay: 1.2s; }
+        .slide.visible .badge:nth-child(10) { animation-delay: 1.3s; }
+
+        @keyframes badgeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .badge-success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.5);
+            color: #4ade80;
+            box-shadow: 0 0 40px rgba(34, 197, 94, 0.5),
+                        inset 0 0 20px rgba(34, 197, 94, 0.2);
+        }
+
+        .badge-primary {
+            background: rgba(6, 182, 212, 0.2);
+            border: 1px solid rgba(6, 182, 212, 0.5);
+            color: #22d3ee;
+            box-shadow: 0 0 40px rgba(6, 182, 212, 0.5),
+                        inset 0 0 20px rgba(6, 182, 212, 0.2);
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #f87171;
+            box-shadow: 0 0 40px rgba(239, 68, 68, 0.5),
+                        inset 0 0 20px rgba(239, 68, 68, 0.2);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            color: #fbbf24;
+            box-shadow: 0 0 40px rgba(245, 158, 11, 0.5),
+                        inset 0 0 20px rgba(245, 158, 11, 0.2);
+        }
+
+        .badge-info {
+            background: rgba(6, 182, 212, 0.2);
+            border: 1px solid rgba(6, 182, 212, 0.5);
+            color: #22d3ee;
+            box-shadow: 0 0 40px rgba(6, 182, 212, 0.5),
+                        inset 0 0 20px rgba(6, 182, 212, 0.2);
+        }
+
+        /* Metrics with animation */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .metric-card {
+            padding: 16px;
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        .slide.visible .metric-card {
+            animation: metricIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .slide.visible .metric-card:nth-child(1) { animation-delay: 0.3s; }
+        .slide.visible .metric-card:nth-child(2) { animation-delay: 0.4s; }
+        .slide.visible .metric-card:nth-child(3) { animation-delay: 0.5s; }
+        .slide.visible .metric-card:nth-child(4) { animation-delay: 0.6s; }
+        .slide.visible .metric-card:nth-child(5) { animation-delay: 0.7s; }
+
+        @keyframes metricIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .metric-value {
+            font-size: clamp(36px, 4.5vw, 56px);
+            font-weight: 800;
+            background: linear-gradient(135deg, #06b6d4, #22d3ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 6px;
+            filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.3));
+        }
+
+        .metric-label {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+        }
+
+        /* Comparison cards with animation */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .comparison-card {
+            padding: 20px;
+            border-radius: 20px;
+            position: relative;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .comparison-card:nth-child(2) {
+            transform: translateX(20px);
+        }
+
+        .slide.visible .comparison-card {
+            animation: compareIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+        }
+
+        @keyframes compareIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .comparison-old {
+            background: rgba(30, 30, 30, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comparison-new {
+            background: linear-gradient(135deg, 
+                rgba(6, 182, 212, 0.1) 0%, 
+                rgba(34, 211, 238, 0.05) 100%);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+        }
+
+        .comparison-new::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 20px;
+            padding: 2px;
+            background: linear-gradient(135deg, #06b6d4, #22d3ee);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .comparison-new {
+            box-shadow: 0 0 80px rgba(6, 182, 212, 0.2),
+                        inset 0 0 60px rgba(6, 182, 212, 0.05);
+        }
+
+        .comparison-card h3 {
+            font-size: 20px;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        /* Charts and graphs */
+        .chart-container {
+            position: relative;
+            height: 250px;
+            margin: 30px 0;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .slide.visible .chart-container {
+            animation: chartIn 1s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+        }
+
+        @keyframes chartIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 100%;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .bar {
+            width: 60px;
+            background: linear-gradient(180deg, #22d3ee, #06b6d4);
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            opacity: 0;
+            transform: scaleY(0);
+            transform-origin: bottom;
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+        }
+
+        .slide.visible .bar {
+            animation: barGrow 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .slide.visible .bar:nth-child(1) { animation-delay: 0.6s; }
+        .slide.visible .bar:nth-child(2) { animation-delay: 0.7s; }
+        .slide.visible .bar:nth-child(3) { animation-delay: 0.8s; }
+        .slide.visible .bar:nth-child(4) { animation-delay: 0.9s; }
+
+        @keyframes barGrow {
+            to {
+                opacity: 1;
+                transform: scaleY(1);
+            }
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            white-space: nowrap;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            font-weight: 600;
+            color: #22d3ee;
+        }
+
+        .gap-visual {
+            position: relative;
+            height: 200px;
+            margin: 30px 0;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding: 0 40px;
+        }
+
+        .gap-bar {
+            width: 35%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            transform: scaleY(0);
+            transform-origin: bottom;
+        }
+
+        .gap-bar.old {
+            height: 30%;
+        }
+
+        .gap-bar.new {
+            height: 90%;
+            background: linear-gradient(180deg, #22d3ee, #06b6d4);
+            box-shadow: 0 0 40px rgba(6, 182, 212, 0.4);
+            border-color: rgba(6, 182, 212, 0.5);
+        }
+
+        .slide.visible .gap-bar {
+            animation: barGrow 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .slide.visible .gap-bar.old { animation-delay: 0.5s; }
+        .slide.visible .gap-bar.new { animation-delay: 0.7s; }
+
+        .gap-arrow {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 32px;
+            color: #22d3ee;
+            opacity: 0;
+        }
+
+        .slide.visible .gap-arrow {
+            animation: pulseIn 1s cubic-bezier(0.16, 1, 0.3, 1) 1s forwards;
+        }
+
+        @keyframes pulseIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Timeline graph */
+        .timeline-graph {
+            position: relative;
+            height: 150px;
+            margin: 30px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .timeline-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #06b6d4, #22d3ee, transparent);
+            opacity: 0;
+            transform: scaleX(0);
+        }
+
+        .slide.visible .timeline-line {
+            animation: lineGrow 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+        }
+
+        @keyframes lineGrow {
+            to {
+                opacity: 1;
+                transform: scaleX(1);
+            }
+        }
+
+        .timeline-point {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #06b6d4, #22d3ee);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.5);
+            z-index: 2;
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        .slide.visible .timeline-point {
+            animation: pointPop 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .slide.visible .timeline-point:nth-child(2) { animation-delay: 0.6s; }
+        .slide.visible .timeline-point:nth-child(3) { animation-delay: 0.8s; }
+        .slide.visible .timeline-point:nth-child(4) { animation-delay: 1.0s; }
+        .slide.visible .timeline-point:nth-child(5) { animation-delay: 1.2s; }
+
+        @keyframes pointPop {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .timeline-label {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            white-space: nowrap;
+        }
+
+        /* CTA Button */
+        .cta-button {
+            display: inline-block;
+            padding: 14px 36px;
+            background: linear-gradient(135deg, #06b6d4, #22d3ee);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 100px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-top: 24px;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4),
+                        0 0 40px rgba(34, 211, 238, 0.3);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .slide.visible .cta-button {
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5),
+                        0 0 80px rgba(34, 211, 238, 0.4);
+        }
+
+        /* Navigation dots */
+        .nav-dots {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 16px;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            padding: 20px 32px;
+            border-radius: 100px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            width: 40px;
+            border-radius: 5px;
+            background: linear-gradient(90deg, #06b6d4, #22d3ee);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.8);
+        }
+
+        /* Special text effects */
+        .highlight {
+            background: linear-gradient(135deg, #06b6d4, #22d3ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.3));
+        }
+
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .slide {
+                padding: 160px 180px;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .slide {
+                padding: 120px 100px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .slide {
+                padding: 80px 40px;
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .glass-card {
+                padding: 20px;
+            }
+
+            .code-block {
+                padding: 16px;
+            }
+
+            .code-text {
+                font-size: 12px;
+            }
+            
+            h1 {
+                font-size: clamp(32px, 7vw, 48px);
+            }
+            
+            h2 {
+                font-size: clamp(16px, 3.5vw, 20px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated gradient background -->
+    <div class="background"></div>
+
+    <!-- Horizontal scrolling container -->
+    <div class="presentation-wrapper">
+        <!-- Slide 1: Opening -->
+        <div class="slide visible">
+            <div class="slide-content">
+                <h1 class="white-text">The <span class="glow-text">$1 Trillion</span> Revolution</h1>
+                <h2>Regular people are about to destroy the entire software industry</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">30M</div>
+                        <div class="metric-label">Businesses suffering</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">$20</div>
+                        <div class="metric-label">To get started</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">4hrs</div>
+                        <div class="metric-label">To first solution</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: The Problem with Graph -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1 class="white-text">Software is <span class="glow-text">Broken</span></h1>
+                <h2>The gap between what businesses have vs. what they need</h2>
+                <div class="gap-visual">
+                    <div class="gap-bar old">
+                        <div style="color: #fff; font-weight: 600; font-size: 16px;">Generic</div>
+                        <div style="color: rgba(255,255,255,0.6); font-size: 14px; margin-top: 8px;">20% fit</div>
+                    </div>
+                    <div class="gap-bar new">
+                        <div style="color: #fff; font-weight: 600; font-size: 16px;">Custom</div>
+                        <div style="color: rgba(255,255,255,0.9); font-size: 14px; margin-top: 8px;">100% fit</div>
+                    </div>
+                    <div class="gap-arrow">⟵ GAP ⟶</div>
+                </div>
+                <p style="margin-top: 30px; color: rgba(255,255,255,0.7); font-size: 18px;">
+                    This gap is worth <span class="highlight">trillions</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 3: The Solution -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1 class="glow-text">Claude Code</h1>
+                <h2>One paragraph. Complete solution. 4 hours.</h2>
+                <div class="code-block">
+                    <div class="code-text">
+                        "Build a booking system for mobile dog groomers with route optimization,<br>
+                        weather-based rescheduling, and real-time photo updates for pet owners..."
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 16px;">
+                    <div class="badge badge-success">✓ $20 total cost</div>
+                    <div class="badge badge-success">✓ 4 hours to build</div>
+                    <div class="badge badge-success">✓ No coding required</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Cost Comparison Chart -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1 class="white-text">The Cost <span class="glow-text">Revolution</span></h1>
+                <h2>Traditional development vs. Claude Code</h2>
+                <div class="chart-container">
+                    <div class="bar-chart">
+                        <div class="bar" style="height: 95%;">
+                            <div class="bar-value">$100K</div>
+                            <div class="bar-label">Traditional</div>
+                        </div>
+                        <div class="bar" style="height: 60%;">
+                            <div class="bar-value">$50K</div>
+                            <div class="bar-label">Freelancer</div>
+                        </div>
+                        <div class="bar" style="height: 30%;">
+                            <div class="bar-value">$10K</div>
+                            <div class="bar-label">Offshore</div>
+                        </div>
+                        <div class="bar" style="height: 2%; background: linear-gradient(180deg, #4ade80, #22c55e);">
+                            <div class="bar-value" style="color: #4ade80;">$20</div>
+                            <div class="bar-label">Claude Code</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Software Tailors -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1 class="white-text">Become a <span class="glow-text">Software Tailor</span></h1>
+                <h2>The new millionaire class is being born right now</h2>
+                <div class="comparison-grid">
+                    <div class="comparison-card comparison-old">
+                        <h3 style="color: #6b7280;">Traditional Developer</h3>
+                        <div style="margin-top: 24px;">
+                            <div class="badge badge-danger">Thinks in code</div>
+                            <div class="badge badge-danger">6 months to ship</div>
+                            <div class="badge badge-danger">$100/hour</div>
+                        </div>
+                    </div>
+                    <div class="comparison-card comparison-new">
+                        <h3 style="color: #ffffff;">You (Software Tailor)</h3>
+                        <div style="margin-top: 24px;">
+                            <div class="badge badge-success">Thinks in solutions</div>
+                            <div class="badge badge-success">Ships in 2 days</div>
+                            <div class="badge badge-success">$2K/month recurring</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: The Math -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1 class="white-text">Your Path to <span class="glow-text">$10K/Month</span></h1>
+                <h2>Simple math that changes everything</h2>
+                <div class="glass-card">
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-value">10</div>
+                            <div class="metric-label">Happy clients</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">×</div>
+                            <div class="metric-label">&nbsp;</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">$1K</div>
+                            <div class="metric-label">Per month each</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">=</div>
+                            <div class="metric-label">&nbsp;</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value">$10K</div>
+                            <div class="metric-label">Your monthly income</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Industries -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1 class="white-text">Pick Your <span class="glow-text">Empire</span></h1>
+                <h2>Every industry is begging for custom solutions</h2>
+                <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; margin-top: 40px;">
+                    <div class="badge badge-primary">🍕 Food Trucks</div>
+                    <div class="badge badge-info">🏠 Home Cleaners</div>
+                    <div class="badge badge-warning">💪 Personal Trainers</div>
+                    <div class="badge badge-primary">📸 Photographers</div>
+                    <div class="badge badge-info">🐕 Dog Daycares</div>
+                    <div class="badge badge-warning">🔓 Escape Rooms</div>
+                    <div class="badge badge-primary">🌽 Farmers Markets</div>
+                    <div class="badge badge-info">🚗 Auto Detailers</div>
+                    <div class="badge badge-warning">☕ Coffee Shops</div>
+                    <div class="badge badge-primary">🦷 Dental Offices</div>
+                </div>
+                <p style="margin-top: 30px; font-size: 20px; color: rgba(255,255,255,0.7);">
+                    30 million businesses. Zero custom solutions. <span class="highlight">Infinite opportunity.</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 8: Your Advantage -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1 class="white-text">You're <span class="glow-text">NOT</span> Technical?</h1>
+                <h2>Perfect. That's exactly why you'll win.</h2>
+                <div class="glass-card" style="margin-top: 40px;">
+                    <div style="font-size: 20px; line-height: 2.2;">
+                        <div>You understand <span class="highlight">problems</span>, not code</div>
+                        <div>You speak <span class="highlight">business</span>, not technical</div>
+                        <div>You ship <span class="highlight">solutions</span>, not perfection</div>
+                        <div>You think like <span class="highlight">customers</span>, not engineers</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: The Ultimate Skill -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1 class="white-text">The <span class="glow-text">#1 Skill</span> of 2025</h1>
+                <h2>Master the art of commanding Claude Code</h2>
+                <div class="glass-card" style="margin-top: 40px;">
+                    <div style="font-size: 20px; line-height: 2; margin-bottom: 20px;">
+                        <div style="color: #22d3ee; font-weight: 600; font-size: 24px; margin-bottom: 16px;">Claude Code can do ANYTHING</div>
+                        <div>Build a $10K app? <span class="highlight">Yes.</span></div>
+                        <div>Create a SaaS business? <span class="highlight">Yes.</span></div>
+                        <div>Automate an entire company? <span class="highlight">Yes.</span></div>
+                        <div>Replace a dev team? <span class="highlight">Yes.</span></div>
+                    </div>
+                </div>
+                <div style="margin-top: 40px;">
+                    <p style="font-size: 22px; color: rgba(255,255,255,0.9); line-height: 1.6;">
+                        It's not about knowing code.<br>
+                        It's about knowing <span class="glow-text">what to ask</span>.
+                    </p>
+                </div>
+                <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; margin-top: 30px;">
+                    <div class="badge badge-primary">🎯 Be specific</div>
+                    <div class="badge badge-primary">🎨 Think in outcomes</div>
+                    <div class="badge badge-primary">⚡ Iterate fast</div>
+                </div>
+                <p style="margin-top: 30px; font-size: 18px; color: rgba(255,255,255,0.7);">
+                    The person who masters prompting Claude Code<br>
+                    becomes more powerful than an entire dev team
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 10: Timeline with Graph -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1 class="white-text">Your Next <span class="glow-text">90 Days</span></h1>
+                <h2>The exact roadmap to freedom</h2>
+                <div class="timeline-graph">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-point" style="position: relative;">
+                        <span>Day 1</span>
+                        <div class="timeline-label">Learn basics</div>
+                    </div>
+                    <div class="timeline-point" style="position: relative;">
+                        <span>Day 7</span>
+                        <div class="timeline-label">First app</div>
+                    </div>
+                    <div class="timeline-point" style="position: relative;">
+                        <span>Day 30</span>
+                        <div class="timeline-label">First client</div>
+                    </div>
+                    <div class="timeline-point" style="position: relative;">
+                        <span>Day 60</span>
+                        <div class="timeline-label">$5K MRR</div>
+                    </div>
+                    <div class="timeline-point" style="position: relative;">
+                        <span>Day 90</span>
+                        <div class="timeline-label">Quit job</div>
+                    </div>
+                </div>
+                <div class="chart-container" style="margin-top: 60px;">
+                    <div class="bar-chart">
+                        <div class="bar" style="height: 10%; background: linear-gradient(180deg, #4ade80, #22c55e);">
+                            <div class="bar-value" style="color: #4ade80;">$0</div>
+                            <div class="bar-label">Month 0</div>
+                        </div>
+                        <div class="bar" style="height: 25%; background: linear-gradient(180deg, #4ade80, #22c55e);">
+                            <div class="bar-value" style="color: #4ade80;">$1K</div>
+                            <div class="bar-label">Month 1</div>
+                        </div>
+                        <div class="bar" style="height: 50%; background: linear-gradient(180deg, #22d3ee, #06b6d4);">
+                            <div class="bar-value" style="color: #22d3ee;">$5K</div>
+                            <div class="bar-label">Month 2</div>
+                        </div>
+                        <div class="bar" style="height: 90%; background: linear-gradient(180deg, #22d3ee, #06b6d4);">
+                            <div class="bar-value" style="color: #22d3ee;">$10K+</div>
+                            <div class="bar-label">Month 3</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Urgency -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1 class="white-text">The Clock is <span class="glow-text">Ticking</span></h1>
+                <h2>Every single day you wait</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">100</div>
+                        <div class="metric-label">People discover Claude Code</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">10</div>
+                        <div class="metric-label">Land their first client</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">1</div>
+                        <div class="metric-label">Takes YOUR opportunity</div>
+                    </div>
+                </div>
+                <div style="margin-top: 40px;">
+                    <div class="badge badge-danger" style="font-size: 20px; padding: 16px 32px;">
+                        The revolution doesn't wait
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Call to Action -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1 class="white-text">Your <span class="glow-text">Choice</span></h1>
+                <h2>Which person will you be?</h2>
+                <div class="comparison-grid">
+                    <div class="comparison-card comparison-old">
+                        <h3 style="color: #6b7280;">The Watcher</h3>
+                        <div style="margin-top: 24px;">
+                            <div class="badge badge-danger">Thinks "interesting"</div>
+                            <div class="badge badge-danger">Watches another video</div>
+                            <div class="badge badge-danger">Stays exactly where they are</div>
+                        </div>
+                    </div>
+                    <div class="comparison-card comparison-new">
+                        <h3 style="color: #ffffff;">The Builder</h3>
+                        <div style="margin-top: 24px;">
+                            <div class="badge badge-success">Opens Claude Code today</div>
+                            <div class="badge badge-success">Ships first app tonight</div>
+                            <div class="badge badge-success">Changes their life forever</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="cta-button">Start Building Today →</a>
+            </div>
+        </div>
+
+        <!-- Slide 13: Final -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1 class="white-text">Welcome to the <span class="glow-text">Revolution</span></h1>
+                <h2>The future belongs to Software Tailors</h2>
+                <div class="glass-card" style="margin: 40px auto; max-width: 600px;">
+                    <div style="font-size: 22px; line-height: 2; font-weight: 300;">
+                        Not because you're technical.<br>
+                        Because you're <span class="highlight">NOT</span>.<br><br>
+                        
+                        Not because you know code.<br>
+                        Because you know <span class="highlight">PROBLEMS</span>.<br><br>
+                        
+                        Not because you're a developer.<br>
+                        Because you're <span class="highlight">HUMAN</span>.
+                    </div>
+                </div>
+                <div class="badge badge-primary" style="font-size: 22px; padding: 18px 40px;">
+                    Your legacy starts NOW
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation dots -->
+    <div class="nav-dots" id="navDots"></div>
+
+    <script>
+        const wrapper = document.querySelector('.presentation-wrapper');
+        const slides = document.querySelectorAll('.slide');
+        const navDotsContainer = document.getElementById('navDots');
+        let currentSlide = 0;
+
+        // Create navigation dots
+        slides.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('nav-dot');
+            if (index === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => scrollToSlide(index));
+            navDotsContainer.appendChild(dot);
+        });
+
+        const dots = document.querySelectorAll('.nav-dot');
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            root: wrapper,
+            rootMargin: '0px',
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                } else {
+                    // Optional: remove 'visible' to replay animations
+                    // entry.target.classList.remove('visible');
+                }
+            });
+        }, observerOptions);
+
+        slides.forEach(slide => {
+            observer.observe(slide);
+        });
+
+        // Scroll to specific slide
+        function scrollToSlide(index) {
+            const slideWidth = window.innerWidth;
+            wrapper.scrollTo({
+                left: slideWidth * index,
+                behavior: 'smooth'
+            });
+        }
+
+        // Update active dot on scroll
+        wrapper.addEventListener('scroll', () => {
+            const slideWidth = window.innerWidth;
+            const newSlide = Math.round(wrapper.scrollLeft / slideWidth);
+            
+            if (newSlide !== currentSlide) {
+                dots[currentSlide].classList.remove('active');
+                dots[newSlide].classList.add('active');
+                currentSlide = newSlide;
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentSlide < slides.length - 1) {
+                scrollToSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                scrollToSlide(currentSlide - 1);
+            }
+        });
+
+        // Touch support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        wrapper.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        wrapper.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50 && currentSlide < slides.length - 1) {
+                scrollToSlide(currentSlide + 1);
+            }
+            if (touchEndX > touchStartX + 50 && currentSlide > 0) {
+                scrollToSlide(currentSlide - 1);
+            }
+        }
+    </script>
+</body>
+</html>

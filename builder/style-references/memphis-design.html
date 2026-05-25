@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Future of AI - Memphis Design Style</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --memphis-pink: #ff6b6b;
+            --memphis-blue: #4ecdc4;
+            --memphis-yellow: #ffd93d;
+            --memphis-orange: #ff8a5b;
+            --memphis-purple: #a8e6cf;
+            --memphis-red: #ff1744;
+            --memphis-cyan: #18ffff;
+            --memphis-lime: #ccff00;
+            --black: #2c2c2c;
+            --white: #ffffff;
+            --gray: #f5f5f5;
+        }
+        
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: var(--white);
+            color: var(--black);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Memphis Background Patterns */
+        .memphis-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+            background-image: 
+                repeating-linear-gradient(45deg, var(--memphis-pink) 0px, var(--memphis-pink) 2px, transparent 2px, transparent 20px),
+                repeating-linear-gradient(-45deg, var(--memphis-blue) 0px, var(--memphis-blue) 2px, transparent 2px, transparent 20px);
+        }
+        
+        /* Floating Memphis Elements */
+        .memphis-shape {
+            position: fixed;
+            z-index: -1;
+            opacity: 0.6;
+            animation: memphisFloat 8s ease-in-out infinite;
+        }
+        
+        .shape-triangle {
+            width: 0;
+            height: 0;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-bottom: 50px solid var(--memphis-yellow);
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .shape-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--memphis-orange);
+            top: 70%;
+            right: 15%;
+            animation-delay: -2s;
+        }
+        
+        .shape-square {
+            width: 40px;
+            height: 40px;
+            background: var(--memphis-purple);
+            transform: rotate(45deg);
+            top: 30%;
+            right: 20%;
+            animation-delay: -4s;
+        }
+        
+        .shape-zigzag {
+            width: 80px;
+            height: 20px;
+            background: 
+                linear-gradient(135deg, var(--memphis-cyan) 25%, transparent 25%), 
+                linear-gradient(225deg, var(--memphis-cyan) 25%, transparent 25%), 
+                linear-gradient(45deg, var(--memphis-cyan) 25%, transparent 25%), 
+                linear-gradient(315deg, var(--memphis-cyan) 25%, var(--memphis-cyan) 25%);
+            background-size: 20px 20px;
+            bottom: 30%;
+            left: 20%;
+            animation-delay: -6s;
+        }
+        
+        @keyframes memphisFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(90deg); }
+            50% { transform: translateY(0px) rotate(180deg); }
+            75% { transform: translateY(20px) rotate(270deg); }
+        }
+        
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            opacity: 0;
+            transform: translateY(30px) rotate(-1deg);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 60px;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0) rotate(0deg);
+        }
+        
+        .slide .content {
+            width: 100%;
+            max-width: 1200px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            text-align: center;
+        }
+        
+        /* Typography */
+        h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: clamp(48px, 8vw, 120px);
+            line-height: 1.1;
+            margin: 0 0 30px 0;
+            color: var(--black);
+            transform: rotate(-2deg);
+            text-shadow: 
+                4px 4px 0px var(--memphis-yellow),
+                8px 8px 0px var(--memphis-pink);
+            position: relative;
+        }
+        
+        h1::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 20px;
+            height: 20px;
+            background: var(--memphis-blue);
+            border-radius: 50%;
+            z-index: -1;
+        }
+        
+        h2 {
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: clamp(36px, 6vw, 72px);
+            line-height: 1.2;
+            margin: 0 0 25px 0;
+            color: var(--black);
+            transform: rotate(1deg);
+            text-shadow: 3px 3px 0px var(--memphis-cyan);
+        }
+        
+        .subtitle {
+            font-weight: 400;
+            font-size: clamp(18px, 3vw, 28px);
+            color: var(--black);
+            margin: 0 0 50px 0;
+            max-width: 700px;
+            line-height: 1.6;
+            background: var(--memphis-purple);
+            padding: 20px;
+            border-radius: 20px;
+            transform: rotate(-1deg);
+        }
+        
+        /* Memphis Cards */
+        .memphis-card {
+            background: var(--white);
+            border: 4px solid var(--black);
+            padding: 32px;
+            margin: 16px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: rotate(var(--rotation, 2deg));
+            border-radius: 0 20px 0 20px;
+            box-shadow: 
+                8px 8px 0px var(--memphis-yellow),
+                12px 12px 0px var(--black);
+        }
+        
+        .memphis-card::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            width: 24px;
+            height: 24px;
+            background: var(--memphis-pink);
+            border: 3px solid var(--black);
+            border-radius: 50%;
+        }
+        
+        .memphis-card::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            right: -8px;
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-top: 20px solid var(--memphis-orange);
+            border: 3px solid var(--black);
+        }
+        
+        .memphis-card:hover {
+            transform: rotate(0deg) translateY(-10px);
+            box-shadow: 
+                12px 12px 0px var(--memphis-blue),
+                16px 16px 0px var(--black);
+        }
+        
+        .memphis-card h3 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: clamp(20px, 2.5vw, 28px);
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--black);
+            transform: rotate(-1deg);
+        }
+        
+        .memphis-card p {
+            font-size: clamp(14px, 1.5vw, 18px);
+            color: var(--black);
+            line-height: 1.7;
+            font-weight: 400;
+        }
+        
+        /* Grid Layouts */
+        .memphis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            width: 100%;
+            margin: 40px 0;
+        }
+        
+        .three-col-memphis {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            width: 100%;
+            margin: 40px 0;
+        }
+        
+        /* Memphis Stats */
+        .stats-memphis {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin: 60px 0;
+            flex-wrap: wrap;
+        }
+        
+        .stat-memphis {
+            text-align: center;
+            transform: rotate(var(--rotation, -3deg));
+            position: relative;
+        }
+        
+        .stat-frame-memphis {
+            background: var(--white);
+            border: 4px solid var(--black);
+            border-radius: 50px;
+            padding: 32px 24px;
+            min-width: 180px;
+            position: relative;
+            box-shadow: 
+                6px 6px 0px var(--memphis-pink),
+                10px 10px 0px var(--black);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-frame-memphis:hover {
+            transform: scale(1.1) rotate(0deg);
+        }
+        
+        .stat-frame-memphis::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            width: 20px;
+            height: 20px;
+            background: var(--memphis-yellow);
+            border: 3px solid var(--black);
+            transform: rotate(45deg);
+        }
+        
+        .stat-frame-memphis::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            right: 20px;
+            width: 20px;
+            height: 20px;
+            background: var(--memphis-blue);
+            border: 3px solid var(--black);
+            border-radius: 50%;
+        }
+        
+        .stat-number-memphis {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(36px, 6vw, 64px);
+            font-weight: 700;
+            line-height: 1;
+            color: var(--black);
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 0px var(--memphis-cyan);
+        }
+        
+        .stat-label-memphis {
+            font-size: clamp(12px, 1.2vw, 16px);
+            font-weight: 600;
+            color: var(--black);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        /* Memphis Quote */
+        .memphis-quote {
+            background: var(--memphis-yellow);
+            border: 5px solid var(--black);
+            border-radius: 30px 0 30px 0;
+            padding: 40px;
+            margin: 40px 0;
+            max-width: 900px;
+            position: relative;
+            transform: rotate(-1deg);
+            box-shadow: 
+                8px 8px 0px var(--memphis-pink),
+                12px 12px 0px var(--black);
+        }
+        
+        .memphis-quote::before {
+            content: '!';
+            position: absolute;
+            top: -15px;
+            left: 40px;
+            width: 30px;
+            height: 30px;
+            background: var(--memphis-red);
+            color: var(--white);
+            border: 3px solid var(--black);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .memphis-quote h4 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: clamp(24px, 4vw, 40px);
+            font-weight: 600;
+            color: var(--black);
+            line-height: 1.3;
+            margin-bottom: 20px;
+            transform: rotate(1deg);
+        }
+        
+        .memphis-quote p {
+            font-size: clamp(16px, 2vw, 20px);
+            color: var(--black);
+            line-height: 1.6;
+            font-weight: 500;
+        }
+        
+        /* Memphis Button */
+        .memphis-btn {
+            background: var(--memphis-orange);
+            border: 4px solid var(--black);
+            color: var(--black);
+            padding: 20px 40px;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: clamp(16px, 2vw, 20px);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 24px 8px;
+            transform: rotate(-2deg);
+            border-radius: 0 15px 0 15px;
+            box-shadow: 
+                6px 6px 0px var(--memphis-blue),
+                10px 10px 0px var(--black);
+        }
+        
+        .memphis-btn::before {
+            content: '★';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 24px;
+            height: 24px;
+            background: var(--memphis-yellow);
+            color: var(--black);
+            border: 3px solid var(--black);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        .memphis-btn:hover {
+            transform: rotate(0deg) translateY(-5px);
+            box-shadow: 
+                10px 10px 0px var(--memphis-pink),
+                14px 14px 0px var(--black);
+            background: var(--memphis-cyan);
+        }
+        
+        /* Memphis Patterns */
+        .pattern-dots {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: 
+                radial-gradient(circle at 10px 10px, var(--memphis-pink) 3px, transparent 3px),
+                radial-gradient(circle at 30px 10px, var(--memphis-blue) 3px, transparent 3px),
+                radial-gradient(circle at 50px 10px, var(--memphis-yellow) 3px, transparent 3px),
+                radial-gradient(circle at 10px 30px, var(--memphis-orange) 3px, transparent 3px),
+                radial-gradient(circle at 30px 30px, var(--memphis-cyan) 3px, transparent 3px),
+                radial-gradient(circle at 50px 30px, var(--memphis-purple) 3px, transparent 3px);
+            background-size: 20px 20px;
+            top: 15%;
+            right: 10%;
+            opacity: 0.7;
+            animation: patternSpin 10s linear infinite;
+        }
+        
+        @keyframes patternSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            display: flex;
+            gap: 16px;
+            z-index: 1000;
+        }
+        
+        .nav-btn {
+            background: var(--memphis-pink);
+            border: 3px solid var(--black);
+            color: var(--black);
+            padding: 12px 20px;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: rotate(-2deg);
+            border-radius: 0 10px 0 10px;
+            box-shadow: 
+                4px 4px 0px var(--memphis-yellow),
+                6px 6px 0px var(--black);
+        }
+        
+        .nav-btn:hover {
+            transform: rotate(0deg) translateY(-2px);
+            box-shadow: 
+                6px 6px 0px var(--memphis-blue),
+                8px 8px 0px var(--black);
+            background: var(--memphis-cyan);
+        }
+        
+        /* Slide Counter */
+        .slide-counter {
+            position: fixed;
+            top: 32px;
+            left: 32px;
+            background: var(--memphis-blue);
+            border: 3px solid var(--black);
+            padding: 12px 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--black);
+            z-index: 1000;
+            transform: rotate(-3deg);
+            border-radius: 0 15px 0 15px;
+            box-shadow: 
+                4px 4px 0px var(--memphis-orange),
+                6px 6px 0px var(--black);
+        }
+        
+        .slide-counter .current {
+            color: var(--memphis-red);
+        }
+        
+        /* Animations */
+        .slide.active .memphis-card {
+            animation: bounceInMemphis 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation-delay: calc(var(--delay) * 0.1s);
+            opacity: 0;
+        }
+        
+        .slide.active .stat-memphis {
+            animation: wiggleIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation-delay: calc(var(--delay) * 0.2s);
+            opacity: 0;
+        }
+        
+        @keyframes bounceInMemphis {
+            0% {
+                opacity: 0;
+                transform: rotate(var(--rotation, 2deg)) translateY(50px) scale(0.5);
+            }
+            50% {
+                opacity: 0.8;
+                transform: rotate(var(--rotation, 2deg)) translateY(-10px) scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: rotate(var(--rotation, 2deg)) translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes wiggleIn {
+            0% {
+                opacity: 0;
+                transform: rotate(var(--rotation, -3deg)) translateX(-30px);
+            }
+            25% {
+                opacity: 0.5;
+                transform: rotate(calc(var(--rotation, -3deg) * 2)) translateX(10px);
+            }
+            50% {
+                opacity: 0.8;
+                transform: rotate(var(--rotation, -3deg)) translateX(-5px);
+            }
+            100% {
+                opacity: 1;
+                transform: rotate(var(--rotation, -3deg)) translateX(0);
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 60px 40px;
+            }
+            
+            .three-col-memphis {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .stats-memphis {
+                flex-direction: column;
+                gap: 40px;
+                align-items: center;
+            }
+            
+            .memphis-card {
+                margin: 8px;
+                padding: 24px;
+            }
+            
+            .memphis-quote {
+                padding: 32px 24px;
+            }
+            
+            .memphis-shape {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .slide {
+                padding: 40px 20px;
+            }
+            
+            .pattern-dots {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="memphis-bg"></div>
+    
+    <!-- Memphis Floating Shapes -->
+    <div class="memphis-shape shape-triangle"></div>
+    <div class="memphis-shape shape-circle"></div>
+    <div class="memphis-shape shape-square"></div>
+    <div class="memphis-shape shape-zigzag"></div>
+    <div class="pattern-dots"></div>
+    
+    <div class="presentation-container">
+        <div class="slide-counter">
+            <span class="current" id="currentSlide">01</span> / <span id="totalSlides">11</span>
+        </div>
+        
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <div class="content">
+                <h1>The Future<br>of AI</h1>
+                <div class="subtitle">A vibrant exploration of artificial intelligence opportunities that will totally transform everything!</div>
+            </div>
+        </div>
+        
+        <!-- Slide 2: Problem Statement -->
+        <div class="slide">
+            <div class="content">
+                <h2>Houston, We Have Problems!</h2>
+                <div class="memphis-quote">
+                    <h4>Traditional businesses are stuck in the stone age!</h4>
+                    <p>Manual processes everywhere, apps that don't play nice together, and expensive humans doing robot work!</p>
+                </div>
+                <div class="subtitle">Time to shake things up with some AI magic! ✨</div>
+            </div>
+        </div>
+        
+        <!-- Slide 3: Amazing Numbers -->
+        <div class="slide">
+            <div class="content">
+                <h2>Check Out These Wild Numbers!</h2>
+                <div class="stats-memphis">
+                    <div class="stat-memphis" style="--delay: 1; --rotation: -2deg;">
+                        <div class="stat-frame-memphis">
+                            <div class="stat-number-memphis">74.5%</div>
+                            <div class="stat-label-memphis">AI Coding Skills</div>
+                        </div>
+                    </div>
+                    <div class="stat-memphis" style="--delay: 2; --rotation: 3deg;">
+                        <div class="stat-frame-memphis">
+                            <div class="stat-number-memphis">115K</div>
+                            <div class="stat-label-memphis">Smart Early Birds</div>
+                        </div>
+                    </div>
+                    <div class="stat-memphis" style="--delay: 3; --rotation: -1deg;">
+                        <div class="stat-frame-memphis">
+                            <div class="stat-number-memphis">30M</div>
+                            <div class="stat-label-memphis">Golden Chances</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="subtitle">AI is now as smart as your best programmer! 🤖</div>
+            </div>
+        </div>
+        
+        <!-- Slide 4: Three Fun Categories -->
+        <div class="slide">
+            <div class="content">
+                <h2>Three Awesome Opportunities!</h2>
+                <div class="three-col-memphis">
+                    <div class="memphis-card" style="--delay: 1; --rotation: -1deg;">
+                        <h3>Manual Madness! 📊</h3>
+                        <p>Companies still living in Excel hell and drowning in paper forms - they need rescuing!</p>
+                    </div>
+                    <div class="memphis-card" style="--delay: 2; --rotation: 2deg;">
+                        <h3>App Juggling Chaos! 🤹</h3>
+                        <p>Businesses using 10 different apps that hate each other - time for peace talks!</p>
+                    </div>
+                    <div class="memphis-card" style="--delay: 3; --rotation: -2deg;">
+                        <h3>Expensive Human Problems! 💰</h3>
+                        <p>Companies paying big bucks for tasks that AI could do while sleeping!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 5: Money Money Money -->
+        <div class="slide">
+            <div class="content">
+                <h2>Show Me The Money! 💸</h2>
+                <div class="memphis-grid">
+                    <div class="memphis-card" style="--rotation: -1deg;">
+                        <h3>Old School Employee 🏢</h3>
+                        <div style="font-family: 'Space Mono', monospace; font-size: clamp(32px, 5vw, 48px); color: var(--memphis-red); margin: 20px 0; transform: rotate(2deg);">$70,000/year</div>
+                        <p>Salary + benefits + coffee + sick days + "my computer broke" days</p>
+                    </div>
+                    <div class="memphis-card" style="--rotation: 1deg;">
+                        <h3>Cool AI Solution 🚀</h3>
+                        <div style="font-family: 'Space Mono', monospace; font-size: clamp(32px, 5vw, 48px); color: var(--memphis-blue); margin: 20px 0; transform: rotate(-1deg);">$21,000/year</div>
+                        <p>Build it once + tiny maintenance = happy wallet forever!</p>
+                    </div>
+                </div>
+                <div class="memphis-quote">
+                    <h4>Save $49,000 every year!</h4>
+                    <p>And your AI worker never complains about Monday mornings! ☕</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 6: AI Super Powers -->
+        <div class="slide">
+            <div class="content">
+                <h2>AI Has Super Powers! 🦸‍♂️</h2>
+                <div class="memphis-grid">
+                    <div class="memphis-card" style="--delay: 1; --rotation: 1deg;">
+                        <h3>Build Entire Websites! 🌐</h3>
+                        <p>Complete web apps with databases, logins, and mobile magic - all while you watch Netflix!</p>
+                    </div>
+                    <div class="memphis-card" style="--delay: 2; --rotation: -2deg;">
+                        <h3>Handle Money Safely! 💳</h3>
+                        <p>Secure payments, automatic billing, and invoices that actually make sense!</p>
+                    </div>
+                    <div class="memphis-card" style="--delay: 3; --rotation: 2deg;">
+                        <h3>Connect Everything! 🔗</h3>
+                        <p>Make all your business tools talk to each other like best friends!</p>
+                    </div>
+                    <div class="memphis-card" style="--delay: 4; --rotation: -1deg;">
+                        <h3>Create Dashboards! 📈</h3>
+                        <p>Beautiful control centers with charts and graphs that actually mean something!</p>
+                    </div>
+                </div>
+                <div class="subtitle">Just tell AI what you want in plain English - no geek speak required! 💬</div>
+            </div>
+        </div>
+        
+        <!-- Slide 7: Why They Need Help -->
+        <div class="slide">
+            <div class="content">
+                <h2>But Why Don't They DIY?</h2>
+                <div class="memphis-quote">
+                    <h4>Business owners are super busy being awesome at business!</h4>
+                    <p>They don't have time to learn fancy AI tricks when they're busy making money!</p>
+                </div>
+                <div class="three-col-memphis">
+                    <div class="memphis-card" style="--delay: 1; --rotation: -2deg;">
+                        <h3>Zero Time! ⏰</h3>
+                        <p>Too busy putting out fires and chasing customers to learn new tech!</p>
+                    </div>
+                    <div class="memphis-card" style="--delay: 2; --rotation: 1deg;">
+                        <h3>Total Confusion! 🤯</h3>
+                        <p>AI still sounds like rocket science to most normal humans!</p>
+                    </div>
+                    <div class="memphis-card" style="--delay: 3; --rotation: -1deg;">
+                        <h3>Love Outsourcing! 🎯</h3>
+                        <p>They'd rather pay experts to fix their problems - that's you!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 8: The Magic Words -->
+        <div class="slide">
+            <div class="content">
+                <h2>The Magic Words That Sell!</h2>
+                <div class="memphis-quote">
+                    <h4>"I'll build you custom software that fixes your exact headache!"</h4>
+                    <p>Not some boring generic app - we're talking YOUR solution for YOUR problems!</p>
+                </div>
+                <button class="memphis-btn">Let's Make Magic Happen!</button>
+                <div class="subtitle">This superpower didn't exist before AI came to the party! 🎉</div>
+            </div>
+        </div>
+        
+        <!-- Slide 9: Success Party Stories -->
+        <div class="slide">
+            <div class="content">
+                <h2>Success Party Stories! 🎊</h2>
+                <div class="three-col-memphis">
+                    <div class="memphis-card" style="--delay: 1; --rotation: -1deg;">
+                        <h3>Happy Dentist! 🦷</h3>
+                        <p>Auto-magic patient forms that remember everything - no more clipboard chaos!</p>
+                        <div style="color: var(--memphis-blue); font-size: 24px; margin-top: 16px; font-weight: 700;">$12,000 earned!</div>
+                    </div>
+                    <div class="memphis-card" style="--delay: 2; --rotation: 2deg;">
+                        <h3>Pumped Gym Owner! 💪</h3>
+                        <p>Track 50+ members' workouts without breaking a sweat!</p>
+                        <div style="color: var(--memphis-blue); font-size: 24px; margin-top: 16px; font-weight: 700;">$8,000 earned!</div>
+                    </div>
+                    <div class="memphis-card" style="--delay: 3; --rotation: -2deg;">
+                        <h3>Chill Landlord! 🏠</h3>
+                        <p>One awesome app for rent, repairs, and tenant happiness!</p>
+                        <div style="color: var(--memphis-blue); font-size: 24px; margin-top: 16px; font-weight: 700;">$15,000 earned!</div>
+                    </div>
+                </div>
+                <div class="subtitle">Every business has annoying problems worth big money to solve! 💰</div>
+            </div>
+        </div>
+        
+        <!-- Slide 10: The Fun Process -->
+        <div class="slide">
+            <div class="content">
+                <h2>The Super Fun Process!</h2>
+                <div class="memphis-grid">
+                    <div class="memphis-card" style="--delay: 1; --rotation: 1deg;">
+                        <h3>1. Detective Mode! 🕵️</h3>
+                        <p>Find businesses complaining about boring, repetitive work!</p>
+                    </div>
+                    <div class="memphis-card" style="--delay: 2; --rotation: -2deg;">
+                        <h3>2. Question Time! ❓</h3>
+                        <p>"Tell me about your most annoying daily process!"</p>
+                    </div>
+                    <div class="memphis-card" style="--delay: 3; --rotation: 2deg;">
+                        <h3>3. Drop The Bomb! 💣</h3>
+                        <p>"I can build custom software that destroys that problem!"</p>
+                    </div>
+                    <div class="memphis-card" style="--delay: 4; --rotation: -1deg;">
+                        <h3>4. Price Like A Boss! 👑</h3>
+                        <p>Charge based on how awesome your solution is!</p>
+                    </div>
+                    <div class="memphis-card" style="--delay: 5; --rotation: 1deg;">
+                        <h3>5. Build With AI! 🤖</h3>
+                        <p>Chat with AI to build everything - then send cool progress pics!</p>
+                    </div>
+                    <div class="memphis-card" style="--delay: 6; --rotation: -2deg;">
+                        <h3>6. Keep The Party Going! 🎉</h3>
+                        <p>Monthly maintenance money = recurring happiness!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 11: Party Time Call to Action -->
+        <div class="slide">
+            <div class="content">
+                <h1>Party Time! 🎉</h1>
+                <div class="memphis-quote">
+                    <h4>The AI revolution is the hottest party in town!</h4>
+                    <p>But this VIP invitation won't last forever - more people are discovering this every day!</p>
+                </div>
+                <div class="subtitle">Your future millionaire self is waiting for you to start! ✨</div>
+                <button class="memphis-btn">Join The Revolution! 🚀</button>
+            </div>
+        </div>
+        
+        <div class="nav">
+            <button class="nav-btn" onclick="previousSlide()">← Back</button>
+            <button class="nav-btn" onclick="nextSlide()">Next →</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('totalSlides').textContent = totalSlides.toString().padStart(2, '0');
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            document.getElementById('currentSlide').textContent = (index + 1).toString().padStart(2, '0');
+        }
+        
+        function nextSlide() {
+            currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+            showSlide(currentSlideIndex);
+        }
+        
+        function previousSlide() {
+            currentSlideIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
+            showSlide(currentSlideIndex);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowRight') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.code === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+        
+        // Initialize animation delays and rotations
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.memphis-card');
+            const stats = document.querySelectorAll('.stat-memphis');
+            
+            cards.forEach((card, index) => {
+                if (!card.style.getPropertyValue('--delay')) {
+                    card.style.setProperty('--delay', index + 1);
+                }
+                if (!card.style.getPropertyValue('--rotation')) {
+                    const rotations = ['-1deg', '2deg', '-2deg', '1deg', '-1deg', '2deg'];
+                    card.style.setProperty('--rotation', rotations[index % rotations.length]);
+                }
+            });
+            
+            stats.forEach((stat, index) => {
+                if (!stat.style.getPropertyValue('--delay')) {
+                    stat.style.setProperty('--delay', index + 1);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Software Tailor Revolution - $15K Client Story</title>
+<style>
+  :root{
+    --space:#0a0b16; --space2:#0f1122; --ink:#f0eadc; --muted:#bdb4a8;
+    --accent:#ff8c4a; --accent2:#6dd3ff; --hud:#a8b2ff;
+    --panel:#101427; --border:#2b3356; --shadow:0 24px 64px rgba(0,0,0,.7);
+    --money:#4ade80; --warning:#ff6b6b; --success:#22d3ee;
+  }
+  *{box-sizing:border-box} html,body{height:100%}
+  body{margin:0;background:radial-gradient(1200px 600px at 50% -10%, var(--space2) 0%, var(--space) 60%);color:var(--ink);
+       font-family: 'Press Start 2P', ui-monospace, Menlo, Monaco, monospace; overflow:hidden}
+  #stars{position:fixed; inset:0; z-index:-1; background:#090a14}
+  .wrap{ height:100%; display:grid; place-items:center; padding:18px }
+  
+  .slide {
+    display:none;
+    width:min(1120px,94vw); 
+    background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+    border:4px solid var(--border); 
+    border-radius:18px; 
+    box-shadow:var(--shadow);
+    padding:38px 28px; 
+    text-align:center;
+    position:relative;
+  }
+  
+  .slide.active {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:16px;
+    animation: slideIn 0.5s ease-out;
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity:0;
+      transform:scale(0.9) translateY(20px);
+    }
+    to {
+      opacity:1;
+      transform:scale(1) translateY(0);
+    }
+  }
+  
+  .hud{ position:absolute; top:14px; left:16px; right:16px; display:flex; justify-content:space-between; color:var(--hud);
+         font-size:12px; letter-spacing:1px; text-shadow:0 0 8px rgba(120,140,255,.35)}
+  
+  h1 {
+    font-size:clamp(28px, 5vw, 48px);
+    font-weight:900;
+    letter-spacing:.08em;
+    line-height:1.3;
+    margin:20px 0;
+    background: linear-gradient(180deg, #d4e5ff 0%, #8db4ff 40%, #5476ff 85%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-shadow:0 0 2px rgba(120,160,255,.9),0 0 6px rgba(84,118,255,.85),0 0 22px rgba(84,118,255,.65),0 8px 0 rgba(10,12,40,.65);
+  }
+  
+  h2 {
+    font-size:clamp(18px, 3vw, 28px);
+    color:var(--accent);
+    margin:10px 0;
+    text-shadow:0 0 12px rgba(255,140,74,.8);
+  }
+  
+  p {
+    font-size:clamp(12px, 1.8vw, 16px);
+    color:var(--muted);
+    line-height:1.8;
+    max-width:800px;
+  }
+  
+  .big-number {
+    font-size:clamp(48px, 8vw, 96px);
+    font-weight:900;
+    color:var(--money);
+    text-shadow:0 0 20px rgba(74,222,128,.8);
+    animation:pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    50% { transform:scale(1.05); }
+  }
+  
+  .grid{ 
+    display:grid; 
+    grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); 
+    gap:20px; 
+    width:100%;
+    margin:20px 0;
+  }
+  
+  .card{ 
+    background:linear-gradient(145deg, #1a1f3a, #0e1426); 
+    border:3px solid #2a365c; 
+    border-radius:16px; 
+    padding:24px;
+    display:flex; 
+    flex-direction:column; 
+    align-items:center; 
+    text-align:center; 
+    gap:12px;
+    box-shadow:0 10px 26px rgba(0,0,0,.45); 
+    transition:.2s; 
+    position:relative;
+    overflow:hidden;
+  }
+  
+  .card::before {
+    content:'';
+    position:absolute;
+    top:-2px;
+    left:-2px;
+    right:-2px;
+    bottom:-2px;
+    background:linear-gradient(45deg, var(--accent), var(--accent2), var(--success));
+    border-radius:16px;
+    opacity:0;
+    z-index:-1;
+    transition:opacity 0.3s;
+  }
+  
+  .card:hover::before { opacity:0.3; }
+  .card:hover{ 
+    transform: translateY(-4px) scale(1.02); 
+    border-color:#3a4e82; 
+    box-shadow:0 16px 36px rgba(0,0,0,.55) 
+  }
+  
+  .card .title{ 
+    font-size:16px; 
+    font-weight:900;
+    color:var(--accent2);
+    text-shadow:0 0 8px rgba(109,211,255,.6);
+  }
+  
+  .card .desc{ 
+    font-size:11px; 
+    color:var(--muted);
+    line-height:1.6;
+  }
+  
+  .card.warning {
+    border-color:#8b2a2a;
+    background:linear-gradient(145deg, #2a1a1a, #1a0e0e);
+  }
+  
+  .card.warning .title { color:var(--warning); }
+  
+  .card.success {
+    border-color:#2a8b4a;
+    background:linear-gradient(145deg, #1a2a1f, #0e1a12);
+  }
+  
+  .card.success .title { color:var(--money); }
+  
+  .pills {
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+    margin:20px 0;
+  }
+  
+  .pill {
+    background:linear-gradient(145deg, var(--accent), #d66a2d);
+    color:#2b1300;
+    padding:12px 24px;
+    border-radius:50px;
+    font-weight:900;
+    font-size:12px;
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,.25), 0 6px 0 #6a3511;
+    animation:float 3s ease-in-out infinite;
+  }
+  
+  .pill:nth-child(2) { animation-delay:0.5s; }
+  .pill:nth-child(3) { animation-delay:1s; }
+  
+  @keyframes float {
+    0%, 100% { transform:translateY(0); }
+    50% { transform:translateY(-10px); }
+  }
+  
+  .comparison {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:30px;
+    margin:30px 0;
+  }
+  
+  .step-list {
+    text-align:left;
+    max-width:800px;
+    margin:20px auto;
+  }
+  
+  .step {
+    background:linear-gradient(145deg, #1a1f3a, #0e1426);
+    border-left:4px solid var(--accent2);
+    padding:20px;
+    margin:15px 0;
+    position:relative;
+    transition:0.3s;
+  }
+  
+  .step:hover {
+    transform:translateX(10px);
+    border-left-color:var(--accent);
+  }
+  
+  .step-number {
+    position:absolute;
+    left:-30px;
+    top:50%;
+    transform:translateY(-50%);
+    background:var(--accent2);
+    color:var(--space);
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    font-size:10px;
+    font-weight:900;
+  }
+  
+  .step h4 {
+    color:var(--accent2);
+    font-size:14px;
+    margin-bottom:8px;
+  }
+  
+  .step p {
+    font-size:11px;
+    color:var(--muted);
+    margin:0;
+  }
+  
+  .blink{ animation:blink 1s steps(2,end) infinite } 
+  @keyframes blink{ 50%{opacity:.1} }
+  
+  .press{ 
+    font-size:14px; 
+    letter-spacing:3px; 
+    color:var(--accent); 
+    opacity:.9;
+    margin-top:20px;
+  }
+  
+  .navigation {
+    position:fixed;
+    bottom:30px;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    gap:20px;
+    z-index:1000;
+  }
+  
+  .nav-btn {
+    background:linear-gradient(180deg,#ffb56b,#e57b2d);
+    border:0;
+    color:#2b1300;
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    font-weight:900;
+    font-size:24px;
+    cursor:pointer;
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,.25), 0 8px 0 #6a3511, 0 12px 28px rgba(0,0,0,.4);
+    transition:0.1s;
+    font-family:'Press Start 2P', monospace;
+  }
+  
+  .nav-btn:hover {
+    transform:translateY(2px);
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,.25), 0 6px 0 #6a3511, 0 10px 24px rgba(0,0,0,.4);
+  }
+  
+  .nav-btn:active {
+    transform:translateY(4px);
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,.25), 0 4px 0 #6a3511, 0 8px 20px rgba(0,0,0,.4);
+  }
+  
+  .slide-counter {
+    position:fixed;
+    top:30px;
+    left:50%;
+    transform:translateX(-50%);
+    color:var(--hud);
+    font-size:12px;
+    text-shadow:0 0 8px rgba(120,140,255,.35);
+  }
+  
+  .example-list {
+    display:grid;
+    gap:15px;
+    text-align:left;
+    max-width:900px;
+    margin:20px auto;
+  }
+  
+  .example {
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:20px;
+    align-items:center;
+    padding:15px;
+    background:rgba(16,20,39,0.5);
+    border-radius:12px;
+    border:1px solid var(--border);
+  }
+  
+  .example .problem {
+    color:var(--warning);
+    font-size:11px;
+    font-style:italic;
+  }
+  
+  .example .price {
+    color:var(--money);
+    font-size:18px;
+    font-weight:900;
+    text-shadow:0 0 12px rgba(74,222,128,.6);
+  }
+  
+  .credits{ 
+    position:absolute; 
+    bottom:10px; 
+    right:14px; 
+    color:#7a84c9; 
+    font-size:10px; 
+    opacity:.8 
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+<canvas id="stars"></canvas>
+
+<div class="slide-counter">
+  LEVEL <span id="currentSlide">1</span> / <span id="totalSlides">20</span>
+</div>
+
+<div class="wrap">
+  <!-- Slide 1: Title Screen -->
+  <div class="slide active">
+    <div class="hud">
+      <div>1UP</div>
+      <div>HIGH SCORE <span style="color:#ff6b6b">$15,000</span></div>
+      <div>PLAYER 1</div>
+    </div>
+    <h1>SOFTWARE TAILOR</h1>
+    <h2>THE $15K CLIENT STORY</h2>
+    <div class="big-number">$15,000</div>
+    <p>How I Replaced a $55K Employee<br>With Claude Code</p>
+    <div class="press blink">PRESS SPACE TO START</div>
+  </div>
+
+  <!-- Slide 2: The Opportunity -->
+  <div class="slide">
+    <div class="hud">
+      <div>OPPORTUNITY UNLOCKED</div>
+      <div>SCORE: <span style="color:var(--money)">115,000</span></div>
+      <div>BUSINESSES: 30M</div>
+    </div>
+    <h1>THE HIDDEN LEVEL</h1>
+    <p>Only 115,000 players have discovered Claude Code</p>
+    <p>Meanwhile, 30 million businesses need power-ups</p>
+    <h2 class="blink">LOTTERY TICKETS AVAILABLE</h2>
+  </div>
+
+  <!-- Slide 3: Senior Dev Score -->
+  <div class="slide">
+    <h1>ACHIEVEMENT UNLOCKED</h1>
+    <div class="big-number">74.5%</div>
+    <h2>SWE BENCHMARK SCORE</h2>
+    <p>Opus 4.1 = Senior Developer Skills</p>
+    <div class="press">GAME CHANGER ACTIVATED</div>
+  </div>
+
+  <!-- Slide 4: Build Once Philosophy -->
+  <div class="slide">
+    <h1>THE WINNING STRATEGY</h1>
+    <div class="pills">
+      <div class="pill">BUILD ONCE</div>
+      <div class="pill">HAND KEYS</div>
+      <div class="pill">SELL FOREVER</div>
+    </div>
+    <p>Create assets that compound like bonus points</p>
+  </div>
+
+  <!-- Slide 5: Freelancer vs Software Tailor -->
+  <div class="slide">
+    <h1>CHOOSE YOUR FIGHTER</h1>
+    <div class="comparison">
+      <div class="card warning">
+        <div class="title">FREELANCER</div>
+        <div class="desc">• 2 AM debugging<br>• Forever dependent<br>• Trade time for money<br>• You = The System</div>
+      </div>
+      <div class="card success">
+        <div class="title">SOFTWARE TAILOR</div>
+        <div class="desc">• Build & deliver<br>• Client independent<br>• Build assets<br>• They own system</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 6: Not a Developer -->
+  <div class="slide">
+    <h1>PLOT TWIST</h1>
+    <h2>I DON'T KNOW CODE</h2>
+    <p>I'm a PROBLEM SOLVER<br>with a POWER TOOL</p>
+    <div class="press">Claude Code = Your Cheat Code</div>
+  </div>
+
+  <!-- Slide 7: Three Problem Categories -->
+  <div class="slide">
+    <h1>ENEMY TYPES EVERYWHERE</h1>
+    <div class="grid">
+      <div class="card">
+        <div class="title">MANUAL CHAOS</div>
+        <div class="desc">Excel sheets<br>Paper forms<br>Sticky notes<br>= $10K+ LOOT</div>
+      </div>
+      <div class="card">
+        <div class="title">TOOL OVERLOAD</div>
+        <div class="desc">5 apps for 1 job<br>$1000/month subs<br>Frankenstein system<br>= $15K SOLUTION</div>
+      </div>
+      <div class="card">
+        <div class="title">HIRING BOSS</div>
+        <div class="desc">$70K employee<br>vs<br>$15K software<br>= INSTANT WIN</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 8: The Math -->
+  <div class="slide">
+    <h1>DAMAGE CALCULATION</h1>
+    <div class="comparison">
+      <div class="card warning">
+        <div class="title">EMPLOYEE COST</div>
+        <div class="desc">$55K salary<br>+$15K benefits<br>+Training XP<br><strong>= -$70K/year</strong></div>
+      </div>
+      <div class="card success">
+        <div class="title">YOUR SOFTWARE</div>
+        <div class="desc">$15K once<br>+$500/month<br>24/7 uptime<br><strong>= -$21K total</strong></div>
+      </div>
+    </div>
+    <div class="big-number">+$49,000</div>
+    <p>FIRST YEAR SAVINGS</p>
+  </div>
+
+  <!-- Slide 9: Upsell Opportunities -->
+  <div class="slide">
+    <h1>COMBO MULTIPLIER</h1>
+    <div class="grid">
+      <div class="card">
+        <div class="title">AI CHATBOT</div>
+        <div class="price">+$10K</div>
+      </div>
+      <div class="card">
+        <div class="title">MOBILE APP</div>
+        <div class="price">+$15K</div>
+      </div>
+      <div class="card">
+        <div class="title">ANALYTICS</div>
+        <div class="price">+$8K</div>
+      </div>
+      <div class="card">
+        <div class="title">INTEGRATIONS</div>
+        <div class="price">+$5K each</div>
+      </div>
+    </div>
+    <h2>TOTAL SCORE: $50K+ PER CLIENT</h2>
+  </div>
+
+  <!-- Slide 10: Claude Capabilities -->
+  <div class="slide">
+    <h1>POWER-UPS AVAILABLE</h1>
+    <div class="pills">
+      <div class="pill">FULL APP</div>
+      <div class="pill">DATABASE</div>
+      <div class="pill">AUTH</div>
+      <div class="pill">MOBILE</div>
+      <div class="pill">PAYMENTS</div>
+      <div class="pill">EMAILS</div>
+      <div class="pill">DASHBOARDS</div>
+      <div class="pill">APIs</div>
+    </div>
+    <p>Just describe what you want - Claude codes it</p>
+  </div>
+
+  <!-- Slide 11: Why They Don't DIY -->
+  <div class="slide">
+    <h1>WHY THEY NEED YOU</h1>
+    <div class="grid">
+      <div class="card">
+        <div class="title">TOO BUSY</div>
+        <div class="desc">Running their business<br>No time for side quests</div>
+      </div>
+      <div class="card">
+        <div class="title">DON'T KNOW AI</div>
+        <div class="desc">Think it costs $100K<br>Living in old patch</div>
+      </div>
+      <div class="card">
+        <div class="title">CAN'T PROMPT</div>
+        <div class="desc">No skill points<br>in AI communication</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 12: Perfect Offer -->
+  <div class="slide">
+    <h1>THE PERFECT PITCH</h1>
+    <h2>"I'll BUILD you software<br>that solves EXACTLY that"</h2>
+    <p>Not "find" software. Not "set up" tools.</p>
+    <p><strong>BUILD CUSTOM SOFTWARE</strong></p>
+    <div class="press">Critical Hit Every Time</div>
+  </div>
+
+  <!-- Slide 13: Market Size -->
+  <div class="slide">
+    <h1>WORLD MAP SIZE</h1>
+    <div class="big-number">30,000,000</div>
+    <p>Small businesses in America</p>
+    <h2>YOU ONLY NEED:</h2>
+    <p>10 clients = $150,000<br>100 clients = $1,500,000<br>(That's 0.0003% of the map)</p>
+  </div>
+
+  <!-- Slide 14: Real Examples -->
+  <div class="slide">
+    <h1>LOOT DROPS EVERYWHERE</h1>
+    <div class="example-list">
+      <div class="example">
+        <div class="problem">"Patients fill out same forms"</div>
+        <div class="price">$12K</div>
+      </div>
+      <div class="example">
+        <div class="problem">"Can't track 50 clients"</div>
+        <div class="price">$8K</div>
+      </div>
+      <div class="example">
+        <div class="problem">"Maintenance requests chaos"</div>
+        <div class="price">$15K</div>
+      </div>
+      <div class="example">
+        <div class="problem">"Inefficient routes"</div>
+        <div class="price">$10K</div>
+      </div>
+      <div class="example">
+        <div class="problem">"Documents everywhere"</div>
+        <div class="price">$18K</div>
+      </div>
+      <div class="example">
+        <div class="problem">"Paper quotes, Excel tracking"</div>
+        <div class="price">$25K</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 15: The Playbook -->
+  <div class="slide">
+    <h1>6-STEP WALKTHROUGH</h1>
+    <div class="step-list">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h4>FIND PROBLEMS</h4>
+        <p>Listen for "we do it manually" = $10K minimum</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h4>MAGIC QUESTION</h4>
+        <p>"Walk me through your current process"</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h4>PERFECT OFFER</h4>
+        <p>"I'll build software that does exactly that"</p>
+      </div>
+      <div class="step">
+        <div class="step-number">4</div>
+        <h4>VALUE PRICING</h4>
+        <p>Save 40hrs/month = Charge $15K once</p>
+      </div>
+      <div class="step">
+        <div class="step-number">5</div>
+        <h4>BUILD WITH CLAUDE</h4>
+        <p>Show daily progress screenshots</p>
+      </div>
+      <div class="step">
+        <div class="step-number">6</div>
+        <h4>RECURRING REVENUE</h4>
+        <p>$1K/month maintenance = Passive income</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 16: Urgency -->
+  <div class="slide">
+    <h1>LIMITED TIME EVENT</h1>
+    <div class="comparison">
+      <div class="card success">
+        <div class="title">TODAY</div>
+        <div class="desc">115K players<br>Zero competition<br>Legendary status</div>
+      </div>
+      <div class="card warning">
+        <div class="title">12 MONTHS</div>
+        <div class="desc">Millions playing<br>Saturated servers<br>Common player</div>
+      </div>
+    </div>
+    <h2 class="blink">WINDOW CLOSING FAST</h2>
+  </div>
+
+  <!-- Slide 17: The Challenge -->
+  <div class="slide">
+    <h1>YOUR QUEST LOG</h1>
+    <div class="step-list">
+      <div class="step">
+        <h4>TONIGHT</h4>
+        <p>Sign up for Claude Code - Learn the controls</p>
+      </div>
+      <div class="step">
+        <h4>TOMORROW</h4>
+        <p>Talk to 3 NPCs - "What's your biggest problem?"</p>
+      </div>
+      <div class="step">
+        <h4>THIS WEEK</h4>
+        <p>Make first offer - Start the boss fight</p>
+      </div>
+      <div class="step">
+        <h4>NEXT MONTH</h4>
+        <p>First $10K+ victory - Level up achieved</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 18: The Choice -->
+  <div class="slide">
+    <h1>CHOOSE YOUR PATH</h1>
+    <div class="comparison">
+      <div class="card success">
+        <div class="title">SOFTWARE TAILOR</div>
+        <div class="desc">Banking $15K/project<br>Building empire<br>Winner</div>
+      </div>
+      <div class="card warning">
+        <div class="title">SPECTATOR</div>
+        <div class="desc">Watching others win<br>Wishing you started<br>Game Over</div>
+      </div>
+    </div>
+    <p>90 days from now - which player are you?</p>
+  </div>
+
+  <!-- Slide 19: Pattern Recognition -->
+  <div class="slide">
+    <h1>THE WINNING FORMULA</h1>
+    <div class="pills">
+      <div class="pill">THEY STATE PROBLEM</div>
+      <div class="pill">YOU OFFER FIX</div>
+      <div class="pill">PRICE ON VALUE</div>
+      <div class="pill">CLOSE DEAL</div>
+    </div>
+    <h2>NO SELLING REQUIRED</h2>
+    <p>It's that simple - like a cheat code</p>
+  </div>
+
+  <!-- Slide 20: Final CTA -->
+  <div class="slide">
+    <h1>GAME ON</h1>
+    <div class="big-number">SOFTWARE TAILOR</div>
+    <h2>Ready to close your first $15K client?</h2>
+    <p>The revolution starts now</p>
+    <p>Join the elite players</p>
+    <div class="press blink">INSERT COIN TO CONTINUE</div>
+    <div class="credits">Claude Code Masterclass 2025</div>
+  </div>
+</div>
+
+<div class="navigation">
+  <button class="nav-btn" id="prevBtn">◄</button>
+  <button class="nav-btn" id="nextBtn">►</button>
+</div>
+
+<script>
+// Star field animation
+const canvas = document.getElementById('stars');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const stars = [];
+for(let i = 0; i < 200; i++) {
+  stars.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    size: Math.random() * 2,
+    speed: Math.random() * 0.5 + 0.1
+  });
+}
+
+function animateStars() {
+  ctx.fillStyle = 'rgba(9, 10, 20, 0.1)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  ctx.fillStyle = '#ffffff';
+  stars.forEach(star => {
+    ctx.globalAlpha = Math.random() * 0.5 + 0.5;
+    ctx.fillRect(star.x, star.y, star.size, star.size);
+    star.y += star.speed;
+    if(star.y > canvas.height) star.y = 0;
+  });
+  
+  requestAnimationFrame(animateStars);
+}
+animateStars();
+
+// Slide navigation
+let currentSlide = 0;
+const slides = document.querySelectorAll('.slide');
+const totalSlides = slides.length;
+
+document.getElementById('totalSlides').textContent = totalSlides;
+
+function showSlide(n) {
+  slides[currentSlide].classList.remove('active');
+  currentSlide = (n + totalSlides) % totalSlides;
+  slides[currentSlide].classList.add('active');
+  document.getElementById('currentSlide').textContent = currentSlide + 1;
+  
+  // Play sound effect (if you want to add it)
+  const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBDGH0fPTgjMGHm7A7+OZURE');
+  // Uncomment to add sound: audio.play();
+}
+
+function nextSlide() {
+  showSlide(currentSlide + 1);
+}
+
+function prevSlide() {
+  showSlide(currentSlide - 1);
+}
+
+// Button controls
+document.getElementById('nextBtn').addEventListener('click', nextSlide);
+document.getElementById('prevBtn').addEventListener('click', prevSlide);
+
+// Keyboard controls
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'ArrowRight' || e.key === ' ') {
+    e.preventDefault();
+    nextSlide();
+  } else if(e.key === 'ArrowLeft') {
+    e.preventDefault();
+    prevSlide();
+  }
+});
+
+// Window resize handler
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+</script>
+</body>
+</html>

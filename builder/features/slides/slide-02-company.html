@@ -144,7 +144,7 @@
         <div class="ls2-dist" style="left:16.8%;top:43.5%;" title="Cuba"></div>
       </div>
       <div class="ls2-map-legend">
-        <span class="ls2-leg-item"><span class="ls2-leg-dot" style="background:#E8711A;box-shadow:0 0 6px rgba(232,113,26,.7);"></span>Offices</span>
+        <span class="ls2-leg-item"><span class="ls2-leg-dot" style="background:var(--accent);box-shadow:0 0 6px rgba(var(--accent-rgb),.7);"></span>Offices</span>
         <span class="ls2-leg-item"><span class="ls2-leg-dot" style="background:#F5C842;box-shadow:0 0 6px rgba(245,200,66,.6);"></span>Agents &amp; Distributors</span>
         <span class="ls2-leg-count" data-edit="network-count" contenteditable="" spellcheck="false">23 countries · 6 continents</span>
       </div>
@@ -156,8 +156,8 @@
 
         <div class="ls2-iqc-card">
           <img src="/slides/shared/LOGO SoftSolution grays.png" alt="Softsolution" class="ls2-iqc-logo">
-          <div class="ls2-iqc-country">Austria</div>
-          <ul class="ls2-iqc-products">
+          <div class="ls2-iqc-country" data-edit="iqc-ss-country" contenteditable="" spellcheck="false">Austria</div>
+          <ul class="ls2-iqc-products" data-edit="iqc-ss-products" contenteditable="" spellcheck="false">
             <li>LineScanner</li>
             <li>BowScanner</li>
             <li>CulletScanner</li>
@@ -167,8 +167,8 @@
 
         <div class="ls2-iqc-card">
           <img src="/slides/shared/LOGO LiteSentry Greys.png" alt="LiteSentry" class="ls2-iqc-logo">
-          <div class="ls2-iqc-country">United States</div>
-          <ul class="ls2-iqc-products">
+          <div class="ls2-iqc-country" data-edit="iqc-ls-country" contenteditable="" spellcheck="false">United States</div>
+          <ul class="ls2-iqc-products" data-edit="iqc-ls-products" contenteditable="" spellcheck="false">
             <li>Osprey® 25 Distortion Inspection</li>
             <li>Osprey® 25 Anisotropy Inspection</li>
             <li>Owl – Furnace Control</li>
@@ -178,9 +178,9 @@
         </div>
 
         <div class="ls2-iqc-card">
-          <img src="/slides/shared/LOGO StrainOptics.png" alt="Strainoptics" class="ls2-iqc-logo" style="transform:scale(1.3);">
-          <div class="ls2-iqc-country">United States</div>
-          <ul class="ls2-iqc-products">
+          <img src="/slides/shared/LOGO StrainOptics.png" alt="Strainoptics" class="ls2-iqc-logo" style="transform:scale(1.3); filter:invert(1) grayscale(1) opacity(.7);">
+          <div class="ls2-iqc-country" data-edit="iqc-strain-country" contenteditable="" spellcheck="false">United States</div>
+          <ul class="ls2-iqc-products" data-edit="iqc-strain-products" contenteditable="" spellcheck="false">
             <li>GASP</li>
             <li>Polarimeter</li>
           </ul>
@@ -188,8 +188,8 @@
 
         <div class="ls2-iqc-card">
           <img src="/slides/shared/LOGO AVALON.png" alt="Avalon Vision" class="ls2-iqc-logo">
-          <div class="ls2-iqc-country">United States</div>
-          <ul class="ls2-iqc-products">
+          <div class="ls2-iqc-country" data-edit="iqc-avalon-country" contenteditable="" spellcheck="false">United States</div>
+          <ul class="ls2-iqc-products" data-edit="iqc-avalon-products" contenteditable="" spellcheck="false">
             <li>MoldWatcher</li>
             <li>ThermalWatch</li>
             <li>NightHawk</li>
@@ -214,26 +214,27 @@
 
   <!-- Scoped styles — slide-02 only -->
   <style>
-    .ls2 { }
-
+    /* Mobile-first base — desktop overrides below in @media(min-width:769px) */
+    .ls2 { padding:52px 16px 80px !important; overflow-y:auto; }
+    .ls2-tabs-wrap { flex:none !important; min-height:360px !important; }
 
     /* ── About Us: Pillars ── */
-    .ls2-pillars { flex:1; display:flex; flex-direction:column; gap:8px; padding:12px 0 8px; min-height:0; }
+    .ls2-pillars { flex:1; display:flex; flex-direction:column; gap:6px; padding:8px 0 4px; min-height:0; }
     .ls2-pillar {
       flex:1; position:relative; overflow:hidden;
       display:flex; align-items:center;
       background:var(--bg-card); border:1px solid var(--border);
       border-left:3px solid var(--accent); border-radius:12px;
-      padding:0 28px; transition:background .2s; min-height:60px;
+      padding:0 14px; transition:background .2s; min-height:70px;
     }
     .ls2-pillar:hover { background:var(--bg-card-hover); }
     .ls2-pillar-num {
       position:absolute; left:16px; top:50%; transform:translateY(-50%);
-      font-size:clamp(60px,9vw,120px); font-weight:900; line-height:1;
-      color:rgba(245,166,35,.08); pointer-events:none; user-select:none;
+      font-size:48px; font-weight:900; line-height:1;
+      color:rgba(var(--accent-rgb),.08); pointer-events:none; user-select:none;
       letter-spacing:-.03em;
     }
-    .ls2-pillar-content { margin-left:clamp(70px,10vw,140px); z-index:1; }
+    .ls2-pillar-content { margin-left:52px; z-index:1; }
     .ls2-pillar-title { font-size:clamp(16px,2.2vw,32px); font-weight:800; color:var(--text); line-height:1.1; }
     .ls2-pillar-desc  { font-size:clamp(11px,1.1vw,15px); color:var(--text-muted); margin-top:4px; line-height:1.4; }
     .ls2-pillar-title:focus, .ls2-pillar-desc:focus { outline:none; }
@@ -246,18 +247,18 @@
     }
     .ls2-map-img { width:100%; height:100%; object-fit:cover; display:block; filter:brightness(.55) saturate(.4); }
     .ls2-pin { position:absolute; transform:translate(-50%,-50%); }
-    .ls2-pin-dot { width:10px; height:10px; border-radius:50%; background:#E8711A; box-shadow:0 0 8px rgba(232,113,26,.9); position:relative; z-index:2; }
+    .ls2-pin-dot { width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px rgba(var(--accent-rgb),.9); position:relative; z-index:2; }
     .ls2-pin-ring {
       position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
       width:22px; height:22px; border-radius:50%;
-      border:2px solid rgba(232,113,26,.5);
+      border:2px solid rgba(var(--accent-rgb),.5);
       animation:ls2Pulse 2s ease-in-out infinite;
     }
     @keyframes ls2Pulse { 0%,100%{opacity:.8;transform:translate(-50%,-50%) scale(1)} 50%{opacity:0;transform:translate(-50%,-50%) scale(1.8)} }
     .ls2-pin-label {
       position:absolute; top:-22px; left:50%; transform:translateX(-50%);
       white-space:nowrap; font-size:9px; font-weight:700; letter-spacing:.05em;
-      color:#fff; background:rgba(0,0,0,.70); padding:2px 6px; border-radius:4px;
+      color:var(--text, #fff); background:rgba(0,0,0,.70); padding:2px 6px; border-radius:4px;
     }
     .ls2-dist {
       position:absolute; width:6px; height:6px; border-radius:50%;
@@ -312,26 +313,17 @@
     .ls2-iqc-products li:last-child { border-bottom:none; }
     .ls2-iqc-products li::before { content:'› '; color:var(--accent); font-weight:700; }
 
-    /* ── Mobile base ── */
-    .ls2 { padding:52px 16px 80px !important; overflow-y:auto; }
-    .ls2-tabs { margin-top:8px; }
-    .ls2-tab { font-size:11px; padding:7px 0; }
-    .ls2-pillars { gap:6px; padding:8px 0 4px; }
-    .ls2-pillar { padding:0 14px; min-height:70px; }
-    .ls2-pillar-content { margin-left:52px; }
-    .ls2-pillar-num { font-size:48px; }
-    .ls2-panels-wrap { min-height:260px; }
-
     [contenteditable]:focus { outline:none; }
 
     /* ── Desktop overrides ── */
     @media(min-width:769px) {
-      .ls2-iqc-grid { grid-template-columns:repeat(4,1fr); gap:12px; }
       .ls2 { padding:52px 80px 0 !important; overflow-y:unset; }
+      .ls2-tabs-wrap { flex:1 !important; min-height:0 !important; }
       .ls2-pillars { gap:8px; padding:12px 0 8px; }
       .ls2-pillar { padding:0 28px; min-height:60px; }
       .ls2-pillar-content { margin-left:clamp(70px,10vw,140px); }
       .ls2-pillar-num { font-size:clamp(60px,9vw,120px); }
+      .ls2-iqc-grid { grid-template-columns:repeat(4,1fr); gap:12px; }
       .ls2-stats { grid-template-columns:repeat(4,1fr); gap:12px; }
     }
   </style>
@@ -349,7 +341,11 @@
       var tabsEl = btn.closest('.ls-tabs');
       tabsEl.querySelectorAll('.ls-tab').forEach(function (t) { t.classList.remove('active'); });
       tabsEl.querySelectorAll('.ls-tab-panel').forEach(function (p) { p.classList.remove('active'); });
-      tabsEl.querySelector('.ls-tab-panel[data-panel="0"]').classList.add('active');
+      var panel0 = tabsEl.querySelector('.ls-tab-panel[data-panel="0"]');
+      panel0.classList.add('active');
+      // tabs.js never calls Carousel.init for panel 0 (stopImmediatePropagation above
+      // prevents it), so we init here the first time it becomes visible.
+      if (window.Carousel) Carousel.init(panel0);
     }, true);
   }, 0);
   </script>

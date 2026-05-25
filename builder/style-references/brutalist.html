@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Future of AI - Brutalist Style</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Space+Grotesk:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --red: #ff0000;
+            --gray: #808080;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--white);
+            color: var(--black);
+            overflow: hidden;
+            cursor: crosshair;
+        }
+        
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background: var(--white);
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .slide .content {
+            width: 100%;
+            max-width: 1200px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        /* Typography */
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 900;
+            font-size: clamp(40px, 8vw, 120px);
+            line-height: 0.8;
+            letter-spacing: -0.03em;
+            text-transform: uppercase;
+            margin: 0;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        h2 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            font-size: clamp(24px, 4vw, 48px);
+            line-height: 1.1;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .big {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: clamp(28px, 3vw, 42px);
+            line-height: 1.2;
+            text-transform: uppercase;
+            margin: 15px 0;
+        }
+        
+        .subtitle {
+            font-weight: 600;
+            font-size: clamp(18px, 2vw, 24px);
+            margin: 10px 0 30px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        /* Brutalist Elements */
+        .brutal-block {
+            background: var(--black);
+            color: var(--white);
+            padding: 30px;
+            margin: 20px 0;
+            transform: rotate(-2deg);
+            border: 4px solid var(--black);
+            position: relative;
+        }
+        
+        .brutal-block::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            background: var(--red);
+            z-index: -1;
+            transform: rotate(1deg);
+        }
+        
+        .brutal-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 30px;
+            width: 100%;
+            margin: 40px 0;
+        }
+        
+        .brutal-card {
+            background: var(--black);
+            color: var(--white);
+            padding: 40px 20px;
+            text-align: center;
+            font-weight: 800;
+            font-size: clamp(16px, 2vw, 24px);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .brutal-card:nth-child(odd) {
+            transform: rotate(2deg);
+        }
+        
+        .brutal-card:nth-child(even) {
+            transform: rotate(-1deg);
+            background: var(--white);
+            color: var(--black);
+            border: 4px solid var(--black);
+        }
+        
+        .brutal-card:hover {
+            transform: scale(1.1) rotate(0deg);
+            z-index: 10;
+        }
+        
+        /* Asymmetric layouts */
+        .asymmetric {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 60px;
+            width: 100%;
+            height: 100%;
+            align-items: center;
+        }
+        
+        .asymmetric .left {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        
+        .asymmetric .right {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+            text-align: right;
+        }
+        
+        /* Experimental text effects */
+        .glitch-text {
+            position: relative;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+        
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .glitch-text::before {
+            animation: glitch-anim-1 0.3s infinite linear alternate-reverse;
+            color: var(--red);
+            z-index: -1;
+        }
+        
+        .glitch-text::after {
+            animation: glitch-anim-2 0.3s infinite linear alternate-reverse;
+            color: var(--black);
+            z-index: -2;
+        }
+        
+        @keyframes glitch-anim-1 {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        
+        @keyframes glitch-anim-2 {
+            0% { transform: translate(0); }
+            20% { transform: translate(2px, 2px); }
+            40% { transform: translate(2px, -2px); }
+            60% { transform: translate(-2px, 2px); }
+            80% { transform: translate(-2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        
+        /* Stats display */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 100%;
+            margin: 40px 0;
+        }
+        
+        .stat-box {
+            background: var(--black);
+            color: var(--white);
+            padding: 40px 20px;
+            text-align: center;
+            transform: rotate(-1deg);
+            border: 4px solid var(--black);
+            position: relative;
+        }
+        
+        .stat-box:nth-child(2) {
+            background: var(--white);
+            color: var(--black);
+            transform: rotate(2deg);
+        }
+        
+        .stat-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 900;
+            font-size: clamp(32px, 6vw, 72px);
+            line-height: 1;
+            margin-bottom: 10px;
+            color: var(--red);
+        }
+        
+        .stat-label {
+            font-weight: 800;
+            font-size: clamp(12px, 1.5vw, 18px);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .nav-btn {
+            background: var(--black);
+            color: var(--white);
+            border: none;
+            padding: 15px 20px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform: rotate(-2deg);
+        }
+        
+        .nav-btn:hover {
+            background: var(--red);
+            transform: rotate(0deg) scale(1.1);
+        }
+        
+        /* Slide counter */
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 900;
+            font-size: 24px;
+            color: var(--black);
+            background: var(--white);
+            padding: 15px 20px;
+            border: 4px solid var(--black);
+            z-index: 1000;
+            text-transform: uppercase;
+        }
+        
+        /* Animations */
+        .slide.active .brutal-block {
+            animation: slideInRough 0.8s ease-out;
+        }
+        
+        .slide.active .brutal-card {
+            animation: popIn 0.6s ease-out forwards;
+            animation-delay: calc(var(--delay) * 0.1s);
+        }
+        
+        @keyframes slideInRough {
+            from {
+                opacity: 0;
+                transform: translateX(-100px) rotate(-5deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) rotate(-2deg);
+            }
+        }
+        
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) rotate(10deg);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) rotate(var(--rotation));
+            }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .brutal-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .asymmetric {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .stat-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .slide {
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="slide-counter">
+            <span id="currentSlide">01</span> / <span id="totalSlides">11</span>
+        </div>
+        
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <div class="content">
+                <h1 class="glitch-text" data-text="THE FUTURE">THE FUTURE</h1>
+                <h1 class="glitch-text" data-text="OF AI">OF AI</h1>
+                <div class="subtitle">BRUTAL REALITY</div>
+            </div>
+        </div>
+        
+        <!-- Slide 2: Problem Statement -->
+        <div class="slide">
+            <div class="content asymmetric">
+                <div class="left">
+                    <h2>THE OLD WORLD</h2>
+                    <div class="big">IS DYING</div>
+                </div>
+                <div class="right">
+                    <div class="brutal-block">
+                        <div class="big">MANUAL PROCESSES</div>
+                        <div class="big">EXPENSIVE EMPLOYEES</div>
+                        <div class="big">BROKEN SYSTEMS</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 3: AI Revolution -->
+        <div class="slide">
+            <div class="content">
+                <h2>AI REVOLUTION</h2>
+                <div class="stat-grid">
+                    <div class="stat-box" style="--rotation: -1deg;">
+                        <div class="stat-number">74.5%</div>
+                        <div class="stat-label">SWE BENCHMARK</div>
+                    </div>
+                    <div class="stat-box" style="--rotation: 2deg;">
+                        <div class="stat-number">115K</div>
+                        <div class="stat-label">USERS ONLY</div>
+                    </div>
+                    <div class="stat-box" style="--rotation: -1deg;">
+                        <div class="stat-number">30M</div>
+                        <div class="stat-label">OPPORTUNITIES</div>
+                    </div>
+                </div>
+                <div class="big">THE WINDOW IS CLOSING</div>
+            </div>
+        </div>
+        
+        <!-- Slide 4: Opportunity Categories -->
+        <div class="slide">
+            <div class="content">
+                <h2>THREE CATEGORIES</h2>
+                <div class="brutal-grid">
+                    <div class="brutal-card" style="--delay: 1; --rotation: 2deg;">MANUAL TRACKING</div>
+                    <div class="brutal-card" style="--delay: 2; --rotation: -1deg;">MULTIPLE APPS</div>
+                    <div class="brutal-card" style="--delay: 3; --rotation: 1deg;">HIRING PROBLEMS</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 5: The Math -->
+        <div class="slide">
+            <div class="content">
+                <h2>THE MATH</h2>
+                <div class="asymmetric">
+                    <div class="left">
+                        <div class="brutal-block">
+                            <div class="stat-number">$70K+</div>
+                            <div class="stat-label">EMPLOYEE COST</div>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <div class="brutal-block">
+                            <div class="stat-number">$15K</div>
+                            <div class="stat-label">YOUR SOFTWARE</div>
+                        </div>
+                        <div class="big">$49K SAVED</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 6: What Claude Does -->
+        <div class="slide">
+            <div class="content">
+                <h2>CLAUDE DOES EVERYTHING</h2>
+                <div class="brutal-grid">
+                    <div class="brutal-card" style="--delay: 1; --rotation: -2deg;">FULL APPS</div>
+                    <div class="brutal-card" style="--delay: 2; --rotation: 1deg;">DATABASES</div>
+                    <div class="brutal-card" style="--delay: 3; --rotation: -1deg;">AUTH SYSTEMS</div>
+                    <div class="brutal-card" style="--delay: 4; --rotation: 2deg;">MOBILE OPTIMIZED</div>
+                    <div class="brutal-card" style="--delay: 5; --rotation: -1deg;">PAYMENTS</div>
+                    <div class="brutal-card" style="--delay: 6; --rotation: 1deg;">INTEGRATIONS</div>
+                </div>
+                <div class="big">YOU JUST DESCRIBE IT</div>
+            </div>
+        </div>
+        
+        <!-- Slide 7: Why They Don't DIY -->
+        <div class="slide">
+            <div class="content asymmetric">
+                <div class="left">
+                    <h2>WHY THEY PAY YOU</h2>
+                </div>
+                <div class="right">
+                    <div class="brutal-block">
+                        <div class="big">NO TIME</div>
+                        <div class="big">NO SKILLS</div>
+                        <div class="big">NO PATIENCE</div>
+                        <div class="big">BUSINESS OWNERS</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 8: Perfect Offer -->
+        <div class="slide">
+            <div class="content">
+                <h2>THE PERFECT OFFER</h2>
+                <div class="brutal-block">
+                    <h1>"I'LL BUILD YOU CUSTOM SOFTWARE THAT SOLVES YOUR EXACT PROBLEM"</h1>
+                </div>
+                <div class="big">NOT FIND. NOT SET UP. BUILD.</div>
+            </div>
+        </div>
+        
+        <!-- Slide 9: Examples -->
+        <div class="slide">
+            <div class="content">
+                <h2>REAL EXAMPLES</h2>
+                <div class="stat-grid">
+                    <div class="stat-box" style="--rotation: 1deg;">
+                        <div class="stat-label">DENTAL FORMS</div>
+                        <div class="stat-number">$12K</div>
+                    </div>
+                    <div class="stat-box" style="--rotation: -2deg;">
+                        <div class="stat-label">GYM TRACKER</div>
+                        <div class="stat-number">$8K</div>
+                    </div>
+                    <div class="stat-box" style="--rotation: 1deg;">
+                        <div class="stat-label">MAINTENANCE</div>
+                        <div class="stat-number">$15K</div>
+                    </div>
+                </div>
+                <div class="big">PROBLEMS EVERYWHERE</div>
+            </div>
+        </div>
+        
+        <!-- Slide 10: The System -->
+        <div class="slide">
+            <div class="content">
+                <h2>THE SYSTEM</h2>
+                <div class="brutal-grid">
+                    <div class="brutal-card" style="--delay: 1; --rotation: -1deg;">FIND PROBLEMS</div>
+                    <div class="brutal-card" style="--delay: 2; --rotation: 2deg;">ASK QUESTIONS</div>
+                    <div class="brutal-card" style="--delay: 3; --rotation: -2deg;">MAKE OFFER</div>
+                    <div class="brutal-card" style="--delay: 4; --rotation: 1deg;">PRICE VALUE</div>
+                    <div class="brutal-card" style="--delay: 5; --rotation: -1deg;">BUILD FAST</div>
+                    <div class="brutal-card" style="--delay: 6; --rotation: 2deg;">UPSELL MORE</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 11: Call to Action -->
+        <div class="slide">
+            <div class="content">
+                <h1 class="glitch-text" data-text="TAKE ACTION">TAKE ACTION</h1>
+                <div class="brutal-block">
+                    <div class="big">THE WINDOW IS CLOSING</div>
+                    <div class="big">THE TOOLS ARE FREE</div>
+                    <div class="big">THE OPPORTUNITIES ARE EVERYWHERE</div>
+                </div>
+                <div class="subtitle">START TODAY OR WATCH OTHERS WIN</div>
+            </div>
+        </div>
+        
+        <div class="nav">
+            <button class="nav-btn" onclick="previousSlide()">PREV</button>
+            <button class="nav-btn" onclick="nextSlide()">NEXT</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('totalSlides').textContent = totalSlides.toString().padStart(2, '0');
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            document.getElementById('currentSlide').textContent = (index + 1).toString().padStart(2, '0');
+        }
+        
+        function nextSlide() {
+            currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+            showSlide(currentSlideIndex);
+        }
+        
+        function previousSlide() {
+            currentSlideIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
+            showSlide(currentSlideIndex);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowRight') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.code === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+        
+        // Initialize glitch effects
+        document.addEventListener('DOMContentLoaded', () => {
+            const glitchTexts = document.querySelectorAll('.glitch-text');
+            glitchTexts.forEach(text => {
+                text.setAttribute('data-text', text.textContent);
+            });
+        });
+    </script>
+</body>
+</html>

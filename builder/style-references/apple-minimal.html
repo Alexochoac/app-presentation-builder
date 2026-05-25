@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Future of AI - Apple Minimal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@200;300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: #FFFFFF;
+            color: #1d1d1f;
+            line-height: 1.1;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: clamp(40px, 8vh, 120px);
+            text-align: center;
+        }
+        
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .slide-content {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease-out 0.3s forwards;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h1 {
+            font-size: clamp(48px, 8vw, 120px);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 0.9;
+            margin-bottom: clamp(20px, 3vh, 40px);
+            color: #1d1d1f;
+        }
+        
+        .subtitle {
+            font-size: clamp(18px, 2.5vw, 32px);
+            font-weight: 400;
+            color: #86868b;
+            margin-bottom: clamp(30px, 5vh, 60px);
+            line-height: 1.2;
+        }
+        
+        .hero-text {
+            font-size: clamp(24px, 4vw, 56px);
+            font-weight: 500;
+            line-height: 1.1;
+            letter-spacing: -0.01em;
+            margin-bottom: clamp(20px, 3vh, 40px);
+        }
+        
+        .body-text {
+            font-size: clamp(16px, 2vw, 24px);
+            font-weight: 400;
+            color: #86868b;
+            line-height: 1.4;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: clamp(20px, 4vw, 40px);
+            margin-top: clamp(30px, 5vh, 60px);
+            max-width: 1000px;
+            width: 100%;
+        }
+        
+        .card {
+            background: rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+            padding: clamp(24px, 4vw, 40px);
+            text-align: left;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: cardSlideUp 0.6s ease-out forwards;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            background: rgba(0, 0, 0, 0.03);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        .card:nth-child(1) { animation-delay: 0.5s; }
+        .card:nth-child(2) { animation-delay: 0.6s; }
+        .card:nth-child(3) { animation-delay: 0.7s; }
+        .card:nth-child(4) { animation-delay: 0.8s; }
+        
+        @keyframes cardSlideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .card h3 {
+            font-size: clamp(18px, 2.5vw, 24px);
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #1d1d1f;
+        }
+        
+        .card p {
+            font-size: clamp(14px, 1.8vw, 18px);
+            color: #86868b;
+            line-height: 1.4;
+        }
+        
+        .highlight {
+            color: #007aff;
+            font-weight: 500;
+        }
+        
+        .big-number {
+            font-size: clamp(72px, 12vw, 180px);
+            font-weight: 700;
+            color: #007aff;
+            line-height: 0.8;
+            margin-bottom: clamp(20px, 3vh, 40px);
+            letter-spacing: -0.04em;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(30px, 6vw, 80px);
+            max-width: 1000px;
+            margin-top: clamp(30px, 5vh, 60px);
+        }
+        
+        .comparison-item {
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.9);
+            animation: scaleIn 0.6s ease-out forwards;
+        }
+        
+        .comparison-item:nth-child(1) { animation-delay: 0.4s; }
+        .comparison-item:nth-child(2) { animation-delay: 0.6s; }
+        
+        @keyframes scaleIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .comparison-item h3 {
+            font-size: clamp(20px, 3vw, 32px);
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1d1d1f;
+        }
+        
+        .comparison-item p {
+            font-size: clamp(14px, 2vw, 20px);
+            color: #86868b;
+            line-height: 1.3;
+        }
+        
+        .old-way {
+            opacity: 0.6;
+        }
+        
+        .new-way {
+            position: relative;
+        }
+        
+        .new-way::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background: #007aff;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0, 122, 255, 0.5);
+        }
+        
+        .slide-indicator {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            color: #86868b;
+            font-weight: 400;
+            z-index: 100;
+        }
+        
+        .nav-hint {
+            position: fixed;
+            bottom: 60px;
+            right: 30px;
+            font-size: 12px;
+            color: #d1d1d6;
+            font-weight: 400;
+            text-align: right;
+            z-index: 100;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Ultra-smooth transitions between slides */
+        .slide-transition {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .slide.active .slide-transition {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <div class="slide-content">
+                <h1>The Future of AI</h1>
+                <p class="subtitle">Transforming tomorrow, today</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Opening Statement -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="hero-text">We're not just building technology.</div>
+                <div class="hero-text">We're crafting the future.</div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Current State -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Where We Are</h1>
+                <div class="cards-container">
+                    <div class="card">
+                        <h3>Machine Learning</h3>
+                        <p>Powerful algorithms learning from vast datasets</p>
+                    </div>
+                    <div class="card">
+                        <h3>Natural Language</h3>
+                        <p>AI that understands and responds like humans</p>
+                    </div>
+                    <div class="card">
+                        <h3>Computer Vision</h3>
+                        <p>Machines that see and interpret the world</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Big Number -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="big-number">10x</div>
+                <div class="hero-text">Faster. Smarter. Better.</div>
+                <p class="body-text">AI is accelerating human capability at an unprecedented pace</p>
+            </div>
+        </div>
+
+        <!-- Slide 5: The Challenge -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>The Challenge</h1>
+                <p class="body-text">Traditional approaches can't keep up with the exponential growth of data, complexity, and human needs. We need something fundamentally different.</p>
+            </div>
+        </div>
+
+        <!-- Slide 6: Old vs New -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="comparison-grid">
+                    <div class="comparison-item old-way">
+                        <h3>Yesterday</h3>
+                        <p>Rigid programming<br>Limited learning<br>Manual processes</p>
+                    </div>
+                    <div class="comparison-item new-way">
+                        <h3>Tomorrow</h3>
+                        <p>Adaptive intelligence<br>Continuous evolution<br>Autonomous systems</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Breakthrough Technologies -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Breakthrough Technologies</h1>
+                <div class="cards-container">
+                    <div class="card">
+                        <h3>Neural Networks</h3>
+                        <p>Deep learning architectures that mimic human cognition</p>
+                    </div>
+                    <div class="card">
+                        <h3>Quantum Computing</h3>
+                        <p>Exponential processing power for complex problems</p>
+                    </div>
+                    <div class="card">
+                        <h3>Edge Intelligence</h3>
+                        <p>AI processing directly where data is created</p>
+                    </div>
+                    <div class="card">
+                        <h3>Generative AI</h3>
+                        <p>Creating new content, ideas, and solutions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Impact Areas -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Transforming Everything</h1>
+                <div class="cards-container">
+                    <div class="card">
+                        <h3>Healthcare</h3>
+                        <p>Personalized medicine and early disease detection</p>
+                    </div>
+                    <div class="card">
+                        <h3>Education</h3>
+                        <p>Adaptive learning tailored to every student</p>
+                    </div>
+                    <div class="card">
+                        <h3>Climate</h3>
+                        <p>Optimizing energy use and reducing emissions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: The Opportunity -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="hero-text">This isn't about replacing humans.</div>
+                <div class="hero-text">It's about <span class="highlight">amplifying</span> human potential.</div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Call to Action -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>The Future Starts Now</h1>
+                <p class="body-text">Every breakthrough begins with curiosity. Every revolution starts with a single step forward.</p>
+            </div>
+        </div>
+
+        <!-- Slide 11: Closing -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="hero-text">Ready to shape tomorrow?</div>
+                <p class="subtitle">The future of AI is in our hands</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-indicator">
+        <span id="current-slide">1</span> of <span id="total-slides">11</span>
+    </div>
+    
+    <div class="nav-hint">
+        Press → or Space to continue
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('total-slides').textContent = totalSlides;
+        
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+            
+            // Restart animations
+            const slideContent = slides[currentSlide].querySelector('.slide-content');
+            slideContent.style.animation = 'none';
+            slideContent.offsetHeight; // Trigger reflow
+            slideContent.style.animation = null;
+            
+            // Restart card animations
+            const cards = slides[currentSlide].querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.animation = 'none';
+                card.offsetHeight; // Trigger reflow
+                card.style.animation = null;
+            });
+        }
+        
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+        
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+        
+        document.addEventListener('keydown', function(event) {
+            switch(event.key) {
+                case 'ArrowRight':
+                case ' ':
+                    event.preventDefault();
+                    nextSlide();
+                    break;
+                case 'ArrowLeft':
+                    event.preventDefault();
+                    prevSlide();
+                    break;
+            }
+        });
+        
+        // Touch/swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.addEventListener('touchstart', function(event) {
+            touchStartX = event.changedTouches[0].screenX;
+        });
+        
+        document.addEventListener('touchend', function(event) {
+            touchEndX = event.changedTouches[0].screenX;
+            if (touchStartX - touchEndX > 50) {
+                nextSlide();
+            } else if (touchEndX - touchStartX > 50) {
+                prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

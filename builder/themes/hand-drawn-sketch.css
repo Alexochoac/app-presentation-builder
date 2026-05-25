@@ -1,0 +1,41 @@
+/* auto-generated */
+@import url('https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Caveat:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Identity */
+  --bg:                 #fef9f3;
+  --slide-hero-bg:      #fef9f3;
+  --slide-hero-rgb:     254,249,243;
+  --text:               #2c2c2c;
+  --text-muted:         rgba(0,0,0,.50);
+  --accent:             #0066cc;
+  --accent-rgb:         0,102,204;
+  --accent-mid:         #0066cc;
+  --accent-light:       #73abe3;
+  --font-body:          'Kalam', cursive;
+  --font-heading:       'Caveat', cursive;
+
+  /* Hero overlay */
+  --hero-overlay-angle: 0deg;
+  --hero-overlay-start: .25;
+  --hero-overlay-end:   .10;
+
+  /* Cards */
+  --card-bg:            rgba(0,0,0,.04);
+  --card-border:        rgba(0,0,0,.10);
+  --card-radius:        12px;
+  --card-shadow:        0 2px 12px rgba(0,0,0,.08);
+
+  /* Badge */
+  --badge-bg:           rgba(0,102,204,.15);
+  --badge-border:       rgba(0,102,204,.35);
+  --badge-radius:       6px;
+  --badge-color:        #0066cc;
+
+  /* Logo container */
+  --logo-bg:            rgba(0,0,0,.04);
+  --logo-border:        rgba(0,0,0,.10);
+  --logo-radius:        20px;
+}
+body, .slide { font-family: var(--font-body); }
+h1, h2, h3 { font-family: var(--font-heading); }

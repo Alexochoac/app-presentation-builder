@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Future of AI - Swiss Design Style</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --white: #ffffff;
+            --black: #000000;
+            --red: #ff0000;
+            --gray-100: #f7f7f7;
+            --gray-200: #e8e8e8;
+            --gray-300: #d0d0d0;
+            --gray-400: #a0a0a0;
+            --gray-500: #707070;
+            --gray-600: #505050;
+            --grid-size: 24px;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--white);
+            color: var(--black);
+            line-height: 1.4;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Grid System */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            z-index: -1;
+            background-image: 
+                linear-gradient(to right, var(--gray-300) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--gray-300) 1px, transparent 1px);
+            background-size: var(--grid-size) var(--grid-size);
+        }
+        
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: calc(var(--grid-size) * 4);
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .slide .content {
+            width: 100%;
+            max-width: 1200px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            position: relative;
+        }
+        
+        /* Typography Hierarchy */
+        h1 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: clamp(48px, 8vw, 120px);
+            line-height: 0.9;
+            letter-spacing: -0.02em;
+            margin: 0 0 calc(var(--grid-size) * 2) 0;
+            color: var(--black);
+            text-transform: uppercase;
+        }
+        
+        h2 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: clamp(32px, 6vw, 72px);
+            line-height: 1;
+            letter-spacing: -0.01em;
+            margin: 0 0 calc(var(--grid-size) * 1.5) 0;
+            color: var(--black);
+            text-transform: uppercase;
+        }
+        
+        h3 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: clamp(18px, 3vw, 28px);
+            line-height: 1.2;
+            margin: 0 0 var(--grid-size) 0;
+            color: var(--black);
+            text-transform: uppercase;
+        }
+        
+        .subtitle {
+            font-weight: 300;
+            font-size: clamp(16px, 2.5vw, 24px);
+            color: var(--gray-500);
+            margin: 0 0 calc(var(--grid-size) * 3) 0;
+            max-width: 600px;
+            line-height: 1.5;
+        }
+        
+        .body-text {
+            font-size: clamp(14px, 1.8vw, 18px);
+            line-height: 1.6;
+            color: var(--gray-600);
+            max-width: 500px;
+            margin: var(--grid-size) 0;
+        }
+        
+        /* Swiss Grid Cards */
+        .swiss-card {
+            background: var(--white);
+            border: 1px solid var(--black);
+            padding: calc(var(--grid-size) * 2);
+            margin: var(--grid-size);
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        
+        .swiss-card::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            width: calc(var(--grid-size) / 2);
+            height: calc(var(--grid-size) / 2);
+            background: var(--red);
+        }
+        
+        .swiss-card:hover {
+            transform: translate(2px, -2px);
+            box-shadow: -2px 2px 0px var(--black);
+        }
+        
+        .swiss-card h4 {
+            font-size: clamp(16px, 2vw, 20px);
+            font-weight: 600;
+            margin-bottom: calc(var(--grid-size) / 2);
+            color: var(--black);
+            text-transform: uppercase;
+        }
+        
+        .swiss-card p {
+            font-size: clamp(12px, 1.5vw, 16px);
+            color: var(--gray-600);
+            line-height: 1.5;
+        }
+        
+        /* Grid Layouts */
+        .swiss-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--grid-size);
+            width: 100%;
+            margin: calc(var(--grid-size) * 2) 0;
+        }
+        
+        .two-col-swiss {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: calc(var(--grid-size) * 3);
+            width: 100%;
+            margin: calc(var(--grid-size) * 2) 0;
+            align-items: start;
+        }
+        
+        .three-col-swiss {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--grid-size);
+            width: 100%;
+            margin: calc(var(--grid-size) * 2) 0;
+        }
+        
+        /* Swiss Typography Elements */
+        .number-large {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(64px, 12vw, 160px);
+            font-weight: 500;
+            line-height: 0.8;
+            color: var(--black);
+            margin: 0;
+            letter-spacing: -0.02em;
+        }
+        
+        .number-small {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(24px, 4vw, 48px);
+            font-weight: 400;
+            line-height: 1;
+            color: var(--red);
+            margin-bottom: calc(var(--grid-size) / 2);
+        }
+        
+        /* Stats Display */
+        .stats-swiss {
+            display: flex;
+            justify-content: flex-start;
+            gap: calc(var(--grid-size) * 4);
+            margin: calc(var(--grid-size) * 3) 0;
+            flex-wrap: wrap;
+        }
+        
+        .stat-swiss {
+            text-align: left;
+            min-width: 150px;
+            border-left: 4px solid var(--red);
+            padding-left: var(--grid-size);
+        }
+        
+        .stat-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(36px, 7vw, 72px);
+            font-weight: 500;
+            line-height: 0.9;
+            color: var(--black);
+            margin-bottom: calc(var(--grid-size) / 4);
+        }
+        
+        .stat-label {
+            font-size: clamp(10px, 1.2vw, 14px);
+            font-weight: 500;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            line-height: 1.2;
+        }
+        
+        /* Quote Block */
+        .swiss-quote {
+            border-left: calc(var(--grid-size) / 2) solid var(--black);
+            padding-left: calc(var(--grid-size) * 2);
+            margin: calc(var(--grid-size) * 3) 0;
+            max-width: 800px;
+        }
+        
+        .swiss-quote h4 {
+            font-size: clamp(20px, 4vw, 40px);
+            font-weight: 600;
+            color: var(--black);
+            line-height: 1.2;
+            margin-bottom: var(--grid-size);
+            text-transform: none;
+        }
+        
+        .swiss-quote p {
+            font-size: clamp(14px, 2vw, 18px);
+            color: var(--gray-600);
+            line-height: 1.5;
+        }
+        
+        /* Swiss Button */
+        .swiss-btn {
+            background: var(--black);
+            color: var(--white);
+            border: none;
+            padding: calc(var(--grid-size) / 2) var(--grid-size);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: clamp(12px, 1.5vw, 16px);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: var(--grid-size) 0;
+            position: relative;
+        }
+        
+        .swiss-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: calc(var(--grid-size) / 4);
+            height: 100%;
+            background: var(--red);
+        }
+        
+        .swiss-btn:hover {
+            background: var(--red);
+            transform: translate(1px, -1px);
+            box-shadow: -1px 1px 0px var(--black);
+        }
+        
+        /* Divider Lines */
+        .swiss-divider {
+            width: 100%;
+            height: 1px;
+            background: var(--black);
+            margin: calc(var(--grid-size) * 2) 0;
+            position: relative;
+        }
+        
+        .swiss-divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: -2px;
+            width: calc(var(--grid-size) * 2);
+            height: 5px;
+            background: var(--red);
+        }
+        
+        /* Lists */
+        .swiss-list {
+            list-style: none;
+            padding: 0;
+            margin: calc(var(--grid-size) * 2) 0;
+        }
+        
+        .swiss-list li {
+            font-size: clamp(14px, 1.8vw, 18px);
+            line-height: 1.6;
+            color: var(--gray-600);
+            margin-bottom: var(--grid-size);
+            padding-left: calc(var(--grid-size) * 1.5);
+            position: relative;
+        }
+        
+        .swiss-list li::before {
+            content: counter(list-counter, decimal-leading-zero);
+            counter-increment: list-counter;
+            position: absolute;
+            left: 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            color: var(--red);
+            font-size: clamp(12px, 1.5vw, 14px);
+        }
+        
+        .swiss-list {
+            counter-reset: list-counter;
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: var(--grid-size);
+            right: var(--grid-size);
+            display: flex;
+            gap: 0;
+            z-index: 1000;
+        }
+        
+        .nav-btn {
+            background: var(--white);
+            border: 1px solid var(--black);
+            color: var(--black);
+            padding: calc(var(--grid-size) / 2) var(--grid-size);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-left: -1px;
+        }
+        
+        .nav-btn:first-child {
+            margin-left: 0;
+        }
+        
+        .nav-btn:hover {
+            background: var(--black);
+            color: var(--white);
+            z-index: 1;
+            position: relative;
+        }
+        
+        /* Slide Counter */
+        .slide-counter {
+            position: fixed;
+            top: var(--grid-size);
+            left: var(--grid-size);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--gray-500);
+            z-index: 1000;
+            background: var(--white);
+            padding: calc(var(--grid-size) / 2);
+            border: 1px solid var(--black);
+        }
+        
+        .slide-counter .current {
+            color: var(--red);
+            font-weight: 500;
+        }
+        
+        /* Red Accent Elements */
+        .red-accent {
+            color: var(--red);
+        }
+        
+        .red-bg {
+            background: var(--red);
+            color: var(--white);
+        }
+        
+        .red-border {
+            border-left: 4px solid var(--red);
+            padding-left: var(--grid-size);
+        }
+        
+        /* Animations */
+        .slide.active .swiss-card {
+            animation: slideInSwiss 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            animation-delay: calc(var(--delay) * 0.1s);
+            opacity: 0;
+        }
+        
+        .slide.active .stat-swiss {
+            animation: fadeInSwiss 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            animation-delay: calc(var(--delay) * 0.15s);
+            opacity: 0;
+        }
+        
+        @keyframes slideInSwiss {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes fadeInSwiss {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            :root {
+                --grid-size: 16px;
+            }
+            
+            .slide {
+                padding: calc(var(--grid-size) * 2);
+            }
+            
+            .slide .content {
+                align-items: center;
+                text-align: center;
+            }
+            
+            .two-col-swiss,
+            .three-col-swiss {
+                grid-template-columns: 1fr;
+                gap: var(--grid-size);
+            }
+            
+            .stats-swiss {
+                flex-direction: column;
+                gap: calc(var(--grid-size) * 2);
+                align-items: center;
+            }
+            
+            .stat-swiss {
+                text-align: center;
+                border-left: none;
+                border-top: 4px solid var(--red);
+                padding-left: 0;
+                padding-top: var(--grid-size);
+            }
+            
+            .swiss-quote {
+                border-left: none;
+                border-top: calc(var(--grid-size) / 2) solid var(--black);
+                padding-left: 0;
+                padding-top: calc(var(--grid-size) * 2);
+                text-align: center;
+            }
+            
+            .swiss-card {
+                margin: calc(var(--grid-size) / 2);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .nav {
+                bottom: calc(var(--grid-size) / 2);
+                right: calc(var(--grid-size) / 2);
+            }
+            
+            .slide-counter {
+                top: calc(var(--grid-size) / 2);
+                left: calc(var(--grid-size) / 2);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-overlay"></div>
+    
+    <div class="presentation-container">
+        <div class="slide-counter">
+            <span class="current" id="currentSlide">01</span> / <span id="totalSlides">11</span>
+        </div>
+        
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <div class="content">
+                <div class="number-large red-accent">01</div>
+                <h1>The Future<br>of AI</h1>
+                <div class="subtitle">A systematic approach to artificial intelligence opportunities</div>
+                <div class="swiss-divider"></div>
+            </div>
+        </div>
+        
+        <!-- Slide 2: Problem Definition -->
+        <div class="slide">
+            <div class="content">
+                <div class="number-large">02</div>
+                <h2>Current State</h2>
+                <div class="swiss-quote">
+                    <h4>Traditional business operations are characterized by inefficiency</h4>
+                    <p>Manual processes, fragmented systems, and resource constraints limit organizational growth potential</p>
+                </div>
+                <div class="body-text red-border">
+                    The paradigm shift toward artificial intelligence creates unprecedented opportunities for optimization
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 3: Quantitative Analysis -->
+        <div class="slide">
+            <div class="content">
+                <div class="number-large">03</div>
+                <h2>Key Metrics</h2>
+                <div class="stats-swiss">
+                    <div class="stat-swiss" style="--delay: 1;">
+                        <div class="stat-number">74.5%</div>
+                        <div class="stat-label">SWE Benchmark<br>Performance Score</div>
+                    </div>
+                    <div class="stat-swiss" style="--delay: 2;">
+                        <div class="stat-number">115K</div>
+                        <div class="stat-label">Current Global<br>User Base</div>
+                    </div>
+                    <div class="stat-swiss" style="--delay: 3;">
+                        <div class="stat-number">30M</div>
+                        <div class="stat-label">Market Opportunity<br>Size (US Only)</div>
+                    </div>
+                </div>
+                <div class="body-text">
+                    Artificial intelligence has achieved senior-level development capability with minimal market penetration
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 4: Market Segmentation -->
+        <div class="slide">
+            <div class="content">
+                <div class="number-large">04</div>
+                <h2>Market Segments</h2>
+                <div class="three-col-swiss">
+                    <div class="swiss-card" style="--delay: 1;">
+                        <h4>Manual Operations</h4>
+                        <p>Organizations dependent on spreadsheet-based workflows and paper documentation systems</p>
+                    </div>
+                    <div class="swiss-card" style="--delay: 2;">
+                        <h4>System Fragmentation</h4>
+                        <p>Businesses utilizing multiple disconnected applications requiring manual data integration</p>
+                    </div>
+                    <div class="swiss-card" style="--delay: 3;">
+                        <h4>Resource Constraints</h4>
+                        <p>Companies limited by expensive human resources operating within traditional work schedules</p>
+                    </div>
+                </div>
+                <div class="swiss-divider"></div>
+            </div>
+        </div>
+        
+        <!-- Slide 5: Cost-Benefit Analysis -->
+        <div class="slide">
+            <div class="content">
+                <div class="number-large">05</div>
+                <h2>Economic Comparison</h2>
+                <div class="two-col-swiss">
+                    <div class="swiss-card">
+                        <h4>Traditional Employee Model</h4>
+                        <div class="number-small">$70,000</div>
+                        <p>Annual cost including salary, benefits, training, and operational overhead</p>
+                    </div>
+                    <div class="swiss-card">
+                        <h4>AI-Powered Solution</h4>
+                        <div class="number-small">$21,000</div>
+                        <p>One-time development cost plus annual maintenance for continuous operation</p>
+                    </div>
+                </div>
+                <div class="swiss-quote">
+                    <h4>Net annual savings: $49,000</h4>
+                    <p>Return on investment achieved within first operational quarter</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 6: Technical Capabilities -->
+        <div class="slide">
+            <div class="content">
+                <div class="number-large">06</div>
+                <h2>System Capabilities</h2>
+                <ol class="swiss-list">
+                    <li>Full-stack web application development with integrated database systems</li>
+                    <li>Secure payment processing and automated billing infrastructure</li>
+                    <li>API integration with existing business tools and third-party services</li>
+                    <li>Real-time analytics dashboards with customizable reporting features</li>
+                    <li>Mobile-responsive interfaces optimized for cross-platform compatibility</li>
+                    <li>User authentication systems with role-based access control</li>
+                </ol>
+                <div class="body-text red-border">
+                    All development completed through natural language specification interface
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 7: Market Barriers -->
+        <div class="slide">
+            <div class="content">
+                <div class="number-large">07</div>
+                <h2>Implementation Barriers</h2>
+                <div class="swiss-quote">
+                    <h4>Why organizations require professional implementation services</h4>
+                    <p>Understanding these barriers reveals significant market opportunity for service providers</p>
+                </div>
+                <div class="three-col-swiss">
+                    <div class="swiss-card" style="--delay: 1;">
+                        <h4>Resource Allocation</h4>
+                        <p>Business operators prioritize core competencies over technology learning initiatives</p>
+                    </div>
+                    <div class="swiss-card" style="--delay: 2;">
+                        <h4>Technical Knowledge</h4>
+                        <p>Limited understanding of artificial intelligence capabilities and implementation methodologies</p>
+                    </div>
+                    <div class="swiss-card" style="--delay: 3;">
+                        <h4>Service Preference</h4>
+                        <p>Strategic focus on outsourcing technical solutions to maintain operational efficiency</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 8: Value Proposition -->
+        <div class="slide">
+            <div class="content">
+                <div class="number-large">08</div>
+                <h2>Service Offering</h2>
+                <div class="swiss-quote">
+                    <h4>"Custom software development tailored to specific operational requirements"</h4>
+                    <p>Purpose-built applications designed for exact business processes, not generic tool adaptation</p>
+                </div>
+                <button class="swiss-btn">Explore Solutions</button>
+                <div class="swiss-divider"></div>
+                <div class="body-text">
+                    This service offering represents a <span class="red-accent">first-mover advantage</span> in an emerging market segment
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 9: Case Studies -->
+        <div class="slide">
+            <div class="content">
+                <div class="number-large">09</div>
+                <h2>Implementation Examples</h2>
+                <div class="swiss-grid">
+                    <div class="swiss-card" style="--delay: 1;">
+                        <h4>Healthcare Practice</h4>
+                        <p>Patient data management system with automated form population and historical integration</p>
+                        <div class="number-small">$12,000</div>
+                    </div>
+                    <div class="swiss-card" style="--delay: 2;">
+                        <h4>Fitness Enterprise</h4>
+                        <p>Comprehensive member management platform with personalized workout tracking capabilities</p>
+                        <div class="number-small">$8,000</div>
+                    </div>
+                    <div class="swiss-card" style="--delay: 3;">
+                        <h4>Property Management</h4>
+                        <p>Integrated tenant communication portal with automated maintenance request processing</p>
+                        <div class="number-small">$15,000</div>
+                    </div>
+                </div>
+                <div class="body-text">
+                    Each implementation addresses specific operational inefficiencies within target industry verticals
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 10: Process Framework -->
+        <div class="slide">
+            <div class="content">
+                <div class="number-large">10</div>
+                <h2>Implementation Process</h2>
+                <div class="swiss-grid">
+                    <div class="swiss-card" style="--delay: 1;">
+                        <h4>Requirements Analysis</h4>
+                        <p>Systematic assessment of current operational workflows and inefficiency identification</p>
+                    </div>
+                    <div class="swiss-card" style="--delay: 2;">
+                        <h4>Solution Architecture</h4>
+                        <p>Custom software specification designed for optimal business process integration</p>
+                    </div>
+                    <div class="swiss-card" style="--delay: 3;">
+                        <h4>Value-Based Pricing</h4>
+                        <p>Cost structure determined by operational improvement value rather than development time</p>
+                    </div>
+                    <div class="swiss-card" style="--delay: 4;">
+                        <h4>Agile Development</h4>
+                        <p>Iterative development methodology with regular progress reporting and feedback integration</p>
+                    </div>
+                    <div class="swiss-card" style="--delay: 5;">
+                        <h4>Quality Assurance</h4>
+                        <p>Comprehensive testing protocols ensuring system reliability and performance standards</p>
+                    </div>
+                    <div class="swiss-card" style="--delay: 6;">
+                        <h4>Ongoing Support</h4>
+                        <p>Maintenance contracts and feature enhancement for sustained competitive advantage</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 11: Strategic Conclusion -->
+        <div class="slide">
+            <div class="content">
+                <div class="number-large red-accent">11</div>
+                <h2>Market Timing</h2>
+                <div class="swiss-quote">
+                    <h4>First-mover advantage window remains open but is rapidly closing</h4>
+                    <p>Current market conditions provide exceptional opportunity for early implementation</p>
+                </div>
+                <div class="body-text red-border">
+                    Organizations that establish AI-powered operational advantages today will maintain sustained competitive differentiation as the market matures
+                </div>
+                <div class="swiss-divider"></div>
+                <button class="swiss-btn">Begin Implementation</button>
+            </div>
+        </div>
+        
+        <div class="nav">
+            <button class="nav-btn" onclick="previousSlide()">Previous</button>
+            <button class="nav-btn" onclick="nextSlide()">Next</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('totalSlides').textContent = totalSlides.toString().padStart(2, '0');
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            document.getElementById('currentSlide').textContent = (index + 1).toString().padStart(2, '0');
+        }
+        
+        function nextSlide() {
+            currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+            showSlide(currentSlideIndex);
+        }
+        
+        function previousSlide() {
+            currentSlideIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
+            showSlide(currentSlideIndex);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowRight') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.code === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+        
+        // Initialize animation delays
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.swiss-card');
+            const stats = document.querySelectorAll('.stat-swiss');
+            
+            cards.forEach((card, index) => {
+                if (!card.style.getPropertyValue('--delay')) {
+                    card.style.setProperty('--delay', index + 1);
+                }
+            });
+            
+            stats.forEach((stat, index) => {
+                if (!stat.style.getPropertyValue('--delay')) {
+                    stat.style.setProperty('--delay', index + 1);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

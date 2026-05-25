@@ -856,6 +856,108 @@
 
     .drawer-save-status { font-size: 11px; color: var(--accent); margin-left: auto; }
 
+    /* ── Style Picker Modal ── */
+    .style-picker-modal {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(6px);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+    }
+    .style-picker-modal.open { display: flex; }
+    .style-picker-box {
+      background: var(--surface, #111);
+      border: 1px solid var(--border, rgba(255,255,255,.12));
+      border-radius: 18px;
+      width: 86vw; max-width: 1100px;
+      height: 80vh;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,.7);
+    }
+    .style-picker-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid var(--border, rgba(255,255,255,.1));
+      flex-shrink: 0;
+    }
+    .style-picker-title { font-size: 15px; font-weight: 700; color: var(--text, #fff); }
+    .style-picker-close {
+      width: 28px; height: 28px; border-radius: 8px; border: none;
+      background: transparent; color: var(--muted, #888); font-size: 14px;
+      cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center;
+      transition: background .15s, color .15s;
+    }
+    .style-picker-close:hover { background: var(--surface-hov); color: var(--text); }
+    .style-picker-body {
+      display: flex; flex: 1; overflow: hidden;
+    }
+    .style-card-list {
+      width: 220px; flex-shrink: 0;
+      overflow-y: auto;
+      border-right: 1px solid var(--border, rgba(255,255,255,.1));
+      padding: 10px 8px;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .style-card {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 10px; border-radius: 10px;
+      cursor: pointer; border: 1px solid transparent;
+      transition: background .15s, border-color .15s;
+      position: relative;
+    }
+    .style-card:hover { background: var(--surface-hov, rgba(255,255,255,.06)); }
+    .style-card.active {
+      background: color-mix(in srgb, var(--accent, #7B8FF8) 10%, transparent);
+      border-color: var(--accent, #7B8FF8);
+    }
+    .style-card-swatch {
+      width: 32px; height: 32px; border-radius: 7px; flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,.15);
+    }
+    .style-card-name {
+      font-size: 12px; font-weight: 600; color: var(--text, #fff);
+      line-height: 1.3; flex: 1;
+    }
+    .style-card.active .style-card-name { color: var(--accent, #7B8FF8); }
+    .style-preview-pane {
+      flex: 1; display: flex; flex-direction: column;
+      position: relative; background: #000;
+      overflow: hidden;
+    }
+    .style-preview-hint {
+      position: absolute; inset: 0; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 13px; color: var(--muted, #888);
+      pointer-events: none; z-index: 1;
+    }
+    .style-preview-iframe {
+      flex: 1; width: 100%; height: 100%;
+      border: none; display: none;
+    }
+    .style-picker-footer {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 22px;
+      border-top: 1px solid var(--border, rgba(255,255,255,.1));
+      flex-shrink: 0;
+    }
+    .style-picker-selected-label {
+      flex: 1; font-size: 12px; color: var(--muted, #888);
+    }
+    .drawer-btn.accent {
+      background: var(--accent, #7B8FF8); border-color: var(--accent, #7B8FF8);
+      color: #fff;
+    }
+    .drawer-btn.accent:disabled {
+      opacity: .35; cursor: not-allowed;
+    }
+    .drawer-style-name {
+      font-size: 13px; color: var(--muted, #aaa);
+      font-style: italic;
+    }
+
   </style>
 </head>
 <body>
@@ -1136,6 +1238,13 @@
         <input class="drawer-input" id="drawerDeckName" type="text" placeholder="Deck name…" maxlength="80" autocomplete="off">
       </div>
 
+      <!-- Brand Credit -->
+      <div class="drawer-section">
+        <div class="drawer-section-label">Credit Line</div>
+        <input class="drawer-input" id="drawerBrandCredit" type="text" placeholder="Your company name…" maxlength="80" autocomplete="off">
+        <div style="font-size:11px;color:#666;margin-top:4px;">Shown as "by [name]" on cover slides</div>
+      </div>
+
       <!-- Theme -->
       <div class="drawer-section">
         <div class="drawer-section-label">Theme</div>
@@ -1152,6 +1261,15 @@
           <div class="drawer-color-preview" id="drawerColorPreview" style="background:#7B8FF8;"></div>
           <input type="color" id="drawerPrimaryColor" value="#7B8FF8">
           <span class="drawer-color-hex" id="drawerColorHex">#7B8FF8</span>
+        </div>
+      </div>
+
+      <!-- Presentation Style -->
+      <div class="drawer-section">
+        <div class="drawer-section-label">Presentation Style</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span class="drawer-style-name" id="drawerStyleName">Default</span>
+          <button class="drawer-btn" id="drawerBrowseStylesBtn">Browse Styles</button>
         </div>
       </div>
 
@@ -1239,11 +1357,36 @@
     </div>
   </div>
 
+  <!-- ── Style Picker Modal ── -->
+  <div class="style-picker-modal" id="stylePickerModal">
+    <div class="style-picker-box">
+      <div class="style-picker-header">
+        <span class="style-picker-title">Presentation Style</span>
+        <button class="style-picker-close" id="stylePickerClose">&#10005;</button>
+      </div>
+      <div class="style-picker-body">
+        <div class="style-card-list" id="styleCardList">
+          <!-- cards injected by JS -->
+        </div>
+        <div class="style-preview-pane">
+          <div class="style-preview-hint" id="stylePreviewHint">Select a style to preview it</div>
+          <iframe class="style-preview-iframe" id="stylePreviewIframe" src="about:blank" title="Style preview"></iframe>
+        </div>
+      </div>
+      <div class="style-picker-footer">
+        <span class="style-picker-selected-label" id="stylePickerSelectedLabel"></span>
+        <button class="drawer-btn" id="stylePickerCancel">Cancel</button>
+        <button class="drawer-btn accent" id="stylePickerApply" disabled>Apply Style</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ── State ──────────────────────────────────────────────────────────────────
-    var decks        = [];
-    var activeDeckId = null;
-    var deckSlides   = [];
+    var decks           = [];
+    var activeDeckId    = null;
+    var deckSlides      = [];
+    var deckCoverLogoSrc = '';
     var currentSlideId = null;
     var dragSrcIdx   = null;
     var pendingRenameId  = null;
@@ -1260,6 +1403,7 @@
     var drawerDeckId  = null;
     var drawerDeck    = null;
     var drawerSaveTimer = null;
+    var drawerPendingReload = false;
 
     function initDeckSidebarHover() {
       var sidebar = document.querySelector('.deck-sidebar');
@@ -1284,6 +1428,13 @@
       window.addEventListener('resize', scaleFrame);
     }
 
+    // ── iframe → parent bridge ─────────────────────────────────────────────────
+    window.addEventListener('message', function (e) {
+      if (e.data && e.data.type === 'slide-image-change' && e.data.editKey === 'customer-logo') {
+        deckCoverLogoSrc = e.data.src || '';
+      }
+    });
+
     // ── Init ───────────────────────────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', function () {
       initSidebar();
@@ -1300,6 +1451,7 @@
       bindSavePresModal();
       initFinishedPanel();
       initDeckSettingsDrawer();
+      initStylePickerModal();
       document.getElementById('newDeckBtn').addEventListener('click', handleNewDeck);
       window.addEventListener('resize', scaleFrame);
     });
@@ -1578,6 +1730,7 @@
     function loadDeckSlides() {
       fetch('/api/deck').then(function (r) { return r.json(); }).then(function (res) {
         deckSlides = (res.success ? res.data.slides : []) || [];
+        deckCoverLogoSrc = res.coverLogoSrc || '';
         renderSlidePanel();
         var first = deckSlides.find(function (s) { return s.visible !== false; });
         if (first) loadSlideInCanvas(first.id, first.name);
@@ -2015,7 +2168,7 @@
       el.innerHTML = '';
       active.forEach(function (p) {
         var name    = p.presentationName || p.customerName || '?';
-        var date    = p.createdAt ? new Date(p.createdAt).toLocaleDateString() : '';
+        var date    = p.createdAt ? new Date(p.createdAt + 'T00:00:00').toLocaleDateString() : '';
         var company = (p.customerName && p.customerName !== name) ? p.customerName : null;
         var metaParts = [company, date].filter(Boolean);
 
@@ -2120,8 +2273,11 @@
       if (editPres) {
         setLogoPreview(editPres.customerLogoSrc || '', editPres.customerLogoSrc ? 'Current logo' : 'No logo');
       } else {
-        var activeDeck = decks.find(function (d) { return d.id === activeDeckId; });
-        setLogoPreview(activeDeck && activeDeck.logo ? activeDeck.logo : '', activeDeck && activeDeck.logo ? 'Using deck logo' : 'No logo');
+        var activeDeck  = decks.find(function (d) { return d.id === activeDeckId; });
+        var deckDefault = activeDeck && activeDeck.logo ? activeDeck.logo : '';
+        var logoSrc     = deckCoverLogoSrc || deckDefault;
+        var logoLabel   = deckCoverLogoSrc ? 'Cover logo' : (deckDefault ? 'Using deck logo' : 'No logo');
+        setLogoPreview(logoSrc, logoLabel);
       }
 
       fetch('/api/translations').then(function (r) { return r.json(); }).then(function (res) {
@@ -2372,14 +2528,25 @@
     }
 
     function closeDeckSettingsDrawer() {
+      var shouldReload = drawerPendingReload;
       drawerDeckId = null;
       drawerDeck   = null;
+      drawerPendingReload = false;
       document.getElementById('drawerBackdrop').classList.remove('open');
       document.getElementById('deckSettingsDrawer').classList.remove('open');
+      /* If the frame was hidden during settings changes, reload it now */
+      if (shouldReload) {
+        var frame = document.getElementById('slideFrame');
+        if (frame && frame.style.display !== 'none' && frame.src && frame.src !== location.href) {
+          var base = frame.src.split('?')[0];
+          frame.src = base + '?_t=' + Date.now();
+        }
+      }
     }
 
     function populateDrawer(deck) {
       document.getElementById('drawerDeckName').value = deck.name || '';
+      document.getElementById('drawerBrandCredit').value = deck.brandCredit || '';
 
       var theme = deck.theme || 'dark';
       document.querySelectorAll('.drawer-theme-btn').forEach(function (btn) {
@@ -2394,6 +2561,12 @@
       renderDrawerLogo(deck.logo);
       renderDrawerHeroBg(deck.heroBg, deck.heroBgFocal, deck.heroBgFocalGrid, deck.heroBgFit, deck.heroBgOpacity, deck.heroBgType, deck.heroBgColor);
       document.getElementById('drawerSaveStatus').textContent = '';
+      var styleNameEl = document.getElementById('drawerStyleName');
+      if (styleNameEl) {
+        styleNameEl.textContent = deck.styleRef
+          ? deck.styleRef.replace(/\.html$/, '').replace(/[-_]+/g, ' ').replace(/\b\w/g, function(c){return c.toUpperCase();})
+          : 'Default';
+      }
     }
 
     function drawerShowSaved() {
@@ -2404,9 +2577,12 @@
 
     function reloadSlideFrame() {
       if (drawerDeckId !== activeDeckId) return;
+      drawerPendingReload = true;
       var frame = document.getElementById('slideFrame');
-      if (frame && frame.style.display !== 'none' && frame.contentWindow) {
-        frame.contentWindow.location.reload();
+      if (frame && frame.style.display !== 'none' && frame.src && frame.src !== location.href) {
+        /* Cache-busting navigation forces the server to re-render with new deck settings */
+        var base = frame.src.split('?')[0];
+        frame.src = base + '?_t=' + Date.now();
       }
     }
 
@@ -2521,6 +2697,16 @@
         saveDeckField({ name: name });
       });
       document.getElementById('drawerDeckName').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') this.blur();
+      });
+
+      // Brand credit — save on blur, reload slide to reflect change
+      document.getElementById('drawerBrandCredit').addEventListener('blur', function () {
+        var val = this.value.trim();
+        if (!drawerDeck || val === (drawerDeck.brandCredit || '')) return;
+        saveDeckField({ brandCredit: val }).then(reloadSlideFrame);
+      });
+      document.getElementById('drawerBrandCredit').addEventListener('keydown', function (e) {
         if (e.key === 'Enter') this.blur();
       });
 
@@ -2694,6 +2880,121 @@
           if (body) body.classList.add('sidebar-collapsed');
         }
       } catch (e) {}
+    }
+
+    // ── Style Picker Modal ────────────────────────────────────────────────────────
+    function initStylePickerModal() {
+      var modal       = document.getElementById('stylePickerModal');
+      var closeBtn    = document.getElementById('stylePickerClose');
+      var cancelBtn   = document.getElementById('stylePickerCancel');
+      var applyBtn    = document.getElementById('stylePickerApply');
+      var cardList    = document.getElementById('styleCardList');
+      var iframe      = document.getElementById('stylePreviewIframe');
+      var hint        = document.getElementById('stylePreviewHint');
+      var selectedLbl = document.getElementById('stylePickerSelectedLabel');
+      var browseBtn   = document.getElementById('drawerBrowseStylesBtn');
+
+      var stylesList    = [];   // [{id, name, file, bgColor}]
+      var selectedFile  = null; // file currently highlighted in picker
+
+      function prettifyRef(ref) {
+        if (!ref) return 'Default';
+        return ref.replace(/\.html$/, '').replace(/[-_]+/g, ' ')
+          .replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+      }
+
+      function renderCards() {
+        cardList.innerHTML = '';
+        // Default card
+        var def = document.createElement('div');
+        def.className = 'style-card' + (selectedFile === '' ? ' active' : '');
+        def.innerHTML = '<div class="style-card-swatch" style="background:#1c1c1e;border:2px dashed rgba(255,255,255,.25);"></div>'
+          + '<span class="style-card-name">Default</span>';
+        def.addEventListener('click', function () { selectCard('', null); });
+        cardList.appendChild(def);
+
+        stylesList.forEach(function (s) {
+          var card = document.createElement('div');
+          card.className = 'style-card' + (selectedFile === s.file ? ' active' : '');
+          card.innerHTML = '<div class="style-card-swatch" style="background:' + s.bgColor + ';"></div>'
+            + '<span class="style-card-name">' + s.name + '</span>';
+          card.addEventListener('click', function () { selectCard(s.file, s); });
+          cardList.appendChild(card);
+        });
+      }
+
+      function selectCard(file, styleObj) {
+        selectedFile = file;
+        renderCards();
+        if (!file) {
+          iframe.style.display = 'none';
+          hint.style.display = 'flex';
+          hint.textContent = 'Default — no style override';
+          selectedLbl.textContent = 'Default selected';
+        } else {
+          hint.style.display = 'none';
+          iframe.style.display = 'block';
+          iframe.src = '/style-references/' + file;
+          selectedLbl.textContent = prettifyRef(file) + ' selected';
+        }
+        var currentRef = (drawerDeck && drawerDeck.styleRef) || null;
+        var isSame = (file === (currentRef || ''));
+        applyBtn.disabled = isSame;
+      }
+
+      function openModal() {
+        selectedFile = (drawerDeck && drawerDeck.styleRef) || '';
+        iframe.src = 'about:blank';
+        iframe.style.display = 'none';
+        hint.style.display = 'flex';
+        hint.textContent = 'Select a style to preview it';
+        selectedLbl.textContent = '';
+        applyBtn.disabled = true;
+
+        if (!stylesList.length) {
+          fetch('/api/style-references')
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+              if (res.success) {
+                stylesList = res.data || [];
+                renderCards();
+                // Auto-select current style if set
+                if (selectedFile) selectCard(selectedFile, stylesList.find(function(s){return s.file===selectedFile;})||null);
+              }
+            });
+        } else {
+          renderCards();
+          if (selectedFile) selectCard(selectedFile, stylesList.find(function(s){return s.file===selectedFile;})||null);
+        }
+        modal.classList.add('open');
+      }
+
+      function closeModal() {
+        modal.classList.remove('open');
+        iframe.src = 'about:blank';
+      }
+
+      function applyStyle() {
+        if (!drawerDeckId) return;
+        var fileToApply = selectedFile;
+        saveDeckField({ styleRef: fileToApply || null }).then(function () {
+          var nameEl = document.getElementById('drawerStyleName');
+          if (nameEl) nameEl.textContent = fileToApply ? prettifyRef(fileToApply) : 'Default';
+          reloadSlideFrame();
+          document.querySelectorAll('.slide-thumb-frame iframe').forEach(function (f) {
+            f.src = f.src;
+          });
+          closeModal();
+        });
+      }
+
+      browseBtn.addEventListener('click', openModal);
+      closeBtn.addEventListener('click', closeModal);
+      cancelBtn.addEventListener('click', closeModal);
+      applyBtn.addEventListener('click', applyStyle);
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) closeModal();
+      });
     }
   </script>
 </body>

@@ -29,17 +29,42 @@ A template is a **blank structural slide** with:
 ### 1. Style-Ready
 All colors, fonts, and theme values use CSS variables. Never hardcode hex values that belong to a theme.
 
-Required variables (always available from the app's style system):
+Full variable contract (always available from the app's style system):
 ```
 --accent          primary brand color
---accent-rgb      RGB triplet for rgba() usage
+--accent-mid      slightly darker variant
 --accent-light    lighter variant
+--accent-rgb      raw RGB triplet "R,G,B" — ONLY for use inside rgba()
 --bg              slide background
 --bg-card         card / panel background
+--bg-card-hover   card background on hover
 --text            primary text color
---text-muted      secondary text color
+--text-muted      secondary / caption text
 --border          border color
+--border-hover    border color on hover / focus
+--nav-bg          navigation bar background
+--nav-border      navigation bar border
+--dot-inactive    inactive pagination dot
+--counter         slide counter text
+--slide-hero-bg   hero slide solid background
+--slide-hero-rgb  hero bg as RGB triplet — ONLY for use inside rgba()
 ```
+
+**Hard rules — enforce on every template:**
+
+- **No hardcoded rgba for accent.** Use `rgba(var(--accent-rgb), .10)`, NEVER `rgba(245,166,35, .10)`.
+  Hardcoded values break when the deck's primary color changes.
+
+- **No hardcoded rgba for text or bg either.** Use `var(--text-muted)` or `var(--bg-card)` rather than
+  new `rgba(255,255,255, .xx)` values. Pick the closest existing token.
+
+- **Hero slides must use `var(--slide-hero-bg)` and `var(--slide-hero-rgb)`.** The overlay gradient must be
+  `rgba(var(--slide-hero-rgb), N)`. Never hardcode `rgba(7,11,26, N)`.
+
+- **No hardcoded font-family.** Do not set `font-family` in slide CSS — inherit from `body`.
+  (Exception: icon fonts like Font Awesome.)
+
+When a deck style is applied, CSS variables are overridden at the container level and cascade into every slide automatically. Templates that follow these rules respond to any deck style with zero extra work.
 
 ### 2. Translation-Ready
 Every user-visible text element gets two attributes:
@@ -525,11 +550,14 @@ Any element visible in the builder but stripped from the final customer output:
 
 Any element with `data-edit` that wraps an **image upload zone** (file picker, logo box, hero image area) must also have `data-edit-type="image"`.
 
+**Background default:** Use `background: transparent`, not `background: #fff`. Transparent PNG logos let the hero background show through (correct). Logos with their own solid background provide it naturally from the image.
+
 ```html
 <!-- ✅ Correct -->
 <div class="[slide-id]-customer-logo"
      data-edit="customer-logo"
      data-edit-type="image"
+     style="background: transparent;"
      title="Click to change logo">
   <button class="[slide-id]-logo-del" data-builder-only="" contenteditable="false"
           onclick="mySlideDeleteLogo()">✕</button>
@@ -539,8 +567,8 @@ Any element with `data-edit` that wraps an **image upload zone** (file picker, l
   <input type="file" id="[slide-id]-logo-file" accept="image/*" style="display:none;">
 </div>
 
-<!-- ❌ Wrong — missing data-edit-type="image" -->
-<div class="[slide-id]-customer-logo" data-edit="customer-logo">
+<!-- ❌ Wrong — missing data-edit-type="image" AND white background -->
+<div class="[slide-id]-customer-logo" data-edit="customer-logo" style="background:#fff;">
 ```
 
 ### Why this is required
@@ -569,6 +597,62 @@ document.dispatchEvent(new CustomEvent('slide-image-change', {
 ```
 
 The server writes the src directly to the slide HTML file via `/api/save-image-src` — no separate API call needed in the slide JS.
+
+---
+
+## Server-Reserved `data-edit` Keys
+
+Some `data-edit` keys are **always overridden by the server at serve time** — editing them per-slide has no permanent effect. The server value always wins.
+
+| Key | Overridden by |
+|---|---|
+| `logo-row` | Deck logos (always injected via `withLiveLogos()`) |
+| `credit` | `"by " + deck.brandCredit` (if set in deck settings) |
+| `subheadline` | Contact info on cover slides (at publish time) |
+
+**Rule:** Never rely on per-slide editing for these keys. The deck setting is the source of truth. If you need a value to come from deck-level settings, use one of these reserved keys so the server can inject it automatically.
+
+---
+
+## Fullscreen Overlays
+
+Place `position:fixed` overlays as **siblings of `.slide`** — never nested inside it.
+
+**Why:** The finished presentation wraps each `.slide` in `transform:scale(1)`. This creates a CSS stacking context — any `position:fixed` child is positioned relative to that container, not the viewport. The overlay clips or mispositions in presentations.
+
+```html
+<!-- ✅ Correct: overlay is a sibling, outside the transformed .slide -->
+<div class="slide content ls01" data-slide="ls01" ...>
+  <!-- slide content -->
+</div>
+
+<!-- Gallery overlay — sibling of .slide so position:fixed covers full viewport -->
+<div class="ls01-gallery-overlay" id="ls01GalleryOverlay"
+     style="display:none; position:fixed; inset:0; z-index:9999;">
+  <!-- overlay content -->
+</div>
+
+<!-- ❌ Wrong: overlay nested inside .slide — position:fixed will not cover viewport -->
+<div class="slide content ls01" data-slide="ls01">
+  <div id="ls01GalleryOverlay" style="position:fixed; inset:0;">...</div>
+</div>
+```
+
+Open/close is just a `display` toggle — no DOM moving needed:
+```javascript
+document.getElementById('ls01GalleryOverlay').style.display = 'flex'; // open
+document.getElementById('ls01GalleryOverlay').style.display = 'none'; // close
+```
+
+**DOM queries for sibling elements:** Use `document.getElementById()` for any element that lives outside `.slide` (a sibling overlay, body-level element, etc.). `slide.querySelector('#id')` searches only within the slide element and returns null for siblings.
+
+```javascript
+// ✅ Works for elements anywhere in the document
+document.getElementById('ls01CarTrack').appendChild(newSlide);
+
+// ❌ Returns null if the element is in a sibling overlay
+slide.querySelector('#ls01CarTrack').appendChild(newSlide);
+```
 
 ---
 
@@ -810,6 +894,10 @@ This means:
 - **Never** add `data-edit` to `img.hero-bg` — the server controls this directly via `injectDeckBranding()`
 - **Never** use `slide-layout` / `slide-head` inside a cover/hero slide
 - **Never** put `data-edit` on an image upload container without also adding `data-edit-type="image"` — the template editor will strip your delete button and file input on the first auto-save and they will never come back
+- **Never** put a `position:fixed` overlay inside `.slide` — the finished presentation applies `transform:scale(1)` to `.slide` which clips `position:fixed` children to the element bounds. Always place fullscreen overlays as siblings.
+- **Never** use `slide.querySelector('#id')` for elements in sibling overlays — use `document.getElementById('id')`
+- **Never** use `background: #fff` on image upload containers — use `transparent` so hero images show through for transparent PNG logos
+- **Never** expect per-slide edits to survive for server-reserved keys (`logo-row`, `credit`, `subheadline`) — the server always overrides these from deck settings
 
 ---
 
@@ -858,3 +946,7 @@ After every template, confirm:
 - [ ] Cover slides: `data-edit="subheadline"` present with placeholder `"Proposal for [Customer] · [Name], [Title]"`
 - [ ] Cover slides: template registered with `"category": "Cover"` in templates.json
 - [ ] Image upload containers have BOTH `data-edit="key"` AND `data-edit-type="image"` — missing the second attribute will cause the template editor to silently destroy the delete button and file input on first save
+- [ ] Image upload containers use `background: transparent`, not `background: #fff`
+- [ ] Fullscreen overlays (gallery, panels) are placed as siblings of `.slide`, not nested inside it
+- [ ] Any element outside `.slide` is queried with `document.getElementById()`, not `slide.querySelector()`
+- [ ] No per-slide editing logic written for server-reserved keys (`logo-row`, `credit`, `subheadline`) — these are deck-level and always overridden by the server

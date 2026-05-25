@@ -1,0 +1,375 @@
+<div class="slide hero ls01"
+     data-slide="ls01"
+     data-slide-mode="sequence">
+
+  <!-- Full-bleed background — server injects deck.heroBg at serve time -->
+  <img class="hero-bg" src="" alt="Hero background">
+  <div class="ls01-overlay"></div>
+
+  <!-- Logo row — server injects live logos -->
+  <div class="slide-logo-row" data-edit="logo-row">
+    <img src="/shared/brand/logo.svg" alt="Your Logo">
+  </div>
+
+  <!-- Credit line top-right -->
+  <span class="ls01-credit"
+        data-edit="credit"
+        data-lang-key="ls01.credit"
+        contenteditable spellcheck="false">by YourBrand.com</span>
+
+  <!-- Customer logo — right half on desktop, above content on mobile -->
+  <div class="ls01-customer-logo"
+       data-edit="customer-logo"
+       data-edit-type="image"
+       title="Click to change logo">
+    <button class="ls01-logo-del" data-builder-only="" contenteditable="false"
+            title="Remove logo" onclick="ls01DeleteLogo()">✕</button>
+    <img class="ls01-cust-img" src="" alt="Customer Logo"
+         onerror="this.classList.add('ls01-cust-img--missing')">
+    <label class="ls01-cust-placeholder" for="ls01-logo-file">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="1.5"
+           stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+        <polyline points="21 15 16 10 5 21"></polyline>
+      </svg>
+      <span>Customer Logo</span>
+      <small>Click to upload</small>
+    </label>
+    <input type="file" id="ls01-logo-file" accept="image/*" style="display:none;">
+  </div>
+
+  <!-- Main hero content -->
+  <div class="ls01-content">
+    <div class="ls01-badge"
+         data-edit="badge"
+         data-lang-key="ls01.badge"
+         contenteditable spellcheck="false">Product · Solution</div>
+    <h1 class="ls01-headline"
+        data-edit="headline"
+        data-lang-key="ls01.headline"
+        contenteditable spellcheck="false">Your Presentation <span class="ls01-accent">Headline</span></h1>
+    <p class="ls01-subheadline"
+       data-edit="subheadline"
+       data-lang-key="ls01.subheadline"
+       contenteditable spellcheck="false">Proposal for [Customer] · [Name], [Title]</p>
+    <div class="ls01-nav-hint" data-builder-only="">→ Navigate with arrows or swipe</div>
+  </div>
+
+  <!-- Gallery button — opens the gallery overlay -->
+  <button class="ls01-gallery-btn" data-ls-gallery-open title="Open gallery">
+    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+         fill="none" stroke="currentColor" stroke-width="2.5"
+         stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="7" height="7"></rect>
+      <rect x="14" y="3" width="7" height="7"></rect>
+      <rect x="14" y="14" width="7" height="7"></rect>
+      <rect x="3" y="14" width="7" height="7"></rect>
+    </svg>
+    Gallery
+  </button>
+
+  <!-- Gallery data store — hidden inside slide for save/restore via applyEditsToHtml -->
+  <div data-ls-gallery
+       data-edit="gallery-track"
+       data-autoplay="8"
+       style="display:none;">
+    <div class="ls-gallery-slide ls-gallery-slide--text">
+      <div class="ls-gallery-stat">
+        <span class="ls-gallery-label"
+              data-lang-key="ls01.stat-1-label"
+              contenteditable spellcheck="false">Section Title</span>
+        <span class="ls-gallery-number"
+              data-lang-key="ls01.stat-1-number"
+              contenteditable spellcheck="false">Key Fact</span>
+        <span class="ls-gallery-body-text"
+              data-lang-key="ls01.stat-1-text"
+              contenteditable spellcheck="false">Description text here</span>
+      </div>
+    </div>
+    <div class="ls-gallery-slide">
+      <img src="" alt="Gallery image">
+      <div class="ls-gallery-caption"
+           data-lang-key="ls01.gallery-caption-1"
+           contenteditable spellcheck="false">Image caption</div>
+    </div>
+  </div>
+
+  <style>
+    /* ── Mobile defaults ── */
+    .ls01 {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      font-family: var(--font-body, inherit);
+    }
+    .ls01 .hero-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+    .ls01-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        var(--hero-overlay-angle, 135deg),
+        rgba(var(--slide-hero-rgb), var(--hero-overlay-start, .72)) 0%,
+        rgba(var(--slide-hero-rgb), var(--hero-overlay-end, .38)) 100%);
+      z-index: 1;
+    }
+    .ls01 .slide-logo-row {
+      position: relative;
+      z-index: 2;
+    }
+    .ls01-credit {
+      position: absolute;
+      top: 18px;
+      right: 16px;
+      z-index: 10;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      color: var(--text-muted, rgba(255,255,255,.4));
+    }
+
+    /* Customer logo — stacked on mobile */
+    .ls01-customer-logo {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--logo-bg, transparent);
+      border: 1px solid var(--logo-border, rgba(255,255,255,.18));
+      border-radius: var(--logo-radius, 20px);
+      padding: 16px;
+      width: 100px;
+      height: 100px;
+      margin: 8px auto 0;
+      cursor: pointer;
+    }
+    .ls01-cust-img {
+      width: 90%;
+      height: 90%;
+      object-fit: contain;
+    }
+    .ls01-cust-img--missing { display: none; }
+    .ls01-cust-img--missing ~ .ls01-cust-placeholder { display: flex; }
+    .ls01-cust-placeholder {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      height: 100%;
+      border: 2px dashed var(--logo-border, rgba(255,255,255,.25));
+      border-radius: calc(var(--logo-radius, 20px) - 4px);
+      color: var(--text-muted, rgba(255,255,255,.5));
+      text-align: center;
+      cursor: pointer;
+    }
+    .ls01-cust-placeholder span { font-size: 11px; font-weight: 700; }
+    .ls01-cust-placeholder small { font-size: 9px; opacity: .65; }
+    .ls01-logo-del {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(180,30,30,.85);
+      border: none;
+      color: #ffffff;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+    }
+    /* Hover overlay — hidden in readonly via JS class */
+    .ls01-customer-logo::after {
+      content: 'Change Logo';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--logo-radius, 20px);
+      background: rgba(0,0,0,.55);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .ls01-customer-logo:hover::after { opacity: 1; }
+    .ls01-readonly .ls01-customer-logo::after { display: none; }
+    .ls01-readonly .ls01-customer-logo { cursor: default; }
+
+    /* Hero content */
+    .ls01-content {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 24px 20px;
+    }
+    .ls01-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--badge-color, var(--accent));
+      background: var(--badge-bg, transparent);
+      border: 1px solid var(--badge-border, transparent);
+      border-radius: var(--badge-radius, 4px);
+      display: inline-block;
+      padding: 3px 8px;
+      margin-bottom: 12px;
+      align-self: flex-start;
+    }
+    .ls01-headline {
+      font-size: clamp(1.6rem, 5vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--text, #fff);
+      font-family: var(--font-heading, var(--font-body, inherit));
+      margin: 0 0 16px;
+    }
+    .ls01-accent { color: var(--accent); }
+    .ls01-subheadline {
+      font-size: clamp(.9rem, 2vw, 1rem);
+      color: var(--text-muted, rgba(255,255,255,.6));
+      margin: 0;
+    }
+    .ls01-nav-hint {
+      margin-top: 24px;
+      font-size: 11px;
+      color: var(--text-muted, rgba(255,255,255,.40));
+      letter-spacing: .04em;
+    }
+
+    /* Gallery button */
+    .ls01-gallery-btn {
+      position: absolute;
+      bottom: 64px;
+      right: 16px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      background: var(--card-bg, rgba(0,0,0,.40));
+      border: 1px solid var(--card-border, rgba(255,255,255,.20));
+      border-radius: var(--card-radius, 20px);
+      color: var(--text-muted, rgba(255,255,255,.70));
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .25s, border-color .25s, color .25s;
+    }
+    .ls01-gallery-btn:hover {
+      background: rgba(var(--accent-rgb), .25);
+      border-color: var(--accent);
+      color: var(--text, #fff);
+    }
+
+    /* ── Desktop expansion ── */
+    @media(min-width:769px) {
+      .ls01-customer-logo {
+        position: absolute;
+        left: 75%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        margin: 0;
+        width: clamp(140px, 15vw, 240px);
+        height: clamp(140px, 15vw, 240px);
+        padding: 24px;
+        border-radius: var(--logo-radius, 24px);
+      }
+      .ls01-content {
+        padding: 48px 56px;
+        max-width: 60%;
+      }
+      .ls01-credit { top: 22px; right: 36px; }
+      .ls01-gallery-btn { bottom: 64px; right: 32px; }
+    }
+  </style>
+
+  <script>
+  (function () {
+    var slide   = document.currentScript.closest('[data-slide]');
+    var slideId = Track.slideId(slide);
+
+    /* ── Readonly setup ── */
+    if (window.PB_READONLY) slide.classList.add('ls01-readonly');
+
+    /* ── Customer logo upload ── */
+    var logoContainer = slide.querySelector('.ls01-customer-logo');
+    var logoInput     = slide.querySelector('#ls01-logo-file');
+
+    if (logoContainer && logoInput) {
+      logoContainer.addEventListener('click', function () {
+        if (window.PB_READONLY) return;
+        logoInput.click();
+      });
+
+      logoInput.addEventListener('change', function (e) {
+        if (window.PB_READONLY) return;
+        var file = e.target.files[0];
+        if (!file) return;
+        var img = slide.querySelector('.ls01-cust-img');
+        img.src = URL.createObjectURL(file);
+        img.classList.remove('ls01-cust-img--missing');
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+          fetch('/api/upload-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ filename: file.name, data: ev.target.result })
+          })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (data.path) {
+              img.src = data.path;
+              document.dispatchEvent(new CustomEvent('slide-image-change', {
+                detail: { editKey: 'customer-logo', src: data.path }
+              }));
+            }
+          });
+        };
+        reader.readAsDataURL(file);
+        e.target.value = '';
+      });
+    }
+
+    window.ls01DeleteLogo = function () {
+      if (window.PB_READONLY) return;
+      var img = slide.querySelector('.ls01-cust-img');
+      img.src = '';
+      img.classList.add('ls01-cust-img--missing');
+      document.dispatchEvent(new CustomEvent('slide-image-change', {
+        detail: { editKey: 'customer-logo', src: '' }
+      }));
+    };
+
+    setTimeout(function () {
+      if (window.Gallery) Gallery.init(slide);
+      if (window.PE) PE.initSlide(slide);
+    }, 0);
+  })();
+  </script>
+
+</div>

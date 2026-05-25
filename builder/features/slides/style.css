@@ -6,30 +6,50 @@
 
 /* ── Brand Variables ── */
 :root {
-  --accent:        #F5A623;
-  --accent-mid:    #E8890C;
-  --accent-light:  #FFD27F;
-  --accent-rgb:    245,166,35;
-  --bg:            #000;
-  --bg-card:       rgba(255,255,255,.03);
-  --bg-card-hover: rgba(245,166,35,.06);
-  --text:          #ffffff;
-  --text-muted:    #aaa;
-  --border:        rgba(255,255,255,.07);
-  --border-hover:  rgba(245,166,35,.32);
-  --nav-bg:        rgba(0,0,0,.65);
-  --nav-border:    rgba(255,255,255,.07);
-  --dot-inactive:  rgba(255,255,255,.18);
-  --counter:       #333;
-  --orb-a:         rgba(245,166,35,.10);
-  --orb-b:         rgba(232,137,12,.07);
+  --accent:          #F5A623;
+  --accent-mid:      #E8890C;
+  --accent-light:    var(--accent);
+  --accent-rgb:      245,166,35;
+  --bg:              #000;
+  --bg-card:         var(--card-bg);
+  --bg-card-hover:   rgba(var(--accent-rgb),.06);
+  --text:            #ffffff;
+  --text-muted:      #aaa;
+  --border:          var(--card-border);
+  --border-hover:    rgba(var(--accent-rgb),.32);
+  --nav-bg:          rgba(0,0,0,.65);
+  --nav-border:      rgba(255,255,255,.07);
+  --dot-inactive:    rgba(255,255,255,.18);
+  --counter:         #333;
+  --orb-a:           rgba(var(--accent-rgb),.10);
+  --orb-b:           rgba(var(--accent-rgb),.07);
+  --slide-hero-bg:   #070B1A;
+  --slide-hero-rgb:  7,11,26;
+
+  /* ── Theme system — new in 2026-05-24 ── */
+  --font-body:             -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --font-heading:          -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --hero-overlay-angle:    135deg;
+  --hero-overlay-start:    .72;
+  --hero-overlay-end:      .38;
+  --card-bg:               rgba(255,255,255,.05);
+  --card-border:           rgba(255,255,255,.10);
+  --card-radius:           12px;
+  --card-shadow:           0 4px 20px rgba(0,0,0,.35);
+  --badge-bg:              transparent;
+  --badge-border:          transparent;
+  --badge-radius:          4px;
+  --badge-color:           var(--accent);
+  --logo-bg:               transparent;
+  --logo-border:           rgba(255,255,255,.18);
+  --logo-radius:           20px;
 }
 
 /* ── Reset ── */
 * { margin:0; padding:0; box-sizing:border-box; }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  font-family: var(--font-body, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif);
   background: var(--bg);
   color: var(--text);
   overflow: hidden;
@@ -68,12 +88,12 @@ body {
   justify-content:flex-end; align-items:flex-start;
   padding:0 80px 80px 80px;
   overflow:hidden;
-  background:#070B1A;
+  background:var(--slide-hero-bg);
 }
 .hero-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; }
 .hero-overlay {
   position:absolute; inset:0; z-index:1;
-  background:linear-gradient(to top, rgba(7,11,26,.97) 0%, rgba(7,11,26,.55) 55%, rgba(7,11,26,.15) 100%);
+  background:linear-gradient(to top, rgba(var(--slide-hero-rgb),.97) 0%, rgba(var(--slide-hero-rgb),.55) 55%, rgba(var(--slide-hero-rgb),.15) 100%);
 }
 .hero-content { position:relative; z-index:2; }
 .softsolution-credit { position:absolute; top:42px; right:80px; z-index:3; font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,.30); }
@@ -89,10 +109,10 @@ body {
 
 .hero-content h1 {
   font-size:clamp(38px,5.5vw,72px);
-  font-weight:700; letter-spacing:-.02em; line-height:1.06; margin-bottom:16px; color:#fff;
+  font-weight:700; letter-spacing:-.02em; line-height:1.06; margin-bottom:16px; color:var(--text);
 }
-.hero-content h2 { font-size:clamp(16px,1.8vw,22px); font-weight:400; color:rgba(255,255,255,.60); line-height:1.5; }
-.click-hint { margin-top:36px; font-size:13px; color:rgba(255,255,255,.22); letter-spacing:.10em; text-transform:uppercase; font-weight:600; animation:blink 2s ease-in-out infinite; }
+.hero-content h2 { font-size:clamp(16px,1.8vw,22px); font-weight:400; color:var(--text-muted); line-height:1.5; }
+.click-hint { margin-top:36px; font-size:13px; color:var(--text-muted); opacity:.4; letter-spacing:.10em; text-transform:uppercase; font-weight:600; animation:blink 2s ease-in-out infinite; }
 
 /* ── Gradient text ── */
 .blue {
@@ -111,17 +131,17 @@ body {
   gap: 10px;
 }
 .slide-logo-row img {
-  height: 56px;
+  height: 28px;
   width: auto;
 }
 .slide-logo-sep {
   width: 1px;
-  height: 52px;
-  background: rgba(255,255,255,.25);
+  height: 26px;
+  background: var(--border);
   flex-shrink: 0;
 }
 .slide-logo-ls {
-  height: 52px !important;
+  height: 26px !important;
 }
 
 /* ── Content Slides ── */
@@ -304,8 +324,8 @@ body, .slides-container { height:100dvh; }
 
 /* Logo row: smaller on mobile */
 .slide-logo-row { top:14px; left:16px; }
-.slide-logo-row img { height:44px; }
-.slide-logo-ls { height:36px !important; }
+.slide-logo-row img { height:24px; }
+.slide-logo-ls { height:22px !important; }
 
 .cards-row { grid-template-columns:1fr; }
 .kpi-row { grid-template-columns:repeat(2,1fr); gap:10px; }
@@ -346,8 +366,8 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   .slide-body   { flex: 1; min-height: 0; overflow: hidden; }
 
   .slide-logo-row { top:22px; left:36px; }
-  .slide-logo-row img { height:60px; }
-  .slide-logo-ls { height:52px !important; }
+  .slide-logo-row img { height:32px; }
+  .slide-logo-ls { height:28px !important; }
 
   .cards-row { grid-template-columns:repeat(3,1fr); }
   .kpi-row { grid-template-columns:repeat(4,1fr); gap:14px; }
@@ -377,4 +397,30 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 .ls-tabs {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+/* ── Carousel: mobile base ──
+   On mobile, .slide-body has height:auto and flex:1 resolves to 0.
+   Give carousels a min-height so they are always visible. */
+.ls-carousel {
+  min-height: 240px;
+}
+
+/* ── Tab panel: mobile base ──
+   height:100% collapses when the parent has no fixed height.
+   Use auto on mobile so the panel expands to its content. */
+.ls-tab-panel {
+  height: auto;
+  overflow: visible;
+}
+
+/* ── Desktop overrides for carousel and tab-panel ── */
+@media(min-width:769px){
+  .ls-carousel {
+    min-height: 0;
+  }
+  .ls-tab-panel {
+    height: 100%;
+    overflow: hidden;
+  }
 }

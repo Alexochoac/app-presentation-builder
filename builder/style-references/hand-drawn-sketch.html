@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Future of AI - Hand-Drawn Sketch Style</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Caveat:wght@400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --paper-bg: #fef9f3;
+            --paper-secondary: #f5f0e8;
+            --ink-dark: #2c2c2c;
+            --ink-light: #666666;
+            --ink-blue: #1a73e8;
+            --ink-red: #d93025;
+            --ink-green: #137333;
+            --ink-orange: #ff6d00;
+            --ink-purple: #8e24aa;
+            --sketch-shadow: rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            font-family: 'Kalam', cursive;
+            background: var(--paper-bg);
+            color: var(--ink-dark);
+            overflow: hidden;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="none" stroke="%23666" stroke-width="2"/><circle cx="10" cy="10" r="2" fill="%23666"/></svg>') 10 10, auto;
+        }
+        
+        /* Paper Texture */
+        .paper-texture {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+            background-image: 
+                radial-gradient(circle at 20% 50%, transparent 20%, rgba(255,255,255,0.3) 21%, rgba(255,255,255,0.3) 34%, transparent 35%, transparent),
+                linear-gradient(0deg, transparent 24%, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05) 76%, transparent 77%, transparent);
+        }
+        
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            opacity: 0;
+            transform: translateY(20px) rotate(-0.5deg);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 60px;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0) rotate(0deg);
+        }
+        
+        .slide .content {
+            width: 100%;
+            max-width: 1200px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            text-align: center;
+        }
+        
+        /* Typography */
+        h1 {
+            font-family: 'Caveat', cursive;
+            font-weight: 700;
+            font-size: clamp(48px, 8vw, 120px);
+            line-height: 1.1;
+            margin: 0 0 30px 0;
+            color: var(--ink-dark);
+            transform: rotate(-1deg);
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 10%;
+            width: 80%;
+            height: 3px;
+            background: var(--ink-blue);
+            border-radius: 50px;
+            transform: rotate(0.5deg);
+            opacity: 0.7;
+        }
+        
+        h2 {
+            font-family: 'Caveat', cursive;
+            font-weight: 600;
+            font-size: clamp(36px, 6vw, 72px);
+            line-height: 1.2;
+            margin: 0 0 25px 0;
+            color: var(--ink-dark);
+            transform: rotate(0.5deg);
+            position: relative;
+        }
+        
+        h2::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -20px;
+            width: 15px;
+            height: 15px;
+            border: 2px solid var(--ink-red);
+            border-radius: 50%;
+            background: none;
+            transform: rotate(-10deg);
+        }
+        
+        .subtitle {
+            font-weight: 400;
+            font-size: clamp(18px, 3vw, 28px);
+            color: var(--ink-light);
+            margin: 0 0 50px 0;
+            max-width: 700px;
+            line-height: 1.6;
+            transform: rotate(-0.3deg);
+            font-style: italic;
+        }
+        
+        /* Sketch Cards */
+        .sketch-card {
+            background: var(--paper-secondary);
+            border: 2px solid var(--ink-dark);
+            padding: 32px;
+            margin: 16px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: rotate(var(--rotation, 1deg));
+            border-radius: 0 15px 0 15px;
+            box-shadow: 3px 3px 0px var(--sketch-shadow);
+        }
+        
+        .sketch-card::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border: 1px dashed var(--ink-light);
+            border-radius: 0 15px 0 15px;
+            opacity: 0.5;
+        }
+        
+        .sketch-card::after {
+            content: '✓';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 20px;
+            height: 20px;
+            background: var(--ink-green);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            transform: rotate(-15deg);
+        }
+        
+        .sketch-card:hover {
+            transform: rotate(0deg) translateY(-5px);
+            box-shadow: 5px 5px 0px var(--sketch-shadow);
+        }
+        
+        .sketch-card:hover::before {
+            border-color: var(--ink-blue);
+            opacity: 0.8;
+        }
+        
+        .sketch-card h3 {
+            font-family: 'Caveat', cursive;
+            font-size: clamp(20px, 2.5vw, 28px);
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--ink-dark);
+            position: relative;
+        }
+        
+        .sketch-card h3::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--ink-orange);
+            border-radius: 2px;
+            transform: rotate(-0.5deg);
+        }
+        
+        .sketch-card p {
+            font-size: clamp(14px, 1.5vw, 18px);
+            color: var(--ink-light);
+            line-height: 1.7;
+            font-weight: 400;
+        }
+        
+        /* Grid Layouts */
+        .sketch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            width: 100%;
+            margin: 40px 0;
+        }
+        
+        .three-col-sketch {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            width: 100%;
+            margin: 40px 0;
+        }
+        
+        /* Hand-drawn Stats */
+        .stats-sketch {
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            margin: 60px 0;
+            flex-wrap: wrap;
+        }
+        
+        .stat-sketch {
+            text-align: center;
+            transform: rotate(var(--rotation, -1deg));
+            position: relative;
+        }
+        
+        .stat-frame {
+            border: 3px solid var(--ink-dark);
+            border-radius: 15px 0 15px 0;
+            padding: 24px;
+            background: var(--paper-secondary);
+            position: relative;
+            min-width: 180px;
+            transform: rotate(-1deg);
+            box-shadow: 4px 4px 0px var(--sketch-shadow);
+        }
+        
+        .stat-frame::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            width: 16px;
+            height: 16px;
+            background: var(--ink-red);
+            border-radius: 50%;
+            box-shadow: 2px 2px 0px var(--sketch-shadow);
+        }
+        
+        .stat-frame::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            right: -8px;
+            width: 16px;
+            height: 16px;
+            background: var(--ink-blue);
+            border-radius: 50%;
+            box-shadow: 2px 2px 0px var(--sketch-shadow);
+        }
+        
+        .stat-number-sketch {
+            font-family: 'Caveat', cursive;
+            font-size: clamp(48px, 8vw, 80px);
+            font-weight: 700;
+            line-height: 1;
+            color: var(--ink-dark);
+            margin-bottom: 8px;
+            transform: rotate(2deg);
+        }
+        
+        .stat-label-sketch {
+            font-size: clamp(12px, 1.2vw, 16px);
+            font-weight: 500;
+            color: var(--ink-light);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        /* Quote Bubble */
+        .quote-bubble {
+            background: var(--paper-secondary);
+            border: 3px solid var(--ink-dark);
+            border-radius: 30px;
+            padding: 40px;
+            margin: 40px 0;
+            max-width: 900px;
+            position: relative;
+            transform: rotate(-0.5deg);
+            box-shadow: 5px 5px 0px var(--sketch-shadow);
+        }
+        
+        .quote-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 60px;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 15px solid var(--ink-dark);
+            transform: rotate(15deg);
+        }
+        
+        .quote-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 63px;
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-top: 12px solid var(--paper-secondary);
+            transform: rotate(15deg);
+        }
+        
+        .quote-bubble h4 {
+            font-family: 'Caveat', cursive;
+            font-size: clamp(24px, 4vw, 40px);
+            font-weight: 600;
+            color: var(--ink-dark);
+            line-height: 1.3;
+            margin-bottom: 20px;
+            transform: rotate(0.3deg);
+        }
+        
+        .quote-bubble p {
+            font-size: clamp(16px, 2vw, 20px);
+            color: var(--ink-light);
+            line-height: 1.6;
+            font-weight: 400;
+        }
+        
+        /* Sketch Button */
+        .sketch-btn {
+            background: var(--paper-secondary);
+            border: 3px solid var(--ink-dark);
+            color: var(--ink-dark);
+            padding: 16px 32px;
+            font-family: 'Caveat', cursive;
+            font-weight: 600;
+            font-size: clamp(16px, 2vw, 20px);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 24px 8px;
+            transform: rotate(-1deg);
+            border-radius: 0 10px 0 10px;
+            box-shadow: 3px 3px 0px var(--sketch-shadow);
+        }
+        
+        .sketch-btn::before {
+            content: '→';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 20px;
+            height: 20px;
+            background: var(--ink-blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transform: rotate(15deg);
+        }
+        
+        .sketch-btn:hover {
+            transform: rotate(0deg) translateY(-2px);
+            box-shadow: 5px 5px 0px var(--sketch-shadow);
+            background: var(--ink-blue);
+            color: white;
+        }
+        
+        .sketch-btn:hover::before {
+            background: var(--ink-red);
+        }
+        
+        /* Doodle Elements */
+        .doodle {
+            position: absolute;
+            font-size: 24px;
+            color: var(--ink-light);
+            opacity: 0.6;
+            animation: float 4s ease-in-out infinite;
+            transform: rotate(var(--rotation, 0deg));
+        }
+        
+        .doodle.star {
+            top: 10%;
+            right: 20%;
+            animation-delay: -1s;
+        }
+        
+        .doodle.heart {
+            bottom: 20%;
+            left: 10%;
+            animation-delay: -2s;
+        }
+        
+        .doodle.arrow {
+            top: 30%;
+            left: 5%;
+            animation-delay: -0.5s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(var(--rotation, 0deg)); }
+            50% { transform: translateY(-10px) rotate(var(--rotation, 0deg)); }
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            display: flex;
+            gap: 16px;
+            z-index: 1000;
+        }
+        
+        .nav-btn {
+            background: var(--paper-secondary);
+            border: 2px solid var(--ink-dark);
+            color: var(--ink-dark);
+            padding: 12px 20px;
+            font-family: 'Kalam', cursive;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform: rotate(-1deg);
+            border-radius: 0 8px 0 8px;
+            box-shadow: 2px 2px 0px var(--sketch-shadow);
+        }
+        
+        .nav-btn:hover {
+            transform: rotate(0deg) translateY(-1px);
+            box-shadow: 3px 3px 0px var(--sketch-shadow);
+            background: var(--ink-dark);
+            color: var(--paper-bg);
+        }
+        
+        /* Slide Counter */
+        .slide-counter {
+            position: fixed;
+            top: 32px;
+            left: 32px;
+            background: var(--paper-secondary);
+            border: 2px solid var(--ink-dark);
+            padding: 12px 20px;
+            font-family: 'Caveat', cursive;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--ink-dark);
+            z-index: 1000;
+            transform: rotate(-2deg);
+            border-radius: 0 12px 0 12px;
+            box-shadow: 3px 3px 0px var(--sketch-shadow);
+        }
+        
+        .slide-counter .current {
+            color: var(--ink-blue);
+            font-weight: 700;
+        }
+        
+        /* Animations */
+        .slide.active .sketch-card {
+            animation: sketchIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: calc(var(--delay) * 0.1s);
+            opacity: 0;
+        }
+        
+        .slide.active .stat-sketch {
+            animation: bounceSketch 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: calc(var(--delay) * 0.2s);
+            opacity: 0;
+        }
+        
+        @keyframes sketchIn {
+            from {
+                opacity: 0;
+                transform: rotate(10deg) translateY(50px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: rotate(var(--rotation, 1deg)) translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes bounceSketch {
+            0% {
+                opacity: 0;
+                transform: rotate(var(--rotation, -1deg)) translateY(30px) scale(0.5);
+            }
+            50% {
+                opacity: 0.8;
+                transform: rotate(var(--rotation, -1deg)) translateY(-10px) scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: rotate(var(--rotation, -1deg)) translateY(0) scale(1);
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 60px 40px;
+            }
+            
+            .three-col-sketch {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .stats-sketch {
+                flex-direction: column;
+                gap: 40px;
+                align-items: center;
+            }
+            
+            .sketch-card {
+                margin: 8px;
+                padding: 24px;
+            }
+            
+            .quote-bubble {
+                padding: 32px 24px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .slide {
+                padding: 40px 20px;
+            }
+            
+            .doodle {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="paper-texture"></div>
+    
+    <div class="presentation-container">
+        <div class="slide-counter">
+            <span class="current" id="currentSlide">01</span> / <span id="totalSlides">11</span>
+        </div>
+        
+        <!-- Doodle elements -->
+        <div class="doodle star" style="--rotation: 15deg;">⭐</div>
+        <div class="doodle heart" style="--rotation: -10deg;">♥</div>
+        <div class="doodle arrow" style="--rotation: 20deg;">→</div>
+        
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <div class="content">
+                <h1>The Future of AI</h1>
+                <div class="subtitle">Sketching out the possibilities in artificial intelligence</div>
+                <div style="font-size: 48px; margin: 20px 0; transform: rotate(-5deg);">🤖</div>
+            </div>
+        </div>
+        
+        <!-- Slide 2: Problem Statement -->
+        <div class="slide">
+            <div class="content">
+                <h2>Current Challenges</h2>
+                <div class="quote-bubble">
+                    <h4>Businesses are stuck in old patterns</h4>
+                    <p>Manual processes, fragmented systems, and expensive human resources are limiting growth potential</p>
+                </div>
+                <div class="subtitle">Time to sketch a better future!</div>
+            </div>
+        </div>
+        
+        <!-- Slide 3: Key Numbers -->
+        <div class="slide">
+            <div class="content">
+                <h2>The Numbers Tell a Story</h2>
+                <div class="stats-sketch">
+                    <div class="stat-sketch" style="--delay: 1; --rotation: -2deg;">
+                        <div class="stat-frame">
+                            <div class="stat-number-sketch">74.5%</div>
+                            <div class="stat-label-sketch">SWE Benchmark</div>
+                        </div>
+                    </div>
+                    <div class="stat-sketch" style="--delay: 2; --rotation: 1deg;">
+                        <div class="stat-frame">
+                            <div class="stat-number-sketch">115K</div>
+                            <div class="stat-label-sketch">Early Users</div>
+                        </div>
+                    </div>
+                    <div class="stat-sketch" style="--delay: 3; --rotation: -1deg;">
+                        <div class="stat-frame">
+                            <div class="stat-number-sketch">30M</div>
+                            <div class="stat-label-sketch">Opportunities</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="subtitle">AI has reached human-level coding ability 🎯</div>
+            </div>
+        </div>
+        
+        <!-- Slide 4: Three Categories -->
+        <div class="slide">
+            <div class="content">
+                <h2>Three Big Opportunities</h2>
+                <div class="three-col-sketch">
+                    <div class="sketch-card" style="--delay: 1; --rotation: -1deg;">
+                        <h3>Manual Everything</h3>
+                        <p>Companies still using spreadsheets and paper forms for everything they do</p>
+                    </div>
+                    <div class="sketch-card" style="--delay: 2; --rotation: 1deg;">
+                        <h3>App Chaos</h3>
+                        <p>Businesses juggling 5-10 different tools that don't talk to each other</p>
+                    </div>
+                    <div class="sketch-card" style="--delay: 3; --rotation: -0.5deg;">
+                        <h3>Expensive Humans</h3>
+                        <p>Companies paying $70K+ for tasks that AI could do 24/7 for much less</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 5: Money Matters -->
+        <div class="slide">
+            <div class="content">
+                <h2>The Math is Simple</h2>
+                <div class="sketch-grid">
+                    <div class="sketch-card" style="--rotation: -1deg;">
+                        <h3>Old Way: Human Employee</h3>
+                        <div style="font-family: 'Caveat', cursive; font-size: clamp(36px, 5vw, 56px); color: var(--ink-red); margin: 20px 0; transform: rotate(2deg);">$70,000/year</div>
+                        <p>Salary + benefits + training + coffee breaks ☕</p>
+                    </div>
+                    <div class="sketch-card" style="--rotation: 1deg;">
+                        <h3>New Way: AI Solution</h3>
+                        <div style="font-family: 'Caveat', cursive; font-size: clamp(36px, 5vw, 56px); color: var(--ink-green); margin: 20px 0; transform: rotate(-1deg);">$21,000/year</div>
+                        <p>One-time build + tiny maintenance costs ✨</p>
+                    </div>
+                </div>
+                <div class="quote-bubble">
+                    <h4>Save $49,000 every single year!</h4>
+                    <p>Plus your AI worker never calls in sick 🤒</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 6: What AI Can Build -->
+        <div class="slide">
+            <div class="content">
+                <h2>AI Can Build Anything!</h2>
+                <div class="sketch-grid">
+                    <div class="sketch-card" style="--delay: 1; --rotation: 0.5deg;">
+                        <h3>Full Websites 🌐</h3>
+                        <p>Complete web applications with databases, user accounts, and mobile-friendly design</p>
+                    </div>
+                    <div class="sketch-card" style="--delay: 2; --rotation: -1deg;">
+                        <h3>Payment Systems 💳</h3>
+                        <p>Secure checkout, subscription billing, and automated invoicing</p>
+                    </div>
+                    <div class="sketch-card" style="--delay: 3; --rotation: 1deg;">
+                        <h3>Smart Connections 🔗</h3>
+                        <p>Link up with existing tools and services through APIs</p>
+                    </div>
+                    <div class="sketch-card" style="--delay: 4; --rotation: -0.5deg;">
+                        <h3>Control Dashboards 📊</h3>
+                        <p>Beautiful admin panels with charts, reports, and real-time data</p>
+                    </div>
+                </div>
+                <div class="subtitle">All built by just talking to AI in plain English! 💬</div>
+            </div>
+        </div>
+        
+        <!-- Slide 7: Why They Need Help -->
+        <div class="slide">
+            <div class="content">
+                <h2>Why Don't They Do It Themselves?</h2>
+                <div class="quote-bubble">
+                    <h4>Business owners are too busy running their businesses!</h4>
+                    <p>They don't have time to learn new tech tools</p>
+                </div>
+                <div class="three-col-sketch">
+                    <div class="sketch-card" style="--delay: 1; --rotation: -1deg;">
+                        <h3>No Time ⏰</h3>
+                        <p>Too busy with customers, employees, and daily fires to put out</p>
+                    </div>
+                    <div class="sketch-card" style="--delay: 2; --rotation: 1deg;">
+                        <h3>No Clue 🤷</h3>
+                        <p>Don't know what AI can actually do or how to use it</p>
+                    </div>
+                    <div class="sketch-card" style="--delay: 3; --rotation: -0.5deg;">
+                        <h3>Prefer Experts 🎯</h3>
+                        <p>Would rather pay someone else to solve their problems</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 8: The Perfect Offer -->
+        <div class="slide">
+            <div class="content">
+                <h2>The Magic Words</h2>
+                <div class="quote-bubble">
+                    <h4>"I'll build you custom software that solves your exact problem"</h4>
+                    <p>Not some generic app. Not complicated setup. Custom-built just for them!</p>
+                </div>
+                <button class="sketch-btn">Let's Build Something!</button>
+                <div class="subtitle">This offer didn't exist before AI 🚀</div>
+            </div>
+        </div>
+        
+        <!-- Slide 9: Real Examples -->
+        <div class="slide">
+            <div class="content">
+                <h2>Success Stories</h2>
+                <div class="three-col-sketch">
+                    <div class="sketch-card" style="--delay: 1; --rotation: -1deg;">
+                        <h3>Dentist Office 🦷</h3>
+                        <p>Auto-fill patient forms with their previous visit info</p>
+                        <div style="color: var(--ink-green); font-size: 20px; margin-top: 16px; font-weight: 700;">$12,000 earned!</div>
+                    </div>
+                    <div class="sketch-card" style="--delay: 2; --rotation: 1deg;">
+                        <h3>Gym Trainer 💪</h3>
+                        <p>Track workouts for 50+ clients with progress photos</p>
+                        <div style="color: var(--ink-green); font-size: 20px; margin-top: 16px; font-weight: 700;">$8,000 earned!</div>
+                    </div>
+                    <div class="sketch-card" style="--delay: 3; --rotation: -0.5deg;">
+                        <h3>Apartment Manager 🏠</h3>
+                        <p>One place for tenants to request repairs and pay rent</p>
+                        <div style="color: var(--ink-green); font-size: 20px; margin-top: 16px; font-weight: 700;">$15,000 earned!</div>
+                    </div>
+                </div>
+                <div class="subtitle">Every business has problems worth solving! 💡</div>
+            </div>
+        </div>
+        
+        <!-- Slide 10: The Simple Process -->
+        <div class="slide">
+            <div class="content">
+                <h2>How It Works</h2>
+                <div class="sketch-grid">
+                    <div class="sketch-card" style="--delay: 1; --rotation: 0.5deg;">
+                        <h3>1. Listen 👂</h3>
+                        <p>Find businesses complaining about manual work or messy systems</p>
+                    </div>
+                    <div class="sketch-card" style="--delay: 2; --rotation: -1deg;">
+                        <h3>2. Ask Questions ❓</h3>
+                        <p>"Walk me through how you currently handle this process"</p>
+                    </div>
+                    <div class="sketch-card" style="--delay: 3; --rotation: 1deg;">
+                        <h3>3. Make the Offer 💰</h3>
+                        <p>"I can build you custom software that fixes this exact problem"</p>
+                    </div>
+                    <div class="sketch-card" style="--delay: 4; --rotation: -0.5deg;">
+                        <h3>4. Price it Right 💎</h3>
+                        <p>Charge based on the value you're creating, not hours worked</p>
+                    </div>
+                    <div class="sketch-card" style="--delay: 5; --rotation: 1deg;">
+                        <h3>5. Build with AI 🤖</h3>
+                        <p>Use Claude Code to build everything while sending progress updates</p>
+                    </div>
+                    <div class="sketch-card" style="--delay: 6; --rotation: -1deg;">
+                        <h3>6. Keep Earning 📈</h3>
+                        <p>Offer maintenance and new features for ongoing income</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 11: Call to Action -->
+        <div class="slide">
+            <div class="content">
+                <h1>Start Sketching Your Future!</h1>
+                <div class="quote-bubble">
+                    <h4>The opportunity is huge, but the window won't stay open forever</h4>
+                    <p>Every day more people discover AI. Get started before everyone else catches on!</p>
+                </div>
+                <div class="subtitle">Your future self will thank you for starting today ✨</div>
+                <button class="sketch-btn">Let's Begin! 🚀</button>
+            </div>
+        </div>
+        
+        <div class="nav">
+            <button class="nav-btn" onclick="previousSlide()">← Back</button>
+            <button class="nav-btn" onclick="nextSlide()">Next →</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('totalSlides').textContent = totalSlides.toString().padStart(2, '0');
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            document.getElementById('currentSlide').textContent = (index + 1).toString().padStart(2, '0');
+        }
+        
+        function nextSlide() {
+            currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+            showSlide(currentSlideIndex);
+        }
+        
+        function previousSlide() {
+            currentSlideIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
+            showSlide(currentSlideIndex);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowRight') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.code === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+        
+        // Initialize animation delays and rotations
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.sketch-card');
+            const stats = document.querySelectorAll('.stat-sketch');
+            
+            cards.forEach((card, index) => {
+                if (!card.style.getPropertyValue('--delay')) {
+                    card.style.setProperty('--delay', index + 1);
+                }
+                if (!card.style.getPropertyValue('--rotation')) {
+                    const rotations = ['-1deg', '1deg', '0.5deg', '-0.5deg', '2deg', '-2deg'];
+                    card.style.setProperty('--rotation', rotations[index % rotations.length]);
+                }
+            });
+            
+            stats.forEach((stat, index) => {
+                if (!stat.style.getPropertyValue('--delay')) {
+                    stat.style.setProperty('--delay', index + 1);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

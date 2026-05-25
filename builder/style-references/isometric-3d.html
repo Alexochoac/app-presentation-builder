@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Future of AI - Isometric 3D Style</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #e2e8f0;
+            --surface: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-green: #10b981;
+            --accent-orange: #f97316;
+            --accent-pink: #ec4899;
+            --shadow: rgba(15, 23, 42, 0.08);
+            --shadow-strong: rgba(15, 23, 42, 0.15);
+            --border: #e2e8f0;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--text-primary);
+            overflow: hidden;
+            perspective: 1000px;
+        }
+        
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 60px;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .slide .content {
+            width: 100%;
+            max-width: 1200px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            text-align: center;
+        }
+        
+        /* Typography */
+        h1 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            font-size: clamp(48px, 8vw, 96px);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin: 0 0 30px 0;
+            color: var(--text-primary);
+            text-shadow: 0 4px 8px rgba(15, 23, 42, 0.1);
+        }
+        
+        h2 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: clamp(36px, 6vw, 64px);
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+            margin: 0 0 25px 0;
+            color: var(--text-primary);
+        }
+        
+        .subtitle {
+            font-weight: 400;
+            font-size: clamp(18px, 3vw, 24px);
+            color: var(--text-secondary);
+            margin: 0 0 50px 0;
+            max-width: 700px;
+            line-height: 1.6;
+        }
+        
+        /* Isometric Elements */
+        .iso-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 32px;
+            margin: 16px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-style: preserve-3d;
+            transform: rotateX(15deg) rotateY(-15deg);
+        }
+        
+        .iso-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            transform: translateZ(-20px) translateX(10px) translateY(-10px);
+            z-index: -1;
+            opacity: 0.8;
+        }
+        
+        .iso-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(to bottom, #e2e8f0, #cbd5e1);
+            transform: translateZ(-1px) rotateY(90deg) translateX(10px);
+            transform-origin: left;
+        }
+        
+        .iso-card:hover {
+            transform: rotateX(20deg) rotateY(-20deg) translateY(-10px);
+            box-shadow: 
+                0 20px 40px var(--shadow-strong),
+                10px -10px 0px rgba(59, 130, 246, 0.1);
+        }
+        
+        .iso-card h3 {
+            font-size: clamp(18px, 2.5vw, 22px);
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .iso-card p {
+            font-size: clamp(14px, 1.5vw, 16px);
+            color: var(--text-secondary);
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* 3D Stats */
+        .stats-3d {
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            margin: 60px 0;
+            flex-wrap: wrap;
+            perspective: 1000px;
+        }
+        
+        .stat-3d {
+            text-align: center;
+            transform-style: preserve-3d;
+            transform: rotateX(10deg) rotateY(-10deg);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+        
+        .stat-3d:hover {
+            transform: rotateX(15deg) rotateY(-15deg) scale(1.1);
+        }
+        
+        .stat-cube {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            transform-style: preserve-3d;
+            margin: 0 auto 20px;
+            animation: rotateCube 8s infinite linear;
+        }
+        
+        @keyframes rotateCube {
+            0% { transform: rotateX(0deg) rotateY(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+        
+        .cube-face {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(20px, 3vw, 32px);
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cube-face.front {
+            background: var(--accent-blue);
+            transform: rotateY(0deg) translateZ(60px);
+        }
+        
+        .cube-face.back {
+            background: var(--accent-purple);
+            transform: rotateY(180deg) translateZ(60px);
+        }
+        
+        .cube-face.right {
+            background: var(--accent-green);
+            transform: rotateY(90deg) translateZ(60px);
+        }
+        
+        .cube-face.left {
+            background: var(--accent-orange);
+            transform: rotateY(-90deg) translateZ(60px);
+        }
+        
+        .cube-face.top {
+            background: var(--accent-pink);
+            transform: rotateX(90deg) translateZ(60px);
+        }
+        
+        .cube-face.bottom {
+            background: #64748b;
+            transform: rotateX(-90deg) translateZ(60px);
+        }
+        
+        .stat-label-3d {
+            font-size: clamp(12px, 1.2vw, 14px);
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 10px;
+        }
+        
+        /* Isometric Grid */
+        .iso-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            width: 100%;
+            margin: 40px 0;
+            transform-style: preserve-3d;
+        }
+        
+        .three-col-iso {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            width: 100%;
+            margin: 40px 0;
+            transform-style: preserve-3d;
+        }
+        
+        /* 3D Building Blocks */
+        .building-block {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            transform-style: preserve-3d;
+            display: inline-block;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .building-block:hover {
+            transform: translateY(-10px);
+        }
+        
+        .block-face {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+        }
+        
+        .block-front {
+            background: var(--accent-blue);
+            transform: rotateY(0deg) translateZ(40px);
+        }
+        
+        .block-back {
+            background: var(--accent-purple);
+            transform: rotateY(180deg) translateZ(40px);
+        }
+        
+        .block-right {
+            background: var(--accent-green);
+            transform: rotateY(90deg) translateZ(40px);
+        }
+        
+        .block-left {
+            background: var(--accent-orange);
+            transform: rotateY(-90deg) translateZ(40px);
+        }
+        
+        .block-top {
+            background: var(--accent-pink);
+            transform: rotateX(90deg) translateZ(40px);
+        }
+        
+        .block-bottom {
+            background: var(--text-muted);
+            transform: rotateX(-90deg) translateZ(40px);
+        }
+        
+        /* 3D Quote Block */
+        .quote-3d {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 48px;
+            margin: 40px 0;
+            max-width: 900px;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateX(5deg) rotateY(-5deg);
+            box-shadow: 
+                0 10px 30px var(--shadow),
+                10px -10px 0px rgba(59, 130, 246, 0.05);
+            transition: all 0.4s ease;
+        }
+        
+        .quote-3d::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            transform: translateZ(-30px) translateX(15px) translateY(-15px);
+            z-index: -1;
+            opacity: 0.7;
+        }
+        
+        .quote-3d:hover {
+            transform: rotateX(10deg) rotateY(-10deg) translateY(-5px);
+            box-shadow: 
+                0 20px 40px var(--shadow-strong),
+                15px -15px 0px rgba(59, 130, 246, 0.1);
+        }
+        
+        .quote-3d h4 {
+            font-size: clamp(24px, 4vw, 36px);
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.3;
+            margin-bottom: 20px;
+        }
+        
+        .quote-3d p {
+            font-size: clamp(16px, 2vw, 20px);
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* 3D Button */
+        .btn-3d {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: clamp(14px, 1.5vw, 16px);
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 24px 8px;
+        }
+        
+        .btn-3d::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #2563eb;
+            transform: translateZ(-8px) translateX(4px) translateY(-4px);
+            z-index: -1;
+        }
+        
+        .btn-3d:hover {
+            transform: translateY(-2px) translateZ(4px);
+        }
+        
+        .btn-3d:active {
+            transform: translateY(2px) translateZ(-2px);
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            display: flex;
+            gap: 16px;
+            z-index: 1000;
+        }
+        
+        .nav-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 12px 20px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px var(--shadow);
+        }
+        
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-secondary);
+            transform: translateZ(-6px) translateX(3px) translateY(-3px);
+            z-index: -1;
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px) translateZ(3px);
+            box-shadow: 0 8px 16px var(--shadow-strong);
+        }
+        
+        /* Slide Counter */
+        .slide-counter {
+            position: fixed;
+            top: 32px;
+            left: 32px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 12px 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            z-index: 1000;
+            transform-style: preserve-3d;
+            transform: rotateX(5deg) rotateY(-5deg);
+            box-shadow: 
+                0 4px 8px var(--shadow),
+                4px -4px 0px rgba(59, 130, 246, 0.05);
+        }
+        
+        .slide-counter .current {
+            color: var(--accent-blue);
+            font-weight: 700;
+        }
+        
+        /* Animations */
+        .slide.active .iso-card {
+            animation: slideIn3D 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: calc(var(--delay) * 0.1s);
+            opacity: 0;
+        }
+        
+        .slide.active .stat-3d {
+            animation: popIn3D 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: calc(var(--delay) * 0.2s);
+            opacity: 0;
+        }
+        
+        @keyframes slideIn3D {
+            from {
+                opacity: 0;
+                transform: rotateX(45deg) rotateY(-45deg) translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: rotateX(15deg) rotateY(-15deg) translateY(0);
+            }
+        }
+        
+        @keyframes popIn3D {
+            0% {
+                opacity: 0;
+                transform: rotateX(45deg) rotateY(-45deg) scale(0.5);
+            }
+            50% {
+                opacity: 0.8;
+                transform: rotateX(25deg) rotateY(-25deg) scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: rotateX(10deg) rotateY(-10deg) scale(1);
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 60px 40px;
+            }
+            
+            .three-col-iso {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .stats-3d {
+                flex-direction: column;
+                gap: 40px;
+                align-items: center;
+            }
+            
+            .iso-card {
+                margin: 8px;
+                padding: 24px;
+                transform: rotateX(10deg) rotateY(-10deg);
+            }
+            
+            .quote-3d {
+                padding: 32px 24px;
+                transform: rotateX(3deg) rotateY(-3deg);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .slide {
+                padding: 40px 20px;
+            }
+            
+            .stat-cube {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .cube-face {
+                width: 80px;
+                height: 80px;
+                font-size: 18px;
+            }
+            
+            .cube-face.front,
+            .cube-face.back,
+            .cube-face.right,
+            .cube-face.left {
+                transform: rotateY(var(--rotation, 0deg)) translateZ(40px);
+            }
+            
+            .cube-face.top,
+            .cube-face.bottom {
+                transform: rotateX(var(--rotation, 90deg)) translateZ(40px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="slide-counter">
+            <span class="current" id="currentSlide">01</span> / <span id="totalSlides">11</span>
+        </div>
+        
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <div class="content">
+                <h1>The Future of AI</h1>
+                <div class="subtitle">Exploring artificial intelligence through three-dimensional perspectives</div>
+                <div class="building-block">
+                    <div class="block-face block-front"></div>
+                    <div class="block-face block-back"></div>
+                    <div class="block-face block-right"></div>
+                    <div class="block-face block-left"></div>
+                    <div class="block-face block-top"></div>
+                    <div class="block-face block-bottom"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 2: Problem Space -->
+        <div class="slide">
+            <div class="content">
+                <h2>The Problem Landscape</h2>
+                <div class="quote-3d">
+                    <h4>Traditional business operations exist in a flat, two-dimensional world</h4>
+                    <p>Manual processes, disconnected systems, and expensive human resources limit growth potential</p>
+                </div>
+                <div class="subtitle">It's time to add depth to business solutions</div>
+            </div>
+        </div>
+        
+        <!-- Slide 3: Key Metrics in 3D -->
+        <div class="slide">
+            <div class="content">
+                <h2>Performance Dimensions</h2>
+                <div class="stats-3d">
+                    <div class="stat-3d" style="--delay: 1;">
+                        <div class="stat-cube">
+                            <div class="cube-face front">74.5%</div>
+                            <div class="cube-face back">SWE</div>
+                            <div class="cube-face right">BENCH</div>
+                            <div class="cube-face left">MARK</div>
+                            <div class="cube-face top">SCORE</div>
+                            <div class="cube-face bottom">AI</div>
+                        </div>
+                        <div class="stat-label-3d">SWE Benchmark</div>
+                    </div>
+                    <div class="stat-3d" style="--delay: 2;">
+                        <div class="stat-cube">
+                            <div class="cube-face front">115K</div>
+                            <div class="cube-face back">EARLY</div>
+                            <div class="cube-face right">ADOPT</div>
+                            <div class="cube-face left">ERS</div>
+                            <div class="cube-face top">USERS</div>
+                            <div class="cube-face bottom">NOW</div>
+                        </div>
+                        <div class="stat-label-3d">Current Users</div>
+                    </div>
+                    <div class="stat-3d" style="--delay: 3;">
+                        <div class="stat-cube">
+                            <div class="cube-face front">30M</div>
+                            <div class="cube-face back">HUGE</div>
+                            <div class="cube-face right">MARKET</div>
+                            <div class="cube-face left">SIZE</div>
+                            <div class="cube-face top">OPPS</div>
+                            <div class="cube-face bottom">BIZ</div>
+                        </div>
+                        <div class="stat-label-3d">Market Size</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 4: Three Categories -->
+        <div class="slide">
+            <div class="content">
+                <h2>Market Segments</h2>
+                <div class="three-col-iso">
+                    <div class="iso-card" style="--delay: 1;">
+                        <h3>Manual Systems</h3>
+                        <p>Businesses operating with spreadsheet-based workflows and paper documentation processes</p>
+                    </div>
+                    <div class="iso-card" style="--delay: 2;">
+                        <h3>Tool Fragmentation</h3>
+                        <p>Organizations juggling multiple disconnected applications requiring manual integration</p>
+                    </div>
+                    <div class="iso-card" style="--delay: 3;">
+                        <h3>Resource Constraints</h3>
+                        <p>Companies limited by expensive human resources working traditional business hours</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 5: Economic Analysis -->
+        <div class="slide">
+            <div class="content">
+                <h2>Economic Comparison</h2>
+                <div class="iso-grid">
+                    <div class="iso-card">
+                        <h3>Traditional Employee</h3>
+                        <div style="font-family: 'Space Mono', monospace; font-size: clamp(32px, 5vw, 48px); color: var(--accent-orange); margin: 20px 0; font-weight: 700;">$70,000</div>
+                        <p>Annual salary, benefits, training costs, and operational overhead</p>
+                    </div>
+                    <div class="iso-card">
+                        <h3>AI Solution</h3>
+                        <div style="font-family: 'Space Mono', monospace; font-size: clamp(32px, 5vw, 48px); color: var(--accent-green); margin: 20px 0; font-weight: 700;">$21,000</div>
+                        <p>One-time development plus maintenance for continuous operation</p>
+                    </div>
+                </div>
+                <div class="quote-3d">
+                    <h4>$49,000 annual savings with 24/7 availability</h4>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 6: AI Capabilities -->
+        <div class="slide">
+            <div class="content">
+                <h2>Development Stack</h2>
+                <div class="iso-grid">
+                    <div class="iso-card" style="--delay: 1;">
+                        <h3>Full-Stack Applications</h3>
+                        <p>Complete web applications with integrated databases and user authentication systems</p>
+                    </div>
+                    <div class="iso-card" style="--delay: 2;">
+                        <h3>Payment Processing</h3>
+                        <p>Secure financial integrations with automated billing and subscription management</p>
+                    </div>
+                    <div class="iso-card" style="--delay: 3;">
+                        <h3>API Integrations</h3>
+                        <p>Seamless connections to existing business tools and third-party service providers</p>
+                    </div>
+                    <div class="iso-card" style="--delay: 4;">
+                        <h3>Analytics Dashboards</h3>
+                        <p>Real-time reporting interfaces with customizable data visualization components</p>
+                    </div>
+                </div>
+                <div class="subtitle">All built through natural language conversations</div>
+            </div>
+        </div>
+        
+        <!-- Slide 7: Implementation Barriers -->
+        <div class="slide">
+            <div class="content">
+                <h2>Market Opportunity</h2>
+                <div class="quote-3d">
+                    <h4>Why businesses need professional implementation services</h4>
+                    <p>The gap between AI capability and business application creates significant opportunities</p>
+                </div>
+                <div class="three-col-iso">
+                    <div class="iso-card" style="--delay: 1;">
+                        <h3>Time Investment</h3>
+                        <p>Business owners focus on core operations rather than technology adoption</p>
+                    </div>
+                    <div class="iso-card" style="--delay: 2;">
+                        <h3>Technical Knowledge</h3>
+                        <p>Limited understanding of AI capabilities and implementation strategies</p>
+                    </div>
+                    <div class="iso-card" style="--delay: 3;">
+                        <h3>Service Preference</h3>
+                        <p>Tendency to outsource technical projects to specialized professionals</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 8: Value Proposition -->
+        <div class="slide">
+            <div class="content">
+                <h2>Our Approach</h2>
+                <div class="quote-3d">
+                    <h4>"Custom software solutions built specifically for your business processes"</h4>
+                    <p>Not generic tools or complex configurations, but purpose-built applications tailored to your needs</p>
+                </div>
+                <button class="btn-3d">Explore Solutions</button>
+                <div class="subtitle">Three-dimensional thinking for complex business challenges</div>
+            </div>
+        </div>
+        
+        <!-- Slide 9: Case Studies -->
+        <div class="slide">
+            <div class="content">
+                <h2>Implementation Examples</h2>
+                <div class="three-col-iso">
+                    <div class="iso-card" style="--delay: 1;">
+                        <h3>Healthcare Practice</h3>
+                        <p>Patient data management with intelligent form automation and history integration</p>
+                        <div style="color: var(--accent-green); font-size: 20px; margin-top: 16px; font-weight: 700;">$12,000 value</div>
+                    </div>
+                    <div class="iso-card" style="--delay: 2;">
+                        <h3>Fitness Studio</h3>
+                        <p>Comprehensive member management with personalized workout tracking capabilities</p>
+                        <div style="color: var(--accent-green); font-size: 20px; margin-top: 16px; font-weight: 700;">$8,000 value</div>
+                    </div>
+                    <div class="iso-card" style="--delay: 3;">
+                        <h3>Property Management</h3>
+                        <p>Integrated tenant portal with automated maintenance request processing</p>
+                        <div style="color: var(--accent-green); font-size: 20px; margin-top: 16px; font-weight: 700;">$15,000 value</div>
+                    </div>
+                </div>
+                <div class="subtitle">Every business has three-dimensional challenges worth solving</div>
+            </div>
+        </div>
+        
+        <!-- Slide 10: Process Framework -->
+        <div class="slide">
+            <div class="content">
+                <h2>Implementation Process</h2>
+                <div class="iso-grid">
+                    <div class="iso-card" style="--delay: 1;">
+                        <h3>01. Analysis</h3>
+                        <p>Comprehensive assessment of current processes and operational bottlenecks</p>
+                    </div>
+                    <div class="iso-card" style="--delay: 2;">
+                        <h3>02. Design</h3>
+                        <p>Three-dimensional solution architecture tailored to specific business requirements</p>
+                    </div>
+                    <div class="iso-card" style="--delay: 3;">
+                        <h3>03. Development</h3>
+                        <p>AI-powered rapid development with iterative feedback and continuous refinement</p>
+                    </div>
+                    <div class="iso-card" style="--delay: 4;">
+                        <h3>04. Integration</h3>
+                        <p>Seamless deployment with comprehensive training and ongoing support systems</p>
+                    </div>
+                    <div class="iso-card" style="--delay: 5;">
+                        <h3>05. Optimization</h3>
+                        <p>Performance monitoring with continuous improvement and feature enhancement</p>
+                    </div>
+                    <div class="iso-card" style="--delay: 6;">
+                        <h3>06. Scale</h3>
+                        <p>Growth-oriented development with expanding capabilities and market adaptation</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 11: Future Perspective -->
+        <div class="slide">
+            <div class="content">
+                <h1>Dimensional Advantage</h1>
+                <div class="quote-3d">
+                    <h4>The future belongs to those who think in multiple dimensions</h4>
+                    <p>While others see flat problems, we build three-dimensional solutions</p>
+                </div>
+                <div class="subtitle">Transform your business from 2D operations to 3D possibilities</div>
+                <button class="btn-3d">Start Building</button>
+            </div>
+        </div>
+        
+        <div class="nav">
+            <button class="nav-btn" onclick="previousSlide()">← Previous</button>
+            <button class="nav-btn" onclick="nextSlide()">Next →</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('totalSlides').textContent = totalSlides.toString().padStart(2, '0');
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            document.getElementById('currentSlide').textContent = (index + 1).toString().padStart(2, '0');
+        }
+        
+        function nextSlide() {
+            currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+            showSlide(currentSlideIndex);
+        }
+        
+        function previousSlide() {
+            currentSlideIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
+            showSlide(currentSlideIndex);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowRight') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.code === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+        
+        // Initialize animation delays
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.iso-card');
+            const stats = document.querySelectorAll('.stat-3d');
+            
+            cards.forEach((card, index) => {
+                if (!card.style.getPropertyValue('--delay')) {
+                    card.style.setProperty('--delay', index + 1);
+                }
+            });
+            
+            stats.forEach((stat, index) => {
+                if (!stat.style.getPropertyValue('--delay')) {
+                    stat.style.setProperty('--delay', index + 1);
+                }
+            });
+            
+            // Set CSS custom properties for cube faces on mobile
+            const cubefaces = document.querySelectorAll('.cube-face');
+            cubefaces.forEach(face => {
+                if (face.classList.contains('front')) {
+                    face.style.setProperty('--rotation', '0deg');
+                } else if (face.classList.contains('back')) {
+                    face.style.setProperty('--rotation', '180deg');
+                } else if (face.classList.contains('right')) {
+                    face.style.setProperty('--rotation', '90deg');
+                } else if (face.classList.contains('left')) {
+                    face.style.setProperty('--rotation', '-90deg');
+                } else if (face.classList.contains('top')) {
+                    face.style.setProperty('--rotation', '90deg');
+                } else if (face.classList.contains('bottom')) {
+                    face.style.setProperty('--rotation', '-90deg');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

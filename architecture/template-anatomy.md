@@ -38,18 +38,39 @@ All visual properties use CSS variables — never hardcoded colors, fonts, or sp
 that belong to a theme.
 
 ```css
-/* Required CSS variables (provided by the active style) */
+/* Full CSS variable contract (provided by deck style + app defaults) */
 --accent          /* primary brand color */
---accent-rgb      /* RGB triplet for rgba() usage */
+--accent-mid      /* slightly darker variant */
 --accent-light    /* lighter variant */
+--accent-rgb      /* raw RGB triplet: "245,166,35" — use inside rgba() */
 --bg              /* slide background */
 --bg-card         /* card/panel background */
+--bg-card-hover   /* card background on hover */
 --text            /* primary text color */
---text-muted      /* secondary text color */
+--text-muted      /* secondary/caption text color */
 --border          /* border color */
+--border-hover    /* border color on hover / focus */
+--nav-bg          /* navigation bar background */
+--nav-border      /* navigation bar border */
+--dot-inactive    /* inactive pagination dot */
+--counter         /* slide counter text color */
+--slide-hero-bg   /* hero slide solid background color */
+--slide-hero-rgb  /* hero background as RGB triplet for overlay gradients */
 ```
 
-Rule: if a color would change when switching styles, it must use a variable.
+**Rules — must follow every time:**
+
+1. **No hardcoded colors.** If a color changes when switching deck styles or themes, it must use a variable.
+
+2. **No hardcoded rgba tints — especially for accent.** Use `rgba(var(--accent-rgb), .10)`, never `rgba(245,166,35, .10)`. Hardcoded values break when the deck's primary color changes.
+
+3. **No hardcoded rgba tints for text or background either.** Use `var(--text-muted)` or `var(--bg-card)` rather than inventing new `rgba(255,255,255, .xx)` values. If you need a subtle tint that maps to text or bg, pick the closest existing token.
+
+4. **Hero slides must use `var(--slide-hero-bg)` and `var(--slide-hero-rgb)`.** The hero overlay gradient must be `rgba(var(--slide-hero-rgb), N)`. Never hardcode the hero background color.
+
+5. **Font families must not be hardcoded.** Do not set `font-family` in slide CSS — inherit from `body` (which the deck style overrides when needed). Exception: icon fonts like Font Awesome where no theme override makes sense.
+
+How deck styles cascade: when a deck style is applied, it overrides the CSS variables at the deck's container level. All slides inside that container inherit the new values automatically. Templates that follow these rules get the full style change for free — no per-template work needed.
 
 ### 2. Translation-Ready
 

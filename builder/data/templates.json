@@ -1,19 +1,30 @@
 [
   {
-    "id": "ls01-cover",
-    "name": "Cover Slide",
+    "id": "ls01",
+    "name": "New-Cover",
     "category": "Cover",
     "slideMode": "sequence",
     "components": [
       "headline",
-      "logo",
-      "customer-logo"
+      "subheadline",
+      "badge",
+      "customer-logo",
+      "carousel-track"
     ],
-    "file": "features/slides/slide-01-cover.html",
-    "createdAt": "2026-05-13T00:00:00.000Z",
+    "file": "features/slides/slide-01.html",
+    "createdAt": "2026-05-23T00:00:00.000Z",
     "tags": [
-      "Fix"
-    ]
+      "Cover",
+      "New"
+    ],
+    "defaultEdits": {
+      "logo-row": "\n    <img src=\"/shared/brand/logo.svg\" alt=\"Your Logo\">\n  ",
+      "credit": "by YourBrand.com",
+      "badge": "Product · Solution",
+      "headline": "Your Presentation <span class=\"ls01-accent\">Headline</span>",
+      "subheadline": "Proposal for [Customer] · [Name], [Title]",
+      "gallery-track": "\n    \n    \n  <div class=\"ls-gallery-slide\"><img src=\"/slides/uploads/CostOfQualityDefects.png\" alt=\"CostOfQualityDefects\"><div class=\"ls-gallery-caption\" contenteditable=\"\" spellcheck=\"false\">CostOfQualityDefects</div></div><div class=\"ls-gallery-slide ls-gallery-slide--text\"><div class=\"ls-gallery-stat\"><span class=\"ls-gallery-label\" contenteditable=\"\" spellcheck=\"false\">Section Title</span><span class=\"ls-gallery-number\" contenteditable=\"\" spellcheck=\"false\">Key Fact</span><span class=\"ls-gallery-body-text\" contenteditable=\"\" spellcheck=\"false\">Description text here</span></div></div>"
+    }
   },
   {
     "id": "ls02-company",
@@ -313,28 +324,6 @@
     }
   },
   {
-    "id": "ls24-test-simple",
-    "name": "Simple (Carousel)",
-    "category": "Test",
-    "slideMode": "sequence",
-    "components": [
-      "headline",
-      "carousel"
-    ],
-    "file": "features/slides/slide-24-test-simple.html",
-    "createdAt": "2026-05-16T00:00:00.000Z",
-    "tags": [
-      "New"
-    ],
-    "defaultEdits": {
-      "logo-row": "\n    <img src=\"/shared/brand/logo.svg\" alt=\"Your Logo\">\n  ",
-      "section-label": "Section Label!",
-      "headline": "Your Headline Goes Here!",
-      "subtitle": "A short supporting sentence that describes this slide.!",
-      "main-carousel": "\n        <div class=\"ls-carousel-track\" style=\"transform: translateX(0px);\">\n          \n          \n        <div class=\"ls-carousel-slide no-img\"><img src=\"\" alt=\"\"></div></div>\n      <div class=\"ls-carousel-counter\"></div>"
-    }
-  },
-  {
     "id": "ls23-screenprinting",
     "name": "Screen Printing v2",
     "category": "Visual",
@@ -357,93 +346,6 @@
       "col-item-5": "<strong>Screen printing errors</strong> &amp; defects",
       "col-item-6": "<strong>Logo position &amp; rotation</strong>",
       "carousel": "\n        <div class=\"ls-carousel-track\" style=\"transform: translateX(-960px);\">\n          <div class=\"ls-carousel-slide\"><button class=\"ls-carousel-del\" data-builder-only=\"\">✕</button>\n            <img src=\"/slides/uploads/image82.png\" alt=\"Pinhole detection on printed glass\" data-zoom=\"\" data-track=\"ls23:zoom:pinhole-detection\">\n          <button class=\"ls-carousel-btn ls-carousel-move\" data-builder-only=\"\" title=\"Move image left\" style=\"position: absolute; top: 8px; left: 8px; width: 26px; height: 26px; font-size: 13px; z-index: 22; opacity: 0; transition: opacity 0.2s;\">◀</button><button class=\"ls-carousel-btn ls-carousel-move\" data-builder-only=\"\" title=\"Move image right\" style=\"position: absolute; top: 8px; right: 38px; width: 26px; height: 26px; font-size: 13px; z-index: 22; opacity: 0; transition: opacity 0.2s;\">▶</button><button class=\"ls-cmp-enter\" data-builder-only=\"\" title=\"Compare two images side by side\">⇔ Compare</button><div class=\"ls-carousel-caption\">Pinhole detection on printed glass</div></div>\n          <div class=\"ls-carousel-slide\"><button class=\"ls-carousel-del\" data-builder-only=\"\">✕</button>\n            <img src=\"/slides/uploads/image83.png\" alt=\"Logo position check\" data-zoom=\"\" data-track=\"ls23:zoom:logo-position-check\">\n          <button class=\"ls-carousel-btn ls-carousel-move\" data-builder-only=\"\" title=\"Move image left\" style=\"position: absolute; top: 8px; left: 8px; width: 26px; height: 26px; font-size: 13px; z-index: 22; opacity: 0; transition: opacity 0.2s;\">◀</button><button class=\"ls-carousel-btn ls-carousel-move\" data-builder-only=\"\" title=\"Move image right\" style=\"position: absolute; top: 8px; right: 38px; width: 26px; height: 26px; font-size: 13px; z-index: 22; opacity: 0; transition: opacity 0.2s;\">▶</button><button class=\"ls-cmp-enter\" data-builder-only=\"\" title=\"Compare two images side by side\">⇔ Compare</button><div class=\"ls-carousel-caption\">Logo position check</div></div>\n        </div>\n      <div class=\"ls-carousel-counter\">2 / 2</div><button class=\"ls-carousel-btn ls-carousel-prev\" data-builder-only=\"\">‹</button><button class=\"ls-carousel-btn ls-carousel-next\" data-builder-only=\"\">›</button><button class=\"ls-carousel-add\" data-builder-only=\"\">+ Image</button><button class=\"ls-carousel-add\" data-builder-only=\"\" title=\"Autoplay off — click to enable\" style=\"right: auto; left: 10px; bottom: 8px;\">⏸ Auto</button>"
-    }
-  },
-  {
-    "id": "ls25-before-after",
-    "name": "Before & After (Tabs + Carousel + Image Compare)",
-    "category": "Test",
-    "slideMode": "sequence",
-    "components": [
-      "headline",
-      "tabs",
-      "carousel",
-      "compare"
-    ],
-    "file": "features/slides/slide-25-before-after.html",
-    "createdAt": "2026-05-16T00:00:00.000Z",
-    "tags": [
-      "New"
-    ],
-    "defaultEdits": {
-      "logo-row": "\n    <img src=\"/shared/brand/logo.svg\" alt=\"Your Logo\">\n  ",
-      "section-label": "Results &amp; Comparison",
-      "headline": "Before &amp; After — <span class=\"ls25-accent\">See the Difference</span>",
-      "subtitle": "Drag the handle or switch tabs to explore real results across different use cases.",
-      "tabs": "\n\n        <div class=\"ls-tab-list\">\n          <button class=\"ls-tab active\" data-panel=\"0\" contenteditable=\"false\" style=\"\">Use Case A</button>\n          <button class=\"ls-tab\" data-panel=\"1\" contenteditable=\"false\">Use Case B</button>\n          \n        <button class=\"ls-tab\" data-panel=\"2\" style=\"\">Use Case C</button><button class=\"ls-tab\" data-panel=\"3\" style=\"\">Use Case D</button></div>\n\n        <div class=\"ls-tab-panels\">\n\n          <!-- ── Panel 0: Use Case A — split compare ── -->\n          <div class=\"ls-tab-panel active\" data-panel=\"0\">\n            <div class=\"ls-carousel\" data-counter=\"\" style=\"flex:1;min-height:0;width:100%;\">\n              <div class=\"ls-carousel-track\" style=\"transform: translateX(0px);\">\n\n                <!-- Compare slide: split mode -->\n                <div class=\"ls-carousel-slide ls-compare ls-split no-img\" data-compare-mode=\"split\"><div class=\"ls-cmp-side ls-cmp-side-left\"><img class=\"ls-cmp-left\" src=\"\" alt=\"Before — Use Case A\" data-zoom=\"\"></div><div class=\"ls-cmp-side ls-cmp-side-right\"><img class=\"ls-cmp-right\" src=\"\" alt=\"After — Use Case A\" data-zoom=\"\"></div><div class=\"ls-cmp-handle\" style=\"display: none;\"><div class=\"ls-cmp-handle-grip\">⇔</div></div></div>\n\n                <!-- Regular slide -->\n                <div class=\"ls-carousel-slide no-img\">\n                  <img src=\"\" alt=\"Use Case A — additional view\" data-zoom=\"\">\n                <div class=\"ls-carousel-caption\">Use Case A — additional view</div></div>\n\n              </div>\n            <div class=\"ls-carousel-counter\">1 / 2</div></div>\n          </div>\n\n          <!-- ── Panel 1: Use Case B — reveal compare ── -->\n          <div class=\"ls-tab-panel\" data-panel=\"1\">\n            <div class=\"ls-carousel\" data-counter=\"\" style=\"flex:1;min-height:0;width:100%;\">\n              <div class=\"ls-carousel-track\" style=\"transform: translateX(0px);\">\n\n                <!-- Compare slide: reveal mode -->\n                <div class=\"ls-carousel-slide ls-compare no-img ls-reveal\" data-compare-mode=\"reveal\"><div class=\"ls-cmp-side ls-cmp-side-left\"><img class=\"ls-cmp-left\" src=\"\" alt=\"Before — Use Case B\" data-zoom=\"\"></div><div class=\"ls-cmp-side ls-cmp-side-right\" style=\"clip-path: inset(0px 0px 0px 50%);\"><img class=\"ls-cmp-right\" src=\"\" alt=\"After — Use Case B\" data-zoom=\"\"></div><div class=\"ls-cmp-handle\" style=\"left: 50%;\"><div class=\"ls-cmp-handle-grip\">⇔</div></div></div>\n\n                <!-- Regular slide -->\n                <div class=\"ls-carousel-slide no-img\">\n                  <img src=\"\" alt=\"Use Case B — additional view\" data-zoom=\"\">\n                <div class=\"ls-carousel-caption\">Use Case B — additional view</div></div>\n\n              </div>\n            <div class=\"ls-carousel-counter\">1 / 2</div></div>\n          </div>\n\n          <!-- ── Panel 2: Use Case C — regular carousel (single images) ── -->\n          \n\n        <div class=\"ls-tab-panel\" data-panel=\"2\"><div class=\"ls-carousel\" data-counter=\"\" data-zoom-group=\"\" style=\"flex:1;min-height:0;width:100%;\">  <div class=\"ls-carousel-track\" style=\"transform: translateX(0px);\">    <div class=\"ls-carousel-slide\" style=\"display:flex;align-items:center;justify-content:center;\">      <span style=\"color:rgba(255,255,255,.2);font-size:13px;font-style:italic;\">Add images with the + Image button</span>    </div>  </div><div class=\"ls-carousel-counter\"></div></div></div><div class=\"ls-tab-panel\" data-panel=\"3\"><div class=\"ls-carousel\" data-counter=\"\" data-zoom-group=\"\" style=\"flex:1;min-height:0;width:100%;\">  <div class=\"ls-carousel-track\" style=\"transform: translateX(0px);\">    <div class=\"ls-carousel-slide\" style=\"display:flex;align-items:center;justify-content:center;\">      <span style=\"color:rgba(255,255,255,.2);font-size:13px;font-style:italic;\">Add images with the + Image button</span>    </div>  </div><div class=\"ls-carousel-counter\"></div></div></div></div><!-- /ls-tab-panels -->\n      "
-    }
-  },
-  {
-    "id": "ls27-multi-panel",
-    "name": "Multi Panel — Buttons + Carousel",
-    "category": "Interactive",
-    "slideMode": "sequence",
-    "components": [
-      "headline",
-      "section-label",
-      "ls27-config",
-      "ls27-default-carousel"
-    ],
-    "file": "features/slides/slide-27-multi-panel.html",
-    "createdAt": "2026-05-16T00:00:00.000Z",
-    "tags": [
-      "Interactive",
-      "Carousel",
-      "Buttons",
-      "New"
-    ],
-    "defaultEdits": {
-      "logo-row": "\n    <img src=\"/shared/brand/logo.svg\" alt=\"Your Logo\">\n  ",
-      "section-label": "Section Name",
-      "headline": "Panel Selector <span class=\"ls27-accent\">Headline</span>",
-      "ls27-config": "[{\"id\":0,\"label\":\"Topic 1\",\"icon\":null,\"carHtml\":\"&lt;div class=\\\"ls-carousel-track\\\"&gt;&lt;div class=\\\"ls-carousel-slide\\\"&gt;&lt;img src=\\\"\\\" alt=\\\"\\\" data-zoom&gt;&lt;/div&gt;&lt;/div&gt;\"},{\"id\":1,\"label\":\"Topic 2\",\"icon\":null,\"carHtml\":\"&lt;div class=\\\"ls-carousel-track\\\"&gt;&lt;div class=\\\"ls-carousel-slide\\\"&gt;&lt;img src=\\\"\\\" alt=\\\"\\\" data-zoom&gt;&lt;/div&gt;&lt;/div&gt;\"},{\"id\":2,\"label\":\"3\",\"icon\":null,\"carHtml\":\"&lt;div class=\\\"ls-carousel-track\\\"&gt;&lt;div class=\\\"ls-carousel-slide\\\"&gt;&lt;img src=\\\"\\\" alt=\\\"\\\" data-zoom&gt;&lt;/div&gt;&lt;/div&gt;\"}]",
-      "ls27-default-carousel": "\n        <div class=\"ls-carousel-track\" style=\"transform: translateX(0px);\">\n          <div class=\"ls-carousel-slide no-img\"><img src=\"\" alt=\"\"></div>\n        </div>\n      <div class=\"ls-carousel-counter\"></div>",
-      "ls27-car-0": "<div class=\"ls-carousel-track\"><div class=\"ls-carousel-slide no-img\"><img src=\"\" alt=\"\" data-zoom=\"\"></div></div>",
-      "ls27-car-1": "<div class=\"ls-carousel-track\"><div class=\"ls-carousel-slide no-img\"><img src=\"\" alt=\"\" data-zoom=\"\"></div></div>",
-      "ls27-car-2": "<div class=\"ls-carousel-track\"><div class=\"ls-carousel-slide no-img\"><img src=\"\" alt=\"\" data-zoom=\"\"></div></div>",
-      "ls27-car-3": "\n          <div class=\"ls-carousel-track\">\n            <div class=\"ls-carousel-slide no-img\"><img src=\"\" alt=\"\" data-zoom=\"\"></div>\n          </div>\n        ",
-      "ls27-car-4": "\n          <div class=\"ls-carousel-track\">\n            <div class=\"ls-carousel-slide no-img\"><img src=\"\" alt=\"\" data-zoom=\"\"></div>\n          </div>\n        ",
-      "ls27-car-5": "\n          <div class=\"ls-carousel-track\">\n            <div class=\"ls-carousel-slide no-img\"><img src=\"\" alt=\"\" data-zoom=\"\"></div>\n          </div>\n        ",
-      "ls27-car-6": "\n          <div class=\"ls-carousel-track\">\n            <div class=\"ls-carousel-slide no-img\"><img src=\"\" alt=\"\" data-zoom=\"\"></div>\n          </div>\n        ",
-      "ls27-car-7": "\n          <div class=\"ls-carousel-track\">\n            <div class=\"ls-carousel-slide no-img\"><img src=\"\" alt=\"\" data-zoom=\"\"></div>\n          </div>\n        "
-    }
-  },
-  {
-    "id": "ls26-cover",
-    "name": "Cover — White + Gallery",
-    "category": "Cover",
-    "slideMode": "sequence",
-    "components": [
-      "headline",
-      "subheadline",
-      "badge",
-      "customer-logo",
-      "carousel-track"
-    ],
-    "file": "features/slides/slide-26-cover.html",
-    "createdAt": "2026-05-16T00:00:00.000Z",
-    "tags": [
-      "Cover",
-      "Hero",
-      "Gallery",
-      "New"
-    ],
-    "defaultEdits": {
-      "logo-row": "\n    <img src=\"/shared/brand/logo.svg\" alt=\"Your Logo\">\n  ",
-      "badge": "Product · Solution",
-      "headline": "Your Presentation <span class=\"ls26-accent\">Headline</span>",
-      "subheadline": "Proposal for [Customer] · [Name], [Title]",
-      "carousel-track": "\n\n          <div class=\"ls26-car-slide ls26-car-slide--text\"><div class=\"ls26-stat-block\"><div class=\"section-label\" contenteditable=\"\" spellcheck=\"false\">Section Title</div><span class=\"stat-number\" contenteditable=\"\" spellcheck=\"false\">Key Fact</span><div class=\"stat-label\" contenteditable=\"\" spellcheck=\"false\">Description text here</div></div></div><div class=\"ls26-car-slide\"><button class=\"ls26-car-del\" title=\"Remove\">✕</button><img src=\"/slides/uploads/CostOfQualityDefects.png\" alt=\"CostOfQualityDefects\"><div class=\"ls26-car-caption\" contenteditable=\"\" spellcheck=\"false\">CostOfQualityDefects</div></div>\n\n        <div class=\"ls26-car-slide ls26-car-slide--text\"><button class=\"ls26-car-del\" title=\"Remove\">✕</button><div class=\"ls26-stat-block\"><div class=\"section-label\" contenteditable=\"\" spellcheck=\"false\">Section Title</div><span class=\"stat-number\" contenteditable=\"\" spellcheck=\"false\">Key Fact</span><div class=\"stat-label\" contenteditable=\"\" spellcheck=\"false\">Description text here</div></div></div><div class=\"ls26-car-slide\"><img src=\"/slides/uploads/EfficiencyCliff.png\" alt=\"EfficiencyCliff\"><div class=\"ls26-car-caption\" contenteditable=\"\" spellcheck=\"false\">EfficiencyCliff</div></div><div class=\"ls26-car-slide ls26-car-slide--text\"><div class=\"ls26-stat-block\"><div class=\"section-label\" contenteditable=\"\" spellcheck=\"false\">Section Title</div><span class=\"stat-number\" contenteditable=\"\" spellcheck=\"false\">Key Fact</span><div class=\"stat-label\" contenteditable=\"\" spellcheck=\"false\">Description text here</div></div></div>"
     }
   }
 ]

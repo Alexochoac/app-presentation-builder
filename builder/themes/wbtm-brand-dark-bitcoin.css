@@ -1,0 +1,38 @@
+/* auto-generated */
+:root {
+  /* Identity */
+  --bg:                 #fff;
+  --slide-hero-bg:      #fff;
+  --slide-hero-rgb:     255,255,255;
+  --text:               #0a0a0a;
+  --text-muted:         rgba(0,0,0,.50);
+  --accent:             #F5A623;
+  --accent-rgb:         245,166,35;
+  --accent-mid:         #F5A623;
+  --accent-light:       #face86;
+  --font-body:          var(--font);
+  --font-heading:       var(--font);
+
+  /* Hero overlay */
+  --hero-overlay-angle: 135deg;
+  --hero-overlay-start: .25;
+  --hero-overlay-end:   .10;
+
+  /* Cards */
+  --card-bg:            rgba(0,0,0,.04);
+  --card-border:        rgba(0,0,0,.10);
+  --card-radius:        12px;
+  --card-shadow:        0 2px 12px rgba(0,0,0,.08);
+
+  /* Badge */
+  --badge-bg:           rgba(245,166,35,.15);
+  --badge-border:       rgba(245,166,35,.35);
+  --badge-radius:       999px;
+  --badge-color:        #E8901A;
+
+  /* Logo container */
+  --logo-bg:            rgba(0,0,0,.04);
+  --logo-border:        rgba(0,0,0,.10);
+  --logo-radius:        20px;
+}
+body, .slide { font-family: var(--font-body); }

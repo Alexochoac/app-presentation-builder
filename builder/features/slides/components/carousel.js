@@ -108,7 +108,11 @@ window.Carousel = (function () {
         body:    JSON.stringify({ filename: file.name, data: ev.target.result })
       })
       .then(function (r) { return r.json(); })
-      .then(function (data) { if (data.path) callback(data.path); });
+      .then(function (data) {
+        if (data.path) { callback(data.path); }
+        else if (data.error) { alert('Upload failed: ' + data.error); }
+      })
+      .catch(function () { alert('Upload failed. Please try again.'); });
     };
     reader.readAsDataURL(file);
   }
@@ -128,10 +132,10 @@ window.Carousel = (function () {
 
   // ── Init a single carousel element ───────────────────────────────────────
 
-  function initOne(el) {
+  function initOne(el, force) {
     if (el._lsCarouselInit) return;
     // Defer if inside a hidden panel — Tabs.switchTo will call Carousel.init when panel becomes visible
-    if (!el.offsetWidth) return;
+    if (!force && !el.offsetWidth) return;
     el._lsCarouselInit = true;
 
     var track       = el.querySelector('.ls-carousel-track');
@@ -754,6 +758,10 @@ window.Carousel = (function () {
     root.querySelectorAll('.ls-carousel').forEach(initOne);
   }
 
-  return { init: init };
+  function forceInit(el) {
+    if (el) initOne(el, true);
+  }
+
+  return { init: init, forceInit: forceInit };
 
 })();

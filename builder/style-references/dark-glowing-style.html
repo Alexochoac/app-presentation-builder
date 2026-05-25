@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Software Tailor Revolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', sans-serif;
+            background: #000;
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Main gradient background */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: radial-gradient(ellipse at 20% 50%, rgba(120, 119, 198, 0.2) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at 50% 100%, rgba(6, 182, 212, 0.1) 0%, transparent 40%),
+                        linear-gradient(180deg, #000000 0%, #0a0a0f 50%, #000000 100%);
+        }
+
+        /* Horizontal scroll container */
+        .presentation-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            display: flex;
+            z-index: 1;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .presentation-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Slides */
+        .slide {
+            min-width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            scroll-snap-align: start;
+            padding: 60px;
+            position: relative;
+        }
+
+        .slide-content {
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+            z-index: 2;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        /* Animate slide content when visible */
+        .slide.visible .slide-content {
+            animation: slideContentIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideContentIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Typography */
+        .hero-number {
+            font-size: 180px;
+            font-weight: 900;
+            letter-spacing: -8px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #06b6d4 0%, #22d3ee 50%, #67e8f9 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(6, 182, 212, 0.3);
+            filter: drop-shadow(0 0 15px rgba(6, 182, 212, 0.2));
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        h1 {
+            font-size: 72px;
+            font-weight: 800;
+            letter-spacing: -2px;
+            text-align: center;
+            max-width: 900px;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .slide.visible h1 {
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            text-align: center;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .slide.visible h2 {
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+        }
+
+        .subtitle {
+            font-size: 28px;
+            font-weight: 500;
+            opacity: 0.9;
+            text-align: center;
+            max-width: 700px;
+            line-height: 1.4;
+            color: rgba(255, 255, 255, 0.8);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .slide.visible .subtitle {
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+        }
+
+        .emphasis {
+            background: linear-gradient(135deg, #06b6d4 0%, #22d3ee 50%, #67e8f9 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+            filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.3));
+        }
+
+        /* Icon grid */
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .icon-item {
+            text-align: center;
+            animation: float 3s ease-in-out infinite;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .slide.visible .icon-item {
+            animation: iconIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards, float 3s ease-in-out infinite;
+        }
+
+        .slide.visible .icon-item:nth-child(1) { animation-delay: 0.4s, 0s; }
+        .slide.visible .icon-item:nth-child(2) { animation-delay: 0.5s, 0.5s; }
+        .slide.visible .icon-item:nth-child(3) { animation-delay: 0.6s, 1s; }
+        .slide.visible .icon-item:nth-child(4) { animation-delay: 0.7s, 1.5s; }
+        .slide.visible .icon-item:nth-child(5) { animation-delay: 0.8s, 2s; }
+        .slide.visible .icon-item:nth-child(6) { animation-delay: 0.9s, 2.5s; }
+
+        @keyframes iconIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, 
+                rgba(6, 182, 212, 0.1) 0%, 
+                rgba(34, 211, 238, 0.05) 100%);
+            border-radius: 20px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.15),
+                        inset 0 0 30px rgba(6, 182, 212, 0.05);
+        }
+
+        .icon-label {
+            font-size: 18px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Comparison */
+        .comparison {
+            display: flex;
+            gap: 60px;
+            margin-top: 50px;
+            justify-content: center;
+        }
+
+        .comparison-item {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            min-width: 300px;
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        .slide.visible .comparison-item {
+            animation: scaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+        }
+
+        .slide.visible .comparison-item:nth-child(2) {
+            animation-delay: 0.6s;
+        }
+
+        @keyframes scaleIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .comparison-item.highlighted {
+            background: linear-gradient(135deg, 
+                rgba(6, 182, 212, 0.1) 0%, 
+                rgba(34, 211, 238, 0.05) 100%);
+            transform: scale(1.1);
+            border: 2px solid rgba(6, 182, 212, 0.5);
+            box-shadow: 0 0 80px rgba(6, 182, 212, 0.2),
+                        inset 0 0 60px rgba(6, 182, 212, 0.05);
+        }
+
+        .price {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .price-label {
+            font-size: 20px;
+            opacity: 0.8;
+        }
+
+        /* Workflow */
+        .workflow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .workflow-step {
+            padding: 25px 40px;
+            background: linear-gradient(135deg, 
+                rgba(6, 182, 212, 0.1) 0%, 
+                rgba(34, 211, 238, 0.05) 100%);
+            border-radius: 100px;
+            font-size: 24px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateY(20px);
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.15);
+        }
+
+        .slide.visible .workflow-step {
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .slide.visible .workflow-step:nth-child(1) { animation-delay: 0.4s; }
+        .slide.visible .workflow-step:nth-child(2) { animation-delay: 0.5s; }
+        .slide.visible .workflow-step:nth-child(3) { animation-delay: 0.6s; }
+        .slide.visible .workflow-step:nth-child(4) { animation-delay: 0.7s; }
+        .slide.visible .workflow-step:nth-child(5) { animation-delay: 0.8s; }
+
+        .arrow {
+            font-size: 40px;
+            color: #22d3ee;
+            animation: bounce 1s ease-in-out infinite;
+            opacity: 0;
+        }
+
+        .slide.visible .arrow {
+            animation: fadeIn 0.5s ease 0.6s forwards, bounce 1s ease-in-out infinite;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(10px); }
+        }
+
+        /* Stats grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-top: 50px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.05) 0%, 
+                rgba(255, 255, 255, 0.02) 100%);
+            border-radius: 30px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.9);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37),
+                        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .slide.visible .stat-card {
+            animation: scaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .slide.visible .stat-card:nth-child(1) { animation-delay: 0.4s; }
+        .slide.visible .stat-card:nth-child(2) { animation-delay: 0.5s; }
+        .slide.visible .stat-card:nth-child(3) { animation-delay: 0.6s; }
+        .slide.visible .stat-card:nth-child(4) { animation-delay: 0.7s; }
+
+        .stat-number {
+            font-size: 64px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #06b6d4, #22d3ee);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.3));
+        }
+
+        .stat-label {
+            font-size: 20px;
+            opacity: 0.9;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* CTA Button */
+        .cta {
+            margin-top: 50px;
+            padding: 25px 60px;
+            background: linear-gradient(135deg, #06b6d4, #22d3ee);
+            color: white;
+            border-radius: 100px;
+            font-size: 24px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: glow 2s ease-in-out infinite;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .slide.visible .cta {
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards, glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 30px rgba(6, 182, 212, 0.5), 0 0 60px rgba(34, 211, 238, 0.3); }
+            50% { box-shadow: 0 0 60px rgba(6, 182, 212, 0.8), 0 0 100px rgba(34, 211, 238, 0.5); }
+        }
+
+        .cta:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 80px rgba(6, 182, 212, 0.8), 0 0 120px rgba(34, 211, 238, 0.6);
+        }
+
+        /* Badge */
+        .badge {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(6, 182, 212, 0.2);
+            padding: 10px 25px;
+            border-radius: 100px;
+            font-size: 16px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(6, 182, 212, 0.5);
+            color: #22d3ee;
+            box-shadow: 0 0 40px rgba(6, 182, 212, 0.5);
+        }
+
+        /* Navigation dots */
+        .nav-dots {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 16px;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            padding: 20px 32px;
+            border-radius: 100px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            width: 40px;
+            border-radius: 5px;
+            background: linear-gradient(90deg, #06b6d4, #22d3ee);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.8);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 40px 20px;
+            }
+            
+            h1 {
+                font-size: 48px;
+            }
+            
+            h2 {
+                font-size: 32px;
+            }
+            
+            .hero-number {
+                font-size: 120px;
+            }
+            
+            .comparison {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            .comparison-item {
+                min-width: auto;
+            }
+            
+            .icon-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            
+            .workflow {
+                flex-direction: column;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated gradient background -->
+    <div class="background"></div>
+
+    <!-- Horizontal scrolling container -->
+    <div class="presentation-wrapper">
+        <!-- Slide 1: Hook -->
+        <div class="slide visible">
+            <div class="slide-content">
+                <div class="badge">BREAKING</div>
+                <div class="hero-number">$15,000</div>
+                <h1>One Week.<br>Zero Code.<br>One Client.</h1>
+                <p class="subtitle">The Software Tailor Revolution starts now</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: The Problem -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Every Business<br>Is <span class="emphasis">Drowning</span></h1>
+                <div class="icon-grid">
+                    <div class="icon-item">
+                        <div class="icon">📱</div>
+                        <div class="icon-label">WhatsApp</div>
+                    </div>
+                    <div class="icon-item">
+                        <div class="icon">📊</div>
+                        <div class="icon-label">Excel</div>
+                    </div>
+                    <div class="icon-item">
+                        <div class="icon">📧</div>
+                        <div class="icon-label">Email</div>
+                    </div>
+                    <div class="icon-item">
+                        <div class="icon">📝</div>
+                        <div class="icon-label">Paper</div>
+                    </div>
+                    <div class="icon-item">
+                        <div class="icon">💬</div>
+                        <div class="icon-label">Texts</div>
+                    </div>
+                    <div class="icon-item">
+                        <div class="icon">📁</div>
+                        <div class="icon-label">Dropbox</div>
+                    </div>
+                </div>
+                <p class="subtitle" style="margin-top: 40px;">5 apps. 10 steps. 20 hours wasted weekly.</p>
+            </div>
+        </div>
+
+        <!-- Slide 3: The Solution -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>One Solution.<br><span class="emphasis">Their</span> Solution.</h1>
+                <div class="workflow">
+                    <div class="workflow-step">Listen</div>
+                    <div class="arrow">→</div>
+                    <div class="workflow-step">Build</div>
+                    <div class="arrow">→</div>
+                    <div class="workflow-step">Deliver</div>
+                </div>
+                <p class="subtitle" style="margin-top: 40px;">Custom software. 72 hours. Claude Code.</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: The Perfect Offer -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>The <span class="emphasis">Perfect</span> Offer</h1>
+                <h2 style="margin-top: 40px; font-size: 36px; opacity: 0.9;">"Tell me your problem.<br>I'll build your exact solution.<br>Next week. $15K."</h2>
+                <p class="subtitle" style="margin-top: 40px;">No selling. No convincing. Just solutions.</p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Price Comparison -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>The Price <span class="emphasis">Revolution</span></h1>
+                <div class="comparison">
+                    <div class="comparison-item">
+                        <div class="price">$100K</div>
+                        <div class="price-label">Traditional Dev</div>
+                        <div style="margin-top: 20px; opacity: 0.7;">6 months</div>
+                    </div>
+                    <div class="comparison-item highlighted">
+                        <div class="price" style="color: #22d3ee;">$15K</div>
+                        <div class="price-label">Software Tailor</div>
+                        <div style="margin-top: 20px; opacity: 0.9;">1 week</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Claude Code Power -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Claude Code<br>Builds <span class="emphasis">Anything</span></h1>
+                <div class="workflow">
+                    <div class="workflow-step">Describe Problem</div>
+                    <div class="arrow">→</div>
+                    <div class="workflow-step">Get Solution</div>
+                </div>
+                <p class="subtitle" style="margin-top: 40px;">No coding. No limits. Just results.</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Market Size -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>The <span class="emphasis">Trillion</span> Dollar Gap</h1>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">30M</div>
+                        <div class="stat-label">Small Businesses</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">$15K</div>
+                        <div class="stat-label">Average Project</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">115K</div>
+                        <div class="stat-label">Know Claude Code</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">90</div>
+                        <div class="stat-label">Days Left</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Real Examples -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Opportunities<br><span class="emphasis">Everywhere</span></h1>
+                <div class="icon-grid">
+                    <div class="icon-item">
+                        <div class="icon">🦷</div>
+                        <div class="icon-label">Dental</div>
+                        <div style="font-size: 24px; margin-top: 10px; font-weight: 700; color: #22d3ee;">$12K</div>
+                    </div>
+                    <div class="icon-item">
+                        <div class="icon">💪</div>
+                        <div class="icon-label">Fitness</div>
+                        <div style="font-size: 24px; margin-top: 10px; font-weight: 700; color: #22d3ee;">$8K</div>
+                    </div>
+                    <div class="icon-item">
+                        <div class="icon">🏠</div>
+                        <div class="icon-label">Property</div>
+                        <div style="font-size: 24px; margin-top: 10px; font-weight: 700; color: #22d3ee;">$15K</div>
+                    </div>
+                    <div class="icon-item">
+                        <div class="icon">🍕</div>
+                        <div class="icon-label">Restaurant</div>
+                        <div style="font-size: 24px; margin-top: 10px; font-weight: 700; color: #22d3ee;">$20K</div>
+                    </div>
+                    <div class="icon-item">
+                        <div class="icon">🔧</div>
+                        <div class="icon-label">Service</div>
+                        <div style="font-size: 24px; margin-top: 10px; font-weight: 700; color: #22d3ee;">$10K</div>
+                    </div>
+                    <div class="icon-item">
+                        <div class="icon">🔥</div>
+                        <div class="icon-label">Inspection</div>
+                        <div style="font-size: 24px; margin-top: 10px; font-weight: 700; color: #22d3ee;">$15K</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Build Once Sell Many -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Build Once.<br>Sell <span class="emphasis">Forever</span>.</h1>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">1</div>
+                        <div class="stat-label">Fire Inspection App</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">5,000</div>
+                        <div class="stat-label">Potential Clients</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">50</div>
+                        <div class="stat-label">Sales @ $15K</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">$750K</div>
+                        <div class="stat-label">Revenue</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: No Competition -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>You're Not<br><span class="emphasis">Competing</span></h1>
+                <h2 style="margin-top: 40px; font-size: 42px; opacity: 0.9;">You're replacing:</h2>
+                <div class="workflow" style="margin-top: 30px;">
+                    <div class="workflow-step">📊 Excel</div>
+                    <div class="workflow-step">📱 WhatsApp</div>
+                    <div class="workflow-step">📝 Paper</div>
+                </div>
+                <p class="subtitle" style="margin-top: 40px;">The bar is on the floor.</p>
+            </div>
+        </div>
+
+        <!-- Slide 11: The Playbook -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>The <span class="emphasis">Playbook</span></h1>
+                <div class="workflow" style="flex-direction: column; gap: 20px;">
+                    <div class="workflow-step">1. Find Pain → Coffee Shops</div>
+                    <div class="workflow-step">2. Diagnose → "Walk me through..."</div>
+                    <div class="workflow-step">3. Prescribe → "What if..."</div>
+                    <div class="workflow-step">4. Price → Hours Saved × $100</div>
+                    <div class="workflow-step">5. Build → Claude Code</div>
+                    <div class="workflow-step">6. Scale → $1K/mo maintenance</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Urgency -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="badge">URGENT</div>
+                <h1>The Window Is<br><span class="emphasis">Closing</span></h1>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">Today</div>
+                        <div class="stat-label">115K know</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">90 Days</div>
+                        <div class="stat-label">1M will know</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">6 Months</div>
+                        <div class="stat-label">Market saturated</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">Now</div>
+                        <div class="stat-label">Your advantage</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Challenge -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Your <span class="emphasis">Challenge</span></h1>
+                <div class="workflow" style="flex-direction: column; gap: 25px; margin-top: 50px;">
+                    <div class="workflow-step">Tonight → Sign up for Claude Code</div>
+                    <div class="workflow-step">Tomorrow → Talk to 3 businesses</div>
+                    <div class="workflow-step">This Week → Make your first offer</div>
+                    <div class="workflow-step">Next Month → Bank $15K</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Final CTA -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>The Revolution<br><span class="emphasis">Starts Now</span></h1>
+                <p class="subtitle" style="font-size: 36px; margin: 40px 0;">30 million businesses.<br>One perfect offer.<br>Your move.</p>
+                <button class="cta">Start Your Software Tailor Journey</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation dots -->
+    <div class="nav-dots" id="navDots"></div>
+
+    <script>
+        const wrapper = document.querySelector('.presentation-wrapper');
+        const slides = document.querySelectorAll('.slide');
+        const navDotsContainer = document.getElementById('navDots');
+        let currentSlide = 0;
+
+        // Create navigation dots
+        slides.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('nav-dot');
+            if (index === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => scrollToSlide(index));
+            navDotsContainer.appendChild(dot);
+        });
+
+        const dots = document.querySelectorAll('.nav-dot');
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            root: wrapper,
+            rootMargin: '0px',
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        slides.forEach(slide => {
+            observer.observe(slide);
+        });
+
+        // Scroll to specific slide
+        function scrollToSlide(index) {
+            const slideWidth = window.innerWidth;
+            wrapper.scrollTo({
+                left: slideWidth * index,
+                behavior: 'smooth'
+            });
+        }
+
+        // Update active dot on scroll
+        wrapper.addEventListener('scroll', () => {
+            const slideWidth = window.innerWidth;
+            const newSlide = Math.round(wrapper.scrollLeft / slideWidth);
+            
+            if (newSlide !== currentSlide) {
+                dots[currentSlide].classList.remove('active');
+                dots[newSlide].classList.add('active');
+                currentSlide = newSlide;
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentSlide < slides.length - 1) {
+                scrollToSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                scrollToSlide(currentSlide - 1);
+            }
+        });
+
+        // Touch support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        wrapper.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        wrapper.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50 && currentSlide < slides.length - 1) {
+                scrollToSlide(currentSlide + 1);
+            }
+            if (touchEndX > touchStartX + 50 && currentSlide > 0) {
+                scrollToSlide(currentSlide - 1);
+            }
+        }
+    </script>
+</body>
+</html>

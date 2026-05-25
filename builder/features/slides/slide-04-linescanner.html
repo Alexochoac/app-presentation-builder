@@ -342,7 +342,7 @@
       width:100%; border-collapse:collapse;
       font-size:clamp(10px,1.05vw,12px);
     }
-    .ls4-table thead tr { border-bottom:2px solid rgba(232,113,26,.4); }
+    .ls4-table thead tr { border-bottom:2px solid rgba(var(--accent-rgb),.4); }
     .ls4-table th {
       padding:7px 6px; font-weight:700; letter-spacing:.04em;
       text-transform:uppercase; font-size:10px;
@@ -351,10 +351,10 @@
     .ls4-check-col { text-align:left !important; width:38%; }
     .ls4-prod-col  { width:12%; }
     .ls4-highlight-col {
-      color:#E8711A !important;
-      background:rgba(232,113,26,.07);
-      border-left:1px solid rgba(232,113,26,.2);
-      border-right:1px solid rgba(232,113,26,.2);
+      color:var(--accent) !important;
+      background:rgba(var(--accent-rgb),.07);
+      border-left:1px solid rgba(var(--accent-rgb),.2);
+      border-right:1px solid rgba(var(--accent-rgb),.2);
     }
     .ls4-table tbody tr td {
       padding:4px 6px; color:var(--text-muted);
@@ -364,23 +364,23 @@
     .ls4-table tbody tr td:first-child { text-align:left; color:var(--text); }
     .ls4-shaded td { background:rgba(255,255,255,.02); }
     .ls4-table tbody tr td:nth-child(2) { background:rgba(99,179,237,.03); border-left:1px solid rgba(99,179,237,.1); border-right:1px solid rgba(99,179,237,.1); }
-    .ls4-table tbody tr td:nth-child(3) { background:rgba(232,113,26,.04); border-left:1px solid rgba(232,113,26,.15); border-right:1px solid rgba(232,113,26,.15); }
+    .ls4-table tbody tr td:nth-child(3) { background:rgba(var(--accent-rgb),.04); border-left:1px solid rgba(var(--accent-rgb),.15); border-right:1px solid rgba(var(--accent-rgb),.15); }
     .ls4-table tbody tr td:nth-child(4) { background:rgba(239,68,68,.03); border-left:1px solid rgba(239,68,68,.1); border-right:1px solid rgba(239,68,68,.1); }
     .ls4-table tbody tr td:nth-child(5) { background:rgba(239,68,68,.03); border-left:1px solid rgba(239,68,68,.1); border-right:1px solid rgba(239,68,68,.1); }
     .ls4-table tbody tr td:nth-child(6) { background:rgba(239,68,68,.03); border-left:1px solid rgba(239,68,68,.1); border-right:1px solid rgba(239,68,68,.1); }
     .ls4-dot      { font-size:12px; }
-    .ls4-dot-on   { color:#E8711A; }
+    .ls4-dot-on   { color:var(--accent); }
     .ls4-dot-red  { color:#f87171; }
     .ls4-dot-blue { color:#63b3ed; }
     .ls4-dot-off  { color:rgba(255,255,255,.25); }
 
     /* Per-column header colors for proc table */
-    .ls4-col-orange { color:#E8711A !important; background:rgba(232,113,26,.07); border-left:1px solid rgba(232,113,26,.2); border-right:1px solid rgba(232,113,26,.2); }
+    .ls4-col-orange { color:var(--accent) !important; background:rgba(var(--accent-rgb),.07); border-left:1px solid rgba(var(--accent-rgb),.2); border-right:1px solid rgba(var(--accent-rgb),.2); }
     .ls4-col-red    { color:#f87171 !important; background:rgba(239,68,68,.07);  border-left:1px solid rgba(239,68,68,.2);  border-right:1px solid rgba(239,68,68,.2); }
     .ls4-col-blue   { color:#63b3ed !important; background:rgba(99,179,237,.07); border-left:1px solid rgba(99,179,237,.2); border-right:1px solid rgba(99,179,237,.2); }
 
     /* Column body tinting for proc table */
-    .ls4-proc-table tbody tr td:nth-child(2) { background:rgba(232,113,26,.03); border-left:1px solid rgba(232,113,26,.1); border-right:1px solid rgba(232,113,26,.1); }
+    .ls4-proc-table tbody tr td:nth-child(2) { background:rgba(var(--accent-rgb),.03); border-left:1px solid rgba(var(--accent-rgb),.1); border-right:1px solid rgba(var(--accent-rgb),.1); }
     .ls4-proc-table tbody tr td:nth-child(3) { background:rgba(239,68,68,.03);  border-left:1px solid rgba(239,68,68,.1);  border-right:1px solid rgba(239,68,68,.1); }
     .ls4-proc-table tbody tr td:nth-child(4) { background:rgba(99,179,237,.03); border-left:1px solid rgba(99,179,237,.1); border-right:1px solid rgba(99,179,237,.1); }
     .ls4-legend {
@@ -425,7 +425,7 @@
       display:flex; align-items:center; justify-content:center;
       transition:border-color .2s;
     }
-    .ls4-proc-card:hover { border-color:rgba(232,113,26,.4); }
+    .ls4-proc-card:hover { border-color:rgba(var(--accent-rgb),.4); }
     .ls4-proc-card img {
       width:100%; height:100%; object-fit:contain; display:block;
       transition:transform .3s;
@@ -484,7 +484,7 @@
       letter-spacing:.04em; font-family:inherit; margin-top:2px;
       transition:all .2s;
     }
-    .ls4-add-row-btn:hover { border-color:rgba(232,113,26,.4); color:#E8711A; }
+    .ls4-add-row-btn:hover { border-color:rgba(var(--accent-rgb),.4); color:var(--accent); }
 
     /* Drag handle */
     .ls4-row-drag {
@@ -494,8 +494,8 @@
     }
     tr:hover .ls4-row-drag { opacity:1; }
     .ls4-row-drag:active { cursor:grabbing; }
-    .ls4-row-dragging { opacity:.4; background:rgba(232,113,26,.08) !important; }
-    .ls4-row-dragover td { border-top:2px solid #E8711A !important; }
+    .ls4-row-dragging { opacity:.4; background:rgba(var(--accent-rgb),.08) !important; }
+    .ls4-row-dragover td { border-top:2px solid var(--accent) !important; }
     tr.ls4-row-hidden { display:none; }
 
     /* Row hide button inside first td */
@@ -512,8 +512,8 @@
 
     /* Editable first cell */
     td[contenteditable="true"] {
-      outline:1px solid rgba(232,113,26,.5); border-radius:3px;
-      background:rgba(232,113,26,.05); padding-left:4px;
+      outline:1px solid rgba(var(--accent-rgb),.5); border-radius:3px;
+      background:rgba(var(--accent-rgb),.05); padding-left:4px;
     }
 
     /* Dot cells clickable */
@@ -534,7 +534,7 @@
       cursor:pointer; display:flex; align-items:center; justify-content:center;
       transition:all .2s; font-family:inherit; line-height:1;
     }
-    .ls4-card-move button:hover { background:rgba(232,113,26,.5); color:#fff; border-color:rgba(232,113,26,.4); }
+    .ls4-card-move button:hover { background:rgba(var(--accent-rgb),.5); color:#fff; border-color:rgba(var(--accent-rgb),.4); }
     .ls4-proc-card.ls4-collapsed .ls4-card-move { display:none; }
 
     /* Table hint badge */
@@ -623,8 +623,8 @@
       font-size:10px; font-weight:700; letter-spacing:.04em;
     }
     .ls4-badge-ls {
-      background:rgba(232,113,26,.15); color:#E8711A;
-      border:1px solid rgba(232,113,26,.3);
+      background:rgba(var(--accent-rgb),.15); color:var(--accent);
+      border:1px solid rgba(var(--accent-rgb),.3);
     }
     .ls4-badge-op {
       background:rgba(99,179,237,.12); color:#63b3ed;

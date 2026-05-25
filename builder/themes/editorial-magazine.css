@@ -1,0 +1,41 @@
+/* auto-generated */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+
+:root {
+  /* Identity */
+  --bg:                 #ffffff;
+  --slide-hero-bg:      #ffffff;
+  --slide-hero-rgb:     255,255,255;
+  --text:               #1a1a1a;
+  --text-muted:         rgba(0,0,0,.50);
+  --accent:             #c9a96e;
+  --accent-rgb:         201,169,110;
+  --accent-mid:         #c9a96e;
+  --accent-light:       #e1d0af;
+  --font-body:          'Source Sans Pro', sans-serif;
+  --font-heading:       'Playfair Display', serif;
+
+  /* Hero overlay */
+  --hero-overlay-angle: 135deg;
+  --hero-overlay-start: .25;
+  --hero-overlay-end:   .10;
+
+  /* Cards */
+  --card-bg:            rgba(0,0,0,.04);
+  --card-border:        rgba(0,0,0,.10);
+  --card-radius:        12px;
+  --card-shadow:        0 2px 12px rgba(0,0,0,.08);
+
+  /* Badge */
+  --badge-bg:           rgba(201,169,110,.15);
+  --badge-border:       rgba(201,169,110,.35);
+  --badge-radius:       6px;
+  --badge-color:        #c9a96e;
+
+  /* Logo container */
+  --logo-bg:            rgba(0,0,0,.04);
+  --logo-border:        rgba(0,0,0,.10);
+  --logo-radius:        20px;
+}
+body, .slide { font-family: var(--font-body); }
+h1, h2, h3 { font-family: var(--font-heading); }

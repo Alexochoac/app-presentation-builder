@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Future of AI - Modern SaaS Dark</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            line-height: 1.2;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: clamp(40px, 8vh, 80px);
+            text-align: center;
+        }
+        
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .slide-content {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h1 {
+            font-size: clamp(48px, 8vw, 96px);
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #8B5CF6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: clamp(20px, 3vh, 30px);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            text-shadow: 0 0 80px rgba(139, 92, 246, 0.5);
+            padding: 0.1em 0;
+        }
+        
+        .subtitle {
+            font-size: clamp(18px, 2.5vw, 28px);
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: clamp(40px, 6vh, 80px);
+            line-height: 1.3;
+        }
+        
+        .hero-text {
+            font-size: clamp(28px, 5vw, 64px);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: clamp(20px, 3vh, 40px);
+            background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.8) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .body-text {
+            font-size: clamp(16px, 2.2vw, 24px);
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .glow-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: clamp(24px, 4vw, 40px);
+            box-shadow: 
+                0 0 40px rgba(139, 92, 246, 0.3),
+                inset 0 0 20px rgba(139, 92, 246, 0.1);
+            animation: glow-pulse 3s ease-in-out infinite, cardSlideUp 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(40px);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .glow-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .glow-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 
+                0 0 60px rgba(139, 92, 246, 0.5),
+                0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        @keyframes glow-pulse {
+            0%, 100% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.3), inset 0 0 20px rgba(139, 92, 246, 0.1); }
+            50% { box-shadow: 0 0 60px rgba(139, 92, 246, 0.5), inset 0 0 30px rgba(139, 92, 246, 0.2); }
+        }
+        
+        @keyframes cardSlideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: clamp(20px, 4vw, 40px);
+            margin-top: clamp(40px, 6vh, 80px);
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        .glow-card:nth-child(1) { animation-delay: 0.5s; }
+        .glow-card:nth-child(2) { animation-delay: 0.7s; }
+        .glow-card:nth-child(3) { animation-delay: 0.9s; }
+        .glow-card:nth-child(4) { animation-delay: 1.1s; }
+        
+        .glow-card h3 {
+            font-size: clamp(18px, 2.8vw, 28px);
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #fff;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .glow-card p {
+            font-size: clamp(14px, 2vw, 18px);
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .highlight {
+            background: linear-gradient(135deg, #8B5CF6, #3B82F6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+        
+        .big-number {
+            font-size: clamp(80px, 15vw, 200px);
+            font-weight: 800;
+            background: linear-gradient(135deg, #8B5CF6, #3B82F6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 0.8;
+            margin-bottom: clamp(30px, 4vh, 50px);
+            letter-spacing: -0.04em;
+            text-shadow: 0 0 100px rgba(139, 92, 246, 0.8);
+            position: relative;
+        }
+        
+        .big-number::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+            z-index: -1;
+            filter: blur(60px);
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(40px, 8vw, 100px);
+            max-width: 1000px;
+            margin-top: clamp(40px, 6vh, 80px);
+        }
+        
+        .comparison-item {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: clamp(30px, 5vw, 50px);
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.9);
+            animation: scaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .comparison-item:nth-child(1) { animation-delay: 0.4s; }
+        .comparison-item:nth-child(2) { animation-delay: 0.6s; }
+        
+        @keyframes scaleIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .comparison-item h3 {
+            font-size: clamp(22px, 3.5vw, 36px);
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        
+        .comparison-item p {
+            font-size: clamp(15px, 2.2vw, 20px);
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+        }
+        
+        .old-way {
+            border-color: rgba(239, 68, 68, 0.3);
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.1);
+        }
+        
+        .new-way {
+            border-color: rgba(34, 197, 94, 0.3);
+            box-shadow: 0 0 30px rgba(34, 197, 94, 0.2);
+        }
+        
+        .new-way::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: #22C55E;
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(34, 197, 94, 0.8);
+        }
+        
+        .progress-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            overflow: hidden;
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+            border-radius: 50px;
+            box-shadow: 0 0 30px #3B82F6;
+            animation: fill 2s ease-out;
+        }
+        
+        @keyframes fill {
+            from { width: 0; }
+        }
+        
+        .progress-text {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            margin-top: 10px;
+            display: block;
+        }
+        
+        .chart-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+        
+        .chart {
+            display: flex;
+            gap: 30px;
+            height: 400px;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        
+        .bar {
+            flex: 1;
+            max-width: 120px;
+            height: var(--height);
+            background: linear-gradient(180deg, var(--color), rgba(var(--color), 0.3));
+            border-radius: 12px 12px 0 0;
+            position: relative;
+            animation: grow 1.5s ease-out var(--delay) both;
+            box-shadow: 0 0 40px var(--color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 20px;
+        }
+        
+        @keyframes grow {
+            from { 
+                height: 0; 
+                opacity: 0;
+            }
+            to { 
+                height: var(--height); 
+                opacity: 1;
+            }
+        }
+        
+        .bar .value {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px var(--color);
+        }
+        
+        .bar .label {
+            position: absolute;
+            bottom: -40px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+        
+        .pills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 60px 0;
+        }
+        
+        .pill {
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            position: relative;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            animation: pillSlideIn 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .pill:nth-child(1) { animation-delay: 0.2s; }
+        .pill:nth-child(2) { animation-delay: 0.4s; }
+        .pill:nth-child(3) { animation-delay: 0.6s; }
+        .pill:nth-child(4) { animation-delay: 0.8s; }
+        
+        @keyframes pillSlideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .pill[data-status="done"] {
+            background: linear-gradient(135deg, #10B981, #34D399);
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        
+        .pill[data-status="progress"] {
+            background: linear-gradient(135deg, #3B82F6, #06B6D4);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+            border-color: rgba(59, 130, 246, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .pill[data-status="review"] {
+            background: linear-gradient(135deg, #F59E0B, #FBBF24);
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.5);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+        
+        .pill[data-status="pending"] {
+            background: linear-gradient(135deg, #6B7280, #9CA3AF);
+            box-shadow: 0 0 20px rgba(107, 114, 128, 0.3);
+            border-color: rgba(107, 114, 128, 0.3);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { 
+                box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 50px rgba(59, 130, 246, 0.8);
+                transform: scale(1.05);
+            }
+        }
+        
+        .slide-indicator {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 8px 16px;
+        }
+        
+        .nav-hint {
+            position: fixed;
+            bottom: 60px;
+            right: 30px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 400;
+            text-align: right;
+            z-index: 100;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <div class="slide-content">
+                <h1>The Future of AI</h1>
+                <p class="subtitle">Transforming tomorrow, today</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Opening Statement -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="hero-text">We're not just building technology.</div>
+                <div class="hero-text">We're crafting the future.</div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Current State -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Where We Are</h1>
+                <div class="cards-container">
+                    <div class="glow-card">
+                        <h3>Machine Learning</h3>
+                        <p>Powerful algorithms learning from vast datasets</p>
+                    </div>
+                    <div class="glow-card">
+                        <h3>Natural Language</h3>
+                        <p>AI that understands and responds like humans</p>
+                    </div>
+                    <div class="glow-card">
+                        <h3>Computer Vision</h3>
+                        <p>Machines that see and interpret the world</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Big Number -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="big-number">10x</div>
+                <div class="hero-text">Faster. Smarter. Better.</div>
+                <p class="body-text">AI is accelerating human capability at an unprecedented pace</p>
+            </div>
+        </div>
+
+        <!-- Slide 5: The Challenge -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>The Challenge</h1>
+                <p class="body-text">Traditional approaches can't keep up with the exponential growth of data, complexity, and human needs. We need something <span class="highlight">fundamentally different</span>.</p>
+            </div>
+        </div>
+
+        <!-- Slide 6: Old vs New -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="comparison-grid">
+                    <div class="comparison-item old-way">
+                        <h3>Yesterday</h3>
+                        <p>Rigid programming<br>Limited learning<br>Manual processes</p>
+                    </div>
+                    <div class="comparison-item new-way">
+                        <h3>Tomorrow</h3>
+                        <p>Adaptive intelligence<br>Continuous evolution<br>Autonomous systems</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Breakthrough Technologies -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Breakthrough Technologies</h1>
+                <div class="cards-container">
+                    <div class="glow-card">
+                        <h3>Neural Networks</h3>
+                        <p>Deep learning architectures that mimic human cognition</p>
+                    </div>
+                    <div class="glow-card">
+                        <h3>Quantum Computing</h3>
+                        <p>Exponential processing power for complex problems</p>
+                    </div>
+                    <div class="glow-card">
+                        <h3>Edge Intelligence</h3>
+                        <p>AI processing directly where data is created</p>
+                    </div>
+                    <div class="glow-card">
+                        <h3>Generative AI</h3>
+                        <p>Creating new content, ideas, and solutions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Impact Areas -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Transforming Everything</h1>
+                <div class="cards-container">
+                    <div class="glow-card">
+                        <h3>Healthcare</h3>
+                        <p>Personalized medicine and early disease detection</p>
+                    </div>
+                    <div class="glow-card">
+                        <h3>Education</h3>
+                        <p>Adaptive learning tailored to every student</p>
+                    </div>
+                    <div class="glow-card">
+                        <h3>Climate</h3>
+                        <p>Optimizing energy use and reducing emissions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: The Opportunity -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="hero-text">This isn't about replacing humans.</div>
+                <div class="hero-text">It's about <span class="highlight">amplifying</span> human potential.</div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Call to Action -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>The Future Starts Now</h1>
+                <p class="body-text">Every breakthrough begins with curiosity. Every revolution starts with a single step forward.</p>
+            </div>
+        </div>
+
+        <!-- Slide 11: Progress Bars Demo -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>AI Development Progress</h1>
+                <div class="cards-container">
+                    <div class="progress-card">
+                        <h3>Natural Language Processing</h3>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 85%;"></div>
+                        </div>
+                        <span class="progress-text">85% Complete</span>
+                    </div>
+                    <div class="progress-card">
+                        <h3>Computer Vision</h3>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 72%; background: linear-gradient(90deg, #10B981, #34D399);"></div>
+                        </div>
+                        <span class="progress-text">72% Complete</span>
+                    </div>
+                    <div class="progress-card">
+                        <h3>Robotics Integration</h3>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 45%; background: linear-gradient(90deg, #F59E0B, #FBBF24);"></div>
+                        </div>
+                        <span class="progress-text">45% Complete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Animated Bar Chart -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Global AI Investment</h1>
+                <div class="chart-container">
+                    <div class="chart">
+                        <div class="bar" style="--height: 85%; --color: #3B82F6; --delay: 0.5s;">
+                            <span class="value">$175B</span>
+                            <span class="label">2024</span>
+                        </div>
+                        <div class="bar" style="--height: 60%; --color: #8B5CF6; --delay: 0.7s;">
+                            <span class="value">$125B</span>
+                            <span class="label">2023</span>
+                        </div>
+                        <div class="bar" style="--height: 40%; --color: #10B981; --delay: 0.9s;">
+                            <span class="value">$85B</span>
+                            <span class="label">2022</span>
+                        </div>
+                        <div class="bar" style="--height: 25%; --color: #F59E0B; --delay: 1.1s;">
+                            <span class="value">$55B</span>
+                            <span class="label">2021</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Neon Pills Demo -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>AI Development Stages</h1>
+                <div class="pills-container">
+                    <span class="pill" data-status="done">Research Complete</span>
+                    <span class="pill" data-status="progress">Development</span>
+                    <span class="pill" data-status="review">Testing Phase</span>
+                    <span class="pill" data-status="pending">Deployment</span>
+                </div>
+                <p class="body-text">Track progress across all development phases</p>
+            </div>
+        </div>
+
+        <!-- Slide 14: Closing -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="hero-text">Ready to shape tomorrow?</div>
+                <p class="subtitle">The future of AI is in our hands</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-indicator">
+        <span id="current-slide">1</span> of <span id="total-slides">14</span>
+    </div>
+    
+    <div class="nav-hint">
+        Press → or Space to continue
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('total-slides').textContent = totalSlides;
+        
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+            
+            // Restart animations
+            const slideContent = slides[currentSlide].querySelector('.slide-content');
+            slideContent.style.animation = 'none';
+            slideContent.offsetHeight; // Trigger reflow
+            slideContent.style.animation = null;
+            
+            // Restart card animations
+            const cards = slides[currentSlide].querySelectorAll('.glow-card');
+            cards.forEach((card, index) => {
+                card.style.animation = 'none';
+                card.offsetHeight; // Trigger reflow
+                card.style.animation = null;
+            });
+        }
+        
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+        
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+        
+        document.addEventListener('keydown', function(event) {
+            switch(event.key) {
+                case 'ArrowRight':
+                case ' ':
+                    event.preventDefault();
+                    nextSlide();
+                    break;
+                case 'ArrowLeft':
+                    event.preventDefault();
+                    prevSlide();
+                    break;
+            }
+        });
+        
+        // Touch/swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.addEventListener('touchstart', function(event) {
+            touchStartX = event.changedTouches[0].screenX;
+        });
+        
+        document.addEventListener('touchend', function(event) {
+            touchEndX = event.changedTouches[0].screenX;
+            if (touchStartX - touchEndX > 50) {
+                nextSlide();
+            } else if (touchEndX - touchStartX > 50) {
+                prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

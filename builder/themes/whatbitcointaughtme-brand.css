@@ -1,0 +1,38 @@
+/* auto-generated */
+:root {
+  /* Identity */
+  --bg:                 #000000;
+  --slide-hero-bg:      #000000;
+  --slide-hero-rgb:     0,0,0;
+  --text:               #ffffff;
+  --text-muted:         rgba(255,255,255,.55);
+  --accent:             #F5A623;
+  --accent-rgb:         245,166,35;
+  --accent-mid:         #F5A623;
+  --accent-light:       #face86;
+  --font-body:          'Segoe UI', system-ui, sans-serif;
+  --font-heading:       'Segoe UI', system-ui, sans-serif;
+
+  /* Hero overlay */
+  --hero-overlay-angle: 135deg;
+  --hero-overlay-start: .72;
+  --hero-overlay-end:   .38;
+
+  /* Cards */
+  --card-bg:            #1a1a1a;
+  --card-border:        rgba(255,255,255,.10);
+  --card-radius:        var(--radius);
+  --card-shadow:        0 4px 20px rgba(0,0,0,.35);
+
+  /* Badge */
+  --badge-bg:           rgba(245,166,35,.15);
+  --badge-border:       rgba(245,166,35,.35);
+  --badge-radius:       999px;
+  --badge-color:        #F5A623;
+
+  /* Logo container */
+  --logo-bg:            rgba(255,255,255,.05);
+  --logo-border:        rgba(255,255,255,.10);
+  --logo-radius:        20px;
+}
+body, .slide { font-family: var(--font-body); }

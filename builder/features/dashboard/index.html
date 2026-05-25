@@ -192,7 +192,7 @@
       color: var(--accent);
       background: color-mix(in srgb, var(--accent) 10%, var(--bg));
     }
-    #viewsPresDropdown, #engPresDropdown, #engDateDropdown { position: relative; }
+    #viewsPresDropdown, #engPresDropdown, #engDeckDropdown, #engDateDropdown { position: relative; }
     #viewsPresTrigger { cursor: pointer; user-select: none; }
     #viewsPresTrigger .chevron { font-size: 10px; opacity: .5; transition: transform .15s; }
     #viewsPresTrigger.open .chevron { transform: rotate(180deg); }
@@ -535,13 +535,13 @@
           <div id="engDateDropdown">
             <button id="engDateTrigger" class="filter-pill" type="button">
               <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5;flex-shrink:0;"><rect x="2" y="4" width="16" height="14" rx="2"/><line x1="2" y1="8" x2="18" y2="8"/><line x1="6" y1="2" x2="6" y2="6"/><line x1="14" y1="2" x2="14" y2="6"/></svg>
-              <span id="engDateLabel">Last 30 days</span>
+              <span id="engDateLabel">Last 7 days</span>
               <span class="chevron">&#9660;</span>
             </button>
             <div id="engDateMenu" class="views-floating-menu">
-              <div class="sort-option" data-value="7d">Last 7 days</div>
               <div class="sort-option" data-value="24h">Last 24 hours</div>
-              <div class="sort-option selected" data-value="30d">Last 30 days</div>
+              <div class="sort-option selected" data-value="7d">Last 7 days</div>
+              <div class="sort-option" data-value="30d">Last 30 days</div>
               <div class="sort-option" data-value="custom">Custom…</div>
             </div>
             <input id="engDateInput" type="text" readonly style="position:absolute;bottom:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none;">
@@ -550,8 +550,18 @@
         </div>
       </div>
       <div id="engActBody" style="display:none;">
-        <!-- Legend -->
-        <div style="display:flex;gap:14px;font-size:11px;color:var(--muted);margin-bottom:12px;">
+        <!-- Events mode header: back to pageviews + sub-mode toggle (hidden in pageviews mode) -->
+        <div id="engEventsHeader" style="display:none;align-items:center;gap:8px;margin-bottom:10px;">
+          <button id="engBackToPageviews" class="views-tab" type="button">&#8592; Pageviews</button>
+          <button id="engSubModeBtn" class="views-tab" type="button">Over time</button>
+        </div>
+        <!-- Drill-down header (hidden by default) -->
+        <div id="engDrillHeader" style="display:none;align-items:center;gap:8px;margin-bottom:10px;">
+          <button id="engDrillBack" class="views-tab" type="button">&#8592; Back</button>
+          <span id="engDrillTitle" style="font-size:13px;color:var(--muted);"></span>
+        </div>
+        <!-- Pageviews legend -->
+        <div id="engLegend" style="display:flex;gap:14px;font-size:11px;color:var(--muted);margin-bottom:12px;">
           <span style="display:flex;align-items:center;gap:5px;">
             <span style="width:12px;height:12px;background:#F5A623;border-radius:2px;display:inline-block;"></span>Pageviews
           </span>
@@ -559,16 +569,32 @@
             <span style="width:12px;height:12px;background:rgba(99,179,237,.8);border-radius:2px;display:inline-block;"></span>Visitors
           </span>
         </div>
-        <!-- Bar chart -->
-        <div style="position:relative;height:240px;">
+        <!-- Pageviews bar chart -->
+        <div id="engBarChartWrap" style="position:relative;height:240px;">
           <canvas id="engBarChart"></canvas>
+          <div id="engChartTooltip" style="display:none;position:absolute;z-index:50;border-radius:10px;padding:10px 12px;min-width:200px;max-width:260px;font-size:12px;pointer-events:auto;box-shadow:0 8px 32px rgba(0,0,0,.4);"></div>
         </div>
+        <!-- Events chart (hidden in pageviews mode) -->
+        <div id="engEventsChartWrap" style="display:none;position:relative;height:240px;">
+          <canvas id="engEventsChart"></canvas>
+          <div id="engEventsSpinner" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);">
+            <span style="color:var(--muted);font-size:13px;">Loading&#8230;</span>
+          </div>
+        </div>
+        <!-- Events legend (shown in timeseries mode) -->
+        <div id="engEventsLegend" style="display:none;flex-wrap:wrap;gap:8px;margin-top:8px;font-size:11px;color:var(--muted);"></div>
         <!-- Filters row -->
         <div style="display:flex;gap:6px;margin-top:16px;flex-wrap:wrap;align-items:center;">
-          <button class="views-tab active" id="engPresAllBtn">All presentations</button>
+          <div id="engDeckDropdown">
+            <button id="engDeckTrigger" class="views-tab" type="button">
+              <span id="engDeckLabel">All decks</span>
+              <span class="chevron" style="margin-left:4px;">&#9660;</span>
+            </button>
+            <div id="engDeckMenu" class="views-floating-menu"></div>
+          </div>
           <div id="engPresDropdown">
             <button id="engPresTrigger" class="views-tab" type="button">
-              <span id="engPresLabel">Filter by presentation</span>
+              <span id="engPresLabel">All presentations</span>
               <span class="chevron" style="margin-left:4px;">&#9660;</span>
             </button>
             <div id="engPresMenu" class="views-floating-menu"></div>
@@ -760,10 +786,12 @@
       ]).then(function (results) {
         var items     = (results[0].data) || [];
         var decksData = results[1].data || {};
-        var deckCount = decksData.decks ? decksData.decks.length : 0;
+        var deckList  = decksData.decks || [];
+        var deckCount = deckList.length;
         window._viewsPresentations = items;
+        window._viewsDecks         = deckList;
         window._viewsDeckCount     = deckCount;
-        document.dispatchEvent(new CustomEvent('viewsPresentationsLoaded', { detail: { items: items, deckCount: deckCount } }));
+        document.dispatchEvent(new CustomEvent('viewsPresentationsLoaded', { detail: { items: items, decks: deckList, deckCount: deckCount } }));
       });
     })();
 
@@ -805,6 +833,15 @@
   </script>
 
   <script>
+    function localDate(d) {
+      return d.getFullYear() + '-' +
+        String(d.getMonth() + 1).padStart(2, '0') + '-' +
+        String(d.getDate()).padStart(2, '0');
+    }
+    function isoToLocalDate(isoStr) {
+      return isoStr ? localDate(new Date(isoStr)) : '';
+    }
+
     // ── Views Overview Chart ────────────────────────────────────────
     (function () {
       var presentations = [];   // populated from API via event
@@ -835,7 +872,7 @@
         var buckets = [];
         var cursor = new Date(startMs);
         while (cursor.getTime() <= endMs) {
-          buckets.push(cursor.toISOString().slice(0, 10));
+          buckets.push(localDate(cursor));
           cursor.setDate(cursor.getDate() + 1);
         }
 
@@ -844,7 +881,7 @@
         buckets.forEach(function (k) { countMap[k] = 0; });
         presentations.forEach(function (p) {
           if (presIds.length > 0 && presIds.indexOf(p.id) === -1) return;
-          var dateStr = (p.publishedAt || p.createdAt || '').slice(0, 10);
+          var dateStr = isoToLocalDate(p.publishedAt || p.createdAt);
           if (countMap.hasOwnProperty(dateStr)) countMap[dateStr]++;
         });
 
@@ -1168,21 +1205,21 @@
       }
 
       // ── Bootstrap: wait for presentations to load ────────────────
-      function init(items, deckCount) {
+      function init(items, decks, deckCount) {
         presentations = items;
         checkedIds = items.map(function (p) { return p.id; });
         buildPresMenu();
-        document.dispatchEvent(new CustomEvent('engPresentationsReady', { detail: presentations }));
+        document.dispatchEvent(new CustomEvent('engPresentationsReady', { detail: { presentations: presentations, decks: decks || [] } }));
         buildChart();
         buildSummaryCards(items, deckCount);
         buildRecentActivity(items);
       }
 
       if (window._viewsPresentations) {
-        init(window._viewsPresentations, window._viewsDeckCount || 0);
+        init(window._viewsPresentations, window._viewsDecks || [], window._viewsDeckCount || 0);
       } else {
         document.addEventListener('viewsPresentationsLoaded', function (e) {
-          init(e.detail.items || [], e.detail.deckCount || 0);
+          init(e.detail.items || [], e.detail.decks || [], e.detail.deckCount || 0);
         });
         buildChart(); // draw empty chart immediately while waiting
       }
@@ -1214,10 +1251,38 @@
   <script>
     // ── Engagement Activity card ───────────────────────────────────
     (function () {
-      var engChart      = null;
-      var engRange      = '30d';
-      var engCustom     = null;  // [Date, Date] when custom range active
-      var engPresId     = null;  // null = all presentations
+      var engChart       = null;
+      var _engBreakdown  = []; // per-presentation series for tooltip breakdown
+      var _engHideTimer  = null;
+      var engRange       = '7d';
+      var engCustom      = null;  // [Date, Date] when custom range active
+      var engPresIds     = [];    // [] = all from current deck; [id,...] = specific subset
+      var _engAllLivePres = [];   // master list — all Live presentations, never filtered
+      var _engLivePres   = [];    // active list — filtered to current deck
+      var engDeckId      = null;  // null = all decks; 'deck-xxx' = specific deck
+      var _engDecks      = [];    // list of all decks
+      var engMode       = 'pageviews'; // 'pageviews' | 'events'
+      var engEventsMode = 'popularity'; // 'popularity' | 'timeseries'
+      var engDrillSlide = null;  // null | event name string when in drill-down
+      var eventsChart   = null;
+      var engYMax       = 0;     // y-axis max — grows via niceMax, never shrinks
+      var SLIDE_COLORS  = ['#6366f1','#f59e0b','#10b981','#ef4444','#3b82f6','#a855f7','#14b8a6','#f97316','#84cc16','#ec4899','#06b6d4','#8b5cf6'];
+
+      function niceMax(val) {
+        if (val <= 10)   return 10;
+        if (val <= 20)   return 20;
+        if (val <= 50)   return 50;
+        if (val <= 100)  return 100;
+        if (val <= 200)  return 200;
+        if (val <= 500)  return 500;
+        if (val <= 1000) return 1000;
+        return Math.ceil(val / 1000) * 1000;
+      }
+      function updateYMax(dataMax) {
+        var nice = niceMax(dataMax || 0);
+        if (nice > engYMax) engYMax = nice;
+        return engYMax;
+      }
 
       // ── Collapse ─────────────────────────────────────────────────
       var header  = document.getElementById('engActHeader');
@@ -1229,61 +1294,119 @@
         body.style.display = open ? '' : 'none';
         chevron.style.transform = open ? 'rotate(0deg)' : 'rotate(-90deg)';
         localStorage.setItem(STORAGE_KEY, open ? '0' : '1');
-        if (open && !engChart) loadEngagement();
+        if (open && !engChart && !eventsChart) loadEngagement();
       }
       var saved = localStorage.getItem(STORAGE_KEY);
       setOpen(saved === '0'); // default collapsed
       header.addEventListener('click', function (e) {
         if (e.target.closest('#engDateDropdown')) return;
+        if (e.target.closest('#engPresDropdown')) return;
+        if (e.target.closest('#engDeckDropdown')) return;
         setOpen(body.style.display === 'none');
       });
 
       // ── Build chart ───────────────────────────────────────────────
+      // Set up tooltip show/hide once — canvas element persists across chart rebuilds
+      (function () {
+        var canvas = document.getElementById('engBarChart');
+        var tip    = document.getElementById('engChartTooltip');
+        if (!canvas || !tip) return;
+        canvas.addEventListener('mouseleave', function () {
+          _engHideTimer = setTimeout(function () { tip.style.display = 'none'; }, 180);
+        });
+        tip.addEventListener('mouseenter', function () { clearTimeout(_engHideTimer); });
+        tip.addEventListener('mouseleave', function () { tip.style.display = 'none'; });
+      }());
+
       function buildEngBarChart(pageviews, sessions) {
         var canvas = document.getElementById('engBarChart');
         if (!canvas) return;
         var dark = document.documentElement.getAttribute('data-theme') !== 'light';
         if (engChart) { engChart.destroy(); engChart = null; }
+        var dataMax = (pageviews.concat(sessions)).reduce(function (m, p) { return Math.max(m, p.y || 0); }, 0);
+        var yMax = updateYMax(dataMax);
+
+        function externalTooltip(context) {
+          var tip = document.getElementById('engChartTooltip');
+          if (!tip) return;
+          var tooltip = context.tooltip;
+          if (!tooltip.opacity || !tooltip.dataPoints || !tooltip.dataPoints.length) { return; }
+          clearTimeout(_engHideTimer);
+          var idx   = tooltip.dataPoints[0].dataIndex;
+          var label = tooltip.title && tooltip.title[0] ? tooltip.title[0] : '';
+          var totalPv = pageviews[idx] ? pageviews[idx].y : 0;
+          var totalVs = sessions[idx]  ? sessions[idx].y  : 0;
+          var bg     = dark ? '#1c1c1e' : '#fff';
+          var border = dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)';
+          var muted  = dark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)';
+          var textClr = dark ? '#fff' : '#000';
+
+          var html = '<div style="font-weight:600;margin-bottom:6px;font-size:12px;">' + label + '</div>';
+          html += '<div style="display:flex;gap:14px;font-size:12px;margin-bottom:' + (_engBreakdown.length > 1 ? 8 : 0) + 'px;">';
+          html += '<span style="color:' + muted + '">&#9632;&nbsp;<span style="color:#F5A623;font-weight:600;">' + totalPv + '</span> views</span>';
+          html += '<span style="color:' + muted + '">&#9632;&nbsp;<span style="color:rgba(99,179,237,.9);font-weight:600;">' + totalVs + '</span> visitors</span>';
+          html += '</div>';
+
+          if (_engBreakdown.length > 1) {
+            var rows = _engBreakdown.slice()
+              .map(function (p) {
+                return { name: p.name, pv: p.pageviews[idx] ? p.pageviews[idx].y : 0, vs: p.sessions[idx] ? p.sessions[idx].y : 0 };
+              })
+              .sort(function (a, b) { return b.pv - a.pv; });
+            html += '<div style="font-size:11px;color:' + muted + ';border-top:1px solid ' + border + ';padding-top:6px;margin-bottom:4px;">By presentation</div>';
+            html += '<div style="overflow-y:auto;max-height:150px;">';
+            rows.forEach(function (r) {
+              var dim = r.pv === 0 ? 'opacity:.35;' : '';
+              html += '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:2px 0;font-size:11px;' + dim + '">';
+              html += '<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + r.name.replace(/"/g, '&quot;') + '">' + r.name + '</span>';
+              html += '<span style="flex-shrink:0;color:' + muted + ';font-variant-numeric:tabular-nums;">' + r.pv + '&nbsp;/&nbsp;' + r.vs + '</span>';
+              html += '</div>';
+            });
+            html += '</div>';
+            html += '<div style="font-size:10px;color:' + muted + ';margin-top:5px;border-top:1px solid ' + border + ';padding-top:4px;">views / visitors</div>';
+          }
+          html += '<div style="font-size:10px;color:' + muted + ';margin-top:' + (_engBreakdown.length > 1 ? 0 : 6) + 'px;">Click bars to see slide events</div>';
+
+          tip.style.background   = bg;
+          tip.style.border       = '1px solid ' + border;
+          tip.style.color        = textClr;
+          tip.innerHTML = html;
+          tip.style.display = 'block';
+
+          var chartW = context.chart.width;
+          var tipW   = 240;
+          var left   = tooltip.caretX + 14;
+          if (left + tipW > chartW) left = tooltip.caretX - tipW - 14;
+          if (left < 0) left = 4;
+          tip.style.left = left + 'px';
+          tip.style.top  = Math.max(0, tooltip.caretY - 24) + 'px';
+        }
+
         engChart = new Chart(canvas, {
           type: 'bar',
           data: {
             labels: pageviews.map(function (p) {
-              var d = new Date(p.x || p.t);
+              var d = new Date((p.x || p.t) + 'T00:00:00');
               return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
             }),
             datasets: [
-              {
-                label: 'Pageviews',
-                data: pageviews.map(function (p) { return p.y; }),
-                backgroundColor: 'rgba(245,166,35,0.75)',
-                borderColor: '#F5A623',
-                borderWidth: 0,
-                borderRadius: 3,
-                borderSkipped: false
-              },
-              {
-                label: 'Visitors',
-                data: sessions.map(function (p) { return p.y; }),
-                backgroundColor: 'rgba(99,179,237,0.65)',
-                borderColor: 'rgba(99,179,237,.8)',
-                borderWidth: 0,
-                borderRadius: 3,
-                borderSkipped: false
-              }
+              { label: 'Pageviews', data: pageviews.map(function (p) { return p.y; }), backgroundColor: 'rgba(245,166,35,0.75)', borderColor: '#F5A623', borderWidth: 0, borderRadius: 3, borderSkipped: false },
+              { label: 'Visitors',  data: sessions.map(function (p) { return p.y; }),  backgroundColor: 'rgba(99,179,237,0.65)', borderColor: 'rgba(99,179,237,.8)', borderWidth: 0, borderRadius: 3, borderSkipped: false }
             ]
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            onClick: function (evt, elements) {
+              if (elements && elements.length > 0) switchEngMode('events');
+            },
+            onHover: function (event, chartElements) {
+              var t = event.native ? event.native.target : null;
+              if (t) t.style.cursor = chartElements.length ? 'pointer' : 'default';
+            },
             plugins: {
               legend: { display: false },
-              tooltip: {
-                backgroundColor: dark ? '#1c1c1e' : '#fff',
-                titleColor: dark ? '#fff' : '#000',
-                bodyColor: dark ? 'rgba(255,255,255,.6)' : 'rgba(0,0,0,.6)',
-                borderColor: dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)',
-                borderWidth: 1, padding: 10, cornerRadius: 8
-              }
+              tooltip: { enabled: false, external: externalTooltip }
             },
             scales: {
               x: {
@@ -1292,9 +1415,9 @@
                 border: { display: false }
               },
               y: {
-                beginAtZero: true,
+                beginAtZero: true, max: yMax,
                 grid: { color: dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)', drawBorder: false },
-                ticks: { color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 } },
+                ticks: { precision: 0, color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 } },
                 border: { display: false }
               }
             }
@@ -1312,18 +1435,272 @@
         return { startAt: now - (ms[engRange] || ms['30d']), endAt: now };
       }
 
-      function loadEngagement() {
+      // Returns the presIds to send to the API.
+      // [] means "all Live" to the server — only safe when no deck is selected.
+      // When a deck IS selected, explicitly send its presentation IDs.
+      // Returns null when a deck is selected but has no Live presentations (render empty).
+      function getActivePresIds() {
+        if (engPresIds.length > 0) return engPresIds;
+        if (engDeckId !== null) {
+          var deckIds = _engLivePres.map(function (p) { return p.id; });
+          return deckIds.length ? deckIds : null; // null = nothing to show
+        }
+        return []; // no deck filter = server default (all Live)
+      }
+
+      function loadPageviewsChart() {
+        var activeIds = getActivePresIds();
+        if (activeIds === null) { _engBreakdown = []; buildEngBarChart([], []); return; }
         var dates = getEngDates();
-        var url = engPresId
-          ? '/api/analytics/pageviews-by-pres?startAt=' + dates.startAt + '&endAt=' + dates.endAt + '&presId=' + encodeURIComponent(engPresId)
-          : '/api/analytics/pageviews?startAt=' + dates.startAt + '&endAt=' + dates.endAt;
+        var url = '/api/analytics/pageviews-multi?startAt=' + dates.startAt + '&endAt=' + dates.endAt;
+        if (activeIds.length) url += '&presIds=' + activeIds.join(',');
         fetch(url)
           .then(function (r) { return r.json(); })
           .then(function (r) {
             if (!r.success || !r.data) return;
+            _engBreakdown = r.data.breakdown || [];
             buildEngBarChart(r.data.pageviews || [], r.data.sessions || []);
           })
           .catch(function () {});
+      }
+
+      function loadEngagement() {
+        if (engMode === 'events') loadEventsChart();
+        else loadPageviewsChart();
+      }
+
+      // ── Events chart ──────────────────────────────────────────────
+      function showEventsSpinner(show) {
+        var el = document.getElementById('engEventsSpinner');
+        if (el) el.style.display = show ? 'flex' : 'none';
+      }
+
+      function loadEventsChart() {
+        var activeIds = getActivePresIds();
+        if (activeIds === null) { buildPopularityChart([]); return; }
+        var dates  = getEngDates();
+        var params = '?startAt=' + dates.startAt + '&endAt=' + dates.endAt;
+        if (activeIds.length) params += '&presIds=' + activeIds.join(',');
+
+        if (engDrillSlide) {
+          fetch('/api/analytics/slide-events' + params + '&eventName=' + encodeURIComponent(engDrillSlide))
+            .then(function (r) { return r.json(); })
+            .then(function (r) {
+              if (!r.success) return;
+              buildDrillChart(r.data || []);
+            })
+            .catch(function () {});
+        } else if (engEventsMode === 'popularity') {
+          fetch('/api/analytics/events' + params)
+            .then(function (r) { return r.json(); })
+            .then(function (r) {
+              if (!r.success) return;
+              buildPopularityChart(r.data || []);
+            })
+            .catch(function () {});
+        } else {
+          showEventsSpinner(true);
+          fetch('/api/analytics/event-series' + params)
+            .then(function (r) { return r.json(); })
+            .then(function (r) {
+              showEventsSpinner(false);
+              if (!r.success) return;
+              buildTimeSeriesChart(r.data || { days: [], series: [] });
+            })
+            .catch(function () { showEventsSpinner(false); });
+        }
+      }
+
+      function buildPopularityChart(data) {
+        var canvas = document.getElementById('engEventsChart');
+        if (!canvas) return;
+        var dark = document.documentElement.getAttribute('data-theme') !== 'light';
+        if (eventsChart) { eventsChart.destroy(); eventsChart = null; }
+        document.getElementById('engEventsLegend').innerHTML = '';
+        if (!data.length) return;
+        var labels = data.map(function (d) { return d.label; });
+        var counts = data.map(function (d) { return d.count; });
+        var bgColors = data.map(function (_, i) { return SLIDE_COLORS[i % SLIDE_COLORS.length] + 'bf'; });
+        var brColors = data.map(function (_, i) { return SLIDE_COLORS[i % SLIDE_COLORS.length]; });
+        var dataMax = counts.reduce(function (m, v) { return Math.max(m, v); }, 0);
+        var yMax = updateYMax(dataMax);
+        eventsChart = new Chart(canvas, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{ label: 'Slide views', data: counts, backgroundColor: bgColors, borderColor: brColors, borderWidth: 0, borderRadius: 3, borderSkipped: false, maxBarThickness: 48 }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            onClick: function (evt, elements) {
+              if (!elements.length) return;
+              var idx = elements[0].index;
+              engDrillSlide = data[idx].event;
+              document.getElementById('engDrillTitle').textContent = data[idx].label;
+              document.getElementById('engEventsHeader').style.display = 'none';
+              document.getElementById('engDrillHeader').style.display = 'flex';
+              if (eventsChart) { eventsChart.destroy(); eventsChart = null; }
+              loadEventsChart();
+            },
+            onHover: function (event, chartElements) {
+              var t = event.native ? event.native.target : null;
+              if (t) t.style.cursor = chartElements.length ? 'pointer' : 'default';
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: dark ? '#1c1c1e' : '#fff',
+                titleColor: dark ? '#fff' : '#000',
+                bodyColor: dark ? 'rgba(255,255,255,.6)' : 'rgba(0,0,0,.6)',
+                borderColor: dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)',
+                borderWidth: 1, padding: 10, cornerRadius: 8,
+                callbacks: { footer: function () { return 'Click to break down by presentation'; } }
+              }
+            },
+            scales: {
+              x: { grid: { display: false }, ticks: { color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 }, maxRotation: 30 }, border: { display: false } },
+              y: { beginAtZero: true, max: yMax, grid: { color: dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)' }, ticks: { precision: 0, color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 } }, border: { display: false } }
+            }
+          }
+        });
+      }
+
+      function buildTimeSeriesChart(data) {
+        var canvas = document.getElementById('engEventsChart');
+        if (!canvas) return;
+        var dark = document.documentElement.getAttribute('data-theme') !== 'light';
+        if (eventsChart) { eventsChart.destroy(); eventsChart = null; }
+        var legend = document.getElementById('engEventsLegend');
+        legend.innerHTML = '';
+        legend.style.display = (data.series && data.series.length) ? 'flex' : 'none';
+        if (!data.days || !data.series || !data.series.length) return;
+        // Format ISO dates as "May 16"
+        var labels = data.days.map(function (d) {
+          var dt = new Date(d + 'T00:00:00');
+          return dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        });
+        var dataMax = 0;
+        var datasets = data.series.map(function (s, i) {
+          var color = SLIDE_COLORS[i % SLIDE_COLORS.length];
+          dataMax = s.values.reduce(function (m, v) { return Math.max(m, v); }, dataMax);
+          var item = document.createElement('span');
+          item.style.cssText = 'display:flex;align-items:center;gap:4px;';
+          var dot = document.createElement('span');
+          dot.style.cssText = 'width:10px;height:10px;border-radius:50%;background:' + color + ';flex-shrink:0;';
+          item.appendChild(dot);
+          item.appendChild(document.createTextNode(s.label));
+          legend.appendChild(item);
+          return { label: s.label, data: s.values, borderColor: color, backgroundColor: color + '18', borderWidth: 2, pointRadius: 3, pointHoverRadius: 5, tension: 0.35, fill: false };
+        });
+        var yMax = updateYMax(dataMax);
+        eventsChart = new Chart(canvas, {
+          type: 'line',
+          data: { labels: labels, datasets: datasets },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: dark ? '#1c1c1e' : '#fff',
+                titleColor: dark ? '#fff' : '#000',
+                bodyColor: dark ? 'rgba(255,255,255,.6)' : 'rgba(0,0,0,.6)',
+                borderColor: dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)',
+                borderWidth: 1, padding: 10, cornerRadius: 8, mode: 'index', intersect: false
+              }
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 10 },
+                border: { display: false }
+              },
+              y: {
+                beginAtZero: true, max: yMax,
+                grid: { color: dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)' },
+                ticks: { precision: 0, color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 } },
+                border: { display: false }
+              }
+            }
+          }
+        });
+      }
+
+      function buildDrillChart(data) {
+        var canvas = document.getElementById('engEventsChart');
+        if (!canvas) return;
+        var dark = document.documentElement.getAttribute('data-theme') !== 'light';
+        if (eventsChart) { eventsChart.destroy(); eventsChart = null; }
+        document.getElementById('engEventsLegend').innerHTML = '';
+        if (!data.length) return;
+        var labels = data.map(function (d) { return d.label; });
+        var counts = data.map(function (d) { return d.count; });
+        var bgColors = data.map(function (_, i) { return SLIDE_COLORS[i % SLIDE_COLORS.length] + 'bf'; });
+        var brColors = data.map(function (_, i) { return SLIDE_COLORS[i % SLIDE_COLORS.length]; });
+        var dataMax = counts.reduce(function (m, v) { return Math.max(m, v); }, 0);
+        var yMax = updateYMax(dataMax);
+        eventsChart = new Chart(canvas, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{ label: 'Events', data: counts, backgroundColor: bgColors, borderColor: brColors, borderWidth: 0, borderRadius: 3, borderSkipped: false, maxBarThickness: 48 }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: dark ? '#1c1c1e' : '#fff',
+                titleColor: dark ? '#fff' : '#000',
+                bodyColor: dark ? 'rgba(255,255,255,.6)' : 'rgba(0,0,0,.6)',
+                borderColor: dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)',
+                borderWidth: 1, padding: 10, cornerRadius: 8
+              }
+            },
+            scales: {
+              x: { grid: { display: false }, ticks: { color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 }, maxRotation: 30 }, border: { display: false } },
+              y: { beginAtZero: true, max: yMax, grid: { color: dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)' }, ticks: { precision: 0, color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 } }, border: { display: false } }
+            }
+          }
+        });
+      }
+
+      function updateSubModeBtn() {
+        var btn = document.getElementById('engSubModeBtn');
+        if (btn) btn.textContent = engEventsMode === 'popularity' ? 'Over time' : 'Popularity';
+      }
+
+      function switchEngMode(mode) {
+        engMode = mode;
+        var isEvents = mode === 'events';
+        document.getElementById('engEventsHeader').style.display    = isEvents ? 'flex' : 'none';
+        document.getElementById('engDrillHeader').style.display     = 'none';
+        document.getElementById('engLegend').style.display          = isEvents ? 'none' : 'flex';
+        document.getElementById('engBarChartWrap').style.display    = isEvents ? 'none' : '';
+        document.getElementById('engEventsChartWrap').style.display = isEvents ? ''     : 'none';
+        document.getElementById('engEventsLegend').style.display    = (isEvents && engEventsMode === 'timeseries') ? 'flex' : 'none';
+        updateSubModeBtn();
+        if (!isEvents) {
+          if (eventsChart) { eventsChart.destroy(); eventsChart = null; }
+          engDrillSlide = null;
+          if (!engChart) loadPageviewsChart();
+        } else {
+          if (engChart) { engChart.destroy(); engChart = null; }
+          engDrillSlide = null;
+          loadEventsChart();
+        }
+      }
+
+      function updateEngPresLabel() {
+        var label = document.getElementById('engPresLabel');
+        if (!label) return;
+        if (engPresIds.length === 0) {
+          label.textContent = 'All presentations';
+        } else if (engPresIds.length === 1) {
+          var p = _engLivePres.find(function (x) { return x.id === engPresIds[0]; });
+          label.textContent = p ? (p.presentationName || p.customerName || p.id) : engPresIds[0];
+        } else {
+          label.textContent = engPresIds.length + ' presentations';
+        }
       }
 
       // ── Date range dropdown ───────────────────────────────────────
@@ -1340,7 +1717,9 @@
         dateFormat: 'Y-m-d',
         onClose: function (selectedDates) {
           if (selectedDates.length < 2) return;
-          engCustom = selectedDates;
+          // Include the full end day: add 23h 59m 59.999s to midnight end date
+          var endOfDay = new Date(selectedDates[1].getTime() + 86400000 - 1);
+          engCustom = [selectedDates[0], endOfDay];
           engRange  = 'custom';
           var btn = document.getElementById('engCustomDateBtn');
           btn.style.display = 'flex';
@@ -1383,45 +1762,114 @@
         loadEngagement();
       });
 
-      // ── Presentation filter ───────────────────────────────────────
-      function buildEngPresMenu(presentations) {
+      // ── Back to Pageviews ─────────────────────────────────────────
+      document.getElementById('engBackToPageviews').addEventListener('click', function () {
+        switchEngMode('pageviews');
+      });
+
+      // ── Sub-mode toggle (single button: Popularity ↔ Over time) ──
+      document.getElementById('engSubModeBtn').addEventListener('click', function () {
+        engEventsMode = engEventsMode === 'popularity' ? 'timeseries' : 'popularity';
+        document.getElementById('engEventsLegend').style.display = engEventsMode === 'timeseries' ? 'flex' : 'none';
+        updateSubModeBtn();
+        if (eventsChart) { eventsChart.destroy(); eventsChart = null; }
+        loadEventsChart();
+      });
+
+      // ── Drill-down back (returns to popularity) ───────────────────
+      document.getElementById('engDrillBack').addEventListener('click', function () {
+        engDrillSlide = null;
+        document.getElementById('engDrillHeader').style.display = 'none';
+        document.getElementById('engEventsHeader').style.display = 'flex';
+        if (eventsChart) { eventsChart.destroy(); eventsChart = null; }
+        loadEventsChart();
+      });
+
+      // ── Presentation filter (checkbox dropdown) ───────────────────
+      // Uses _engLivePres — set by deck filter (or _engAllLivePres when no deck selected)
+      function buildEngPresMenu() {
         var menu = document.getElementById('engPresMenu');
         menu.innerHTML = '';
+
+        // Search box
         var searchWrap = document.createElement('div');
         searchWrap.style.cssText = 'padding:6px 8px 4px;';
         var searchInput = document.createElement('input');
         searchInput.type = 'search';
-        searchInput.placeholder = 'Search presentations…';
+        searchInput.placeholder = 'Search…';
         searchInput.style.cssText = 'width:100%;box-sizing:border-box;padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:12px;outline:none;';
         searchWrap.appendChild(searchInput);
         menu.appendChild(searchWrap);
+
+        // "All" row
+        var allRow = document.createElement('label');
+        allRow.className = 'sort-option eng-check-row';
+        allRow.style.cssText = 'display:flex;align-items:center;gap:8px;cursor:pointer;border-bottom:1px solid var(--border);margin-bottom:2px;';
+        var allChk = document.createElement('input');
+        allChk.type = 'checkbox';
+        allChk.id = 'engChkAll';
+        allChk.checked = engPresIds.length === 0;
+        allChk.style.cssText = 'accent-color:var(--accent,#E8711A);cursor:pointer;';
+        allRow.appendChild(allChk);
+        var allLbl = document.createElement('span');
+        allLbl.textContent = 'All (' + _engLivePres.length + ')';
+        allRow.appendChild(allLbl);
+        menu.appendChild(allRow);
+
+        // Per-presentation rows
         var listWrap = document.createElement('div');
         listWrap.style.cssText = 'max-height:200px;overflow-y:auto;';
         menu.appendChild(listWrap);
 
+        function presName(p) {
+          return (p.presentationName ? p.customerName + ' — ' + p.presentationName : p.customerName) || p.id;
+        }
+
         function renderRows(filter) {
           listWrap.innerHTML = '';
           var q = (filter || '').toLowerCase();
-          presentations.forEach(function (p) {
-            var name = (p.presentationName ? p.customerName + ' — ' + p.presentationName : p.customerName) || p.id;
+          _engLivePres.forEach(function (p) {
+            var name = presName(p);
             if (q && name.toLowerCase().indexOf(q) === -1) return;
-            var row = document.createElement('div');
-            row.className = 'sort-option' + (engPresId === p.id ? ' selected' : '');
-            row.textContent = name;
-            row.addEventListener('click', function (e) {
+            var row = document.createElement('label');
+            row.className = 'sort-option eng-check-row';
+            row.style.cssText = 'display:flex;align-items:center;gap:8px;cursor:pointer;';
+            var chk = document.createElement('input');
+            chk.type = 'checkbox';
+            chk.dataset.presId = p.id;
+            chk.checked = engPresIds.indexOf(p.id) !== -1;
+            chk.style.cssText = 'accent-color:var(--accent,#E8711A);cursor:pointer;';
+            chk.addEventListener('change', function (e) {
               e.stopPropagation();
-              engPresId = p.id;
-              document.getElementById('engPresLabel').textContent = name;
-              document.getElementById('engPresAllBtn').classList.remove('active');
-              menu.querySelectorAll('.sort-option').forEach(function (r) { r.classList.remove('selected'); });
-              row.classList.add('selected');
-              menu.classList.remove('open');
-              document.getElementById('engPresTrigger').classList.remove('open');
+              if (chk.checked) {
+                if (engPresIds.indexOf(p.id) === -1) engPresIds.push(p.id);
+              } else {
+                engPresIds = engPresIds.filter(function (id) { return id !== p.id; });
+              }
+              allChk.checked = engPresIds.length === 0;
+              updateEngPresLabel();
               loadEngagement();
             });
+            row.appendChild(chk);
+            var lbl = document.createElement('span');
+            lbl.textContent = name;
+            row.appendChild(lbl);
             listWrap.appendChild(row);
           });
         }
+
+        allChk.addEventListener('change', function (e) {
+          e.stopPropagation();
+          if (allChk.checked) {
+            engPresIds = [];
+            listWrap.querySelectorAll('input[type=checkbox]').forEach(function (c) { c.checked = false; });
+            updateEngPresLabel();
+            loadEngagement();
+          } else {
+            allChk.checked = engPresIds.length === 0;
+          }
+        });
+
         searchInput.addEventListener('input', function () { renderRows(this.value); });
         searchInput.addEventListener('click', function (e) { e.stopPropagation(); });
         renderRows('');
@@ -1435,17 +1883,91 @@
         presTrigger.classList.toggle('open', open);
       });
 
-      document.getElementById('engPresAllBtn').addEventListener('click', function () {
-        engPresId = null;
-        document.getElementById('engPresLabel').textContent = 'Filter by presentation';
-        this.classList.add('active');
-        presMenu.querySelectorAll('.sort-option').forEach(function (r) { r.classList.remove('selected'); });
+      // External trigger: set filter to a single presentation (e.g. from card image click)
+      document.addEventListener('engFilterByPres', function (e) {
+        var id = e.detail;
+        if (!id) return;
+        engPresIds = [id];
+        updateEngPresLabel();
+        // Open Engagement panel if collapsed
+        var engBody = document.getElementById('engActBody');
+        if (engBody && engBody.style.display === 'none') document.getElementById('engActHeader').click();
+        // Sync checkboxes if menu is built
+        var allChkEl = document.getElementById('engChkAll');
+        if (allChkEl) {
+          allChkEl.checked = false;
+          presMenu.querySelectorAll('input[data-pres-id]').forEach(function (c) {
+            c.checked = c.dataset.presId === id;
+          });
+        }
         loadEngagement();
       });
 
-      // Wire up presentations list once it's available from the pub-activity script
+      // ── Deck filter dropdown ──────────────────────────────────────
+      function buildEngDeckMenu() {
+        var menu = document.getElementById('engDeckMenu');
+        menu.innerHTML = '';
+        // "All decks" option
+        var allOpt = document.createElement('div');
+        allOpt.className = 'sort-option' + (engDeckId === null ? ' selected' : '');
+        allOpt.textContent = 'All decks (' + _engAllLivePres.length + ')';
+        allOpt.addEventListener('click', function (e) {
+          e.stopPropagation();
+          engDeckId = null;
+          document.getElementById('engDeckLabel').textContent = 'All decks';
+          menu.querySelectorAll('.sort-option').forEach(function (o) { o.classList.remove('selected'); });
+          allOpt.classList.add('selected');
+          menu.classList.remove('open');
+          document.getElementById('engDeckTrigger').classList.remove('open');
+          _engLivePres = _engAllLivePres;
+          engPresIds   = [];
+          updateEngPresLabel();
+          buildEngPresMenu();
+          loadEngagement();
+        });
+        menu.appendChild(allOpt);
+        // Per-deck options
+        _engDecks.forEach(function (deck) {
+          var deckPres = _engAllLivePres.filter(function (p) { return p.deckId === deck.id; });
+          if (!deckPres.length) return;
+          var opt = document.createElement('div');
+          opt.className = 'sort-option' + (engDeckId === deck.id ? ' selected' : '');
+          opt.textContent = deck.name + ' (' + deckPres.length + ')';
+          opt.addEventListener('click', function (e) {
+            e.stopPropagation();
+            engDeckId = deck.id;
+            document.getElementById('engDeckLabel').textContent = deck.name;
+            menu.querySelectorAll('.sort-option').forEach(function (o) { o.classList.remove('selected'); });
+            opt.classList.add('selected');
+            menu.classList.remove('open');
+            document.getElementById('engDeckTrigger').classList.remove('open');
+            _engLivePres = deckPres;
+            engPresIds   = [];
+            updateEngPresLabel();
+            buildEngPresMenu();
+            loadEngagement();
+          });
+          menu.appendChild(opt);
+        });
+      }
+
+      var deckTrigger = document.getElementById('engDeckTrigger');
+      var deckMenu    = document.getElementById('engDeckMenu');
+      deckTrigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var open = deckMenu.classList.toggle('open');
+        deckTrigger.classList.toggle('open', open);
+      });
+
+      // Wire up once presentations + decks are available from pub-activity script
       document.addEventListener('engPresentationsReady', function (e) {
-        buildEngPresMenu(e.detail || []);
+        var detail = e.detail || {};
+        var pres   = detail.presentations || (Array.isArray(detail) ? detail : []);
+        _engDecks        = detail.decks || [];
+        _engAllLivePres  = pres.filter(function (p) { return p.publishedAt && !p.archivedAt; });
+        _engLivePres     = _engAllLivePres;
+        buildEngDeckMenu();
+        buildEngPresMenu();
       });
 
       // Close dropdowns on outside click
@@ -1454,6 +1976,8 @@
         dateTrigger.classList.remove('open');
         presMenu.classList.remove('open');
         presTrigger.classList.remove('open');
+        deckMenu.classList.remove('open');
+        deckTrigger.classList.remove('open');
       });
     })();
   </script>
@@ -1570,13 +2094,11 @@
           var id = el.dataset.presId;
           var d  = batchData[id];
           if (!d) { el.innerHTML = '<span style="opacity:.35;font-size:11px;">no data yet</span>'; return; }
-          var visitors  = (d.visitors  && d.visitors.value  != null) ? d.visitors.value  : '—';
-          var visits    = (d.visits    && d.visits.value    != null) ? d.visits.value    : '—';
-          var pageviews = (d.pageviews && d.pageviews.value != null) ? d.pageviews.value : '—';
-          var bounce    = (d.bounces && d.bounces.value != null && visits && visits !== '—' && visits > 0)
-                          ? Math.round((d.bounces.value / visits) * 100) + '%' : '—';
-          var duration  = (d.totaltime && d.totaltime.value != null && visits && visits !== '—' && visits > 0)
-                          ? fmtDuration(Math.round(d.totaltime.value / visits) * 1000) : '—';
+          var visitors  = d.visitors  != null ? d.visitors  : '—';
+          var pageviews = d.pageviews != null ? d.pageviews : '—';
+          var visits    = '—';
+          var bounce    = '—';
+          var duration  = '—';
           el.innerHTML =
             '<span class="fp-metric">👤 <span class="fp-metric-val">' + visitors + '</span> visitors</span>' +
             '<span class="fp-metric">👁 <span class="fp-metric-val">' + pageviews + '</span> views</span>' +
@@ -1611,7 +2133,18 @@
         } else {
           wrap.textContent = (p.customerName || p.presentationName || '?').charAt(0).toUpperCase();
         }
-        wrap.addEventListener('dblclick', function () {
+        var clickTimer = null;
+        wrap.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (clickTimer) return; // swallow second click of dblclick
+          clickTimer = setTimeout(function () {
+            clickTimer = null;
+            document.dispatchEvent(new CustomEvent('engFilterByPres', { detail: p.id }));
+          }, 220);
+        });
+        wrap.addEventListener('dblclick', function (e) {
+          e.stopPropagation();
+          if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; }
           // Open Publication Activity panel if collapsed
           var pubBody = document.getElementById('pubActBody');
           if (pubBody && pubBody.style.display === 'none') {
@@ -1619,6 +2152,7 @@
           }
           document.dispatchEvent(new CustomEvent('viewsFilterByPres', { detail: p.id }));
         });
+        wrap.title = 'Click to filter engagement chart · Double-click to view in Publication Activity';
         return wrap;
       }
 

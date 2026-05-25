@@ -2,9 +2,9 @@
   "title": "GlassQuality",
   "slides": [
     {
-      "id": "deck-lib-1778854157322-1778854164717",
+      "id": "deck-lib-1779600719325-1779603501751",
       "visible": true,
-      "librarySlideId": "lib-1778854157322"
+      "librarySlideId": "lib-1779600719325"
     },
     {
       "id": "deck-lib-company-1778837870406",
@@ -73,7 +73,7 @@
     },
     {
       "id": "deck-integrations",
-      "visible": false,
+      "visible": true,
       "librarySlideId": "lib-integrations"
     },
     {

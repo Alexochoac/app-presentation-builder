@@ -13,13 +13,13 @@
     <button class="s6-defect-btn" data-defect-idx="0"><div class="s6-icon" data-defect-row="0"></div><span class="s6-defect-label" data-edit="s6-label-0" contenteditable="" spellcheck="false">Scratches</span></button>
     <button class="s6-defect-btn" data-defect-idx="1"><div class="s6-icon" data-defect-row="1"></div><span class="s6-defect-label" data-edit="s6-label-1" contenteditable="" spellcheck="false">Inclusions</span></button>
     <button class="s6-defect-btn" data-defect-idx="2"><div class="s6-icon" data-defect-row="2"></div><span class="s6-defect-label" data-edit="s6-label-2" contenteditable="" spellcheck="false">Dirt</span></button>
-    <button class="s6-defect-btn" data-defect-idx="3"><div class="s6-icon" data-defect-row="3"></div><span class="s6-defect-label" data-edit="s6-label-3" contenteditable="" spellcheck="false">Dust</span></button>
-    <button class="s6-defect-btn" data-defect-idx="4"><div class="s6-icon" data-defect-row="4"></div><span class="s6-defect-label" data-edit="s6-label-4" contenteditable="" spellcheck="false">Water</span></button>
-    <button class="s6-defect-btn" data-defect-idx="5"><div class="s6-icon" data-defect-row="5"></div><span class="s6-defect-label" data-edit="s6-label-5" contenteditable="" spellcheck="false">Fingerprints</span></button>
-    <button class="s6-defect-btn" data-defect-idx="6"><div class="s6-icon" data-defect-row="6"></div><span class="s6-defect-label" data-edit="s6-label-6" contenteditable="" spellcheck="false">Ignore</span></button>
+    <button class="s6-defect-btn" data-defect-idx="3"><div class="s6-icon" data-defect-row="2"></div><span class="s6-defect-label" data-edit="s6-label-3" contenteditable="" spellcheck="false">Dust</span></button>
+    <button class="s6-defect-btn" data-defect-idx="4"><div class="s6-icon" data-defect-row="3"></div><span class="s6-defect-label" data-edit="s6-label-4" contenteditable="" spellcheck="false">Water</span></button>
+    <button class="s6-defect-btn" data-defect-idx="5"><div class="s6-icon" data-defect-row="4"></div><span class="s6-defect-label" data-edit="s6-label-5" contenteditable="" spellcheck="false">Fingerprints</span></button>
+    <button class="s6-defect-btn" data-defect-idx="6"><div class="s6-icon" data-defect-row="5"></div><span class="s6-defect-label" data-edit="s6-label-6" contenteditable="" spellcheck="false">Ignore</span></button>
     <button class="s6-defect-btn" data-defect-idx="7"><div class="s6-icon" data-defect-row="7"></div><span class="s6-defect-label" data-edit="s6-label-7" contenteditable="" spellcheck="false">Edge defects</span></button>
-    <button class="s6-defect-btn" data-defect-idx="8"><div class="s6-icon" data-defect-row="8"></div><span class="s6-defect-label" data-edit="s6-label-8" contenteditable="" spellcheck="false">Frame &amp; bars</span></button>
-    <button class="s6-defect-btn" data-defect-idx="9"><div class="s6-icon" data-defect-row="9"></div><span class="s6-defect-label" data-edit="s6-label-9" contenteditable="" spellcheck="false">Undefined</span></button>
+    <button class="s6-defect-btn" data-defect-idx="8"><div class="s6-icon" data-defect-row="6"></div><span class="s6-defect-label" data-edit="s6-label-8" contenteditable="" spellcheck="false">Frame &amp; bars</span></button>
+    <button class="s6-defect-btn" data-defect-idx="9"><div class="s6-icon" data-defect-row="8"></div><span class="s6-defect-label" data-edit="s6-label-9" contenteditable="" spellcheck="false">Undefined</span></button>
     <button class="s6-defect-btn" data-defect-idx="10"><div class="s6-emoji-icon">◈</div><span class="s6-defect-label" data-edit="s6-label-10" contenteditable="" spellcheck="false">Coating</span></button>
   </div>
 
@@ -118,16 +118,16 @@
       background: var(--bg-card); border: 1px solid var(--border);
       transition: all .2s; min-width: 76px; font-family: inherit;
     }
-    .s6-defect-btn:hover { border-color: rgba(232,113,26,.4); background: var(--bg-card-hover); }
+    .s6-defect-btn:hover { border-color: rgba(var(--accent-rgb),.4); background: var(--bg-card-hover); }
     .s6-defect-btn.active {
-      border-color: #E8711A; background: rgba(232,113,26,.12);
-      box-shadow: 0 0 0 1px rgba(232,113,26,.25);
+      border-color: var(--accent); background: rgba(var(--accent-rgb),.12);
+      box-shadow: 0 0 0 1px rgba(var(--accent-rgb),.25);
     }
     .s6-defect-btn span {
       font-size: 10px; font-weight: 600; letter-spacing: .03em;
       color: var(--text-muted); white-space: nowrap; transition: color .2s;
     }
-    .s6-defect-btn.active span { color: #E8711A; }
+    .s6-defect-btn.active span { color: var(--accent); }
 
     /* ── Sprite icon ── */
     .s6-icon {
@@ -172,13 +172,13 @@
       { name: 'Scratches',    row: 0, carId: 's6-car-scratches'    },
       { name: 'Inclusions',   row: 1, carId: 's6-car-inclusions'   },
       { name: 'Dirt',         row: 2, carId: 's6-car-dirt'         },
-      { name: 'Dust',         row: 3, carId: 's6-car-dust'         },
-      { name: 'Water',        row: 4, carId: 's6-car-water'        },
-      { name: 'Fingerprints', row: 5, carId: 's6-car-fingerprints' },
-      { name: 'Ignore',       row: 6, carId: 's6-car-ignore'       },
+      { name: 'Dust',         row: 2, carId: 's6-car-dust'         },
+      { name: 'Water',        row: 3, carId: 's6-car-water'        },
+      { name: 'Fingerprints', row: 4, carId: 's6-car-fingerprints' },
+      { name: 'Ignore',       row: 5, carId: 's6-car-ignore'       },
       { name: 'Edge defects', row: 7, carId: 's6-car-edge-defects' },
-      { name: 'Frame & bars', row: 8, carId: 's6-car-frame-bars'   },
-      { name: 'Undefined',    row: 9, carId: 's6-car-undefined'    },
+      { name: 'Frame & bars', row: 6, carId: 's6-car-frame-bars'   },
+      { name: 'Undefined',    row: 8, carId: 's6-car-undefined'    },
       { name: 'Coating',   icon: '◈', carId: 's6-car-coating'      }
     ];
 
@@ -187,7 +187,7 @@
     var carWrap  = document.getElementById('s6CarWrap');
 
     function setIconPos(icon, row, active) {
-      icon.style.backgroundPosition = (active ? '100%' : '0%') + ' ' + (row / 9 * 100).toFixed(2) + '%';
+      icon.style.backgroundPosition = (active ? '100%' : '0%') + ' ' + (row / 8 * 100).toFixed(2) + '%';
     }
 
     function updateBtns() {

@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The $4 Trillion Moat - Claude Code Revolution</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #f5f5f0 0%, #e8e8e3 100%);
+            overflow: hidden;
+            color: #1d1d1f;
+            height: 100vh;
+            position: relative;
+        }
+
+        .presentation-container {
+            display: flex;
+            height: 100vh;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+        }
+
+        .slide {
+            min-width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            position: relative;
+        }
+
+        .slide > * {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .slide.active > * {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Stagger the animations */
+        .slide.active > *:nth-child(1) { transition-delay: 0.1s; }
+        .slide.active > *:nth-child(2) { transition-delay: 0.2s; }
+        .slide.active > *:nth-child(3) { transition-delay: 0.3s; }
+        .slide.active > *:nth-child(4) { transition-delay: 0.4s; }
+        .slide.active > *:nth-child(5) { transition-delay: 0.5s; }
+        .slide.active > *:nth-child(6) { transition-delay: 0.6s; }
+
+        h1 {
+            font-size: 72px;
+            font-weight: 700;
+            line-height: 1.1;
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #1d1d1f 0%, #515154 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            font-size: 48px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1d1d1f;
+        }
+
+        h3 {
+            font-size: 32px;
+            font-weight: 500;
+            text-align: center;
+            color: #6e6e73;
+            margin-bottom: 40px;
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1), 0 1px 8px rgba(0,0,0,0.1);
+            animation: float 3s ease-in-out infinite;
+            transition: all 0.3s ease;
+        }
+
+        .pill-primary {
+            background: linear-gradient(135deg, #5856d6 0%, #af52de 100%);
+            color: white;
+        }
+
+        .pill-danger {
+            background: linear-gradient(135deg, #ff3b30 0%, #ff6b6b 100%);
+            color: white;
+        }
+
+        .pill-success {
+            background: linear-gradient(135deg, #34c759 0%, #30d158 100%);
+            color: white;
+        }
+
+        .pill-warning {
+            background: linear-gradient(135deg, #ff9500 0%, #ffb143 100%);
+            color: white;
+        }
+
+        .pill-info {
+            background: linear-gradient(135deg, #007aff 0%, #5ac8fa 100%);
+            color: white;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(88, 86, 214, 0.3), 0 0 40px rgba(88, 86, 214, 0.1);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(88, 86, 214, 0.5), 0 0 60px rgba(88, 86, 214, 0.2);
+            }
+        }
+
+        .stat-container {
+            display: flex;
+            gap: 60px;
+            margin-top: 60px;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            text-align: center;
+            min-width: 250px;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.12);
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 18px;
+            color: #6e6e73;
+        }
+
+        .comparison-container {
+            display: flex;
+            gap: 80px;
+            align-items: center;
+            margin-top: 60px;
+        }
+
+        .comparison-side {
+            text-align: center;
+        }
+
+        .vs-circle {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ff3b30 0%, #ff6b6b 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 24px;
+            box-shadow: 0 10px 30px rgba(255, 59, 48, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .quote-box {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            max-width: 800px;
+            margin: 40px auto;
+            position: relative;
+        }
+
+        .quote-box::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: 40px;
+            font-size: 120px;
+            color: #5856d6;
+            opacity: 0.2;
+            font-family: Georgia, serif;
+        }
+
+        .quote-text {
+            font-size: 28px;
+            line-height: 1.5;
+            color: #1d1d1f;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .quote-author {
+            font-size: 18px;
+            color: #6e6e73;
+            text-align: right;
+        }
+
+        .timeline {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 60px;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff3b30 0%, #34c759 100%);
+            z-index: 0;
+        }
+
+        .slide.active .timeline::before {
+            animation: expandWidth 1s ease-out 0.3s both;
+        }
+
+        @keyframes expandWidth {
+            from {
+                transform: scaleX(0);
+            }
+            to {
+                transform: scaleX(1);
+            }
+        }
+
+        .timeline-item {
+            position: relative;
+            text-align: center;
+            z-index: 1;
+        }
+
+        .timeline-dot {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border: 4px solid #5856d6;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            box-shadow: 0 10px 25px rgba(88, 86, 214, 0.2);
+        }
+
+        .timeline-label {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 10px;
+        }
+
+        .timeline-desc {
+            font-size: 14px;
+            color: #6e6e73;
+        }
+
+        .chart-container {
+            width: 900px;
+            height: 400px;
+            margin: 40px auto;
+            position: relative;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 100%;
+            padding: 20px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+
+        .bar {
+            width: 120px;
+            background: linear-gradient(135deg, #ff3b30 0%, #ff9500 100%);
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 20px;
+            color: white;
+            font-weight: 600;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .bar.positive {
+            background: linear-gradient(135deg, #34c759 0%, #30d158 100%);
+        }
+
+        .bar.primary {
+            background: linear-gradient(135deg, #5856d6 0%, #af52de 100%);
+        }
+
+        .slide.active .bar {
+            animation: barGrow 1s ease-out 0.5s both;
+        }
+
+        @keyframes barGrow {
+            from {
+                transform: scaleY(0);
+                transform-origin: bottom;
+            }
+            to {
+                transform: scaleY(1);
+            }
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -40px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1d1d1f;
+        }
+
+        .bar-label {
+            margin-top: 20px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+            max-width: 800px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 45px rgba(0,0,0,0.12);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #5856d6 0%, #af52de 100%);
+            border-radius: 16px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #ff3b30 0%, #ff6b6b 100%);
+            color: white;
+            padding: 20px 60px;
+            border-radius: 50px;
+            font-size: 24px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 20px 40px rgba(255, 59, 48, 0.3);
+            transition: all 0.3s ease;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 25px 50px rgba(255, 59, 48, 0.4);
+        }
+
+        .slide-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #c4c4c6;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            width: 30px;
+            border-radius: 5px;
+            background: linear-gradient(135deg, #ff3b30 0%, #ff6b6b 100%);
+        }
+
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .icon-item {
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .icon-item:hover {
+            transform: scale(1.1);
+        }
+
+        .icon-circle {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 15px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            font-size: 48px;
+        }
+
+        .icon-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: #6e6e73;
+        }
+
+        .list-container {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            max-width: 600px;
+            margin: 40px auto;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .list-icon {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #ff3b30 0%, #ff6b6b 100%);
+            border-radius: 50%;
+            margin-right: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container" id="presentation">
+        
+        <!-- Slide 1: Title -->
+        <div class="slide">
+            <h1>The $4 Trillion Moat</h1>
+            <h2 style="font-size: 36px;">That Just Disappeared</h2>
+            <div class="pill pill-danger">Two Amazon Developers Called Me</div>
+        </div>
+
+        <!-- Slide 2: The Confession -->
+        <div class="slide">
+            <h2>Senior Developers Confess</h2>
+            <div class="quote-box">
+                <div class="quote-text">"Claude Code is doing all of my coding."</div>
+                <div class="quote-author">— Senior Developer, Amazon</div>
+            </div>
+            <div class="stat-container">
+                <div class="stat-box">
+                    <div class="stat-number" style="color: #ff3b30;">$400K</div>
+                    <div class="stat-label">Combined Salary</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" style="color: #5856d6;">10+</div>
+                    <div class="stat-label">Years Experience</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" style="color: #34c759;">0</div>
+                    <div class="stat-label">Lines of Code Now</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: The Warning -->
+        <div class="slide">
+            <h2>They See What's Coming</h2>
+            <div class="quote-box">
+                <div class="quote-text">"Amazon is going to look at us and say: Why pay them $200K when AI can do this?"</div>
+                <div class="quote-author">— Developer #2</div>
+            </div>
+            <h3 style="margin-top: 40px; color: #ff3b30;">"We want to get ahead of it."</h3>
+        </div>
+
+        <!-- Slide 4: The $4 Trillion Industry -->
+        <div class="slide">
+            <h2>50 Years of Moat</h2>
+            <div class="stat-container">
+                <div class="stat-box">
+                    <div class="stat-number" style="color: #5856d6;">$4T</div>
+                    <div class="stat-label">Global Software Industry</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" style="color: #ff9500;">$150K+</div>
+                    <div class="stat-label">Average Dev Salary</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" style="color: #ff3b30;">$100K</div>
+                    <div class="stat-label">To Build An App</div>
+                </div>
+            </div>
+            <h3 style="margin-top: 40px;">The Priesthood of Code</h3>
+        </div>
+
+        <!-- Slide 5: Failed Promises Timeline -->
+        <div class="slide">
+            <h2>The Failed Revolution</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot">2021</div>
+                    <div class="timeline-label">GitHub Copilot</div>
+                    <div class="timeline-desc">"Autocomplete on steroids"</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot">2022</div>
+                    <div class="timeline-label">ChatGPT</div>
+                    <div class="timeline-desc">"Calculator that crashes"</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot">2023</div>
+                    <div class="timeline-label">AI Developers</div>
+                    <div class="timeline-desc">"Intern who sort of knows Python"</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot" style="background: linear-gradient(135deg, #34c759 0%, #30d158 100%); color: white; border-color: #34c759;">2024</div>
+                    <div class="timeline-label" style="color: #34c759;">Claude Code</div>
+                    <div class="timeline-desc" style="color: #34c759; font-weight: 600;">Senior Developer Level</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: The Breaking Point -->
+        <div class="slide">
+            <h2>August 2024: Everything Changes</h2>
+            <div class="stat-container">
+                <div class="stat-box">
+                    <div class="stat-number" style="color: #34c759;">74.5%</div>
+                    <div class="stat-label">SWE-bench Score</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" style="color: #5856d6;">Senior</div>
+                    <div class="stat-label">Developer Level</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" style="color: #ff9500;">Zero</div>
+                    <div class="stat-label">Coding Required</div>
+                </div>
+            </div>
+            <h3 style="margin-top: 40px;">Not Junior. Not Mid. <span style="color: #34c759;">SENIOR.</span></h3>
+        </div>
+
+        <!-- Slide 7: What Claude Actually Does -->
+        <div class="slide">
+            <h2>From English to Enterprise</h2>
+            <div class="icon-grid">
+                <div class="icon-item">
+                    <div class="icon-circle">🏗️</div>
+                    <div class="icon-label">Architects Apps</div>
+                </div>
+                <div class="icon-item">
+                    <div class="icon-circle">💾</div>
+                    <div class="icon-label">Sets Up Databases</div>
+                </div>
+                <div class="icon-item">
+                    <div class="icon-circle">🔐</div>
+                    <div class="icon-label">Handles Auth</div>
+                </div>
+                <div class="icon-item">
+                    <div class="icon-circle">🎨</div>
+                    <div class="icon-label">Builds UI</div>
+                </div>
+                <div class="icon-item">
+                    <div class="icon-circle">🚀</div>
+                    <div class="icon-label">Deploys Live</div>
+                </div>
+                <div class="icon-item">
+                    <div class="icon-circle">🐛</div>
+                    <div class="icon-label">Fixes Own Bugs</div>
+                </div>
+                <div class="icon-item">
+                    <div class="icon-circle">✨</div>
+                    <div class="icon-label">Adds Features</div>
+                </div>
+                <div class="icon-item">
+                    <div class="icon-circle">💬</div>
+                    <div class="icon-label">Plain English</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Developer Exodus -->
+        <div class="slide">
+            <h2>The Developer Exodus</h2>
+            <div class="list-container">
+                <div class="list-item">
+                    <div class="list-icon">!</div>
+                    <span>"I haven't written code in weeks"</span>
+                </div>
+                <div class="list-item">
+                    <div class="list-icon">!</div>
+                    <span>"My company has no idea AI does my work"</span>
+                </div>
+                <div class="list-item">
+                    <div class="list-icon">!</div>
+                    <span>"Building my own products now"</span>
+                </div>
+                <div class="list-item">
+                    <div class="list-icon">!</div>
+                    <span>"Why make someone else rich?"</span>
+                </div>
+            </div>
+            <h3 style="margin-top: 40px;">Messages from Microsoft, Google, Meta Engineers</h3>
+        </div>
+
+        <!-- Slide 9: Old World vs New World -->
+        <div class="slide">
+            <h2>The World Just Changed</h2>
+            <div class="comparison-container">
+                <div class="comparison-side">
+                    <h3 style="color: #ff3b30;">Old World</h3>
+                    <div class="feature-card" style="margin-top: 20px;">
+                        <h3 style="font-size: 18px;">CS Degree</h3>
+                        <div class="pill pill-danger" style="font-size: 16px;">$200,000</div>
+                    </div>
+                    <div class="feature-card" style="margin-top: 20px;">
+                        <h3 style="font-size: 18px;">Build App</h3>
+                        <div class="pill pill-danger" style="font-size: 16px;">3-6 Months</div>
+                    </div>
+                    <div class="feature-card" style="margin-top: 20px;">
+                        <h3 style="font-size: 18px;">Custom Software</h3>
+                        <div class="pill pill-danger" style="font-size: 16px;">$50K-$100K</div>
+                    </div>
+                </div>
+                <div class="vs-circle">VS</div>
+                <div class="comparison-side">
+                    <h3 style="color: #34c759;">New World</h3>
+                    <div class="feature-card" style="margin-top: 20px;">
+                        <h3 style="font-size: 18px;">Learn Claude</h3>
+                        <div class="pill pill-success" style="font-size: 16px;">1 Weekend</div>
+                    </div>
+                    <div class="feature-card" style="margin-top: 20px;">
+                        <h3 style="font-size: 18px;">Build App</h3>
+                        <div class="pill pill-success" style="font-size: 16px;">1 Day</div>
+                    </div>
+                    <div class="feature-card" style="margin-top: 20px;">
+                        <h3 style="font-size: 18px;">Custom Software</h3>
+                        <div class="pill pill-success" style="font-size: 16px;">$10K-$15K</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Market Reality -->
+        <div class="slide">
+            <h2>The Numbers Don't Lie</h2>
+            <div class="chart-container">
+                <div class="bar-chart">
+                    <div class="bar" style="height: 90%;">
+                        <div class="bar-value">4.4M</div>
+                        <div class="bar-label">Developer Jobs</div>
+                    </div>
+                    <div class="bar primary" style="height: 70%;">
+                        <div class="bar-value">$572B</div>
+                        <div class="bar-label">Annual Spend</div>
+                    </div>
+                    <div class="bar positive" style="height: 95%;">
+                        <div class="bar-value">30M</div>
+                        <div class="bar-label">Businesses Need Software</div>
+                    </div>
+                    <div class="bar" style="height: 15%;">
+                        <div class="bar-value">115K</div>
+                        <div class="bar-label">Claude Users</div>
+                    </div>
+                </div>
+            </div>
+            <h3 style="margin-top: 40px;">The Gap: <span style="color: #34c759;">2 Million Software Tailors Needed</span></h3>
+        </div>
+
+        <!-- Slide 11: Gold Rush Parallel -->
+        <div class="slide">
+            <h2>The Gold Rush Parallel</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot">1848</div>
+                    <div class="timeline-label">Discovery</div>
+                    <div class="timeline-desc">Gold found, locals collect</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot">1849</div>
+                    <div class="timeline-label">Rush Begins</div>
+                    <div class="timeline-desc">300,000 people arrive</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot">1850</div>
+                    <div class="timeline-label">Saturation</div>
+                    <div class="timeline-desc">Easy gold gone</div>
+                </div>
+            </div>
+            <h3 style="margin-top: 60px; font-size: 36px;">We're in January 1848. <span style="color: #34c759;">The gold is on the ground.</span></h3>
+        </div>
+
+        <!-- Slide 12: The Developer's Dilemma -->
+        <div class="slide">
+            <h2>The Developer's Dilemma</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #ff3b30 0%, #ff6b6b 100%);">🤐</div>
+                    <h3 style="font-size: 24px;">Option 1</h3>
+                    <p style="color: #6e6e73;">Keep quiet, collect salary, hope nobody notices</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3 style="font-size: 24px;">Option 2</h3>
+                    <p style="color: #6e6e73;">Jump ship now, use advantage while it lasts</p>
+                </div>
+            </div>
+            <h3 style="margin-top: 40px;">Those Amazon devs chose Option 2</h3>
+            <div class="pill pill-success">Already have their first $25K client</div>
+        </div>
+
+        <!-- Slide 13: The Window -->
+        <div class="slide">
+            <h2>The Closing Window</h2>
+            <div class="timeline" style="max-width: 1000px;">
+                <div class="timeline-item">
+                    <div class="timeline-dot" style="background: #34c759; color: white; border-color: #34c759;">NOW</div>
+                    <div class="timeline-label">Sept 2024</div>
+                    <div class="timeline-desc">115K users<br>Zero competition<br>$15K easy</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot" style="background: #ff9500; color: white; border-color: #ff9500;">6mo</div>
+                    <div class="timeline-label">March 2025</div>
+                    <div class="timeline-desc">1M+ users<br>Media coverage<br>Prices dropping</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot" style="background: #ff3b30; color: white; border-color: #ff3b30;">12mo</div>
+                    <div class="timeline-label">Sept 2025</div>
+                    <div class="timeline-desc">5M+ users<br>Mainstream<br>Race to bottom</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot" style="background: #6e6e73; color: white; border-color: #6e6e73;">24mo</div>
+                    <div class="timeline-label">Sept 2026</div>
+                    <div class="timeline-desc">Everyone knows<br>New normal<br>Game over</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: The Blueprint -->
+        <div class="slide">
+            <h2>The 4-Week Blueprint</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot">W1</div>
+                    <div class="timeline-label">Master</div>
+                    <div class="timeline-desc">Build 5 practice apps</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot">W2</div>
+                    <div class="timeline-label">Find</div>
+                    <div class="timeline-desc">10 business problems</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot">W3</div>
+                    <div class="timeline-label">Build</div>
+                    <div class="timeline-desc">Demo solution</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot">W4</div>
+                    <div class="timeline-label">Close</div>
+                    <div class="timeline-desc">$15K deal</div>
+                </div>
+            </div>
+            <h3 style="margin-top: 40px;">Those Amazon devs already completed this</h3>
+        </div>
+
+        <!-- Slide 15: The Philosophical Shift -->
+        <div class="slide">
+            <h2>The Democratization of Creation</h2>
+            <div class="quote-box">
+                <div class="quote-text" style="font-size: 24px;">For 50 years, ideas needed builders.<br>The builders had all the power.<br><br>Now, your idea IS the execution.<br>Your vision IS the product.</div>
+            </div>
+            <h3 style="margin-top: 40px;">The only barrier is describing what you want</h3>
+        </div>
+
+        <!-- Slide 16: The Prophecy -->
+        <div class="slide">
+            <h2>In 5 Years...</h2>
+            <h3 style="font-size: 36px; margin: 40px 0;">This will be the moment<br>the $4 trillion moat disappeared</h3>
+            <div class="stat-container">
+                <div class="stat-box">
+                    <div class="stat-number" style="color: #ff3b30;">Yesterday</div>
+                    <div class="stat-label">Coding = Superpower</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" style="color: #34c759;">Today</div>
+                    <div class="stat-label">Coding = Commodity</div>
+                </div>
+            </div>
+            <h3 style="margin-top: 40px;">The developers saw it first</h3>
+        </div>
+
+        <!-- Slide 17: The Question -->
+        <div class="slide">
+            <h1 style="font-size: 64px;">Those Amazon developers<br>saw the future</h1>
+            <h3 style="margin: 40px 0;">They could have ignored it.<br>Instead, they called a non-coder for advice.</h3>
+            <div class="pill pill-danger">That takes courage</div>
+            <div class="pill pill-success" style="margin-left: 20px;">That takes vision</div>
+        </div>
+
+        <!-- Slide 18: Final Call -->
+        <div class="slide">
+            <h2>The Moat Is Gone</h2>
+            <h3 style="font-size: 36px; margin: 40px 0;">You have the same opportunity<br>as $200K/year developers</h3>
+            <div class="pill pill-danger">Same tools</div>
+            <div class="pill pill-warning" style="margin-left: 20px;">Same market</div>
+            <div class="pill pill-success" style="margin-left: 20px;">Same potential</div>
+            <button class="cta-button" style="margin-top: 60px;">What Are You Waiting For?</button>
+        </div>
+
+    </div>
+
+    <div class="slide-indicator">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const presentation = document.getElementById('presentation');
+        const dots = document.querySelectorAll('.dot');
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = 18;
+
+        // Set first slide as active immediately
+        slides[0].classList.add('active');
+
+        function updateSlide() {
+            // Smooth slide transition
+            presentation.style.transform = `translateX(-${currentSlide * 100}vw)`;
+            
+            // Update dots
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+
+            // Remove active from all slides first
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            // Add active to current slide after a small delay to trigger animations
+            setTimeout(() => {
+                slides[currentSlide].classList.add('active');
+            }, 100);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlide();
+            } else if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        });
+
+        // Also allow clicking to advance
+        document.addEventListener('click', (e) => {
+            if (e.clientX > window.innerWidth / 2 && currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlide();
+            } else if (e.clientX <= window.innerWidth / 2 && currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        });
+    </script>
+</body>
+</html>
