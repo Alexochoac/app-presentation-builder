@@ -805,6 +805,10 @@ function applyEditsToBlob(blobHtml, savedEdits) {
   $('[data-edit]').each(function () {
     var key = $(this).attr('data-edit');
     if (key && savedEdits[key] !== undefined) {
+      // Tables managed by table.js always save their state through the tabs blob.
+      // Re-applying their individual edit key would overwrite the blob's current
+      // column/row collapse state with a stale value.
+      if ($(this).attr('data-ls-table') !== undefined) return;
       $(this).html(savedEdits[key]);
     }
     // Blobs are saved with runtime state — tabs.js and other components temporarily
@@ -2465,15 +2469,18 @@ function renderCarouselTagsLayout(slideId, savedEdits) {
     '    .ls9-tag:hover { outline: 1px solid rgba(232,113,26,.5); }',
     '    .ls9-tag.active { outline: 2px solid #E8711A; opacity: 1 !important; }',
     '    .ls9-tag-car { position: relative; }',
-    '    .ls9-tag-car:not([data-has-slides]) .ls9-empty {',
-    '      display: flex !important; }',
+    '    .ls9-tag-car:not([data-has-slides]) {',
+    '      display: flex !important; flex-direction: column;',
+    '      align-items: center; justify-content: center; min-height: 300px !important; }',
+    '    .ls9-tag-car:not([data-has-slides]) .ls-carousel-track { display: none !important; }',
     '    .ls9-empty {',
-    '      display: none; position: absolute; inset: 0; z-index: 3;',
-    '      align-items: center; justify-content: center; flex-direction: column; gap: 8px;',
-    '      border: 1.5px dashed rgba(232,113,26,.35); border-radius: 13px;',
-    '      color: rgba(232,113,26,.6); font-size: 12px; font-weight: 600; pointer-events: none;',
-    '    }',
-    '    .ls9-tag-car .ls-carousel-track { position: relative; z-index: 4; }',
+    '      display: none; padding: 28px 32px; border: 1.5px dashed rgba(232,113,26,.45);',
+    '      border-radius: 13px; color: rgba(232,113,26,.7); font-size: 15px;',
+    '      font-weight: 600; pointer-events: none; text-align: center; }',
+    '    .ls9-tag-car:not([data-has-slides]) .ls9-empty { display: block !important; }',
+    '    .ls9-tag-car:not([data-has-slides]) .ls-carousel-prev,',
+    '    .ls9-tag-car:not([data-has-slides]) .ls-carousel-next,',
+    '    .ls9-tag-car:not([data-has-slides]) .ls-carousel-counter { display: none !important; }',
     '  <\/style>',
     '  <script>',
     '  (function () {',
@@ -2889,7 +2896,9 @@ function renderCardsGridLayout(slideId, savedEdits) {
     { nameDefault: 'Erdman',       typeDefault: 'Automated lines'       },
   ];
 
-  var totalCards = Math.max(DEFAULT_CARDS.length, Math.min(20, parseInt(savedEdits['int-card-count'] || String(DEFAULT_CARDS.length), 10)));
+  var totalCards = savedEdits['int-card-count'] != null
+    ? Math.min(20, Math.max(1, parseInt(savedEdits['int-card-count'], 10)))
+    : DEFAULT_CARDS.length;
 
   var cardLines = [];
   for (var i = 1; i <= totalCards; i++) {
@@ -2911,6 +2920,7 @@ function renderCardsGridLayout(slideId, savedEdits) {
       '      </div>',
       '      <div class="int-name" data-edit="' + nameKey + '" contenteditable="" spellcheck="false">' + nameVal + '</div>',
       '      <div class="int-type" data-edit="' + typeKey + '" contenteditable="" spellcheck="false">' + typeVal + '</div>',
+      '      <button class="int-del-btn" data-builder-only="" title="Remove card">&#215;</button>',
       '    </div>',
     ].join('\n'));
   }
@@ -2940,6 +2950,9 @@ function renderCardsGridLayout(slideId, savedEdits) {
     '    .int-logo-img { max-height:46px; max-width:100%; object-fit:contain; }',
     '    .int-logo-btn { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.55); border:none; border-radius:6px; color:#fff; font-size:11px; font-weight:600; font-family:inherit; cursor:pointer; opacity:0; transition:opacity .15s; padding:0; }',
     '    .int-logo-wrap:hover .int-logo-btn, .int-logo-wrap.empty .int-logo-btn { opacity:1; }',
+    '    .int-del-btn { position:absolute; top:6px; right:6px; width:20px; height:20px; border-radius:50%; background:rgba(180,30,30,.8); border:1px solid rgba(255,100,100,.3); color:#fff; font-size:13px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s,background .2s; font-family:inherit; padding:0; }',
+    '    .int-card:hover .int-del-btn { opacity:1; }',
+    '    .int-del-btn:hover { background:rgba(220,40,40,1); }',
     '    .int-add-btn {',
     '      display:flex; align-items:center; justify-content:center; padding:14px;',
     '      border-radius:12px; cursor:pointer; grid-column:1/-1; width:100%;',
@@ -2962,41 +2975,85 @@ function renderCardsGridLayout(slideId, savedEdits) {
     '        inp.type = \'file\'; inp.accept = \'image/*\';',
     '        inp.onchange = function() {',
     '          var file = inp.files[0]; if (!file) return;',
-    '          var fd = new FormData(); fd.append(\'file\', file);',
-    '          fetch(\'/upload-image\', { method: \'POST\', body: fd })',
+    '          var preview = URL.createObjectURL(file);',
+    '          var img = wrap.querySelector(\'.int-logo-img\');',
+    '          if (!img) { img = document.createElement(\'img\'); img.className = \'int-logo-img\'; img.alt = \'\'; wrap.prepend(img); }',
+    '          img.src = preview;',
+    '          wrap.classList.remove(\'empty\');',
+    '          btn.textContent = \'Change\';',
+    '          var reader = new FileReader();',
+    '          reader.onload = function(ev) {',
+    '            fetch(\'/api/upload-image\', {',
+    '              method: \'POST\', headers: { \'Content-Type\': \'application/json\' },',
+    '              body: JSON.stringify({ filename: file.name, data: ev.target.result })',
+    '            })',
     '            .then(function(r) { return r.json(); })',
     '            .then(function(j) {',
-    '              var url = j.url; if (!url) return;',
-    '              var img = wrap.querySelector(\'.int-logo-img\');',
-    '              if (!img) { img = document.createElement(\'img\'); img.className = \'int-logo-img\'; img.alt = \'\'; wrap.prepend(img); }',
+    '              var url = j.path; if (!url) return;',
     '              img.src = url;',
-    '              wrap.classList.remove(\'empty\');',
-    '              btn.textContent = \'Change\';',
     '              document.dispatchEvent(new CustomEvent(\'slide-carousel-save\', {',
-    '                detail: { editKey: wrap.dataset.edit, html: url }',
+    '                detail: { editKey: wrap.getAttribute(\'data-edit\'), html: url }',
     '              }));',
     '            });',
+    '          };',
+    '          reader.readAsDataURL(file);',
     '        };',
     '        inp.click();',
     '      });',
     '    }',
     '',
+    '    function deleteCard(card) {',
+    '      var grid = card.closest(\'.integration-grid\');',
+    '      var cards = Array.from(grid.querySelectorAll(\'.int-card\'));',
+    '      if (cards.length <= 1) return;',
+    '      var idx = cards.indexOf(card);',
+    '      card.remove();',
+    '      var remaining = cards.filter(function(c, i) { return i !== idx; });',
+    '      remaining.forEach(function(c, i) {',
+    '        var num = i + 1;',
+    '        var nameEl = c.querySelector(\'.int-name\');',
+    '        var typeEl = c.querySelector(\'.int-type\');',
+    '        var logoWrap = c.querySelector(\'.int-logo-wrap\');',
+    '        if (nameEl) {',
+    '          nameEl.setAttribute(\'data-edit\', \'int-name-\' + num);',
+    '          document.dispatchEvent(new CustomEvent(\'slide-carousel-save\', { detail: { editKey: \'int-name-\' + num, html: nameEl.innerHTML } }));',
+    '        }',
+    '        if (typeEl) {',
+    '          typeEl.setAttribute(\'data-edit\', \'int-type-\' + num);',
+    '          document.dispatchEvent(new CustomEvent(\'slide-carousel-save\', { detail: { editKey: \'int-type-\' + num, html: typeEl.innerHTML } }));',
+    '        }',
+    '        if (logoWrap) {',
+    '          logoWrap.setAttribute(\'data-edit\', \'int-logo-\' + num);',
+    '          var logoImg = logoWrap.querySelector(\'.int-logo-img\');',
+    '          if (logoImg && logoImg.src) document.dispatchEvent(new CustomEvent(\'slide-carousel-save\', { detail: { editKey: \'int-logo-\' + num, html: logoImg.src } }));',
+    '        }',
+    '      });',
+    '      document.dispatchEvent(new CustomEvent(\'slide-carousel-save\', { detail: { editKey: \'int-card-count\', html: String(remaining.length) } }));',
+    '    }',
+    '',
+    '    function attachDelBtn(card) {',
+    '      var btn = card.querySelector(\'.int-del-btn\');',
+    '      if (btn) btn.addEventListener(\'click\', function(e) { e.stopPropagation(); deleteCard(card); });',
+    '    }',
+    '',
     '    slide.querySelectorAll(\'.int-logo-wrap\').forEach(attachLogoBtn);',
+    '    slide.querySelectorAll(\'.int-card\').forEach(attachDelBtn);',
     '',
     '    var addBtn = slide.querySelector(\'.int-add-btn\');',
     '    if (addBtn) addBtn.addEventListener(\'click\', function() {',
     '      var grid = addBtn.closest(\'.integration-grid\');',
-    '      var count = grid.querySelectorAll(\'.int-card\').length;',
-    '      var n = count + 1;',
+    '      var n = grid.querySelectorAll(\'.int-card\').length + 1;',
     '      var card = document.createElement(\'div\');',
     '      card.className = \'int-card anim-in\';',
     '      card.innerHTML =',
-    '        \'<div class="int-logo-wrap empty" id="int-logo-car-\' + n + \'" data-edit="int-logo-\' + n + \'">\' +',
-    '        \'<button class="int-logo-btn" data-builder-only="" data-logo-idx="\' + n + \'">+ Logo</button></div>\' +',
+    '        \'<div class="int-logo-wrap empty" data-edit="int-logo-\' + n + \'">\' +',
+    '        \'<button class="int-logo-btn" data-builder-only="">+ Logo</button></div>\' +',
     '        \'<div class="int-name" data-edit="int-name-\' + n + \'" contenteditable="" spellcheck="false">New Partner</div>\' +',
-    '        \'<div class="int-type" data-edit="int-type-\' + n + \'" contenteditable="" spellcheck="false">Category</div>\';',
+    '        \'<div class="int-type" data-edit="int-type-\' + n + \'" contenteditable="" spellcheck="false">Category</div>\' +',
+    '        \'<button class="int-del-btn" data-builder-only="" title="Remove card">&#215;</button>\';',
     '      grid.insertBefore(card, addBtn);',
     '      attachLogoBtn(card.querySelector(\'.int-logo-wrap\'));',
+    '      attachDelBtn(card);',
     '      document.dispatchEvent(new CustomEvent(\'slide-carousel-save\', {',
     '        detail: { editKey: \'int-card-count\', html: String(n) }',
     '      }));',
@@ -4383,6 +4440,19 @@ app.post('/api/decks', function (req, res) {
   var name = (req.body && req.body.name) ? String(req.body.name).trim() : '';
   if (!name) return res.status(400).json({ success: false, error: 'name required' });
   try {
+    var logo = null;
+    var logoFilename = (req.body && req.body.logoFilename) ? String(req.body.logoFilename).trim() : '';
+    var logoData     = (req.body && req.body.logoData)     ? String(req.body.logoData).trim()     : '';
+    if (logoFilename && logoData) {
+      var logoMatches = logoData.match(/^data:([A-Za-z0-9+/]+);base64,(.+)$/);
+      if (logoMatches) {
+        var logoBuffer = Buffer.from(logoMatches[2], 'base64');
+        var logoSafe   = path.basename(logoFilename).replace(/[^a-zA-Z0-9._-]/g, '_');
+        var logoDest   = path.join(__dirname, 'features', 'slides', 'uploads', logoSafe);
+        fs.writeFileSync(logoDest, logoBuffer);
+        logo = '/slides/uploads/' + logoSafe;
+      }
+    }
     var store = readDecks();
     var now = new Date().toISOString();
     var deck = {
@@ -4391,7 +4461,7 @@ app.post('/api/decks', function (req, res) {
       theme: (req.body && req.body.theme) || 'dark',
       createdAt: now,
       updatedAt: now,
-      logo: null,
+      logo: logo,
       heroBg: null,
       heroBgFocal: '50% 50%',
       colors: { primary: '#F5A623' }
@@ -5562,7 +5632,8 @@ app.post('/api/presentations', function (req, res) {
         customerLogoSrc = '/slides/uploads/' + logoSafe;
       }
     }
-    // Fall back to the deck's own logo if no file was uploaded
+    // Fall back to cover slide logo, then deck logo
+    if (!customerLogoSrc && body.coverLogoSrc) customerLogoSrc = (body.coverLogoSrc || '').trim();
     if (!customerLogoSrc && deckMeta.logo) customerLogoSrc = deckMeta.logo;
 
     // Build a snapshot: deck slide order + names

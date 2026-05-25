@@ -1,5 +1,5 @@
 ---
-description: Full release — build Docker image, push to ghcr.io, restart prod, update CHANGELOG, create GitHub Release.
+description: Full release — build Docker image, push to ghcr.io, deploy standalone compose, update CHANGELOG, create GitHub Release.
 ---
 
 # Release — App Presentation Builder
@@ -8,8 +8,43 @@ description: Full release — build Docker image, push to ghcr.io, restart prod,
 
 - **App source:** `C:/Users/Alex/Alex-Projects/active/App-presentation-builder/builder`
 - **Image registry:** `ghcr.io/alexochoac/app-presentation-builder`
-- **Prod compose:** `C:/Users/Alex/n8n-projects/`
+- **Prod compose root:** `C:/Users/Alex/put-a-presentation/` ← each version lives in its own subfolder here
 - **Project root:** `C:/Users/Alex/Alex-Projects/active/App-presentation-builder`
+
+---
+
+## Versioning — SemVer
+
+Versions follow **Semantic Versioning**: `vMAJOR.MINOR.PATCH`
+
+| Number | When to bump | Example |
+|--------|-------------|---------|
+| MAJOR | Breaking change — old data or workflows may stop working | v2.0.0 |
+| MINOR | New features added, nothing broken | v1.1.0 |
+| PATCH | Bug fixes only | v1.1.1 |
+
+Examples: `v1.1.0`, `v1.2.0`, `v2.0.0`
+
+---
+
+## Deployment Model — Standalone Compose Per Version
+
+Each version of Put.A.Presentation runs as its **own standalone Docker Compose project**, separate from n8n and from other versions.
+
+**Folder structure on the host machine:**
+```
+C:/Users/Alex/put-a-presentation/
+└── v1.1.0/
+    ├── docker-compose.yml   ← copied from project root
+    └── .env.prod            ← copied from builder/.env.prod
+```
+
+Each compose stack contains **3 services**:
+- `builder` — the App Presentation Builder (port 3000)
+- `umami` — Umami analytics (port 3003)
+- `umami-db` — PostgreSQL for Umami
+
+This means each version has its own isolated analytics data, its own volumes, and can run alongside other versions without conflict.
 
 ---
 
@@ -28,15 +63,16 @@ Before sharing presentations with real customers:
 
 ## Step 1 — Version number
 
-If the user passed a version (e.g. `/release v1.2`), use it.
-If not, ask: **What version number? (e.g. `v1.2`)**
-Must start with `v` and follow semver.
+If the user passed a version (e.g. `/release v1.2.0`), use it.
+If not, ask: **What version number? (e.g. `v1.1.0`)**
+Must start with `v` and follow semver (vMAJOR.MINOR.PATCH).
 
 ---
 
 ## Step 2 — Release notes
 
-Ask: **What changed in this version?**
+If CHANGELOG.md already has an entry for this version, use those notes.
+If not, ask: **What changed in this version?**
 Keep it as bullet points — used in CHANGELOG.md and GitHub Release.
 
 ---
@@ -65,19 +101,32 @@ Stop if it fails.
 
 ---
 
-## Step 5 — Restart prod
+## Step 5 — Deploy standalone compose
+
+Create the version folder and copy in the compose files:
 
 ```bash
-cd C:/Users/Alex/n8n-projects
-docker compose pull presentation-builder
-docker compose up -d presentation-builder
+mkdir -p "C:/Users/Alex/put-a-presentation/{version}"
+cp "C:/Users/Alex/Alex-Projects/active/App-presentation-builder/docker-compose.yml" \
+   "C:/Users/Alex/put-a-presentation/{version}/docker-compose.yml"
+cp "C:/Users/Alex/Alex-Projects/active/App-presentation-builder/builder/.env.prod" \
+   "C:/Users/Alex/put-a-presentation/{version}/.env"
 ```
+
+Then start the stack:
+
+```bash
+cd "C:/Users/Alex/put-a-presentation/{version}"
+docker compose -p put-a-presentation-{version} up -d
+```
+
+The `-p` flag names the compose project so it doesn't collide with other versions.
 
 ---
 
 ## Step 6 — Update CHANGELOG.md
 
-Add a new entry at the top of the release history table:
+If not already done, add a new entry at the top of the release history:
 
 ```markdown
 ## [{version}] — {today's date}
@@ -90,7 +139,7 @@ Add a new entry at the top of the release history table:
 
 ## Step 7 — Update VERSIONS.md
 
-Add a new row to the release history table:
+Add a new row to the release history table (create the file if it doesn't exist):
 
 ```markdown
 | {version} | {today's date} | {one-line summary} |
@@ -131,6 +180,6 @@ docker pull ghcr.io/alexochoac/app-presentation-builder:{version}
 
 Report:
 - Image: `ghcr.io/alexochoac/app-presentation-builder:{version}` ✅
-- Prod restarted at `https://put-a-presentation.wbtm.io` ✅
+- Compose stack running at `C:/Users/Alex/put-a-presentation/{version}/` ✅
 - GitHub Release link ✅
 - CHANGELOG.md updated ✅

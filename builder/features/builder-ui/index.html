@@ -1118,7 +1118,26 @@
   <div class="modal-backdrop" id="deckNameModal">
     <div class="modal-box">
       <div class="modal-title" id="deckNameModalTitle">New Deck</div>
-      <input class="modal-input" id="deckNameInput" type="text" placeholder="Deck name…" maxlength="80" autocomplete="off">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="modal-field">
+          <label class="modal-label" for="deckNameInput">Deck Name <span style="color:#f87171;">*</span></label>
+          <input class="modal-input" id="deckNameInput" type="text" placeholder="e.g. Acme Corp" maxlength="80" autocomplete="off">
+        </div>
+        <div class="modal-field" id="deckLogoField">
+          <label class="modal-label">Company Image</label>
+          <div class="save-logo-row">
+            <div class="save-logo-preview" id="deckLogoPreview" title="Click to upload image">
+              <span class="save-logo-placeholder" id="deckLogoPlaceholder">&#127960;</span>
+              <img id="deckLogoImg" src="" alt="" style="display:none;">
+            </div>
+            <div class="save-logo-actions">
+              <button class="btn-logo-upload" id="deckLogoUploadBtn" type="button">Upload image</button>
+              <span class="save-logo-hint" id="deckLogoHint">Shown on the deck card</span>
+            </div>
+          </div>
+          <input type="file" id="deckLogoFile" accept="image/*" style="display:none;">
+        </div>
+      </div>
       <div class="modal-actions">
         <button class="modal-cancel" id="deckNameCancel">Cancel</button>
         <button class="modal-confirm" id="deckNameConfirm">Create</button>
@@ -1183,7 +1202,7 @@
         <div class="modal-divider"></div>
 
         <div class="modal-field">
-          <label class="modal-label">Logo</label>
+          <label class="modal-label">Card Logo <span id="saveLogoRequiredMark" style="color:#f87171;display:none;">*</span></label>
           <div class="save-logo-row">
             <div class="save-logo-preview" id="saveLogoPreview" title="Click to upload logo">
               <span class="save-logo-placeholder" id="saveLogoPlaceholder">&#128444;</span>
@@ -1191,9 +1210,10 @@
             </div>
             <div class="save-logo-actions">
               <button class="btn-logo-upload" id="saveLogoUploadBtn" type="button">Upload logo</button>
-              <span class="save-logo-hint" id="saveLogoHint">Using deck logo</span>
+              <span class="save-logo-hint" id="saveLogoHint"></span>
             </div>
           </div>
+          <span id="saveLogoError" style="display:none;font-size:11px;color:#f87171;margin-top:2px;">Required — upload a logo to identify this card.</span>
           <input type="file" id="saveLogoFile" accept="image/*" style="display:none;">
         </div>
 
@@ -1405,11 +1425,31 @@
     var drawerSaveTimer = null;
     var drawerPendingReload = false;
 
+    var deckCollapseTimer = null;
+
+    function scheduleDeckCollapse() {
+      clearTimeout(deckCollapseTimer);
+      deckCollapseTimer = setTimeout(function () {
+        document.querySelector('.deck-sidebar').classList.add('collapsed');
+      }, 3000);
+    }
+
+    function cancelDeckCollapse() {
+      clearTimeout(deckCollapseTimer);
+    }
+
     function initDeckSidebarHover() {
       var sidebar = document.querySelector('.deck-sidebar');
       if (!sidebar) return;
-      sidebar.addEventListener('mouseenter', function () { sidebar.classList.remove('collapsed'); });
-      sidebar.addEventListener('mouseleave', function () { sidebar.classList.add('collapsed'); });
+      sidebar.addEventListener('mouseleave', scheduleDeckCollapse);
+      sidebar.addEventListener('mouseenter', cancelDeckCollapse);
+    }
+
+    function attachDeckRowHover(row) {
+      row.addEventListener('mouseenter', function () {
+        cancelDeckCollapse();
+        document.querySelector('.deck-sidebar').classList.remove('collapsed');
+      });
     }
 
     // ── Library slide mode ─────────────────────────────────────────────────────
@@ -1566,6 +1606,7 @@
         var deckId    = row.dataset.deckId;
         var renderIdx = parseInt(row.dataset.renderIdx, 10);
 
+        attachDeckRowHover(row);
         row.addEventListener('click', function () { setActiveDeck(deckId); });
         row.addEventListener('dblclick', function () {
           if (deckId !== activeDeckId) {
@@ -2225,6 +2266,9 @@
     // ── Save / Edit Presentation Modal (shared state) ─────────────────────────
     var saveLogoData     = '';
     var saveLogoFilename = '';
+    var saveLogoRequired = false;
+    var deckLogoData     = '';
+    var deckLogoFilename = '';
     var selectedLangs    = [];
     var pendingReplaceId = null;
 
@@ -2271,13 +2315,17 @@
       saveLogoData = ''; saveLogoFilename = '';
 
       if (editPres) {
+        saveLogoRequired = false;
         setLogoPreview(editPres.customerLogoSrc || '', editPres.customerLogoSrc ? 'Current logo' : 'No logo');
+        document.getElementById('saveLogoRequiredMark').style.display = 'none';
+        document.getElementById('saveLogoError').style.display = 'none';
       } else {
-        var activeDeck  = decks.find(function (d) { return d.id === activeDeckId; });
-        var deckDefault = activeDeck && activeDeck.logo ? activeDeck.logo : '';
-        var logoSrc     = deckCoverLogoSrc || deckDefault;
-        var logoLabel   = deckCoverLogoSrc ? 'Cover logo' : (deckDefault ? 'Using deck logo' : 'No logo');
+        saveLogoRequired = !deckCoverLogoSrc;
+        var logoSrc   = deckCoverLogoSrc || '';
+        var logoLabel = deckCoverLogoSrc ? 'From cover slide' : '';
         setLogoPreview(logoSrc, logoLabel);
+        document.getElementById('saveLogoRequiredMark').style.display = saveLogoRequired ? '' : 'none';
+        document.getElementById('saveLogoError').style.display = 'none';
       }
 
       fetch('/api/translations').then(function (r) { return r.json(); }).then(function (res) {
@@ -2321,7 +2369,12 @@
         if (!file) return;
         saveLogoFilename = file.name;
         var reader = new FileReader();
-        reader.onload = function (e) { saveLogoData = e.target.result; setLogoPreview(saveLogoData, file.name); };
+        reader.onload = function (e) {
+          saveLogoData = e.target.result;
+          setLogoPreview(saveLogoData, file.name);
+          document.getElementById('saveLogoError').style.display = 'none';
+          document.getElementById('saveLogoRequiredMark').style.display = 'none';
+        };
         reader.readAsDataURL(file);
         this.value = '';
       });
@@ -2341,6 +2394,12 @@
       confirm.addEventListener('click', function () {
         var company = document.getElementById('savePresCompany').value.trim();
         if (!company) { document.getElementById('savePresCompany').focus(); return; }
+        if (saveLogoRequired && !saveLogoData) {
+          document.getElementById('saveLogoError').style.display = '';
+          document.getElementById('saveLogoRequiredMark').style.display = '';
+          document.getElementById('saveLogoPreview').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
 
         var defaultLang = document.getElementById('savePresDefaultLang').value || 'en';
         var allLangs    = [defaultLang].concat(selectedLangs.filter(function (l) { return l !== defaultLang; }));
@@ -2359,6 +2418,7 @@
             contactName:      document.getElementById('savePresContact').value.trim(),
             logoFilename:     saveLogoFilename,
             logoData:         saveLogoData,
+            coverLogoSrc:     deckCoverLogoSrc || '',
             defaultLanguage:  defaultLang,
             languages:        allLangs
           })
@@ -2391,6 +2451,18 @@
       document.getElementById('deckNameConfirm').textContent   = isRename ? 'Rename' : 'Create';
       var inp = document.getElementById('deckNameInput');
       inp.value = currentName || '';
+
+      // Logo field only shown when creating
+      var logoField = document.getElementById('deckLogoField');
+      if (logoField) logoField.style.display = isRename ? 'none' : '';
+      deckLogoData = ''; deckLogoFilename = '';
+      var dImg = document.getElementById('deckLogoImg');
+      var dPh  = document.getElementById('deckLogoPlaceholder');
+      if (dImg) { dImg.src = ''; dImg.style.display = 'none'; }
+      if (dPh)  dPh.style.display = '';
+      var dHint = document.getElementById('deckLogoHint');
+      if (dHint) dHint.textContent = 'Shown on the deck card';
+
       document.getElementById('deckNameModal').classList.add('open');
       setTimeout(function () { inp.focus(); inp.select(); }, 60);
     }
@@ -2419,7 +2491,7 @@
       } else {
         fetch('/api/decks', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: name })
+          body: JSON.stringify({ name: name, logoFilename: deckLogoFilename, logoData: deckLogoData })
         }).then(function (r) { return r.json(); }).then(function (res) {
           if (res.success) {
             decks.push(res.data);
@@ -2458,6 +2530,30 @@
         if (e.key === 'Escape') closeDeckNameModal();
       });
       document.getElementById('deckNameConfirm').addEventListener('click', doSubmitDeckName);
+
+      // Deck logo upload
+      document.getElementById('deckLogoUploadBtn').addEventListener('click', function () {
+        document.getElementById('deckLogoFile').click();
+      });
+      document.getElementById('deckLogoPreview').addEventListener('click', function () {
+        document.getElementById('deckLogoFile').click();
+      });
+      document.getElementById('deckLogoFile').addEventListener('change', function () {
+        var file = this.files && this.files[0];
+        if (!file) return;
+        deckLogoFilename = file.name;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          deckLogoData = e.target.result;
+          var img = document.getElementById('deckLogoImg');
+          var ph  = document.getElementById('deckLogoPlaceholder');
+          img.src = deckLogoData; img.style.display = ''; ph.style.display = 'none';
+          var hint = document.getElementById('deckLogoHint');
+          if (hint) hint.textContent = file.name;
+        };
+        reader.readAsDataURL(file);
+        this.value = '';
+      });
 
       // Delete deck modal
       document.getElementById('deleteDeckCancel').addEventListener('click', function () {
