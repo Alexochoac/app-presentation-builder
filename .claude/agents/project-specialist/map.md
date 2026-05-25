@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-05-16 (session 18)
+Last updated: 2026-05-25 (session 19)
 
 ---
 
@@ -71,13 +71,11 @@ App-presentation-builder/
     │   ├── builder-ui/
     │   │   ├── index.html          ← Builder section (/builder) — 3-zone layout, deck manager
     │   │   └── preview.html        ← Legacy full-screen slide viewer (still in use)
-    │   ├── zone-builder/
-    │   │   └── index.html          ← Zone Builder (/zone-builder) — visual slide builder; see Zone Builder section
     │   ├── slides/
     │   │   ├── index.html          ← Slides section (/slides) — 3-tab: My Library / Templates / Slide Builder
     │   │   ├── style.css           ← Shared slide CSS (mobile-first, all slides)
     │   │   ├── slide-01-cover.html ← Original HTML fragments (source of truth for content structure)
-    │   │   ├── ... (slides 02-22)  ← Files ≥16 are zone-builder or wizard-generated templates
+    │   │   ├── ... (slides 02-24)  ← HTML source fragments; not served directly (server.js is source of truth)
     │   │   ├── uploads/            ← Customer-uploaded images (gitignored)
     │   │   └── components/
     │   │       ├── carousel.js     ← ls-carousel: add/delete/reorder/zoom/autoplay/compare
@@ -87,6 +85,7 @@ App-presentation-builder/
     │   │       ├── table.js        ← table[data-ls-table]: row+col edit, dot cycling, resizable col
     │   │       ├── button.js       ← auto-attaches Track.click() to .slide-btn
     │   │       ├── tags.js         ← auto-attaches Track.click() to .slide-tag
+    │   │       ├── gallery.js      ← image gallery component (new)
     │   │       ├── language-switcher.js ← client-side lang switcher for finished presentations
     │   │       └── tracker.js      ← Umami analytics tracker
     │   ├── layouts/
@@ -109,7 +108,6 @@ App-presentation-builder/
 | `/` | Dashboard | Analytics overview + Finished Presentations CRUD |
 | `/builder` | Builder | 3-zone layout: deck list + slide panel + main canvas |
 | `/slides` | Slides | 3-tab: My Library / Templates / Slide Builder |
-| `/zone-builder` | Zone Builder | Visual drag-drop slide builder (creates Templates) |
 | `/settings` | Settings | Global app settings only |
 
 `/layouts` redirects to `/slides`.
@@ -128,12 +126,48 @@ Three panels stacked vertically:
 
 ### 2. Publication Activity (below FP, **starts collapsed**)
 - Collapse toggle (`#pubActHeader` / `#pubActBody`), state saved to `pb-pubact-collapsed` (default `'1'` = collapsed)
-- Date range dropdown (7d / 24h / 30d / Custom flatpickr)
+- Date range dropdown (Last 24h / Last 7 days / Last 30 days / Custom flatpickr) — default **7 days**
 - Summary cards: total presentations, total decks, last published
 - Publications bar chart (`#viewsChart`, Chart.js 4) — real data from `/api/presentations`
 - Presentations multi-select dropdown with search
-- **Engagement chart** (`#engagementChart`) — Umami pageviews + visitors line chart, lazy-loaded on panel open via `/api/analytics/pageviews`
 - **Recent Activity** inside as collapsible subsection (`pb-recentact-collapsed`, default open) — last 10 published
+
+### 3. Engagement Analytics (below Publication Activity, **starts collapsed**)
+Full analytics panel with two chart modes and a 4-level drill-down filter hierarchy.
+
+**Filter hierarchy (left to right in filter bar):**
+- `#engDeckDropdown` — All Decks → specific deck (filters `#engPresDropdown` to that deck's Live presentations)
+- `#engPresDropdown` — All Presentations → specific presentation (multi-select)
+- Date range dropdown (same options as Publication Activity) — default 7 days
+
+**State variables (key):**
+```js
+engMode        // 'pageviews' | 'events'
+engEventsMode  // 'popularity' | 'timeseries'  (only relevant when engMode='events')
+engDrillSlide  // null | slide-id string (drill into one slide's per-pres breakdown)
+engDeckId      // null | deck-id string
+engPresIds     // [] = all from current scope; specific IDs = filtered
+_engAllLivePres // master list, never filtered — source of truth
+_engLivePres   // active list — filtered by deck when engDeckId is set
+engYMax        // sticky max: only grows, never shrinks (niceMax() steps: 10,20,50,100,200,500,1000)
+```
+
+**`getActivePresIds()` helper** — resolves `engPresIds` in context:
+- `engPresIds.length > 0` → return those IDs
+- `engDeckId !== null` → return deck's presentation IDs (or `null` if deck has no Live presentations)
+- otherwise → return `[]` (server default = all Live)
+- Returns `null` → caller renders empty chart without API call
+
+**Chart modes:**
+- **Pageviews mode** — bar chart (Chart.js 4), x=date, y=pageviews+sessions overlay. External HTML tooltip (scrollable per-presentation breakdown). Click a bar → enters Events mode.
+- **Events mode / Popularity** — horizontal bar chart sorted by event frequency. Click a bar → drills to per-presentation breakdown for that slide.
+- **Events mode / Over Time** — line chart per slide, colored, date x-axis. Slide color legend below chart.
+- **Back button** — exits drill → exits events → returns to pageviews.
+- Single toggle button flips Popularity ↔ Over Time.
+
+**External tooltip (pageviews bar chart):**
+- `pointer-events:auto` HTML div, 180ms hide delay, mouseenter on tooltip cancels hide
+- Shows date, totals (pageviews orange / sessions blue), scrollable list of all presentations sorted by views desc (max-height 150px overflow-y:auto)
 
 ### Key CSS notes
 - `.panel` has `overflow:hidden` in `app-style.css` — date dropdowns use `overflow:visible` inline to escape
@@ -164,43 +198,6 @@ Three-zone layout:
 
 ---
 
-## Zone Builder (`builder/features/zone-builder/index.html`)
-
-A dedicated visual slide builder at `/zone-builder`. Creates slides as **Templates** (written to `templates.json`), not library slides.
-
-**Two-screen flow:**
-1. **Layout Picker** — grid of 10 layout skeletons from `GET /api/layout-skeletons`; `?layout=id` URL param pre-selects
-2. **3-Panel Builder** — palette (240px) | canvas (center) | properties (280px)
-
-**Topbar:**
-- Template name input (default "New Template")
-- Category select (Content / Cover / Stats / Visual / CTA / Data)
-- "Save as Template" button → `POST /api/slide-builder/save` → writes to `templates.json`
-
-**Canvas zones:**
-- Header zone: section-label + headline (both `contenteditable`)
-- Body zone: slots populated by skeleton's `defaultComponents`; click empty slot to pick component
-
-**Component palette:** carousel, tabs, editable-list, capability-table, cta-button, tag-chips, text-block, stat-block, logo-grid, card-grid, numbered-steps
-
-**Properties panel:** text style controls (font size/weight/style/align/color) per selected component
-
-**State object (key fields):**
-```js
-state = {
-  skeleton, selected, savedTemplateId,  // null = new; lsNN-slug after first save
-  images,    // { [compId]: string[] } carousel image URLs (null = placeholder)
-  styles,    // { [id]: { fontSize, color, fontWeight, ... } }
-  content: { header: { sectionLabel, headline }, components: [{ id, type, slot }] }
-}
-```
-
-**HTML assembly (`assembleHtml`):** clones canvas DOM, strips `data-builder-only` elements, stamps `data-lang-key`, flattens `.zb-component` wrappers, embeds layout CSS + script block into the slide fragment.
-
-**Template catalog entries** from zone builder have `builtWith: 'zone-builder'` — used by the Templates tab to show "ZB" badge and "Zone Builder" edit button instead of canvas builder.
-
----
-
 ## Slides Section (`builder/features/slides/index.html`)
 
 Three top-level tabs:
@@ -215,10 +212,11 @@ Three top-level tabs:
 
 **Templates tab**
 - Filter pills by category (Cover / Content / Visual / Stats / CTA / Data)
-- "New Template" button → navigates to `/zone-builder`
+- "New Template" button → opens Slide Builder tab
 - "Import" button → opens import modal
-- Template cards: "Use Template" (→ name modal → creates library slide), "Edit Template" (canvas builder) or "Zone Builder" (for `builtWith: 'zone-builder'` entries)
-- Zone-builder templates show a blue "ZB" badge
+- **Template Detail View** — full-screen modal: live template preview iframe + theme picker sidebar (~35 colored swatches), slide name input, Create button
+  - Picking a theme reloads iframe with `?theme=filename.css`
+  - "Create Slide" → `POST /api/library` with `{ templateId, name, themeId }` → server reads `themes/[themeId].css`, stores `styleCss` on the new library slide
 - Pick-mode: "Use & Add to [DeckName]" → creates library slide + adds to deck
 
 **Slide Builder tab**
@@ -279,11 +277,15 @@ Global-only settings (per-deck settings moved to Builder deck drawer):
 | POST | `/api/layouts` | Create layout template |
 | PUT | `/api/layouts/:id` | Update layout template |
 | DELETE | `/api/layouts/:id` | Delete layout |
-| GET | `/api/layout-skeletons` | List zone-builder layout skeletons from `layout-skeletons.json` |
-| GET | `/api/templates` | List HTML template catalog (`templates.json`) — wizard + zone-builder entries |
-| POST | `/api/templates` | Register HTML template (wizard mode or direct html) |
+| GET | `/api/layout-skeletons` | List layout skeletons from `layout-skeletons.json` |
+| GET | `/api/templates` | List HTML template catalog (`templates.json`) |
+| POST | `/api/templates` | Register HTML template |
 | DELETE | `/api/templates/:id` | Deregister template (keeps HTML file) |
-| POST | `/api/slide-builder/save` | Zone builder: save assembled HTML as template to `templates.json`; `{ slideName, savedTemplateId, layoutId, category, html }` → `{ ok, templateId }` |
+| POST | `/api/slide-builder/save` | Save assembled HTML as template to `templates.json`; `{ slideName, savedTemplateId, layoutId, category, html }` → `{ ok, templateId }` |
+| GET | `/api/themes` | List all theme files with `{ id, name, file, bgColor, accentColor }` |
+| POST | `/api/themes/regenerate` | Regenerate all `.css` theme files from style references |
+| GET | `/themes/:file.css` | Serve theme CSS to browser (no auth) |
+| GET | `/slides/template-preview/:id` | Render template; `?theme=x.css` injects theme CSS, `?style=x.html` legacy path |
 
 ### Presentations
 | Method | Path | What it does |
@@ -301,14 +303,21 @@ Global-only settings (per-deck settings moved to Builder deck drawer):
 | GET | `/finished/:presId/` | Static: serves frozen output |
 | GET | `/view/:id` | Redirect to `/finished/:id/` if frozen exists; else live viewer |
 
-### Analytics (Umami proxy)
+### Analytics (Umami proxy + direct Postgres)
 | Method | Path | What it does |
 |--------|------|-------------|
 | GET | `/api/analytics/batch?startAt=&endAt=` | Stats for all presentations in parallel (visitors, visits, pageviews, bounces, totaltime) |
 | GET | `/api/analytics/presentation/:id?startAt=&endAt=` | Stats for one presentation by URL `/finished/:id/` |
-| GET | `/api/analytics/pageviews?startAt=&endAt=&presId=` | Time-series pageviews + sessions for engagement chart |
+| GET | `/api/analytics/pageviews-multi?startAt=&endAt=&presIds=` | Time-series pageviews + sessions + per-presentation breakdown; `presIds` CSV optional (omit = all Live) |
+| GET | `/api/analytics/events?startAt=&endAt=&presIds=` | Slide event popularity (click counts per slide-id, sorted desc) |
+| GET | `/api/analytics/event-series?startAt=&endAt=&slideId=&presIds=` | Time-series events per-day for one slide, grouped by presentation |
+| GET | `/api/analytics/slide-events?startAt=&endAt=&slideId=&presId=` | Per-slide event breakdown for one presentation |
 
 **Umami auth pattern:** Server calls `POST /api/auth/login` with `UMAMI_USERNAME` + `UMAMI_PASSWORD` (self-hosted v1 has no API key UI). JWT cached 23h. Results cached 15min. `getUmamiToken(cb)` + `umamiGet(path, cb)` helpers.
+
+**Direct Postgres pattern (for analytics endpoints the Umami API can't filter):** `pg.Pool` reads from `UMAMI_DB_URL`. Queries `website_event` table — `event_type=1` = pageview, `event_type=2` = custom event. Slide events: `event_name LIKE 'slide-%'` from URLs matching `/finished/*/`. `dbPresTimeSeriesWithBreakdown()` runs a single GROUP BY `url_path + day` query and returns `{ pageviews, sessions, breakdown }`.
+
+**`slugToTitle(slug)` helper:** converts `slide-cover-main` → `Cover Main` for display.
 
 ### Settings & Translation
 | Method | Path | What it does |
@@ -368,6 +377,7 @@ Global-only settings (per-deck settings moved to Builder deck drawer):
     "customerLogoSrc": "/slides/uploads/logo.png",
     "slideCount": 3,
     "slides": [{ "id": "...", "librarySlideId": "lib-cover", "name": "Cover", "visible": true }],
+    "deckId": "deck-abc123",
     "publishedAt": "2026-04-26T10:00:00Z",
     "archivedAt": null,
     "replacedAt": null
@@ -376,6 +386,12 @@ Global-only settings (per-deck settings moved to Builder deck drawer):
 ```
 
 **Presentation ID format:** numeric only (`00000001`, `00000002`, …) — `makePresId()`.
+
+---
+
+## Template Lifecycle (conceptual overview)
+
+See [`architecture/template-lifecycle.md`](../../architecture/template-lifecycle.md) for a full plain-language breakdown of how a slide moves through all four stages: Template → Library Slide → Deck Slide → Frozen Presentation. Covers what each stage adds, where data is stored, and how the render chain works.
 
 ---
 
@@ -417,8 +433,12 @@ slide-templates.json  →  slide-library.json  →  decks/[id]/deck.json
 ## Style System
 
 - **App shell:** `builder/shared/app-style.css` — Apple Keynote aesthetic, dark/light via `data-theme` on `<html>`, persisted as `pb-theme`
-- **CSS variables:** `--border`, `--border-hov`, `--surface`, `--surface-hov`, `--bg`, `--muted`, `--dim`, `--text`, `--accent`, `--accent-dim`, `--accent-glow`, `--radius-btn`, `--radius-card`, `--sidebar-w` (220px), `--sidebar-collapsed-w` (64px), `--font`, `--input-bg`, `--nav-active`, `--topbar-bg`, `--remove-hov-fg`, `--remove-hov-bg`
-- **Slide CSS:** `builder/features/slides/style.css` — mobile-first (`min-width` breakpoints)
+- **Slide CSS:** `builder/features/slides/style.css` — mobile-first (`min-width` breakpoints); holds `:root` default variable values + bridge variables
+- **24-variable theme system:** `builder/themes/*.css` — 35 auto-generated theme files (one per style-reference). Each is a `:root {}` block setting all 24 slide variables. Generated by `node builder/generate-themes.js`. Per-slide `styleCss` field stores the theme at create time; `library-preview`, `library-edit`, and `deck-preview` routes inject it into the page `<head>`. **Priority: slide `styleCss` > deck `styleCss`**.
+- **24 slide variables:** `--bg`, `--slide-hero-bg`, `--slide-hero-rgb`, `--text`, `--text-muted`, `--accent`, `--accent-rgb`, `--accent-mid`, `--accent-light`, `--font-body`, `--font-heading`, `--hero-overlay-angle/start/end`, `--card-bg`, `--card-border`, `--card-radius`, `--card-shadow`, `--badge-bg/border/radius/color`, `--logo-bg/border/radius`
+- **Bridge variables** in `style.css`: `--bg-card: var(--card-bg)`, `--border: var(--card-border)` etc. — old templates respond to theme changes automatically
+- **Deck accent CSS** (`deckAccentCss`): deck's `colors.primary` overrides `--accent` + `--accent-rgb`; hero bg color mode injects `--slide-hero-bg` + hides hero image
+- **CSS scoping in preview.html:** `scopeDeckCss()` rewrites `:root {}` → `.slides-container {}` before injection to prevent builder UI chrome bleed
 - **Known conflict:** 3-layer CSS (style.css vs per-slide `<style>` vs inline) — design system refactor planned
 
 ---
@@ -469,7 +489,7 @@ slide-templates.json  →  slide-library.json  →  decks/[id]/deck.json
 - **dashboard.css** — legacy file, should be deleted
 - **Translation — Preview navigate fix** — language re-apply on slide navigate uses `setTimeout(50)`; not yet replaced with reliable slide-ready signal
 - **Template update notifications** — when template rows change, library slides don't show an "Update available" badge yet (`Feature-L-2026-05-10-template-update-notifications-diff-and-review-flow.md`)
-- **Umami API token** — user's self-hosted Umami is v1 (no API key UI); using username/password auth. Credentials in `.env` as `UMAMI_USERNAME` + `UMAMI_PASSWORD`
+- **Umami API token** — user's self-hosted Umami is v1 (no API key UI); using username/password auth + direct Postgres for filtered queries. Credentials in `.env` as `UMAMI_USERNAME` + `UMAMI_PASSWORD` + `UMAMI_DB_URL`
 - **fpDelete modal** — Finished Presentations delete in builder-ui still uses native `confirm()` instead of proper modal
 
 ---
@@ -494,11 +514,11 @@ slide-templates.json  →  slide-library.json  →  decks/[id]/deck.json
 
 ## What's Next
 
-1. **Zone Builder — Component resize** — size control (compact / default / wide) in properties panel
-2. **Zone Builder — Properties panel Task 6** — component-specific settings (carousel config, list items, etc.)
-3. **Zone Builder — Linking system Task 8** — trigger-button component for embedded slide navigation
-4. **Translation — Preview navigate fix** — replace `setTimeout(50)` with reliable slide-ready signal
-5. **Template update notifications** — "Update available" badge in My Library when template rows change
-6. **Design system refactor** — eliminate 3-layer CSS conflict
-7. **App UI icons standardise** — minimalist icon set across all pages
-8. **fpDelete modal** — replace native `confirm()` with proper modal in builder-ui Finished Presentations
+1. **Hero bg color fix** — opacity/color not updating in canvas (`Issue-H-2026-05-17`)
+2. **Translation — Preview navigate fix** — replace `setTimeout(50)` with reliable slide-ready signal
+3. **Dashboard — Engagement chart filter** — live-only filter, multi-select checkbox dropdown, card image shortcut (`Feature-M-2026-05-22`)
+4. **Dashboard — Events chart** — slide popularity + time-series + drill-down sub-events (`Feature-M-2026-05-22`)
+5. **fpDelete modal** — replace native `confirm()` with proper modal in builder-ui Finished Presentations
+6. **Design system refactor** — eliminate 3-layer CSS conflict (partially addressed by 24-var theme system)
+7. **Template update notifications** — "Update available" badge in My Library when template rows change
+8. **App UI icons standardise** — minimalist icon set across all pages
