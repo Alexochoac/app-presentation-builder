@@ -180,6 +180,7 @@ All content slides now use this structure:
 - [ ] **Dashboard — Engagement chart filter** — live-only filter, multi-select checkbox dropdown, card image click shortcut (Feature-M-2026-05-22)
 - [ ] **Dashboard — Events chart** — slide popularity + time-series + drill-down per-slide sub-events (Feature-M-2026-05-22)
 - [ ] **Hero bg color fix** — opacity/color not updating in canvas (Issue-H-2026-05-17)
+- [x] **Tabs language switch fix** — `applyPreviewLang` now resets `_lsTabsInit` + re-inits tabs after every language change; `tabs.js` removes duplicate `+ Tab` buttons on re-init; deployed as v1.1.2 (2026-05-27)
 
 ## Phase Roadmap
 - **Phase 1** (current) — Local app, single user, build + publish
@@ -187,4 +188,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-05-25 (session 19)
+Last updated: 2026-05-27 (session 20)
