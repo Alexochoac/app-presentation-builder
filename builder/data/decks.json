@@ -4,9 +4,9 @@
     {
       "id": "default",
       "name": "SoftSolution",
-      "theme": "dark",
+      "theme": "light",
       "createdAt": "2026-05-09T00:00:00.000Z",
-      "updatedAt": "2026-05-25T08:07:03.536Z",
+      "updatedAt": "2026-05-26T17:53:25.688Z",
       "logo": "/slides/uploads/LOGO_Softsolution_Black.jpg",
       "heroBg": "/slides/uploads/Panther_Eye.jpeg",
       "heroBgFocal": "25% 50%",
@@ -22,40 +22,30 @@
       "brandCredit": "GlassQuality.com"
     },
     {
-      "id": "deck-1779600737153-b8v94",
-      "name": "TEST",
+      "id": "deck-1779723183017-evt77",
+      "name": "StrainOptics",
       "theme": "dark",
-      "createdAt": "2026-05-24T05:32:17.153Z",
-      "updatedAt": "2026-05-24T14:56:01.886Z",
-      "logo": "/slides/uploads/LOGO_LiteSentry_Greys.png",
-      "heroBg": "/slides/uploads/Panther_Eye.jpeg",
-      "heroBgFocal": "33% 33%",
-      "colors": {
-        "primary": "#e15e3d"
-      },
-      "styleRef": "animated-gradients.html",
-      "styleCss": "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');\n:root {\n  --bg: #000000;\n  --slide-hero-bg: #000000;\n  --slide-hero-rgb: 0,0,0;\n  --text: #ffffff;\n  --text-muted: rgba(255,255,255,.55);\n  --bg-card: rgba(255, 255, 255, 0.1);\n  --bg-card-hover: rgba(255,255,255,.09);\n  --border: rgba(255,255,255,.10);\n  --border-hover: rgba(255,255,255,.28);\n  --nav-bg: rgba(0,0,0,.65);\n  --nav-border: rgba(255,255,255,.08);\n  --dot-inactive: rgba(255,255,255,.18);\n  --counter: #555;\n}\nbody { font-family: 'Inter', sans-serif; }\n",
-      "heroBgType": "image",
-      "heroBgColor": "#eaebf0",
-      "heroBgOpacity": 22,
-      "heroBgFocalGrid": 4,
-      "heroBgFit": "cover",
-      "brandCredit": "wbtm.io"
-    },
-    {
-      "id": "deck-1779648288366-q7men",
-      "name": "TEEESET",
-      "theme": "dark",
-      "createdAt": "2026-05-24T18:44:48.365Z",
-      "updatedAt": "2026-05-24T18:45:31.428Z",
-      "logo": null,
+      "createdAt": "2026-05-25T15:33:03.016Z",
+      "updatedAt": "2026-05-25T15:43:59.951Z",
+      "logo": "/slides/uploads/LOGO_StrainOptics.png",
       "heroBg": null,
       "heroBgFocal": "50% 50%",
       "colors": {
         "primary": "#F5A623"
-      },
-      "styleRef": "animated-gradients.html",
-      "styleCss": "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');\n:root {\n  --bg: #000000;\n  --slide-hero-bg: #000000;\n  --slide-hero-rgb: 0,0,0;\n  --text: #ffffff;\n  --text-muted: rgba(255,255,255,.55);\n  --bg-card: rgba(255, 255, 255, 0.1);\n  --bg-card-hover: rgba(255,255,255,.09);\n  --border: rgba(255,255,255,.10);\n  --border-hover: rgba(255,255,255,.28);\n  --nav-bg: rgba(0,0,0,.65);\n  --nav-border: rgba(255,255,255,.08);\n  --dot-inactive: rgba(255,255,255,.18);\n  --counter: #555;\n}\nbody { font-family: 'Inter', sans-serif; }\n"
+      }
+    },
+    {
+      "id": "deck-1779723795196-ez81b",
+      "name": "LiteSentry",
+      "theme": "dark",
+      "createdAt": "2026-05-25T15:43:15.196Z",
+      "updatedAt": "2026-05-25T15:43:47.866Z",
+      "logo": "/slides/uploads/LiteSentry_Logo_part_of_the_group_of_SoftSolution.png",
+      "heroBg": null,
+      "heroBgFocal": "50% 50%",
+      "colors": {
+        "primary": "#F5A623"
+      }
     }
   ]
 }

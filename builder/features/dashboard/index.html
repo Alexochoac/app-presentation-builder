@@ -2014,6 +2014,10 @@
       var PAGE_SIZE     = 10;
       var currentStatus = 'active';
       var currentView  = localStorage.getItem('pb-fp-view') || 'list';
+      var publicBaseUrl = 'http://localhost:3000'; // overwritten by /api/settings
+      var settingsReady = fetch('/api/settings').then(function (r) { return r.json(); }).then(function (res) {
+        if (res.success && res.data.publicBaseUrl) publicBaseUrl = res.data.publicBaseUrl;
+      }).catch(function () {});
 
       function applyView() {
         document.getElementById('fpList').classList.toggle('fp-grid-mode', currentView === 'grid');
@@ -2158,7 +2162,7 @@
 
       function buildFpLinkEl(p) {
         var viewUrl = p.publishedAt
-          ? 'https://app-presentation-builder.pages.dev/finished-presentations/' + p.id + '/'
+          ? publicBaseUrl + '/public/' + p.id + '/'
           : window.location.origin + '/view/' + p.id;
         var span = document.createElement('span');
         span.className = 'fp-item-link';
@@ -2589,11 +2593,11 @@
       // ── Init ─────────────────────────────────────────────────────
       if (window._viewsPresentations) {
         allPres = window._viewsPresentations;
-        render();
+        settingsReady.then(function () { render(); });
       } else {
         document.addEventListener('viewsPresentationsLoaded', function (e) {
           allPres = e.detail.items || [];
-          render();
+          settingsReady.then(function () { render(); });
         });
       }
     })();

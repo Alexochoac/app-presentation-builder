@@ -246,6 +246,7 @@ window.Tabs = (function () {
 
     // "+ Tab" button
     if (!window.PB_READONLY) {
+      tabList.querySelectorAll('.ls-tab-add').forEach(function (b) { b.remove(); });
       var addBtn = document.createElement('button');
       addBtn.className = 'ls-tab-add';
       addBtn.setAttribute('data-builder-only', '');

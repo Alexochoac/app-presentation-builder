@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-05-25 (session 19)
+Last updated: 2026-05-27 (session 20)
 
 ---
 
@@ -491,6 +491,7 @@ slide-templates.json  →  slide-library.json  →  decks/[id]/deck.json
 - **Template update notifications** — when template rows change, library slides don't show an "Update available" badge yet (`Feature-L-2026-05-10-template-update-notifications-diff-and-review-flow.md`)
 - **Umami API token** — user's self-hosted Umami is v1 (no API key UI); using username/password auth + direct Postgres for filtered queries. Credentials in `.env` as `UMAMI_USERNAME` + `UMAMI_PASSWORD` + `UMAMI_DB_URL`
 - **fpDelete modal** — Finished Presentations delete in builder-ui still uses native `confirm()` instead of proper modal
+- **Tabs language switch** — ✅ fixed in v1.1.2: `applyPreviewLang` resets `_lsTabsInit` and re-calls `Tabs.init` after every language switch; `tabs.js` removes duplicate `ls-tab-add` buttons on re-init
 
 ---
 
@@ -499,9 +500,11 @@ slide-templates.json  →  slide-library.json  →  decks/[id]/deck.json
 - **Dockerfile:** `builder/Dockerfile` — Node 20 Alpine, `npm install --omit=dev`, `node server.js`
 - **Dev compose:** `docker-compose.yml` (project root) — builds from source, mounts `builder/data/` + `builder/.../uploads/` + `finished-presentations/`
 - **Prod compose:** `C:/Users/Alex/n8n-projects/docker-compose.yml` — `presentation-builder` service using `ghcr.io/alexochoac/app-presentation-builder:latest`, mounts `prod/` folders
-- **Image registry:** `ghcr.io/alexochoac/app-presentation-builder` — v1.0 + latest published
+- **Image registry:** `ghcr.io/alexochoac/app-presentation-builder` — v1.1.2 + latest published
 - **GitHub Release:** `github.com/Alexochoac/app-presentation-builder/releases/tag/v1.0`
-- **Deploy workflow:** build → tag → push to ghcr.io → `docker compose pull` + `up -d` in n8n-projects
+- **Prod stack:** `C:/Users/Alex/put-a-presentation/v1.1.0/` — project `put-a-presentation-v1-1-0`; builder on port 3005, umami on 3004, umami-db on 5434
+- **Patch release workflow:** build → push to ghcr.io → update `v1.1.0/docker-compose.yml` image tag → `docker compose -p put-a-presentation-v1-1-0 up -d --no-deps --pull always builder`
+- **Full release workflow:** documented in `.claude/commands/release.md`
 
 **Volume mounts (prod):**
 | Host | Container |
@@ -522,3 +525,4 @@ slide-templates.json  →  slide-library.json  →  decks/[id]/deck.json
 6. **Design system refactor** — eliminate 3-layer CSS conflict (partially addressed by 24-var theme system)
 7. **Template update notifications** — "Update available" badge in My Library when template rows change
 8. **App UI icons standardise** — minimalist icon set across all pages
+9. **Slide 11 tag carousel double-stack** — empty-state CSS flex refactor causes two carousels to stack on tag button click (`Issue-M-2026-05-25`)

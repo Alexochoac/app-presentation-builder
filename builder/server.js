@@ -8,9 +8,33 @@ const http     = require('http');
 const cheerio  = require('cheerio');
 const session  = require('express-session');
 const { requireAuth, registerAuthRoutes } = require('./features/auth/auth');
-const { execFile } = require('child_process');
+const { execFile, execSync } = require('child_process');
 const { translate } = require('./lib/translator');
 const { generateHtml } = require('./lib/template-generator');
+
+// ── Deployment config ─────────────────────────────────────────────────────────
+// REPO_ROOT: path to the git repo root — used for git add/commit/push and for
+// writing finished-presentations. Defaults to the project root in local dev.
+// In Docker, set REPO_ROOT=/repo and mount the git repo there.
+const REPO_ROOT       = process.env.REPO_ROOT       || path.join(__dirname, '..');
+const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL  || 'http://localhost:3000';
+
+// Configure git credentials on startup if GITHUB_TOKEN is provided.
+// This lets the Docker container push to GitHub without needing SSH keys.
+if (process.env.GITHUB_TOKEN) {
+  try {
+    execSync('git config user.email "builder@put-a-presentation.app"', { cwd: REPO_ROOT });
+    execSync('git config user.name "Put.A.Presentation Builder"',      { cwd: REPO_ROOT });
+    var currentRemote = execSync('git remote get-url origin', { cwd: REPO_ROOT }).toString().trim();
+    // Strip any existing credentials (greedy .+ catches all accumulated user:pass@ segments)
+    var cleanRemote = currentRemote.replace(/https:\/\/.+@/, 'https://');
+    var tokenizedRemote = cleanRemote.replace('https://', 'https://Alexochoac:' + process.env.GITHUB_TOKEN + '@');
+    execSync('git remote set-url origin ' + tokenizedRemote, { cwd: REPO_ROOT });
+    console.log('[git] credentials configured for', cleanRemote);
+  } catch (e) {
+    console.warn('[git] credential setup warning:', e.message);
+  }
+}
 
 const app  = express();
 const PORT = 3000;
@@ -29,8 +53,19 @@ app.use(session({
 // ── Public assets (no auth required) ─────────────────────────────────────────
 app.use('/shared/brand', express.static(path.join(__dirname, 'shared/brand')));
 
+// GET /public/:id/ — customer-facing frozen presentations (no auth required)
+app.use('/public', express.static(path.join(__dirname, '..', 'finished-presentations')));
+
 // ── Auth routes (login / logout) ──────────────────────────────────────────────
 registerAuthRoutes(app);
+
+// Public config endpoint — must be before requireAuth so the login page can read publicBaseUrl.
+app.get('/api/settings', function (_req, res) {
+  var data = readSettings();
+  data.umamiBaseUrl  = UMAMI_BASE_URL;
+  data.publicBaseUrl = PUBLIC_BASE_URL;
+  res.json({ success: true, data: data });
+});
 
 // ── Protect everything below this line ───────────────────────────────────────
 app.use(requireAuth);
@@ -3320,7 +3355,8 @@ app.use('/builder', express.static(path.join(__dirname, 'features/builder-ui')))
 // ── API: settings ─────────────────────────────────────────────────────────────
 app.get('/api/settings', function (_req, res) {
   var data = readSettings();
-  data.umamiBaseUrl = UMAMI_BASE_URL;
+  data.umamiBaseUrl   = UMAMI_BASE_URL;
+  data.publicBaseUrl  = PUBLIC_BASE_URL;
   res.json({ success: true, data: data });
 });
 
@@ -3847,7 +3883,7 @@ function dbPresStats(urlPaths, startMs, endMs, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, {});
   var siteId = null;
-  try { siteId = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, {});
   db.query(
     'SELECT url_path, COUNT(*) AS pageviews, COUNT(DISTINCT session_id) AS visitors ' +
@@ -3874,7 +3910,7 @@ function dbPresTimeSeries(urlPaths, startMs, endMs, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, { pageviews: [], sessions: [] });
   var siteId = null;
-  try { siteId = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, { pageviews: [], sessions: [] });
   db.query(
     "SELECT TO_CHAR(created_at AT TIME ZONE '" + localTzString() + "', 'YYYY-MM-DD') AS day, " +
@@ -3912,7 +3948,7 @@ function dbSlideEvents(urlPaths, startMs, endMs, eventNames, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, []);
   var siteId = null;
-  try { siteId = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, []);
   var params = [siteId, urlPaths, startMs, endMs];
   var extra = '';
@@ -3941,7 +3977,7 @@ function dbSlideEventSeries(urlPaths, startMs, endMs, eventNames, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, { days: [], series: [] });
   var siteId = null;
-  try { siteId = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, { days: [], series: [] });
   var params = [siteId, urlPaths, startMs, endMs];
   var extra = '';
@@ -3980,7 +4016,7 @@ function dbSlideEventByPres(urlPaths, presMap, startMs, endMs, eventName, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, []);
   var siteId = null;
-  try { siteId = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, []);
   db.query(
     'SELECT url_path, COUNT(*) AS cnt ' +
@@ -3993,7 +4029,7 @@ function dbSlideEventByPres(urlPaths, presMap, startMs, endMs, eventName, cb) {
     function (err, result) {
       if (err) return cb(err);
       var out = (result.rows || []).map(function (r) {
-        var presId = r.url_path.replace(/^\/finished\//, '').replace(/\/$/, '');
+        var presId = r.url_path.replace(/^\/public\//, '').replace(/\/$/, '');
         return { label: presMap[presId] || presId, count: parseInt(r.cnt, 10) };
       });
       cb(null, out);
@@ -4002,9 +4038,16 @@ function dbSlideEventByPres(urlPaths, presMap, startMs, endMs, eventName, cb) {
 }
 
 // ── Umami analytics proxy ─────────────────────────────────────────────────────
-var UMAMI_BASE_URL = process.env.UMAMI_BASE_URL || 'https://umami.wbtm.io';
-var UMAMI_USER     = process.env.UMAMI_USERNAME || '';
-var UMAMI_PASS     = process.env.UMAMI_PASSWORD || '';
+// UMAMI_BASE_URL:    public URL injected into published presentations as the tracking script src.
+// UMAMI_API_URL:     internal URL the server uses for Umami API calls (login, stats).
+//                    In Docker this is http://umami:3000 (container-to-container).
+//                    Defaults to UMAMI_BASE_URL if not set.
+// UMAMI_WEBSITE_ID:  overrides umamiWebsiteId in settings.json — set per environment in .env.
+var UMAMI_BASE_URL   = process.env.UMAMI_BASE_URL   || 'https://umami.wbtm.io';
+var UMAMI_API_URL    = process.env.UMAMI_API_URL    || UMAMI_BASE_URL;
+var UMAMI_USER       = process.env.UMAMI_USERNAME   || '';
+var UMAMI_PASS       = process.env.UMAMI_PASSWORD   || '';
+var UMAMI_WEBSITE_ID = process.env.UMAMI_WEBSITE_ID || '';
 
 var _umamiToken    = null;   // cached JWT
 var _umamiTokenExp = 0;      // expiry timestamp (ms)
@@ -4014,7 +4057,7 @@ var _analyticsCache = {};    // path → { data, expiresAt }
 // Umami v2 ignores the legacy &url= param; the correct form is &filters=[...].
 function umamiPresFilter(presId) {
   if (!presId) return '';
-  var f = JSON.stringify([{ column: 'url_path', filter: '=', value: '/finished/' + presId + '/' }]);
+  var f = JSON.stringify([{ column: 'url_path', filter: '=', value: '/public/' + presId + '/' }]);
   return '&filters=' + encodeURIComponent(f);
 }
 
@@ -4030,7 +4073,7 @@ var ANALYTICS_TTL  = 15 * 60 * 1000; // 15 min
 function getUmamiToken(cb) {
   if (_umamiToken && Date.now() < _umamiTokenExp) return cb(null, _umamiToken);
   var body   = JSON.stringify({ username: UMAMI_USER, password: UMAMI_PASS });
-  var url    = new URL('/api/auth/login', UMAMI_BASE_URL);
+  var url    = new URL('/api/auth/login', UMAMI_API_URL);
   var mod    = url.protocol === 'https:' ? https : http;
   var opts   = {
     hostname: url.hostname, port: url.port || (url.protocol === 'https:' ? 443 : 80), path: url.pathname,
@@ -4060,7 +4103,7 @@ function umamiGet(apiPath, cb) {
   if (cached && Date.now() < cached.expiresAt) return cb(null, cached.data);
   getUmamiToken(function (err, token) {
     if (err) return cb(err);
-    var url   = new URL(apiPath, UMAMI_BASE_URL);
+    var url   = new URL(apiPath, UMAMI_API_URL);
     var mod   = url.protocol === 'https:' ? https : http;
     var opts  = {
       hostname: url.hostname, port: url.port || (url.protocol === 'https:' ? 443 : 80),
@@ -4082,6 +4125,50 @@ function umamiGet(apiPath, cb) {
     req.on('error', cb);
     req.end();
   });
+}
+
+// Auto-setup: creates the Umami website entry on first start if umamiWebsiteId is missing.
+// Retries for up to ~2 minutes to give Umami time to boot.
+function setupUmamiWebsite() {
+  if (!UMAMI_USER) return;
+  function trySetup(attemptsLeft) {
+    if (attemptsLeft <= 0) { console.warn('[umami] setup gave up — set umamiWebsiteId manually in settings.json'); return; }
+    getUmamiToken(function (err, token) {
+      if (err) {
+        console.log('[umami] not ready yet, retrying in 10s… (' + attemptsLeft + ' attempts left)');
+        return setTimeout(function () { trySetup(attemptsLeft - 1); }, 10000);
+      }
+      var settings = readSettings();
+      if (UMAMI_WEBSITE_ID || settings.umamiWebsiteId) { console.log('[umami] website already configured:', UMAMI_WEBSITE_ID || settings.umamiWebsiteId); return; }
+      var domain = (PUBLIC_BASE_URL).replace(/^https?:\/\//, '');
+      var body   = JSON.stringify({ name: 'Put.A.Presentation', domain: domain });
+      var url    = new URL('/api/websites', UMAMI_API_URL);
+      var mod    = url.protocol === 'https:' ? https : http;
+      var opts   = {
+        hostname: url.hostname, port: url.port || (url.protocol === 'https:' ? 443 : 80),
+        path: url.pathname, method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body), 'Authorization': 'Bearer ' + token }
+      };
+      var req = mod.request(opts, function (res) {
+        var raw = '';
+        res.on('data', function (c) { raw += c; });
+        res.on('end', function () {
+          try {
+            var d = JSON.parse(raw);
+            if (!d.id) throw new Error('unexpected response: ' + raw);
+            var s = readSettings();
+            s.umamiWebsiteId = d.id;
+            fs.writeFileSync(SETTINGS_PATH, JSON.stringify(s, null, 2), 'utf8');
+            console.log('[umami] website created and saved, id:', d.id);
+          } catch (e) { console.warn('[umami] setup error:', e.message); }
+        });
+      });
+      req.on('error', function () { setTimeout(function () { trySetup(attemptsLeft - 1); }, 10000); });
+      req.write(body);
+      req.end();
+    });
+  }
+  setTimeout(function () { trySetup(12); }, 15000); // wait 15s for Umami to boot, then try up to 12× every 10s
 }
 
 function readSettings() {
@@ -4673,8 +4760,8 @@ function getTranslationValue(slideId, fieldKey, lang, translationsData) {
 
 function buildFrozenPresentation(presentation) {
   var presId   = presentation.id;
-  var outDir   = path.join(__dirname, '..', 'finished-presentations', presId);
-  var assetDir = path.join(__dirname, '..', 'finished-presentations', 'shared');
+  var outDir   = path.join(REPO_ROOT, 'finished-presentations', presId);
+  var assetDir = path.join(REPO_ROOT, 'finished-presentations', 'shared');
   fs.mkdirSync(outDir,    { recursive: true });
   fs.mkdirSync(assetDir,  { recursive: true });
 
@@ -4781,7 +4868,7 @@ function buildFrozenPresentation(presentation) {
       el.html(wrappers.join(''));
     });
   }
-  var umamiWebsiteId = appSettings.umamiWebsiteId || '';
+  var umamiWebsiteId = UMAMI_WEBSITE_ID || appSettings.umamiWebsiteId || '';
 
   // Image path mappings: URL prefix → filesystem dir
   var imgRoots = [
@@ -5228,7 +5315,7 @@ function buildFrozenPresentation(presentation) {
     '',
     '  /* ── Share modal ── */',
     '  var presId    = ' + JSON.stringify(presentation.id) + ';',
-    '  var baseUrl   = "https://app-presentation-builder.pages.dev/finished-presentations/" + presId + "/";',
+    '  var baseUrl   = "' + PUBLIC_BASE_URL + '/public/" + presId + "/";',
     '  var overlay   = document.getElementById("fp-share-overlay");',
     '  var shareBtns = [document.getElementById("fp-share-btn-hdr"), document.getElementById("fp-share-btn-ftr")];',
     '  var nameIn    = document.getElementById("fp-share-name");',
@@ -5300,6 +5387,29 @@ function buildFrozenPresentation(presentation) {
     '  });',
     '})();',
     '</script>',
+    '<div id="_pb-nav-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(0,0,0,0.72);backdrop-filter:blur(6px);display:flex;align-items:center;padding:0 16px;height:40px;font-family:sans-serif;font-size:13px;">',
+    '  <a id="_pb-back-btn" href="#" style="color:#fff;text-decoration:none;opacity:0.85;display:flex;align-items:center;gap:6px;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.85">',
+    '    <span style="font-size:16px;">&#8592;</span><span id="_pb-back-label">Back</span>',
+    '  </a>',
+    '</div>',
+    '<script>',
+    '(function () {',
+    '  var btn   = document.getElementById("_pb-back-btn");',
+    '  var label = document.getElementById("_pb-back-label");',
+    '  var websiteUrl = ' + JSON.stringify(presDeck.websiteUrl || '') + ';',
+    '  if (window.location.pathname.indexOf("/finished/") === 0) {',
+    '    label.textContent = "Back to Dashboard";',
+    '    btn.href = "/";',
+    '  } else if (websiteUrl) {',
+    '    label.textContent = "Company Webpage";',
+    '    btn.href = websiteUrl;',
+    '    btn.target = "_blank";',
+    '    btn.rel = "noopener noreferrer";',
+    '  } else {',
+    '    document.getElementById("_pb-nav-bar").style.display = "none";',
+    '  }',
+    '})();',
+    '</script>',
     '</body>',
     '</html>'
   ].join('\n');
@@ -5354,11 +5464,11 @@ app.get('/api/analytics/presentation/:id', function (req, res) {
   if (!UMAMI_USER) return res.json({ success: false, error: 'Umami not configured' });
   try {
     var settings  = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8'));
-    var websiteId = settings.umamiWebsiteId;
+    var websiteId = UMAMI_WEBSITE_ID || settings.umamiWebsiteId;
     if (!websiteId) return res.json({ success: false, error: 'umamiWebsiteId not set' });
     var startAt = req.query.startAt || String(Date.now() - 30 * 86400000);
     var endAt   = req.query.endAt   || String(Date.now());
-    var url     = encodeURIComponent('/finished/' + req.params.id + '/');
+    var url     = encodeURIComponent('/public/' + req.params.id + '/');
     var apiPath = '/api/websites/' + websiteId + '/stats?startAt=' + startAt + '&endAt=' + endAt + '&url=' + url;
     umamiGet(apiPath, function (err, data) {
       if (err) return res.status(500).json({ success: false, error: err.message });
@@ -5376,12 +5486,12 @@ app.get('/api/analytics/batch', function (req, res) {
     if (ids.length === 0) return res.json({ success: true, data: {} });
     var startMs = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
     var endMs   = parseInt(req.query.endAt)   || Date.now();
-    var urlPaths = ids.map(function (id) { return '/finished/' + id + '/'; });
+    var urlPaths = ids.map(function (id) { return '/public/' + id + '/'; });
     dbPresStats(urlPaths, startMs, endMs, function (err, statsMap) {
       if (err) return res.status(500).json({ success: false, error: err.message });
       var result = {};
       ids.forEach(function (id) {
-        var s = statsMap['/finished/' + id + '/'] || { pageviews: 0, visitors: 0 };
+        var s = statsMap['/public/' + id + '/'] || { pageviews: 0, visitors: 0 };
         result[id] = { pageviews: s.pageviews, visitors: s.visitors };
       });
       res.json({ success: true, data: result });
@@ -5394,11 +5504,11 @@ app.get('/api/analytics/pageviews', function (req, res) {
   if (!UMAMI_USER) return res.json({ success: false, error: 'Umami not configured' });
   try {
     var settings  = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8'));
-    var websiteId = settings.umamiWebsiteId;
+    var websiteId = UMAMI_WEBSITE_ID || settings.umamiWebsiteId;
     var startAt   = req.query.startAt || String(Date.now() - 30 * 86400000);
     var endAt     = req.query.endAt   || String(Date.now());
     var apiPath   = '/api/websites/' + websiteId + '/pageviews?startAt=' + startAt + '&endAt=' + endAt + '&unit=day&timezone=UTC';
-    if (req.query.presId) apiPath += '&url=' + encodeURIComponent('/finished/' + req.query.presId + '/');
+    if (req.query.presId) apiPath += '&url=' + encodeURIComponent('/public/' + req.query.presId + '/');
     umamiGet(apiPath, function (err, data) {
       if (err) return res.status(500).json({ success: false, error: err.message });
       res.json({ success: true, data: data });
@@ -5412,7 +5522,7 @@ app.get('/api/analytics/pageviews-by-pres', function (req, res) {
   if (!UMAMI_USER) return res.json({ success: false, error: 'Umami not configured' });
   try {
     var settings  = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8'));
-    var websiteId = settings.umamiWebsiteId;
+    var websiteId = UMAMI_WEBSITE_ID || settings.umamiWebsiteId;
     var startAt   = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
     var endAt     = parseInt(req.query.endAt)   || Date.now();
     var presId    = req.query.presId;
@@ -5457,7 +5567,7 @@ function dbPresTimeSeriesWithBreakdown(urlPaths, presMap, startMs, endMs, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, { pageviews: [], sessions: [], breakdown: [] });
   var siteId = null;
-  try { siteId = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, { pageviews: [], sessions: [], breakdown: [] });
   db.query(
     "SELECT url_path, TO_CHAR(created_at AT TIME ZONE '" + localTzString() + "', 'YYYY-MM-DD') AS day, " +
@@ -5488,7 +5598,7 @@ function dbPresTimeSeriesWithBreakdown(urlPaths, presMap, startMs, endMs, cb) {
       var pageviews = days.map(function (d) { return { x: d, y: byDay[d] ? byDay[d].pv : 0 }; });
       var sessions  = days.map(function (d) { return { x: d, y: byDay[d] ? byDay[d].vs : 0 }; });
       var breakdown = urlPaths.map(function (url) {
-        var presId = url.replace(/^\/finished\//, '').replace(/\/$/, '');
+        var presId = url.replace(/^\/public\//, '').replace(/\/$/, '');
         return {
           id: presId,
           name: presMap[presId] || presId,
@@ -5515,7 +5625,7 @@ app.get('/api/analytics/pageviews-multi', function (req, res) {
 
     if (targets.length === 0) return res.json({ success: true, data: { pageviews: [], sessions: [], breakdown: [] } });
 
-    var urlPaths = targets.map(function (p) { return '/finished/' + p.id + '/'; });
+    var urlPaths = targets.map(function (p) { return '/public/' + p.id + '/'; });
     var presMap  = {};
     targets.forEach(function (p) {
       presMap[p.id] = p.presentationName
@@ -5540,7 +5650,7 @@ app.get('/api/analytics/events', function (req, res) {
     var requested = req.query.presIds ? req.query.presIds.split(',').map(function (s) { return s.trim(); }) : null;
     var targets   = requested ? livePres.filter(function (p) { return requested.indexOf(p.id) !== -1; }) : livePres;
     if (targets.length === 0) return res.json({ success: true, data: [] });
-    var urlPaths = targets.map(function (p) { return '/finished/' + p.id + '/'; });
+    var urlPaths = targets.map(function (p) { return '/public/' + p.id + '/'; });
     dbSlideEvents(urlPaths, startAt, endAt, null, function (err, data) {
       if (err) return res.status(500).json({ success: false, error: err.message });
       res.json({ success: true, data: data });
@@ -5559,7 +5669,7 @@ app.get('/api/analytics/event-series', function (req, res) {
     var requested = req.query.presIds ? req.query.presIds.split(',').map(function (s) { return s.trim(); }) : null;
     var targets   = requested ? livePres.filter(function (p) { return requested.indexOf(p.id) !== -1; }) : livePres;
     if (targets.length === 0) return res.json({ success: true, data: { days: [], series: [] } });
-    var urlPaths = targets.map(function (p) { return '/finished/' + p.id + '/'; });
+    var urlPaths = targets.map(function (p) { return '/public/' + p.id + '/'; });
     var evNames  = req.query.eventNames ? req.query.eventNames.split(',').map(function (s) { return s.trim(); }) : null;
     dbSlideEventSeries(urlPaths, startAt, endAt, evNames, function (err, data) {
       if (err) return res.status(500).json({ success: false, error: err.message });
@@ -5581,7 +5691,7 @@ app.get('/api/analytics/slide-events', function (req, res) {
     var requested = req.query.presIds ? req.query.presIds.split(',').map(function (s) { return s.trim(); }) : null;
     var targets   = requested ? livePres.filter(function (p) { return requested.indexOf(p.id) !== -1; }) : livePres;
     if (targets.length === 0) return res.json({ success: true, data: [] });
-    var urlPaths = targets.map(function (p) { return '/finished/' + p.id + '/'; });
+    var urlPaths = targets.map(function (p) { return '/public/' + p.id + '/'; });
     var presMap  = {};
     targets.forEach(function (p) {
       presMap[p.id] = p.presentationName
@@ -5885,10 +5995,10 @@ app.post('/api/presentations/:id/publish', function (req, res) {
   var pres = (data.presentations || []).find(function (p) { return p.id === id; });
   if (!pres) return res.status(404).json({ success: false, error: 'Presentation not found' });
 
-  var repoRoot = path.join(__dirname, '..');
+  var repoRoot  = REPO_ROOT;
   var folderArg = 'finished-presentations/' + id;
   var commitMsg = 'publish: ' + (pres.customerName || id) + (pres.presentationName ? ' — ' + pres.presentationName : '') + ' (' + id + ')';
-  var publicUrl = 'https://app-presentation-builder.pages.dev/finished-presentations/' + id;
+  var publicUrl = PUBLIC_BASE_URL + '/public/' + id;
 
   function run(cmd, args, cwd, cb) {
     execFile(cmd, args, { cwd: cwd }, function (err, stdout, stderr) {
@@ -5926,8 +6036,7 @@ app.post('/api/presentations/:id/publish', function (req, res) {
   });
 });
 
-// Static: serve frozen finished presentations (index.html + assets/)
-// Mounted before /view redirect so relative asset paths resolve correctly.
+// GET /finished/:id/ — internal preview (protected by global requireAuth middleware)
 app.use('/finished', express.static(path.join(__dirname, '..', 'finished-presentations')));
 
 // GET /view/:id — redirect to frozen file if it exists; fall back to live viewer
@@ -7474,4 +7583,5 @@ app.post('/api/clone-slide', function (req, res) {
 app.listen(PORT, function () {
   console.log('Builder running at http://localhost:' + PORT);
   console.log('Preview:  http://localhost:' + PORT + '/builder/preview.html');
+  setupUmamiWebsite();
 });

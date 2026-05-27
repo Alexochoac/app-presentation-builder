@@ -38,7 +38,7 @@
     },
     {
       "id": "deck-surface",
-      "visible": false,
+      "visible": true,
       "librarySlideId": "lib-surface"
     },
     {
