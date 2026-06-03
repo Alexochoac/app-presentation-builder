@@ -5,24 +5,25 @@ status: pending
 area: css
 ---
 
-Each slide file (`slide-NN-name.html`) is a self-contained HTML fragment that includes its own `<style>` block and inline `style=""` attributes alongside the markup. This is intentional — the builder fetches each slide via `/slides/slide-NN-name.html` and injects the raw HTML into the page DOM using `innerHTML`, so the `<style>` block travels with the slide and takes effect automatically.
+## Status (2026-05-30 update)
+A shared `builder/features/slides/style.css` now exists and is the canonical location for all slide CSS. However, individual slide templates still embed their own `<style>` blocks, creating a 3-layer conflict:
 
-**What we found:**
-- All 16 slide files have their own `<style>` block (slide-01 alone has ~185 lines of CSS inside it)
-- There are 150+ inline `style=""` attributes across all slides
-- Everything currently works correctly because each slide is self-contained
+1. `shared/app-style.css` — app shell (dark/light theme)
+2. `builder/features/slides/style.css` — all slide CSS (this is the target)
+3. Per-slide `<style>` blocks inside each template file — these are the ones to eliminate
 
-**The goal:** Move all slide-specific CSS into a shared `style.css` so there is one source of truth, no duplication, and no risk of class name conflicts between slides.
+The risk is that layers 2 and 3 define some of the same classes, causing inconsistencies when styles are changed in one place but not the other.
 
-**Risks before doing this:**
-- Removing a slide's `<style>` block before its classes exist in `style.css` will break that slide's layout immediately
-- Each slide uses unique `ls[N]-` prefixed class names (e.g. `.ls1-customer-logo`, `.ls1-gallery-btn`) — these must all be migrated carefully, one slide at a time
-- Inline styles are harder to extract because some are dynamic or one-off (e.g. `style="display:none"`, `object-position:right center`) — not all of them belong in a stylesheet
-- The refactor must be done slide-by-slide with visual verification after each one, since there is no automated test for slide appearance
+**The goal:** Remove all `<style>` blocks from individual slide template files, with all slide CSS consolidated in `builder/features/slides/style.css`.
 
-**Recommended approach when ready:**
+**Risks:**
+- Removing a slide's `<style>` block before verifying its classes exist in `style.css` will break that slide
+- Each slide uses `ls[N]-` prefixed class names — must migrate one slide at a time with visual verification
+- Inline `style=""` attributes that are dynamic or one-off (e.g. `display:none`, `object-position`) stay inline — only rule-based styles go to the stylesheet
+
+**Approach (slide-by-slide):**
 1. Pick one slide
-2. Copy its `<style>` block into `style.css` under a clearly labeled section
-3. Remove the `<style>` block from the slide file
-4. Open the builder and visually verify that slide looks identical
+2. Diff its `<style>` block against `style.css` — copy any missing rules into `style.css` under a clearly labeled section
+3. Remove the `<style>` block from the template file
+4. Open builder and visually verify the slide looks identical
 5. Repeat for each slide

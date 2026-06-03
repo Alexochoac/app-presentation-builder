@@ -1,51 +1,45 @@
 {
-  "activeDeckId": "default",
+  "activeDeckId": "deck-rebuild",
   "decks": [
     {
       "id": "default",
-      "name": "SoftSolution",
+      "name": "Original SoftSolution",
       "theme": "light",
       "createdAt": "2026-05-09T00:00:00.000Z",
-      "updatedAt": "2026-05-26T17:53:25.688Z",
+      "updatedAt": "2026-06-02T19:39:42.740Z",
       "logo": "/slides/uploads/LOGO_Softsolution_Black.jpg",
       "heroBg": "/slides/uploads/Panther_Eye.jpeg",
       "heroBgFocal": "25% 50%",
       "colors": {
-        "primary": "#183cf2"
+        "primary": "#f5a623"
       },
       "heroBgFocalGrid": 5,
       "heroBgFit": "cover",
       "styleRef": null,
       "styleCss": null,
-      "heroBgOpacity": 74,
+      "heroBgOpacity": 100,
       "heroBgType": "image",
       "brandCredit": "GlassQuality.com"
     },
     {
-      "id": "deck-1779723183017-evt77",
-      "name": "StrainOptics",
+      "id": "deck-rebuild",
+      "name": "SoftSolution (rebuild)",
       "theme": "dark",
-      "createdAt": "2026-05-25T15:33:03.016Z",
-      "updatedAt": "2026-05-25T15:43:59.951Z",
-      "logo": "/slides/uploads/LOGO_StrainOptics.png",
-      "heroBg": null,
-      "heroBgFocal": "50% 50%",
+      "createdAt": "2026-06-01T00:00:00.000Z",
+      "updatedAt": "2026-06-03T12:18:59.405Z",
+      "logo": "/slides/uploads/LOGO_Softsolution_Black.jpg",
+      "heroBg": "/slides/uploads/Panther_Eye.jpeg",
+      "heroBgFocal": "25% 50%",
       "colors": {
-        "primary": "#F5A623"
-      }
-    },
-    {
-      "id": "deck-1779723795196-ez81b",
-      "name": "LiteSentry",
-      "theme": "dark",
-      "createdAt": "2026-05-25T15:43:15.196Z",
-      "updatedAt": "2026-05-25T15:43:47.866Z",
-      "logo": "/slides/uploads/LiteSentry_Logo_part_of_the_group_of_SoftSolution.png",
-      "heroBg": null,
-      "heroBgFocal": "50% 50%",
-      "colors": {
-        "primary": "#F5A623"
-      }
+        "primary": "#2c30b5"
+      },
+      "heroBgFocalGrid": 5,
+      "heroBgFit": "cover",
+      "styleRef": null,
+      "styleCss": null,
+      "heroBgOpacity": 100,
+      "heroBgType": "image",
+      "brandCredit": "GlassQuality.com"
     }
   ]
 }

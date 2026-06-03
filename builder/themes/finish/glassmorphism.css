@@ -1,0 +1,66 @@
+/* ============================================================
+   Finish block — Glassmorphism
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/glassmorphism.css). Adds what a CSS variable
+   can't express: the vivid animated backdrop the glass frosts
+   against, plus the blur / sheen on the surfaces themselves.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   ============================================================ */
+
+/* ── The backdrop the glass reads against (the palette flattens this away) ── */
+@keyframes gm-shift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%) !important;
+  background-size: 400% 400% !important;
+  animation: gm-shift 15s ease infinite;
+}
+.glow-orb { display: none; }   /* dark-theme artifact — not wanted over a bright gradient */
+
+/* ── Frosted-glass surfaces ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.slide-logo-row,
+.ls-tabs,
+.ls-carousel {
+  background: rgba(255, 255, 255, 0.14) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18),
+              inset 0 1px 0 rgba(255, 255, 255, 0.40);
+}
+
+/* Lift + brighten on hover (the glass "catches light") */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  background: rgba(255, 255, 255, 0.24) !important;
+  border-color: rgba(255, 255, 255, 0.55) !important;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.24),
+              inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  transform: translateY(-4px);
+}
+
+/* Pill buttons / tags get the same frosted treatment */
+.cta-btn-wa,
+.cta-btn-email,
+.tag {
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(160%);
+}
+
+/* Logo row reads as a floating glass bar */
+.slide-logo-row { padding: 10px 18px; }
+
+/* Glass seam for the divider */
+.divider { background: linear-gradient(90deg, rgba(255,255,255,0.55), rgba(255,255,255,0.08)); }

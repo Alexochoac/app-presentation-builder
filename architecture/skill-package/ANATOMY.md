@@ -1,18 +1,19 @@
 # Template Anatomy — Quick Reference
 
-Full spec: `architecture/template-anatomy.md` in the project repo.
+Derived from `architecture/slide-system-rulebook.md` (the authoritative spec). Keep in sync; the rulebook
+wins if they ever differ.
 
-## CSS Variables (always available)
+## CSS Variables (the full real contract — use only these)
 ```
---accent        primary brand color
---accent-rgb    RGB triplet for rgba()
---accent-light  lighter variant
---bg            slide background
---bg-card       card / panel background
---text          primary text
---text-muted    secondary text
---border        border color
+Accent:  --accent  --accent-mid  --accent-light  --accent-rgb
+Base:    --bg  --text  --text-muted
+Cards:   --card-bg  --card-border  --card-radius  --card-shadow
+Badges:  --badge-bg  --badge-border  --badge-color  --badge-radius
+Logo:    --logo-bg  --logo-border  --logo-radius
+Hero:    --slide-hero-bg  --slide-hero-rgb  --hero-overlay-start  --hero-overlay-end  --hero-overlay-angle
+Fonts:   --font-body  --font-heading
 ```
+Do not invent variables — `--bg-card`, `--border`, `--nav-bg` do **not** exist.
 
 ## Tracking helpers (tracker.js)
 Event name format: `'slide-' + slideId`
@@ -28,8 +29,8 @@ Track.event('slide-' + slideId, { label: 'custom' })
 ```
 
 ## Naming
-- Slide ID: `ls[NN]-[name]` — e.g. `ls16-stats`
-- Lang key: `[slide-id].[element]` — e.g. `ls16-stats.headline`
+- Template ID (= the slide's `data-slide` and CSS scope class): `template[NN]-[name]` — e.g. `template16-stats` (unique NN, never reused)
+- Lang key: `[template-id].[element]` — e.g. `template16-stats.headline`
 - data-edit key: short kebab noun — e.g. `headline`, `step-1`, `stat-value`
 - data-feed key: metric name — e.g. `revenue-q1`, `lead-count`
 

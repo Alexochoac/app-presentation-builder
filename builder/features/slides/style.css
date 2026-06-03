@@ -91,6 +91,31 @@ body {
   background:var(--slide-hero-bg);
 }
 .hero-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; }
+/* Safety net: empty/missing hero image shows a branded placeholder, never a broken icon */
+.hero-bg:not([src]),
+.hero-bg[src=""] {
+  content: url('/shared/brand/hero-placeholder.svg');
+  object-fit: cover;
+}
+
+/* ── Universal gallery button (server-injected by injectGallery when galleryEnabled) ── */
+.pb-gallery-btn {
+  position: absolute; bottom: 64px; right: 16px; z-index: 10;
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 14px;
+  background: var(--card-bg, rgba(0,0,0,.40));
+  border: 1px solid var(--card-border, rgba(255,255,255,.20));
+  border-radius: var(--card-radius, 20px);
+  color: var(--text-muted, rgba(255,255,255,.70));
+  font-size: 11px; font-weight: 600; letter-spacing: .06em;
+  cursor: pointer; font-family: inherit;
+  transition: background .25s, border-color .25s, color .25s;
+}
+.pb-gallery-btn:hover {
+  background: rgba(var(--accent-rgb), .25);
+  border-color: var(--accent);
+  color: var(--text, #fff);
+}
 .hero-overlay {
   position:absolute; inset:0; z-index:1;
   background:linear-gradient(to top, rgba(var(--slide-hero-rgb),.97) 0%, rgba(var(--slide-hero-rgb),.55) 55%, rgba(var(--slide-hero-rgb),.15) 100%);

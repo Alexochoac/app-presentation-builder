@@ -43,7 +43,7 @@ App-presentation-builder/
 │   ├── shared/
 │   │   ├── style.css
 │   │   └── assets/          ← logos, shared images
-│   └── ls[NN]-[name]/
+│   └── template[NN]-[name]/
 │       └── slide.html
 │
 ├── themes/                  ← CSS per product/brand
@@ -83,12 +83,13 @@ All specs and architectural decisions live in [`architecture/`](architecture/).
 
 | Document | Purpose |
 |---|---|
-| [`architecture/template-anatomy.md`](architecture/template-anatomy.md) | **The template spec** — 5-layer anatomy every slide template must follow (style, translations, tracking, slide mode, data feed). Read this before creating or modifying any slide template. |
-| [`architecture/claude-skill-template-creator.md`](architecture/claude-skill-template-creator.md) | **Claude Desktop skill** — paste into a Claude Desktop Project to get a template generator that always follows the anatomy spec. |
+| [`architecture/slide-system-rulebook.md`](architecture/slide-system-rulebook.md) | **THE single source of truth** — anatomy (5 layers), lifecycle, IDs, styling, tracking, deck model, template guardrails. Read this before creating or modifying any slide, template, or theme. If anything disagrees with it, it wins. |
+| [`architecture/standardization-plan.md`](architecture/standardization-plan.md) | The *why* behind each rule + migration status (the decisions record). |
+| [`architecture/skill-package/`](architecture/skill-package/) | **Claude Desktop skill** — upload bundle (SKILL.md + ANATOMY.md + app-base.css) that generates rulebook-compliant template cartridges. |
 
 ## Key Conventions
-- Each slide is a self-contained HTML fragment (`<div class="slide ...">`)
-- Slide prefix: `ls[NN]-` (ls01-, ls02-, …) — never reuse a prefix
+- Each slide is a self-contained HTML "cartridge" (`<div class="slide ...">`) — one `.html` file per slide is the source of truth (no JS string-builder renderers)
+- IDs: template `template[NN]-[name]` (unique NN, never reused) · library slide `slide-[name]` · deck slide `deck-[name]` — see the rulebook §4
 - `data-edit="key"` on any element = editable in builder, saved to disk
 - `data-builder-only=""` on any element = stripped in final customer output
 - Slides are registered in `builder/public/preview.html` → `const SLIDES = [...]`
@@ -98,8 +99,9 @@ All specs and architectural decisions live in [`architecture/`](architecture/).
 - Secrets (passwords, GitHub token) go in `.env` — never hardcoded
 
 ## Analytics Conventions
-- **Every new component must include umami.track() calls** for all user interactions (clicks, opens, navigations, etc.)
-- Tracking calls live inside the component JS file (tabs.js, carousel.js, etc.) — written once, fires in every presentation that uses that component
-- Read the slide identifier at runtime: `el.closest('[data-slide]')?.dataset.slide`
-- Follow the naming convention in the softsolution project's `docs/umami-guidelines.md`: event name = slide id, properties = component + label + action
-- Example: `umami.track(slideId, { component: 'carousel', label: itemTitle, action: 'next' })`
+- **Every interactive element must be tracked via the `Track` helper** (`builder/features/slides/components/tracker.js`). **Never call `umami.track()` directly.**
+- Tracking calls live inside the component/slide JS (tabs.js, carousel.js, the slide's scoped `<script>`) — written once, fires in every presentation that uses it
+- Resolve the slide id: `var slideId = Track.slideId(el);`
+- Event shape (defined by tracker.js): event name = `slide-<id>`, properties = `{ label: '<component>-<label>-<action>' }` (one joined string)
+- Example: `Track.carousel(slideId, 'next', itemTitle)` → `slide-<id>`, `{ label: 'carousel-<itemTitle>-next' }`
+- Full details: rulebook §3 (Tracking-Ready)

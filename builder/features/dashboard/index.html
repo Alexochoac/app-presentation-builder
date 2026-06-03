@@ -2242,7 +2242,11 @@
       function fpPublish(id) {
         fetch('/api/presentations/' + id + '/publish', { method: 'POST' })
           .then(function (r) { return r.json(); })
-          .then(function (r) { if (r.success) refreshFromApi(); })
+          .then(function (r) {
+            if (!r.success) return;
+            if (r.warning) alert('Published locally (not on GitHub).\n\n' + r.warning);
+            refreshFromApi();
+          })
           .catch(function () {});
       }
 

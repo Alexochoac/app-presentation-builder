@@ -1,354 +1,271 @@
-<div class="slide content ls2" style="">
+<div class="slide content template02-company"
+     data-slide="template02-company"
+     data-slide-mode="sequence">
 
-  <!-- Softsolution + LiteSentry logo row — top left -->
-  <div class="slide-logo-row">
-    <img src="/slides/shared/LOGO SoftSolution grays.png" alt="Softsolution">
-    <span class="slide-logo-sep"></span>
-    <img src="/slides/shared/LOGO LiteSentry Greys.png" alt="LiteSentry" class="slide-logo-ls">
+  <!-- Logo row — defaults to the "Put A Presentation" product logo; deck branding overrides it.
+       data-managed = server-injected, never hand-editable (so auto-save can't serialise it). -->
+  <div class="slide-logo-row" data-edit="logo-row" data-managed>
+    <img src="/shared/brand/logo.svg" alt="Put A Presentation">
   </div>
 
   <div class="slide-layout">
+    <span class="softsolution-credit" data-edit="credit" contenteditable spellcheck="false">by YourBrand.com</span>
 
-  <!-- Credit line: top right -->
-  <span class="softsolution-credit" data-edit="credit" contenteditable="" spellcheck="false">by GlassQuality.com</span>
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label" contenteditable spellcheck="false">Section Label</div>
+      <h1 class="slide-title" data-edit="headline" contenteditable spellcheck="false">Your Company <span class="blue">Headline</span></h1>
+      <p class="slide-subtitle anim-in" data-edit="tagline" contenteditable spellcheck="false">One sentence describing your company and what it does.</p>
+    </header>
 
-  <!-- Header -->
-  <header class="slide-head">
-  <div class="section-label" data-edit="section-label" contenteditable="" spellcheck="false">Our Company</div>
-  <h1 class="slide-title" data-edit="headline" contenteditable="" spellcheck="false" style="margin-bottom:6px;">Quality inspection <span class="blue">is all we do</span></h1>
-  <p class="slide-subtitle anim-in" data-edit="tagline" contenteditable="" spellcheck="false">We inspect every quality aspect of your glass guaranteeing peak performance and the best quality..</p>
-  </header>
+    <div class="slide-body">
 
-  <div class="slide-body">
-
-  <!-- Tabs + Panels (ls-tabs component) -->
-  <div class="ls-tabs ls2-tabs-wrap" data-edit="tabs" data-track="ls2:tabs" style="flex:1;min-height:0;width:100%;max-width:860px;">
-    <div class="ls-tab-list">
-      <button class="ls-tab active" data-panel="1" data-edit="tab-about" contenteditable="false" spellcheck="false">About Us</button>
-      <button class="ls-tab" data-panel="2" data-edit="tab-technologies" contenteditable="false" spellcheck="false">Technologies</button>
-      <button class="ls-tab" data-panel="3" data-edit="tab-network" contenteditable="false" spellcheck="false">Global Network</button>
-      <button class="ls-tab" data-panel="4" data-edit="tab-iqc" contenteditable="false" spellcheck="false">IQC Group</button>
-    </div>
-    <div class="ls-tab-panels">
-
-    <!-- ── DEFAULT: Image Carousel (no tab) ── -->
-    <div class="ls-tab-panel" data-panel="0" style="padding-top:12px;">
-      <div class="ls-carousel" data-counter="" data-edit="company-carousel" data-track="ls2:carousel:company" style="flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);">
-          
-        <div class="ls-carousel-slide">
-            <img src="/slides/uploads/Group-Picture-of-the-Team-members-.png" alt="Group Picture of the Team members" data-zoom="" data-track="ls2:zoom:group-picture-of-the-team-members">
-          <div class="ls-carousel-caption" data-edit="company-caption" contenteditable="" spellcheck="false">Group Picture of the Team members</div></div></div><div class="ls-carousel-counter"></div></div>
-    </div>
-
-    <!-- ── PANEL: About Us ── -->
-    <div class="ls-tab-panel active" data-panel="1">
-      <div class="ls2-pillars">
-
-        <div class="ls2-pillar anim-in" style="">
-          <div class="ls2-pillar-num">01</div>
-          <div class="ls2-pillar-content">
-            <div class="ls2-pillar-title" data-edit="pillar-1-title" contenteditable="" spellcheck="false">One Partner</div>
-            <div class="ls2-pillar-desc" data-edit="pillar-1-desc" contenteditable="" spellcheck="false">for all your quality inspection needs — surface, geometry, dimension, and more</div>
-          </div>
+      <!-- Tabs (shared tabs.js). Whole structure persists as one blob under data-edit="tabs";
+           inner data-edit keys are re-applied on top by applyEditsToHtml. Panel 0 holds the
+           image carousel and has NO tab button — it is revealed by clicking the active tab. -->
+      <div class="ls-tabs template02-company-tabs" data-edit="tabs" data-track="template02-company:tabs">
+        <div class="ls-tab-list">
+          <button class="ls-tab active" data-panel="1" data-edit="tab-about" contenteditable spellcheck="false">About</button>
+          <button class="ls-tab" data-panel="2" data-edit="tab-technologies" contenteditable spellcheck="false">Technology</button>
+          <button class="ls-tab" data-panel="3" data-edit="tab-network" contenteditable spellcheck="false">Network</button>
+          <button class="ls-tab" data-panel="4" data-edit="tab-iqc" contenteditable spellcheck="false">Group</button>
         </div>
+        <div class="ls-tab-panels">
 
-        <div class="ls2-pillar anim-in" style="">
-          <div class="ls2-pillar-num">02</div>
-          <div class="ls2-pillar-content">
-            <div class="ls2-pillar-title" data-edit="pillar-2-title" contenteditable="" spellcheck="false">Global Presence</div>
-            <div class="ls2-pillar-desc" data-edit="pillar-2-desc" contenteditable="" spellcheck="false">global support hubs with local experts in 23 countries across 6 continents</div>
+          <!-- Panel 0 — image carousel (revealed by clicking the active tab) -->
+          <div class="ls-tab-panel" data-panel="0" style="padding-top:12px;">
+            <div class="ls-carousel" data-counter data-edit="company-carousel" data-track="template02-company:carousel" style="flex:1;min-height:0;width:100%;">
+              <div class="ls-carousel-track" style="transform:translateX(0px);">
+                <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;">
+                  <span style="color:var(--text-muted);font-size:13px;font-style:italic;">Add images with the + Image button</span>
+                  <div class="ls-carousel-caption" data-edit="company-caption" contenteditable spellcheck="false">Image caption</div>
+                </div>
+              </div>
+              <div class="ls-carousel-counter"></div>
+            </div>
           </div>
-        </div>
 
-        <div class="ls2-pillar anim-in" style="">
-          <div class="ls2-pillar-num">03</div>
-          <div class="ls2-pillar-content">
-            <div class="ls2-pillar-title" data-edit="pillar-3-title" contenteditable="" spellcheck="false">Technological Leadership</div>
-            <div class="ls2-pillar-desc" data-edit="pillar-3-desc" contenteditable="" spellcheck="false">true scanning · bright-field · dark-field · reflection · spectrometer</div>
+          <!-- Panel 1 — three pillar cards -->
+          <div class="ls-tab-panel active" data-panel="1">
+            <div class="template02-company-pillars">
+              <div class="card card-pillar anim-in">
+                <div class="card-pillar-num">01</div>
+                <div class="card-pillar-content">
+                  <div class="card-pillar-title" data-edit="pillar-1-title" contenteditable spellcheck="false">Pillar One</div>
+                  <div class="card-pillar-desc" data-edit="pillar-1-desc" contenteditable spellcheck="false">Short description of the first pillar.</div>
+                </div>
+              </div>
+              <div class="card card-pillar anim-in">
+                <div class="card-pillar-num">02</div>
+                <div class="card-pillar-content">
+                  <div class="card-pillar-title" data-edit="pillar-2-title" contenteditable spellcheck="false">Pillar Two</div>
+                  <div class="card-pillar-desc" data-edit="pillar-2-desc" contenteditable spellcheck="false">Short description of the second pillar.</div>
+                </div>
+              </div>
+              <div class="card card-pillar anim-in">
+                <div class="card-pillar-num">03</div>
+                <div class="card-pillar-content">
+                  <div class="card-pillar-title" data-edit="pillar-3-title" contenteditable spellcheck="false">Pillar Three</div>
+                  <div class="card-pillar-desc" data-edit="pillar-3-desc" contenteditable spellcheck="false">Short description of the third pillar.</div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
 
+          <!-- Panel 2 — feature list -->
+          <div class="ls-tab-panel" data-panel="2">
+            <div class="feature-list" style="margin:12px 0 0;gap:8px;">
+              <div class="feature-item anim-in"><div class="feature-num">1</div><div class="feature-text"><strong data-edit="tech-1-name" contenteditable spellcheck="false">Feature One</strong><span data-edit="tech-1-desc" contenteditable spellcheck="false"> — Short description of this feature.</span></div></div>
+              <div class="feature-item anim-in"><div class="feature-num">2</div><div class="feature-text"><strong data-edit="tech-2-name" contenteditable spellcheck="false">Feature Two</strong><span data-edit="tech-2-desc" contenteditable spellcheck="false"> — Short description of this feature.</span></div></div>
+              <div class="feature-item anim-in"><div class="feature-num">3</div><div class="feature-text"><strong data-edit="tech-3-name" contenteditable spellcheck="false">Feature Three</strong><span data-edit="tech-3-desc" contenteditable spellcheck="false"> — Short description of this feature.</span></div></div>
+              <div class="feature-item anim-in"><div class="feature-num">4</div><div class="feature-text"><strong data-edit="tech-4-name" contenteditable spellcheck="false">Feature Four</strong><span data-edit="tech-4-desc" contenteditable spellcheck="false"> — Short description of this feature.</span></div></div>
+            </div>
+          </div>
+
+          <!-- Panel 3 — a single uploadable image (e.g. a map) -->
+          <div class="ls-tab-panel" data-panel="3">
+            <div class="card template02-company-map" data-edit="map-image" data-edit-type="image" title="Click to change the image">
+              <img class="template02-company-map-img" src="" alt="Panel image"
+                   onerror="this.classList.add('template02-company-map-img--missing')">
+              <label class="template02-company-map-placeholder">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="1.5"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+                <span>Image</span>
+                <small>Click to upload</small>
+              </label>
+            </div>
+          </div>
+
+          <!-- Panel 4 — brand/partner cards -->
+          <div class="ls-tab-panel" data-panel="4">
+            <div class="template02-company-iqc">
+              <div class="card card-iqc">
+                <div class="card-iqc-logo" data-edit="iqc-1-logo" data-edit-type="image"><img src="/shared/brand/logo.svg" alt="Brand logo"></div>
+                <div class="card-iqc-country" data-edit="iqc-1-country" contenteditable spellcheck="false">Country</div>
+                <ul class="card-iqc-products" data-edit="iqc-1-products"><li>Product one</li><li>Product two</li></ul>
+              </div>
+              <div class="card card-iqc">
+                <div class="card-iqc-logo" data-edit="iqc-2-logo" data-edit-type="image"><img src="/shared/brand/logo.svg" alt="Brand logo"></div>
+                <div class="card-iqc-country" data-edit="iqc-2-country" contenteditable spellcheck="false">Country</div>
+                <ul class="card-iqc-products" data-edit="iqc-2-products"><li>Product one</li><li>Product two</li></ul>
+              </div>
+              <div class="card card-iqc">
+                <div class="card-iqc-logo" data-edit="iqc-3-logo" data-edit-type="image"><img src="/shared/brand/logo.svg" alt="Brand logo"></div>
+                <div class="card-iqc-country" data-edit="iqc-3-country" contenteditable spellcheck="false">Country</div>
+                <ul class="card-iqc-products" data-edit="iqc-3-products"><li>Product one</li><li>Product two</li></ul>
+              </div>
+              <div class="card card-iqc">
+                <div class="card-iqc-logo" data-edit="iqc-4-logo" data-edit-type="image"><img src="/shared/brand/logo.svg" alt="Brand logo"></div>
+                <div class="card-iqc-country" data-edit="iqc-4-country" contenteditable spellcheck="false">Country</div>
+                <ul class="card-iqc-products" data-edit="iqc-4-products"><li>Product one</li><li>Product two</li></ul>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.ls-tab-panels -->
       </div>
-    </div>
 
-    <!-- ── PANEL: Technologies ── -->
-    <div class="ls-tab-panel" data-panel="2">
-      <div class="feature-list" style="margin:12px 0 0; gap:8px;">
-
-        <div class="feature-item anim-in" style="">
-          <div class="feature-num">1</div>
-          <div class="feature-text">
-            <strong data-edit="tech-1-name" contenteditable="" spellcheck="false">90° Parallel-Light System</strong>
-            <span data-edit="tech-1-desc" contenteditable="" spellcheck="false"> — Sensor-based technology using a 90° parallel-light beam to detect surface defects with high precision and speed across flat and curved glass panels.</span>
-          </div>
-        </div>
-
-        <div class="feature-item anim-in" style="">
-          <div class="feature-num">2</div>
-          <div class="feature-text">
-            <strong data-edit="tech-2-name" contenteditable="" spellcheck="false">Bright-field &amp; Dark-field</strong>
-            <span data-edit="tech-2-desc" contenteditable="" spellcheck="false"> — Camera-based technology combining both illumination modes for comprehensive detection of inclusions, scratches, bubbles, and coatings.</span>
-          </div>
-        </div>
-
-        <div class="feature-item anim-in" style="">
-          <div class="feature-num">3</div>
-          <div class="feature-text">
-            <strong data-edit="tech-3-name" contenteditable="" spellcheck="false">Reflexion Technology</strong>
-            <span data-edit="tech-3-desc" contenteditable="" spellcheck="false"> — Sensor and stray-light technology using reflexion principles to detect edge defects and surface anomalies in flat and bent glass.</span>
-          </div>
-        </div>
-
-        <div class="feature-item anim-in" style="">
-          <div class="feature-num">4</div>
-          <div class="feature-text">
-            <strong data-edit="tech-4-name" contenteditable="" spellcheck="false">Spectrometer</strong>
-            <span data-edit="tech-4-desc" contenteditable="" spellcheck="false"> — Polarized filter sensor-technology for spectral analysis — measures glass coatings, optical transmission properties, and stress patterns.</span>
-          </div>
-        </div>
-
+      <!-- Stats row -->
+      <div class="template02-company-stats">
+        <div class="kpi-card"><div class="kpi-value" data-edit="stat-founded" contenteditable spellcheck="false">YYYY</div><div class="kpi-label" data-edit="stat-label-founded" contenteditable spellcheck="false">Founded</div></div>
+        <div class="kpi-card"><div class="kpi-value" data-edit="stat-systems" contenteditable spellcheck="false">000+</div><div class="kpi-label" data-edit="stat-label-systems" contenteditable spellcheck="false">Metric</div></div>
+        <div class="kpi-card"><div class="kpi-value" data-edit="stat-countries" contenteditable spellcheck="false">00</div><div class="kpi-label" data-edit="stat-label-countries" contenteditable spellcheck="false">Metric</div></div>
+        <div class="kpi-card"><div class="kpi-value" data-edit="stat-employees" contenteditable spellcheck="false">00</div><div class="kpi-label" data-edit="stat-label-employees" contenteditable spellcheck="false">Metric</div></div>
       </div>
+
     </div>
+  </div>
 
-    <!-- ── PANEL: Global Network ── -->
-    <div class="ls-tab-panel" data-panel="3">
-      <div class="ls2-map-wrap">
-        <img class="ls2-map-img" src="/slides/uploads/World Map of locations .jpeg" alt="World Map" data-zoom="" data-track="ls2:zoom:world-map">
+  <!-- Map file input lives OUTSIDE every data-edit container so its change event never dirties a slot -->
+  <input type="file" id="template02-company-map-file" accept="image/*" data-builder-only="" style="display:none;">
 
-        <!-- Office pins -->
-        <div class="ls2-pin" style="left:19.5%;top:34%;">
-          <div class="ls2-pin-dot"></div>
-          <div class="ls2-pin-ring"></div>
-          <div class="ls2-pin-label" data-edit="pin-burnsville" contenteditable="" spellcheck="false">Burnsville MN, USA</div>
-        </div>
-        <div class="ls2-pin" style="left:51.2%;top:32.5%;">
-          <div class="ls2-pin-dot"></div>
-          <div class="ls2-pin-ring"></div>
-          <div class="ls2-pin-label" data-edit="pin-waidhofen" contenteditable="" spellcheck="false">Waidhofen, Austria</div>
-        </div>
-
-        <!-- Distributor dots -->
-        <div class="ls2-dist" style="left:19.1%;top:24.4%;" title="Canada"></div>
-        <div class="ls2-dist" style="left:10.9%;top:42.5%;" title="Mexico"></div>
-        <div class="ls2-dist" style="left:24.3%;top:66.5%;" title="Brazil"></div>
-        <div class="ls2-dist" style="left:43.5%;top:28.2%;" title="UK"></div>
-        <div class="ls2-dist" style="left:42.0%;top:36.1%;" title="Spain"></div>
-        <div class="ls2-dist" style="left:47.1%;top:34.6%;" title="Italy"></div>
-        <div class="ls2-dist" style="left:55.4%;top:35.8%;" title="Turkey"></div>
-        <div class="ls2-dist" style="left:61.3%;top:25.2%;" title="Russia"></div>
-        <div class="ls2-dist" style="left:72.1%;top:39.3%;" title="China"></div>
-        <div class="ls2-dist" style="left:83.2%;top:73.3%;" title="Australia"></div>
-        <div class="ls2-dist" style="left:46.7%;top:23.0%;" title="Norway"></div>
-        <div class="ls2-dist" style="left:73.3%;top:48.5%;" title="Thailand"></div>
-        <div class="ls2-dist" style="left:52.9%;top:31.5%;" title="Moldova"></div>
-        <div class="ls2-dist" style="left:16.8%;top:43.5%;" title="Cuba"></div>
-      </div>
-      <div class="ls2-map-legend">
-        <span class="ls2-leg-item"><span class="ls2-leg-dot" style="background:var(--accent);box-shadow:0 0 6px rgba(var(--accent-rgb),.7);"></span>Offices</span>
-        <span class="ls2-leg-item"><span class="ls2-leg-dot" style="background:#F5C842;box-shadow:0 0 6px rgba(245,200,66,.6);"></span>Agents &amp; Distributors</span>
-        <span class="ls2-leg-count" data-edit="network-count" contenteditable="" spellcheck="false">23 countries · 6 continents</span>
-      </div>
-    </div>
-
-    <!-- ── PANEL: IQC Group ── -->
-    <div class="ls-tab-panel" data-panel="4">
-      <div class="ls2-iqc-grid">
-
-        <div class="ls2-iqc-card">
-          <img src="/slides/shared/LOGO SoftSolution grays.png" alt="Softsolution" class="ls2-iqc-logo">
-          <div class="ls2-iqc-country" data-edit="iqc-ss-country" contenteditable="" spellcheck="false">Austria</div>
-          <ul class="ls2-iqc-products" data-edit="iqc-ss-products" contenteditable="" spellcheck="false">
-            <li>LineScanner</li>
-            <li>BowScanner</li>
-            <li>CulletScanner</li>
-            <li>VirtualDigitizing</li>
-          </ul>
-        </div>
-
-        <div class="ls2-iqc-card">
-          <img src="/slides/shared/LOGO LiteSentry Greys.png" alt="LiteSentry" class="ls2-iqc-logo">
-          <div class="ls2-iqc-country" data-edit="iqc-ls-country" contenteditable="" spellcheck="false">United States</div>
-          <ul class="ls2-iqc-products" data-edit="iqc-ls-products" contenteditable="" spellcheck="false">
-            <li>Osprey® 25 Distortion Inspection</li>
-            <li>Osprey® 25 Anisotropy Inspection</li>
-            <li>Owl – Furnace Control</li>
-            <li>LoadValidator</li>
-            <li>TS 4000 Thickness &amp; Coating Sensor</li>
-          </ul>
-        </div>
-
-        <div class="ls2-iqc-card">
-          <img src="/slides/shared/LOGO StrainOptics.png" alt="Strainoptics" class="ls2-iqc-logo" style="transform:scale(1.3); filter:invert(1) grayscale(1) opacity(.7);">
-          <div class="ls2-iqc-country" data-edit="iqc-strain-country" contenteditable="" spellcheck="false">United States</div>
-          <ul class="ls2-iqc-products" data-edit="iqc-strain-products" contenteditable="" spellcheck="false">
-            <li>GASP</li>
-            <li>Polarimeter</li>
-          </ul>
-        </div>
-
-        <div class="ls2-iqc-card">
-          <img src="/slides/shared/LOGO AVALON.png" alt="Avalon Vision" class="ls2-iqc-logo">
-          <div class="ls2-iqc-country" data-edit="iqc-avalon-country" contenteditable="" spellcheck="false">United States</div>
-          <ul class="ls2-iqc-products" data-edit="iqc-avalon-products" contenteditable="" spellcheck="false">
-            <li>MoldWatcher</li>
-            <li>ThermalWatch</li>
-            <li>NightHawk</li>
-            <li>QualityStation</li>
-          </ul>
-        </div>
-
-      </div>
-    </div>
-
-    </div><!-- /.ls-tab-panels -->
-  </div><!-- /.ls-tabs -->
-
-  <!-- Stats bar -->
-  <div class="ls2-stats">
-    <div class="kpi-card"><div class="kpi-value" data-edit="stat-founded" contenteditable="" spellcheck="false">1999</div><div class="kpi-label" data-edit="stat-label-founded" contenteditable="" spellcheck="false">Founded</div></div>
-    <div class="kpi-card"><div class="kpi-value" data-edit="stat-systems" contenteditable="" spellcheck="false">2050+</div><div class="kpi-label" data-edit="stat-label-systems" contenteditable="" spellcheck="false">Systems installed</div></div>
-    <div class="kpi-card"><div class="kpi-value" data-edit="stat-countries" contenteditable="" spellcheck="false">23</div><div class="kpi-label" data-edit="stat-label-countries" contenteditable="" spellcheck="false">Countries · 6 continents</div></div>
-    <div class="kpi-card"><div class="kpi-value" data-edit="stat-employees" contenteditable="" spellcheck="false">60</div><div class="kpi-label" data-edit="stat-label-employees" contenteditable="" spellcheck="false">Specialized employees</div></div>
-  </div><!-- /.slide-body -->
-  </div><!-- /.slide-layout -->
-
-  <!-- Scoped styles — slide-02 only -->
   <style>
-    /* Mobile-first base — desktop overrides below in @media(min-width:769px) */
-    .ls2 { padding:52px 16px 80px !important; overflow-y:auto; }
-    .ls2-tabs-wrap { flex:none !important; min-height:360px !important; }
+    /* Layout-only scoped rules. Every surface composes from .card / .kpi-card / .feature-list,
+       so theme Finish blocks restyle them for free. Bespoke classes here are purely positional. */
+    .template02-company { padding:52px 16px 80px !important; overflow-y:auto; }
+    .template02-company .slide-body { width:100%; align-items:center; }
+    .template02-company-tabs { flex:1; min-height:0; width:100%; max-width:860px; }
+    .template02-company .ls-carousel { min-height:260px !important; height:260px !important; }
 
-    /* ── About Us: Pillars ── */
-    .ls2-pillars { flex:1; display:flex; flex-direction:column; gap:6px; padding:8px 0 4px; min-height:0; }
-    .ls2-pillar {
-      flex:1; position:relative; overflow:hidden;
-      display:flex; align-items:center;
-      background:var(--bg-card); border:1px solid var(--border);
-      border-left:3px solid var(--accent); border-radius:12px;
-      padding:0 14px; transition:background .2s; min-height:70px;
-    }
-    .ls2-pillar:hover { background:var(--bg-card-hover); }
-    .ls2-pillar-num {
-      position:absolute; left:16px; top:50%; transform:translateY(-50%);
-      font-size:48px; font-weight:900; line-height:1;
-      color:rgba(var(--accent-rgb),.08); pointer-events:none; user-select:none;
-      letter-spacing:-.03em;
-    }
-    .ls2-pillar-content { margin-left:52px; z-index:1; }
-    .ls2-pillar-title { font-size:clamp(16px,2.2vw,32px); font-weight:800; color:var(--text); line-height:1.1; }
-    .ls2-pillar-desc  { font-size:clamp(11px,1.1vw,15px); color:var(--text-muted); margin-top:4px; line-height:1.4; }
-    .ls2-pillar-title:focus, .ls2-pillar-desc:focus { outline:none; }
+    /* Pillars — .card surface + positional modifier (accent bar, giant index number) */
+    .template02-company-pillars { flex:1; display:flex; flex-direction:column; gap:8px; padding:12px 0 8px; min-height:0; }
+    .template02-company .card-pillar { flex:1; position:relative; overflow:hidden; display:flex; align-items:center; border-left:3px solid var(--accent); padding:0 28px; min-height:60px; }
+    .template02-company .card-pillar:hover { transform:none; }
+    .card-pillar-num { position:absolute; left:16px; top:50%; transform:translateY(-50%); font-size:clamp(60px,9vw,120px); font-weight:900; line-height:1; color:rgba(var(--accent-rgb),.10); pointer-events:none; user-select:none; letter-spacing:-.03em; }
+    .card-pillar-content { margin-left:clamp(70px,10vw,140px); z-index:1; }
+    .card-pillar-title { font-size:clamp(16px,2.2vw,32px); font-weight:800; color:var(--text); line-height:1.1; }
+    .card-pillar-desc { font-size:clamp(11px,1.1vw,15px); color:var(--text-muted); margin-top:4px; line-height:1.4; }
+    .card-pillar-title:focus, .card-pillar-desc:focus { outline:none; }
 
-    /* ── Global Network: Map ── */
-    .ls2-map-wrap {
-      position:relative; flex:1; min-height:0;
-      border-radius:14px; overflow:hidden;
-      border:1px solid var(--border); margin-top:12px;
-    }
-    .ls2-map-img { width:100%; height:100%; object-fit:cover; display:block; filter:brightness(.55) saturate(.4); }
-    .ls2-pin { position:absolute; transform:translate(-50%,-50%); }
-    .ls2-pin-dot { width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px rgba(var(--accent-rgb),.9); position:relative; z-index:2; }
-    .ls2-pin-ring {
-      position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-      width:22px; height:22px; border-radius:50%;
-      border:2px solid rgba(var(--accent-rgb),.5);
-      animation:ls2Pulse 2s ease-in-out infinite;
-    }
-    @keyframes ls2Pulse { 0%,100%{opacity:.8;transform:translate(-50%,-50%) scale(1)} 50%{opacity:0;transform:translate(-50%,-50%) scale(1.8)} }
-    .ls2-pin-label {
-      position:absolute; top:-22px; left:50%; transform:translateX(-50%);
-      white-space:nowrap; font-size:9px; font-weight:700; letter-spacing:.05em;
-      color:var(--text, #fff); background:rgba(0,0,0,.70); padding:2px 6px; border-radius:4px;
-    }
-    .ls2-dist {
-      position:absolute; width:6px; height:6px; border-radius:50%;
-      background:#F5C842; box-shadow:0 0 5px rgba(245,200,66,.7);
-      transform:translate(-50%,-50%);
-    }
-    .ls2-map-legend {
-      display:flex; align-items:center; gap:16px;
-      padding:6px 0 4px; flex-shrink:0;
-    }
-    .ls2-leg-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-muted); font-weight:600; }
-    .ls2-leg-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-    .ls2-leg-count { margin-left:auto; font-size:11px; color:var(--text-muted); opacity:.5; }
-    .ls2-leg-count:focus { outline:none; }
+    /* Network/panel image — themeable .card surface holding an uploadable image */
+    .template02-company .template02-company-map { position:relative; flex:1; min-height:0; margin-top:12px; padding:0; overflow:hidden; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+    .template02-company .template02-company-map:hover { transform:none; }
+    .template02-company-map-img { width:100%; height:100%; object-fit:cover; display:block; }
+    .template02-company-map-img--missing { display:none; }
+    .template02-company-map-img--missing ~ .template02-company-map-placeholder { display:flex; }
+    .template02-company-map-placeholder { display:none; flex-direction:column; align-items:center; justify-content:center; gap:6px; width:100%; height:100%; color:var(--text-muted); text-align:center; }
+    .template02-company-map-placeholder span { font-size:12px; font-weight:700; }
+    .template02-company-map-placeholder small { font-size:10px; opacity:.65; }
+    .template02-company-readonly .template02-company-map { cursor:default; }
 
-    /* ── Stats bar ── */
-    .ls2-stats {
-      display:grid; grid-template-columns:repeat(2,1fr); gap:8px;
-      width:100%; max-width:860px;
-      flex-shrink:0; padding:10px 0 16px;
-    }
-    .ls2-stats .kpi-card { padding:14px 12px; }
-    .ls2-stats .kpi-value { font-size:clamp(18px,2.2vw,32px); }
+    /* Brand/partner cards — .card surface + positional modifier (logo / country / product list) */
+    .template02-company-iqc { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; padding:12px 0 8px; flex:1; min-height:0; }
+    .template02-company .card-iqc { display:grid; grid-template-rows:80px auto 1fr; justify-items:center; align-content:start; padding:16px 14px 14px; gap:8px; text-align:center; }
+    .template02-company .card-iqc:hover { transform:none; }
+    .card-iqc-logo { display:flex; align-items:center; justify-content:center; width:100%; }
+    .card-iqc-logo img { max-height:44px; max-width:120px; width:auto; height:auto; object-fit:contain; filter:brightness(0) invert(.7); }
+    .card-iqc-country { font-size:10px; font-weight:700; color:var(--text-muted); letter-spacing:.07em; text-transform:uppercase; }
+    .card-iqc-products { list-style:none; margin:0; padding:0; font-size:11px; color:var(--text-muted); line-height:1; opacity:.75; text-align:left; width:100%; }
+    .card-iqc-products li { padding:4px 0; border-bottom:1px solid var(--border); }
+    .card-iqc-products li:last-child { border-bottom:none; }
+    .card-iqc-products li::before { content:"› "; color:var(--accent); font-weight:700; }
 
-    /* ── IQC Group panel ── */
-    .ls2-iqc-grid {
-      display:grid; grid-template-columns:repeat(2,1fr);
-      gap:12px; padding:12px 0 8px; flex:1; min-height:0;
-    }
-    .ls2-iqc-card {
-      display:grid; grid-template-rows:80px auto 1fr;
-      justify-items:center; align-content:start;
-      background:var(--bg-card); border:1px solid var(--border);
-      border-radius:12px; padding:16px 14px 14px; gap:8px;
-      text-align:center;
-    }
-    .ls2-iqc-logo {
-      height:auto; max-height:44px; width:auto; max-width:120px;
-      object-fit:contain; align-self:center;
-      filter:brightness(0) invert(.7);
-    }
-    .ls2-iqc-country {
-      font-size:10px; font-weight:700; color:var(--text-muted);
-      letter-spacing:.07em; text-transform:uppercase;
-    }
-    .ls2-iqc-products {
-      list-style:none; margin:0; padding:0;
-      font-size:11px; color:var(--text-muted); line-height:1;
-      opacity:.75; text-align:left; width:100%;
-    }
-    .ls2-iqc-products li { padding:4px 0; border-bottom:1px solid rgba(255,255,255,.05); }
-    .ls2-iqc-products li:last-child { border-bottom:none; }
-    .ls2-iqc-products li::before { content:'› '; color:var(--accent); font-weight:700; }
+    /* Stats */
+    .template02-company-stats { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; width:100%; max-width:860px; flex-shrink:0; padding:10px 0 16px; }
+    .template02-company-stats .kpi-card { padding:14px 12px; }
+    .template02-company-stats .kpi-value { font-size:clamp(18px,2.2vw,32px); }
 
-    [contenteditable]:focus { outline:none; }
-
-    /* ── Desktop overrides ── */
-    @media(min-width:769px) {
-      .ls2 { padding:52px 80px 0 !important; overflow-y:unset; }
-      .ls2-tabs-wrap { flex:1 !important; min-height:0 !important; }
-      .ls2-pillars { gap:8px; padding:12px 0 8px; }
-      .ls2-pillar { padding:0 28px; min-height:60px; }
-      .ls2-pillar-content { margin-left:clamp(70px,10vw,140px); }
-      .ls2-pillar-num { font-size:clamp(60px,9vw,120px); }
-      .ls2-iqc-grid { grid-template-columns:repeat(4,1fr); gap:12px; }
-      .ls2-stats { grid-template-columns:repeat(4,1fr); gap:12px; }
+    @media (min-width:769px) {
+      .template02-company { padding:52px 80px 0 !important; overflow-y:unset; }
+      .template02-company .ls-carousel { min-height:0 !important; height:100% !important; }
+      .template02-company-iqc { grid-template-columns:repeat(4,1fr); }
+      .template02-company-stats { grid-template-columns:repeat(4,1fr); gap:12px; }
     }
   </style>
 
-  <!-- Slide JS -->
   <script>
-  // Click an already-active tab → return to default carousel panel (panel 0)
-  setTimeout(function () {
-    var tabList = document.querySelector('.ls2-tabs-wrap .ls-tab-list');
-    if (!tabList) return;
-    tabList.addEventListener('click', function (e) {
-      var btn = e.target.closest('.ls-tab');
-      if (!btn || !btn.classList.contains('active')) return;
-      e.stopImmediatePropagation();
-      var tabsEl = btn.closest('.ls-tabs');
-      tabsEl.querySelectorAll('.ls-tab').forEach(function (t) { t.classList.remove('active'); });
-      tabsEl.querySelectorAll('.ls-tab-panel').forEach(function (p) { p.classList.remove('active'); });
-      var panel0 = tabsEl.querySelector('.ls-tab-panel[data-panel="0"]');
-      panel0.classList.add('active');
-      // tabs.js never calls Carousel.init for panel 0 (stopImmediatePropagation above
-      // prevents it), so we init here the first time it becomes visible.
-      if (window.Carousel) Carousel.init(panel0);
-    }, true);
-  }, 0);
+  (function () {
+    var slide   = document.currentScript.closest('[data-slide]');
+    var slideId = Track.slideId(slide);
+
+    if (window.PB_READONLY) slide.classList.add('template02-company-readonly');
+
+    /* Reveal the hidden carousel (panel 0) when the already-active tab is clicked.
+       Capture phase + stopImmediatePropagation so this beats tabs.js's own click handler. */
+    var tabList = slide.querySelector('.template02-company-tabs .ls-tab-list');
+    if (tabList) {
+      tabList.addEventListener('click', function (e) {
+        var btn = e.target.closest('.ls-tab');
+        if (!btn || !btn.classList.contains('active')) return;
+        if (e.target.closest('.ls-tab-del')) return;
+        e.stopImmediatePropagation();
+        var tabsEl = btn.closest('.ls-tabs');
+        tabsEl.querySelectorAll('.ls-tab').forEach(function (t) { t.classList.remove('active'); });
+        tabsEl.querySelectorAll('.ls-tab-panel').forEach(function (p) { p.classList.remove('active'); });
+        var carouselPanel = tabsEl.querySelector('.ls-tab-panel[data-panel="0"]');
+        if (carouselPanel) {
+          carouselPanel.classList.add('active');
+          if (window.Carousel) Carousel.init(carouselPanel);
+        }
+      }, true);
+    }
+
+    /* Panel image — uploadable (reuses the cover's debugged image-upload pattern) */
+    var mapBox   = slide.querySelector('.template02-company-map');
+    var mapInput = slide.querySelector('#template02-company-map-file');
+    var mapImg   = slide.querySelector('.template02-company-map-img');
+    if (mapImg && !mapImg.getAttribute('src')) mapImg.classList.add('template02-company-map-img--missing');
+
+    if (mapBox && mapInput) {
+      mapBox.addEventListener('click', function () {
+        if (window.PB_READONLY) return;
+        mapInput.click();
+      });
+      mapInput.addEventListener('change', function (e) {
+        if (window.PB_READONLY) return;
+        var file = e.target.files[0];
+        if (!file) return;
+        var img = slide.querySelector('.template02-company-map-img');
+        img.src = URL.createObjectURL(file);
+        img.classList.remove('template02-company-map-img--missing');
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+          fetch('/api/upload-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ filename: file.name, data: ev.target.result })
+          })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (data.path) {
+              img.src = data.path;
+              document.dispatchEvent(new CustomEvent('slide-image-change', {
+                detail: { editKey: 'map-image', src: data.path }
+              }));
+            }
+          });
+        };
+        reader.readAsDataURL(file);
+        e.target.value = '';
+      });
+    }
+
+    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
+  })();
   </script>
 
-</div>
 </div>

@@ -12,7 +12,7 @@ When triggered, run the following flow — ask Step 1 questions, wait for answer
 ```
 I'll create a slide template for you. A few quick questions:
 
-1. **Slide number** — What's the next slide number? (e.g. ls16, ls17)
+1. **Slide number** — What's the next template number? (e.g. template16, template17)
 2. **Slide name** — Short name for the slide (e.g. stats, team, timeline)
 3. **Slide type** — Pick one: Cover · Content · Stats/Metrics · Visual/Gallery · Two-Column · CTA · Data/Chart
 4. **Content blocks** — What goes on this slide? List the elements (e.g. "headline, 3 stat numbers, a supporting image, a short paragraph")
@@ -31,7 +31,7 @@ The `<head>` must contain a `<style>` block with the **full verbatim contents of
 
 The `<body>` must contain:
 1. A `.slides-container` div wrapping two `.glow-orb` divs (class `a` and `b`) followed by the slide fragment.
-2. The slide fragment's root element must include `active` in its class list so it renders visible, e.g. `class="slide content ls[NN]-[name] active"`.
+2. The slide fragment's root element must include `active` in its class list so it renders visible, e.g. `class="slide content template[NN]-[name] active"`.
 
 A `<script>` block at the end of `<body>` must stub the app globals so the slide's JavaScript does not throw errors:
 `window.Track = { slideId:function(el){return el?(el.dataset.slide||'preview'):'preview';}, click:function(){}, tab:function(){}, carousel:function(){}, expand:function(){}, zoom:function(){}, event:function(){} };`
@@ -49,13 +49,13 @@ See ANATOMY.md for the full spec. Key rules:
 
 Root element:
 
-    <div class="slide content ls[NN]-[name]"
-         data-slide="ls[NN]-[name]"
+    <div class="slide content template[NN]-[name]"
+         data-slide="template[NN]-[name]"
          data-slide-mode="sequence|embedded">
 
-Every text node gets: `data-edit="key"` (kebab-case), `data-lang-key="ls[NN]-[name].key"`, `contenteditable spellcheck="false"`, and dummy placeholder text only — no real content.
+Every text node gets: `data-edit="key"` (kebab-case), `contenteditable spellcheck="false"`, and dummy placeholder text only — no real content. (Do NOT add `data-lang-key` — translation keys off `data-edit`; the app never reads `data-lang-key`.)
 
-Style rules: all colors via CSS variables (`var(--accent)`, `var(--text)`, `var(--bg-card)`, `var(--border)`, `var(--text-muted)`). Never hardcode hex or rgb theme colors. Mobile-first CSS, desktop overrides in `@media(min-width:769px)`. Scoped to the slide's class — no global pollution.
+Style rules: all colors via CSS variables (`var(--accent)`, `var(--text)`, `var(--text-muted)`, `var(--bg)`, `var(--card-bg)`, `var(--card-border)`). Use only variables that exist (`--bg-card`, `--border`, `--nav-bg` do NOT exist — see ANATOMY.md for the full real list). Never hardcode hex or rgb theme colors. Mobile-first CSS, desktop overrides in `@media(min-width:769px)`. Scoped to the slide's class — no global pollution.
 
 Tracking rules: use `Track.click(slideId, 'label')` for buttons/links, `Track.tab(slideId, 'Label')` for tabs, `Track.carousel(slideId, 'next'/'prev', 'caption')` for carousels, `Track.expand(slideId, 'Section')` for accordions. Get slideId via `var slideId = Track.slideId(slide);`. Never call `window.umami.track()` directly.
 
@@ -74,8 +74,8 @@ Standard slide wrapper structure:
     </div>
     <div class="slide-layout">
       <header class="slide-head">
-        <div class="section-label" data-edit="section-label" data-lang-key="[id].section-label" contenteditable spellcheck="false">Section Name</div>
-        <h1 class="slide-title" data-edit="headline" data-lang-key="[id].headline" contenteditable spellcheck="false">Dummy Headline</h1>
+        <div class="section-label" data-edit="section-label" contenteditable spellcheck="false">Section Name</div>
+        <h1 class="slide-title" data-edit="headline" contenteditable spellcheck="false">Dummy Headline</h1>
         <div class="divider"></div>
       </header>
       <div class="slide-body">
@@ -91,7 +91,7 @@ After Step 3, always show:
 
     ✅ Checklist
     - [x] data-slide + data-slide-mode on root
-    - [x] Every text node has data-edit + data-lang-key
+    - [x] Every editable text node has data-edit (no data-lang-key)
     - [x] No hardcoded theme colors — CSS variables only
     - [x] Interactive elements have Track.*() calls
     - [x] Scoped <style> block

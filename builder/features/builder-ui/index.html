@@ -414,6 +414,42 @@
       background: #0a0a0a;
       overflow: hidden;
     }
+
+    /* ── Slide-level features button (circled "f") + popover ── */
+    .feature-fab {
+      position: absolute; right: 18px; bottom: 18px; z-index: 30;
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(0,0,0,.45); border: 1px solid rgba(255,255,255,.30);
+      color: rgba(255,255,255,.80); font-family: inherit; font-size: 16px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .15s, border-color .15s, color .15s;
+    }
+    .feature-fab:hover { background: rgba(0,0,0,.65); border-color: rgba(255,255,255,.6); color: #fff; }
+    .feature-fab.active { border-color: var(--accent); color: var(--accent); }
+    .feature-pop {
+      position: absolute; right: 18px; bottom: 72px; z-index: 31;
+      width: 248px; padding: 14px 16px;
+      background: #111; border: 1px solid rgba(255,255,255,.12);
+      border-radius: 14px; box-shadow: 0 24px 64px rgba(0,0,0,.8);
+    }
+    [data-theme="light"] .feature-pop { background: #fff; border-color: rgba(0,0,0,.1); box-shadow: 0 24px 64px rgba(0,0,0,.2); }
+    .feature-pop-title { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+    .feature-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; }
+    .feature-row-label { font-size: 14px; font-weight: 600; color: var(--text); }
+    .feature-row-hint { font-size: 11px; color: var(--muted); line-height: 1.45; margin-top: 8px; }
+    /* Toggle switch */
+    .feature-switch { position: relative; display: inline-block; width: 38px; height: 22px; flex-shrink: 0; }
+    .feature-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .feature-switch-track {
+      position: absolute; inset: 0; border-radius: 22px;
+      background: var(--surface-hov); border: 1px solid var(--border); transition: background .2s, border-color .2s;
+    }
+    .feature-switch-track::before {
+      content: ''; position: absolute; left: 3px; top: 50%; transform: translateY(-50%);
+      width: 16px; height: 16px; border-radius: 50%; background: var(--muted); transition: transform .2s, background .2s;
+    }
+    .feature-switch input:checked + .feature-switch-track { background: var(--accent-dim); border-color: var(--accent); }
+    .feature-switch input:checked + .feature-switch-track::before { transform: translate(16px, -50%); background: var(--accent); }
     .canvas-empty-state {
       position: absolute;
       inset: 0;
@@ -1080,6 +1116,20 @@
             <div class="canvas-empty-sub">Click a slide in the panel below to preview it</div>
           </div>
           <iframe id="slideFrame" class="canvas-frame" src="" style="display:none;" title="Slide preview"></iframe>
+
+          <!-- Slide-level features button (circled "f") + popover -->
+          <button class="feature-fab" id="featureFab" title="Slide features" style="display:none;">f</button>
+          <div class="feature-pop" id="featurePop" style="display:none;">
+            <div class="feature-pop-title">Slide features</div>
+            <label class="feature-row">
+              <span class="feature-row-label">Gallery</span>
+              <span class="feature-switch">
+                <input type="checkbox" id="featureGalleryToggle">
+                <span class="feature-switch-track"></span>
+              </span>
+            </label>
+            <div class="feature-row-hint">Adds an in-slide image/text gallery viewers can open.</div>
+          </div>
         </div>
       </div>
 
@@ -1165,6 +1215,17 @@
       <div class="modal-actions">
         <button class="modal-cancel" id="removeSlideCancel">Cancel</button>
         <button class="modal-confirm danger" id="removeSlideConfirm">Remove</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Slide Details (lineage) Modal ── -->
+  <div class="modal-backdrop" id="slideDetailsModal">
+    <div class="modal-box">
+      <div class="modal-title">Slide Details</div>
+      <div class="modal-body" id="slideDetailsBody"></div>
+      <div class="modal-actions">
+        <button class="modal-cancel" id="slideDetailsClose">Close</button>
       </div>
     </div>
   </div>
@@ -1460,7 +1521,7 @@
     }
 
     // ── Library slide mode ─────────────────────────────────────────────────────
-    function enterLibrarySlideMode(slideId, slideName) {
+    function enterLibrarySlideMode(slideId, slideName, deckId) {
       document.querySelector('.deck-sidebar').style.display = 'none';
       document.querySelector('.slide-panel').style.display = 'none';
       document.querySelector('.finished-panel').style.display = 'none';
@@ -1468,11 +1529,57 @@
       document.getElementById('savePresBtn').style.display = 'none';
       document.getElementById('canvasSlideName').textContent = slideName;
       var frame = document.getElementById('slideFrame');
-      frame.src = '/slides/library-edit/' + slideId;
+      var src = '/slides/library-edit/' + slideId;
+      if (deckId) src += '?deckId=' + encodeURIComponent(deckId);
+      frame.src = src;
       frame.onload = function () { scaleFrame(); };
       frame.style.display = '';
       document.getElementById('canvasEmptyState').style.display = 'none';
       window.addEventListener('resize', scaleFrame);
+      setupFeatureFab(slideId);
+    }
+
+    // ── Slide-level features button (circled "f") ──────────────────────────────
+    var currentLibrarySlideId = null;
+    function setupFeatureFab(slideId) {
+      currentLibrarySlideId = slideId;
+      var fab = document.getElementById('featureFab');
+      var pop = document.getElementById('featurePop');
+      var toggle = document.getElementById('featureGalleryToggle');
+      if (!fab) return;
+      if (!fab._wired) {
+        fab._wired = true;
+        fab.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var open = pop.style.display !== 'none';
+          pop.style.display = open ? 'none' : 'block';
+          fab.classList.toggle('active', !open);
+        });
+        pop.addEventListener('click', function (e) { e.stopPropagation(); });
+        document.addEventListener('click', function () { pop.style.display = 'none'; fab.classList.remove('active'); });
+        toggle.addEventListener('change', function () {
+          if (!currentLibrarySlideId) return;
+          fetch('/api/library/' + encodeURIComponent(currentLibrarySlideId) + '/features', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ galleryEnabled: toggle.checked })
+          })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (res && res.success) {
+              var f = document.getElementById('slideFrame');
+              if (f && f.src) f.src = f.src;   // reload canvas so the gallery button injects/removes
+            }
+          })
+          .catch(function () {});
+        });
+      }
+      fab.style.display = '';
+      pop.style.display = 'none';
+      fab.classList.remove('active');
+      fetch('/api/library/' + encodeURIComponent(slideId) + '/features')
+        .then(function (r) { return r.json(); })
+        .then(function (res) { toggle.checked = !!(res.success && res.data && res.data.galleryEnabled); })
+        .catch(function () {});
     }
 
     // ── iframe → parent bridge ─────────────────────────────────────────────────
@@ -1493,7 +1600,7 @@
       var params    = new URLSearchParams(window.location.search);
       var libSlideId = params.get('librarySlide');
       if (libSlideId) {
-        enterLibrarySlideMode(libSlideId, params.get('slideName') || 'Untitled');
+        enterLibrarySlideMode(libSlideId, params.get('slideName') || 'Untitled', params.get('deckId') || '');
         return;
       }
       initDeckControls();
@@ -1848,6 +1955,15 @@
           toggleSlideVisibility(slide.id);
         });
 
+        var detailsBtn = document.createElement('button');
+        detailsBtn.className = 'slide-thumb-btn';
+        detailsBtn.title = 'Details (lineage)';
+        detailsBtn.innerHTML = '&#9432;';
+        detailsBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          showSlideDetails(slide);
+        });
+
         var removeBtn = document.createElement('button');
         removeBtn.className = 'slide-thumb-btn btn-danger';
         removeBtn.title = 'Remove from deck';
@@ -1858,6 +1974,7 @@
         });
 
         actions.appendChild(eyeBtn);
+        actions.appendChild(detailsBtn);
         actions.appendChild(removeBtn);
         frame.appendChild(actions);
 
@@ -2129,7 +2246,10 @@
         .then(function (r) { return r.json(); })
         .then(function (res) {
           if (!res.success) { alert('Publish failed'); return; }
-          if (confirm('Published!\n\n' + res.url + '\n\nOpen link?')) window.open(res.url, '_blank');
+          var msg = res.warning
+            ? 'Published locally (not on GitHub).\n\n' + res.warning + '\n\n' + res.url + '\n\nOpen local link?'
+            : 'Published!\n\n' + res.url + '\n\nOpen link?';
+          if (confirm(msg)) window.open(res.url, '_blank');
           loadFinishedPresentations();
         })
         .catch(function () { alert('Publish failed'); });
@@ -2588,6 +2708,14 @@
       });
       document.getElementById('removeSlideConfirm').addEventListener('click', doRemoveSlide);
 
+      // Slide details (lineage) modal
+      document.getElementById('slideDetailsClose').addEventListener('click', function () {
+        document.getElementById('slideDetailsModal').classList.remove('open');
+      });
+      document.getElementById('slideDetailsModal').addEventListener('click', function (e) {
+        if (e.target === this) this.classList.remove('open');
+      });
+
       // Presentation history modal
       document.getElementById('presHistoryClose').addEventListener('click', function () {
         document.getElementById('presHistoryModal').classList.remove('open');
@@ -2611,6 +2739,23 @@
       return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
     }
     function escQ(s) { return esc(s).replace(/'/g,"\\'"); }
+
+    // Read-only lineage view: Template → Library slide → Deck slide (rulebook §4)
+    function showSlideDetails(slide) {
+      function row(label, id, name) {
+        return '<div style="margin:0 0 14px;">' +
+          '<div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;">' + esc(label) + '</div>' +
+          '<div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--text);word-break:break-all;">' + (id ? esc(id) : '<span style="color:var(--muted);">—</span>') + '</div>' +
+          (name ? '<div style="font-size:12px;color:var(--muted);margin-top:1px;">' + esc(name) + '</div>' : '') +
+        '</div>';
+      }
+      var body = document.getElementById('slideDetailsBody');
+      body.innerHTML =
+        row('Template', slide.templateId, slide.templateName) +
+        row('Library slide', slide.librarySlideId, '') +
+        row('Deck slide', slide.id, '');
+      document.getElementById('slideDetailsModal').classList.add('open');
+    }
 
     function relDate(iso) {
       try {

@@ -1,7 +1,7 @@
 [
   {
     "id": "ls01",
-    "name": "New-Cover",
+    "name": "Cover",
     "category": "Cover",
     "slideMode": "sequence",
     "components": [
@@ -14,8 +14,7 @@
     "file": "features/slides/slide-01.html",
     "createdAt": "2026-05-23T00:00:00.000Z",
     "tags": [
-      "Cover",
-      "New"
+      "Cover"
     ],
     "defaultEdits": {
       "logo-row": "\n    <img src=\"/shared/brand/logo.svg\" alt=\"Your Logo\">\n  ",
@@ -23,7 +22,7 @@
       "badge": "Product · Solution",
       "headline": "Your Presentation <span class=\"ls01-accent\">Headline</span>",
       "subheadline": "Proposal for [Customer] · [Name], [Title]",
-      "gallery-track": "\n    \n    \n  <div class=\"ls-gallery-slide\"><img src=\"/slides/uploads/CostOfQualityDefects.png\" alt=\"CostOfQualityDefects\"><div class=\"ls-gallery-caption\" contenteditable=\"\" spellcheck=\"false\">CostOfQualityDefects</div></div><div class=\"ls-gallery-slide ls-gallery-slide--text\"><div class=\"ls-gallery-stat\"><span class=\"ls-gallery-label\" contenteditable=\"\" spellcheck=\"false\">Section Title</span><span class=\"ls-gallery-number\" contenteditable=\"\" spellcheck=\"false\">Key Fact</span><span class=\"ls-gallery-body-text\" contenteditable=\"\" spellcheck=\"false\">Description text here</span></div></div>"
+      "gallery-track": "\n    \n    \n  <div class=\"ls-gallery-slide ls-gallery-slide--text\"><div class=\"ls-gallery-stat\"><span class=\"ls-gallery-label\" contenteditable=\"\" spellcheck=\"false\">Section Title</span><span class=\"ls-gallery-number\" contenteditable=\"\" spellcheck=\"false\">Key Fact</span><span class=\"ls-gallery-body-text\" contenteditable=\"\" spellcheck=\"false\">Description text here</span></div></div>"
     }
   },
   {
@@ -235,11 +234,34 @@
     "createdAt": "2026-05-13T00:00:00.000Z",
     "tags": [
       "Fix"
-    ]
+    ],
+    "defaultEdits": {
+      "section-label": "Integrations",
+      "headline": "Compatible with<br><span class=\"blue\">your current machinery</span>",
+      "subtitle": "LineScanner is already integrated with the leading glass machinery manufacturers — if you already run any of these lines, integration is direct.",
+      "int-name-1": "LiSEC",
+      "int-type-1": "Processing lines",
+      "int-name-2": "FOREL",
+      "int-type-2": "Architectural glass",
+      "int-name-3": "Benteler",
+      "int-type-3": "Automotive glass",
+      "int-name-4": "CMS Tecglass",
+      "int-type-4": "Digital printing",
+      "int-name-5": "Bystronic",
+      "int-type-5": "Cutting and processing",
+      "int-name-6": "Hegla",
+      "int-type-6": "Cutting and storage",
+      "int-name-7": "Glaston",
+      "int-type-7": "Tempering and bending",
+      "int-name-8": "TecoFerrari",
+      "int-type-8": "Insulating glass",
+      "int-name-9": "Erdman",
+      "int-type-9": "Automated lines"
+    }
   },
   {
-    "id": "ls14-cta",
-    "name": "Call to Action",
+    "id": "template14-cta",
+    "name": "Call to Action-Validated",
     "category": "CTA",
     "slideMode": "sequence",
     "components": [
@@ -248,7 +270,24 @@
       "contact"
     ],
     "file": "features/slides/slide-14-cta.html",
-    "createdAt": "2026-05-13T00:00:00.000Z"
+    "createdAt": "2026-05-13T00:00:00.000Z",
+    "tags": [
+      "Validated",
+      "CTA"
+    ],
+    "defaultEdits": {
+      "section-label": "Next Steps",
+      "headline": "Ready to <span class=\"blue\">get started?</span>",
+      "intro": "A short paragraph introducing the next step you propose to the customer.",
+      "step1": "First step in the process",
+      "step2": "Second step in the process",
+      "step3": "Third step in the process",
+      "contact-name": "Contact Name",
+      "contact-title": "Job Title",
+      "contact-addr": "Street · City · Country",
+      "contact-phone": "+00 000 000 000",
+      "contact-email": "yourname@example.com"
+    }
   },
   {
     "id": "ls06-surface-copy",
@@ -346,6 +385,94 @@
       "col-item-5": "<strong>Screen printing errors</strong> &amp; defects",
       "col-item-6": "<strong>Logo position &amp; rotation</strong>",
       "carousel": "\n        <div class=\"ls-carousel-track\" style=\"transform: translateX(-960px);\">\n          <div class=\"ls-carousel-slide\"><button class=\"ls-carousel-del\" data-builder-only=\"\">✕</button>\n            <img src=\"/slides/uploads/image82.png\" alt=\"Pinhole detection on printed glass\" data-zoom=\"\" data-track=\"ls23:zoom:pinhole-detection\">\n          <button class=\"ls-carousel-btn ls-carousel-move\" data-builder-only=\"\" title=\"Move image left\" style=\"position: absolute; top: 8px; left: 8px; width: 26px; height: 26px; font-size: 13px; z-index: 22; opacity: 0; transition: opacity 0.2s;\">◀</button><button class=\"ls-carousel-btn ls-carousel-move\" data-builder-only=\"\" title=\"Move image right\" style=\"position: absolute; top: 8px; right: 38px; width: 26px; height: 26px; font-size: 13px; z-index: 22; opacity: 0; transition: opacity 0.2s;\">▶</button><button class=\"ls-cmp-enter\" data-builder-only=\"\" title=\"Compare two images side by side\">⇔ Compare</button><div class=\"ls-carousel-caption\">Pinhole detection on printed glass</div></div>\n          <div class=\"ls-carousel-slide\"><button class=\"ls-carousel-del\" data-builder-only=\"\">✕</button>\n            <img src=\"/slides/uploads/image83.png\" alt=\"Logo position check\" data-zoom=\"\" data-track=\"ls23:zoom:logo-position-check\">\n          <button class=\"ls-carousel-btn ls-carousel-move\" data-builder-only=\"\" title=\"Move image left\" style=\"position: absolute; top: 8px; left: 8px; width: 26px; height: 26px; font-size: 13px; z-index: 22; opacity: 0; transition: opacity 0.2s;\">◀</button><button class=\"ls-carousel-btn ls-carousel-move\" data-builder-only=\"\" title=\"Move image right\" style=\"position: absolute; top: 8px; right: 38px; width: 26px; height: 26px; font-size: 13px; z-index: 22; opacity: 0; transition: opacity 0.2s;\">▶</button><button class=\"ls-cmp-enter\" data-builder-only=\"\" title=\"Compare two images side by side\">⇔ Compare</button><div class=\"ls-carousel-caption\">Logo position check</div></div>\n        </div>\n      <div class=\"ls-carousel-counter\">2 / 2</div><button class=\"ls-carousel-btn ls-carousel-prev\" data-builder-only=\"\">‹</button><button class=\"ls-carousel-btn ls-carousel-next\" data-builder-only=\"\">›</button><button class=\"ls-carousel-add\" data-builder-only=\"\">+ Image</button><button class=\"ls-carousel-add\" data-builder-only=\"\" title=\"Autoplay off — click to enable\" style=\"right: auto; left: 10px; bottom: 8px;\">⏸ Auto</button>"
+    }
+  },
+  {
+    "id": "template01-cover",
+    "name": "Cover-Validated",
+    "category": "Cover",
+    "slideMode": "sequence",
+    "components": [
+      "headline",
+      "subheadline",
+      "badge",
+      "customer-logo"
+    ],
+    "file": "features/slides/slide-01-cover.html",
+    "createdAt": "2026-06-01T00:00:00.000Z",
+    "tags": [
+      "Cover",
+      "Validated",
+      "PUT A PRESENTATION"
+    ],
+    "defaultEdits": {
+      "credit": "by YourBrand.com",
+      "badge": "Product · Solution.",
+      "headline": "Your Presentation <span class=\"blue\">Headline.</span>",
+      "subheadline": "Proposal for [Customer] · [Name], [Title]."
+    }
+  },
+  {
+    "id": "template02-company",
+    "name": "Company Intro-Validated",
+    "category": "Company",
+    "slideMode": "sequence",
+    "components": [
+      "tabs",
+      "carousel",
+      "feature-list",
+      "kpi-cards",
+      "image"
+    ],
+    "file": "features/slides/slide-02-company.html",
+    "createdAt": "2026-06-01T00:00:00.000Z",
+    "tags": [
+      "Company",
+      "Validated",
+      "SoftSolution&LiteSentry"
+    ],
+    "defaultEdits": {
+      "credit": "by YourBrand.com",
+      "section-label": "Section Label",
+      "headline": "Your Company <span class=\"blue\">Headline</span>",
+      "tagline": "One sentence describing your company and what it does.",
+      "tabs": "\n        <div class=\"ls-tab-list\">\n          <button class=\"ls-tab\" data-panel=\"1\" data-edit=\"tab-about\" contenteditable=\"\" spellcheck=\"false\">About</button>\n          <button class=\"ls-tab active\" data-panel=\"2\" data-edit=\"tab-technologies\" contenteditable=\"\" spellcheck=\"false\">Technology</button>\n          <button class=\"ls-tab\" data-panel=\"3\" data-edit=\"tab-network\" contenteditable=\"\" spellcheck=\"false\">Network</button>\n          <button class=\"ls-tab\" data-panel=\"4\" data-edit=\"tab-iqc\" contenteditable=\"\" spellcheck=\"false\">Group</button>\n        </div>\n        <div class=\"ls-tab-panels\">\n\n          <!-- Panel 0 — image carousel (revealed by clicking the active tab) -->\n          <div class=\"ls-tab-panel\" data-panel=\"0\" style=\"padding-top:12px;\">\n            <div class=\"ls-carousel\" data-counter=\"\" data-edit=\"company-carousel\" data-track=\"template02-company:carousel\" style=\"flex:1;min-height:0;width:100%;\" contenteditable=\"\" spellcheck=\"false\">\n              <div class=\"ls-carousel-track\" style=\"transform:translateX(0px);\">\n                <div class=\"ls-carousel-slide\" style=\"display:flex;align-items:center;justify-content:center;\">\n                  <span style=\"color:var(--text-muted);font-size:13px;font-style:italic;\">Add images with the + Image button</span>\n                  <div class=\"ls-carousel-caption\" data-edit=\"company-caption\" contenteditable=\"\" spellcheck=\"false\">Image caption</div>\n                </div>\n              </div>\n              \n            <div class=\"ls-carousel-counter\"></div></div>\n          </div>\n\n          <!-- Panel 1 — three pillar cards -->\n          <div class=\"ls-tab-panel\" data-panel=\"1\">\n            <div class=\"template02-company-pillars\">\n              <div class=\"card card-pillar anim-in\">\n                <div class=\"card-pillar-num\">01</div>\n                <div class=\"card-pillar-content\">\n                  <div class=\"card-pillar-title\" data-edit=\"pillar-1-title\" contenteditable=\"\" spellcheck=\"false\">Pillar One</div>\n                  <div class=\"card-pillar-desc\" data-edit=\"pillar-1-desc\" contenteditable=\"\" spellcheck=\"false\">Short description of the first pillar.</div>\n                </div>\n              </div>\n              <div class=\"card card-pillar anim-in\">\n                <div class=\"card-pillar-num\">02</div>\n                <div class=\"card-pillar-content\">\n                  <div class=\"card-pillar-title\" data-edit=\"pillar-2-title\" contenteditable=\"\" spellcheck=\"false\">Pillar Two</div>\n                  <div class=\"card-pillar-desc\" data-edit=\"pillar-2-desc\" contenteditable=\"\" spellcheck=\"false\">Short description of the second pillar.</div>\n                </div>\n              </div>\n              <div class=\"card card-pillar anim-in\">\n                <div class=\"card-pillar-num\">03</div>\n                <div class=\"card-pillar-content\">\n                  <div class=\"card-pillar-title\" data-edit=\"pillar-3-title\" contenteditable=\"\" spellcheck=\"false\">Pillar Three</div>\n                  <div class=\"card-pillar-desc\" data-edit=\"pillar-3-desc\" contenteditable=\"\" spellcheck=\"false\">Short description of the third pillar.</div>\n                </div>\n              </div>\n            </div>\n          </div>\n\n          <!-- Panel 2 — feature list -->\n          <div class=\"ls-tab-panel active\" data-panel=\"2\">\n            <div class=\"feature-list\" style=\"margin:12px 0 0;gap:8px;\">\n              <div class=\"feature-item anim-in\"><div class=\"feature-num\">1</div><div class=\"feature-text\"><strong data-edit=\"tech-1-name\" contenteditable=\"\" spellcheck=\"false\">Feature One</strong><span data-edit=\"tech-1-desc\" contenteditable=\"\" spellcheck=\"false\"> — Short description of this feature.</span></div></div>\n              <div class=\"feature-item anim-in\"><div class=\"feature-num\">2</div><div class=\"feature-text\"><strong data-edit=\"tech-2-name\" contenteditable=\"\" spellcheck=\"false\">Feature Two</strong><span data-edit=\"tech-2-desc\" contenteditable=\"\" spellcheck=\"false\"> — Short description of this feature.</span></div></div>\n              <div class=\"feature-item anim-in\"><div class=\"feature-num\">3</div><div class=\"feature-text\"><strong data-edit=\"tech-3-name\" contenteditable=\"\" spellcheck=\"false\">Feature Three</strong><span data-edit=\"tech-3-desc\" contenteditable=\"\" spellcheck=\"false\"> — Short description of this feature.</span></div></div>\n              <div class=\"feature-item anim-in\"><div class=\"feature-num\">4</div><div class=\"feature-text\"><strong data-edit=\"tech-4-name\" contenteditable=\"\" spellcheck=\"false\">Feature Four</strong><span data-edit=\"tech-4-desc\" contenteditable=\"\" spellcheck=\"false\"> — Short description of this feature.</span></div></div>\n            </div>\n          </div>\n\n          <!-- Panel 3 — a single uploadable image (e.g. a map) -->\n          <div class=\"ls-tab-panel\" data-panel=\"3\">\n            <div class=\"card template02-company-map\" data-edit=\"map-image\" data-edit-type=\"image\" title=\"Click to change the image\">\n              <img class=\"template02-company-map-img template02-company-map-img--missing no-img\" src=\"\" alt=\"Panel image\" onerror=\"this.classList.add('template02-company-map-img--missing')\">\n              <label class=\"template02-company-map-placeholder\">\n                <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"30\" height=\"30\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n                  <rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"3\"></rect>\n                  <circle cx=\"8.5\" cy=\"8.5\" r=\"1.5\"></circle>\n                  <polyline points=\"21 15 16 10 5 21\"></polyline>\n                </svg>\n                <span>Image</span>\n                <small>Click to upload</small>\n              </label>\n            </div>\n          </div>\n\n          <!-- Panel 4 — brand/partner cards -->\n          <div class=\"ls-tab-panel\" data-panel=\"4\">\n            <div class=\"template02-company-iqc\">\n              <div class=\"card card-iqc\">\n                <div class=\"card-iqc-logo\" data-edit=\"iqc-1-logo\" data-edit-type=\"image\"><br><img src=\"/shared/brand/logo.svg\" alt=\"Brand logo\"></div>\n                <div class=\"card-iqc-country\" data-edit=\"iqc-1-country\" contenteditable=\"\" spellcheck=\"false\">Country</div>\n                <ul class=\"card-iqc-products\" data-edit=\"iqc-1-products\" contenteditable=\"\" spellcheck=\"false\"><li>Product one</li><li>Product two</li></ul>\n              </div>\n              <div class=\"card card-iqc\">\n                <div class=\"card-iqc-logo\" data-edit=\"iqc-2-logo\" data-edit-type=\"image\"><img src=\"/shared/brand/logo.svg\" alt=\"Brand logo\"></div>\n                <div class=\"card-iqc-country\" data-edit=\"iqc-2-country\" contenteditable=\"\" spellcheck=\"false\">Country</div>\n                <ul class=\"card-iqc-products\" data-edit=\"iqc-2-products\" contenteditable=\"\" spellcheck=\"false\"><li>Product one</li><li>Product two</li></ul>\n              </div>\n              <div class=\"card card-iqc\">\n                <div class=\"card-iqc-logo\" data-edit=\"iqc-3-logo\" data-edit-type=\"image\"><img src=\"/shared/brand/logo.svg\" alt=\"Brand logo\"></div>\n                <div class=\"card-iqc-country\" data-edit=\"iqc-3-country\" contenteditable=\"\" spellcheck=\"false\">Country</div>\n                <ul class=\"card-iqc-products\" data-edit=\"iqc-3-products\" contenteditable=\"\" spellcheck=\"false\"><li>Product one</li><li>Product two</li></ul>\n              </div>\n              <div class=\"card card-iqc\">\n                <div class=\"card-iqc-logo\" data-edit=\"iqc-4-logo\" data-edit-type=\"image\"><img src=\"/shared/brand/logo.svg\" alt=\"Brand logo\"></div>\n                <div class=\"card-iqc-country\" data-edit=\"iqc-4-country\" contenteditable=\"\" spellcheck=\"false\">Country</div>\n                <ul class=\"card-iqc-products\" data-edit=\"iqc-4-products\" contenteditable=\"\" spellcheck=\"false\"><li>Product one</li><li>Product two</li></ul>\n              </div>\n            </div>\n          </div>\n\n        </div><!-- /.ls-tab-panels -->\n      ",
+      "tab-about": "About",
+      "tab-technologies": "Technology",
+      "tab-network": "Network",
+      "tab-iqc": "Group",
+      "company-carousel": "\n              <div class=\"ls-carousel-track\" style=\"transform:translateX(0px);\">\n                <div class=\"ls-carousel-slide\" style=\"display:flex;align-items:center;justify-content:center;\">\n                  <span style=\"color:var(--text-muted);font-size:13px;font-style:italic;\">Add images with the + Image button</span>\n                  <div class=\"ls-carousel-caption\" data-edit=\"company-caption\" contenteditable=\"\" spellcheck=\"false\">Image caption</div>\n                </div>\n              </div>\n              \n            <div class=\"ls-carousel-counter\"></div>",
+      "company-caption": "Image caption",
+      "pillar-1-title": "Pillar One",
+      "pillar-1-desc": "Short description of the first pillar.",
+      "pillar-2-title": "Pillar Two",
+      "pillar-2-desc": "Short description of the second pillar.",
+      "pillar-3-title": "Pillar Three",
+      "pillar-3-desc": "Short description of the third pillar.",
+      "tech-1-name": "Feature One",
+      "tech-1-desc": " — Short description of this feature.",
+      "tech-2-name": "Feature Two",
+      "tech-2-desc": " — Short description of this feature.",
+      "tech-3-name": "Feature Three",
+      "tech-3-desc": " — Short description of this feature.",
+      "tech-4-name": "Feature Four",
+      "tech-4-desc": " — Short description of this feature.",
+      "iqc-1-country": "Country",
+      "iqc-1-products": "<li>Product one</li><li>Product two</li>",
+      "iqc-2-country": "Country",
+      "iqc-2-products": "<li>Product one</li><li>Product two</li>",
+      "iqc-3-country": "Country",
+      "iqc-3-products": "<li>Product one</li><li>Product two</li>",
+      "iqc-4-country": "Country",
+      "iqc-4-products": "<li>Product one</li><li>Product two</li>",
+      "stat-founded": "YYYY",
+      "stat-label-founded": "Founded",
+      "stat-systems": "000+",
+      "stat-label-systems": "Metric",
+      "stat-countries": "00",
+      "stat-label-countries": "Metric",
+      "stat-employees": "00",
+      "stat-label-employees": "Metric"
     }
   }
 ]

@@ -107,17 +107,6 @@
     ]
   },
   {
-    "id": "tpl-cta",
-    "name": "Call to Action",
-    "description": "Closing slide with big text, button, and contact info",
-    "category": "cta",
-    "label": "old",
-    "version": 1,
-    "rows": [
-      { "id": "r1", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"},{"type":"Text Block"},{"type":"Button"}] }] }
-    ]
-  },
-  {
     "id": "tpl-new-cover",
     "name": "Cover Slide",
     "description": "Hero cover with full-bleed background, headline, and gallery carousel",
@@ -373,28 +362,6 @@
       "title-0-0": "Compatible with your current machinery",
       "subtitle-0-0": "LineScanner is already integrated with the leading glass machinery manufacturers — if you already run any of these lines, integration is direct.",
       "integrations-1-0": "<div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">LiSEC</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Processing lines</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">FOREL</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Architectural glass</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">Benteler</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Automotive glass</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">CMS Tecglass</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Digital printing</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">Bystronic</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Cutting and processing</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">Hegla</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Cutting and storage</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">Glaston</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Tempering and bending</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">TecoFerrari</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Insulating glass</div></div><div class=\"int-card\"><div class=\"int-name\" contenteditable=\"\" spellcheck=\"false\">Erdman</div><div class=\"int-type\" contenteditable=\"\" spellcheck=\"false\">Automated lines</div></div>"
-    }
-  },
-  {
-    "id": "tpl-new-cta",
-    "name": "Call to Action",
-    "description": "Closing slide with message, bullet points, and action button",
-    "category": "cta",
-    "label": "new",
-    "version": 1,
-    "rows": [
-      { "id": "r1", "layout": "full", "height": "auto", "cols": [{ "components": [{"type":"Title"},{"type":"Subtitle"}] }] },
-      { "id": "r2", "layout": "full", "height": "tall", "cols": [{ "components": [{"type":"Text Block"},{"type":"List"},{"type":"Button"}] }] }
-    ],
-    "defaultContent": {
-      "section-label": "Next Steps",
-      "title": "Ready for a live demonstration?",
-      "subtitle": "We propose that your team visit our facilities in Austria so we can carry out an on-site demonstration with your own glass samples — together.",
-      "title-0-0": "Ready for a live demonstration?",
-      "subtitle-0-0": "We propose that your team visit our facilities in Austria so we can carry out an on-site demonstration with your own glass samples — together.",
-      "text-1-0": "We propose that your team visit our facilities in Austria so we can carry out an on-site demonstration with your own glass samples — together.",
-      "list-1-0": "<li contenteditable=\"\" spellcheck=\"false\">Analyse [Customer]'s current production line</li><li contenteditable=\"\" spellcheck=\"false\">Live demo with [Customer] glass samples</li><li contenteditable=\"\" spellcheck=\"false\">Customised technical and commercial proposal</li>",
-      "btn-1-0": "Request a Demo"
     }
   },
   {

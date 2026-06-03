@@ -2220,6 +2220,31 @@
       width: 100%;
       background: #fff;
     }
+
+    /* ── Card Details (lineage) Modal — matches the deck-thumbnail modal in builder-ui ── */
+    .card-details-modal {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,.6); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    .card-details-modal.open { display: flex; }
+    .card-details-box {
+      background: #111; border: 1px solid rgba(255,255,255,.12);
+      border-radius: 16px; padding: 28px;
+      width: 380px; max-width: calc(100vw - 32px);
+      box-shadow: 0 24px 64px rgba(0,0,0,.8);
+    }
+    [data-theme="light"] .card-details-box {
+      background: #fff; border-color: rgba(0,0,0,.1); box-shadow: 0 24px 64px rgba(0,0,0,.2);
+    }
+    .card-details-title { font-size: 17px; font-weight: 700; letter-spacing: -.3px; color: var(--text); margin-bottom: 16px; }
+    .card-details-actions { display: flex; justify-content: flex-end; margin-top: 8px; }
+    .card-details-close {
+      padding: 9px 18px; border-radius: var(--radius-btn);
+      border: 1px solid var(--border); background: transparent; color: var(--muted);
+      cursor: pointer; font-family: inherit; font-size: 13px; transition: border-color .15s, color .15s;
+    }
+    .card-details-close:hover { border-color: var(--border-hov); color: var(--text); }
   </style>
 </head>
 <body>
@@ -2604,6 +2629,17 @@
 
   <!-- Toast -->
   <div class="toast" id="toast"></div>
+
+  <!-- ── Card Details (lineage) Modal ── -->
+  <div class="card-details-modal" id="cardDetailsModal">
+    <div class="card-details-box">
+      <div class="card-details-title" id="cardDetailsTitle">Details</div>
+      <div id="cardDetailsBody"></div>
+      <div class="card-details-actions">
+        <button class="card-details-close" id="cardDetailsClose">Close</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     (function () {
@@ -3246,7 +3282,16 @@
       moreWrap.appendChild(moreBtn);
       moreWrap.appendChild(drop);
 
+      var infoBtn = makeInfoBtn(function () {
+        showCardDetails('Template Details', [
+          { label: 'Template', id: tpl.id, sub: tpl.name },
+          { label: 'Cartridge file', id: tpl.file },
+          { label: 'Category', id: tpl.category }
+        ]);
+      });
+
       actions.appendChild(useBtn);
+      actions.appendChild(infoBtn);
       actions.appendChild(moreWrap);
       card.appendChild(actions);
 
@@ -3352,7 +3397,16 @@
       moreWrap.appendChild(moreBtn);
       moreWrap.appendChild(drop);
 
+      var infoBtn = makeInfoBtn(function () {
+        showCardDetails('Template Details', [
+          { label: 'Template', id: tpl.id, sub: tpl.name },
+          { label: 'Cartridge file', id: tpl.file },
+          { label: 'Category', id: tpl.category }
+        ]);
+      });
+
       actions.appendChild(useBtn);
+      actions.appendChild(infoBtn);
       actions.appendChild(moreWrap);
       row.appendChild(actions);
 
@@ -3882,8 +3936,12 @@
     }
 
     function openBuilderWithLibrarySlide(slide) {
-      window.location.href = '/builder?librarySlide=' + encodeURIComponent(slide.id) +
+      var url = '/builder?librarySlide=' + encodeURIComponent(slide.id) +
         '&slideName=' + encodeURIComponent(slide.name || 'Untitled');
+      if (slide.decks && slide.decks.length > 0) {
+        url += '&deckId=' + encodeURIComponent(slide.decks[0].id);
+      }
+      window.location.href = url;
     }
 
     function buildMiniPreview(rows) {
@@ -4150,7 +4208,15 @@
         moreWrap.appendChild(moreBtn);
         moreWrap.appendChild(drop);
 
+        var infoBtn = makeInfoBtn(function () {
+          showCardDetails('Slide Details', [
+            { label: 'Template', id: slide.templateId, sub: slide.templateId ? getTemplateName(slide.templateId) : '' },
+            { label: 'Library slide', id: slide.id }
+          ]);
+        });
+
         actions.appendChild(gearBtn);
+        actions.appendChild(infoBtn);
         actions.appendChild(moreWrap);
       }
 
@@ -4364,7 +4430,14 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ librarySlideId: librarySlideId, deckId: pickDeckId })
       })
-        .then(function () {
+        .then(function (r) { return r.json().then(function (body) { return { ok: r.ok, body: body }; }); })
+        .then(function (result) {
+          if (!result.ok) {
+            btn.disabled = false;
+            btn.textContent = 'Add to ' + pickDeckName;
+            showToast(result.body.message || 'Could not add slide. Try again.');
+            return;
+          }
           window.location.href = '/builder';
         })
         .catch(function () {
@@ -4421,6 +4494,7 @@
       if (!ids.length) return;
       var addBtn = document.getElementById('libAddSelectedBtn');
       if (addBtn) { addBtn.textContent = 'Adding…'; addBtn.disabled = true; }
+      var blockedMessages = [];
       var chain = Promise.resolve();
       ids.forEach(function (slideId) {
         chain = chain.then(function () {
@@ -4428,11 +4502,22 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ librarySlideId: slideId, deckId: pickDeckId })
-          });
+          })
+            .then(function (r) { return r.json().then(function (body) { return { ok: r.ok, body: body }; }); })
+            .then(function (result) {
+              if (!result.ok) blockedMessages.push(result.body.message || 'A slide could not be added.');
+            });
         });
       });
       chain
-        .then(function () { window.location.href = '/builder'; })
+        .then(function () {
+          if (blockedMessages.length > 0) {
+            blockedMessages.forEach(function (msg) { showToast(msg); });
+            renderLibSelectionBar();
+          } else {
+            window.location.href = '/builder';
+          }
+        })
         .catch(function () {
           showToast('Some slides could not be added. Try again.');
           renderLibSelectionBar();
@@ -5084,6 +5169,38 @@
       }
       switchTab(tab, true);
     });
+
+    // ── Card Details (lineage) modal ──────────────────────────────
+    function escHtml(s) {
+      if (s == null) return '';
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function showCardDetails(title, rows) {
+      function row(label, id, sub) {
+        return '<div style="margin:0 0 14px;">' +
+          '<div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;">' + escHtml(label) + '</div>' +
+          '<div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--text);word-break:break-all;">' + (id ? escHtml(id) : '<span style="color:var(--muted);">—</span>') + '</div>' +
+          (sub ? '<div style="font-size:12px;color:var(--muted);margin-top:1px;">' + escHtml(sub) + '</div>' : '') +
+        '</div>';
+      }
+      document.getElementById('cardDetailsTitle').textContent = title;
+      document.getElementById('cardDetailsBody').innerHTML = rows.map(function (r) { return row(r.label, r.id, r.sub); }).join('');
+      document.getElementById('cardDetailsModal').classList.add('open');
+    }
+    // Shared ⓘ Details button (same glyph as the deck thumbnail)
+    function makeInfoBtn(onClick) {
+      var b = document.createElement('button');
+      b.className = 'lib-card-gear-btn';
+      b.title = 'Details (lineage)';
+      b.innerHTML = '&#9432;';
+      b.addEventListener('click', function (e) { e.stopPropagation(); onClick(); });
+      return b;
+    }
+    (function wireCardDetailsModal() {
+      var modal = document.getElementById('cardDetailsModal');
+      document.getElementById('cardDetailsClose').addEventListener('click', function () { modal.classList.remove('open'); });
+      modal.addEventListener('click', function (e) { if (e.target === this) this.classList.remove('open'); });
+    })();
 
   </script>
 </body>

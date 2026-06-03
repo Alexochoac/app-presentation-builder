@@ -1,0 +1,20 @@
+{
+  "title": "GlassQuality (rebuild)",
+  "slides": [
+    {
+      "id": "deck-cover",
+      "visible": true,
+      "librarySlideId": "lib-cover"
+    },
+    {
+      "id": "deck-company",
+      "visible": true,
+      "librarySlideId": "lib-company-v2"
+    },
+    {
+      "id": "deck-lib-1780338645841-1780424554857",
+      "visible": true,
+      "librarySlideId": "lib-1780338645841"
+    }
+  ]
+}

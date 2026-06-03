@@ -1,0 +1,31 @@
+#!/bin/sh
+# Pre-commit gate — validates any staged slide cartridge against the Slide System Rulebook.
+# Only checks slides that are part of THIS commit (added/modified), so the legacy backlog
+# never blocks unrelated work. Bypass in a pinch with:  git commit --no-verify
+#
+# Enabled via:  git config core.hooksPath scripts/hooks   (run once per clone)
+
+# Staged .html files directly in features/slides/ (exclude components/ subdir and index.html)
+files=$(git diff --cached --name-only --diff-filter=ACM -- builder/features/slides/ \
+        | grep -E '^builder/features/slides/[^/]+\.html$' \
+        | grep -v '/index\.html$')
+
+[ -z "$files" ] && exit 0   # no slides in this commit → nothing to gate
+
+echo "↳ slide gate: validating $(echo "$files" | wc -l | tr -d ' ') staged cartridge(s)…"
+fail=0
+for f in $files; do
+  if ! node scripts/validate.js "$f"; then
+    fail=1
+  fi
+done
+
+if [ "$fail" -ne 0 ]; then
+  echo ""
+  echo "✗ commit blocked — staged slide(s) have rulebook ERRORS (above)."
+  echo "  Fix them and re-commit, or bypass with:  git commit --no-verify"
+  exit 1
+fi
+
+echo "✓ slide gate passed."
+exit 0

@@ -12,17 +12,6 @@
   <script src="/slides/components/list.js"></script>
   <script src="/slides/components/table.js"></script>
   <script src="/slides/components/gallery.js"></script>
-  <script>
-    fetch('/api/settings').then(function(r){ return r.json(); }).then(function(res){
-      var s = res.data;
-      if (!s.umamiWebsiteId || !s.umamiBaseUrl) return;
-      var el = document.createElement('script');
-      el.defer = true;
-      el.src = s.umamiBaseUrl + '/script.js';
-      el.setAttribute('data-website-id', s.umamiWebsiteId);
-      document.head.appendChild(el);
-    });
-  </script>
   <style>
     #header {
       position: fixed; top: 0; left: 0; right: 0;
@@ -269,6 +258,33 @@
     .slide-logo-row img { height: 28px !important; }
     .slide-logo-ls { height: 26px !important; }
     .slide-logo-sep { height: 26px !important; }
+
+    /* ── Slide-level features button (simple circle) + popover ── */
+    .feature-fab {
+      position: fixed; right: 22px; bottom: 22px; z-index: 9500;
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(0,0,0,.45); border: 1px solid rgba(255,255,255,.30);
+      color: rgba(255,255,255,.80); font-family: inherit; font-size: 16px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .15s, border-color .15s, color .15s;
+    }
+    .feature-fab:hover { background: rgba(0,0,0,.65); border-color: rgba(255,255,255,.6); color: #fff; }
+    .feature-fab.active { border-color: var(--accent, #F5A623); color: var(--accent, #F5A623); }
+    .feature-pop {
+      position: fixed; right: 22px; bottom: 64px; z-index: 9501;
+      width: 250px; padding: 14px 16px; background: #14161c;
+      border: 1px solid rgba(255,255,255,.14); border-radius: 14px; box-shadow: 0 24px 64px rgba(0,0,0,.7);
+    }
+    .feature-pop-title { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 12px; }
+    .feature-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; }
+    .feature-row-label { font-size: 14px; font-weight: 600; color: #fff; }
+    .feature-row-hint { font-size: 11px; color: rgba(255,255,255,.5); line-height: 1.45; margin-top: 8px; }
+    .feature-switch { position: relative; display: inline-block; width: 38px; height: 22px; flex-shrink: 0; }
+    .feature-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .feature-switch-track { position: absolute; inset: 0; border-radius: 22px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); transition: background .2s, border-color .2s; }
+    .feature-switch-track::before { content:''; position:absolute; left:3px; top:50%; transform:translateY(-50%); width:16px; height:16px; border-radius:50%; background: rgba(255,255,255,.6); transition: transform .2s, background .2s; }
+    .feature-switch input:checked + .feature-switch-track { background: rgba(var(--accent-rgb,245,166,35),.25); border-color: var(--accent, #F5A623); }
+    .feature-switch input:checked + .feature-switch-track::before { transform: translate(16px,-50%); background: var(--accent, #F5A623); }
   </style>
 </head>
 <body>
@@ -309,6 +325,17 @@
 
   <div class="slides-container" id="slidesContainer"></div>
   <div id="saveStatus"></div>
+
+  <!-- Slide-level features button (simple circle) + popover -->
+  <button class="feature-fab" id="featureFab" title="Slide features" style="display:none;">f</button>
+  <div class="feature-pop" id="featurePop" style="display:none;">
+    <div class="feature-pop-title">Slide features</div>
+    <label class="feature-row">
+      <span class="feature-row-label">Gallery</span>
+      <span class="feature-switch"><input type="checkbox" id="featureGalleryToggle"><span class="feature-switch-track"></span></span>
+    </label>
+    <div class="feature-row-hint">Adds an in-slide image/text gallery viewers can open.</div>
+  </div>
   <div id="previewLangBanner">Editing in <span id="previewLangBannerName"></span> — type directly into any field, changes auto-save</div>
 
   <!-- Translation settings modal -->
@@ -446,6 +473,11 @@
       accentStyle.textContent = scopeDeckCss(deck.accentCss);
       document.head.appendChild(accentStyle);
     }
+    if (deck.finishCss) {
+      var finishStyle = document.createElement('style');
+      finishStyle.textContent = deck.finishCss;
+      document.head.appendChild(finishStyle);
+    }
     return deck.data.slides
       .filter(function(s) { return s.visible; })
       .map(function(s) {
@@ -462,7 +494,6 @@
   var current        = 0;
   var slideEls       = [];
   var loaded         = {};   // { index: htmlString }
-  var slideStartTime = null;
 
   // ── Fetch a slide HTML fragment ──────────────────────────────────────────────
   function fetchSlide(index) {
@@ -489,34 +520,18 @@
     if (window.Tabs)    Tabs.init(el);
     if (window.List)    List.init(el);
     if (window.LSTable) LSTable.init(el);
+    if (window.Gallery) Gallery.init(el);
     if (typeof previewLang !== 'undefined' && previewLang !== 'en') {
       setTimeout(function () { applyPreviewLang(previewLang); }, 50);
     }
     return el;
   }
 
-  // ── Track analytics ──────────────────────────────────────────────────────────
-  function trackEnter(index) {
-    slideStartTime = Date.now();
-    if (window.umami) umami.track('slide:' + SLIDES[index].name);
-  }
-
-  function trackExit(index) {
-    if (slideStartTime === null) return;
-    var seconds = Math.round((Date.now() - slideStartTime) / 1000);
-    slideStartTime = null;
-    if (window.umami && seconds > 0) {
-      umami.track('slide:' + SLIDES[index].name + ':time', { seconds: seconds });
-    }
-  }
 
   // ── Navigate to a slide ──────────────────────────────────────────────────────
   function goTo(index, direction) {
     if (index < 0 || index >= SLIDES.length) return;
     var prevIndex = current;
-
-    // Track exit of previous slide
-    trackExit(prevIndex);
 
     // Animate out
     if (slideEls[prevIndex]) {
@@ -542,11 +557,59 @@
       }, 700);
 
       el.classList.add('active');
-      trackEnter(index);
       updateNav();
 
       // Preload next slide in background
       if (index + 1 < SLIDES.length) fetchSlide(index + 1);
+    });
+  }
+
+  // ── Re-render the current slide (after a feature toggle changes its markup) ──
+  function reloadCurrentSlide() {
+    var idx = current;
+    delete loaded[idx];
+    if (slideEls[idx]) { slideEls[idx].remove(); slideEls[idx] = undefined; }
+    fetch(SLIDES[idx].file, { cache: 'no-store' })
+      .then(function (r) { return r.text(); })
+      .then(function (html) {
+        loaded[idx] = html;
+        var el = injectSlide(idx, html);
+        el.classList.add('active');
+      });
+  }
+
+  // ── Slide-level features button (circled "f") ───────────────────────────────
+  function initFeatureFab() {
+    var fab = document.getElementById('featureFab');
+    var pop = document.getElementById('featurePop');
+    var toggle = document.getElementById('featureGalleryToggle');
+    if (!fab) return;
+    fab.style.display = 'flex';
+    fab.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = pop.style.display !== 'none';
+      if (open) { pop.style.display = 'none'; fab.classList.remove('active'); return; }
+      var lib = SLIDES[current] && SLIDES[current].librarySlideId;
+      if (lib) {
+        fetch('/api/library/' + encodeURIComponent(lib) + '/features')
+          .then(function (r) { return r.json(); })
+          .then(function (res) { toggle.checked = !!(res.success && res.data && res.data.galleryEnabled); })
+          .catch(function () {});
+      }
+      pop.style.display = 'block'; fab.classList.add('active');
+    });
+    pop.addEventListener('click', function (e) { e.stopPropagation(); });
+    document.addEventListener('click', function () { pop.style.display = 'none'; fab.classList.remove('active'); });
+    toggle.addEventListener('change', function () {
+      var lib = SLIDES[current] && SLIDES[current].librarySlideId;
+      if (!lib) return;
+      fetch('/api/library/' + encodeURIComponent(lib) + '/features', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ galleryEnabled: toggle.checked })
+      })
+      .then(function (r) { return r.json(); })
+      .then(function (res) { if (res && res.success) reloadCurrentSlide(); })
+      .catch(function () {});
     });
   }
 
@@ -766,12 +829,12 @@
     SLIDES = slides;
 
     buildDots();
+    initFeatureFab();
 
     // Load slide 0, preload slide 1
     fetchSlide(0).then(function (html) {
       injectSlide(0, html);
       slideEls[0].classList.add('active');
-      trackEnter(0);
       updateNav();
       if (SLIDES.length > 1) fetchSlide(1);
     }).catch(function (err) {
