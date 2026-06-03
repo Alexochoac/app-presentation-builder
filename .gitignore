@@ -22,6 +22,3 @@ npm-debug.log*
 
 # Prod data (runtime only, not source code)
 prod/
-
-# Generated publish output (baked presentations) — not source
-finished-presentations/
