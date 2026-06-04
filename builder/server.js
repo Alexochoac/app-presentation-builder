@@ -260,6 +260,8 @@ app.get('/slides/preview/:id', function (req, res) {
         '  <meta charset="UTF-8">',
         '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
         '  <link rel="stylesheet" href="/slides/style.css">',
+        '  <script>window.PB_READONLY = true;</script>',
+        '  <script src="/slides/components/tracker.js"></script>',
         '  <style>',
         '    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }',
         '    html, body { width: 100%; height: 100%; overflow: hidden; }',
@@ -6505,7 +6507,10 @@ app.get('/slides/template-preview/:id', function (req, res) {
           '  <script>window.PB_TEMPLATE_ID = "' + id + '";</script>',
           '  <script src="/slides/components/tracker.js"></script>'
         ].join('\n')
-      : '  <script>window.PB_READONLY = true;</script>';
+      : [
+          '  <script>window.PB_READONLY = true;</script>',
+          '  <script src="/slides/components/tracker.js"></script>'
+        ].join('\n');
     var saveScript = editMode ? [
       '  <script>',
       '  (function () {',
@@ -6715,6 +6720,7 @@ app.get('/slides/library-preview/:id', function (req, res) {
       finishStyleTag(deckConfig ? (deckConfig.styleRef || null) : (libSlide.styleRef || null)),
       deckConfig && deckAccentCss(deckConfig) ? '  <style>' + deckAccentCss(deckConfig) + '</style>' : '',
       '  <script>window.PB_READONLY = true;</script>',
+      '  <script src="/slides/components/tracker.js"></script>',
       '  <script src="/slides/components/lightbox.js"></script>',
       '  <script src="/slides/components/carousel.js"></script>',
       '  <script src="/slides/components/tabs.js"></script>',
