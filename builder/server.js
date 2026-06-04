@@ -3,6 +3,7 @@ require('dotenv').config();
 const express  = require('express');
 const path     = require('path');
 const fs       = require('fs');
+const crypto   = require('crypto');
 const https    = require('https');
 const http     = require('http');
 const cheerio  = require('cheerio');
@@ -7512,17 +7513,33 @@ app.post('/api/upload-image', function (req, res) {
     var uploadsDir = path.join(__dirname, 'features/slides/uploads');
     if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
-    // If the exact filename already exists (e.g. re-uploading from the uploads folder), reuse it
-    if (fs.existsSync(path.join(uploadsDir, baseName))) {
-      return res.json({ ok: true, path: '/slides/uploads/' + baseName });
+    var buffer = Buffer.from(matches[2], 'base64');
+
+    // 1. Content-based dedup — if an identical image already exists (any name), reuse it
+    //    so the same picture is never duplicated. Prefilter by byte size (cheap), then hash.
+    var uploadHash = crypto.createHash('sha1').update(buffer).digest('hex');
+    var existingName = null;
+    try {
+      fs.readdirSync(uploadsDir).forEach(function (f) {
+        if (existingName) return;
+        var fp = path.join(uploadsDir, f);
+        try {
+          var st = fs.statSync(fp);
+          if (!st.isFile() || st.size !== buffer.length) return;
+          if (crypto.createHash('sha1').update(fs.readFileSync(fp)).digest('hex') === uploadHash) {
+            existingName = f;
+          }
+        } catch (e) { /* skip unreadable entry */ }
+      });
+    } catch (e) { /* uploads dir unreadable — fall through to write */ }
+    if (existingName) {
+      return res.json({ ok: true, path: '/slides/uploads/' + existingName });
     }
 
-    // Sanitize filename — no path traversal, spaces/special chars → dashes
+    // 2. New/edited image — write under a sanitized name (spaces/special chars → dashes),
+    //    OVERWRITING any existing file with that name (same name = replace, no duplicate).
     var sanitized = baseName.replace(/[^a-zA-Z0-9._-]/g, '-');
-    var destPath = path.join(uploadsDir, sanitized);
-    if (!fs.existsSync(destPath)) {
-      fs.writeFileSync(destPath, Buffer.from(matches[2], 'base64'));
-    }
+    fs.writeFileSync(path.join(uploadsDir, sanitized), buffer);
     res.json({ ok: true, path: '/slides/uploads/' + sanitized });
   } catch (err) {
     res.status(500).json({ error: err.message });
