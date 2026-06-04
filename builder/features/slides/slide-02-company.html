@@ -200,7 +200,7 @@
   <script>
   (function () {
     var slide   = document.currentScript.closest('[data-slide]');
-    var slideId = Track.slideId(slide);
+    var slideId = window.Track ? Track.slideId(slide) : (slide ? slide.getAttribute('data-slide') : '');
 
     if (window.PB_READONLY) slide.classList.add('template02-company-readonly');
 
