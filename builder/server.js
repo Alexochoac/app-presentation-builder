@@ -4952,6 +4952,9 @@ function buildFrozenPresentation(presentation) {
     .filter(function (f) { return f.endsWith('.js'); })
     .map(function (f) { return fs.readFileSync(path.join(componentsDir, f), 'utf8'); })
     .join('\n');
+  // tracker.js only — it defines window.Track and is DOM-safe, so it can load in <head>
+  // ahead of the slide fragments (whose inline scripts call Track.slideId() at parse time).
+  var trackerJs = fs.readFileSync(path.join(componentsDir, 'tracker.js'), 'utf8');
 
   // Per-presentation cover overrides (never written back to library)
   var coverEdits = {};
@@ -5156,7 +5159,11 @@ function buildFrozenPresentation(presentation) {
     '    #fp-lang-menu button.active { color: #E8711A; font-weight: 600; }',
     '  </style>',
     (umamiWebsiteId ? '  <script defer src="' + UMAMI_BASE_URL + '/script.js" data-website-id="' + umamiWebsiteId + '"></script>' : ''),
-    (isMultiLang ? '<script>' + langSwitcherCode + '</script>' : ''),
+    // Define PB_READONLY + Track in <head>, before the slide fragments — their inline
+    // scripts call Track.slideId() at parse time. The rest of the components stay at the
+    // bottom (some touch the DOM at load and aren't safe to run before <body>).
+    '<script>window.PB_READONLY = true;</script>',
+    '<script>' + trackerJs + '</script>',
     '</head>',
     (isMultiLang ? '<body data-default-lang="' + presDefaultLang + '" data-pres-id="' + presId + '">' : '<body>'),
     '<div id="fp-shell">',
@@ -5227,9 +5234,10 @@ function buildFrozenPresentation(presentation) {
     '    </div>',
     '  </div>',
     '<script>',
-    'window.PB_READONLY = true;',
     '(function(){var h=window.location.hostname;if(h==="localhost"||h==="127.0.0.1"){var b=document.getElementById("fp-dash-btn");if(b){b.href="/";b.textContent="← Dashboard";b.target="_top";}}})();',
     inlineJs,
+    // language-switcher runs after <body> exists (it reads document.body at load)
+    (isMultiLang ? langSwitcherCode : ''),
     '(function () {',
     '  var mainSlides = document.querySelectorAll(".fp-slide:not(.fp-optional)");',
     '  var optSlides  = document.querySelectorAll(".fp-slide.fp-optional");',
