@@ -335,13 +335,9 @@
         img.classList.remove('ls01-cust-img--missing');
         var reader = new FileReader();
         reader.onload = function (ev) {
-          fetch('/api/upload-image', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ filename: file.name, data: ev.target.result })
-          })
-          .then(function (r) { return r.json(); })
+          window.PBUpload(file.name, ev.target.result)
           .then(function (data) {
+            data = { path: data };
             if (data.path) {
               img.src = data.path;
               document.dispatchEvent(new CustomEvent('slide-image-change', {

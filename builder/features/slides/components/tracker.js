@@ -74,3 +74,28 @@ window.Track = (function () {
   };
 
 })();
+
+// ── Shared image-upload helper ──────────────────────────────────────────────
+// POSTs to /api/upload-image. If the server warns the (sanitized) name is already
+// in use (HTTP 409 needsConfirm), asks the user before overwriting it everywhere.
+// Resolves to the saved '/slides/uploads/...' path, or null if cancelled/failed.
+// Lives here because tracker.js is always loaded first (<head>) in every context.
+window.PBUpload = function (filename, dataUrl) {
+  function send(confirmOverwrite) {
+    return fetch('/api/upload-image', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename: filename, data: dataUrl, confirmOverwrite: confirmOverwrite })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (d && d.needsConfirm) {
+        var where = d.usedIn.slice(0, 8).join(', ') + (d.usedIn.length > 8 ? ', …' : '');
+        if (window.confirm('"' + d.name + '" is already used by ' + d.usedIn.length +
+            ' place(s) (' + where + ').\n\nReplacing it updates the image EVERYWHERE it is used. Continue?')) {
+          return send(true);
+        }
+        return null;
+      }
+      return (d && d.path) || null;
+    });
+  }
+  return send(false);
+};

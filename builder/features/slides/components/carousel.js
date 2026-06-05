@@ -102,17 +102,9 @@ window.Carousel = (function () {
   function uploadImage(file, callback) {
     var reader = new FileReader();
     reader.onload = function (ev) {
-      fetch('/api/upload-image', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ filename: file.name, data: ev.target.result })
-      })
-      .then(function (r) { return r.json(); })
-      .then(function (data) {
-        if (data.path) { callback(data.path); }
-        else if (data.error) { alert('Upload failed: ' + data.error); }
-      })
-      .catch(function () { alert('Upload failed. Please try again.'); });
+      window.PBUpload(file.name, ev.target.result)
+        .then(function (path) { if (path) callback(path); })
+        .catch(function () { alert('Upload failed. Please try again.'); });
     };
     reader.readAsDataURL(file);
   }

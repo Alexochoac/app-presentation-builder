@@ -243,13 +243,9 @@
           if (!file) return;
           var reader = new FileReader();
           reader.onload = function (ev) {
-            fetch('/api/upload-image', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ filename: file.name, data: ev.target.result })
-            })
-            .then(function (r) { return r.json(); })
+            window.PBUpload(file.name, ev.target.result)
             .then(function (d) {
+              d = { path: d };
               if (!d.path) return;
               item.icon = d.path;
               var old = iconWrap.querySelector('.ls20-icon-sprite,.ls20-icon-img,.ls20-icon-placeholder');

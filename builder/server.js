@@ -7473,7 +7473,8 @@ app.post('/api/save', function (req, res) {
 //  - content dedup: identical bytes (size-prefiltered sha1) → reuse existing file, never duplicate
 //  - overwrite-by-name: otherwise write under the sanitized name, replacing any file of that name
 // Returns the public '/slides/uploads/<name>' path. Shared by all image-upload endpoints.
-function dedupUpload(baseName, buffer) {
+function dedupUpload(baseName, buffer, opts) {
+  opts = opts || {};
   var uploadsDir = path.join(__dirname, 'features/slides/uploads');
   if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
   var hash = crypto.createHash('sha1').update(buffer).digest('hex');
@@ -7493,8 +7494,39 @@ function dedupUpload(baseName, buffer) {
   } catch (e) { /* uploads dir unreadable — fall through to write */ }
   if (existingName) return '/slides/uploads/' + existingName;
   var sanitized = baseName.replace(/[^a-zA-Z0-9._-]/g, '-');
-  fs.writeFileSync(path.join(uploadsDir, sanitized), buffer);
+  var destPath = path.join(uploadsDir, sanitized);
+  // Warn before replacing a file that other slides/decks reference (caller opts in)
+  if (opts.checkUsage && !opts.confirmOverwrite && fs.existsSync(destPath)) {
+    var usedIn = findImageUsage(sanitized);
+    if (usedIn.length) return { needsConfirm: true, name: sanitized, usedIn: usedIn };
+  }
+  fs.writeFileSync(destPath, buffer);
   return '/slides/uploads/' + sanitized;
+}
+
+// Lists places that reference /slides/uploads/<name> — used to warn before overwriting
+// an image that other slides/decks/templates depend on.
+function findImageUsage(name) {
+  var needle = '/slides/uploads/' + name;
+  var hits = [];
+  function scan(label, file) {
+    try { if (fs.readFileSync(file, 'utf8').indexOf(needle) !== -1) hits.push(label); } catch (e) {}
+  }
+  scan('library', LIBRARY_PATH);
+  scan('presentations', PRESENTATIONS_PATH);
+  try {
+    fs.readdirSync(DECKS_DIR_PATH).forEach(function (d) {
+      var dp = path.join(DECKS_DIR_PATH, d, 'deck.json');
+      if (fs.existsSync(dp)) scan('deck:' + d, dp);
+    });
+  } catch (e) {}
+  var slidesDir = path.join(__dirname, 'features', 'slides');
+  try {
+    fs.readdirSync(slidesDir).forEach(function (f) {
+      if (f.endsWith('.html')) scan('template:' + f.replace('.html', ''), path.join(slidesDir, f));
+    });
+  } catch (e) {}
+  return hits;
 }
 
 // POST /api/upload-image  { filename: 'logo.png', data: 'data:image/png;base64,...' }
@@ -7517,7 +7549,12 @@ app.post('/api/upload-image', function (req, res) {
   if (!matches) return res.status(400).json({ error: 'Invalid image data' });
 
   try {
-    res.json({ ok: true, path: dedupUpload(baseName, Buffer.from(matches[2], 'base64')) });
+    var result = dedupUpload(baseName, Buffer.from(matches[2], 'base64'),
+      { checkUsage: true, confirmOverwrite: !!req.body.confirmOverwrite });
+    if (result && result.needsConfirm) {
+      return res.status(409).json({ ok: false, needsConfirm: true, name: result.name, usedIn: result.usedIn });
+    }
+    res.json({ ok: true, path: result });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

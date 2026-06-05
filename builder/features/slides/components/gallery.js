@@ -328,13 +328,7 @@ window.Gallery = (function () {
   function uploadImage(file, cb) {
     var reader = new FileReader();
     reader.onload = function (ev) {
-      fetch('/api/upload-image', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename: file.name, data: ev.target.result })
-      })
-      .then(function (r) { return r.json(); })
-      .then(function (data) { if (data.path) cb(data.path); });
+      window.PBUpload(file.name, ev.target.result).then(function (path) { if (path) cb(path); });
     };
     reader.readAsDataURL(file);
   }
