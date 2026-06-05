@@ -415,7 +415,7 @@ function renderDimensionLayout(slideId, savedEdits) {
     '    Lightbox.openGallery([',
     "      { src: '/slides/uploads/Belt Conveyor Diagram.jpg',           caption: 'Belt conveyor — system diagram' },",
     "      { src: '/slides/uploads/Band Conveyor Picture.jpg',           caption: 'Band conveyor' },",
-    "      { src: '/slides/uploads/Benteler Conveyor Picture .jpg',      caption: 'Benteler conveyor' },",
+    "      { src: '/slides/uploads/Benteler_Conveyor_Picture_.jpg',      caption: 'Benteler conveyor' },",
     "      { src: '/slides/uploads/LOGO Benteler.jpg',                   caption: 'Benteler' },",
     "      { src: '/slides/uploads/Belt Conveyour Diagram Top View.jpg', caption: 'Belt conveyor — top view diagram' }",
     '    ], 0);',

@@ -457,10 +457,91 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   }
 }
 
+:root {
+  --bg: #0a0a0f;
+  --slide-hero-bg: #0a0a0f;
+  --slide-hero-rgb: 10,10,15;
+  --text: #ffffff;
+  --text-muted: rgba(255,255,255,.55);
+  --bg-card: rgba(255, 255, 255, 0.15);
+  --bg-card-hover: rgba(255,255,255,.09);
+  --border: rgba(255,255,255,.10);
+  --border-hover: rgba(255,255,255,.28);
+  --nav-bg: rgba(0,0,0,.65);
+  --nav-border: rgba(255,255,255,.08);
+  --dot-inactive: rgba(255,255,255,.18);
+  --counter: #555;
+}
 
-:root{--accent:#2c30b5;--accent-mid:#272a9f;--accent-light:#8587d4;--accent-rgb:44,48,181;}
+:root{--accent:#34366f;--accent-mid:#2e3062;--accent-light:#898aab;--accent-rgb:52,54,111;}
   </style>
+  <style data-finish="glassmorphism">/* ============================================================
+   Finish block — Glassmorphism
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/glassmorphism.css). Adds what a CSS variable
+   can't express: the vivid animated backdrop the glass frosts
+   against, plus the blur / sheen on the surfaces themselves.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   ============================================================ */
 
+/* ── The backdrop the glass reads against (the palette flattens this away) ── */
+@keyframes gm-shift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%) !important;
+  background-size: 400% 400% !important;
+  animation: gm-shift 15s ease infinite;
+}
+.glow-orb { display: none; }   /* dark-theme artifact — not wanted over a bright gradient */
+
+/* ── Frosted-glass surfaces ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.slide-logo-row,
+.ls-tabs,
+.ls-carousel {
+  background: rgba(255, 255, 255, 0.14) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18),
+              inset 0 1px 0 rgba(255, 255, 255, 0.40);
+}
+
+/* Lift + brighten on hover (the glass "catches light") */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  background: rgba(255, 255, 255, 0.24) !important;
+  border-color: rgba(255, 255, 255, 0.55) !important;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.24),
+              inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  transform: translateY(-4px);
+}
+
+/* Pill buttons / tags get the same frosted treatment */
+.cta-btn-wa,
+.cta-btn-email,
+.tag {
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(160%);
+}
+
+/* Logo row reads as a floating glass bar */
+.slide-logo-row { padding: 10px 18px; }
+
+/* Glass seam for the divider */
+.divider { background: linear-gradient(90deg, rgba(255,255,255,0.55), rgba(255,255,255,0.08)); }
+</style>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0a0a; }
@@ -539,92 +620,82 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     #fp-lang-menu button.active { color: #E8711A; font-weight: 600; }
   </style>
   <script defer src="https://put-a-presentation-umami.wbtm.io/script.js" data-website-id="7af8feb0-6661-4a3c-b8b3-23346b0f3ea1"></script>
+<script>window.PB_READONLY = true;</script>
 <script>/**
- * language-switcher.js
- * Client-side language switcher for finished presentations.
- * Reads [data-lang] spans and shows only the active language.
- * Active language is resolved from: ?lang= URL param → per-presentation localStorage → data-default-lang on <body>
+ * tracker.js — Presentation Builder Analytics
+ *
+ * Event format follows umami-guidelines:
+ *   event name  = 'slide-[slide-id]'   e.g. 'slide-ls4'
+ *   properties  = { label: 'component-label-action' }
+ *
+ * Usage:
+ *   Track.tab('ls4', 'Archive')                   → slide-ls4, { label:'tab-Archive-click' }
+ *   Track.zoom('ls6', 'Camera Detail')             → slide-ls6, { label:'image-Camera Detail-open' }
+ *   Track.carousel('ls4', 'next', 'Belt Detail')  → slide-ls4, { label:'carousel-Belt Detail-next' }
+ *   Track.expand('ls10', 'Archive')               → slide-ls10,{ label:'toggle-Archive-expand' }
+ *   Track.click('ls14', 'whatsapp')               → slide-ls14,{ label:'button-whatsapp-click' }
+ *   Track.event('slide-ls5', { label:'custom-foo' }) → raw call
+ *
+ * Silently does nothing if window.umami is not available.
  */
-(function () {
-  'use strict';
 
-  // Use a per-presentation key so each presentation starts in its own default language
-  var presId = document.body.getAttribute('data-pres-id') || 'default';
-  var STORAGE_KEY = 'pres-lang-' + presId;
+window.Track = (function () {
 
-  function getDefaultLang() {
-    return document.body.getAttribute('data-default-lang') || 'en';
+  function fire(name, props) {
+    if (!window.umami) return;
+    window.umami.track(name, props);
   }
 
-  function resolveActiveLang() {
-    var params = new URLSearchParams(window.location.search);
-    var fromUrl = params.get('lang');
-    if (fromUrl) return fromUrl;
-    try { var stored = localStorage.getItem(STORAGE_KEY); if (stored) return stored; } catch (e) {}
-    return getDefaultLang();
+  function slug(str) {
+    return String(str).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   }
 
-  function applyLang(lang) {
-    document.querySelectorAll('[data-lang]').forEach(function (el) {
-      if (el.closest && el.closest('#fp-lang-menu')) return;
-      el.hidden = el.getAttribute('data-lang') !== lang;
-    });
-    // Update dropdown label and active state
-    var label = document.getElementById('fp-lang-label');
-    if (label) label.textContent = lang.toUpperCase();
-    document.querySelectorAll('#fp-lang-menu button[data-lang]').forEach(function (btn) {
-      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
-    });
-    try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
+  function slideName(id) {
+    return 'slide-' + slug(id);
   }
 
-  function switchLang(lang) {
-    applyLang(lang);
-    var url = new URL(window.location.href);
-    url.searchParams.set('lang', lang);
-    history.replaceState(null, '', url.toString());
+  /** Resolve slide id from a DOM element — walks up to the nearest [data-slide] */
+  function slideId(el) {
+    if (!el) return '';
+    var node = el.closest ? el.closest('[data-slide]') : null;
+    return node ? (node.getAttribute('data-slide') || '') : '';
   }
 
-  // Expose for dropdown buttons
-  window.switchLang = switchLang;
+  return {
+    /** Expose slideId helper so components can use it */
+    slideId: slideId,
 
-  window.fpLangToggle = function () {
-    var menu = document.getElementById('fp-lang-menu');
-    if (menu) menu.classList.toggle('open');
-  };
+    /** Tab click */
+    tab: function (slide, label) {
+      fire(slideName(slide), { label: 'tab-' + String(label) + '-click' });
+    },
 
-  window.fpLangSelect = function (lang) {
-    switchLang(lang);
-    var menu = document.getElementById('fp-lang-menu');
-    if (menu) menu.classList.remove('open');
-  };
+    /** Image zoom / lightbox open */
+    zoom: function (slide, label) {
+      fire(slideName(slide), { label: 'image-' + String(label) + '-open' });
+    },
 
-  // Close dropdown on outside click
-  document.addEventListener('click', function (e) {
-    var drop = document.getElementById('fp-lang-drop');
-    if (drop && !drop.contains(e.target)) {
-      var menu = document.getElementById('fp-lang-menu');
-      if (menu) menu.classList.remove('open');
+    /** Carousel navigation — label is the caption/alt of the image navigated to */
+    carousel: function (slide, action, label) {
+      fire(slideName(slide), { label: 'carousel-' + String(label || '') + '-' + String(action) });
+    },
+
+    /** Accordion / expand section */
+    expand: function (slide, label) {
+      fire(slideName(slide), { label: 'toggle-' + String(label) + '-expand' });
+    },
+
+    /** Button / link click */
+    click: function (slide, label) {
+      fire(slideName(slide), { label: 'button-' + String(label) + '-click' });
+    },
+
+    /** Generic event with full props control */
+    event: function (name, props) {
+      fire(String(name), props || undefined);
     }
-  });
+  };
 
-  // Init on DOM ready
-  function init() {
-    var lang = resolveActiveLang();
-    // Validate: if resolved lang has no spans in this presentation, fall back to default
-    var available = Array.from(document.querySelectorAll('[data-lang]')).map(function (el) {
-      return el.getAttribute('data-lang');
-    });
-    var unique = Array.from(new Set(available));
-    if (unique.length > 0 && !unique.includes(lang)) lang = getDefaultLang();
-    applyLang(lang);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
 })();
 </script>
 </head>
@@ -1242,7 +1313,6 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
     </div>
   </div>
 <script>
-window.PB_READONLY = true;
 (function(){var h=window.location.hostname;if(h==="localhost"||h==="127.0.0.1"){var b=document.getElementById("fp-dash-btn");if(b){b.href="/";b.textContent="← Dashboard";b.target="_top";}}})();
 /**
  * button.js — Presentation Builder Button Component
@@ -3776,6 +3846,94 @@ window.Track = (function () {
     }
   };
 
+})();
+
+/**
+ * language-switcher.js
+ * Client-side language switcher for finished presentations.
+ * Reads [data-lang] spans and shows only the active language.
+ * Active language is resolved from: ?lang= URL param → per-presentation localStorage → data-default-lang on <body>
+ */
+(function () {
+  'use strict';
+
+  // Use a per-presentation key so each presentation starts in its own default language
+  var presId = document.body.getAttribute('data-pres-id') || 'default';
+  var STORAGE_KEY = 'pres-lang-' + presId;
+
+  function getDefaultLang() {
+    return document.body.getAttribute('data-default-lang') || 'en';
+  }
+
+  function resolveActiveLang() {
+    var params = new URLSearchParams(window.location.search);
+    var fromUrl = params.get('lang');
+    if (fromUrl) return fromUrl;
+    try { var stored = localStorage.getItem(STORAGE_KEY); if (stored) return stored; } catch (e) {}
+    return getDefaultLang();
+  }
+
+  function applyLang(lang) {
+    document.querySelectorAll('[data-lang]').forEach(function (el) {
+      if (el.closest && el.closest('#fp-lang-menu')) return;
+      el.hidden = el.getAttribute('data-lang') !== lang;
+    });
+    // Update dropdown label and active state
+    var label = document.getElementById('fp-lang-label');
+    if (label) label.textContent = lang.toUpperCase();
+    document.querySelectorAll('#fp-lang-menu button[data-lang]').forEach(function (btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+    });
+    try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
+  }
+
+  function switchLang(lang) {
+    applyLang(lang);
+    var url = new URL(window.location.href);
+    url.searchParams.set('lang', lang);
+    history.replaceState(null, '', url.toString());
+  }
+
+  // Expose for dropdown buttons
+  window.switchLang = switchLang;
+
+  window.fpLangToggle = function () {
+    var menu = document.getElementById('fp-lang-menu');
+    if (menu) menu.classList.toggle('open');
+  };
+
+  window.fpLangSelect = function (lang) {
+    switchLang(lang);
+    var menu = document.getElementById('fp-lang-menu');
+    if (menu) menu.classList.remove('open');
+  };
+
+  // Close dropdown on outside click
+  document.addEventListener('click', function (e) {
+    var drop = document.getElementById('fp-lang-drop');
+    if (drop && !drop.contains(e.target)) {
+      var menu = document.getElementById('fp-lang-menu');
+      if (menu) menu.classList.remove('open');
+    }
+  });
+
+  // Init on DOM ready
+  function init() {
+    var lang = resolveActiveLang();
+    // Validate: if resolved lang has no spans in this presentation, fall back to default
+    var available = Array.from(document.querySelectorAll('[data-lang]')).map(function (el) {
+      return el.getAttribute('data-lang');
+    });
+    var unique = Array.from(new Set(available));
+    if (unique.length > 0 && !unique.includes(lang)) lang = getDefaultLang();
+    applyLang(lang);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
 
 (function () {

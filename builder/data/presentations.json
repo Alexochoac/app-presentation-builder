@@ -1,6 +1,66 @@
 {
   "presentations": [
     {
+      "id": "00000024",
+      "createdAt": "2026-06-05",
+      "deckId": "deck-1780653517426-z95wf",
+      "presentationName": "15",
+      "customerName": "15",
+      "contactName": "15",
+      "contactTitle": "",
+      "customerLogoSrc": "/slides/uploads/Anisothropy-Building-Picture--5-.jpg",
+      "slideCount": 1,
+      "slides": [
+        {
+          "id": "deck-lib-1780653560512-1780653595364",
+          "librarySlideId": "lib-1780653560512",
+          "name": "Company Intro (Copy)",
+          "visible": true
+        }
+      ],
+      "defaultLanguage": "en",
+      "languages": [
+        "en"
+      ],
+      "publishedAt": "2026-06-05T10:01:26.722Z"
+    },
+    {
+      "id": "00000023",
+      "createdAt": "2026-06-04",
+      "deckId": "deck-rebuild",
+      "presentationName": "67",
+      "customerName": "67",
+      "contactName": "67",
+      "contactTitle": "",
+      "customerLogoSrc": "/slides/uploads/Anisothropy-Building-Picture--4-.JPG",
+      "slideCount": 3,
+      "slides": [
+        {
+          "id": "deck-cover",
+          "librarySlideId": "lib-cover",
+          "name": "Cover",
+          "visible": true
+        },
+        {
+          "id": "deck-company",
+          "librarySlideId": "lib-company-v2",
+          "name": "Company Intro",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1780338645841-1780424554857",
+          "librarySlideId": "lib-1780338645841",
+          "name": "Call to Action-Validated Style",
+          "visible": true
+        }
+      ],
+      "defaultLanguage": "en",
+      "languages": [
+        "en"
+      ],
+      "publishedAt": "2026-06-04T05:37:55.059Z"
+    },
+    {
       "id": "00000022",
       "createdAt": "2026-06-03",
       "deckId": "deck-rebuild",
@@ -34,7 +94,8 @@
       "languages": [
         "es",
         "en"
-      ]
+      ],
+      "publishedAt": "2026-06-03T19:11:44.142Z"
     }
   ]
 }

@@ -78,7 +78,7 @@ function renderCompanyLayout(slideId, savedEdits) {
     '',
     '<div class="ls-tab-panel" data-panel="3">',
     '  <div class="ls2-map-wrap">',
-    '    <img class="ls2-map-img" src="/slides/uploads/World Map of locations .jpeg" alt="World Map">',
+    '    <img class="ls2-map-img" src="/slides/uploads/World-Map-of-locations-.jpeg" alt="World Map">',
     '    <div class="ls2-pin" style="left:19.5%;top:34%;">',
     '      <div class="ls2-pin-dot"></div>',
     '      <div class="ls2-pin-ring"></div>',

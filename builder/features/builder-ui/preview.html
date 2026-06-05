@@ -498,7 +498,9 @@
   // ── Fetch a slide HTML fragment ──────────────────────────────────────────────
   function fetchSlide(index) {
     if (loaded[index]) return Promise.resolve(loaded[index]);
-    return fetch(SLIDES[index].file)
+    // no-store: the cartridge is re-rendered server-side every request, so never let the
+    // browser serve a stale slide fragment (which hides freshly-added editing controls).
+    return fetch(SLIDES[index].file, { cache: 'no-store' })
       .then(function (r) { return r.text(); })
       .then(function (html) { loaded[index] = html; return html; });
   }

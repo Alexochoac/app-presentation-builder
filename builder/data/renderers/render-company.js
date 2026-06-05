@@ -92,7 +92,7 @@ function renderCompanyLayout(slideId, savedEdits) {
     '<!-- \u2500\u2500 PANEL: Global Network \u2500\u2500 -->',
     '<div class="ls-tab-panel" data-panel="3">',
     '  <div class="ls2-map-wrap">',
-    '    <img class="ls2-map-img" src="/slides/uploads/World Map of locations .jpeg" alt="World Map">',
+    '    <img class="ls2-map-img" src="/slides/uploads/World-Map-of-locations-.jpeg" alt="World Map">',
     '',
     '    <!-- Office pins -->',
     '    <div class="ls2-pin" style="left:19.5%;top:34%;">',
