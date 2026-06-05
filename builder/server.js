@@ -3281,11 +3281,8 @@ app.post('/api/settings/logos', function (req, res) {
     var matches = data.match(/^data:([A-Za-z0-9+/]+);base64,(.+)$/);
     if (!matches) return res.status(400).json({ success: false, error: 'invalid data URL' });
     var buffer   = Buffer.from(matches[2], 'base64');
-    var safeName = path.basename(filename).replace(/[^a-zA-Z0-9._-]/g, '_');
-    var dest     = path.join(__dirname, 'features', 'slides', 'uploads', safeName);
-    fs.writeFileSync(dest, buffer);
-
-    var src      = '/slides/uploads/' + safeName;
+    var src      = dedupUpload(path.basename(filename), buffer);
+    var safeName = src.split('/').pop();
     var settings = readSettings();
     settings.logos.push({ src: src, alt: safeName.replace(/\.[^.]+$/, '') });
     writeSettings(settings);
@@ -3321,11 +3318,7 @@ app.post('/api/settings/hero-bg', function (req, res) {
     var matches = data.match(/^data:([A-Za-z0-9+/]+);base64,(.+)$/);
     if (!matches) return res.status(400).json({ success: false, error: 'invalid data URL' });
     var buffer   = Buffer.from(matches[2], 'base64');
-    var safeName = path.basename(filename).replace(/[^a-zA-Z0-9._-]/g, '_');
-    var dest     = path.join(__dirname, 'features', 'slides', 'uploads', safeName);
-    fs.writeFileSync(dest, buffer);
-
-    var src      = '/slides/uploads/' + safeName;
+    var src      = dedupUpload(path.basename(filename), buffer);
     var settings = readSettings();
     settings.heroBg = src;
     writeSettings(settings);
@@ -4525,9 +4518,7 @@ app.post('/api/decks', function (req, res) {
       var logoMatches = logoData.match(/^data:([A-Za-z0-9+/]+);base64,(.+)$/);
       if (logoMatches) {
         var logoBuffer = Buffer.from(logoMatches[2], 'base64');
-        var logoSafe   = path.basename(logoFilename).replace(/[^a-zA-Z0-9._-]/g, '_');
-        var logoDest   = path.join(__dirname, 'features', 'slides', 'uploads', logoSafe);
-        fs.writeFileSync(logoDest, logoBuffer);
+        var logoSafe   = dedupUpload(path.basename(logoFilename), logoBuffer).split('/').pop();
         logo = '/slides/uploads/' + logoSafe;
       }
     }
@@ -4681,10 +4672,7 @@ app.post('/api/decks/:id/upload-logo', function (req, res) {
     var matches = data.match(/^data:([A-Za-z0-9+/]+);base64,(.+)$/);
     if (!matches) return res.status(400).json({ success: false, error: 'invalid data URL' });
     var buffer   = Buffer.from(matches[2], 'base64');
-    var safeName = path.basename(filename).replace(/[^a-zA-Z0-9._-]/g, '_');
-    var dest     = path.join(__dirname, 'features', 'slides', 'uploads', safeName);
-    fs.writeFileSync(dest, buffer);
-    var src = '/slides/uploads/' + safeName;
+    var src = dedupUpload(path.basename(filename), buffer);
     store.decks[idx].logo = src;
     store.decks[idx].updatedAt = new Date().toISOString();
     writeDecks(store);
@@ -4707,10 +4695,7 @@ app.post('/api/decks/:id/upload-hero-bg', function (req, res) {
     var matches = data.match(/^data:([A-Za-z0-9+/]+);base64,(.+)$/);
     if (!matches) return res.status(400).json({ success: false, error: 'invalid data URL' });
     var buffer   = Buffer.from(matches[2], 'base64');
-    var safeName = path.basename(filename).replace(/[^a-zA-Z0-9._-]/g, '_');
-    var dest     = path.join(__dirname, 'features', 'slides', 'uploads', safeName);
-    fs.writeFileSync(dest, buffer);
-    var src = '/slides/uploads/' + safeName;
+    var src = dedupUpload(path.basename(filename), buffer);
     store.decks[idx].heroBg = src;
     store.decks[idx].updatedAt = new Date().toISOString();
     writeDecks(store);
@@ -5784,9 +5769,7 @@ app.post('/api/presentations', function (req, res) {
       var logoMatches = logoData.match(/^data:([A-Za-z0-9+/]+);base64,(.+)$/);
       if (logoMatches) {
         var logoBuffer = Buffer.from(logoMatches[2], 'base64');
-        var logoSafe   = path.basename(logoFilename).replace(/[^a-zA-Z0-9._-]/g, '_');
-        var logoDest   = path.join(__dirname, 'features', 'slides', 'uploads', logoSafe);
-        fs.writeFileSync(logoDest, logoBuffer);
+        var logoSafe   = dedupUpload(path.basename(logoFilename), logoBuffer).split('/').pop();
         customerLogoSrc = '/slides/uploads/' + logoSafe;
       }
     }
@@ -5901,9 +5884,7 @@ app.put('/api/presentations/:id', function (req, res) {
       var logoMatches = logoData.match(/^data:([A-Za-z0-9+/]+);base64,(.+)$/);
       if (logoMatches) {
         var logoBuffer = Buffer.from(logoMatches[2], 'base64');
-        var logoSafe   = path.basename(logoFilename).replace(/[^a-zA-Z0-9._-]/g, '_');
-        var logoDest   = path.join(__dirname, 'features', 'slides', 'uploads', logoSafe);
-        fs.writeFileSync(logoDest, logoBuffer);
+        var logoSafe   = dedupUpload(path.basename(logoFilename), logoBuffer).split('/').pop();
         pres.customerLogoSrc = '/slides/uploads/' + logoSafe;
       }
     }
@@ -5991,9 +5972,7 @@ app.post('/api/presentations/:id/duplicate', function (req, res) {
       var logoMatches = logoData.match(/^data:([A-Za-z0-9+/]+);base64,(.+)$/);
       if (logoMatches) {
         var logoBuffer = Buffer.from(logoMatches[2], 'base64');
-        var logoSafe   = path.basename(logoFilename).replace(/[^a-zA-Z0-9._-]/g, '_');
-        var logoDest   = path.join(__dirname, 'features', 'slides', 'uploads', logoSafe);
-        fs.writeFileSync(logoDest, logoBuffer);
+        var logoSafe   = dedupUpload(path.basename(logoFilename), logoBuffer).split('/').pop();
         logoSrc = '/slides/uploads/' + logoSafe;
       }
     }
@@ -7490,6 +7469,34 @@ app.post('/api/save', function (req, res) {
 });
 
 // ── API: upload an image file ─────────────────────────────────────────────────
+// Saves an image buffer into uploads/ with:
+//  - content dedup: identical bytes (size-prefiltered sha1) → reuse existing file, never duplicate
+//  - overwrite-by-name: otherwise write under the sanitized name, replacing any file of that name
+// Returns the public '/slides/uploads/<name>' path. Shared by all image-upload endpoints.
+function dedupUpload(baseName, buffer) {
+  var uploadsDir = path.join(__dirname, 'features/slides/uploads');
+  if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+  var hash = crypto.createHash('sha1').update(buffer).digest('hex');
+  var existingName = null;
+  try {
+    fs.readdirSync(uploadsDir).forEach(function (f) {
+      if (existingName) return;
+      var fp = path.join(uploadsDir, f);
+      try {
+        var st = fs.statSync(fp);
+        if (st.isFile() && st.size === buffer.length &&
+            crypto.createHash('sha1').update(fs.readFileSync(fp)).digest('hex') === hash) {
+          existingName = f;
+        }
+      } catch (e) { /* skip unreadable entry */ }
+    });
+  } catch (e) { /* uploads dir unreadable — fall through to write */ }
+  if (existingName) return '/slides/uploads/' + existingName;
+  var sanitized = baseName.replace(/[^a-zA-Z0-9._-]/g, '-');
+  fs.writeFileSync(path.join(uploadsDir, sanitized), buffer);
+  return '/slides/uploads/' + sanitized;
+}
+
 // POST /api/upload-image  { filename: 'logo.png', data: 'data:image/png;base64,...' }
 app.post('/api/upload-image', function (req, res) {
   var filename = req.body.filename;
@@ -7510,37 +7517,7 @@ app.post('/api/upload-image', function (req, res) {
   if (!matches) return res.status(400).json({ error: 'Invalid image data' });
 
   try {
-    var uploadsDir = path.join(__dirname, 'features/slides/uploads');
-    if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
-
-    var buffer = Buffer.from(matches[2], 'base64');
-
-    // 1. Content-based dedup — if an identical image already exists (any name), reuse it
-    //    so the same picture is never duplicated. Prefilter by byte size (cheap), then hash.
-    var uploadHash = crypto.createHash('sha1').update(buffer).digest('hex');
-    var existingName = null;
-    try {
-      fs.readdirSync(uploadsDir).forEach(function (f) {
-        if (existingName) return;
-        var fp = path.join(uploadsDir, f);
-        try {
-          var st = fs.statSync(fp);
-          if (!st.isFile() || st.size !== buffer.length) return;
-          if (crypto.createHash('sha1').update(fs.readFileSync(fp)).digest('hex') === uploadHash) {
-            existingName = f;
-          }
-        } catch (e) { /* skip unreadable entry */ }
-      });
-    } catch (e) { /* uploads dir unreadable — fall through to write */ }
-    if (existingName) {
-      return res.json({ ok: true, path: '/slides/uploads/' + existingName });
-    }
-
-    // 2. New/edited image — write under a sanitized name (spaces/special chars → dashes),
-    //    OVERWRITING any existing file with that name (same name = replace, no duplicate).
-    var sanitized = baseName.replace(/[^a-zA-Z0-9._-]/g, '-');
-    fs.writeFileSync(path.join(uploadsDir, sanitized), buffer);
-    res.json({ ok: true, path: '/slides/uploads/' + sanitized });
+    res.json({ ok: true, path: dedupUpload(baseName, Buffer.from(matches[2], 'base64')) });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
