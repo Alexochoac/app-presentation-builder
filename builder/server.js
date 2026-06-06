@@ -68,6 +68,10 @@ app.get('/api/settings', function (_req, res) {
   res.json({ success: true, data: data });
 });
 
+// Public static assets — must be before requireAuth so shared/readonly presentations can load images
+app.use('/slides/uploads', express.static(path.join(__dirname, 'features/slides/uploads')));
+app.use('/slides/shared',  express.static(path.join(__dirname, 'shared/assets')));
+
 // ── Protect everything below this line ───────────────────────────────────────
 app.use(requireAuth);
 
