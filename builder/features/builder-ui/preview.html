@@ -198,6 +198,18 @@
       padding: 6px; z-index: 9998; letter-spacing: .02em;
     }
     #previewLangBanner.visible { display: block; }
+    /* ── Non-English read-only mode — hide edit controls, keep navigation ── */
+    #slidesContainer.readonly-lang .ls-carousel-add,
+    #slidesContainer.readonly-lang .ls-carousel-del,
+    #slidesContainer.readonly-lang .ls-carousel-move,
+    #slidesContainer.readonly-lang .ls-cmp-replace,
+    #slidesContainer.readonly-lang .ls-tab-del,
+    #slidesContainer.readonly-lang .s6-icon-ctrls,
+    #slidesContainer.readonly-lang .s6-card-del,
+    #slidesContainer.readonly-lang .s6-add-btn { display: none !important; pointer-events: none !important; }
+    #slidesContainer.readonly-lang [contenteditable] { user-select: none !important; }
+    #slidesContainer.readonly-lang [contenteditable]:focus { outline: none !important; caret-color: transparent !important; }
+    body.readonly-lang #lb-add-image { display: none !important; }
     /* ── Translation popover ── */
     #translationPanel {
       display: none; position: fixed;
@@ -336,7 +348,7 @@
     </label>
     <div class="feature-row-hint">Adds an in-slide image/text gallery viewers can open.</div>
   </div>
-  <div id="previewLangBanner">Editing in <span id="previewLangBannerName"></span> — type directly into any field, changes auto-save</div>
+  <div id="previewLangBanner">Previewing in <span id="previewLangBannerName"></span> — edit translations in the Translation Center</div>
 
   <!-- Translation settings modal -->
   <div id="translationSettingsModal" style="
@@ -385,9 +397,17 @@
     <div id="tc-header" style="display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.1);flex-shrink:0;">
       <button onclick="closeTranslationCenter()" style="background:none;border:none;color:rgba(255,255,255,.5);font-size:20px;cursor:pointer;padding:0;line-height:1;">&#8592;</button>
       <div style="font-size:15px;font-weight:700;color:#e5e5e5;flex:1;">&#127760; Translation Center</div>
-      <button id="btnTranslateAll" onclick="handleTranslateAllClick()" style="padding:8px 20px;border-radius:8px;border:none;background:#F5A623;color:#111;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">
-        Translate Missing &amp; Changed <span id="translateAllBadge" style="display:none;background:#111;color:#F5A623;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;margin-left:4px;"></span>
-      </button>
+      <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">
+        <button id="btnTranslateMissing" onclick="handleTranslateClick('missing')" title="Translate fields with no translation yet" style="padding:7px 13px;border-radius:8px;border:1px solid rgba(248,113,113,.4);background:transparent;color:#f87171;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">
+          Missing <span id="badgeMissing" style="display:none;background:#f87171;color:#111;border-radius:10px;padding:1px 6px;font-size:10px;font-weight:700;margin-left:3px;"></span>
+        </button>
+        <button id="btnTranslateDirty" onclick="handleTranslateClick('dirty')" title="Re-translate fields whose English changed" style="padding:7px 13px;border-radius:8px;border:1px solid rgba(245,166,35,.4);background:transparent;color:#F5A623;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">
+          Outdated <span id="badgeDirty" style="display:none;background:#F5A623;color:#111;border-radius:10px;padding:1px 6px;font-size:10px;font-weight:700;margin-left:3px;"></span>
+        </button>
+        <button id="btnTranslateAll" onclick="handleTranslateClick('all')" title="Re-translate everything, including already-translated fields" style="padding:7px 13px;border-radius:8px;border:none;background:#F5A623;color:#111;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">
+          Translate All
+        </button>
+      </div>
     </div>
     <div style="padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;">
       <input id="tcSearch" type="text" placeholder="Filter fields…" oninput="filterTcRows(this.value)"
@@ -524,7 +544,10 @@
     if (window.LSTable) LSTable.init(el);
     if (window.Gallery) Gallery.init(el);
     if (typeof previewLang !== 'undefined' && previewLang !== 'en') {
-      setTimeout(function () { applyPreviewLang(previewLang); }, 50);
+      setTimeout(function () {
+        snapshotEnglish(); // capture English content before translations overwrite it
+        applyPreviewLang(previewLang);
+      }, 50);
     }
     return el;
   }
@@ -670,6 +693,7 @@
 
   // ── Carousel save (any slide dispatches slide-carousel-save) ─────────────
   document.addEventListener('slide-carousel-save', function (e) {
+    if (previewLang !== 'en') return; // never save English blobs while previewing another language
     var slideDef = SLIDES[current];
     var editKey  = e.detail.editKey || 'carousel-track';
     var body     = { slide: slideDef.file.replace('/slides/', '').replace('.html', ''), edits: {} };
@@ -755,7 +779,9 @@
 
     var edits = {};
     slideEl.querySelectorAll('[data-edit][contenteditable]').forEach(function (el) {
-      edits[el.getAttribute('data-edit')] = el.innerHTML;
+      var clone = el.cloneNode(true);
+      clone.querySelectorAll('[data-builder-only]').forEach(function (n) { n.remove(); });
+      edits[el.getAttribute('data-edit')] = clone.innerHTML;
     });
 
     // Also save [data-edit] containers whose children were edited (e.g. list items)
@@ -1112,22 +1138,32 @@
   }
 
   function applyPreviewLang(lang) {
+    var isEn = lang === 'en';
+    // Toggle CSS class that hides all builder-only controls and blocks pointer events
+    // on contenteditable elements — zero editing possible in non-English mode
+    var container = document.getElementById('slidesContainer');
+    if (container) container.classList.toggle('readonly-lang', !isEn);
+    document.body.classList.toggle('readonly-lang', !isEn);
+
     slideEls.forEach(function (slideEl, idx) {
       if (!slideEl) return;
       var libSlideId = SLIDES[idx] && SLIDES[idx].librarySlideId;
       var slideStore = (translationsData && translationsData.slides && libSlideId && translationsData.slides[libSlideId]) || {};
       slideEl.querySelectorAll('[data-edit]').forEach(function (el) {
         var key     = el.getAttribute('data-edit');
+        if (el.getAttribute('data-edit-type') === 'image') return;
         var snapKey = idx + '/' + key;
         var hasEditable = el.hasAttribute('contenteditable');
-        if (lang === 'en') {
+        if (isEn) {
           if (enSnapshot[snapKey] !== undefined) el.innerHTML = enSnapshot[snapKey];
           if (hasEditable) el.contentEditable = 'true';
         } else {
           var entry = slideStore[key] && slideStore[key][lang];
           if (entry && entry.current) el.innerHTML = entry.current;
+          if (hasEditable) el.contentEditable = 'false';
         }
       });
+
       // Re-init tabs after any language change — the tabs innerHTML may have been replaced,
       // and non-tab-translation languages (de/it) need re-init if a previous switch left
       // broken HTML without click handlers.
@@ -1142,25 +1178,7 @@
     });
   }
 
-  // Save non-English field on blur → translations store
-  document.getElementById('slidesContainer').addEventListener('focusout', function (e) {
-    if (previewLang === 'en') return;
-    var el = e.target;
-    if (!el.hasAttribute('data-edit') || !el.hasAttribute('contenteditable')) return;
-    // Find which loaded slide owns this element (avoids wrong save if focus moves between slides)
-    var ownerIdx = slideEls.findIndex(function (se) { return se && se.contains(el); });
-    var slideId = ownerIdx >= 0 && SLIDES[ownerIdx] && SLIDES[ownerIdx].librarySlideId;
-    if (!slideId) return;
-    var fieldKey = el.getAttribute('data-edit');
-    var value = el.innerHTML;
-    fetch('/api/translations/field', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ slideId: slideId, fieldKey: fieldKey, language: previewLang, value: value })
-    }).then(function (r) { return r.json(); }).then(function (res) {
-      if (res.success) loadTranslations();
-    });
-  });
+  // Non-English preview is read-only — translations are edited in the Translation Center only.
 
   // Block autosave when previewing a non-English language
   var _origScheduleSave = scheduleSave;
@@ -1177,15 +1195,29 @@
     }
   });
 
-  // Load translations on init, then restore last selected language
+  // Load translations on init — language restore is handled inside injectSlide
+  // (snapshotEnglish + applyPreviewLang run after the first slide is in the DOM)
   loadTranslations().then(function () {
     try {
       var saved = localStorage.getItem(PREVIEW_LANG_KEY);
       var available = translationsData && translationsData.languages || [];
       if (saved && saved !== 'en' && available.includes(saved)) {
-        setPreviewLang(saved);
+        // Only update the button label — the actual language apply happens in injectSlide
+        // once slides are in the DOM, avoiding the flash of English then translation
+        previewLang = saved;
+        document.getElementById('previewLangFlag').textContent = langFlag(saved);
+        document.getElementById('previewLangLabel').textContent = saved.toUpperCase();
+        document.getElementById('previewLangBtn').classList.add('active');
+        var langObj = (_tsAllLangs || []).find(function (l) { return l.code === saved; });
+        var banner = document.getElementById('previewLangBanner');
+        document.getElementById('previewLangBannerName').textContent = langObj ? langObj.name : saved.toUpperCase();
+        banner.classList.add('visible');
+        document.body.classList.add('readonly-lang');
+        var container = document.getElementById('slidesContainer');
+        if (container) container.classList.add('readonly-lang');
       }
     } catch(e) {}
+    buildLangMenu();
   });
 
   // ── Translation Settings modal ────────────────────────────────────────────
@@ -1367,7 +1399,7 @@
     var tbody = document.getElementById('tc-tbody');
     var html = '';
     var lastSlide = null;
-    var totalDirtyMissing = 0;
+    var totalMissing = 0, totalDirty = 0;
 
     rows.forEach(function(row) {
       if (row.slideId !== lastSlide) {
@@ -1384,7 +1416,8 @@
         var entry = row.langs && row.langs[lang];
         var val = entry && entry.current || '';
         var cls = !val ? 'missing' : (entry && entry.dirty ? 'dirty' : '');
-        if (cls) totalDirtyMissing++;
+        if (cls === 'missing') totalMissing++;
+        else if (cls === 'dirty') totalDirty++;
         var valPlain = stripHtmlTags(val);
         html += '<td class="tc-cell-lang"><textarea class="' + cls + '" data-slide-id="' + sid + '" data-field-key="' + fk + '" data-lang="' + lang + '" rows="2">' + escHtml(valPlain) + '</textarea></td>';
       });
@@ -1395,31 +1428,36 @@
     document.getElementById('tc-loading').style.display = 'none';
     document.getElementById('tc-table').style.display = 'table';
 
-    // Update badge
-    var badge = document.getElementById('translateAllBadge');
-    if (totalDirtyMissing > 0) {
-      badge.textContent = totalDirtyMissing;
-      badge.style.display = 'inline';
-    } else {
-      badge.style.display = 'none';
-    }
+    // Update badges
+    var bMissing = document.getElementById('badgeMissing');
+    var bDirty   = document.getElementById('badgeDirty');
+    if (bMissing) { bMissing.textContent = totalMissing; bMissing.style.display = totalMissing > 0 ? 'inline' : 'none'; }
+    if (bDirty)   { bDirty.textContent   = totalDirty;   bDirty.style.display   = totalDirty   > 0 ? 'inline' : 'none'; }
 
-    // Wire non-English textarea save on blur
+    // Wire non-English textarea save on blur + yellow highlight while typing
     tbody.querySelectorAll('textarea:not(.tc-en-edit)').forEach(function(ta) {
-      ta.dataset.originalVal = ta.value; // store displayed (stripped) value for change detection
+      ta.dataset.originalVal = ta.value;
+      ta.addEventListener('input', function() {
+        if (!ta.classList.contains('dirty')) ta.classList.add('dirty');
+      });
       ta.addEventListener('blur', function() {
         var slideId  = ta.dataset.slideId;
         var fieldKey = ta.dataset.fieldKey;
         var lang     = ta.dataset.lang;
         if (!slideId || !fieldKey || !lang) return;
         var val = ta.value.trim();
-        if (val === (ta.dataset.originalVal || '').trim()) return; // no change — don't overwrite
+        if (val === (ta.dataset.originalVal || '').trim()) { ta.classList.toggle('missing', !val); if (val) ta.classList.remove('dirty'); return; }
+        // Save even when val is empty — clearing a translation removes it (marks as missing)
         fetch('/api/translations/field', {
           method: 'PATCH',
+          keepalive: true,
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ slideId: slideId, fieldKey: fieldKey, language: lang, value: val })
-        }).then(function(){
-          ta.classList.remove('dirty','missing');
+        }).then(function(r){ return r.json(); }).then(function(res){
+          if (!res.success) return;
+          ta.classList.remove('dirty');
+          ta.classList.toggle('missing', !val);
+          ta.dataset.originalVal = val;
           if (!translationsData.slides) translationsData.slides = {};
           if (!translationsData.slides[slideId]) translationsData.slides[slideId] = {};
           if (!translationsData.slides[slideId][fieldKey]) translationsData.slides[slideId][fieldKey] = {};
@@ -1440,6 +1478,7 @@
         if (val === originalVal) return; // no change
         fetch('/api/library/' + slideId + '/edits', {
           method: 'POST',
+          keepalive: true,
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ edits: { [fieldKey]: val } })
         }).then(function() {
@@ -1447,6 +1486,21 @@
           // Mark all language cells for this field as dirty
           var langCells = tbody.querySelectorAll('textarea[data-slide-id="' + slideId + '"][data-field-key="' + fieldKey + '"]:not(.tc-en-edit)');
           langCells.forEach(function(lt) { lt.classList.add('dirty'); });
+          // Reload matching slide(s) in the builder so the English change is visible immediately
+          SLIDES.forEach(function(s, idx) {
+            if (s.librarySlideId !== slideId) return;
+            delete loaded[idx];
+            if (slideEls[idx]) { slideEls[idx].remove(); slideEls[idx] = undefined; }
+            if (idx === current) {
+              fetch(s.file, { cache: 'no-store' })
+                .then(function(r){ return r.text(); })
+                .then(function(html){
+                  loaded[idx] = html;
+                  var el = injectSlide(idx, html);
+                  el.classList.add('active');
+                });
+            }
+          });
         });
       });
       // Store original value for change detection
@@ -1462,11 +1516,14 @@
     renderTcTable(filtered);
   }
 
-  function handleTranslateAllClick() {
-    var btn = document.getElementById('btnTranslateAll');
-    if (!btn || btn.disabled) return;
+  function handleTranslateClick(mode) {
+    // mode: 'missing' | 'dirty' | 'all'
+    var btns = ['btnTranslateMissing','btnTranslateDirty','btnTranslateAll'];
+    if (btns.some(function(id){ var b = document.getElementById(id); return b && b.disabled; })) return;
     var langs = (translationsData && translationsData.languages || []).filter(function(l){ return l !== 'en'; });
     if (langs.length === 0) { alert('No additional languages configured.'); return; }
+
+    btns.forEach(function(id){ var b = document.getElementById(id); if (b) b.disabled = true; });
 
     // Show progress bar area
     var progressEl = document.getElementById('tc-translate-progress');
@@ -1477,11 +1534,27 @@
       document.getElementById('tc-header').insertAdjacentElement('afterend', progressEl);
     }
 
-    btn.disabled = true;
-    var slides = tcRows.reduce(function(acc, r) {
+    // Filter rows based on mode
+    var rowsToTranslate = tcRows.filter(function(r) {
+      if (mode === 'all') return true;
+      return langs.some(function(lang) {
+        var entry = r.langs && r.langs[lang];
+        if (mode === 'missing') return !entry || !entry.current;
+        if (mode === 'dirty')   return entry && entry.dirty;
+        return false;
+      });
+    });
+
+    var slides = rowsToTranslate.reduce(function(acc, r) {
       if (!acc.find(function(s){ return s.id === r.slideId; })) acc.push({ id: r.slideId, title: r.slideTitle });
       return acc;
     }, []);
+
+    if (slides.length === 0) {
+      progressEl.innerHTML = '<span style="color:rgba(255,255,255,.5);">Nothing to translate for this mode.</span>';
+      btns.forEach(function(id){ var b = document.getElementById(id); if (b) b.disabled = false; });
+      return;
+    }
 
     var done = 0, failed = 0, total = slides.length;
 
@@ -1495,14 +1568,11 @@
 
     function processNext(idx) {
       if (idx >= slides.length) {
-        // All done — reload translations and re-apply current language so changes are visible immediately
         return loadTranslations().then(function(){
-          btn.disabled = false;
+          btns.forEach(function(id){ var b = document.getElementById(id); if (b) b.disabled = false; });
           updateProgress(null);
           var doneMsg = '<span style="color:#4ade80;font-weight:700;">&#10003; All done!</span>';
-          if (failed > 0) {
-            doneMsg += ' <span style="color:#f87171;">(' + failed + ' batch(es) failed — check API key)</span>';
-          }
+          if (failed > 0) doneMsg += ' <span style="color:#f87171;">(' + failed + ' batch(es) failed — check API key)</span>';
           progressEl.innerHTML += doneMsg;
           loadTranslationCenter();
           updateTranslateBadge();
@@ -1511,19 +1581,19 @@
       }
       var slide = slides[idx];
       updateProgress(slide.title);
-      // Collect fields for this slide from tcRows
       var sourceFields = {};
-      tcRows.filter(function(r){ return r.slideId === slide.id; }).forEach(function(r){ sourceFields[r.fieldKey] = r.en; });
+      rowsToTranslate.filter(function(r){ return r.slideId === slide.id; })
+        .forEach(function(r){ sourceFields[r.fieldKey] = r.en; });
       fetch('/api/translations/translate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slideId: slide.id, sourceFields: sourceFields, languages: langs })
+        body: JSON.stringify({ slideId: slide.id, sourceFields: sourceFields, languages: langs, force: mode === 'all' })
       })
       .then(function(r){ return r.json(); })
       .then(function(res){
-        if (res.success && res.data) { translationsData = res.data; }
+        if (res.success && res.data) translationsData = res.data;
         done++;
-        if (res.failed > 0) { failed += res.failed; }
+        if (res.failed > 0) failed += res.failed;
       })
       .catch(function(){ failed++; })
       .finally(function(){ processNext(idx + 1); });

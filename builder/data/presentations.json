@@ -1,6 +1,244 @@
 {
   "presentations": [
     {
+      "id": "00000026",
+      "createdAt": "2026-06-06",
+      "deckId": "default",
+      "presentationName": "3",
+      "customerName": "3",
+      "contactName": "3",
+      "contactTitle": "",
+      "customerLogoSrc": "/slides/uploads/16 bit tech.jpg",
+      "slideCount": 16,
+      "slides": [
+        {
+          "id": "deck-lib-1780488418898-1780488482284",
+          "librarySlideId": "lib-1780488418898",
+          "name": "Cover (Copy)",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-company-1778837870406",
+          "librarySlideId": "lib-company",
+          "name": "Company Intro",
+          "visible": true
+        },
+        {
+          "id": "deck-comparison",
+          "librarySlideId": "lib-comparison",
+          "name": "Why Us",
+          "visible": true
+        },
+        {
+          "id": "deck-capability",
+          "librarySlideId": "lib-capability",
+          "name": "Products Overview",
+          "visible": true
+        },
+        {
+          "id": "deck-technology",
+          "librarySlideId": "lib-technology",
+          "name": "LineScanner-Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1777096783950-1777096961176",
+          "librarySlideId": "lib-1777096783950",
+          "name": "Osprey-Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1780736476040-1780736532132",
+          "librarySlideId": "lib-1780736476040",
+          "name": "CulletScanner-Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-surface",
+          "librarySlideId": "lib-surface",
+          "name": "Surface Types",
+          "visible": true
+        },
+        {
+          "id": "deck-dimension",
+          "librarySlideId": "lib-dimension",
+          "name": "Dimensions",
+          "visible": true
+        },
+        {
+          "id": "deck-screenprint",
+          "librarySlideId": "lib-screenprint",
+          "name": "Screen Printing",
+          "visible": true
+        },
+        {
+          "id": "deck-logo-check",
+          "librarySlideId": "lib-logo-check",
+          "name": "Logo Check",
+          "visible": true
+        },
+        {
+          "id": "deck-database",
+          "librarySlideId": "lib-database",
+          "name": "Traceability",
+          "visible": true
+        },
+        {
+          "id": "deck-sensitivity",
+          "librarySlideId": "lib-sensitivity",
+          "name": "Sensitivity",
+          "visible": true
+        },
+        {
+          "id": "deck-footprint",
+          "librarySlideId": "lib-footprint",
+          "name": "Installation",
+          "visible": true
+        },
+        {
+          "id": "deck-integrations",
+          "librarySlideId": "lib-integrations",
+          "name": "Integrations",
+          "visible": true
+        },
+        {
+          "id": "deck-cta",
+          "librarySlideId": "lib-cta",
+          "name": "Call to Action",
+          "visible": true
+        }
+      ],
+      "defaultLanguage": "en",
+      "languages": [
+        "en",
+        "es",
+        "it",
+        "de",
+        "fr",
+        "pt"
+      ],
+      "publishedAt": "2026-06-06T09:33:51.581Z"
+    },
+    {
+      "id": "00000025",
+      "createdAt": "2026-06-05",
+      "deckId": "default",
+      "presentationName": "7",
+      "customerName": "7",
+      "contactName": "7",
+      "contactTitle": "",
+      "customerLogoSrc": "/slides/uploads/CulletScanner-Specific-Cullets.jpg",
+      "slideCount": 16,
+      "slides": [
+        {
+          "id": "deck-lib-1780488418898-1780488482284",
+          "librarySlideId": "lib-1780488418898",
+          "name": "Cover (Copy)",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-company-1778837870406",
+          "librarySlideId": "lib-company",
+          "name": "Company Intro",
+          "visible": true
+        },
+        {
+          "id": "deck-comparison",
+          "librarySlideId": "lib-comparison",
+          "name": "Why Us",
+          "visible": true
+        },
+        {
+          "id": "deck-capability",
+          "librarySlideId": "lib-capability",
+          "name": "Products Overview",
+          "visible": true
+        },
+        {
+          "id": "deck-technology",
+          "librarySlideId": "lib-technology",
+          "name": "LineScanner-Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1777096783950-1777096961176",
+          "librarySlideId": "lib-1777096783950",
+          "name": "Osprey-Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1778837645228-1778837655832",
+          "librarySlideId": "lib-1778837645228",
+          "name": "CulletScanner-Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-surface",
+          "librarySlideId": "lib-surface",
+          "name": "Surface Types",
+          "visible": true
+        },
+        {
+          "id": "deck-dimension",
+          "librarySlideId": "lib-dimension",
+          "name": "Dimensions",
+          "visible": true
+        },
+        {
+          "id": "deck-screenprint",
+          "librarySlideId": "lib-screenprint",
+          "name": "Screen Printing",
+          "visible": true
+        },
+        {
+          "id": "deck-logo-check",
+          "librarySlideId": "lib-logo-check",
+          "name": "Logo Check",
+          "visible": true
+        },
+        {
+          "id": "deck-database",
+          "librarySlideId": "lib-database",
+          "name": "Traceability",
+          "visible": true
+        },
+        {
+          "id": "deck-sensitivity",
+          "librarySlideId": "lib-sensitivity",
+          "name": "Sensitivity",
+          "visible": true
+        },
+        {
+          "id": "deck-footprint",
+          "librarySlideId": "lib-footprint",
+          "name": "Installation",
+          "visible": true
+        },
+        {
+          "id": "deck-integrations",
+          "librarySlideId": "lib-integrations",
+          "name": "Integrations",
+          "visible": true
+        },
+        {
+          "id": "deck-cta",
+          "librarySlideId": "lib-cta",
+          "name": "Call to Action",
+          "visible": true
+        }
+      ],
+      "defaultLanguage": "en",
+      "languages": [
+        "en",
+        "es",
+        "it",
+        "de",
+        "fr",
+        "pt"
+      ],
+      "publishedAt": "2026-06-05T19:18:57.401Z"
+    },
+    {
       "id": "00000024",
       "createdAt": "2026-06-05",
       "deckId": "deck-1780653517426-z95wf",

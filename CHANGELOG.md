@@ -5,6 +5,22 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [v1.2.0] — 2026-06-06
+
+### Added
+- **Surface slide** — per-card uploadable defect icons; legacy canvas renderer removed
+- **Uploads** — content-dedup: identical images stored once, regardless of filename
+- **Uploads** — overwrite-by-name: re-uploading the same filename replaces it in-place
+- **Uploads** — all upload paths (logo, hero, defect icons) share one unified dedup pipeline
+
+### Fixed
+- `Track.slideId()` guard in cover and company cartridges — no longer throws when tracker is loaded late
+- `tracker.js` now loaded in preview routes so `Track` is defined before slide scripts run
+- Publish: `Track` defined in `<head>`; language-switcher moved after `<body>` open to fix script order
+- Publish: `finished-presentations/` was accidentally git-ignored — presentations no longer disappear after push
+
+---
+
 ## [v1.1.0] — 2026-05-25
 
 ### Added

@@ -164,6 +164,7 @@ window.Tabs = (function () {
       tabBtn.addEventListener('dblclick', function (e) {
         e.stopPropagation();
         e.preventDefault();
+        if (window.previewLang && window.previewLang !== 'en') return; // read-only in non-English preview
 
         // Read current label (text nodes only, skip del button child)
         var currentText = '';

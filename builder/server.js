@@ -7028,6 +7028,7 @@ app.post('/api/translations/translate', async function (req, res) {
     // Per-slide mode: slideId + sourceFields: { fieldKey: englishText }
     const slideId      = req.body && req.body.slideId;
     const sourceFields = req.body && req.body.sourceFields; // { fieldKey: englishText }
+    const force        = !!(req.body && req.body.force);    // true = re-translate even clean fields
 
     if (slideId && sourceFields && Object.keys(sourceFields).length > 0) {
       if (!t.slides) t.slides = {};
@@ -7042,7 +7043,7 @@ app.post('/api/translations/translate', async function (req, res) {
         for (const [key, englishText] of Object.entries(sourceFields)) {
           if (!englishText) continue;
           const existing = slideStore[key] && slideStore[key][lang];
-          if (!existing || !existing.current || existing.dirty) {
+          if (force || !existing || !existing.current || existing.dirty) {
             dirty[key] = englishText;
           }
         }
@@ -7152,6 +7153,20 @@ app.get('/api/translations/fields-summary', function (req, res) {
         var defaults = extractSlideDefaultFields(libSlide, activeDeckId);
         // Merge: template defaults first, then saved edits override them
         var allFields = Object.assign({}, defaults, edits);
+        // Extract inner [data-edit] values from blob fields so the TC shows
+        // current tab/carousel label content, not stale template defaults.
+        blobKeys.forEach(function (bk) {
+          var bv = allFields[bk];
+          if (!bv || typeof bv !== 'string') return;
+          var $b = cheerio.load(bv, { decodeEntities: false }, false);
+          $b('[data-builder-only]').remove();
+          $b('[data-edit]').each(function () {
+            var bKey = $b(this).attr('data-edit');
+            var bType = $b(this).attr('data-edit-type');
+            if (!bKey || bType === 'image') return;
+            allFields[bKey] = $b(this).html() || '';
+          });
+        });
         var slideTranslations = (t.slides && t.slides[deckSlide.librarySlideId]) || {};
 
         Object.keys(allFields).forEach(function (fieldKey) {
@@ -7162,6 +7177,7 @@ app.get('/api/translations/fields-summary', function (req, res) {
           if (fieldKey.startsWith('__attr:')) return;
           if (blobKeys.includes(fieldKey)) return;
           if (val.includes('<img')) return;
+          if (/\.(jpe?g|png|gif|webp|svg|bmp)(\?.*)?$/i.test(val.trim())) return;
 
           var stripped = val.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
           if (stripped.length < 3) return;
@@ -7213,6 +7229,22 @@ app.post('/api/translations/translate-all', async function (req, res) {
       var slideId = slide.id;
       if (!t.slides[slideId]) t.slides[slideId] = {};
 
+      // Extract inner [data-edit] values from blob fields (tabs, carousels)
+      // so translate-all uses the current label content, not stale template defaults.
+      var blobKeys = ['tabs', 'company-carousel', 'carousel-track-html', 'carousel-track'];
+      blobKeys.forEach(function (bk) {
+        var bv = allFields[bk];
+        if (!bv || typeof bv !== 'string') return;
+        var $b = cheerio.load(bv, { decodeEntities: false }, false);
+        $b('[data-builder-only]').remove();
+        $b('[data-edit]').each(function () {
+          var bKey = $b(this).attr('data-edit');
+          var bType = $b(this).attr('data-edit-type');
+          if (!bKey || bType === 'image') return;
+          allFields[bKey] = $b(this).html() || '';
+        });
+      });
+
       for (var li = 0; li < targetLanguages.length; li++) {
         var lang = targetLanguages[li];
         if (lang === 'en') continue;
@@ -7230,6 +7262,7 @@ app.post('/api/translations/translate-all', async function (req, res) {
           if (fieldKey.startsWith('__attr:')) return;
           if (blobKeys.includes(fieldKey)) return;
           if (val.includes('<img')) return;
+          if (/\.(jpe?g|png|gif|webp|svg|bmp)(\?.*)?$/i.test(val.trim())) return;
 
           var stripped = val.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
           if (stripped.length < 3) return;

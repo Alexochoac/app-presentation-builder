@@ -8,25 +8,23 @@
     <p class="slide-subtitle" data-edit="subtitle" contenteditable="" spellcheck="false" style="margin-bottom:14px;">Neural network trained to automatically classify every defect type.</p>
   </header>
   <div class="slide-body">
-  <!-- ── Defect type selector (acts as tabs) ── -->
-  <div class="s6-selector anim-in" id="s6-selector">
-    <button class="s6-defect-btn" data-defect-idx="0"><span class="s6-icon-wrap" data-edit="s6-icon-0" data-edit-type="image"><img class="s6-icon" src="/slides/uploads/defect-icon-0.png" alt="Scratches icon"><span class="s6-icon-ctrls" data-builder-only=""><span class="s6-icon-btn s6-icon-change" title="Change image" role="button">&#8682;</span><span class="s6-icon-btn s6-icon-del" title="Clear image" role="button">&#10005;</span></span></span><span class="s6-defect-label" data-edit="s6-label-0" contenteditable="" spellcheck="false">Scratches</span></button>
-    <button class="s6-defect-btn" data-defect-idx="1"><span class="s6-icon-wrap" data-edit="s6-icon-1" data-edit-type="image"><img class="s6-icon" src="/slides/uploads/defect-icon-1.png" alt="Inclusions icon"><span class="s6-icon-ctrls" data-builder-only=""><span class="s6-icon-btn s6-icon-change" title="Change image" role="button">&#8682;</span><span class="s6-icon-btn s6-icon-del" title="Clear image" role="button">&#10005;</span></span></span><span class="s6-defect-label" data-edit="s6-label-1" contenteditable="" spellcheck="false">Inclusions</span></button>
-    <button class="s6-defect-btn" data-defect-idx="2"><span class="s6-icon-wrap" data-edit="s6-icon-2" data-edit-type="image"><img class="s6-icon" src="/slides/uploads/defect-icon-2.png" alt="Dirt icon"><span class="s6-icon-ctrls" data-builder-only=""><span class="s6-icon-btn s6-icon-change" title="Change image" role="button">&#8682;</span><span class="s6-icon-btn s6-icon-del" title="Clear image" role="button">&#10005;</span></span></span><span class="s6-defect-label" data-edit="s6-label-2" contenteditable="" spellcheck="false">Dirt</span></button>
-    <button class="s6-defect-btn" data-defect-idx="3"><span class="s6-icon-wrap" data-edit="s6-icon-3" data-edit-type="image"><img class="s6-icon" src="/slides/uploads/defect-icon-2.png" alt="Dust icon"><span class="s6-icon-ctrls" data-builder-only=""><span class="s6-icon-btn s6-icon-change" title="Change image" role="button">&#8682;</span><span class="s6-icon-btn s6-icon-del" title="Clear image" role="button">&#10005;</span></span></span><span class="s6-defect-label" data-edit="s6-label-3" contenteditable="" spellcheck="false">Dust</span></button>
-    <button class="s6-defect-btn" data-defect-idx="4"><span class="s6-icon-wrap" data-edit="s6-icon-4" data-edit-type="image"><img class="s6-icon" src="/slides/uploads/defect-icon-3.png" alt="Water icon"><span class="s6-icon-ctrls" data-builder-only=""><span class="s6-icon-btn s6-icon-change" title="Change image" role="button">&#8682;</span><span class="s6-icon-btn s6-icon-del" title="Clear image" role="button">&#10005;</span></span></span><span class="s6-defect-label" data-edit="s6-label-4" contenteditable="" spellcheck="false">Water</span></button>
-    <button class="s6-defect-btn" data-defect-idx="5"><span class="s6-icon-wrap" data-edit="s6-icon-5" data-edit-type="image"><img class="s6-icon" src="/slides/uploads/defect-icon-4.png" alt="Fingerprints icon"><span class="s6-icon-ctrls" data-builder-only=""><span class="s6-icon-btn s6-icon-change" title="Change image" role="button">&#8682;</span><span class="s6-icon-btn s6-icon-del" title="Clear image" role="button">&#10005;</span></span></span><span class="s6-defect-label" data-edit="s6-label-5" contenteditable="" spellcheck="false">Fingerprints</span></button>
-    <button class="s6-defect-btn" data-defect-idx="6"><span class="s6-icon-wrap" data-edit="s6-icon-6" data-edit-type="image"><img class="s6-icon" src="/slides/uploads/defect-icon-5.png" alt="Ignore icon"><span class="s6-icon-ctrls" data-builder-only=""><span class="s6-icon-btn s6-icon-change" title="Change image" role="button">&#8682;</span><span class="s6-icon-btn s6-icon-del" title="Clear image" role="button">&#10005;</span></span></span><span class="s6-defect-label" data-edit="s6-label-6" contenteditable="" spellcheck="false">Ignore</span></button>
-    <button class="s6-defect-btn" data-defect-idx="7"><span class="s6-icon-wrap" data-edit="s6-icon-7" data-edit-type="image"><img class="s6-icon" src="/slides/uploads/defect-icon-7.png" alt="Edge defects icon"><span class="s6-icon-ctrls" data-builder-only=""><span class="s6-icon-btn s6-icon-change" title="Change image" role="button">&#8682;</span><span class="s6-icon-btn s6-icon-del" title="Clear image" role="button">&#10005;</span></span></span><span class="s6-defect-label" data-edit="s6-label-7" contenteditable="" spellcheck="false">Edge defects</span></button>
-    <button class="s6-defect-btn" data-defect-idx="8"><span class="s6-icon-wrap" data-edit="s6-icon-8" data-edit-type="image"><img class="s6-icon" src="/slides/uploads/defect-icon-6.png" alt="Frame and bars icon"><span class="s6-icon-ctrls" data-builder-only=""><span class="s6-icon-btn s6-icon-change" title="Change image" role="button">&#8682;</span><span class="s6-icon-btn s6-icon-del" title="Clear image" role="button">&#10005;</span></span></span><span class="s6-defect-label" data-edit="s6-label-8" contenteditable="" spellcheck="false">Frame &amp; bars</span></button>
-    <button class="s6-defect-btn" data-defect-idx="9"><span class="s6-icon-wrap" data-edit="s6-icon-9" data-edit-type="image"><img class="s6-icon" src="/slides/uploads/defect-icon-8.png" alt="Undefined icon"><span class="s6-icon-ctrls" data-builder-only=""><span class="s6-icon-btn s6-icon-change" title="Change image" role="button">&#8682;</span><span class="s6-icon-btn s6-icon-del" title="Clear image" role="button">&#10005;</span></span></span><span class="s6-defect-label" data-edit="s6-label-9" contenteditable="" spellcheck="false">Undefined</span></button>
-    <button class="s6-defect-btn" data-defect-idx="10"><span class="s6-icon-wrap" data-edit="s6-icon-10" data-edit-type="image"><img class="s6-icon" src="/slides/uploads/defect-icon-coating.png" alt="Coating icon"><span class="s6-icon-ctrls" data-builder-only=""><span class="s6-icon-btn s6-icon-change" title="Change image" role="button">&#8682;</span><span class="s6-icon-btn s6-icon-del" title="Clear image" role="button">&#10005;</span></span></span><span class="s6-defect-label" data-edit="s6-label-10" contenteditable="" spellcheck="false">Coating</span></button>
-  </div>
+
+  <!--
+    Card-list persistence — stores the defect-type buttons (label + icon + carousel slot)
+    as JSON. contenteditable so it rides the standard focusout→save pipeline; the JS
+    reads/writes textContent. Carousel IMAGES are NOT stored here — they stay in each
+    slot's own data-edit element below, so existing content is never touched.
+  -->
+  <div id="s6-config" data-edit="s6-config" contenteditable="" spellcheck="false" aria-hidden="true"
+       style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;left:-9999px;top:0;"></div>
+
+  <!-- ── Defect type selector (acts as tabs) — populated by JS from the config ── -->
+  <div class="s6-selector anim-in" id="s6-selector"></div>
 
   <!-- ── Default carousel (shown when no defect is selected) ── -->
   <div class="ls-carousel s6-car-wrap" id="s6CarWrap" data-counter="" data-edit="s6-default-carousel" data-track="s6:carousel:default" data-autoplay="5000" style="flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track" style="transform: translateX(0px);">
-      
-      
+
+
     <div class="ls-carousel-slide"><img src="/slides/uploads/Details_Surface-Quality-Control.jpg" alt="Details_Surface Quality Control" data-zoom="" data-track="s6:zoom:details-surface-quality-control"></div></div></div>
 
   <!-- ── Scratches ── -->
@@ -100,6 +98,19 @@
       <div class="ls-carousel-slide ls-compare ls-split" data-compare-mode="split"><img class="ls-cmp-left" src="/slides/uploads/Defect of a Coating 2 Camera image.png" alt="Camera" data-zoom="" data-track="s6:zoom:coating-camera"><img class="ls-cmp-right" src="/slides/uploads/Defect of a Coating 2 Camera image LineScanner Raw Image.png" alt="LineScanner" data-zoom="" data-track="s6:zoom:coating-linescanner"></div>
     </div></div>
 
+  <!-- ── Spare carousel slots for user-added defect types (claimed on "Add") ── -->
+  <div class="ls-carousel s6-defect-car" id="s6-car-x0" data-counter="" data-edit="s6-defect-x0" data-track="s6:carousel:x0" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"></div></div>
+  <div class="ls-carousel s6-defect-car" id="s6-car-x1" data-counter="" data-edit="s6-defect-x1" data-track="s6:carousel:x1" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"></div></div>
+  <div class="ls-carousel s6-defect-car" id="s6-car-x2" data-counter="" data-edit="s6-defect-x2" data-track="s6:carousel:x2" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"></div></div>
+  <div class="ls-carousel s6-defect-car" id="s6-car-x3" data-counter="" data-edit="s6-defect-x3" data-track="s6:carousel:x3" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"></div></div>
+  <div class="ls-carousel s6-defect-car" id="s6-car-x4" data-counter="" data-edit="s6-defect-x4" data-track="s6:carousel:x4" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"></div></div>
+  <div class="ls-carousel s6-defect-car" id="s6-car-x5" data-counter="" data-edit="s6-defect-x5" data-track="s6:carousel:x5" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"></div></div>
+  <div class="ls-carousel s6-defect-car" id="s6-car-x6" data-counter="" data-edit="s6-defect-x6" data-track="s6:carousel:x6" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"></div></div>
+  <div class="ls-carousel s6-defect-car" id="s6-car-x7" data-counter="" data-edit="s6-defect-x7" data-track="s6:carousel:x7" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"></div></div>
+  <div class="ls-carousel s6-defect-car" id="s6-car-x8" data-counter="" data-edit="s6-defect-x8" data-track="s6:carousel:x8" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"></div></div>
+  <div class="ls-carousel s6-defect-car" id="s6-car-x9" data-counter="" data-edit="s6-defect-x9" data-track="s6:carousel:x9" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"></div></div>
+  <div class="ls-carousel s6-defect-car" id="s6-car-x10" data-counter="" data-edit="s6-defect-x10" data-track="s6:carousel:x10" style="display:none;flex:1;min-height:0;width:100%;max-width:960px;margin-top:12px;"><div class="ls-carousel-track"></div></div>
+
   </div><!-- slide-body -->
   </div><!-- slide-layout -->
 
@@ -113,6 +124,7 @@
       width: 100%; max-width: 960px; flex-shrink: 0;
     }
     .s6-defect-btn {
+      position: relative;
       display: flex; flex-direction: column; align-items: center; gap: 5px;
       padding: 8px 10px; border-radius: 12px; cursor: pointer;
       background: var(--bg-card); border: 1px solid var(--border);
@@ -123,11 +135,14 @@
       border-color: var(--accent); background: rgba(var(--accent-rgb),.12);
       box-shadow: 0 0 0 1px rgba(var(--accent-rgb),.25);
     }
-    .s6-defect-btn span {
+    .s6-defect-btn .s6-defect-label {
       font-size: 10px; font-weight: 600; letter-spacing: .03em;
       color: var(--text-muted); white-space: nowrap; transition: color .2s;
     }
-    .s6-defect-btn.active span { color: var(--accent); }
+    .s6-defect-btn.active .s6-defect-label { color: var(--accent); }
+    /* Editable label (builder) */
+    .s6-defect-label[contenteditable] { outline: none; cursor: text; min-width: 18px; }
+    .s6-defect-label[contenteditable]:focus { color: var(--text); }
 
     /* ── Per-card icon (uploadable image) ── */
     .s6-icon-wrap { position: relative; display: inline-flex; flex-shrink: 0; }
@@ -135,9 +150,14 @@
       width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
       object-fit: contain; background: #F5D800; display: block;
     }
+    .s6-icon-placeholder {
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 900; color: rgba(255,255,255,.4);
+      background: rgba(255,255,255,.06); border: 1.5px dashed rgba(255,255,255,.18);
+    }
     .s6-defect-btn.active .s6-icon { box-shadow: 0 0 0 2px var(--accent); }
-    /* Builder-only "change icon" affordance (stripped in published output) */
-    /* change / delete-image controls — appear when hovering the defect card */
+
+    /* ── Image controls on the icon — change / clear (appear on card hover) ── */
     .s6-icon-ctrls {
       position: absolute; top: -8px; right: -8px; z-index: 4;
       display: none; gap: 3px;
@@ -150,11 +170,31 @@
       box-shadow: 0 1px 4px rgba(0,0,0,.5);
     }
     .s6-icon-change { background: var(--accent); color: #000; }
-    .s6-icon-del    { background: #d42b2b; color: #fff; }
+    .s6-icon-del    { background: #444; color: #fff; }
+
+    /* ── Delete-CARD control (whole-card corner, distinct from image controls) ── */
+    .s6-card-del {
+      position: absolute; top: -8px; left: -8px; z-index: 5;
+      width: 20px; height: 20px; border-radius: 50%; cursor: pointer;
+      background: #d42b2b; color: #fff;
+      font-size: 11px; font-weight: 900; line-height: 1;
+      display: none; align-items: center; justify-content: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,.5);
+    }
+    .s6-defect-btn:hover .s6-card-del { display: flex; }
+
+    /* ── Add-card button (builder only) ── */
+    .s6-add-btn { border-style: dashed !important; border-color: rgba(255,255,255,.22) !important; opacity: .7; }
+    .s6-add-btn:hover { opacity: 1; border-color: rgba(var(--accent-rgb),.5) !important; }
+    .s6-add-icon {
+      width: 40px; height: 40px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; color: rgba(255,255,255,.45); background: rgba(255,255,255,.04);
+    }
 
     /* ── Mobile base ── */
     .s6-defect-btn { min-width:60px; padding:6px; }
-    .s6-defect-btn span { font-size:11px; }
+    .s6-defect-btn .s6-defect-label { font-size:11px; }
     .s6 { padding: 52px 16px 80px !important; }
 
     /* ── Mobile carousel fix ──
@@ -167,7 +207,7 @@
     /* ── Desktop overrides ── */
     @media(min-width:769px) {
       .s6-defect-btn { min-width:76px; padding:8px 10px; }
-      .s6-defect-btn span { font-size:10px; }
+      .s6-defect-btn .s6-defect-label { font-size:10px; }
       .s6 { padding: 52px 80px 0 !important; }
     }
   </style>
@@ -175,118 +215,239 @@
   <!-- ── Scoped Script ── -->
   <script>
   (function () {
+    var slide   = document.currentScript.closest('[data-slide]');
+    var slideId = window.Track ? Track.slideId(slide) : (slide ? slide.getAttribute('data-slide') : 's6');
+    var root    = slide || document;
 
-    var DEFECTS = [
-      { name: 'Scratches',    row: 0, carId: 's6-car-scratches'    },
-      { name: 'Inclusions',   row: 1, carId: 's6-car-inclusions'   },
-      { name: 'Dirt',         row: 2, carId: 's6-car-dirt'         },
-      { name: 'Dust',         row: 2, carId: 's6-car-dust'         },
-      { name: 'Water',        row: 3, carId: 's6-car-water'        },
-      { name: 'Fingerprints', row: 4, carId: 's6-car-fingerprints' },
-      { name: 'Ignore',       row: 5, carId: 's6-car-ignore'       },
-      { name: 'Edge defects', row: 7, carId: 's6-car-edge-defects' },
-      { name: 'Frame & bars', row: 6, carId: 's6-car-frame-bars'   },
-      { name: 'Undefined',    row: 8, carId: 's6-car-undefined'    },
-      { name: 'Coating',   icon: '◈', carId: 's6-car-coating'      }
+    var EDIT_MODE = !window.PB_READONLY;
+    var MAX_CARDS = 22;
+
+    // Default defect set. carKey maps each card to its carousel slot (data-edit) below.
+    // Existing carousel content lives in those slots — never duplicated into this config.
+    var DEFAULT_CONFIG = [
+      { id:'scratches',    label:'Scratches',    icon:'/slides/uploads/defect-icon-0.png',       carKey:'s6-defect-scratches'    },
+      { id:'inclusions',   label:'Inclusions',   icon:'/slides/uploads/defect-icon-1.png',       carKey:'s6-defect-inclusions'   },
+      { id:'dirt',         label:'Dirt',         icon:'/slides/uploads/defect-icon-2.png',       carKey:'s6-defect-dirt'         },
+      { id:'dust',         label:'Dust',         icon:'/slides/uploads/defect-icon-2.png',       carKey:'s6-defect-dust'         },
+      { id:'water',        label:'Water',        icon:'/slides/uploads/defect-icon-3.png',       carKey:'s6-defect-water'        },
+      { id:'fingerprints', label:'Fingerprints', icon:'/slides/uploads/defect-icon-4.png',       carKey:'s6-defect-fingerprints' },
+      { id:'ignore',       label:'Ignore',       icon:'/slides/uploads/defect-icon-5.png',       carKey:'s6-defect-ignore'       },
+      { id:'edge-defects', label:'Edge defects', icon:'/slides/uploads/defect-icon-7.png',       carKey:'s6-defect-edge-defects' },
+      { id:'frame-bars',   label:'Frame & bars', icon:'/slides/uploads/defect-icon-6.png',       carKey:'s6-defect-frame-bars'   },
+      { id:'undefined',    label:'Undefined',    icon:'/slides/uploads/defect-icon-8.png',       carKey:'s6-defect-undefined'    },
+      { id:'coating',      label:'Coating',      icon:'/slides/uploads/defect-icon-coating.png', carKey:'s6-defect-coating'      }
     ];
 
-    var currentDefect = -1;
-    var selector = document.getElementById('s6-selector');
-    var carWrap  = document.getElementById('s6CarWrap');
+    // Every carousel slot (named defaults + spares). New cards prefer a spare (x*) slot.
+    var ALL_SLOTS = [
+      's6-defect-scratches','s6-defect-inclusions','s6-defect-dirt','s6-defect-dust',
+      's6-defect-water','s6-defect-fingerprints','s6-defect-ignore','s6-defect-edge-defects',
+      's6-defect-frame-bars','s6-defect-undefined','s6-defect-coating',
+      's6-defect-x0','s6-defect-x1','s6-defect-x2','s6-defect-x3','s6-defect-x4','s6-defect-x5',
+      's6-defect-x6','s6-defect-x7','s6-defect-x8','s6-defect-x9','s6-defect-x10'
+    ];
 
-    // Per-card icon editing (builder only). Hovering a defect card reveals a change/delete
-    // control pair on its icon. They stopPropagation so they never trigger the card's
-    // click-to-switch-carousel. Both persist via slide-image-change (data-edit image slot);
-    // "delete" resets the icon to its original default.
-    function wireIconControls(wrap) {
-      if (window.PB_READONLY) return;
-      var img        = wrap.querySelector('.s6-icon');
-      var key        = wrap.getAttribute('data-edit');
-      var defaultSrc = img.getAttribute('src');
-      function persist(src) {
-        document.dispatchEvent(new CustomEvent('slide-image-change', { detail: { editKey: key, src: src } }));
-      }
-      var changeBtn = wrap.querySelector('.s6-icon-change');
-      var delBtn    = wrap.querySelector('.s6-icon-del');
-      if (changeBtn) changeBtn.addEventListener('click', function (e) {
-        e.stopPropagation(); e.preventDefault();
-        var input = document.createElement('input');
-        input.type = 'file'; input.accept = 'image/*'; input.style.display = 'none';
-        document.body.appendChild(input);
-        input.addEventListener('change', function (ev) {
-          document.body.removeChild(input);
-          var file = ev.target.files[0]; if (!file) return;
-          img.src = URL.createObjectURL(file);
-          var reader = new FileReader();
-          reader.onload = function (re) {
-            window.PBUpload(file.name, re.target.result).then(function (p) {
-              if (!p) return; img.src = p; persist(p);
-            });
-          };
-          reader.readAsDataURL(file);
-        });
-        input.click();
-      });
-      if (delBtn) delBtn.addEventListener('click', function (e) {
-        e.stopPropagation(); e.preventDefault();
-        img.src = ''; persist('');   // clear the icon (empty)
-      });
+    var config     = [];
+    var currentIdx = -1;
+    var selector   = root.querySelector('#s6-selector');
+    var carWrap    = root.querySelector('#s6CarWrap');
+    var configEl   = root.querySelector('#s6-config');
+
+    function clone(o) { return JSON.parse(JSON.stringify(o)); }
+
+    /* ── Config I/O ── */
+    function loadConfig() {
+      var raw = configEl ? configEl.textContent.trim() : '';
+      try { config = raw ? JSON.parse(raw) : clone(DEFAULT_CONFIG); }
+      catch (e) { config = clone(DEFAULT_CONFIG); }
+      if (!Array.isArray(config) || !config.length) config = clone(DEFAULT_CONFIG);
+    }
+    function persistConfig() {
+      if (!configEl) return;
+      configEl.textContent = JSON.stringify(config);
+      configEl.dispatchEvent(new Event('focusout', { bubbles: true }));
     }
 
-    function updateBtns() {
-      selector.querySelectorAll('.s6-defect-btn').forEach(function (btn, i) {
-        btn.classList.toggle('active', i === currentDefect);
-      });
-    }
+    /* ── Carousel lookup + show/hide ── */
+    function findCar(item) { return item ? root.querySelector('.s6-defect-car[data-edit="' + item.carKey + '"]') : null; }
 
     function showDefault() {
-      if (currentDefect >= 0) document.getElementById(DEFECTS[currentDefect].carId).style.display = 'none';
-      currentDefect = -1;
-      carWrap.style.display = '';
-      if (window.Carousel) Carousel.init(carWrap);
-      if (window.Lightbox) Lightbox.init(carWrap);
+      root.querySelectorAll('.s6-defect-car').forEach(function (c) { c.style.display = 'none'; });
+      currentIdx = -1;
+      if (carWrap) {
+        carWrap.style.display = '';
+        if (window.Carousel) Carousel.init(carWrap);
+        if (window.Lightbox) Lightbox.init(carWrap);
+      }
       updateBtns();
     }
-
     function showDefect(idx) {
-      // Click active defect → deselect back to default
-      if (currentDefect === idx) { showDefault(); return; }
-      // Hide previous defect carousel
-      if (currentDefect >= 0) document.getElementById(DEFECTS[currentDefect].carId).style.display = 'none';
-
-      currentDefect = idx;
-      carWrap.style.display = 'none';
-
-      var car = document.getElementById(DEFECTS[idx].carId);
-      car.style.display = '';
-      // Reset to first slide and init if not already done
-      if (car._lsGoTo) car._lsGoTo(0);
-      if (window.Carousel) Carousel.init(car);
-      if (window.Lightbox)  Lightbox.init(car);
-
+      if (idx === currentIdx) { showDefault(); return; }
+      if (currentIdx >= 0) { var prev = findCar(config[currentIdx]); if (prev) prev.style.display = 'none'; }
+      if (carWrap) carWrap.style.display = 'none';
+      currentIdx = idx;
+      var car = findCar(config[idx]);
+      if (car) {
+        car.style.display = '';
+        if (car._lsGoTo) car._lsGoTo(0);
+        if (window.Carousel) Carousel.init(car);
+        if (window.Lightbox) Lightbox.init(car);
+      }
       updateBtns();
     }
-
-    // ── Attach handlers to pre-rendered buttons ──────────────────────────────
-    Array.from(selector.querySelectorAll('.s6-defect-btn')).forEach(function (btn, i) {
-      var wrap = btn.querySelector('.s6-icon-wrap');
-      if (wrap) wireIconControls(wrap);
-      btn.addEventListener('click', function () {
-        showDefect(i);
-        if (window.Track) {
-          var lbl = btn.querySelector('.s6-defect-label');
-          Track.click(Track.slideId(btn), lbl ? lbl.textContent.trim() : (DEFECTS[i] ? DEFECTS[i].name : ''));
-        }
+    function updateBtns() {
+      selector.querySelectorAll('.s6-defect-btn').forEach(function (btn, i) {
+        if (btn.classList.contains('s6-add-btn')) return;
+        btn.classList.toggle('active', i === currentIdx);
       });
-    });
+    }
 
-    showDefault();
+    /* ── Icon element (image, or a "+" placeholder when empty) ── */
+    function makeIcon(item) {
+      if (item.icon) {
+        var img = document.createElement('img');
+        img.className = 's6-icon'; img.src = item.icon; img.alt = (item.label || '') + ' icon';
+        return img;
+      }
+      var ph = document.createElement('span');
+      ph.className = 's6-icon s6-icon-placeholder'; ph.textContent = '+';
+      return ph;
+    }
+    function replaceIcon(iconWrap, item) {
+      var old = iconWrap.querySelector('.s6-icon');
+      var fresh = makeIcon(item);
+      if (old) iconWrap.replaceChild(fresh, old); else iconWrap.insertBefore(fresh, iconWrap.firstChild);
+    }
 
+    /* ── Build one defect card ── */
+    function makeBtn(item, idx) {
+      var btn = document.createElement('button');
+      btn.className = 's6-defect-btn'; btn.setAttribute('data-defect-id', item.id);
+
+      var iconWrap = document.createElement('span');
+      iconWrap.className = 's6-icon-wrap';
+      iconWrap.appendChild(makeIcon(item));
+
+      if (EDIT_MODE) {
+        var ctrls = document.createElement('span');
+        ctrls.className = 's6-icon-ctrls'; ctrls.setAttribute('data-builder-only', '');
+
+        var changeBtn = document.createElement('span');
+        changeBtn.className = 's6-icon-btn s6-icon-change'; changeBtn.title = 'Change image';
+        changeBtn.setAttribute('role', 'button'); changeBtn.innerHTML = '&#8682;';
+        changeBtn.addEventListener('click', function (e) {
+          e.stopPropagation(); e.preventDefault();
+          var input = document.createElement('input');
+          input.type = 'file'; input.accept = 'image/*'; input.style.display = 'none';
+          document.body.appendChild(input);
+          input.addEventListener('change', function (ev) {
+            document.body.removeChild(input);
+            var file = ev.target.files[0]; if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function (re) {
+              window.PBUpload(file.name, re.target.result).then(function (p) {
+                if (!p) return;
+                item.icon = p; replaceIcon(iconWrap, item); persistConfig();
+              });
+            };
+            reader.readAsDataURL(file);
+          });
+          input.click();
+        });
+
+        var clearBtn = document.createElement('span');
+        clearBtn.className = 's6-icon-btn s6-icon-del'; clearBtn.title = 'Clear image';
+        clearBtn.setAttribute('role', 'button'); clearBtn.innerHTML = '&#10005;';
+        clearBtn.addEventListener('click', function (e) {
+          e.stopPropagation(); e.preventDefault();
+          item.icon = ''; replaceIcon(iconWrap, item); persistConfig();
+        });
+
+        ctrls.appendChild(changeBtn); ctrls.appendChild(clearBtn);
+        iconWrap.appendChild(ctrls);
+      }
+      btn.appendChild(iconWrap);
+
+      var labelEl = document.createElement('span');
+      labelEl.className = 's6-defect-label'; labelEl.textContent = item.label;
+      labelEl.setAttribute('data-edit', 's6-label-' + idx);
+      if (EDIT_MODE) {
+        labelEl.contentEditable = 'true'; labelEl.spellcheck = false;
+        labelEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); labelEl.blur(); } });
+        labelEl.addEventListener('blur', function () { var v = labelEl.textContent.trim(); if (v) item.label = v; persistConfig(); });
+        labelEl.addEventListener('click', function (e) { if (!window.previewLang || window.previewLang === 'en') e.stopPropagation(); });
+      }
+      btn.appendChild(labelEl);
+
+      if (EDIT_MODE) {
+        var cardDel = document.createElement('span');
+        cardDel.className = 's6-card-del'; cardDel.setAttribute('data-builder-only', '');
+        cardDel.setAttribute('role', 'button'); cardDel.title = 'Delete card'; cardDel.innerHTML = '&#10005;';
+        cardDel.addEventListener('click', function (e) {
+          e.stopPropagation(); e.preventDefault();
+          if (!window.confirm('Delete "' + (item.label || 'this defect') + '" card?')) return;
+          config.splice(idx, 1);
+          renderSelector(); persistConfig();
+        });
+        btn.appendChild(cardDel);
+      }
+
+      btn.addEventListener('click', function () {
+        if (document.activeElement && document.activeElement.isContentEditable) return;
+        showDefect(idx);
+        if (window.Track) Track.click(slideId, item.label);
+      });
+
+      return btn;
+    }
+
+    /* ── Find a free carousel slot for a new card (spares first) ── */
+    function freeSlot() {
+      var used = config.map(function (c) { return c.carKey; });
+      var i, k;
+      for (i = 0; i < ALL_SLOTS.length; i++) { k = ALL_SLOTS[i]; if (k.indexOf('s6-defect-x') === 0 && used.indexOf(k) === -1) return k; }
+      for (i = 0; i < ALL_SLOTS.length; i++) { k = ALL_SLOTS[i]; if (used.indexOf(k) === -1) return k; }
+      return null;
+    }
+    function clearSlot(carKey) {
+      var car = root.querySelector('.s6-defect-car[data-edit="' + carKey + '"]');
+      if (!car) return;
+      var track = car.querySelector('.ls-carousel-track');
+      if (track) track.innerHTML = '';          // truly empty — no placeholder slide
+      car._lsCarouselInit = false;              // let it re-init cleanly when first shown
+      // Persist the emptied slot so a reused spare never resurrects stale images on reload
+      document.dispatchEvent(new CustomEvent('slide-carousel-save', {
+        detail: { editKey: carKey, html: '<div class="ls-carousel-track"></div>' }
+      }));
+    }
+
+    /* ── Render the full selector strip ── */
+    function renderSelector() {
+      currentIdx = -1;
+      selector.innerHTML = '';
+      config.forEach(function (item, idx) { selector.appendChild(makeBtn(item, idx)); });
+
+      if (EDIT_MODE && config.length < MAX_CARDS) {
+        var add = document.createElement('button');
+        add.className = 's6-defect-btn s6-add-btn'; add.setAttribute('data-builder-only', '');
+        add.title = 'Add defect type';
+        var ai = document.createElement('span'); ai.className = 's6-add-icon'; ai.textContent = '+';
+        var al = document.createElement('span'); al.className = 's6-defect-label'; al.textContent = 'Add';
+        add.appendChild(ai); add.appendChild(al);
+        add.addEventListener('click', function () {
+          if (config.length >= MAX_CARDS) return;
+          var slot = freeSlot(); if (!slot) return;
+          clearSlot(slot);
+          config.push({ id: slot, label: 'New defect', icon: '', carKey: slot });
+          renderSelector(); persistConfig();
+        });
+        selector.appendChild(add);
+      }
+      showDefault();
+    }
+
+    loadConfig();
+    renderSelector();
   })();
-  </script>
-
-  <script>
-  (function () { var s = document.currentScript;
-    setTimeout(function () { if (window.PE && s) PE.initSlide(s.closest('.slide')); }, 0); })();
   </script>
 </div>
