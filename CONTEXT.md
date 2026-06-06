@@ -181,6 +181,16 @@ All content slides now use this structure:
 - [ ] **Dashboard — Events chart** — slide popularity + time-series + drill-down per-slide sub-events (Feature-M-2026-05-22)
 - [ ] **Hero bg color fix** — opacity/color not updating in canvas (Issue-H-2026-05-17)
 - [x] **Tabs language switch fix** — `applyPreviewLang` now resets `_lsTabsInit` + re-inits tabs after every language change; `tabs.js` removes duplicate `+ Tab` buttons on re-init; deployed as v1.1.2 (2026-05-27)
+- [x] **Slide System Rulebook** — `architecture/slide-system-rulebook.md` is the single source of truth for anatomy, IDs, tracking, deck model, and template guardrails; slide gate validator added as pre-commit hook (2026-06-06)
+- [x] **Standardization milestone** — two-block theming, slide rebuilds, gallery/Details/hero patterns brought to rulebook compliance (2026-06-06)
+- [x] **Translation system architecture doc** — `architecture/translation-system.md` documents the full multi-language / Translation Center system (2026-06-06)
+- [x] **Upload improvements** — content-dedup (identical images stored once), overwrite-by-name, all upload paths (logo, hero, defect icons) share one unified `dedupUpload` pipeline; overwrite warning added (2026-06-06)
+- [x] **Slide 06 Surface — per-card defect icons** — each defect card has an uploadable icon; legacy canvas renderer removed; dynamic add/delete cards preserved (2026-06-06)
+- [x] **tracker.js guardrails** — `Track.slideId()` guarded in cover/company cartridges; `tracker.js` loaded in preview routes before slide scripts run; `Track` defined in `<head>` of published output (2026-06-06)
+- [x] **Publish fixes** — `finished-presentations/` removed from `.gitignore`; language-switcher script moved after `<body>` open to fix script load order (2026-06-06)
+- [x] **v1.2.0 released** — Docker image pushed to ghcr.io, in-place deploy on production stack, GitHub Release created (2026-06-06)
+- [x] **v1.2.1 hotfix** — `/slides/uploads` and `/slides/shared` moved before `requireAuth` so shared/readonly presentations can load images without a session cookie; localhost URLs scrubbed from data files (2026-06-06)
+- [x] **Sidebar version label** — `v{version}` shown below Log out in all 5 sidebar pages; `.sidebar-version` CSS class in `app-style.css`; release checklist updated (2026-06-06)
 
 ## Phase Roadmap
 - **Phase 1** (current) — Local app, single user, build + publish
@@ -188,4 +198,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-05-27 (session 20)
+Last updated: 2026-06-06 (session 21)

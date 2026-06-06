@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-05-27 (session 20)
+Last updated: 2026-06-06 (session 21)
 
 ---
 
@@ -26,6 +26,11 @@ App-presentation-builder/
 ├── CHANGELOG.md                    ← Release history (Keep a Changelog format)
 ├── VERSIONS.md                     ← Docker image registry + deploy workflow
 ├── docker-compose.yml              ← Local/dev compose (builds from source)
+├── architecture/
+│   ├── slide-system-rulebook.md    ← THE single source of truth: anatomy, IDs, tracking, templates, deck model
+│   ├── standardization-plan.md     ← Decisions record + migration status
+│   ├── translation-system.md       ← Full multi-language / Translation Center system doc
+│   └── skill-package/              ← Claude Desktop skill bundle for template generation
 ├── tasks/                          ← Pending task specs
 │   └── done/                       ← Completed task specs
 ├── prod/                           ← Prod runtime data (gitignored)
@@ -405,7 +410,7 @@ slide-templates.json  →  slide-library.json  →  decks/[id]/deck.json
 
 `GET /slides/deck-preview/:id` → looks up deck slide → library slide → template → calls `renderLayoutToHtml(tpl, deckSlideId, savedEdits)` → dispatches to render function → returns full HTML page with component JS.
 
-**⚠️ server.js is the SOLE source of truth for slide structure.** The `.html` files in `features/slides/` are not served — they are reference only. All slide changes must go into render functions in `server.js`.
+**⚠️ server.js is the SOLE source of truth for most slide structure.** However, newer slides (e.g. `slide-06-surface.html`) are self-contained HTML cartridges served directly at `/slides/[deckSlideId].html` — see the Slide System Rulebook for the full anatomy spec. Image uploads are publicly accessible (no auth required) at `/slides/uploads/` and `/slides/shared/`.
 
 ---
 
@@ -500,11 +505,11 @@ slide-templates.json  →  slide-library.json  →  decks/[id]/deck.json
 - **Dockerfile:** `builder/Dockerfile` — Node 20 Alpine, `npm install --omit=dev`, `node server.js`
 - **Dev compose:** `docker-compose.yml` (project root) — builds from source, mounts `builder/data/` + `builder/.../uploads/` + `finished-presentations/`
 - **Prod compose:** `C:/Users/Alex/n8n-projects/docker-compose.yml` — `presentation-builder` service using `ghcr.io/alexochoac/app-presentation-builder:latest`, mounts `prod/` folders
-- **Image registry:** `ghcr.io/alexochoac/app-presentation-builder` — v1.1.2 + latest published
-- **GitHub Release:** `github.com/Alexochoac/app-presentation-builder/releases/tag/v1.0`
+- **Image registry:** `ghcr.io/alexochoac/app-presentation-builder` — v1.2.1 + latest published
+- **Current prod version:** v1.2.1 (running in `v1.1.0/` folder — updated in-place)
 - **Prod stack:** `C:/Users/Alex/put-a-presentation/v1.1.0/` — project `put-a-presentation-v1-1-0`; builder on port 3005, umami on 3004, umami-db on 5434
-- **Patch release workflow:** build → push to ghcr.io → update `v1.1.0/docker-compose.yml` image tag → `docker compose -p put-a-presentation-v1-1-0 up -d --no-deps --pull always builder`
-- **Full release workflow:** documented in `.claude/commands/release.md`
+- **Data sync:** prod data at `C:/Users/Alex/put-a-presentation/v1.1.0/data/` and `uploads/` — sync from local with robocopy (no /MIR for uploads to preserve prod-only files)
+- **Release workflow:** documented in `.claude/commands/release.md` — includes Step 7b (scrub localhost URLs) and Step 8b (update sidebar version label in 5 files)
 
 **Volume mounts (prod):**
 | Host | Container |
@@ -517,12 +522,14 @@ slide-templates.json  →  slide-library.json  →  decks/[id]/deck.json
 
 ## What's Next
 
-1. **Hero bg color fix** — opacity/color not updating in canvas (`Issue-H-2026-05-17`)
-2. **Translation — Preview navigate fix** — replace `setTimeout(50)` with reliable slide-ready signal
-3. **Dashboard — Engagement chart filter** — live-only filter, multi-select checkbox dropdown, card image shortcut (`Feature-M-2026-05-22`)
-4. **Dashboard — Events chart** — slide popularity + time-series + drill-down sub-events (`Feature-M-2026-05-22`)
-5. **fpDelete modal** — replace native `confirm()` with proper modal in builder-ui Finished Presentations
-6. **Design system refactor** — eliminate 3-layer CSS conflict (partially addressed by 24-var theme system)
-7. **Template update notifications** — "Update available" badge in My Library when template rows change
-8. **App UI icons standardise** — minimalist icon set across all pages
-9. **Slide 11 tag carousel double-stack** — empty-state CSS flex refactor causes two carousels to stack on tag button click (`Issue-M-2026-05-25`)
+1. **Chore — Surface slide cruft cleanup** — remove leftover defect-card code from the old canvas renderer (`Chore-L-2026-06-06`)
+2. **Hero bg color fix** — opacity/color not updating in canvas (`Issue-H-2026-05-17`)
+3. **Translation — Preview navigate fix** — replace `setTimeout(50)` with reliable slide-ready signal
+4. **Dashboard — Engagement chart filter** — live-only filter, multi-select checkbox dropdown, card image shortcut (`Feature-M-2026-05-22`)
+5. **Dashboard — Events chart** — slide popularity + time-series + drill-down sub-events (`Feature-M-2026-05-22`)
+6. **fpDelete modal** — replace native `confirm()` with proper modal in builder-ui Finished Presentations
+7. **Design system refactor** — eliminate 3-layer CSS conflict (partially addressed by 24-var theme system)
+8. **Template update notifications** — "Update available" badge in My Library when template rows change
+9. **App UI icons standardise** — minimalist icon set across all pages
+10. **Slide 11 tag carousel double-stack** — empty-state CSS flex refactor causes two carousels to stack on tag button click (`Issue-M-2026-05-25`)
+11. **Sidebar version label** — currently hardcoded in 5 HTML files; could be wired dynamically from `/api/settings`

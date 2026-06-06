@@ -379,6 +379,13 @@ ul { list-style: none; }
   font-size: 13px;
 }
 
+.sidebar-version {
+  padding: 4px 12px 8px;
+  font-size: 11px;
+  color: rgba(255,255,255,.2);
+  user-select: none;
+}
+
 /* Collapse toggle (desktop only) */
 .sidebar-toggle {
   display: flex;
