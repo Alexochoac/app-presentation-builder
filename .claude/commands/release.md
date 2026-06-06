@@ -281,6 +281,33 @@ Note: use `host.docker.internal` (not a container name) because the new stack is
 
 ---
 
+## Step 7b — Scrub localhost URLs from data files
+
+Image URLs saved during local development may have been stored as absolute `http://localhost:3000/...` paths instead of relative `/slides/uploads/...` paths. These break in production (mixed content errors over HTTPS).
+
+Run this before building the image:
+
+```bash
+grep -rl "http://localhost:3000" builder/data/
+```
+
+If any files are found, strip the host prefix:
+
+```bash
+sed -i 's|http://localhost:3000/slides/uploads/|/slides/uploads/|g' builder/data/decks/default/translations.json builder/data/slide-library.json
+# add any other files grep found
+```
+
+Verify zero matches remain:
+
+```bash
+grep -r "http://localhost:3000" builder/data/
+```
+
+Commit the cleaned files before building.
+
+---
+
 ## Step 8 — Update CHANGELOG.md
 
 If not already done, add a new entry at the top of the release history:
@@ -290,6 +317,24 @@ If not already done, add a new entry at the top of the release history:
 
 ### Added / Changed / Fixed
 - {bullets from release notes}
+```
+
+---
+
+## Step 8b — Update sidebar version label
+
+Update the `v{old}` string to `v{version}` in the `.sidebar-version` div across all 5 sidebar files:
+
+- `builder/features/builder-ui/index.html`
+- `builder/features/dashboard/index.html`
+- `builder/features/layouts/index.html`
+- `builder/features/settings/index.html`
+- `builder/features/slides/index.html`
+
+Each file has this pattern just below the Log out link — update the version number in all of them:
+
+```html
+<div class="sidebar-version">v{version}</div>
 ```
 
 ---

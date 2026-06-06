@@ -5443,7 +5443,7 @@
         }
       },
       "int-logo-3": {
-        "en": "http://localhost:3000/slides/uploads/LOGO%20Benteler.jpg",
+        "en": "/slides/uploads/LOGO%20Benteler.jpg",
         "es": {
           "current": "\n\n        <button class=\"int-logo-btn\" data-builder-only=\"\" data-logo-idx=\"3\">+ Logo</button>\n      ",
           "previous": null,
@@ -5611,7 +5611,7 @@
         }
       },
       "int-logo-1": {
-        "en": "http://localhost:3000/slides/uploads/LOGO%20LISEC.png",
+        "en": "/slides/uploads/LOGO%20LISEC.png",
         "es": {
           "current": "\n\n        <button class=\"int-logo-btn\" data-builder-only=\"\" data-logo-idx=\"1\">+ Logo</button>\n      ",
           "previous": null,
@@ -5639,7 +5639,7 @@
         }
       },
       "int-logo-9": {
-        "en": "http://localhost:3000/slides/uploads/LOGO%20ERDMAN.png",
+        "en": "/slides/uploads/LOGO%20ERDMAN.png",
         "es": {
           "current": "\n\n        <button class=\"int-logo-btn\" data-builder-only=\"\" data-logo-idx=\"9\">+ Logo</button>\n      ",
           "previous": null,
