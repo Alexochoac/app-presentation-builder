@@ -1,5 +1,5 @@
 {
-  "activeDeckId": "default",
+  "activeDeckId": "deck-rebuild",
   "decks": [
     {
       "id": "default",
@@ -26,33 +26,20 @@
       "name": "SoftSolution (rebuild)",
       "theme": "dark",
       "createdAt": "2026-06-01T00:00:00.000Z",
-      "updatedAt": "2026-06-03T19:13:45.357Z",
+      "updatedAt": "2026-06-07T17:00:40.991Z",
       "logo": "/slides/uploads/LOGO_Softsolution_Black.jpg",
       "heroBg": "/slides/uploads/Panther_Eye.jpeg",
       "heroBgFocal": "25% 50%",
       "colors": {
-        "primary": "#34366f"
+        "primary": "#282ff0"
       },
       "heroBgFocalGrid": 5,
       "heroBgFit": "cover",
-      "styleRef": "glassmorphism.html",
-      "styleCss": ":root {\n  --bg: #0a0a0f;\n  --slide-hero-bg: #0a0a0f;\n  --slide-hero-rgb: 10,10,15;\n  --text: #ffffff;\n  --text-muted: rgba(255,255,255,.55);\n  --bg-card: rgba(255, 255, 255, 0.15);\n  --bg-card-hover: rgba(255,255,255,.09);\n  --border: rgba(255,255,255,.10);\n  --border-hover: rgba(255,255,255,.28);\n  --nav-bg: rgba(0,0,0,.65);\n  --nav-border: rgba(255,255,255,.08);\n  --dot-inactive: rgba(255,255,255,.18);\n  --counter: #555;\n}\n",
+      "styleRef": null,
+      "styleCss": null,
       "heroBgOpacity": 100,
       "heroBgType": "image",
       "brandCredit": "GlassQuality.com"
-    },
-    {
-      "id": "deck-1780653517426-z95wf",
-      "name": "Daily",
-      "theme": "dark",
-      "createdAt": "2026-06-05T09:58:37.426Z",
-      "updatedAt": "2026-06-05T09:58:37.426Z",
-      "logo": "/slides/uploads/CostOfQualityDefects.png",
-      "heroBg": null,
-      "heroBgFocal": "50% 50%",
-      "colors": {
-        "primary": "#F5A623"
-      }
     }
   ]
 }

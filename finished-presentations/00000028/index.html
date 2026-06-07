@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>15</title>
+  <title>67</title>
   <style>
 /*
   Presentation Builder — Softsolution
@@ -458,7 +458,7 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
 }
 
 
-:root{--accent:#F5A623;--accent-mid:#d8921f;--accent-light:#f9cb7f;--accent-rgb:245,166,35;}
+:root{--accent:#282ff0;--accent-mid:#2329d3;--accent-light:#8286f6;--accent-rgb:40,47,240;}
   </style>
 
   <style>
@@ -616,37 +616,156 @@ window.Track = (function () {
   };
 
 })();
+
+// ── Shared image-upload helper ──────────────────────────────────────────────
+// POSTs to /api/upload-image. If the server warns the (sanitized) name is already
+// in use (HTTP 409 needsConfirm), asks the user before overwriting it everywhere.
+// Resolves to the saved '/slides/uploads/...' path, or null if cancelled/failed.
+// Lives here because tracker.js is always loaded first (<head>) in every context.
+window.PBUpload = function (filename, dataUrl) {
+  function send(confirmOverwrite) {
+    return fetch('/api/upload-image', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename: filename, data: dataUrl, confirmOverwrite: confirmOverwrite })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (d && d.needsConfirm) {
+        var where = d.usedIn.slice(0, 8).join(', ') + (d.usedIn.length > 8 ? ', …' : '');
+        if (window.confirm('"' + d.name + '" is already used by ' + d.usedIn.length +
+            ' place(s) (' + where + ').\n\nReplacing it updates the image EVERYWHERE it is used. Continue?')) {
+          return send(true);
+        }
+        return null;
+      }
+      return (d && d.path) || null;
+    });
+  }
+  return send(false);
+};
 </script>
 </head>
-<body>
+<body data-default-lang="en" data-pres-id="00000028">
 <div id="fp-shell">
   <div id="fp-header">
     <a href="https://glassquality.com" id="fp-dash-btn">Go to Glassquality.com</a>
     <div style="width:1px;height:20px;background:#333;flex-shrink:0;"></div>
     <button class="fp-nav-btn" id="fp-prev" disabled>&#8249;</button>
-    <div id="fp-counter">1 / 1</div>
-    <button class="fp-nav-btn" id="fp-next" disabled>&#8250;</button>
-
+    <div id="fp-counter">1 / 3</div>
+    <button class="fp-nav-btn" id="fp-next">&#8250;</button>
+    <div id="fp-lang-drop"><button id="fp-lang-btn" onclick="fpLangToggle()"><span id="fp-lang-label">EN</span><svg width="8" height="8" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg></button><div id="fp-lang-menu"><button data-lang="en" onclick="fpLangSelect('en')">EN — English</button><button data-lang="es" onclick="fpLangSelect('es')">ES — Español</button></div></div>
     <div id="fp-header-spacer"></div>
-    <div id="fp-title">15</div>
+    <div id="fp-title">67</div>
     <button class="fp-share-btn" id="fp-share-btn-hdr" title="Share presentation"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
   </div>
   <div id="fp-viewer">
     <div class="slides-container">
 <div class="fp-slide" data-slide-index="0" style="">
-<div class="slide content template02-company" data-slide="company-intro-copy" data-slide-mode="sequence">
+<div class="slide content template03-why-us" data-slide="why-us" data-slide-mode="sequence">
+
+  <!-- Logo row — defaults to the product logo; deck branding overrides it.
+       data-managed = server-injected, never hand-editable (so auto-save can't serialise it). -->
+  <div class="slide-logo-row" data-edit="logo-row" data-managed=""><span data-lang="en"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span><span data-lang="es" hidden=""><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span></div>
+
+  <div class="slide-layout">
+    <span class="softsolution-credit" data-edit="credit"><span data-lang="en">by GlassQuality.com</span><span data-lang="es" hidden="">by GlassQuality.com</span></span>
+
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label"><span data-lang="en">The Case for Inspection</span><span data-lang="es" hidden="">The Case for Inspection</span></div>
+      <h1 class="slide-title" data-edit="headline"><span data-lang="en">Why automate quality inspection<br>for <span class="blue">flat glass processing</span></span><span data-lang="es" hidden="">Why automate quality inspection<br>for <span class="blue">flat glass processing</span></span></h1>
+      <p class="slide-subtitle anim-in" data-edit="subtitle"><span data-lang="en">Manual inspection versus automated inspection — the difference at a glance.</span><span data-lang="es" hidden="">Manual inspection versus automated inspection — the difference at a glance.</span></p>
+    </header>
+
+    <div class="slide-body">
+
+      <!-- Two-column comparison. Each column body is ONE editable blob (data-edit) saved as a
+           unit; tier rows are styled <li class="compare-tier"> inside the same list, so no
+           per-item keys are needed. .card surface → theme Finish blocks restyle it for free. -->
+      <div class="template03-why-us-compare">
+
+        <!-- Problem / status-quo column -->
+        <div class="card card-compare card-compare--problem anim-in">
+          <div class="card-compare-head" data-edit="col-header-prob"><span data-lang="en">Without Inspection Automation</span><span data-lang="es" hidden="">Without Inspection Automation</span></div>
+          <ul class="card-compare-list" data-edit="prob-list"><li class="compare-tier">Human Limitations</li><li>Operator fatigue — detection rates drop significantly over long shifts</li><li>As line speed increases, operator effectiveness declines — more throughput means more defects slip through</li><li>100% manual inspection is impossible at production speed</li><li>Distortion &amp; anisotropy are <strong>invisible to the naked eye</strong> — no matter how skilled the operator</li><li class="compare-tier">Business Impact</li><li>Inconsistent quality &amp; frequent customer complaints</li><li>Construction-site rejections — glass already delivered &amp; installed means transport, rework &amp; project delays</li><li>Increased liability risks &amp; reputational damage</li><li>Automotive: one defect triggers a full batch return — shipping &amp; material costs on the entire load</li></ul>
+        </div>
+
+        <!-- Benefit / solution column -->
+        <div class="card card-compare card-compare--benefit anim-in">
+          <div class="card-compare-head" data-edit="col-header-ben"><span data-lang="en">LineScanner &amp; Osprey</span><span data-lang="es" hidden="">LineScanner &amp; Osprey</span></div>
+          <ul class="card-compare-list" data-edit="ben-list"><li>100% inspection of every glass, every shift — no fatigue, no blind spots</li><li>Real-time process control &amp; quality feedback</li><li>Prove quality to customers — a documented defense against claims</li><li>Database &amp; archive for shift accountability and CpK analysis</li><li>Detects distortion, anisotropy &amp; surface defects <strong>invisible to the human eye</strong></li><li>Acceptance procedures for new machinery (e.g. furnaces)</li><li>Increase throughput &amp; reduce costly downstream rejects</li><li>Mandatory as per industry standards</li></ul>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <style>
+    /* Layout-only scoped rules. Both columns compose from .card, so theme Finish blocks restyle
+       them for free; the rules here are purely positional + the ✓ / ✕ list markers. */
+    .template03-why-us { padding:52px 16px 40px !important; overflow-y:auto; }
+    .template03-why-us .slide-body { width:100%; align-items:stretch; }
+    .template03-why-us-compare { display:grid; grid-template-columns:1fr; gap:14px; width:100%; max-width:920px; margin:0 auto; flex:1; min-height:0; }
+
+    .template03-why-us .card-compare { display:flex; flex-direction:column; padding:20px 22px; min-height:0; border-top:3px solid var(--border); }
+    .template03-why-us .card-compare:hover { transform:none; }
+    .card-compare-head { font-size:clamp(14px,1.6vw,20px); font-weight:800; letter-spacing:.01em; padding-bottom:10px; margin-bottom:12px; border-bottom:1px solid var(--border); color:var(--text-muted); }
+
+    .card-compare-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+    .card-compare-list:focus { outline:none; }
+    .card-compare-list li { position:relative; padding-left:26px; font-size:clamp(12px,1.15vw,15px); line-height:1.4; color:var(--text-muted); }
+    .card-compare-list li.compare-tier { padding-left:0; margin-top:8px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--text); opacity:.65; }
+    .card-compare-list li.compare-tier:first-child { margin-top:0; }
+    .card-compare-list li:not(.compare-tier)::before { position:absolute; left:0; top:0; font-weight:800; }
+
+    /* Problem column — neutral, muted ✕ markers */
+    .card-compare--problem .card-compare-list li:not(.compare-tier)::before { content:"\2715"; color:var(--text-muted); }
+
+    /* Benefit column — accent surface + ✓ markers */
+    .card-compare--benefit { border-top-color:var(--accent); background:rgba(var(--accent-rgb),.04); }
+    .card-compare--benefit .card-compare-head { color:var(--accent); }
+    .card-compare--benefit .card-compare-list li:not(.compare-tier) { color:var(--text); }
+    .card-compare--benefit .card-compare-list li:not(.compare-tier)::before { content:"\2713"; color:var(--accent); }
+
+    @media (min-width:769px) {
+      .template03-why-us { padding:52px 80px 0 !important; overflow-y:unset; }
+      .template03-why-us-compare { grid-template-columns:1fr 1fr; gap:20px; }
+    }
+  </style>
+
+  <script>
+  (function () {
+    var slide = document.currentScript.closest('[data-slide]');
+    if (window.PB_READONLY) slide.classList.add('template03-why-us-readonly');
+    /* Static comparison — no interactive elements, so no Track wiring needed. */
+    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
+  })();
+  </script>
+
+<button class="pb-gallery-btn" data-ls-gallery-open="" data-builder-feature="gallery" title="Open gallery">
+  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+  Gallery
+</button>
+<div data-ls-gallery="" data-edit="gallery-track" data-autoplay="8" style="display:none;">
+  <div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat">
+    <span class="ls-gallery-label">Section Title</span>
+    <span class="ls-gallery-number">Key Fact</span>
+    <span class="ls-gallery-body-text">Description text here</span>
+  </div></div>
+</div></div>
+</div>
+<div class="fp-slide" data-slide-index="1" style="display:none;">
+<div class="slide content template02-company" data-slide="company-intro" data-slide-mode="sequence">
 
   <!-- Logo row — defaults to the "Put A Presentation" product logo; deck branding overrides it.
        data-managed = server-injected, never hand-editable (so auto-save can't serialise it). -->
-  <div class="slide-logo-row" data-edit="logo-row" data-managed=""><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></div>
+  <div class="slide-logo-row" data-edit="logo-row" data-managed=""><span data-lang="en"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span><span data-lang="es" hidden=""><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span></div>
 
   <div class="slide-layout">
-    <span class="softsolution-credit" data-edit="credit">by YourBrand.com</span>
+    <span class="softsolution-credit" data-edit="credit"><span data-lang="en">by GlassQuality.com</span><span data-lang="es" hidden="">por GlassQuality.com</span></span>
 
     <header class="slide-head">
-      <div class="section-label" data-edit="section-label">Section Label</div>
-      <h1 class="slide-title" data-edit="headline">Your Company <span class="blue">Headline</span></h1>
-      <p class="slide-subtitle anim-in" data-edit="tagline">One sentence describing your company and what it does.</p>
+      <div class="section-label" data-edit="section-label"><span data-lang="en">Our Company</span><span data-lang="es" hidden="">Nuestra Empresa</span></div>
+      <h1 class="slide-title" data-edit="headline"><span data-lang="en">Quality inspection <span class="blue">is all we do</span></span><span data-lang="es" hidden="">La inspección de calidad <span class="blue">es todo lo que hacemos</span></span></h1>
+      <p class="slide-subtitle anim-in" data-edit="tagline"><span data-lang="en">We inspect every quality aspect of your glass guaranteeing peak performance and the best quality.</span><span data-lang="es" hidden="">Inspeccionamos todos los aspectos de calidad de su vidrio garantizando un rendimiento máximo y la mejor calidad.</span></p>
     </header>
 
     <div class="slide-body">
@@ -656,102 +775,86 @@ window.Track = (function () {
            image carousel and has NO tab button — it is revealed by clicking the active tab. -->
       <div class="ls-tabs template02-company-tabs" data-edit="tabs" data-track="template02-company:tabs">
         <div class="ls-tab-list">
-          <button class="ls-tab" data-panel="1" data-edit="tab-about">About</button>
-          <button class="ls-tab" data-panel="2" data-edit="tab-technologies">Technology</button>
-          <button class="ls-tab" data-panel="3" data-edit="tab-network">Network</button>
-          <button class="ls-tab active" data-panel="4" data-edit="tab-iqc">Group</button>
+          <button class="ls-tab active" data-panel="1" data-edit="tab-about" style=""><span data-lang="en">About Us</span><span data-lang="es" hidden="">About Us</span></button>
+          <button class="ls-tab" data-panel="2" data-edit="tab-technologies"><span data-lang="en">Technologies</span><span data-lang="es" hidden="">Technologies</span></button>
+          <button class="ls-tab" data-panel="3" data-edit="tab-network"><span data-lang="en">Global Network</span><span data-lang="es" hidden="">Global Network</span></button>
+          <button class="ls-tab" data-panel="4" data-edit="tab-iqc" style=""><span data-lang="en">IQC Group</span><span data-lang="es" hidden="">IQC Group</span></button>
         </div>
         <div class="ls-tab-panels">
 
-          <!-- Panel 0 — image carousel (revealed by clicking the active tab) -->
+          <!-- Panel 0 — team carousel (revealed by clicking the active tab) -->
           <div class="ls-tab-panel" data-panel="0" style="padding-top:12px;">
             <div class="ls-carousel" data-counter="" data-edit="company-carousel" data-track="template02-company:carousel" style="flex:1;min-height:0;width:100%;">
               <div class="ls-carousel-track" style="transform:translateX(0px);">
-                <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;">
-                  <span style="color:var(--text-muted);font-size:13px;font-style:italic;">Add images with the + Image button</span>
-                  <div class="ls-carousel-caption" data-edit="company-caption">Image caption</div>
+                <div class="ls-carousel-slide">
+                  <img src="../shared/Group-Picture-of-the-Team-members-.png" alt="Group Picture of the Team members" data-zoom="">
+                  <div class="ls-carousel-caption" data-edit="company-caption"><span data-lang="en">Group Picture of the Team members</span><span data-lang="es" hidden="">Foto de Grupo de los Miembros del Equipo</span></div>
                 </div>
               </div>
-              <div class="ls-carousel-counter"></div>
-            </div>
+              
+            <div class="ls-carousel-counter"></div></div>
           </div>
 
-          <!-- Panel 1 — three pillar cards -->
-          <div class="ls-tab-panel" data-panel="1">
+          <!-- Panel 1 — About: three pillar cards -->
+          <div class="ls-tab-panel active" data-panel="1">
             <div class="template02-company-pillars">
-              <div class="card card-pillar anim-in">
+              <div class="card card-pillar anim-in" style="">
                 <div class="card-pillar-num">01</div>
                 <div class="card-pillar-content">
-                  <div class="card-pillar-title" data-edit="pillar-1-title">Pillar One</div>
-                  <div class="card-pillar-desc" data-edit="pillar-1-desc">Short description of the first pillar.</div>
+                  <div class="card-pillar-title" data-edit="pillar-1-title"><span data-lang="en">One Partner</span><span data-lang="es" hidden="">Un Socio</span></div>
+                  <div class="card-pillar-desc" data-edit="pillar-1-desc"><span data-lang="en">for all your quality inspection needs — surface, geometry, dimension, and more</span><span data-lang="es" hidden="">para todas sus necesidades de inspección de calidad — superficie, geometría, dimensión, y más</span></div>
                 </div>
               </div>
-              <div class="card card-pillar anim-in">
+              <div class="card card-pillar anim-in" style="">
                 <div class="card-pillar-num">02</div>
                 <div class="card-pillar-content">
-                  <div class="card-pillar-title" data-edit="pillar-2-title">Pillar Two</div>
-                  <div class="card-pillar-desc" data-edit="pillar-2-desc">Short description of the second pillar.</div>
+                  <div class="card-pillar-title" data-edit="pillar-2-title"><span data-lang="en">Global Presence</span><span data-lang="es" hidden="">Presencia Global</span></div>
+                  <div class="card-pillar-desc" data-edit="pillar-2-desc"><span data-lang="en">global support hubs with local experts in 23 countries across 6 continents</span><span data-lang="es" hidden="">centros de soporte global con expertos locales en 23 países en 6 continentes</span></div>
                 </div>
               </div>
-              <div class="card card-pillar anim-in">
+              <div class="card card-pillar anim-in" style="">
                 <div class="card-pillar-num">03</div>
                 <div class="card-pillar-content">
-                  <div class="card-pillar-title" data-edit="pillar-3-title">Pillar Three</div>
-                  <div class="card-pillar-desc" data-edit="pillar-3-desc">Short description of the third pillar.</div>
+                  <div class="card-pillar-title" data-edit="pillar-3-title"><span data-lang="en">Technological Leadership</span><span data-lang="es" hidden="">Liderazgo Tecnológico</span></div>
+                  <div class="card-pillar-desc" data-edit="pillar-3-desc"><span data-lang="en">true scanning · bright-field · dark-field · reflection · spectrometer</span><span data-lang="es" hidden="">escaneo verdadero · campo brillante · campo oscuro · reflexión · espectrómetro</span></div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Panel 2 — feature list -->
+          <!-- Panel 2 — Technologies: feature list -->
           <div class="ls-tab-panel" data-panel="2">
             <div class="feature-list" style="margin:12px 0 0;gap:8px;">
-              <div class="feature-item anim-in"><div class="feature-num">1</div><div class="feature-text"><strong data-edit="tech-1-name">Feature One</strong><span data-edit="tech-1-desc"> — Short description of this feature.</span></div></div>
-              <div class="feature-item anim-in"><div class="feature-num">2</div><div class="feature-text"><strong data-edit="tech-2-name">Feature Two</strong><span data-edit="tech-2-desc"> — Short description of this feature.</span></div></div>
-              <div class="feature-item anim-in"><div class="feature-num">3</div><div class="feature-text"><strong data-edit="tech-3-name">Feature Three</strong><span data-edit="tech-3-desc"> — Short description of this feature.</span></div></div>
-              <div class="feature-item anim-in"><div class="feature-num">4</div><div class="feature-text"><strong data-edit="tech-4-name">Feature Four</strong><span data-edit="tech-4-desc"> — Short description of this feature.</span></div></div>
+              <div class="feature-item anim-in" style=""><div class="feature-num">1</div><div class="feature-text"><strong data-edit="tech-1-name"><span data-lang="en">90° Parallel-Light System</span><span data-lang="es" hidden="">Sistema de Luz Paralela a 90°</span></strong><span data-edit="tech-1-desc"><span data-lang="en"> — Sensor-based technology using a 90° parallel-light beam to detect surface defects.</span><span data-lang="es" hidden="">— Tecnología basada en sensores que utiliza un haz de luz paralela a 90° para detectar defectos de superficie.</span></span></div></div>
+              <div class="feature-item anim-in" style=""><div class="feature-num">2</div><div class="feature-text"><strong data-edit="tech-2-name"><span data-lang="en">Bright-field &amp; Dark-field</span><span data-lang="es" hidden="">Campo Brillante y Campo Oscuro</span></strong><span data-edit="tech-2-desc"><span data-lang="en"> — Camera-based technology combining both illumination modes.</span><span data-lang="es" hidden="">— Tecnología basada en cámara que combina ambos modos de iluminación.</span></span></div></div>
+              <div class="feature-item anim-in" style=""><div class="feature-num">3</div><div class="feature-text"><strong data-edit="tech-3-name"><span data-lang="en">Reflexion Technology</span><span data-lang="es" hidden="">Tecnología de Reflexión</span></strong><span data-edit="tech-3-desc"><span data-lang="en"> — Sensor and stray-light technology using reflexion principles.</span><span data-lang="es" hidden="">— Tecnología de sensor y luz parásita utilizando principios de reflexión.</span></span></div></div>
+              <div class="feature-item anim-in" style=""><div class="feature-num">4</div><div class="feature-text"><strong data-edit="tech-4-name"><span data-lang="en">Spectrometer</span><span data-lang="es" hidden="">Espectrómetro</span></strong><span data-edit="tech-4-desc"><span data-lang="en"> — Polarized filter sensor-technology for spectral analysis.</span><span data-lang="es" hidden="">— Tecnología de sensor con filtro polarizado para análisis espectral.</span></span></div></div>
             </div>
           </div>
 
-          <!-- Panel 3 — a single uploadable image (e.g. a map) -->
+          <!-- Panel 3 — Global Network: a single uploadable map image (simplified from the old pin map) -->
           <div class="ls-tab-panel" data-panel="3">
-            <div class="card template02-company-map" data-edit="map-image" data-edit-type="image" title="Click to change the image">
-              <img class="template02-company-map-img template02-company-map-img--missing no-img" src="" alt="Panel image" onerror="this.classList.add('template02-company-map-img--missing')">
+            <div class="card template02-company-map" data-edit="map-image" data-edit-type="image" title="Click to change the map image">
+              <img class="template02-company-map-img" src="../shared/World-Map-of-locations-.jpeg" alt="Global network map" onerror="this.classList.add('template02-company-map-img--missing')">
               <label class="template02-company-map-placeholder">
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="3" y="3" width="18" height="18" rx="3"></rect>
                   <circle cx="8.5" cy="8.5" r="1.5"></circle>
                   <polyline points="21 15 16 10 5 21"></polyline>
                 </svg>
-                <span>Image</span>
+                <span>Network Map</span>
                 <small>Click to upload</small>
               </label>
             </div>
           </div>
 
-          <!-- Panel 4 — brand/partner cards -->
-          <div class="ls-tab-panel active" data-panel="4">
+          <!-- Panel 4 — IQC Group: brand cards -->
+          <div class="ls-tab-panel" data-panel="4">
             <div class="template02-company-iqc">
-              <div class="card card-iqc">
-                <div class="card-iqc-logo" data-edit="iqc-1-logo" data-edit-type="image"><img src="/shared/brand/logo.svg" alt="Brand logo"></div>
-                <div class="card-iqc-country" data-edit="iqc-1-country">Country</div>
-                <ul class="card-iqc-products" data-edit="iqc-1-products"><li>Product one</li><li>Product two</li></ul>
-              </div>
-              <div class="card card-iqc">
-                <div class="card-iqc-logo" data-edit="iqc-2-logo" data-edit-type="image"><img src="/shared/brand/logo.svg" alt="Brand logo"></div>
-                <div class="card-iqc-country" data-edit="iqc-2-country">Country</div>
-                <ul class="card-iqc-products" data-edit="iqc-2-products"><li>Product one</li><li>Product two</li></ul>
-              </div>
-              <div class="card card-iqc">
-                <div class="card-iqc-logo" data-edit="iqc-3-logo" data-edit-type="image"><img src="/shared/brand/logo.svg" alt="Brand logo"></div>
-                <div class="card-iqc-country" data-edit="iqc-3-country">Country</div>
-                <ul class="card-iqc-products" data-edit="iqc-3-products"><li>Product one</li><li>Product two</li></ul>
-              </div>
-              <div class="card card-iqc">
-                <div class="card-iqc-logo" data-edit="iqc-4-logo" data-edit-type="image"><img src="/shared/brand/logo.svg" alt="Brand logo"></div>
-                <div class="card-iqc-country" data-edit="iqc-4-country">Country</div>
-                <ul class="card-iqc-products" data-edit="iqc-4-products"><li>Product one</li><li>Product two</li></ul>
-              </div>
+              <div class="card card-iqc"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution" class="card-iqc-logo"><div class="card-iqc-country">Austria</div><ul class="card-iqc-products"><li>LineScanner</li><li>BowScanner</li><li>CulletScanner</li><li>VirtualDigitizing</li></ul></div>
+              <div class="card card-iqc"><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LiteSentry" class="card-iqc-logo"><div class="card-iqc-country">United States</div><ul class="card-iqc-products"><li>Osprey® 25 Distortion Inspection</li><li>Osprey® 25 Anisotropy Inspection</li><li>Owl – Furnace Control</li><li>LoadValidator</li><li>TS 4000 Thickness &amp; Coating Sensor</li></ul></div>
+              <div class="card card-iqc"><img src="../shared/LOGO_StrainOptics.png" alt="Strainoptics" class="card-iqc-logo" style="transform:scale(1.3);"><div class="card-iqc-country">United States</div><ul class="card-iqc-products"><li>GASP</li><li>Polarimeter</li></ul></div>
+              <div class="card card-iqc"><img src="../shared/LOGO_AVALON.png" alt="Avalon Vision" class="card-iqc-logo"><div class="card-iqc-country">United States</div><ul class="card-iqc-products"><li>MoldWatcher</li><li>ThermalWatch</li><li>NightHawk</li><li>QualityStation</li></ul></div>
             </div>
           </div>
 
@@ -760,10 +863,10 @@ window.Track = (function () {
 
       <!-- Stats row -->
       <div class="template02-company-stats">
-        <div class="kpi-card"><div class="kpi-value" data-edit="stat-founded">YYYY</div><div class="kpi-label" data-edit="stat-label-founded">Founded</div></div>
-        <div class="kpi-card"><div class="kpi-value" data-edit="stat-systems">000+</div><div class="kpi-label" data-edit="stat-label-systems">Metric</div></div>
-        <div class="kpi-card"><div class="kpi-value" data-edit="stat-countries">00</div><div class="kpi-label" data-edit="stat-label-countries">Metric</div></div>
-        <div class="kpi-card"><div class="kpi-value" data-edit="stat-employees">00</div><div class="kpi-label" data-edit="stat-label-employees">Metric</div></div>
+        <div class="kpi-card"><div class="kpi-value" data-edit="stat-founded"><span data-lang="en">1999</span><span data-lang="es" hidden="">1999</span></div><div class="kpi-label" data-edit="stat-label-founded"><span data-lang="en">Founded</span><span data-lang="es" hidden="">Fundada</span></div></div>
+        <div class="kpi-card"><div class="kpi-value" data-edit="stat-systems"><span data-lang="en">2050+</span><span data-lang="es" hidden="">2050+</span></div><div class="kpi-label" data-edit="stat-label-systems"><span data-lang="en">Systems installed</span><span data-lang="es" hidden="">Sistemas instalados</span></div></div>
+        <div class="kpi-card"><div class="kpi-value" data-edit="stat-countries"><span data-lang="en">23&nbsp;</span><span data-lang="es" hidden="">23&nbsp;</span></div><div class="kpi-label" data-edit="stat-label-countries"><span data-lang="en">Countries · 6 continents</span><span data-lang="es" hidden="">Países · 6 continentes</span></div></div>
+        <div class="kpi-card"><div class="kpi-value" data-edit="stat-employees"><span data-lang="en">60</span><span data-lang="es" hidden="">60</span></div><div class="kpi-label" data-edit="stat-label-employees"><span data-lang="en">Specialized employees</span><span data-lang="es" hidden="">Empleados especializados</span></div></div>
       </div>
 
     </div>
@@ -873,13 +976,9 @@ window.Track = (function () {
         img.classList.remove('template02-company-map-img--missing');
         var reader = new FileReader();
         reader.onload = function (ev) {
-          fetch('/api/upload-image', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ filename: file.name, data: ev.target.result })
-          })
-          .then(function (r) { return r.json(); })
+          window.PBUpload(file.name, ev.target.result)
           .then(function (data) {
+            data = { path: data };
             if (data.path) {
               img.src = data.path;
               document.dispatchEvent(new CustomEvent('slide-image-change', {
@@ -907,26 +1006,314 @@ window.Track = (function () {
     <span class="ls-gallery-number">Key Fact</span>
     <span class="ls-gallery-body-text">Description text here</span>
   </div></div>
-</div></div>
+<div class="ls-gallery-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects"><div class="ls-gallery-caption">CostOfQualityDefects</div></div><div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">Section Title</span><span class="ls-gallery-number">Key&nbsp;</span><span class="ls-gallery-body-text">Description text here</span></div></div></div></div>
 </div>
+<div class="fp-slide" data-slide-index="2" style="display:none;">
+<div class="slide content template14-cta" data-slide="call-to-action-validated-style" data-slide-mode="sequence">
+  <img class="cta-bg" src="../shared/image112.png" alt="" aria-hidden="true">
+  <div class="slide-logo-row" data-edit="logo-row" data-managed=""><span data-lang="en"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span><span data-lang="es" hidden=""><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span></div>
+  <div class="slide-layout">
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label"><span data-lang="en">Next Steps</span><span data-lang="es" hidden="">Next Steps</span></div>
+      <h1 class="slide-title" data-edit="headline"><span data-lang="en">Ready to <span class="blue">get started?</span></span><span data-lang="es" hidden="">Ready to <span class="blue">get started?</span></span></h1>
+      <div class="divider"></div>
+    </header>
+    <div class="slide-body">
+      <div class="cta-box anim-in">
+        <p data-edit="intro"><span data-lang="en">A short paragraph introducing the next step you propose to the customer.</span><span data-lang="es" hidden="">A short paragraph introducing the next step you propose to the customer.</span></p>
+        <div class="cta-steps">
+          <div class="cta-step"><div class="step-num">1</div><span data-edit="step1"><span data-lang="en">First step in the process</span><span data-lang="es" hidden="">First step in the process</span></span></div>
+          <div class="cta-step"><div class="step-num">2</div><span data-edit="step2"><span data-lang="en">Second step in the process</span><span data-lang="es" hidden="">Second step in the process</span></span></div>
+          <div class="cta-step"><div class="step-num">3</div><span data-edit="step3"><span data-lang="en">Third step in the process</span><span data-lang="es" hidden="">Third step in the process</span></span></div>
+        </div>
+        <div class="cta-contact">
+          <div class="cta-contact-name">
+            <strong data-edit="contact-name"><span data-lang="en">Contact Name</span><span data-lang="es" hidden="">Contact Name</span></strong>
+            <span class="cta-contact-role" data-edit="contact-title"><span data-lang="en">Job Title</span><span data-lang="es" hidden="">Job Title</span></span>
+            <span class="cta-contact-addr" data-edit="contact-addr"><span data-lang="en">Street · City · Country</span><span data-lang="es" hidden="">Street · City · Country</span></span>
+            <span class="cta-contact-phone" data-edit="contact-phone" title="WhatsApp number (digits only, e.g. 4366412345678)"><span data-lang="en">+00 000 000 000</span><span data-lang="es" hidden="">+00 000 000 000</span></span>
+          </div>
+          <div class="cta-contact-btns">
+            <a class="cta-btn-wa" href="#" target="_blank" rel="noopener">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"></path><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.554 4.103 1.523 5.83L.057 23.25a.75.75 0 0 0 .918.919l5.42-1.466A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.694 9.694 0 0 1-4.946-1.355l-.354-.212-3.658.989.989-3.658-.212-.354A9.694 9.694 0 0 1 2.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"></path></svg>
+              WhatsApp
+            </a>
+            <a class="cta-btn-email" href="#">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+              <span data-edit="contact-email"><span data-lang="en">name@example.com</span><span data-lang="es" hidden="">name@example.com</span></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <style>
+    .template14-cta { overflow:hidden; padding:52px 20px 80px !important; }
+    .template14-cta .cta-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:.06; pointer-events:none; z-index:0; }
+    .template14-cta .cta-box { flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center; padding-bottom:72px; max-width:680px; width:100%; text-align:left; }
+
+    .cta-contact {
+      display:flex; flex-direction:column; align-items:flex-start; gap:14px;
+      margin-top:24px; padding-top:20px;
+      border-top:1px solid rgba(var(--accent-rgb),.2);
+      flex-wrap:wrap;
+    }
+    .cta-contact-name { display:flex; flex-direction:column; gap:3px; }
+    .cta-contact-name strong { font-size:15px; color:var(--text); }
+    .cta-contact-role { font-size:13px; color:var(--text-muted); }
+    .cta-contact-addr, .cta-contact-phone { font-size:12px; color:var(--text-muted); opacity:.7; }
+    .cta-contact-btns { display:flex; flex-direction:column; gap:10px; }
+
+    .cta-btn-wa, .cta-btn-email {
+      display:inline-flex; align-items:center; gap:10px;
+      padding:14px 20px; border-radius:100px; min-height:44px;
+      font-size:14px; font-weight:600; text-decoration:none;
+      transition:all .2s; white-space:nowrap;
+    }
+    /* WhatsApp brand green — intentionally fixed, NOT a theme color (do not convert to a var) */
+    .cta-btn-wa { background:rgba(37,211,102,.15); border:1px solid rgba(37,211,102,.35); color:#25d366; }
+    .cta-btn-wa:hover { background:rgba(37,211,102,.25); border-color:rgba(37,211,102,.6); }
+    .cta-btn-email { background:rgba(var(--accent-rgb),.12); border:1px solid rgba(var(--accent-rgb),.3); color:var(--accent); }
+    .cta-btn-email:hover { background:rgba(var(--accent-rgb),.22); border-color:rgba(var(--accent-rgb),.55); }
+
+    @media(min-width:769px){
+      .template14-cta { padding:60px 80px 0 !important; }
+      .cta-contact { flex-direction:row; align-items:center; gap:20px; }
+      .cta-btn-wa, .cta-btn-email { font-size:13px; padding:10px 20px; min-height:unset; }
+    }
+  </style>
+
+  <script>
+  (function () {
+    var slide   = document.currentScript.closest('.slide');
+    var slideId = window.Track ? Track.slideId(slide) : 'template14-cta';
+
+    // Keep the mailto: and wa.me links in sync with the editable contact fields.
+    function sync() {
+      var emailEl = slide.querySelector('[data-edit="contact-email"]');
+      var emailBtn = slide.querySelector('.cta-btn-email');
+      if (emailEl && emailBtn) { var e = emailEl.textContent.trim(); if (e) emailBtn.href = 'mailto:' + e; }
+
+      var phoneEl = slide.querySelector('[data-edit="contact-phone"]');
+      var waBtn = slide.querySelector('.cta-btn-wa');
+      if (phoneEl && waBtn) { var p = phoneEl.textContent.replace(/\D/g, ''); waBtn.href = p ? 'https://wa.me/' + p : '#'; }
+    }
+    sync();
+    slide.querySelectorAll('[data-edit="contact-email"],[data-edit="contact-phone"]').forEach(function (el) {
+      el.addEventListener('input', sync);
+    });
+
+    // Tracking — via the Track helper only (never raw umami.track()).
+    var waBtn = slide.querySelector('.cta-btn-wa');
+    if (waBtn) waBtn.addEventListener('click', function () { if (window.Track) Track.click(slideId, 'whatsapp'); });
+    var emailBtn = slide.querySelector('.cta-btn-email');
+    if (emailBtn) emailBtn.addEventListener('click', function () { if (window.Track) Track.click(slideId, 'email'); });
+
+    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
+  })();
+  </script>
+</div>
+</div>
+<div class="fp-slide fp-optional" data-optional-index="0" style="display:none;">
+<div class="slide hero template01-cover" data-slide="cover" data-slide-mode="sequence">
+
+  <!-- Full-bleed background — server injects deck.heroBg at serve time (injectDeckBranding targets img.hero-bg) -->
+  <img class="hero-bg" src="../shared/Panther_Eye.jpeg" alt="Hero background" style="object-position:25% 50%;">
+  <div class="hero-overlay"></div>
+
+  <!-- Brand logos — server injects live deck logos into this slot (withLiveLogos → logo-row) -->
+  <div class="slide-logo-row" data-edit="logo-row" data-managed=""><span data-lang="en"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span><span data-lang="es" hidden=""><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span></div>
+
+  <!-- Credit line (top-right) -->
+  <span class="softsolution-credit" data-edit="credit"><span data-lang="en">by GlassQuality.com</span><span data-lang="es" hidden="">por GlassQuality.com</span></span>
+
+  <!-- Customer logo uploader — the one cover-unique feature (positioning is scoped, never themed) -->
+  <div class="template01-cover-customer-logo" data-edit="customer-logo" data-edit-type="image">
+    
+    <img class="template01-cover-cust-img" src="../shared/CostOfQualityDefects.png" alt="Customer Logo" onerror="this.classList.add('template01-cover-cust-img--missing')">
+    <label class="template01-cover-cust-placeholder">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+        <polyline points="21 15 16 10 5 21"></polyline>
+      </svg>
+      <span>Customer Logo</span>
+      <small>Click to upload</small>
+    </label>
+  </div>
+  <!-- File input lives OUTSIDE the data-edit container so its change event never dirties the slot -->
+  
+
+  <!-- Main hero content — composed from the standard hero scaffold (.hero-content / .brand-badge / .blue) -->
+  <div class="hero-content">
+    <div class="brand-badge" data-edit="badge"><span data-lang="en">Product · Solution</span><span data-lang="es" hidden="">Producto · Solución</span></div>
+    <h1 data-edit="headline"><span data-lang="en">Your Presentation <span class="blue">Headline</span></span><span data-lang="es" hidden="">Su Titular de Presentación <span class="blue">Headline</span></span></h1>
+    <h2 data-edit="subheadline"><span data-lang="en">Proposal for 67 · 67</span><span data-lang="es" hidden="">Propuesta para [Customer] · [Name], [Title]</span></h2>
+  </div>
+
+  <style>
+    /* Only the customer-logo uploader needs scoped rules — unique positioning a theme never touches.
+       Every visible surface is driven by theme variables (--logo-bg/-border/-radius, --text-muted). */
+    .template01-cover-customer-logo {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--logo-bg);
+      border: 1px solid var(--logo-border);
+      border-radius: var(--logo-radius);
+      padding: 16px;
+      width: 100px;
+      height: 100px;
+      margin: 8px auto 0;
+      cursor: pointer;
+    }
+    .template01-cover-cust-img { width: 90%; height: 90%; object-fit: contain; }
+    .template01-cover-cust-img--missing { display: none; }
+    .template01-cover-cust-img--missing ~ .template01-cover-cust-placeholder { display: flex; }
+    .template01-cover-cust-placeholder {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      height: 100%;
+      border: 2px dashed var(--logo-border);
+      border-radius: calc(var(--logo-radius) - 4px);
+      color: var(--text-muted);
+      text-align: center;
+      cursor: pointer;
+    }
+    .template01-cover-cust-placeholder span { font-size: 11px; font-weight: 700; }
+    .template01-cover-cust-placeholder small { font-size: 9px; opacity: .65; }
+    /* Delete button — builder-only control, stripped from output, intentionally not themed */
+    .template01-cover-logo-del {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(180,30,30,.85);
+      border: none;
+      color: #ffffff;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+    }
+    .template01-cover-readonly .template01-cover-customer-logo { cursor: default; }
+
+    @media (min-width: 769px) {
+      .template01-cover-customer-logo {
+        position: absolute;
+        left: 75%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        margin: 0;
+        width: clamp(140px, 15vw, 240px);
+        height: clamp(140px, 15vw, 240px);
+        padding: 24px;
+      }
+    }
+  </style>
+
+  <script>
+  (function () {
+    var slide   = document.currentScript.closest('[data-slide]');
+    var slideId = window.Track ? Track.slideId(slide) : (slide ? slide.getAttribute('data-slide') : '');
+
+    /* Readonly setup */
+    if (window.PB_READONLY) slide.classList.add('template01-cover-readonly');
+
+    /* Customer logo upload (cover-unique feature) */
+    var logoContainer = slide.querySelector('.template01-cover-customer-logo');
+    var logoInput     = slide.querySelector('#template01-cover-logo-file');
+    var custImg       = slide.querySelector('.template01-cover-cust-img');
+
+    /* Placeholder shows only when no logo is set; a restored/uploaded src shows the image */
+    if (custImg && !custImg.getAttribute('src')) {
+      custImg.classList.add('template01-cover-cust-img--missing');
+    }
+
+    if (logoContainer && logoInput) {
+      logoContainer.addEventListener('click', function (e) {
+        if (window.PB_READONLY) return;
+        if (e.target.closest('.template01-cover-logo-del')) return; // delete button handles its own click
+        logoInput.click();
+      });
+
+      logoInput.addEventListener('change', function (e) {
+        if (window.PB_READONLY) return;
+        var file = e.target.files[0];
+        if (!file) return;
+        var img = slide.querySelector('.template01-cover-cust-img');
+        img.src = URL.createObjectURL(file);
+        img.classList.remove('template01-cover-cust-img--missing');
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+          window.PBUpload(file.name, ev.target.result)
+          .then(function (data) {
+            data = { path: data };
+            if (data.path) {
+              img.src = data.path;
+              document.dispatchEvent(new CustomEvent('slide-image-change', {
+                detail: { editKey: 'customer-logo', src: data.path }
+              }));
+            }
+          });
+        };
+        reader.readAsDataURL(file);
+        e.target.value = '';
+      });
+    }
+
+    window.template01CoverDeleteLogo = function () {
+      if (window.PB_READONLY) return;
+      var img = slide.querySelector('.template01-cover-cust-img');
+      img.src = '';
+      img.classList.add('template01-cover-cust-img--missing');
+      document.dispatchEvent(new CustomEvent('slide-image-change', {
+        detail: { editKey: 'customer-logo', src: '' }
+      }));
+    };
+
+    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
+  })();
+  </script>
+
+<button class="pb-gallery-btn" data-ls-gallery-open="" data-builder-feature="gallery" title="Open gallery">
+  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+  Gallery
+</button>
+<div data-ls-gallery="" data-edit="gallery-track" data-autoplay="8" style="display:none;">
+  
+<div class="ls-gallery-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects"><div class="ls-gallery-caption">CostOfQualityDefects</div></div><div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">Section Title</span><span class="ls-gallery-number">Key Fact</span><span class="ls-gallery-body-text">Description text here</span></div></div><div class="ls-gallery-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects"><div class="ls-gallery-caption">CostOfQualityDefects</div></div><div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">Section Title</span><span class="ls-gallery-number">Key&nbsp;</span><span class="ls-gallery-body-text">Description text here</span></div></div><div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">Section Title</span><span class="ls-gallery-number">Key&nbsp;</span><span class="ls-gallery-body-text">Description text here</span></div></div></div></div>
+</div>
     </div>
   </div>
   <div id="fp-footer">
     <div id="fp-nav-menu-wrap">
       <div id="fp-nav-menu">
         <div class="fp-nm-section">Slides</div>
-        <button class="fp-nm-item fp-nm-active" data-main="0">Company Intro (Copy)</button>
-
+        <button class="fp-nm-item fp-nm-active" data-main="0">Why Us</button>
+        <button class="fp-nm-item" data-main="1">Company Intro</button>
+        <button class="fp-nm-item" data-main="2">Call to Action-Validated Style</button>
+        <div class="fp-nm-divider"></div><div class="fp-nm-section fp-nm-hidden-section">Hidden Slides</div>        <button class="fp-nm-item" data-opt="0">Cover</button>
       </div>
       <button id="fp-nav-menu-btn" title="Slide navigation"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
     </div>
-    <div id="fp-slide-name">Company Intro (Copy)</div>
+    <div id="fp-slide-name">Why Us</div>
     <button class="fp-share-btn" id="fp-share-btn-ftr" title="Share presentation"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
   </div>
 </div>
 <button class="fp-side-arrow" id="fp-arrow-prev" disabled>&#8249;</button>
-<button class="fp-side-arrow" id="fp-arrow-next" disabled>&#8250;</button>
+<button class="fp-side-arrow" id="fp-arrow-next">&#8250;</button>
 <div id="fp-share-overlay">
   <div id="fp-share-modal">
     <h3>Share this presentation</h3>
@@ -1094,17 +1481,9 @@ window.Carousel = (function () {
   function uploadImage(file, callback) {
     var reader = new FileReader();
     reader.onload = function (ev) {
-      fetch('/api/upload-image', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ filename: file.name, data: ev.target.result })
-      })
-      .then(function (r) { return r.json(); })
-      .then(function (data) {
-        if (data.path) { callback(data.path); }
-        else if (data.error) { alert('Upload failed: ' + data.error); }
-      })
-      .catch(function () { alert('Upload failed. Please try again.'); });
+      window.PBUpload(file.name, ev.target.result)
+        .then(function (path) { if (path) callback(path); })
+        .catch(function () { alert('Upload failed. Please try again.'); });
     };
     reader.readAsDataURL(file);
   }
@@ -2088,13 +2467,7 @@ window.Gallery = (function () {
   function uploadImage(file, cb) {
     var reader = new FileReader();
     reader.onload = function (ev) {
-      fetch('/api/upload-image', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename: file.name, data: ev.target.result })
-      })
-      .then(function (r) { return r.json(); })
-      .then(function (data) { if (data.path) cb(data.path); });
+      window.PBUpload(file.name, ev.target.result).then(function (path) { if (path) cb(path); });
     };
     reader.readAsDataURL(file);
   }
@@ -3219,6 +3592,7 @@ window.Tabs = (function () {
       tabBtn.addEventListener('dblclick', function (e) {
         e.stopPropagation();
         e.preventDefault();
+        if (window.previewLang && window.previewLang !== 'en') return; // read-only in non-English preview
 
         // Read current label (text nodes only, skip del button child)
         var currentText = '';
@@ -3490,12 +3864,124 @@ window.Track = (function () {
 
 })();
 
+// ── Shared image-upload helper ──────────────────────────────────────────────
+// POSTs to /api/upload-image. If the server warns the (sanitized) name is already
+// in use (HTTP 409 needsConfirm), asks the user before overwriting it everywhere.
+// Resolves to the saved '/slides/uploads/...' path, or null if cancelled/failed.
+// Lives here because tracker.js is always loaded first (<head>) in every context.
+window.PBUpload = function (filename, dataUrl) {
+  function send(confirmOverwrite) {
+    return fetch('/api/upload-image', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename: filename, data: dataUrl, confirmOverwrite: confirmOverwrite })
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (d && d.needsConfirm) {
+        var where = d.usedIn.slice(0, 8).join(', ') + (d.usedIn.length > 8 ? ', …' : '');
+        if (window.confirm('"' + d.name + '" is already used by ' + d.usedIn.length +
+            ' place(s) (' + where + ').\n\nReplacing it updates the image EVERYWHERE it is used. Continue?')) {
+          return send(true);
+        }
+        return null;
+      }
+      return (d && d.path) || null;
+    });
+  }
+  return send(false);
+};
+
+/**
+ * language-switcher.js
+ * Client-side language switcher for finished presentations.
+ * Reads [data-lang] spans and shows only the active language.
+ * Active language is resolved from: ?lang= URL param → per-presentation localStorage → data-default-lang on <body>
+ */
+(function () {
+  'use strict';
+
+  // Use a per-presentation key so each presentation starts in its own default language
+  var presId = document.body.getAttribute('data-pres-id') || 'default';
+  var STORAGE_KEY = 'pres-lang-' + presId;
+
+  function getDefaultLang() {
+    return document.body.getAttribute('data-default-lang') || 'en';
+  }
+
+  function resolveActiveLang() {
+    var params = new URLSearchParams(window.location.search);
+    var fromUrl = params.get('lang');
+    if (fromUrl) return fromUrl;
+    try { var stored = localStorage.getItem(STORAGE_KEY); if (stored) return stored; } catch (e) {}
+    return getDefaultLang();
+  }
+
+  function applyLang(lang) {
+    document.querySelectorAll('[data-lang]').forEach(function (el) {
+      if (el.closest && el.closest('#fp-lang-menu')) return;
+      el.hidden = el.getAttribute('data-lang') !== lang;
+    });
+    // Update dropdown label and active state
+    var label = document.getElementById('fp-lang-label');
+    if (label) label.textContent = lang.toUpperCase();
+    document.querySelectorAll('#fp-lang-menu button[data-lang]').forEach(function (btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+    });
+    try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
+  }
+
+  function switchLang(lang) {
+    applyLang(lang);
+    var url = new URL(window.location.href);
+    url.searchParams.set('lang', lang);
+    history.replaceState(null, '', url.toString());
+  }
+
+  // Expose for dropdown buttons
+  window.switchLang = switchLang;
+
+  window.fpLangToggle = function () {
+    var menu = document.getElementById('fp-lang-menu');
+    if (menu) menu.classList.toggle('open');
+  };
+
+  window.fpLangSelect = function (lang) {
+    switchLang(lang);
+    var menu = document.getElementById('fp-lang-menu');
+    if (menu) menu.classList.remove('open');
+  };
+
+  // Close dropdown on outside click
+  document.addEventListener('click', function (e) {
+    var drop = document.getElementById('fp-lang-drop');
+    if (drop && !drop.contains(e.target)) {
+      var menu = document.getElementById('fp-lang-menu');
+      if (menu) menu.classList.remove('open');
+    }
+  });
+
+  // Init on DOM ready
+  function init() {
+    var lang = resolveActiveLang();
+    // Validate: if resolved lang has no spans in this presentation, fall back to default
+    var available = Array.from(document.querySelectorAll('[data-lang]')).map(function (el) {
+      return el.getAttribute('data-lang');
+    });
+    var unique = Array.from(new Set(available));
+    if (unique.length > 0 && !unique.includes(lang)) lang = getDefaultLang();
+    applyLang(lang);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
 
 (function () {
   var mainSlides = document.querySelectorAll(".fp-slide:not(.fp-optional)");
   var optSlides  = document.querySelectorAll(".fp-slide.fp-optional");
-  var mainNames  = ["Company Intro (Copy)"];
-  var optNames   = [];
+  var mainNames  = ["Why Us","Company Intro","Call to Action-Validated Style"];
+  var optNames   = ["Cover"];
   var total      = mainSlides.length;
   var idx        = 0;
   var inOptional = false;
@@ -3612,7 +4098,7 @@ window.Track = (function () {
   arrowNext.addEventListener("click", function () { if (inOptional) goToOptional(optIdx + 1); else goTo(idx + 1); });
 
   /* ── Share modal ── */
-  var presId    = "00000024";
+  var presId    = "00000028";
   var baseUrl   = "http://localhost:3000/public/" + presId + "/";
   var overlay   = document.getElementById("fp-share-overlay");
   var shareBtns = [document.getElementById("fp-share-btn-hdr"), document.getElementById("fp-share-btn-ftr")];

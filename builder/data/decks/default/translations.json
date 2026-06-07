@@ -1143,27 +1143,27 @@
         "es": {
           "current": "Por qué LINESCANNER",
           "previous": "Por-qué-LINESCANNER",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "Perché-LINESCANNER",
           "previous": "Perché-LINESCANNER",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "Warum-LINESCANNER",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "Pourquoi-LINESCANNER",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "Por que-LINESCANNER",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "title": {
@@ -1311,27 +1311,27 @@
         "es": {
           "current": "Por qué automatizar&nbsp; la inspección de calidad<br>para <span class=\"blue\">procesamiento de vidrio plano</span>",
           "previous": "Por qué automatizar&nbsp; Inspección de Calidad<br>para <span class=\"blue\">Procesamiento de Vidrio Plano</span>",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "Perché automatizzare&nbsp; l'Ispezione della Qualità<br>per <span class=\"blue\">la Lavorazione del Vetro Piatto</span>",
           "previous": "Automatizzare l'ispezione della&nbsp;qualità<br>per l'<span class=\"blue\">elaborazione del vetro piano</span>",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "Warum Qualitätsprüfung&nbsp; automatisieren<br>für <span class=\"blue\">Flachglasverarbeitung</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "Pourquoi automatiser&nbsp; l'inspection de qualité<br>pour <span class=\"blue\">le traitement du verre plat</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "Por que automatizar&nbsp; Inspeção de Qualidade<br>para <span class=\"blue\">Processamento de Vidro Plano</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "col-header-prob": {
@@ -1339,27 +1339,27 @@
         "es": {
           "current": "Sin automatización de inspección",
           "previous": "Sin automatización de inspección",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "Senza Automazione dell'Ispezione",
           "previous": "Senza automazione dell'ispezione",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "Ohne Inspektionsautomation",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "Sans automatisation de l'inspection",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "Sem Automação de Inspeção",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "tier-label-1": {
@@ -1423,31 +1423,31 @@
         "es": {
           "current": "LineScanner y Osprey",
           "previous": "LineScanner &amp; Osprey",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "LineScanner &amp; Osprey",
           "previous": "LineScanner &amp; Osprey",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "LineScanner &amp; Osprey",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "LineScanner &amp; Osprey",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "LineScanner &amp; Osprey",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "ben-list": {
-        "en": "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<li class=\"ben-item\">100% inspection of every glass, every shift — no fatigue, no blind spots</li>\n<li class=\"ben-item\">Real-time process control &amp; quality feedback</li>\n<li class=\"ben-item\">Prove quality to customers — a documented defense against claims</li>\n<li class=\"ben-item\">Database &amp; archive for shift accountability and CpK analysis</li>\n<li class=\"ben-item\" draggable=\"false\">Detects distortion, anisotropy &amp; surface defects <strong>invisible to the human eye</strong></li><li class=\"ben-item\">Acceptance procedures for new machinery (e.g. furnaces)</li>\n<li class=\"ben-item\">Increase throughput &amp; reduce costly downstream rejects</li>\n\n\n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      <li class=\"ben-item\"><span style=\"color: rgb(255, 255, 255); background-color: rgba(239, 68, 68, 0.06);\">Mandatory as per industry standards&nbsp;</span><span class=\"prob-img-hint\" style=\"opacity: 1; color: rgb(255, 255, 255);\">💰</span></li>\n      \n      \n      \n      \n      ",
+        "en": "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<li class=\"ben-item\">100% inspection of every glass, every shift — no fatigue, no blind spots</li>\n<li class=\"ben-item\">Real-time process control &amp; quality feedback</li>\n<li class=\"ben-item\">Prove quality to customers — a documented defense against claims</li>\n<li class=\"ben-item\">Database &amp; archive for shift accountability and CpK analysis</li>\n<li class=\"ben-item\" draggable=\"false\">Detects distortion, anisotropy &amp; surface defects <strong>invisible to the human eye</strong></li><li class=\"ben-item\">Acceptance procedures for new machinery (e.g. furnaces)</li>\n<li class=\"ben-item\">Increase throughput &amp; reduce costly downstream rejects</li>\n\n\n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      <li class=\"ben-item\"><span style=\"color: rgb(255, 255, 255); background-color: rgba(239, 68, 68, 0.06);\">Mandatory as per industry standards&nbsp;</span><span class=\"prob-img-hint\" style=\"opacity: 1; color: rgb(255, 255, 255);\">💰</span></li>\n      \n      \n      \n      \n      <li class=\"ben-item ls-list-hidden\">TEST&nbsp;</li>\n      \n      \n      ",
         "es": {
           "current": "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<li class=\"ben-item\">Inspección del 100% de cada vidrio, cada turno — sin fatiga, sin puntos ciegos</li>\n<li class=\"ben-item\">Control del proceso en tiempo real y retroalimentación de calidad</li>\n<li class=\"ben-item\">Demostrar calidad a los clientes — una defensa documentada contra reclamaciones</li>\n<li class=\"ben-item\">Base de datos y archivo para responsabilidad de turnos y análisis de CpK</li>\n<li class=\"ben-item\" draggable=\"false\">Detecta distorsión, anisotropía y defectos de superficie <strong>invisibles al ojo humano</strong></li><li class=\"ben-item\">Procedimientos de aceptación para maquinaria nueva (p. ej., hornos)</li>\n<li class=\"ben-item\">Aumentar rendimiento y reducir rechazos costosos aguas abajo</li>\n\n\n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      <li class=\"ben-item\"><span style=\"color: rgb(255, 255, 255); background-color: rgba(239, 68, 68, 0.06);\">Obligatorio según normas industriales&nbsp;</span><span class=\"prob-img-hint\" style=\"opacity: 1; color: rgb(255, 255, 255);\">💰</span></li>\n      \n      <li class=\"ben-item ls-list-hidden\">Nuevo elemento</li>\n      ",
           "previous": "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<li class=\"ben-item\">Inspección 100% de cada vidrio, cada turno — sin fatiga, sin puntos ciegos</li>\n<li class=\"ben-item\">Control de proceso en tiempo real y retroalimentación de calidad</li>\n<li class=\"ben-item\">Demuestra calidad a los clientes — una defensa documentada contra reclamaciones</li>\n<li class=\"ben-item\">Base de datos y archivo para responsabilidad de turno y análisis CpK</li>\n<li class=\"ben-item\" draggable=\"false\">Detecta distorsión, anisotropía y defectos superficiales <strong>invisibles al ojo humano</strong></li><li class=\"ben-item\">Procedimientos de aceptación para maquinaria nueva (por ejemplo, hornos)</li>\n<li class=\"ben-item\">Aumenta el rendimiento y reduce rechazos costosos en etapas posteriores</li>\n\n\n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      <li class=\"ben-item\"><span style=\"color: rgb(255, 255, 255); background-color: rgba(239, 68, 68, 0.06);\">Obligatorio según estándares de la industria&nbsp;</span><span class=\"prob-img-hint\" style=\"opacity: 1; color: rgb(255, 255, 255);\">💰</span></li>\n      \n      <li class=\"ben-item\">Elemento nuevo</li>",
@@ -1475,7 +1475,7 @@
         }
       },
       "prob-list": {
-        "en": "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"why3-tier-label\" data-edit=\"tier-label-1\" spellcheck=\"false\">Human Limitations</div>\n<li class=\"prob-item\">Operator fatigue — detection rates drop significantly over long shifts</li>\n<li class=\"prob-item prob-clickable\" title=\"Click to view chart\">As line speed increases, operator effectiveness declines — higher throughput means more defects slip through undetected <span class=\"prob-img-hint\">📈</span></li>\n<li class=\"prob-item\">100% manual inspection is impossible at production speed</li>\n<li class=\"prob-item\" draggable=\"false\">Distortion &amp; anisotropy are <strong>invisible to the naked eye</strong> — no matter how skilled the operator</li>\n<div class=\"why3-tier-label\" data-edit=\"tier-label-2\" spellcheck=\"false\" style=\"margin-top:8px;\">Business Impact</div>\n<li class=\"prob-item\">Inconsistent quality &amp; frequent customer complaints</li>\n<li class=\"prob-item prob-clickable\" title=\"Click to view chart\">Construction site rejections — glass already delivered &amp; installed means transport, rework &amp; project delays <span class=\"prob-img-hint\">💰</span></li>\n<li class=\"prob-item\" draggable=\"false\">Increased liability risks &amp; reputational damage</li>\n\n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      <li class=\"prob-item\"><span style=\"color: rgb(255, 255, 255); background-color: rgba(239, 68, 68, 0.06);\">Automotive: one defect triggers a full batch return — shipping &amp; material costs on the entire load </span><span class=\"prob-img-hint\" style=\"opacity: 1; color: rgb(255, 255, 255);\">💰</span></li>\n      \n      \n      \n      \n      \n      ",
+        "en": "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"why3-tier-label\" data-edit=\"tier-label-1\" spellcheck=\"false\">Human Limitations</div>\n<li class=\"prob-item\">Operator fatigue — detection rates drop significantly over long shifts</li>\n<li class=\"prob-item prob-clickable\" title=\"Click to view chart\">As line speed increases, operator effectiveness declines — higher throughput means more defects slip through undetected <span class=\"prob-img-hint\">📈</span></li>\n<li class=\"prob-item\">100% manual inspection is impossible at production speed</li>\n<li class=\"prob-item\" draggable=\"false\">Distortion &amp; anisotropy are <strong>invisible to the naked eye</strong> — no matter how skilled the operator</li>\n<div class=\"why3-tier-label\" data-edit=\"tier-label-2\" spellcheck=\"false\" style=\"margin-top:8px;\">Business Impact</div>\n<li class=\"prob-item\">Inconsistent quality &amp; frequent customer complaints</li>\n<li class=\"prob-item prob-clickable\" title=\"Click to view chart\">Construction site rejections — glass already delivered &amp; installed means transport, rework &amp; project delays <span class=\"prob-img-hint\">💰</span></li>\n<li class=\"prob-item\" draggable=\"false\">Increased liability risks &amp; reputational damage</li>\n\n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      <li class=\"prob-item\"><span style=\"color: rgb(255, 255, 255); background-color: rgba(239, 68, 68, 0.06);\">Automotive: one defect triggers a full batch return — shipping &amp; material costs on the entire load </span><span class=\"prob-img-hint\" style=\"opacity: 1; color: rgb(255, 255, 255);\">💰</span></li>\n      \n      \n      \n      \n      \n      <li class=\"prob-item ls-list-hidden\">TEST&nbsp;</li>\n      \n      \n      ",
         "es": {
           "current": "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"why3-tier-label\" data-edit=\"tier-label-1\" spellcheck=\"false\">Limitaciones Humanas</div>\n<li class=\"prob-item\">Fatiga del operador — las tasas de detección disminuyen significativamente durante turnos largos</li>\n<li class=\"prob-item prob-clickable\" title=\"Click to view chart\">A medida que aumenta la velocidad de la línea, la efectividad del operador disminuye — mayor rendimiento significa más defectos sin detectar <span class=\"prob-img-hint\">📈</span></li>\n<li class=\"prob-item\">La inspección manual del 100% es imposible a velocidad de producción</li>\n<li class=\"prob-item\" draggable=\"false\">La distorsión y la anisotropía son <strong>invisibles al ojo humano</strong> — sin importar qué tan hábil sea el operador</li>\n<div class=\"why3-tier-label\" data-edit=\"tier-label-2\" spellcheck=\"false\" style=\"margin-top:8px;\">Impacto Empresarial</div>\n<li class=\"prob-item\">Calidad inconsistente y quejas frecuentes de clientes</li>\n<li class=\"prob-item prob-clickable\" title=\"Click to view chart\">Rechazos en sitios de construcción — vidrio ya entregado e instalado significa transporte, reparación y retrasos en proyectos <span class=\"prob-img-hint\">💰</span></li>\n<li class=\"prob-item\" draggable=\"false\">Mayor riesgo de responsabilidad y daño reputacional</li>\n\n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      <li class=\"prob-item\"><span style=\"color: rgb(255, 255, 255); background-color: rgba(239, 68, 68, 0.06);\">Automoción: un defecto desencadena el retorno de un lote completo — costos de envío y material para toda la carga </span><span class=\"prob-img-hint\" style=\"opacity: 1; color: rgb(255, 255, 255);\">💰</span></li>\n      \n      \n      \n      \n      ",
           "previous": "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"why3-tier-label\" data-edit=\"tier-label-1\" spellcheck=\"false\">Limitaciones humanas</div>\n<li class=\"prob-item\">Fatiga del operador — las tasas de detección disminuyen significativamente durante turnos largos</li>\n<li class=\"prob-item prob-clickable\" title=\"Click to view chart\">A medida que aumenta la velocidad de la línea, la eficacia del operador disminuye — mayor rendimiento significa más defectos no detectados <span class=\"prob-img-hint\">📈</span></li>\n<li class=\"prob-item\">La inspección 100% manual es imposible a velocidad de producción</li>\n<li class=\"prob-item\" draggable=\"false\">La distorsión y anisotropía son <strong>invisibles al ojo desnudo</strong> — sin importar cuán hábil sea el operador</li>\n<div class=\"why3-tier-label\" data-edit=\"tier-label-2\" spellcheck=\"false\" style=\"margin-top:8px;\">Impacto empresarial</div>\n<li class=\"prob-item\">Calidad inconsistente y quejas frecuentes de clientes</li>\n<li class=\"prob-item prob-clickable\" title=\"Click to view chart\">Rechazos en sitios de construcción — vidrio ya entregado e instalado significa transporte, reelaboración y retrasos en proyectos <span class=\"prob-img-hint\">💰</span></li>\n<li class=\"prob-item\" draggable=\"false\">Riesgos de responsabilidad aumentados y daño reputacional</li>\n\n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      \n      <li class=\"prob-item\"><span style=\"color: rgb(255, 255, 255); background-color: rgba(239, 68, 68, 0.06);\">Automoción: un defecto desencadena la devolución de un lote completo — costos de envío y materiales de toda la carga </span><span class=\"prob-img-hint\" style=\"opacity: 1; color: rgb(255, 255, 255);\">💰</span></li>\n      \n      \n      <li class=\"prob-item\">Elemento nuevo</li>",
@@ -3021,7 +3021,7 @@
         }
       },
       "subtitle": {
-        "en": "Neural network trained to automatically classify every defect type.",
+        "en": "Neural network trained to automatically classify every defect type",
         "es": {
           "current": "Red neuronal entrenada para clasificar automáticamente cada tipo de defecto.",
           "previous": null,
@@ -3049,7 +3049,7 @@
         }
       },
       "s6-config": {
-        "en": "[{\"id\":\"scratches\",\"label\":\"Scratches\",\"icon\":\"/slides/uploads/defect-icon-0.png\",\"carKey\":\"s6-defect-scratches\"},{\"id\":\"inclusions\",\"label\":\"Inclusions\",\"icon\":\"/slides/uploads/defect-icon-1.png\",\"carKey\":\"s6-defect-inclusions\"},{\"id\":\"dirt\",\"label\":\"Dirt\",\"icon\":\"/slides/uploads/defect-icon-2.png\",\"carKey\":\"s6-defect-dirt\"},{\"id\":\"dust\",\"label\":\"Dust\",\"icon\":\"/slides/uploads/defect-icon-2.png\",\"carKey\":\"s6-defect-dust\"},{\"id\":\"water\",\"label\":\"Water\",\"icon\":\"/slides/uploads/defect-icon-3.png\",\"carKey\":\"s6-defect-water\"},{\"id\":\"fingerprints\",\"label\":\"Fingerprints\",\"icon\":\"/slides/uploads/defect-icon-4.png\",\"carKey\":\"s6-defect-fingerprints\"},{\"id\":\"ignore\",\"label\":\"Ignore\",\"icon\":\"/slides/uploads/defect-icon-5.png\",\"carKey\":\"s6-defect-ignore\"},{\"id\":\"edge-defects\",\"label\":\"Edge defects\",\"icon\":\"/slides/uploads/defect-icon-7.png\",\"carKey\":\"s6-defect-edge-defects\"},{\"id\":\"frame-bars\",\"label\":\"Frame &amp; bars\",\"icon\":\"/slides/uploads/defect-icon-6.png\",\"carKey\":\"s6-defect-frame-bars\"},{\"id\":\"undefined\",\"label\":\"Undefined\",\"icon\":\"/slides/uploads/defect-icon-8.png\",\"carKey\":\"s6-defect-undefined\"},{\"id\":\"coating\",\"label\":\"Coating\",\"icon\":\"/slides/uploads/defect-icon-coating.png\",\"carKey\":\"s6-defect-coating\"}]",
+        "en": "[{\"id\":\"scratches\",\"label\":\"Scratches\",\"icon\":\"/slides/uploads/defect-icon-0.png\",\"carKey\":\"s6-defect-scratches\"},{\"id\":\"inclusions\",\"label\":\"Inclusions\",\"icon\":\"/slides/uploads/defect-icon-1.png\",\"carKey\":\"s6-defect-inclusions\"},{\"id\":\"dirt\",\"label\":\"Dirt\",\"icon\":\"/slides/uploads/defect-icon-2.png\",\"carKey\":\"s6-defect-dirt\"},{\"id\":\"dust\",\"label\":\"Dust\",\"icon\":\"/slides/uploads/defect-icon-3.png\",\"carKey\":\"s6-defect-dust\"},{\"id\":\"water\",\"label\":\"Water\",\"icon\":\"/slides/uploads/defect-icon-9.png\",\"carKey\":\"s6-defect-water\"},{\"id\":\"fingerprints\",\"label\":\"Fingerprints\",\"icon\":\"/slides/uploads/defect-icon-4.png\",\"carKey\":\"s6-defect-fingerprints\"},{\"id\":\"ignore\",\"label\":\"Ignore\",\"icon\":\"/slides/uploads/defect-icon-5.png\",\"carKey\":\"s6-defect-ignore\"},{\"id\":\"edge-defects\",\"label\":\"Edge defects\",\"icon\":\"/slides/uploads/defect-icon-7.png\",\"carKey\":\"s6-defect-edge-defects\"},{\"id\":\"frame-bars\",\"label\":\"Frame &amp; bars\",\"icon\":\"/slides/uploads/defect-icon-6.png\",\"carKey\":\"s6-defect-frame-bars\"},{\"id\":\"undefined\",\"label\":\"Undefined\",\"icon\":\"/slides/uploads/defect-icon-8.png\",\"carKey\":\"s6-defect-undefined\"},{\"id\":\"coating\",\"label\":\"Coating\",\"icon\":\"/slides/uploads/defect-icon-coating.png\",\"carKey\":\"s6-defect-coating\"}]",
         "es": {
           "current": "[{\"id\":\"scratches\",\"label\":\"Arañazos\",\"icon\":\"/slides/uploads/defect-icon-0.png\",\"carKey\":\"s6-defect-scratches\"},{\"id\":\"inclusions\",\"label\":\"Inclusiones\",\"icon\":\"/slides/uploads/defect-icon-1.png\",\"carKey\":\"s6-defect-inclusions\"},{\"id\":\"dirt\",\"label\":\"Suciedad\",\"icon\":\"/slides/uploads/defect-icon-2.png\",\"carKey\":\"s6-defect-dirt\"},{\"id\":\"dust\",\"label\":\"Polvo\",\"icon\":\"/slides/uploads/defect-icon-2.png\",\"carKey\":\"s6-defect-dust\"},{\"id\":\"water\",\"label\":\"Agua\",\"icon\":\"/slides/uploads/defect-icon-3.png\",\"carKey\":\"s6-defect-water\"},{\"id\":\"fingerprints\",\"label\":\"Huellas dactilares\",\"icon\":\"/slides/uploads/defect-icon-4.png\",\"carKey\":\"s6-defect-fingerprints\"},{\"id\":\"ignore\",\"label\":\"Ignorar\",\"icon\":\"/slides/uploads/defect-icon-5.png\",\"carKey\":\"s6-defect-ignore\"},{\"id\":\"edge-defects\",\"label\":\"Defectos de borde\",\"icon\":\"/slides/uploads/defect-icon-7.png\",\"carKey\":\"s6-defect-edge-defects\"},{\"id\":\"frame-bars\",\"label\":\"Marco &amp; barras\",\"icon\":\"/slides/uploads/defect-icon-6.png\",\"carKey\":\"s6-defect-frame-bars\"},{\"id\":\"undefined\",\"label\":\"Indefinido\",\"icon\":\"/slides/uploads/defect-icon-8.png\",\"carKey\":\"s6-defect-undefined\"},{\"id\":\"coating\",\"label\":\"Revestimiento\",\"icon\":\"/slides/uploads/defect-icon-coating.png\",\"carKey\":\"s6-defect-coating\"},{\"id\":\"s6-defect-x1\",\"label\":\"Nuevo defecto\",\"icon\":\"/slides/uploads/CostOfQualityDefects.png\",\"carKey\":\"s6-defect-x1\"}]",
           "previous": null,
@@ -3783,31 +3783,31 @@
     },
     "lib-logo-check": {
       "section-label": {
-        "en": "Screen Printing &amp; Logo .",
+        "en": "Screen Printing &amp; Logo",
         "es": {
           "current": "Impresión de pantalla y logotipo .",
           "previous": "Impresión de Pantalla y Logo",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "Stampa serigrafica e logo .",
           "previous": "Stampa serigrafica e logo",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "Siebdruck &amp; Logo .",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "Impression sérigraphique et logo .",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "Serigrafia e Logo .",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "headline": {
@@ -3815,27 +3815,27 @@
         "es": {
           "current": "Control de posición y <span class=\"blue\">calidad de impresión</span>",
           "previous": "Control de posición y <span class=\"blue\">calidad de impresión</span>",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "Posizionamento e <span class=\"blue\">controllo qualità stampa</span>",
           "previous": "Controllo della posizione e della <span class=\"blue\">qualità di stampa</span>",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "Position und <span class=\"blue\">Druckqualitätskontrolle</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "Contrôle de la position et de la <span class=\"blue\">qualité d'impression</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "Controle de posicionamento e <span class=\"blue\">qualidade de impressão</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "tag-1": {
@@ -3843,27 +3843,27 @@
         "es": {
           "current": "❌ Impresión faltante .",
           "previous": "❌ Impresión faltante",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "❌ Stampa mancante .",
           "previous": "❌ Stampa mancante",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "❌ Druck fehlt .",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "❌ Impression manquante .",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "❌ Impressão faltando .",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "tag-2": {
@@ -3871,27 +3871,27 @@
         "es": {
           "current": "📐 Distorsión",
           "previous": "📐 Distorsión",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "📐 Distorsione",
           "previous": "📐 Distorsione",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "📐 Verformung",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "📐 Distorsion",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "📐 Distorção",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "tag-3": {
@@ -3899,27 +3899,27 @@
         "es": {
           "current": "💡 Tinta brillante",
           "previous": "💡 Tinta brillante",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "💡 Inchiostro lucido",
           "previous": "💡 Inchiostro lucido",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "💡 Glänzende Tinte",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "💡 Encre brillante",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "💡 Tinta brilhante",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "tag-4": {
@@ -3927,27 +3927,27 @@
         "es": {
           "current": "🔄 Rotación",
           "previous": "🔄 Rotación",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "🔄 Rotazione",
           "previous": "🔄 Rotazione",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "🔄 Rotation",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "🔄 Rotation",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "🔄 Rotação",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "tag-5": {
@@ -3955,27 +3955,27 @@
         "es": {
           "current": "📍 Fuera de posición",
           "previous": "📍 Fuera de posición",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "📍 Fuori posizione",
           "previous": "📍 Fuori posizione",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "📍 Falsche Position",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "📍 Hors position",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "📍 Fora de posição",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "tag-6": {
@@ -3983,27 +3983,27 @@
         "es": {
           "current": "⬛ Elementos \"rellenos\"",
           "previous": "⬛ Artículos \"rellenos\"",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "⬛ Articoli \"riempiti\"",
           "previous": "⬛ Articoli \"riempiti\"",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "⬛ \"Gefüllte\" Elemente",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "⬛ Éléments « remplis »",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "⬛ Itens \"preenchidos\"",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       }
     },
@@ -5983,27 +5983,27 @@
         "es": {
           "current": "La Tecnología - OSPREY",
           "previous": "La Tecnología - OSPREY",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "La Tecnologia - OSPREY",
           "previous": "La Tecnologia - OSPREY",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "Die Technologie - OSPREY",
           "previous": "Die Technologie - OSPREY",
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "La Technologie - OSPREY",
           "previous": "La technologie - OSPREY",
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "A Tecnologia - OSPREY",
           "previous": "A Tecnologia - OSPREY",
-          "dirty": false
+          "dirty": true
         }
       },
       "headline": {
@@ -6011,27 +6011,27 @@
         "es": {
           "current": "<span class=\"blue\"><span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255); background-color: rgba(0, 0, 0, 0);\">Cómo&nbsp;</span>Osprey ve&nbsp;<span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255);\">lo que otros se pierden</span><br></span>",
           "previous": "Cómo Osprey&nbsp;<span class=\"blue\">ve lo que otros se pierden</span>",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<span class=\"blue\"><span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255); background-color: rgba(0, 0, 0, 0);\">Come&nbsp;</span>Osprey vede&nbsp;<span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255);\">ciò che altri perdono</span><br></span>",
           "previous": "Come Osprey&nbsp;<span class=\"blue\">vede ciò che altri perdono</span>",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<span class=\"blue\"><span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255); background-color: rgba(0, 0, 0, 0);\">Wie&nbsp;</span>Osprey sieht,&nbsp;<span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255);\">was andere übersehen</span><br></span>",
           "previous": "Wie Osprey&nbsp;<span class=\"blue\">sieht, was andere übersehen</span>",
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<span class=\"blue\"><span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255); background-color: rgba(0, 0, 0, 0);\">Comment&nbsp;</span>Osprey voit&nbsp;<span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255);\">ce que les autres manquent</span><br></span>",
           "previous": "Comment Osprey&nbsp;<span class=\"blue\">voit ce que les autres manquent</span>",
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<span class=\"blue\"><span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255); background-color: rgba(0, 0, 0, 0);\">Como&nbsp;</span>o Osprey vê&nbsp;<span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255);\">o que outros não veem</span><br></span>",
           "previous": "Como o Osprey&nbsp;<span class=\"blue\">vê o que outros perdem</span>",
-          "dirty": false
+          "dirty": true
         }
       },
       "comp-card-1": {
@@ -6039,27 +6039,27 @@
         "es": {
           "current": "<font color=\"#ffffff\"><b>Medición Omnidireccional de Potencia Óptica</b></font>&nbsp;— Distorsión medida en todas las direcciones simultáneamente",
           "previous": "<font color=\"#ffffff\"><b>Medición de Potencia Óptica Omnidireccional</b></font>&nbsp;— Distorsión medida en todas las direcciones simultáneamente",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<font color=\"#ffffff\"><b>Misurazione Omnidirezionale della Potenza Ottica</b></font>&nbsp;— Distorsione misurata in tutte le direzioni simultaneamente",
           "previous": "<font color=\"#ffffff\"><b>Misurazione della Potenza Ottica Omnidirezionale</b></font>&nbsp;— Distorsione misurata in tutte le direzioni simultaneamente",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<font color=\"#ffffff\"><b>Omnidirektionale optische Leistungsmessung</b></font>&nbsp;— Verzerrung wird gleichzeitig in alle Richtungen gemessen",
           "previous": "<font color=\"#ffffff\"><b>Omnidirektionale optische Leistungsmessung</b></font>&nbsp;— Verzerrung wird gleichzeitig in alle Richtungen gemessen",
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<font color=\"#ffffff\"><b>Mesure omnidirectionnelle de la puissance optique</b></font>&nbsp;— La distorsion mesurée dans toutes les directions simultanément",
           "previous": "<font color=\"#ffffff\"><b>Mesure omnidirectionnelle de la puissance optique</b></font>&nbsp;— Distorsion mesurée dans toutes les directions simultanément",
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<font color=\"#ffffff\"><b>Medição Omnidirecional de Potência Óptica</b></font>&nbsp;— Distorção medida em todas as direções simultaneamente",
           "previous": "<font color=\"#ffffff\"><b>Medição de Potência Óptica Omnidirecional</b></font>&nbsp;— Distorção medida em todas as direções simultaneamente",
-          "dirty": false
+          "dirty": true
         }
       },
       "comp-card-2": {
@@ -6067,27 +6067,27 @@
         "es": {
           "current": "<font color=\"#ffffff\"><b>Milidioptría (mD)</b></font> — es una unidad utilizada en óptica y oftalmología para medir cambios muy pequeños en la potencia de la lente.",
           "previous": "<font color=\"#ffffff\"><b>Milidioptría (mD)</b></font> — es una unidad utilizada en óptica y oftalmología para medir cambios muy pequeños en la potencia de la lente.",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<font color=\"#ffffff\"><b>Millidiottra (mD)</b></font> — è un'unità di misura utilizzata in ottica e oftalmologia per misurare cambiamenti molto piccoli nella potenza delle lenti.",
           "previous": "<font color=\"#ffffff\"><b>Millidiottra (mD)</b></font> — è un'unità utilizzata in ottica e oftalmologia per misurare cambiamenti molto piccoli nella potenza delle lenti.",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<font color=\"#ffffff\"><b>Millidiopter (mD)</b></font> — ist eine in der Optik und Ophthalmologie verwendete Einheit zur Messung sehr kleiner Änderungen der Linsenstärke.",
           "previous": "<font color=\"#ffffff\"><b>Millidiopter (mD)</b></font> — ist eine in der Optik und Ophthalmologie verwendete Einheit zur Messung sehr kleiner Änderungen der Linsenstärke.",
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<font color=\"#ffffff\"><b>Millidioptrie (mD)</b></font> — est une unité utilisée en optique et ophtalmologie pour mesurer de très petits changements de puissance de lentille.",
           "previous": "<font color=\"#ffffff\"><b>Millioptrie (mD)</b></font> — est une unité utilisée en optique et en ophtalmologie pour mesurer de très petits changements de puissance de lentille.",
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<font color=\"#ffffff\"><b>Milidioptria (mD)</b></font> — é uma unidade usada em óptica e oftalmologia para medir mudanças muito pequenas na potência das lentes.",
           "previous": "<font color=\"#ffffff\"><b>Milidioptria (mD)</b></font> — é uma unidade usada em óptica e oftalmologia para medir mudanças muito pequenas na potência das lentes.",
-          "dirty": false
+          "dirty": true
         }
       },
       "comp-card-3": {
@@ -6095,27 +6095,27 @@
         "es": {
           "current": "<font color=\"#ffffff\"><b>Tecnología Única</b></font>— Proyectando&nbsp;",
           "previous": "<font color=\"#ffffff\"><b>Tecnología Única</b></font>— Proyectando&nbsp;",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<font color=\"#ffffff\"><b>Tecnologia Unica</b></font>— Proiezione&nbsp;",
           "previous": "<font color=\"#ffffff\"><b>Tecnologia Unica</b></font>— Proiezione&nbsp;",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<font color=\"#ffffff\"><b>Einzigartige Technologie</b></font> — Projektion&nbsp;",
           "previous": "<font color=\"#ffffff\"><b>Einzigartige Technologie</b></font> — Projektion&nbsp;",
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<font color=\"#ffffff\"><b>Technologie unique</b></font> — Projection&nbsp;",
           "previous": "<font color=\"#ffffff\"><b>Technologie unique</b></font>— Projection&nbsp;",
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<font color=\"#ffffff\"><b>Tecnologia Única</b></font>— Projetando&nbsp;",
           "previous": "<font color=\"#ffffff\"><b>Tecnologia Única</b></font>— Projetando&nbsp;",
-          "dirty": false
+          "dirty": true
         }
       },
       "comp-card-4": {
@@ -6123,27 +6123,27 @@
         "es": {
           "current": "<strong>Módulo electrónico</strong> —&nbsp;",
           "previous": "<strong>Módulo electrónico</strong> —&nbsp;",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Modulo elettronico</strong> — ",
           "previous": "<strong>Modulo elettronico</strong> —&nbsp;",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Elektronisches Modul</strong> —&nbsp;",
           "previous": "<strong>Elektronisches Modul</strong> — &nbsp;",
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Module électronique</strong> —&nbsp;",
           "previous": "<strong>Module électronique</strong> — ",
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Módulo eletrônico</strong> —&nbsp;",
           "previous": "<strong>Módulo eletrônico</strong> —&nbsp;",
-          "dirty": false
+          "dirty": true
         }
       },
       "feat-card-1": {
@@ -6151,27 +6151,27 @@
         "es": {
           "current": "<strong>Detección de bajo contraste:</strong>",
           "previous": "<strong>Detección de bajo contraste:</strong>",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Rilevamento a basso contrasto:</strong>",
           "previous": "<strong>Rilevamento a basso contrasto:</strong>",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Niedrigkontrasterkennung:</strong>",
           "previous": "<strong>Niedrigkontrasterkennung:</strong>",
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Détection de faible contraste :</strong>",
           "previous": "<strong>Détection de faible contraste :</strong>",
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Detecção de baixo contraste:</strong>",
           "previous": "<strong>Detecção de baixo contraste:</strong>",
-          "dirty": false
+          "dirty": true
         }
       },
       "feat-card-2": {
@@ -6179,27 +6179,27 @@
         "es": {
           "current": "<strong>Homogeneización de transmisión:</strong> G",
           "previous": "<strong>Homogeneización de transmisión:</strong> G",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Omogeneizzazione della trasmissione:</strong> G",
           "previous": "<strong>Omogeneizzazione della trasmissione:</strong> G",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Transmissionshomogenisierung:</strong> G",
           "previous": "<strong>Transmissionshomogenisierung:</strong> G",
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Homogénéisation de la transmission :</strong> G",
           "previous": "<strong>Homogénéisation de la transmission :</strong> G",
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Homogeneização de transmissão:</strong> G",
           "previous": "<strong>Homogeneização de transmissão:</strong> G",
-          "dirty": false
+          "dirty": true
         }
       },
       "feat-card-3": {
@@ -6207,27 +6207,27 @@
         "es": {
           "current": "<strong>Cada píxel es igual</strong>",
           "previous": "<strong>Cada píxel es igual</strong>",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Ogni pixel è uguale</strong>",
           "previous": "<strong>Ogni pixel è uguale</strong>",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Jedes Pixel ist gleich</strong>",
           "previous": "<strong>Jeder Pixel ist gleich</strong>",
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Chaque pixel est égal</strong>",
           "previous": "<strong>Chaque pixel est égal</strong>",
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Cada pixel é igual</strong>",
           "previous": "<strong>Cada pixel é igual</strong>",
-          "dirty": false
+          "dirty": true
         }
       },
       "feat-card-4": {
@@ -6235,27 +6235,27 @@
         "es": {
           "current": "<strong>Velocidad de procesamiento extrema:</strong> No",
           "previous": "<strong>Velocidad de procesamiento extrema:</strong> No",
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Velocità di elaborazione estrema:</strong> No",
           "previous": "<strong>Velocità di elaborazione estrema:</strong> No",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Extreme Verarbeitungsgeschwindigkeit:</strong> Nein",
           "previous": "<strong>Extreme Verarbeitungsgeschwindigkeit:</strong> Nein",
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Vitesse de traitement extrême :</strong> Non",
           "previous": "<strong>Vitesse de traitement extrême :</strong> Non",
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Velocidade de processamento extrema:</strong> Não",
           "previous": "<strong>Velocidade de processamento extrema:</strong> Não",
-          "dirty": false
+          "dirty": true
         }
       },
       "vc-header-bad": {
@@ -6374,56 +6374,56 @@
         "es": {
           "current": "Cómo Funciona<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
           "previous": "Cómo funciona<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
-          "dirty": false
+          "dirty": true
         },
-        "en": "How It Works",
+        "en": "How It Works?",
         "it": {
           "current": "Come Funziona",
           "previous": "Come funziona<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "So funktioniert es",
           "previous": "So funktioniert es<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "Comment ça marche",
           "previous": "Comment ça marche<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "Como Funciona",
           "previous": "Como Funciona<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
-          "dirty": false
+          "dirty": true
         }
       },
       "tab-16bit": {
         "es": {
           "current": "Lo&nbsp;que&nbsp;vemos<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
           "previous": "Lo&nbsp;que&nbsp;vemos<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
-          "dirty": false
+          "dirty": true
         },
         "en": "What&nbsp;we&nbsp;see",
         "it": {
           "current": "Ciò che&nbsp;vediamo",
           "previous": "Quello&nbsp;che&nbsp;vediamo<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "Was&nbsp;wir&nbsp;sehen",
           "previous": "Was&nbsp;wir&nbsp;sehen<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "Ce&nbsp;que&nbsp;nous&nbsp;voyons",
           "previous": "Ce&nbsp;que&nbsp;nous&nbsp;voyons<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "O&nbsp;que&nbsp;vemos",
           "previous": "O que&nbsp;vemos<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
-          "dirty": false
+          "dirty": true
         }
       },
       "t5-vc-bad-list": {
@@ -7764,27 +7764,27 @@
         "es": {
           "current": "La Tecnología-Culletscanner",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "La Tecnologia-Culletscanner",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "Der Technologie-Culletscanner",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "La Technologie-Culletscanner",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "A Tecnologia-Culletscanner",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "headline": {
@@ -7792,27 +7792,27 @@
         "es": {
           "current": "<span class=\"blue\"><span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255);\">Cómo facilitar las cosas con </span>el CulletScanner</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<span class=\"blue\"><span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255);\">Come semplificare le cose con </span>il CulletScanner</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<span class=\"blue\"><span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255);\">Wie man die Dinge einfacher macht mit </span>dem CulletScanner</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<span class=\"blue\"><span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255);\">Comment faciliter les choses avec </span>le CulletScanner</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<span class=\"blue\"><span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255);\">Como facilitar as coisas com </span>o CulletScanner</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "tab-howitworks": {
@@ -7820,27 +7820,27 @@
         "es": {
           "current": "¿Cómo Funciona?",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "Come Funziona?",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "Wie funktioniert es?",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "Comment ça marche ?",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "Como Funciona?",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "tab-16bit": {
@@ -7848,27 +7848,27 @@
         "es": {
           "current": "¿Cómo cuenta?",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "Come conta?",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "Wie zählt es?",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "Comment ça compte ?",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "Como conta?",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "tab-vs": {
@@ -7900,227 +7900,227 @@
         }
       },
       "comp-card-1": {
-        "en": "<strong>Telecentric light</strong> — uniform illumination independent of glass position",
+        "en": "<strong>Telecentric light</strong> — please add your text here so it make sense",
         "es": {
           "current": "<strong>Luz telecéntrica</strong> — iluminación uniforme independiente de la posición del vidrio",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Illuminazione telecentric</strong> — illuminazione uniforme indipendente dalla posizione del vetro",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Telezentrisches Licht</strong> — gleichmäßige Beleuchtung unabhängig von der Glasposition",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Lumière télécentrique</strong> — illumination uniforme indépendante de la position du verre",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Luz Telecêntrica</strong> — iluminação uniforme independente da posição do vidro",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "comp-card-2": {
-        "en": "<strong>Linear image sensor</strong> — real scanning line-by-line, not a snapshot camera",
+        "en": "<strong>Linear image sensor</strong> — please add your text here so it make sense",
         "es": {
           "current": "<strong>Sensor de imagen lineal</strong> — escaneo real línea por línea, no una cámara de captura instantánea",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Sensore di immagine lineare</strong> — scansione reale riga per riga, non una telecamera istantanea",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Linearer Bildsensor</strong> — echte Zeilenabtastung, nicht eine Schnappschuss-Kamera",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Capteur d'image linéaire</strong> — vrai balayage ligne par ligne, pas une caméra instantanée",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Sensor de imagem linear</strong> — varredura real linha por linha, não câmera de captura instantânea",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "comp-card-3": {
-        "en": "<strong>Glass</strong> — inspected continuously at full production speed",
+        "en": "<strong>Glass</strong> — please add your text here so it make sense",
         "es": {
           "current": "<strong>Vidrio</strong> — inspeccionado continuamente a velocidad de producción completa",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Vetro</strong> — ispezionato continuamente a piena velocità di produzione",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Glas</strong> — kontinuierlich in voller Produktionsgeschwindigkeit inspiziert",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Verre</strong> — inspecté en continu à la vitesse de production complète",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Vidro</strong> — inspecionado continuamente em velocidade de produção total",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "comp-card-4": {
-        "en": "<strong>Electronic module</strong> — 16-bit processing at extreme speed",
+        "en": "<strong>Electronic module</strong> — please add your text here so it make sense",
         "es": {
           "current": "<strong>Módulo electrónico</strong> — procesamiento de 16 bits a velocidad extrema",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Modulo elettronico</strong> — elaborazione a 16 bit a velocità estrema",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Elektronisches Modul</strong> — 16-Bit-Verarbeitung bei extremer Geschwindigkeit",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Module électronique</strong> — traitement 16 bits à une vitesse extrême",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Módulo eletrônico</strong> — processamento de 16 bits em velocidade extrema",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "feat-card-1": {
-        "en": "<strong>Low-contrast detection:</strong> Identifies defects 8-bit systems cannot see — subtle inclusions, coating variations, micro-scratches.",
+        "en": "<strong>Low-contrast detection:</strong>&nbsp;please add your text here so it make sense",
         "es": {
           "current": "<strong>Detección de bajo contraste:</strong> Identifica defectos que los sistemas de 8 bits no pueden ver — inclusiones sutiles, variaciones de recubrimiento, micro-arañazos.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Rilevamento a basso contrasto:</strong> Identifica difetti che i sistemi a 8 bit non riescono a vedere — inclusioni sottili, variazioni di rivestimento, micro-graffi.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Erkennung niedriger Kontraste:</strong> Erkennt Mängel, die 8-Bit-Systeme nicht sehen können — subtile Einschlüsse, Beschichtungsvariationen, Mikrokratzer.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Détection faible contraste :</strong> Identifie les défauts que les systèmes 8 bits ne peuvent pas voir — inclusions subtiles, variations de revêtement, micro-rayures.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Detecção de baixo contraste:</strong> Identifica defeitos que sistemas de 8 bits não conseguem ver — inclusões sutis, variações de revestimento, micro-arranhões.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "feat-card-2": {
-        "en": "<strong>Transmission homogenization:</strong> Glass from 15% to 99% processed with the same setup — identical results across all types.",
+        "en": "<strong>Transmission homogenization:</strong>&nbsp;please add your text here so it make sense",
         "es": {
           "current": "<strong>Homogenización de transmisión:</strong> Vidrio del 15% al 99% procesado con la misma configuración — resultados idénticos en todos los tipos.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Omogeneizzazione della trasmissione:</strong> Vetro dal 15% al 99% elaborato con la stessa configurazione — risultati identici su tutti i tipi.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Transmissionshomogenisierung:</strong> Glas von 15% bis 99% mit demselben Setup verarbeitet — identische Ergebnisse für alle Typen.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Homogénéisation de transmission :</strong> Verre de 15 % à 99 % traité avec la même configuration — résultats identiques pour tous les types.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Homogeneização de transmissão:</strong> Vidro de 15% a 99% processado com a mesma configuração — resultados idênticos em todos os tipos.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "feat-card-3": {
-        "en": "<strong>Every pixel is equal:</strong> No variation by position — always consistent, eliminating false positives and unnecessary rejections.",
+        "en": "<strong>Every pixel is equal:</strong>&nbsp;please add your text here so it make sense",
         "es": {
           "current": "<strong>Cada píxel es igual:</strong> Sin variación por posición — siempre consistente, eliminando falsos positivos y rechazos innecesarios.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Ogni pixel è uguale:</strong> Nessuna variazione per posizione — sempre coerente, eliminando i falsi positivi e i rifiuti non necessari.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Jedes Pixel ist gleich:</strong> Keine Variation nach Position — immer konsistent, eliminiert Fehlalarme und unnötige Ausschussrate.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Chaque pixel est égal :</strong> Aucune variation de position — toujours cohérent, éliminant les faux positifs et les rejets inutiles.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Cada pixel é igual:</strong> Sem variação por posição — sempre consistente, eliminando falsos positivos e rejeições desnecessárias.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "feat-card-4": {
-        "en": "<strong>Extreme processing speed:</strong> No compromise on throughput. Compatible with automotive and railway production rates.",
+        "en": "<strong>Extreme processing speed:</strong>&nbsp;please add your text here so it make sense",
         "es": {
           "current": "<strong>Velocidad de procesamiento extrema:</strong> Sin compromiso en el rendimiento. Compatible con tasas de producción automotriz y ferroviaria.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Velocità di elaborazione estrema:</strong> Nessun compromesso sulla velocità effettiva. Compatibile con i tassi di produzione automobilistica e ferroviaria.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Extreme Verarbeitungsgeschwindigkeit:</strong> Keine Kompromisse beim Durchsatz. Kompatibel mit Automobil- und Bahnproduktionsraten.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Vitesse de traitement extrême :</strong> Aucun compromis sur le débit. Compatible avec les cadences de production automobile et ferroviaire.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Velocidade de processamento extrema:</strong> Sem comprometimento da taxa de transferência. Compatível com taxas de produção automotiva e ferroviária.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "vc-header-bad": {

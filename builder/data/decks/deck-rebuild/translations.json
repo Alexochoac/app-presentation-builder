@@ -52,7 +52,7 @@
         }
       },
       "headline": {
-        "en": "Quality inspection <span class=\"blue\">is all we do!</span>",
+        "en": "Quality inspection <span class=\"blue\">is all we do</span>",
         "es": {
           "current": "La inspección de calidad <span class=\"blue\">es todo lo que hacemos</span>",
           "previous": null,
