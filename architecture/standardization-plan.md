@@ -19,11 +19,18 @@
 > toggle** (flag on library slide; circled-"f" Features button on preview.html + builder canvas; injected in
 > all 6 render sites). **Follow-up:** verify gallery *interactivity* in published output (injection wired,
 > runtime unverified).
-> **Logged idea (decide):** 💡 **Single render path** — one `renderCartridge()` to replace the 6 duplicated
-> render sites so features can't drift (Builder Preview = source of truth; thumbnails/preview/publish reflect
-> it). See that section.
-> **Next:** either (a) decide & do the **single-render-path** refactor, or (b) continue the rebuild loop on
-> **#3 Why Us (`tpl-new-comparison`)**. Roadmap below.
+> **✅ Single render path — DONE (2026-06-07):** one `renderCartridge(resolved, {galleryEnabled, rawEdits,
+> deck, editable})` (server.js ~4177) now backs all 6 cartridge-render sites (deck-preview, Builder Preview,
+> publish ×2, library-preview, library-edit). A per-slide feature is wired ONCE and can't drift. Verified
+> byte-identical before/after across deck-preview / Builder Preview / library-preview / library-edit (publish
+> uses the same folded call, inspection-verified). Also made `PORT` env-driven (`process.env.PORT || 3000`).
+> **✅ #3 WHY US — DONE (2026-06-07):** `template03-why-us` / `slide-03-why-us.html` / `lib-why-us` / in `deck-rebuild`.
+> Problem-vs-benefit two-column compare (each column = one editable `.card` list blob, tier rows as `<li class="compare-tier">`,
+> ✓/✕ markers via CSS); gallery is server-injected (flag on the lib slide), no gallery markup in the cartridge. Validator clean
+> (0/0). Real LineScanner/Osprey content migrated into `deckEdits["deck-rebuild"]` (reshaped to the new classes); old
+> `tpl-new-comparison` + `lib-comparison` kept as fallback. Verified live in the `deck-rebuild` context. **Dropped (follow-up if
+> wanted):** the old "click to view chart" popup + 📈/💰 hint emojis — rebuilt lean.
+> **Next:** continue the rebuild loop on **#4 Products Overview (`tpl-new-capability-matrix`)**. Roadmap below.
 > **Pending verify:** publish `deck-rebuild` once and diff the frozen output (confirms the `applyEditsToHtml`
 > change end-to-end in the publish path).
 > **To run the app:** `cd builder && node server.js` → log in at localhost:3000. **deck-rebuild** holds the
@@ -193,7 +200,9 @@ JS twins in `server.js`. Old set stays as a working fallback until then.
 
 ### Roadmap (deck order — rebuild top to bottom)
 1. New-Cover · `ls01` → **✅ `template01-cover`** · 2. Company Intro · `tpl-new-company` → **✅ `template02-company`** · 3. Why Us ·
-`tpl-new-comparison` ← **next** · 4. Products Overview · `tpl-new-capability-matrix` · 5. LineScanner-Technology ·
+`tpl-new-comparison` → **✅ `template03-why-us`** / `slide-03-why-us.html` / `lib-why-us` / in `deck-rebuild` (problem-vs-benefit
+two-column compare, tier-grouped lists, ✓/✕ markers, gallery server-injected; real LineScanner content in deck; verified live) ·
+4. Products Overview · `tpl-new-capability-matrix` · 5. LineScanner-Technology ·
 `tpl-new-technology` · 6. Osprey-Technology · `tpl-new-technology` *(same template as #5)* ·
 7. CulletScanner-Technology · `ls05-technology` · 8. Surface Types · `tpl-new-defect-gallery` ·
 9. Dimensions · `tpl-new-carousel-cards` · 10. Screen Printing · `tpl-new-checklist-carousel` · 11. Logo
@@ -288,7 +297,7 @@ anything we add appears identically everywhere:
 
 Rule: new debug info goes in this Details area (consistent, discoverable), not scattered as one-off badges.
 
-## 💡 IDEA (to decide) — Single render path: one `renderCartridge()` — captured 2026-06-03
+## ✅ DONE (2026-06-07) — Single render path: one `renderCartridge()` — captured 2026-06-03
 
 **Surfaced while building the gallery toggle.** A per-slide feature appeared in deck preview but not in
 Builder Preview (preview.html) — twice — because `server.js` has **6 independent cartridge-render sites**,
@@ -320,6 +329,28 @@ variant args to fold into `opts` — readonly flag (`!readonly` / `true` / `fals
 (`withBrandCredit(withLiveLogos())` vs `processedEdits` vs raw), and whether `injectDeckBranding` is applied
 — plus publish does extra baking (strip builder-only, bake language spans, rewrite image paths) *after* the
 render. Needs careful per-path testing. Relates to decision **#3** (cartridge = source of truth).
+
+**✅ Done 2026-06-07 — exactly as proposed.** `renderCartridge(resolved, opts)` lives at server.js ~4177:
+```js
+function renderCartridge(resolved, opts) {            // opts: { galleryEnabled, rawEdits, deck, editable }
+  var edits = opts.deck ? withBrandCredit(withLiveLogos(opts.rawEdits), opts.deck) : opts.rawEdits;
+  var html  = injectGallery(fs.readFileSync(resolved.filePath, 'utf8'), opts.galleryEnabled);
+  html = applyEditsToHtml(html, edits, opts.editable);
+  if (opts.deck) html = injectDeckBranding(html, opts.deck);
+  return html;
+}
+```
+The two variant args that genuinely differ per surface stay at the call site: `rawEdits` (the
+`resolveSlideEdits` result) and `editable` (deck-preview `!readonly`, Builder Preview/library-edit `true`,
+publish/library-preview `false`). The edit-wrapping + branding are now uniform: applied iff `deck` is
+truthy — which matches the prior `deckConfig ? wrap : raw` / `if (deckConfig) inject` logic at every site.
+**Scope kept tight:** only the cartridge branch was touched; the legacy `canvas` branch (`renderLayoutToHtml`)
+and publish's post-render baking were left as-is. **Verification:** byte-identical before/after across
+deck-preview / Builder Preview / library-preview / library-edit (gallery-enabled cartridge `lib-cover` + a
+second cartridge), via an isolated `PORT=3007` instance diffed against the running old-code server. Publish
+(sites 3/4) uses the identical folded call — inspection-verified, not live-published (avoids a concurrent
+write to the repo). Side change: `PORT` is now `process.env.PORT || 3000` (matches the existing `.env` entry;
+enables isolated test instances).
 
 ## Next steps
 

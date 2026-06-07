@@ -38,7 +38,7 @@ if (process.env.GITHUB_TOKEN) {
 }
 
 const app  = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: false }));
@@ -109,9 +109,7 @@ app.get('/slides/deck-preview/:id', function (req, res) {
       fragment = renderLayoutToHtml(resolved.tpl, id, slideEdits, deckConfig);
       if (readonly) fragment = fragment.replace(/ contenteditable=""/g, '').replace(/ contenteditable=''/g, '');
     } else {
-      var rawCartridge = injectGallery(fs.readFileSync(resolved.filePath, 'utf8'), libSlide.galleryEnabled);
-      fragment = applyEditsToHtml(rawCartridge, withBrandCredit(withLiveLogos(slideEdits), deckConfig), !readonly);
-      fragment = injectDeckBranding(fragment, deckConfig);
+      fragment = renderCartridge(resolved, { galleryEnabled: libSlide.galleryEnabled, rawEdits: slideEdits, deck: deckConfig, editable: !readonly });
     }
     // In deck context, deck is the sole theming authority — never fall back to per-slide CSS
     var effectiveStyleCss = deckConfig.styleCss || null;
@@ -3231,9 +3229,7 @@ app.get('/slides/:deckSlideId.html', function (req, res, next) {
     if (resolved.source === 'canvas') {
       html = renderLayoutToHtml(resolved.tpl, deckSlideId, savedEdits, deckConfig);
     } else {
-      var rawCartridge = injectGallery(fs.readFileSync(resolved.filePath, 'utf8'), libSlide.galleryEnabled);
-      html = applyEditsToHtml(rawCartridge, withBrandCredit(withLiveLogos(savedEdits), deckConfig), true);
-      html = injectDeckBranding(html, deckConfig);
+      html = renderCartridge(resolved, { galleryEnabled: libSlide.galleryEnabled, rawEdits: savedEdits, deck: deckConfig, editable: true });
     }
     res.type('text/html').send(html);
   } catch (err) {
@@ -4166,6 +4162,28 @@ function injectGallery(html, enabled) {
   return $.html('body > *') || $.html();
 }
 
+// ── Single cartridge render path ──────────────────────────────────────────────
+// THE one place a cartridge (HTML-file slide) becomes rendered HTML. Every surface
+// (deck preview, Builder Preview, library preview/edit, publish) calls this so a
+// per-slide feature (gallery, hero-bg, logo-row…) is wired ONCE and can't drift.
+// Builder Preview is the source of truth; all others are reflections of this output.
+//
+// opts:
+//   galleryEnabled  bool   — inject the universal gallery feature
+//   rawEdits        object — slide edits BEFORE deck wrapping (resolveSlideEdits result)
+//   deck            object — deck config; when present, edits are brand-wrapped and
+//                            deck branding is injected. Pass null/undefined for standalone.
+//   editable        bool   — render data-edit slots as contenteditable (builder) vs static
+function renderCartridge(resolved, opts) {
+  var edits = opts.deck
+    ? withBrandCredit(withLiveLogos(opts.rawEdits), opts.deck)
+    : opts.rawEdits;
+  var html = injectGallery(fs.readFileSync(resolved.filePath, 'utf8'), opts.galleryEnabled);
+  html = applyEditsToHtml(html, edits, opts.editable);
+  if (opts.deck) html = injectDeckBranding(html, opts.deck);
+  return html;
+}
+
 // GET /api/deck — return the current deck config, with library slide names merged in
 app.get('/api/deck', function (req, res) {
   try {
@@ -5001,7 +5019,7 @@ function buildFrozenPresentation(presentation) {
 
     var fragment = resolved.source === 'canvas'
       ? renderLayoutToHtml(resolved.tpl, s.id, edits, presDeck)
-      : injectDeckBranding(applyEditsToHtml(injectGallery(fs.readFileSync(resolved.filePath, 'utf8'), libSlide.galleryEnabled), withBrandCredit(withLiveLogos(edits), presDeck), false), presDeck);
+      : renderCartridge(resolved, { galleryEnabled: libSlide.galleryEnabled, rawEdits: edits, deck: presDeck, editable: false });
 
     // Strip builder-only elements + contenteditable + logo change interactivity
     var $ = cheerio.load(fragment, { xmlMode: false });
@@ -5040,7 +5058,7 @@ function buildFrozenPresentation(presentation) {
 
     var fragment = resolved.source === 'canvas'
       ? renderLayoutToHtml(resolved.tpl, s.id, edits, presDeck)
-      : injectDeckBranding(applyEditsToHtml(injectGallery(fs.readFileSync(resolved.filePath, 'utf8'), libSlide.galleryEnabled), withBrandCredit(withLiveLogos(edits), presDeck), false), presDeck);
+      : renderCartridge(resolved, { galleryEnabled: libSlide.galleryEnabled, rawEdits: edits, deck: presDeck, editable: false });
     var $ = cheerio.load(fragment, { xmlMode: false });
     $('[data-builder-only],[data-ls-add-row],[data-ls-add],[data-ls-restore]').remove();
     $('[contenteditable]').removeAttr('contenteditable');
@@ -6682,11 +6700,8 @@ app.get('/slides/library-preview/:id', function (req, res) {
         fragment = renderLayoutToHtml(resolved.tpl, id, slideEdits, deckConfig || {});
         fragment = fragment.replace(/ contenteditable=""/g, '').replace(/ contenteditable=''/g, '');
       } else {
-        var processedEdits = deckConfig
-          ? withBrandCredit(withLiveLogos(slideEdits), deckConfig)
-          : slideEdits;  // no-deck: show slide's own content with template's default logo
-        fragment = applyEditsToHtml(injectGallery(fs.readFileSync(resolved.filePath, 'utf8'), libSlide.galleryEnabled), processedEdits, false);
-        if (deckConfig) fragment = injectDeckBranding(fragment, deckConfig);
+        // no-deck (deck=null): shows slide's own content with template's default logo, no branding
+        fragment = renderCartridge(resolved, { galleryEnabled: libSlide.galleryEnabled, rawEdits: slideEdits, deck: deckConfig, editable: false });
       }
     }
 
@@ -6808,12 +6823,7 @@ app.get('/slides/library-edit/:id', function (req, res) {
       if (resolved.source === 'canvas') {
         fragment = renderLayoutToHtml(resolved.tpl, id, baseEdits, deckConfig || {});
       } else {
-        var editProcessedEdits = deckConfig
-          ? withBrandCredit(withLiveLogos(baseEdits), deckConfig)
-          : baseEdits;
-        var rawCartridge = injectGallery(fs.readFileSync(resolved.filePath, 'utf8'), libSlide.galleryEnabled);
-        fragment = applyEditsToHtml(rawCartridge, editProcessedEdits, true);
-        if (deckConfig) fragment = injectDeckBranding(fragment, deckConfig);
+        fragment = renderCartridge(resolved, { galleryEnabled: libSlide.galleryEnabled, rawEdits: baseEdits, deck: deckConfig, editable: true });
       }
     }
 

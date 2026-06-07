@@ -1,0 +1,100 @@
+<div class="slide content template03-why-us"
+     data-slide="template03-why-us"
+     data-slide-mode="sequence">
+
+  <!-- Logo row — defaults to the product logo; deck branding overrides it.
+       data-managed = server-injected, never hand-editable (so auto-save can't serialise it). -->
+  <div class="slide-logo-row" data-edit="logo-row" data-managed>
+    <img src="/shared/brand/logo.svg" alt="Put A Presentation">
+  </div>
+
+  <div class="slide-layout">
+    <span class="softsolution-credit" data-edit="credit" contenteditable spellcheck="false">by YourBrand.com</span>
+
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label" contenteditable spellcheck="false">Section Label</div>
+      <h1 class="slide-title" data-edit="headline" contenteditable spellcheck="false">The Case for <span class="blue">Change</span></h1>
+      <p class="slide-subtitle anim-in" data-edit="subtitle" contenteditable spellcheck="false">A side-by-side look at the status quo versus a better way.</p>
+    </header>
+
+    <div class="slide-body">
+
+      <!-- Two-column comparison. Each column body is ONE editable blob (data-edit) saved as a
+           unit; tier rows are styled <li class="compare-tier"> inside the same list, so no
+           per-item keys are needed. .card surface → theme Finish blocks restyle it for free. -->
+      <div class="template03-why-us-compare">
+
+        <!-- Problem / status-quo column -->
+        <div class="card card-compare card-compare--problem anim-in">
+          <div class="card-compare-head" data-edit="col-header-prob" contenteditable spellcheck="false">Without [Your Solution]</div>
+          <ul class="card-compare-list" data-edit="prob-list" contenteditable spellcheck="false">
+            <li class="compare-tier">Day-to-Day Limitations</li>
+            <li>A recurring problem that slows the team down</li>
+            <li>Inconsistent results that are hard to predict</li>
+            <li>Work that can't keep up at full speed</li>
+            <li class="compare-tier">Business Impact</li>
+            <li>Avoidable cost that adds up over time</li>
+            <li>Risk that reaches the customer undetected</li>
+          </ul>
+        </div>
+
+        <!-- Benefit / solution column -->
+        <div class="card card-compare card-compare--benefit anim-in">
+          <div class="card-compare-head" data-edit="col-header-ben" contenteditable spellcheck="false">With [Your Solution]</div>
+          <ul class="card-compare-list" data-edit="ben-list" contenteditable spellcheck="false">
+            <li>A clear advantage delivered every shift, automatically</li>
+            <li>Consistent, dependable results you can stand behind</li>
+            <li>Keeps pace at full speed with no blind spots</li>
+            <li>A documented trail you can show to customers</li>
+            <li>Lower cost of quality and fewer downstream surprises</li>
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <style>
+    /* Layout-only scoped rules. Both columns compose from .card, so theme Finish blocks restyle
+       them for free; the rules here are purely positional + the ✓ / ✕ list markers. */
+    .template03-why-us { padding:52px 16px 40px !important; overflow-y:auto; }
+    .template03-why-us .slide-body { width:100%; align-items:stretch; }
+    .template03-why-us-compare { display:grid; grid-template-columns:1fr; gap:14px; width:100%; max-width:920px; margin:0 auto; flex:1; min-height:0; }
+
+    .template03-why-us .card-compare { display:flex; flex-direction:column; padding:20px 22px; min-height:0; border-top:3px solid var(--border); }
+    .template03-why-us .card-compare:hover { transform:none; }
+    .card-compare-head { font-size:clamp(14px,1.6vw,20px); font-weight:800; letter-spacing:.01em; padding-bottom:10px; margin-bottom:12px; border-bottom:1px solid var(--border); color:var(--text-muted); }
+
+    .card-compare-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+    .card-compare-list:focus { outline:none; }
+    .card-compare-list li { position:relative; padding-left:26px; font-size:clamp(12px,1.15vw,15px); line-height:1.4; color:var(--text-muted); }
+    .card-compare-list li.compare-tier { padding-left:0; margin-top:8px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--text); opacity:.65; }
+    .card-compare-list li.compare-tier:first-child { margin-top:0; }
+    .card-compare-list li:not(.compare-tier)::before { position:absolute; left:0; top:0; font-weight:800; }
+
+    /* Problem column — neutral, muted ✕ markers */
+    .card-compare--problem .card-compare-list li:not(.compare-tier)::before { content:"\2715"; color:var(--text-muted); }
+
+    /* Benefit column — accent surface + ✓ markers */
+    .card-compare--benefit { border-top-color:var(--accent); background:rgba(var(--accent-rgb),.04); }
+    .card-compare--benefit .card-compare-head { color:var(--accent); }
+    .card-compare--benefit .card-compare-list li:not(.compare-tier) { color:var(--text); }
+    .card-compare--benefit .card-compare-list li:not(.compare-tier)::before { content:"\2713"; color:var(--accent); }
+
+    @media (min-width:769px) {
+      .template03-why-us { padding:52px 80px 0 !important; overflow-y:unset; }
+      .template03-why-us-compare { grid-template-columns:1fr 1fr; gap:20px; }
+    }
+  </style>
+
+  <script>
+  (function () {
+    var slide = document.currentScript.closest('[data-slide]');
+    if (window.PB_READONLY) slide.classList.add('template03-why-us-readonly');
+    /* Static comparison — no interactive elements, so no Track wiring needed. */
+    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
+  })();
+  </script>
+
+</div>
