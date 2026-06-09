@@ -497,7 +497,7 @@
       "headline": "The Case for <span class=\"blue\">Change</span>",
       "subtitle": "A side-by-side look at the status quo versus a better way.",
       "col-header-prob": "Without [Your Solution]",
-      "prob-list": "<li class=\"compare-tier\">Day-to-Day Limitations</li><li>A recurring problem that slows the team down</li><li>Inconsistent results that are hard to predict</li><li>Work that can't keep up at full speed</li><li class=\"compare-tier\">Business Impact</li><li>Avoidable cost that adds up over time</li><li>Risk that reaches the customer undetected</li>",
+      "prob-list": "<div class=\"compare-tier\" data-edit=\"tier-label-1\" contenteditable=\"\" spellcheck=\"false\">Day-to-Day Limitations</div><li>A recurring problem that slows the team down</li><li>Inconsistent results that are hard to predict</li><li>Work that can't keep up at full speed</li><div class=\"compare-tier\" data-edit=\"tier-label-2\" contenteditable=\"\" spellcheck=\"false\">Business Impact</div><li>Avoidable cost that adds up over time</li><li>Risk that reaches the customer undetected</li>",
       "col-header-ben": "With [Your Solution]",
       "ben-list": "<li>A clear advantage delivered every shift, automatically</li><li>Consistent, dependable results you can stand behind</li><li>Keeps pace at full speed with no blind spots</li><li>A documented trail you can show to customers</li><li>Lower cost of quality and fewer downstream surprises</li>"
     }

@@ -1,6 +1,49 @@
 {
   "presentations": [
     {
+      "id": "00000029",
+      "createdAt": "2026-06-08",
+      "deckId": "deck-rebuild",
+      "presentationName": "89",
+      "customerName": "89",
+      "contactName": "89",
+      "contactTitle": "",
+      "customerLogoSrc": "/slides/uploads/Anisothropy-Building-Picture--2-.jpg",
+      "slideCount": 4,
+      "slides": [
+        {
+          "id": "deck-cover",
+          "librarySlideId": "lib-cover",
+          "name": "Cover",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-why-us-1780851570888",
+          "librarySlideId": "lib-why-us",
+          "name": "Why Us",
+          "visible": true
+        },
+        {
+          "id": "deck-company",
+          "librarySlideId": "lib-company-v2",
+          "name": "Company Intro",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1780338645841-1780424554857",
+          "librarySlideId": "lib-1780338645841",
+          "name": "Call to Action-Validated Style",
+          "visible": true
+        }
+      ],
+      "defaultLanguage": "en",
+      "languages": [
+        "en",
+        "es"
+      ],
+      "publishedAt": "2026-06-08T11:08:06.237Z"
+    },
+    {
       "id": "00000028",
       "createdAt": "2026-06-07",
       "deckId": "deck-rebuild",

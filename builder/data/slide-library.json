@@ -3369,7 +3369,7 @@
           "name": "SoftSolution (rebuild)"
         }
       ],
-      "galleryEnabled": true
+      "galleryEnabled": false
     },
     {
       "id": "lib-company-v2",
@@ -3529,12 +3529,14 @@
           "credit": "by GlassQuality.com",
           "section-label": "The Case for Inspection",
           "headline": "Why automate quality inspection<br>for <span class=\"blue\">flat glass processing</span>",
-          "subtitle": "Manual inspection versus automated inspection — the difference at a glance.",
+          "subtitle": "Manual inspection versus automated inspection — the difference at a glance",
           "col-header-prob": "Without Inspection Automation",
-          "prob-list": "<li class=\"compare-tier\">Human Limitations</li><li>Operator fatigue — detection rates drop significantly over long shifts</li><li>As line speed increases, operator effectiveness declines — more throughput means more defects slip through</li><li>100% manual inspection is impossible at production speed</li><li>Distortion &amp; anisotropy are <strong>invisible to the naked eye</strong> — no matter how skilled the operator</li><li class=\"compare-tier\">Business Impact</li><li>Inconsistent quality &amp; frequent customer complaints</li><li>Construction-site rejections — glass already delivered &amp; installed means transport, rework &amp; project delays</li><li>Increased liability risks &amp; reputational damage</li><li>Automotive: one defect triggers a full batch return — shipping &amp; material costs on the entire load</li>",
+          "prob-list": "<div class=\"compare-tier\" data-edit=\"tier-label-1\" spellcheck=\"false\">Human Limitations</div><li class=\"ls-list-hidden\">Operator fatigue — detection rates drop significantly over long shifts</li><li>As line speed increases, operator effectiveness declines — more throughput means more defects slip through</li><li>100% manual inspection is impossible at production speed</li><li>Distortion &amp; anisotropy are <strong>invisible to the naked eye</strong> — no matter how skilled the operator</li><div class=\"compare-tier\" data-edit=\"tier-label-2\" spellcheck=\"false\">Business Impact</div><li>Inconsistent quality &amp; frequent customer complaints</li><li>Construction-site rejections — glass already delivered &amp; installed means transport, rework &amp; project delays</li><li class=\"\">Increased liability risks &amp; reputational damage</li><li class=\"\">Automotive: one defect triggers a full batch return — shipping &amp; material costs on the entire load</li>",
           "col-header-ben": "LineScanner &amp; Osprey",
-          "ben-list": "<li>100% inspection of every glass, every shift — no fatigue, no blind spots</li><li>Real-time process control &amp; quality feedback</li><li>Prove quality to customers — a documented defense against claims</li><li>Database &amp; archive for shift accountability and CpK analysis</li><li>Detects distortion, anisotropy &amp; surface defects <strong>invisible to the human eye</strong></li><li>Acceptance procedures for new machinery (e.g. furnaces)</li><li>Increase throughput &amp; reduce costly downstream rejects</li><li>Mandatory as per industry standards</li>",
-          "gallery-track": "\n  <div class=\"ls-gallery-slide ls-gallery-slide--text\"><div class=\"ls-gallery-stat\">\n    <span class=\"ls-gallery-label\" contenteditable=\"\" spellcheck=\"false\">Section Title</span>\n    <span class=\"ls-gallery-number\" contenteditable=\"\" spellcheck=\"false\">Key Fact</span>\n    <span class=\"ls-gallery-body-text\" contenteditable=\"\" spellcheck=\"false\">Description text here</span>\n  </div></div>\n"
+          "ben-list": "<li>100% inspection of every glass, every shift — no fatigue, no blind spots</li><li>Real-time process control &amp; quality feedback</li><li>Prove quality to customers — a documented defense against claims</li><li>Database &amp; archive for shift accountability and CpK analysis</li><li>Detects distortion, anisotropy &amp; surface defects <strong>invisible to the human eye</strong></li><li class=\"\">Acceptance procedures for new machinery (e.g. furnaces)</li><li draggable=\"false\" class=\"\">Mandatory as per industry standards</li><li class=\"\">Increase throughput &amp; reduce costly downstream rejects</li><li class=\"ls-list-hidden\">New item lo que sea&nbsp;</li>",
+          "gallery-track": "\n  <div class=\"ls-gallery-slide ls-gallery-slide--text\"><div class=\"ls-gallery-stat\">\n    <span class=\"ls-gallery-label\" contenteditable=\"\" spellcheck=\"false\">Section Title</span>\n    <span class=\"ls-gallery-number\" contenteditable=\"\" spellcheck=\"false\">Key Fact</span>\n    <span class=\"ls-gallery-body-text\" contenteditable=\"\" spellcheck=\"false\">Description text here</span>\n  </div></div>\n",
+          "tier-label-1": "Human Limitations",
+          "tier-label-2": "Business Impact"
         }
       },
       "decks": [
@@ -3652,12 +3654,7 @@
           "gallery-track": "\n  <div class=\"ls-gallery-slide ls-gallery-slide--text\"><div class=\"ls-gallery-stat\">\n    <span class=\"ls-gallery-label\" contenteditable=\"\" spellcheck=\"false\">Section Title</span>\n    <span class=\"ls-gallery-number\" contenteditable=\"\" spellcheck=\"false\">Key Fact</span>\n    <span class=\"ls-gallery-body-text\" contenteditable=\"\" spellcheck=\"false\">Description text here</span>\n  </div></div>\n"
         }
       },
-      "decks": [
-        {
-          "id": "deck-1780653517426-z95wf",
-          "name": "Daily"
-        }
-      ],
+      "decks": [],
       "galleryEnabled": true
     },
     {
