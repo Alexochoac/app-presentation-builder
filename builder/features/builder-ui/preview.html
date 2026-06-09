@@ -267,6 +267,7 @@
     .tc-cell-lang textarea.dirty { border-color:#F5A623 !important; }
     .tc-cell-lang textarea.missing { border-color:#f87171 !important; }
     .tc-field-key { color:rgba(255,255,255,.3);font-size:11px;font-family:monospace; }
+    .tc-list-tag { display:inline-block;margin-left:4px;padding:0 5px;border-radius:8px;background:rgba(99,179,237,.15);color:#63b3ed;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;vertical-align:middle; }
     .slide-logo-row img { height: 28px !important; }
     .slide-logo-ls { height: 26px !important; }
     .slide-logo-sep { height: 26px !important; }
@@ -282,6 +283,10 @@
     }
     .feature-fab:hover { background: rgba(0,0,0,.65); border-color: rgba(255,255,255,.6); color: #fff; }
     .feature-fab.active { border-color: var(--accent, #F5A623); color: var(--accent, #F5A623); }
+    /* Builder only: the 'f' owns the corner (right:22, 34px wide); the gallery button (the dock's
+       first occupant) sits just to its left. In published output there's no 'f', so the gallery
+       button keeps its own corner position (right:22 from the shared rule). */
+    .pb-gallery-btn { right: 64px !important; }
     .feature-pop {
       position: fixed; right: 22px; bottom: 64px; z-index: 9501;
       width: 250px; padding: 14px 16px; background: #14161c;
@@ -1346,6 +1351,42 @@
 
   // ── Translation Center ────────────────────────────────────────────────────
   var tcRows = [];
+  var tcListEn = {};   // "<slideId>|<fieldKey>" -> English list HTML (for per-line rebuild)
+
+  // A field is a "list" when its English value contains <li> items (data-ls-list blobs).
+  function isListField(en) { return /<li[\s>]/i.test(en || ''); }
+
+  // Direct children of a list blob, in order (each <li> item or <div> tier label).
+  function parseListChildren(html) {
+    var doc = new DOMParser().parseFromString('<ul>' + (html || '') + '</ul>', 'text/html');
+    var ul = doc.querySelector('ul');
+    return ul ? Array.prototype.slice.call(ul.children) : [];
+  }
+  // One visible-text line per child.
+  function listToLines(html) {
+    return parseListChildren(html).map(function (c) { return (c.textContent || '').replace(/\s+/g, ' ').trim(); });
+  }
+  // Rebuild list HTML: take tag+attrs from the English structure by index, fill text from `lines`.
+  // Extra lines (beyond the English structure) become <li>; blank lines are dropped.
+  function linesToListHtml(enHtml, lines) {
+    var enChildren = parseListChildren(enHtml);
+    var out = [];
+    for (var i = 0; i < lines.length; i++) {
+      var text = (lines[i] || '').trim();
+      if (!text) continue;
+      var tmpl = enChildren[i];
+      if (tmpl) {
+        var clone = tmpl.cloneNode(false);          // keep tag + attributes, drop inner markup
+        clone.removeAttribute('contenteditable');
+        clone.removeAttribute('spellcheck');
+        clone.textContent = text;
+        out.push(clone.outerHTML);
+      } else {
+        out.push('<li>' + escHtml(text) + '</li>');
+      }
+    }
+    return out.join('');
+  }
 
   function openTranslationCenter() {
     closeTranslationSettings();
@@ -1382,11 +1423,27 @@
     activeLangs.forEach(function(lang){ headerCells += '<th>' + lang.toUpperCase() + '</th>'; });
     thead.innerHTML = '<tr>' + headerCells + '</tr>';
 
+    // Lists are edited per-line (each <li>/tier shown on its own line). Stash the English HTML
+    // for rebuild, and collect inner keys (e.g. tier-label-1) that live inside a list blob so
+    // we don't also render them as standalone rows.
+    tcListEn = {};
+    var listInnerKeys = {};   // slideId -> { key: true }
+    rows.forEach(function(row) {
+      if (!isListField(row.en)) return;
+      tcListEn[row.slideId + '|' + row.fieldKey] = row.en;
+      parseListChildren(row.en).forEach(function(c) {
+        var k = c.getAttribute && c.getAttribute('data-edit');
+        if (k) { (listInnerKeys[row.slideId] = listInnerKeys[row.slideId] || {})[k] = true; }
+      });
+    });
+
     // Filter out non-translatable rows (large HTML blobs, tiny values, pure numbers)
     rows = rows.filter(function(row) {
       var v = row.en || '';
-      // Skip large HTML blobs (tabs component, carousels, etc.)
-      if (v.length > 400) return false;
+      // Drop inner keys already covered by their parent list field (avoid duplicate rows)
+      if (listInnerKeys[row.slideId] && listInnerKeys[row.slideId][row.fieldKey]) return false;
+      // Skip large HTML blobs (tabs component, carousels, etc.) — but lists ARE translatable
+      if (v.length > 400 && !isListField(v)) return false;
       // Skip if plain text is less than 3 characters after stripping tags
       var plain = stripHtmlTags(v).trim();
       if (plain.length < 3) return false;
@@ -1408,19 +1465,36 @@
       }
       var sid = escHtml(row.slideId);
       var fk  = escHtml(row.fieldKey);
+      var fieldIsList = isListField(row.en);
       html += '<tr>';
-      html += '<td class="tc-field-key">' + fk + '</td>';
-      var enPlain = stripHtmlTags(row.en || '').trim();
-      html += '<td class="tc-cell-en"><textarea class="tc-en-edit" data-slide-id="' + sid + '" data-field-key="' + fk + '" rows="2" style="width:100%;background:transparent;border:1px solid transparent;border-radius:6px;color:rgba(255,255,255,.8);font-size:12px;font-family:inherit;resize:vertical;min-height:36px;padding:4px 6px;line-height:1.4;">' + escHtml(enPlain) + '</textarea></td>';
-      activeLangs.forEach(function(lang) {
-        var entry = row.langs && row.langs[lang];
-        var val = entry && entry.current || '';
-        var cls = !val ? 'missing' : (entry && entry.dirty ? 'dirty' : '');
-        if (cls === 'missing') totalMissing++;
-        else if (cls === 'dirty') totalDirty++;
-        var valPlain = stripHtmlTags(val);
-        html += '<td class="tc-cell-lang"><textarea class="' + cls + '" data-slide-id="' + sid + '" data-field-key="' + fk + '" data-lang="' + lang + '" rows="2">' + escHtml(valPlain) + '</textarea></td>';
-      });
+      html += '<td class="tc-field-key">' + fk + (fieldIsList ? ' <span class="tc-list-tag">list</span>' : '') + '</td>';
+      if (fieldIsList) {
+        // English is authored on the slide (list.js) — show it read-only, one item per line.
+        var enLines  = listToLines(row.en);
+        var enRows   = Math.max(2, enLines.length);
+        html += '<td class="tc-cell-en"><textarea class="tc-en-edit tc-en-list" readonly title="Edit list items on the slide" data-slide-id="' + sid + '" data-field-key="' + fk + '" rows="' + enRows + '" style="width:100%;background:transparent;border:1px solid transparent;border-radius:6px;color:rgba(255,255,255,.55);font-size:12px;font-family:inherit;resize:vertical;min-height:36px;padding:4px 6px;line-height:1.4;">' + escHtml(enLines.join('\n')) + '</textarea></td>';
+        activeLangs.forEach(function(lang) {
+          var entry = row.langs && row.langs[lang];
+          var val = entry && entry.current || '';
+          var cls = !val ? 'missing' : (entry && entry.dirty ? 'dirty' : '');
+          if (cls === 'missing') totalMissing++;
+          else if (cls === 'dirty') totalDirty++;
+          var langLines = val ? listToLines(val).join('\n') : '';
+          html += '<td class="tc-cell-lang"><textarea class="tc-lang-list ' + cls + '" data-slide-id="' + sid + '" data-field-key="' + fk + '" data-lang="' + lang + '" rows="' + enRows + '" placeholder="one item per line…">' + escHtml(langLines) + '</textarea></td>';
+        });
+      } else {
+        var enPlain = stripHtmlTags(row.en || '').trim();
+        html += '<td class="tc-cell-en"><textarea class="tc-en-edit" data-slide-id="' + sid + '" data-field-key="' + fk + '" rows="2" style="width:100%;background:transparent;border:1px solid transparent;border-radius:6px;color:rgba(255,255,255,.8);font-size:12px;font-family:inherit;resize:vertical;min-height:36px;padding:4px 6px;line-height:1.4;">' + escHtml(enPlain) + '</textarea></td>';
+        activeLangs.forEach(function(lang) {
+          var entry = row.langs && row.langs[lang];
+          var val = entry && entry.current || '';
+          var cls = !val ? 'missing' : (entry && entry.dirty ? 'dirty' : '');
+          if (cls === 'missing') totalMissing++;
+          else if (cls === 'dirty') totalDirty++;
+          var valPlain = stripHtmlTags(val);
+          html += '<td class="tc-cell-lang"><textarea class="' + cls + '" data-slide-id="' + sid + '" data-field-key="' + fk + '" data-lang="' + lang + '" rows="2">' + escHtml(valPlain) + '</textarea></td>';
+        });
+      }
       html += '</tr>';
     });
 
@@ -1447,12 +1521,18 @@
         if (!slideId || !fieldKey || !lang) return;
         var val = ta.value.trim();
         if (val === (ta.dataset.originalVal || '').trim()) { ta.classList.toggle('missing', !val); if (val) ta.classList.remove('dirty'); return; }
+        // List fields: the textarea is one item per line — rebuild the <li>/tier HTML (using the
+        // English structure as the template) so the stored value is a complete, bake-ready <ul>.
+        var isList   = ta.classList.contains('tc-lang-list');
+        var saveVal  = isList && val
+          ? linesToListHtml(tcListEn[slideId + '|' + fieldKey] || '', ta.value.split('\n'))
+          : val;
         // Save even when val is empty — clearing a translation removes it (marks as missing)
         fetch('/api/translations/field', {
           method: 'PATCH',
           keepalive: true,
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ slideId: slideId, fieldKey: fieldKey, language: lang, value: val })
+          body: JSON.stringify({ slideId: slideId, fieldKey: fieldKey, language: lang, value: saveVal })
         }).then(function(r){ return r.json(); }).then(function(res){
           if (!res.success) return;
           ta.classList.remove('dirty');
@@ -1461,7 +1541,7 @@
           if (!translationsData.slides) translationsData.slides = {};
           if (!translationsData.slides[slideId]) translationsData.slides[slideId] = {};
           if (!translationsData.slides[slideId][fieldKey]) translationsData.slides[slideId][fieldKey] = {};
-          translationsData.slides[slideId][fieldKey][lang] = { current: val, previous: null, dirty: false };
+          translationsData.slides[slideId][fieldKey][lang] = { current: saveVal, previous: null, dirty: false };
           updateTranslateBadge();
         });
       });
@@ -1469,6 +1549,7 @@
 
     // Wire English textarea save on blur
     tbody.querySelectorAll('textarea.tc-en-edit').forEach(function(ta) {
+      if (ta.classList.contains('tc-en-list')) return;   // list English is read-only (edit on the slide)
       ta.addEventListener('blur', function() {
         var slideId  = ta.dataset.slideId;
         var fieldKey = ta.dataset.fieldKey;
