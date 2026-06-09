@@ -85,6 +85,12 @@ function validateCartridge(file, html) {
     // CSS scope class should match the id
     const cls = (root.attr('class') || '').split(/\s+/);
     if (id && !cls.includes(id)) add(WARN, 'scope-class', `root class list does not include its id "${id}"`);
+
+    // — §3 Responsive model: content cartridges must carry `pb-responsive` (the shared
+    //   slide-as-sole-scroll-container model). Hero/cover slides are full-bleed, not scrollable. —
+    if (cls.includes('content') && !cls.includes('hero') && !cls.includes('pb-responsive')) {
+      add(WARN, 'responsive-model', 'content cartridge is missing the `pb-responsive` root class (rulebook §3 — the shared responsive model)');
+    }
   }
 
   // — §3 Layer 3: tracking must use Track.*(), never raw umami.track() —

@@ -160,6 +160,32 @@ This rule is what guarantees full style-conversion: every styleable surface wear
 so the theme's Finish block can't miss one. Bespoke per-slide classes (`.ls4-shaded`, `.ls27-car`, …) are
 the legacy variance being migrated away.
 
+### The Responsive Model — `pb-responsive` (required on every content cartridge)
+
+Every rebuilt **content** cartridge's root carries the shared class `pb-responsive` (e.g.
+`class="slide content templateNN-name pb-responsive"`). It is defined once in `features/slides/style.css`
+and is the single source of responsive behavior — **do not re-implement it per slide.**
+
+The model — **the slide is the *sole* scroll container:**
+- Content **stacks and the whole slide scrolls** (like mobile) at every size; **no inner element gets a
+  fixed height or its own overflow.** A scrollbar appears only when content genuinely overflows, and
+  content is **never clipped or hidden**.
+- `justify-content: safe center` — centers content when it fits, top-aligns + scrolls when it doesn't
+  (plain `center` on a scroll container clips the **top** and makes it unreachable — never use it).
+- Columns/grids go multi-column **by available width, not a device breakpoint**:
+  `grid-template-columns: repeat(auto-fit, minmax(<min>px, 1fr))` (stack when each column would be < min).
+- Spacing + corner chrome (logos / credit) scale with `clamp()`, not stepped breakpoints. The shared block
+  reserves ~72px top clearance so the centered header never rides under the corner logo/credit band.
+- The active slide uses `transform: none` (not `scale(1)`) so descendant `position:fixed` controls pin to
+  the **viewport** (a transformed ancestor traps `fixed` to itself and it scrolls with content).
+
+**Therefore, in a cartridge's scoped `<style>`: never set `overflow`, fixed `height`/`height:100%`,
+`flex:1; min-height:0`, `justify-content:center`, or `@media` breakpoints to re-create a fixed-height
+layout.** Size inner content to its own content; let the slide scroll. Per-slide CSS is positional only.
+
+*(Hero/cover slides (`.slide.hero`) are full-bleed and do not scroll — they are not `pb-responsive`.
+Legacy non-`pb-responsive` slides keep the old fixed-height model until they are rebuilt.)*
+
 ---
 
 ## 4. IDs & Naming

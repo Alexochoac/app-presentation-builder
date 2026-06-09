@@ -1,4 +1,4 @@
-<div class="slide content template03-why-us"
+<div class="slide content template03-why-us pb-responsive"
      data-slide="template03-why-us"
      data-slide-mode="sequence">
 
@@ -62,37 +62,12 @@
   </div>
 
   <style>
-    /* Layout-only scoped rules. Both columns compose from .card, so theme Finish blocks restyle
-       them for free; the rules here are purely positional + the ✓ / ✕ list markers. */
-    /* Responsive model: the SLIDE is the sole scroll container — it scrolls as one (like mobile)
-       at every size. No inner element gets a fixed height or its own overflow, so content is
-       never clipped/hidden. These !important rules override the shared fixed-height desktop model
-       (.slide.content overflow:unset + justify:center, .slide-layout height:100%,
-       .slide-body flex:1/min-height:0/overflow:hidden). 'safe center' centers content when it
-       fits and top-aligns + scrolls when it doesn't (never clips the top). */
-    /* !important on justify-content: must beat the shared `.slide.content { justify-content:center }`
-       (2 classes) — plain center on a scroll container clips the TOP of overflowing content and makes
-       it unreachable. `safe center` centers when it fits, top-aligns + scrolls when it doesn't. */
-    .template03-why-us { padding:72px clamp(16px,6vw,80px) 48px !important; overflow-y:auto !important; overflow-x:hidden; justify-content:safe center !important; }
-    /* Reserve top clearance so the centered header never rides under the corner logo row (left)
-       / credit (right) when content top-aligns. ~72px clears the logos + credit. */
-    .template03-why-us .slide-layout { height:auto !important; padding-top:0 !important; }
-
-    /* Release the transform trap on the active slide so the gallery button's position:fixed pins
-       to the VIEWPORT (stays put while the slide scrolls, like the 'f'), not to the scrolling
-       slide. scale(1) was an identity transform, so the entrance animation is unchanged. */
-    .template03-why-us.active { transform:none; }
-
-    /* Corner chrome (logo row left, credit right) scales with the viewport — low floors + faster
-       vw scaling so logos/credit keep shrinking on phone widths and don't collide in the top band. */
-    .template03-why-us .slide-logo-row { top:clamp(12px,3vw,22px); left:clamp(12px,3vw,36px); gap:clamp(5px,1.2vw,10px); }
-    /* !important: the first logo (SoftSolution) has no class and the builder sets an inline height
-       on logos at runtime — only !important beats that inline style. Both logos size identically. */
-    .template03-why-us .slide-logo-row img,
-    .template03-why-us .slide-logo-ls { height:clamp(15px,4vw,30px) !important; width:auto !important; }
-    .template03-why-us .slide-logo-sep { height:clamp(12px,3vw,24px); }
-    .template03-why-us .softsolution-credit { top:clamp(12px,3vw,42px); right:clamp(10px,4vw,80px); font-size:clamp(7px,1.6vw,11px); max-width:38%; text-align:right; line-height:1.2; }
-    .template03-why-us .slide-body { width:100%; align-items:stretch; flex:none !important; min-height:0; height:auto; overflow:visible !important; }
+    /* Layout-only scoped rules. The shared `pb-responsive` root class provides the responsive
+       model — slide-as-sole-scroll-container, safe-center, no inner clip, viewport-fixed controls,
+       and fluid corner chrome (logos/credit). See style.css §pb-responsive. The rules here are
+       purely Why-Us positional + the ✓ / ✕ list markers; both columns compose from .card so theme
+       Finish blocks restyle them for free. */
+    .template03-why-us .slide-body { width:100%; align-items:stretch; }
 
     /* Columns sit side-by-side only when each has ≥~320px; otherwise they stack. Width-driven
        (auto-fit), not a device breakpoint — adapts to real available space. */

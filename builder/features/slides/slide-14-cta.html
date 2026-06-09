@@ -1,4 +1,4 @@
-<div class="slide content template14-cta" data-slide="template14-cta" data-slide-mode="sequence">
+<div class="slide content template14-cta pb-responsive" data-slide="template14-cta" data-slide-mode="sequence">
   <img class="cta-bg" src="/slides/uploads/image112.png" alt="" aria-hidden="true">
   <div class="slide-logo-row" data-edit="logo-row" data-managed><img src="/shared/brand/logo.svg" alt="Put A Presentation"></div>
   <div class="slide-layout">
@@ -38,9 +38,9 @@
   </div>
 
   <style>
-    .template14-cta { overflow:hidden; padding:52px 20px 80px !important; }
+    /* Responsive model comes from the shared `pb-responsive` root class (see style.css). */
     .template14-cta .cta-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:.06; pointer-events:none; z-index:0; }
-    .template14-cta .cta-box { flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center; padding-bottom:72px; max-width:680px; width:100%; text-align:left; }
+    .template14-cta .cta-box { display:flex; flex-direction:column; padding-bottom:24px; max-width:680px; width:100%; text-align:left; }
 
     .cta-contact {
       display:flex; flex-direction:column; align-items:flex-start; gap:14px;
@@ -67,7 +67,6 @@
     .cta-btn-email:hover { background:rgba(var(--accent-rgb),.22); border-color:rgba(var(--accent-rgb),.55); }
 
     @media(min-width:769px){
-      .template14-cta { padding:60px 80px 0 !important; }
       .cta-contact { flex-direction:row; align-items:center; gap:20px; }
       .cta-btn-wa, .cta-btn-email { font-size:13px; padding:10px 20px; min-height:unset; }
     }
