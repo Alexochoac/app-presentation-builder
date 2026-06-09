@@ -100,7 +100,10 @@ body {
 
 /* ── Universal gallery button (server-injected by injectGallery when galleryEnabled) ── */
 .pb-gallery-btn {
-  position: absolute; bottom: 64px; right: 16px; z-index: 10;
+  /* First occupant of the bottom-right "feature dock". Fixed to the slide's corner so it stays
+     put while the slide scrolls; pinned beside the builder's 'f' (see preview.html override).
+     In published output there's no 'f', so it sits in the corner on its own. */
+  position: fixed; bottom: 22px; right: 22px; z-index: 9499;
   display: flex; align-items: center; gap: 6px;
   padding: 7px 14px;
   background: var(--card-bg, rgba(0,0,0,.40));

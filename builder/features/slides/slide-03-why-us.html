@@ -19,35 +19,41 @@
 
     <div class="slide-body">
 
-      <!-- Two-column comparison. Each column body is ONE editable blob (data-edit) saved as a
-           unit; tier rows are styled <li class="compare-tier"> inside the same list, so no
-           per-item keys are needed. .card surface → theme Finish blocks restyle it for free. -->
+      <!-- Two-column comparison. Each list is a list.js component (data-ls-list): items get
+           drag-reorder, hide/restore, add, delete + double-click-edit. Tier rows are <div>s
+           (list.js only touches <li>), individually editable via their own data-edit key. The
+           whole <ul> innerHTML also persists as one blob under data-edit (List saveList). .card
+           surface → theme Finish blocks restyle it for free. -->
       <div class="template03-why-us-compare">
 
         <!-- Problem / status-quo column -->
         <div class="card card-compare card-compare--problem anim-in">
           <div class="card-compare-head" data-edit="col-header-prob" contenteditable spellcheck="false">Without [Your Solution]</div>
-          <ul class="card-compare-list" data-edit="prob-list" contenteditable spellcheck="false">
-            <li class="compare-tier">Day-to-Day Limitations</li>
+          <ul class="card-compare-list" data-edit="prob-list" data-ls-list>
+            <div class="compare-tier" data-edit="tier-label-1" contenteditable spellcheck="false">Day-to-Day Limitations</div>
             <li>A recurring problem that slows the team down</li>
             <li>Inconsistent results that are hard to predict</li>
             <li>Work that can't keep up at full speed</li>
-            <li class="compare-tier">Business Impact</li>
+            <div class="compare-tier" data-edit="tier-label-2" contenteditable spellcheck="false">Business Impact</div>
             <li>Avoidable cost that adds up over time</li>
             <li>Risk that reaches the customer undetected</li>
           </ul>
+          <div class="compare-restore" data-builder-only data-ls-restore></div>
+          <button class="compare-add" data-builder-only data-ls-add>+ Add item</button>
         </div>
 
         <!-- Benefit / solution column -->
         <div class="card card-compare card-compare--benefit anim-in">
           <div class="card-compare-head" data-edit="col-header-ben" contenteditable spellcheck="false">With [Your Solution]</div>
-          <ul class="card-compare-list" data-edit="ben-list" contenteditable spellcheck="false">
+          <ul class="card-compare-list" data-edit="ben-list" data-ls-list>
             <li>A clear advantage delivered every shift, automatically</li>
             <li>Consistent, dependable results you can stand behind</li>
             <li>Keeps pace at full speed with no blind spots</li>
             <li>A documented trail you can show to customers</li>
             <li>Lower cost of quality and fewer downstream surprises</li>
           </ul>
+          <div class="compare-restore" data-builder-only data-ls-restore></div>
+          <button class="compare-add" data-builder-only data-ls-add>+ Add item</button>
         </div>
 
       </div>
@@ -58,41 +64,73 @@
   <style>
     /* Layout-only scoped rules. Both columns compose from .card, so theme Finish blocks restyle
        them for free; the rules here are purely positional + the ✓ / ✕ list markers. */
-    .template03-why-us { padding:52px 16px 40px !important; overflow-y:auto; }
-    .template03-why-us .slide-body { width:100%; align-items:stretch; }
-    .template03-why-us-compare { display:grid; grid-template-columns:1fr; gap:14px; width:100%; max-width:920px; margin:0 auto; flex:1; min-height:0; }
+    /* Responsive model: the SLIDE is the sole scroll container — it scrolls as one (like mobile)
+       at every size. No inner element gets a fixed height or its own overflow, so content is
+       never clipped/hidden. These !important rules override the shared fixed-height desktop model
+       (.slide.content overflow:unset + justify:center, .slide-layout height:100%,
+       .slide-body flex:1/min-height:0/overflow:hidden). 'safe center' centers content when it
+       fits and top-aligns + scrolls when it doesn't (never clips the top). */
+    /* !important on justify-content: must beat the shared `.slide.content { justify-content:center }`
+       (2 classes) — plain center on a scroll container clips the TOP of overflowing content and makes
+       it unreachable. `safe center` centers when it fits, top-aligns + scrolls when it doesn't. */
+    .template03-why-us { padding:72px clamp(16px,6vw,80px) 48px !important; overflow-y:auto !important; overflow-x:hidden; justify-content:safe center !important; }
+    /* Reserve top clearance so the centered header never rides under the corner logo row (left)
+       / credit (right) when content top-aligns. ~72px clears the logos + credit. */
+    .template03-why-us .slide-layout { height:auto !important; padding-top:0 !important; }
 
-    .template03-why-us .card-compare { display:flex; flex-direction:column; padding:20px 22px; min-height:0; border-top:3px solid var(--border); }
+    /* Release the transform trap on the active slide so the gallery button's position:fixed pins
+       to the VIEWPORT (stays put while the slide scrolls, like the 'f'), not to the scrolling
+       slide. scale(1) was an identity transform, so the entrance animation is unchanged. */
+    .template03-why-us.active { transform:none; }
+
+    /* Corner chrome (logo row left, credit right) scales with the viewport — low floors + faster
+       vw scaling so logos/credit keep shrinking on phone widths and don't collide in the top band. */
+    .template03-why-us .slide-logo-row { top:clamp(12px,3vw,22px); left:clamp(12px,3vw,36px); gap:clamp(5px,1.2vw,10px); }
+    /* !important: the first logo (SoftSolution) has no class and the builder sets an inline height
+       on logos at runtime — only !important beats that inline style. Both logos size identically. */
+    .template03-why-us .slide-logo-row img,
+    .template03-why-us .slide-logo-ls { height:clamp(15px,4vw,30px) !important; width:auto !important; }
+    .template03-why-us .slide-logo-sep { height:clamp(12px,3vw,24px); }
+    .template03-why-us .softsolution-credit { top:clamp(12px,3vw,42px); right:clamp(10px,4vw,80px); font-size:clamp(7px,1.6vw,11px); max-width:38%; text-align:right; line-height:1.2; }
+    .template03-why-us .slide-body { width:100%; align-items:stretch; flex:none !important; min-height:0; height:auto; overflow:visible !important; }
+
+    /* Columns sit side-by-side only when each has ≥~320px; otherwise they stack. Width-driven
+       (auto-fit), not a device breakpoint — adapts to real available space. */
+    .template03-why-us-compare { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:clamp(14px,2vw,20px); width:100%; max-width:920px; margin:0 auto; }
+
+    .template03-why-us .card-compare { display:flex; flex-direction:column; padding:20px 22px 8px; border-top:3px solid var(--border); }
     .template03-why-us .card-compare:hover { transform:none; }
     .card-compare-head { font-size:clamp(14px,1.6vw,20px); font-weight:800; letter-spacing:.01em; padding-bottom:10px; margin-bottom:12px; border-bottom:1px solid var(--border); color:var(--text-muted); }
 
     .card-compare-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
-    .card-compare-list:focus { outline:none; }
-    .card-compare-list li { position:relative; padding-left:26px; font-size:clamp(12px,1.15vw,15px); line-height:1.4; color:var(--text-muted); }
-    .card-compare-list li.compare-tier { padding-left:0; margin-top:8px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--text); opacity:.65; }
-    .card-compare-list li.compare-tier:first-child { margin-top:0; }
-    .card-compare-list li:not(.compare-tier)::before { position:absolute; left:0; top:0; font-weight:800; }
+    /* Tier rows are <div>s inside the <ul> (list.js ignores non-<li>) */
+    .card-compare-list .compare-tier { margin-top:8px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--text); opacity:.65; }
+    .card-compare-list .compare-tier:first-child { margin-top:0; }
+    .card-compare-list .compare-tier:focus { outline:none; }
+    /* List items — room on the left for the ✓/✕ marker, on the right for list.js drag/hide controls */
+    .card-compare-list li { position:relative; padding-left:26px; padding-right:40px; font-size:clamp(12px,1.15vw,15px); line-height:1.4; color:var(--text-muted); }
+    .card-compare-list li::before { position:absolute; left:0; top:0; font-weight:800; }
 
     /* Problem column — neutral, muted ✕ markers */
-    .card-compare--problem .card-compare-list li:not(.compare-tier)::before { content:"\2715"; color:var(--text-muted); }
+    .card-compare--problem .card-compare-list li::before { content:"\2715"; color:var(--text-muted); }
 
     /* Benefit column — accent surface + ✓ markers */
     .card-compare--benefit { border-top-color:var(--accent); background:rgba(var(--accent-rgb),.04); }
     .card-compare--benefit .card-compare-head { color:var(--accent); }
-    .card-compare--benefit .card-compare-list li:not(.compare-tier) { color:var(--text); }
-    .card-compare--benefit .card-compare-list li:not(.compare-tier)::before { content:"\2713"; color:var(--accent); }
+    .card-compare--benefit .card-compare-list li { color:var(--text); }
+    .card-compare--benefit .card-compare-list li::before { content:"\2713"; color:var(--accent); }
 
-    @media (min-width:769px) {
-      .template03-why-us { padding:52px 80px 0 !important; overflow-y:unset; }
-      .template03-why-us-compare { grid-template-columns:1fr 1fr; gap:20px; }
-    }
+    /* Builder-only list controls never show in readonly / published output */
+    .template03-why-us-readonly [data-ls-add],
+    .template03-why-us-readonly [data-ls-restore] { display:none; }
   </style>
 
   <script>
   (function () {
     var slide = document.currentScript.closest('[data-slide]');
     if (window.PB_READONLY) slide.classList.add('template03-why-us-readonly');
-    /* Static comparison — no interactive elements, so no Track wiring needed. */
+    /* Editable lists — drag-reorder / hide / add / delete via the shared list.js component. */
+    if (window.List) List.init(slide);
     setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
   })();
   </script>
