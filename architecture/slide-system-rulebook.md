@@ -183,8 +183,13 @@ The model — **the slide is the *sole* scroll container:**
 `flex:1; min-height:0`, `justify-content:center`, or `@media` breakpoints to re-create a fixed-height
 layout.** Size inner content to its own content; let the slide scroll. Per-slide CSS is positional only.
 
-*(Hero/cover slides (`.slide.hero`) are full-bleed and do not scroll — they are not `pb-responsive`.
-Legacy non-`pb-responsive` slides keep the old fixed-height model until they are rebuilt.)*
+**Corner-chrome fluidity is a separate concern — `pb-chrome`.** The fluid logo-row + credit (scaling
+with the viewport via `clamp()`) lives in `pb-chrome`, which `pb-responsive` **includes** — so content
+cartridges need only `pb-responsive`. Non-scrolling **hero/cover** slides (`.slide.hero`) carry **`pb-chrome`
+alone**: they get the fluid chrome but not the scroll model (the scroll rules are `.slide.content`-gated,
+so they never apply to a hero anyway).
+
+*(Legacy non-`pb-responsive` slides keep the old fixed-height model until they are rebuilt.)*
 
 ---
 
