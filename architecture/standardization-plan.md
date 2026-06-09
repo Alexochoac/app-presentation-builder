@@ -230,6 +230,33 @@ when it should be a **universal opt-in feature** like the server-injected logo-r
 - **Sequencing:** (1) rebuild the cover **lean — no gallery markup in the cartridge**; (2) build the
   universal gallery toggle as its own task; the cover becomes its first consumer by flipping the flag.
 
+## 💡 IDEA (to build) — The Feature Dock + overflow "e" menu — captured 2026-06-09
+
+**User's vision (locked intent).** As more universal features land (gallery now; charts, webhooks, … later),
+each feature splits into two parts:
+- **Settings** — toggle/configure → lives behind the builder's **`f`** Features button (builder-only chrome).
+- **An optional on-slide affordance** — e.g. the Gallery "open" button; a future "view chart" button; some
+  features (webhooks) have none → this ships to the **published** deck.
+
+These affordances should live in a single anchored **feature dock** (bottom-right, where the `f` is), not be
+hand-placed per feature:
+- **Builder:** `f` (settings) + the affordances of enabled features, clustered together.
+- **Published:** no `f` — only the affordances of enabled features.
+- **Responsive collapse:** wide screens show affordances inline; **small screens collapse them into an overflow
+  menu — an "e" (extra) button** — that opens the list. (Standard toolbar-overflow pattern.)
+
+**Why it fits:** extends the universal-features model (server-injected, per-slide-toggled) to the *control*
+layer — features stop re-solving placement; the dock lays them out and handles responsive collapse once.
+
+**Foundation done (2026-06-09):** the gallery button is now the dock's first occupant — `position:fixed`
+bottom-right of the slide (stays put while the slide scrolls), pinned just left of the `f` in the builder
+(`preview.html` override), and alone in the corner in published output. `.pb-gallery-btn` in
+`features/slides/style.css`.
+
+**To build (own task):** a real dock component — feature→affordance registration, inline-vs-"e"-overflow
+responsive collapse, builder/published modes. Until then, new feature affordances follow the gallery button's
+fixed-corner pattern.
+
 ## Builder-UX batch (captured 2026-06-01) — do as ONE task after the cover loop
 
 Three builder-layer capabilities surfaced while rebuilding the cover. All are shared/builder features (not
