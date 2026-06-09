@@ -1,4 +1,4 @@
-<div class="slide content template02-company"
+<div class="slide content template02-company pb-responsive"
      data-slide="template02-company"
      data-slide-mode="sequence">
 
@@ -146,14 +146,16 @@
   <style>
     /* Layout-only scoped rules. Every surface composes from .card / .kpi-card / .feature-list,
        so theme Finish blocks restyle them for free. Bespoke classes here are purely positional. */
-    .template02-company { padding:52px 16px 80px !important; overflow-y:auto; }
+    /* Responsive model from the shared `pb-responsive` root class (style.css): the slide is the
+       sole scroll container. Content-flow — panels/cards/grids size to their content; nothing
+       inner-clips. Rules here are Company-positional; surfaces compose from .card/.kpi-card. */
     .template02-company .slide-body { width:100%; align-items:center; }
-    .template02-company-tabs { flex:1; min-height:0; width:100%; max-width:860px; }
-    .template02-company .ls-carousel { min-height:260px !important; height:260px !important; }
+    .template02-company-tabs { width:100%; max-width:860px; }
+    .template02-company .ls-carousel { height:clamp(240px,42vh,380px) !important; min-height:0 !important; }
 
     /* Pillars — .card surface + positional modifier (accent bar, giant index number) */
-    .template02-company-pillars { flex:1; display:flex; flex-direction:column; gap:8px; padding:12px 0 8px; min-height:0; }
-    .template02-company .card-pillar { flex:1; position:relative; overflow:hidden; display:flex; align-items:center; border-left:3px solid var(--accent); padding:0 28px; min-height:60px; }
+    .template02-company-pillars { display:flex; flex-direction:column; gap:8px; padding:12px 0 8px; }
+    .template02-company .card-pillar { position:relative; overflow:hidden; display:flex; align-items:center; border-left:3px solid var(--accent); padding:0 28px; min-height:72px; }
     .template02-company .card-pillar:hover { transform:none; }
     .card-pillar-num { position:absolute; left:16px; top:50%; transform:translateY(-50%); font-size:clamp(60px,9vw,120px); font-weight:900; line-height:1; color:rgba(var(--accent-rgb),.10); pointer-events:none; user-select:none; letter-spacing:-.03em; }
     .card-pillar-content { margin-left:clamp(70px,10vw,140px); z-index:1; }
@@ -162,7 +164,7 @@
     .card-pillar-title:focus, .card-pillar-desc:focus { outline:none; }
 
     /* Network/panel image — themeable .card surface holding an uploadable image */
-    .template02-company .template02-company-map { position:relative; flex:1; min-height:0; margin-top:12px; padding:0; overflow:hidden; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+    .template02-company .template02-company-map { position:relative; width:100%; aspect-ratio:16/9; margin-top:12px; padding:0; overflow:hidden; cursor:pointer; display:flex; align-items:center; justify-content:center; }
     .template02-company .template02-company-map:hover { transform:none; }
     .template02-company-map-img { width:100%; height:100%; object-fit:cover; display:block; }
     .template02-company-map-img--missing { display:none; }
@@ -172,9 +174,10 @@
     .template02-company-map-placeholder small { font-size:10px; opacity:.65; }
     .template02-company-readonly .template02-company-map { cursor:default; }
 
-    /* Brand/partner cards — .card surface + positional modifier (logo / country / product list) */
-    .template02-company-iqc { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; padding:12px 0 8px; flex:1; min-height:0; }
-    .template02-company .card-iqc { display:grid; grid-template-rows:80px auto 1fr; justify-items:center; align-content:start; padding:16px 14px 14px; gap:8px; text-align:center; }
+    /* Brand/partner cards — .card surface + positional modifier. Auto-fit: more columns when wide,
+       fewer (stack) when narrow — width-driven, no breakpoint. */
+    .template02-company-iqc { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; padding:12px 0 8px; }
+    .template02-company .card-iqc { display:grid; grid-template-rows:80px auto auto; justify-items:center; align-content:start; padding:16px 14px 14px; gap:8px; text-align:center; }
     .template02-company .card-iqc:hover { transform:none; }
     .card-iqc-logo { display:flex; align-items:center; justify-content:center; width:100%; }
     .card-iqc-logo img { max-height:44px; max-width:120px; width:auto; height:auto; object-fit:contain; filter:brightness(0) invert(.7); }
@@ -184,17 +187,10 @@
     .card-iqc-products li:last-child { border-bottom:none; }
     .card-iqc-products li::before { content:"› "; color:var(--accent); font-weight:700; }
 
-    /* Stats */
-    .template02-company-stats { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; width:100%; max-width:860px; flex-shrink:0; padding:10px 0 16px; }
+    /* Stats — auto-fit: 4-up when wide, fewer when narrow */
+    .template02-company-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; width:100%; max-width:860px; padding:10px 0 16px; }
     .template02-company-stats .kpi-card { padding:14px 12px; }
     .template02-company-stats .kpi-value { font-size:clamp(18px,2.2vw,32px); }
-
-    @media (min-width:769px) {
-      .template02-company { padding:52px 80px 0 !important; overflow-y:unset; }
-      .template02-company .ls-carousel { min-height:0 !important; height:100% !important; }
-      .template02-company-iqc { grid-template-columns:repeat(4,1fr); }
-      .template02-company-stats { grid-template-columns:repeat(4,1fr); gap:12px; }
-    }
   </style>
 
   <script>
