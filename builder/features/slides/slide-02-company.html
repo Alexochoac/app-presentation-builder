@@ -151,7 +151,9 @@
        inner-clips. Rules here are Company-positional; surfaces compose from .card/.kpi-card. */
     .template02-company .slide-body { width:100%; align-items:center; }
     .template02-company-tabs { width:100%; max-width:860px; }
-    .template02-company .ls-carousel { height:clamp(240px,42vh,380px) !important; min-height:0 !important; }
+    /* flex:none !important overrides the carousel's inline flex:1 (flex-basis:0) — in a content-flow
+       (auto-height) panel that would collapse the carousel to 0 and hide the "Add images" state. */
+    .template02-company .ls-carousel { height:clamp(240px,42vh,380px) !important; min-height:0 !important; flex:none !important; }
 
     /* Pillars — .card surface + positional modifier (accent bar, giant index number) */
     .template02-company-pillars { display:flex; flex-direction:column; gap:8px; padding:12px 0 8px; }
