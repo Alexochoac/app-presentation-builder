@@ -3369,7 +3369,7 @@
           "name": "SoftSolution (rebuild)"
         }
       ],
-      "galleryEnabled": false
+      "galleryEnabled": true
     },
     {
       "id": "lib-company-v2",
