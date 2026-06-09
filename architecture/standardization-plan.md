@@ -1,7 +1,8 @@
 # Pipeline Standardization — Decisions & Plan
 
-> ## ▶ RESUME HERE (last worked 2026-06-03)
-> **Branch:** `docs/standardization` (NOT merged to master). Check out this branch before continuing.
+> ## ▶ RESUME HERE (last worked 2026-06-09)
+> **Branch:** `master` (the standardization work was merged; we now commit directly to `master`). User
+> pushes from PowerShell (HTTPS, no creds in WSL). As of this handoff: **5 commits ahead of `origin`**.
 > **Method (locked):** RECREATE alongside, in deck order — new template → new `lib-` slide → new
 > `deck-rebuild` deck; clean up old stuff only at the very end. Full loop in "The Standard Slide-Rebuild Loop".
 > **Done:** rulebook · validator · pre-commit gate · two-block theming (glassmorphism finish) · **CTA rebuilt**
@@ -30,9 +31,29 @@
 > (0/0). Real LineScanner/Osprey content migrated into `deckEdits["deck-rebuild"]` (reshaped to the new classes); old
 > `tpl-new-comparison` + `lib-comparison` kept as fallback. Verified live in the `deck-rebuild` context. **Dropped (follow-up if
 > wanted):** the old "click to view chart" popup + 📈/💰 hint emojis — rebuilt lean.
-> **Next:** continue the rebuild loop on **#4 Products Overview (`tpl-new-capability-matrix`)**. Roadmap below.
-> **Pending verify:** publish `deck-rebuild` once and diff the frozen output (confirms the `applyEditsToHtml`
-> change end-to-end in the publish path).
+> **✅ Why Us follow-ups — DONE (2026-06-08):** (a) restored the **list.js** controls (drag-reorder / hide /
+> Shift+delete / add / dblclick-edit) on both columns — tier labels are now `<div class="compare-tier">` so
+> list.js skips them; (b) **Translation Center per-line list editing** — list fields show one `<li>` per line
+> (English read-only, each language editable per-line, rebuilt to `<li>`/tier HTML on save; tier rows surface
+> as lines, dup standalone rows suppressed); lists were previously hidden by the TC's >400-char blob filter.
+> **✅ RESPONSIVE MODEL — DONE (2026-06-09):** shared **`pb-responsive`** (rulebook §3, `style.css`) = the
+> *slide is the sole scroll container* (content stacks + whole slide scrolls; no inner element gets fixed
+> height/overflow; `justify-content:safe center`; `auto-fit` columns not breakpoints; fluid chrome; active
+> slide `transform:none` so `position:fixed` controls pin to the viewport). Opt-in marker class so **legacy
+> slides are untouched**. Fluid corner chrome split into **`pb-chrome`** (included by pb-responsive; heroes
+> use it alone). **Applied to:** Why Us, **CTA**, **Company** (#2 — converted tabs/pillars/carousel/map/iqc to
+> content-flow; carousel needs `flex:none`+explicit height), **Cover** (#1 — `pb-chrome` only, hero). Validator
+> now WARNs any `.slide.content` cartridge missing `pb-responsive`. **Feature-dock foundation:** the gallery
+> button is a viewport-`fixed` bottom-right control (beside the `f` in builder); full dock + "e" overflow menu
+> is a logged future task.
+> **⚠ Pending USER visual verification:** Company across all tabs + the image carousel; Cover gallery button +
+> chrome at small sizes (419×595 / 822×567). Code is committed; these are eyeball checks.
+> **Next:** continue the rebuild loop on **#4 Products Overview (`tpl-new-capability-matrix`)** — build it
+> `pb-responsive` from the start. Roadmap below.
+> **Pending verify (older):** publish `deck-rebuild` once and diff the frozen output (confirms `applyEditsToHtml`
+> end-to-end in publish).
+> **Gotcha for new slides:** embedded carousels carry an inline `flex:1` → under pb-responsive give them
+> `flex:none !important` + an explicit (viewport-relative) height, or they collapse to 0.
 > **To run the app:** `cd builder && node server.js` → log in at localhost:3000. **deck-rebuild** holds the
 > rebuilt slides; `default` is the untouched working deck. **Verify a render:** authenticated curl / headless.
 
