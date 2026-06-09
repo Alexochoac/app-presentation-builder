@@ -467,8 +467,11 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
   padding: 72px clamp(16px,6vw,80px) 48px !important;
 }
 /* Release the transform trap so descendant position:fixed pins to the VIEWPORT (controls stay put
-   while the slide scrolls). scale(1) was an identity transform, so the entrance animation is fine. */
-.slide.pb-responsive.active { transform: none; }
+   while the slide scrolls / aren't clipped by a hero's overflow:hidden). scale(1) was an identity
+   transform, so the entrance animation is unchanged. Applies to both models since either may host
+   the fixed gallery button. */
+.slide.pb-responsive.active,
+.slide.pb-chrome.active { transform: none; }
 .pb-responsive .slide-layout { height: auto; padding-top: 0; }
 .pb-responsive .slide-body   { flex: none; min-height: 0; height: auto; overflow: visible; }
 
