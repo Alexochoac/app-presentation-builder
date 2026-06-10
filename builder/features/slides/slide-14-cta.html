@@ -20,7 +20,7 @@
             <strong data-edit="contact-name" contenteditable="" spellcheck="false">Contact Name</strong>
             <span class="cta-contact-role" data-edit="contact-title" contenteditable="" spellcheck="false">Job Title</span>
             <span class="cta-contact-addr" data-edit="contact-addr" contenteditable="" spellcheck="false">Street · City · Country</span>
-            <span class="cta-contact-phone" data-edit="contact-phone" contenteditable="" spellcheck="false" title="WhatsApp number (digits only, e.g. 4366412345678)">+00 000 000 000</span>
+            <span class="cta-contact-phone" data-edit="contact-phone" contenteditable="" spellcheck="false" data-placeholder="WhatsApp number — e.g. +43 664 123 45678">+00 000 000 000</span>
           </div>
           <div class="cta-contact-btns">
             <a class="cta-btn-wa" href="#" target="_blank" rel="noopener">
@@ -29,9 +29,10 @@
             </a>
             <a class="cta-btn-email" href="#">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
-              <span data-edit="contact-email" contenteditable="" spellcheck="false">name@example.com</span>
+              <span data-edit="contact-email" contenteditable="" spellcheck="false" data-placeholder="you@example.com">name@example.com</span>
             </a>
           </div>
+          <div class="cta-contact-warn" data-builder-only hidden></div>
         </div>
       </div>
     </div>
@@ -60,6 +61,17 @@
       font-size:14px; font-weight:600; text-decoration:none;
       transition:all .2s; white-space:nowrap;
     }
+    /* Builder-only in-field placeholder when the phone is blank. The `cta-phone-empty` class is
+       toggled by the script (contenteditable :empty misfires once a stray <br> is left); gated by
+       [contenteditable], which the publisher strips, so it never shows in the finished deck. */
+    .cta-contact-phone[contenteditable].cta-phone-empty::before,
+    .cta-btn-email [contenteditable].cta-email-empty::before { content:attr(data-placeholder); color:var(--text-muted); opacity:.6; }
+    /* Contact buttons disabled + a builder-only warning when their field is empty. The email button
+       keeps pointer-events (its address is edited inline); dropping its href is enough to disable it. */
+    .cta-btn-wa--off { opacity:.45; pointer-events:none; }
+    .cta-btn-email--off { opacity:.55; }
+    .cta-contact-warn { margin-top:8px; font-size:12px; font-weight:600; color:var(--accent); display:flex; align-items:center; gap:6px; }
+    .cta-contact-warn[hidden] { display:none; }
     /* WhatsApp brand green — intentionally fixed, NOT a theme color (do not convert to a var) */
     .cta-btn-wa { background:rgba(37,211,102,.15); border:1px solid rgba(37,211,102,.35); color:#25d366; }
     .cta-btn-wa:hover { background:rgba(37,211,102,.25); border-color:rgba(37,211,102,.6); }
@@ -79,13 +91,36 @@
 
     // Keep the mailto: and wa.me links in sync with the editable contact fields.
     function sync() {
-      var emailEl = slide.querySelector('[data-edit="contact-email"]');
+      // Email — mailto link + in-field placeholder + disabled state when blank
+      var emailEl  = slide.querySelector('[data-edit="contact-email"]');
       var emailBtn = slide.querySelector('.cta-btn-email');
-      if (emailEl && emailBtn) { var e = emailEl.textContent.trim(); if (e) emailBtn.href = 'mailto:' + e; }
+      var emailRaw = emailEl ? emailEl.textContent.trim() : '';
+      if (emailEl) emailEl.classList.toggle('cta-email-empty', !emailRaw);
+      if (emailBtn) {
+        if (emailRaw) { emailBtn.href = 'mailto:' + emailRaw; emailBtn.classList.remove('cta-btn-email--off'); }
+        else          { emailBtn.removeAttribute('href');     emailBtn.classList.add('cta-btn-email--off'); }
+      }
 
+      // WhatsApp — wa.me link (digits only) + in-field placeholder + disabled state when blank
       var phoneEl = slide.querySelector('[data-edit="contact-phone"]');
-      var waBtn = slide.querySelector('.cta-btn-wa');
-      if (phoneEl && waBtn) { var p = phoneEl.textContent.replace(/\D/g, ''); waBtn.href = p ? 'https://wa.me/' + p : '#'; }
+      var waBtn   = slide.querySelector('.cta-btn-wa');
+      var raw = phoneEl ? phoneEl.textContent.trim() : '';
+      var p   = raw.replace(/\D/g, '');
+      if (phoneEl) phoneEl.classList.toggle('cta-phone-empty', !raw);
+      if (waBtn) {
+        if (p) { waBtn.href = 'https://wa.me/' + p; waBtn.classList.remove('cta-btn-wa--off'); }
+        else   { waBtn.removeAttribute('href');     waBtn.classList.add('cta-btn-wa--off'); }
+      }
+
+      // One builder-only warning naming whichever contact is missing
+      var warn = slide.querySelector('.cta-contact-warn');
+      if (warn) {
+        var missing = [];
+        if (!p)        missing.push('a WhatsApp number');
+        if (!emailRaw) missing.push('an email');
+        if (missing.length) { warn.textContent = '⚠ Add ' + missing.join(' and ') + " above — the matching button won't work without it."; warn.hidden = false; }
+        else warn.hidden = true;
+      }
     }
     sync();
     slide.querySelectorAll('[data-edit="contact-email"],[data-edit="contact-phone"]').forEach(function (el) {

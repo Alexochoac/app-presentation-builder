@@ -40,7 +40,7 @@
         "es": {
           "current": "por GlassQuality.com",
           "previous": "por GlassQuality.com",
-          "dirty": false
+          "dirty": true
         }
       },
       "section-label": {
@@ -48,7 +48,7 @@
         "es": {
           "current": "Nuestra Empresa",
           "previous": "Nuestra Empresa",
-          "dirty": false
+          "dirty": true
         }
       },
       "headline": {
@@ -56,7 +56,7 @@
         "es": {
           "current": "La inspección de calidad <span class=\"blue\">es todo lo que hacemos</span>",
           "previous": "La inspección de calidad <span class=\"blue\">es todo lo que hacemos</span>",
-          "dirty": false
+          "dirty": true
         }
       },
       "tagline": {
@@ -64,7 +64,7 @@
         "es": {
           "current": "Inspeccionamos todos los aspectos de calidad de su vidrio garantizando el máximo rendimiento y la mejor calidad.",
           "previous": "Inspeccionamos todos los aspectos de calidad de su vidrio garantizando un rendimiento máximo y la mejor calidad.",
-          "dirty": false
+          "dirty": true
         }
       },
       "company-caption": {
@@ -72,7 +72,7 @@
         "es": {
           "current": "Foto grupal de los miembros del equipo",
           "previous": "Foto de Grupo de los Miembros del Equipo",
-          "dirty": false
+          "dirty": true
         }
       },
       "pillar-1-title": {
@@ -80,15 +80,15 @@
         "es": {
           "current": "Un Socio",
           "previous": "Un Socio",
-          "dirty": false
+          "dirty": true
         }
       },
       "pillar-1-desc": {
-        "en": "for all your quality inspection needs — surface, geometry, dimension, and more",
+        "en": "<br>",
         "es": {
           "current": "para todas sus necesidades de inspección de calidad — superficie, geometría, dimensión y más",
           "previous": "para todas sus necesidades de inspección de calidad — superficie, geometría, dimensión, y más",
-          "dirty": false
+          "dirty": true
         }
       },
       "pillar-2-title": {
@@ -96,15 +96,15 @@
         "es": {
           "current": "Presencia Global",
           "previous": "Presencia Global",
-          "dirty": false
+          "dirty": true
         }
       },
       "pillar-2-desc": {
-        "en": "global support hubs with local experts in 23 countries across 6 continents",
+        "en": "<br>",
         "es": {
           "current": "centros de apoyo global con expertos locales en 23 países en 6 continentes",
           "previous": "centros de soporte global con expertos locales en 23 países en 6 continentes",
-          "dirty": false
+          "dirty": true
         }
       },
       "pillar-3-title": {
@@ -112,15 +112,15 @@
         "es": {
           "current": "Liderazgo Tecnológico",
           "previous": "Liderazgo Tecnológico",
-          "dirty": false
+          "dirty": true
         }
       },
       "pillar-3-desc": {
-        "en": "true scanning · bright-field · dark-field · reflection · spectrometer",
+        "en": "<br>",
         "es": {
           "current": "escaneo verdadero · campo claro · campo oscuro · reflexión · espectrómetro",
           "previous": "escaneo verdadero · campo brillante · campo oscuro · reflexión · espectrómetro",
-          "dirty": false
+          "dirty": true
         }
       },
       "tech-1-name": {
@@ -128,15 +128,15 @@
         "es": {
           "current": "Sistema de Luz Paralela 90°",
           "previous": "Sistema de Luz Paralela a 90°",
-          "dirty": false
+          "dirty": true
         }
       },
       "tech-1-desc": {
-        "en": " — Sensor-based technology using a 90° parallel-light beam to detect surface defects.",
+        "en": "<br>",
         "es": {
           "current": " — Tecnología basada en sensores que utiliza un haz de luz paralela de 90° para detectar defectos de superficie.",
           "previous": " — Tecnología basada en sensores que utiliza un haz de luz paralela a 90° para detectar defectos de superficie.",
-          "dirty": false
+          "dirty": true
         }
       },
       "tech-2-name": {
@@ -144,15 +144,15 @@
         "es": {
           "current": "Campo claro y campo oscuro",
           "previous": "Campo Brillante y Campo Oscuro",
-          "dirty": false
+          "dirty": true
         }
       },
       "tech-2-desc": {
-        "en": " — Camera-based technology combining both illumination modes.",
+        "en": "<br>",
         "es": {
           "current": " — Tecnología basada en cámara que combina ambos modos de iluminación.",
           "previous": " — Tecnología basada en cámara que combina ambos modos de iluminación.",
-          "dirty": false
+          "dirty": true
         }
       },
       "tech-3-name": {
@@ -160,15 +160,15 @@
         "es": {
           "current": "Tecnología de Reflexión",
           "previous": "Tecnología de Reflexión",
-          "dirty": false
+          "dirty": true
         }
       },
       "tech-3-desc": {
-        "en": " — Sensor and stray-light technology using reflexion principles.",
+        "en": "<br>",
         "es": {
           "current": " — Tecnología de sensor y luz parásita utilizando principios de reflexión.",
           "previous": " — Tecnología de sensor y luz parásita utilizando principios de reflexión.",
-          "dirty": false
+          "dirty": true
         }
       },
       "tech-4-name": {
@@ -176,15 +176,15 @@
         "es": {
           "current": "Espectrómetro",
           "previous": "Espectrómetro",
-          "dirty": false
+          "dirty": true
         }
       },
       "tech-4-desc": {
-        "en": " — Polarized filter sensor-technology for spectral analysis.",
+        "en": "<br>",
         "es": {
           "current": " — Tecnología de sensor con filtro polarizado para análisis espectral.",
           "previous": " — Tecnología de sensor con filtro polarizado para análisis espectral.",
-          "dirty": false
+          "dirty": true
         }
       },
       "stat-label-founded": {
@@ -192,7 +192,7 @@
         "es": {
           "current": "Fundada",
           "previous": "Fundada",
-          "dirty": false
+          "dirty": true
         }
       },
       "stat-label-systems": {
@@ -200,7 +200,7 @@
         "es": {
           "current": "Sistemas instalados",
           "previous": "Sistemas instalados",
-          "dirty": false
+          "dirty": true
         }
       },
       "stat-label-countries": {
@@ -208,7 +208,7 @@
         "es": {
           "current": "Países · 6 continentes",
           "previous": "Países · 6 continentes",
-          "dirty": false
+          "dirty": true
         }
       },
       "stat-label-employees": {
@@ -216,7 +216,7 @@
         "es": {
           "current": "Empleados especializados",
           "previous": "Empleados especializados",
-          "dirty": false
+          "dirty": true
         }
       },
       "tab-about": {
@@ -224,15 +224,15 @@
         "es": {
           "current": "Acerca de Nosotros",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "tab-technologies": {
-        "en": "Technologies",
+        "en": "TechnolYeogies",
         "es": {
           "current": "Tecnologías",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "tab-network": {
@@ -240,7 +240,7 @@
         "es": {
           "current": "Red Global",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "tab-iqc": {
@@ -248,7 +248,7 @@
         "es": {
           "current": "Grupo IQC",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "iqc-1-country": {
@@ -320,7 +320,7 @@
         "es": {
           "current": "23&nbsp;",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       }
     },
@@ -420,87 +420,87 @@
         "es": {
           "current": "Próximos Pasos",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "headline": {
-        "en": "Ready to <span class=\"blue\">get started?</span>",
+        "en": "Ready for a<br><span class=\"blue\">live demonstration?</span>",
         "es": {
           "current": "¿Listo para <span class=\"blue\">empezar?</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "intro": {
-        "en": "A short paragraph introducing the next step you propose to the customer.",
+        "en": "We propose that your team visit our facilities in Austria so we can carry out an on-site demonstration with <strong>your own glass samples</strong> — together.",
         "es": {
           "current": "Un párrafo breve que presenta el siguiente paso que propone al cliente.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "step1": {
-        "en": "First step in the process",
+        "en": "Analyse [Customer]'s current production line",
         "es": {
           "current": "Primer paso en el proceso",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "step2": {
-        "en": "Second step in the process",
+        "en": "Live demo with [Customer] glass samples",
         "es": {
           "current": "Segundo paso en el proceso",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "step3": {
-        "en": "Third step in the process",
+        "en": "Customised technical and commercial proposal",
         "es": {
           "current": "Tercer paso en el proceso",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "contact-name": {
-        "en": "Contact Name",
+        "en": "Alex Ochoa",
         "es": {
           "current": "Nombre de Contacto",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "contact-title": {
-        "en": "Job Title",
+        "en": "Sales Manager",
         "es": {
           "current": "Puesto de Trabajo",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "contact-addr": {
-        "en": "Street · City · Country",
+        "en": "Im Vogelsang 18 · 3340 Waidhofen · Austria",
         "es": {
           "current": "Calle · Ciudad · País",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "contact-phone": {
-        "en": "+00 000 000 000",
+        "en": "+43 676 88040501",
         "es": {
           "current": "+00 000 000 000",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "contact-email": {
-        "en": "name@example.com",
+        "en": "alex.ochoa@softsolution.at",
         "es": {
           "current": "name@example.com",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       }
     },
@@ -554,7 +554,7 @@
         }
       },
       "capability-matrix": {
-        "en": "\n                  <colgroup><col><col class=\"\"><col class=\"\"><col class=\"\"><col class=\"\"><col class=\"\"></colgroup>\n                  <thead>\n                    <tr><th></th><th><span class=\"ls-col-label\">Osprey-25</span></th><th class=\"is-featured\"><span class=\"ls-col-label\">LineScanner</span></th><th class=\"is-featured\"><span class=\"ls-col-label\">White Haze</span></th><th><span class=\"ls-col-label\">BowScanner</span></th><th><span class=\"ls-col-label\">CulletScanner</span></th></tr>\n                  </thead>\n                  <tbody>\n                    <tr><td>Quality Check</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Edge Chips</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Sight Line Check</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Dimension Check</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Logo Position &amp; Quality Check</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Distortion Check</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td><td></td></tr>\n                    <tr><td>Anisotropy Check</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n                    <tr><td>WhiteHaze</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n                    <tr><td>Load Control</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Overall Bending Check</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n                    <tr><td>Glass Thickness Check</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n                    <tr><td>Glass Type Recognition</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Data Matrix Code Interpretation</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Break Pattern Check</td><td></td><td></td><td></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                  </tbody>\n                ",
+        "en": "\n                  <colgroup><col><col class=\"\"><col class=\"\"><col class=\"\"><col class=\"\"><col class=\"\"></colgroup>\n                  <thead>\n                    <tr><th></th><th><span class=\"ls-col-label\">Osprey-25</span></th><th class=\"is-featured\"><span class=\"ls-col-label\">LineScanner</span></th><th class=\"is-featured\"><span class=\"ls-col-label\">White Haze</span></th><th><span class=\"ls-col-label\">BowScanner</span></th><th style=\"\"><span class=\"ls-col-label\">CulletScanner</span></th></tr>\n                  </thead>\n                  <tbody>\n                    <tr><td>Quality Check</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td style=\"\"></td></tr>\n                    <tr><td>Edge Chips</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td style=\"\"></td></tr>\n                    <tr><td>Sight Line Check</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td style=\"\"></td></tr>\n                    <tr><td>Dimension Check</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td style=\"\"></td></tr>\n                    <tr><td>Logo Position &amp; Quality Check</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td style=\"\"></td></tr>\n                    <tr><td>Distortion Check</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td><td style=\"\"></td></tr>\n                    <tr><td>Anisotropy Check</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td style=\"\"></td></tr>\n                    <tr><td>WhiteHaze</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td style=\"\"></td></tr>\n                    <tr><td>Load Control</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td style=\"\"></td></tr>\n                    <tr><td>Overall Bending Check</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td style=\"\"></td></tr>\n                    <tr><td>Glass Thickness Check</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td style=\"\"></td></tr>\n                    <tr><td>Glass Type Recognition</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td style=\"\"></td></tr>\n                    <tr draggable=\"false\" class=\"\"><td>Break Pattern Check</td><td></td><td></td><td></td><td></td><td style=\"\"><span class=\"ls-dot ls-dot-on\">◆</span></td></tr><tr class=\"\"><td>Data Matrix Code Interpretation</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td style=\"\"></td></tr>\n                    \n                  </tbody>\n                ",
         "es": {
           "current": "\n                  <colgroup><col><col class=\"\"><col class=\"\"><col class=\"\"><col class=\"\"><col class=\"\"></colgroup>\n                  <thead>\n                    <tr><th></th><th><span class=\"ls-col-label\">Osprey-25</span></th><th class=\"is-featured\"><span class=\"ls-col-label\">LineScanner</span></th><th class=\"is-featured\"><span class=\"ls-col-label\">White Haze</span></th><th><span class=\"ls-col-label\">BowScanner</span></th><th><span class=\"ls-col-label\">CulletScanner</span></th></tr>\n                  </thead>\n                  <tbody>\n                    <tr><td>Control de Calidad</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Astillas en los Bordes</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Verificación de Línea de Visión</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Verificación de Dimensiones</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Verificación de Posición y Calidad del Logo</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Verificación de Distorsión</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td><td></td></tr>\n                    <tr><td>Verificación de Anisotropía</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n                    <tr><td>Neblina Blanca</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n                    <tr><td>Control de Carga</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Verificación de Curvatura General</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n                    <tr><td>Verificación del Espesor del Vidrio</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n                    <tr><td>Reconocimiento del Tipo de Vidrio</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Interpretación del Código de Matriz de Datos</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Verificación del Patrón de Ruptura</td><td></td><td></td><td></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                  </tbody>\n                ",
           "previous": "\n                  <colgroup><col><col><col class=\"\"><col><col class=\"\"><col class=\"\"></colgroup>\n                  <thead>\n                    <tr><th></th><th><span class=\"ls-col-label\">Osprey-25</span></th><th class=\"is-featured\"><span class=\"ls-col-label\">LineScanner</span></th><th class=\"is-featured\"><span class=\"ls-col-label\">White Haze</span></th><th><span class=\"ls-col-label\">BowScanner</span></th><th><span class=\"ls-col-label\">CulletScanner</span></th></tr>\n                  </thead>\n                  <tbody>\n                    <tr><td>Control de Calidad</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Astillas en Bordes</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Verificación de Línea de Visión</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Verificación de Dimensiones</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Verificación de Posición y Calidad del Logo</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Verificación de Distorsión</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td><td></td></tr>\n                    <tr><td>Verificación de Anisotropía</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Neblina Blanca</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n                    <tr><td>Control de Carga</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Verificación de Curvatura General</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n                    <tr><td>Verificación de Espesor del Vidrio</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n                    <tr><td>Reconocimiento del Tipo de Vidrio</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Interpretación del Código Data Matrix</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td><td></td></tr>\n                    <tr><td>Verificación del Patrón de Rotura</td><td></td><td></td><td></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                  </tbody>\n                ",
@@ -586,7 +586,7 @@
         }
       },
       "proc-matrix": {
-        "en": "\n                  <colgroup><col><col><col><col></colgroup>\n                  <thead>\n                    <tr><th></th><th><span class=\"ls-col-label\">LSC-V</span></th><th><span class=\"ls-col-label\">LSC-H</span></th><th><span class=\"ls-col-label\">Osprey-25</span></th></tr>\n                  </thead>\n                  <tbody>\n                    <tr><td>Quality Check (Scratches, Inclusions, Finger Prints, Dirt, Coating Voids, Automotive)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Edge Chips</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Sight Line Check for IG Unit, Butyl Defects, Grid Alignement</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n                    <tr><td>Dimension Check (Overall Dimension, Position of Drill Holes, Diameter of Drill Holes, Cut Outs)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Logo Quality Check (Existence and Position of Logo, Quality of Logo)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Distortion Check (Rollerwave, EdgeLift, Pocket Distortion, Center Kink, Picture Framing)</td><td></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Anisotropy Check (Retardation, Isotropy Values)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>WhiteHaze (Prediction, Real Optical effect)</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Load Control (Location of Glasses, Distance, Long and Wide Load, Broken Corners)</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n                    <tr><td>Overall Bending Check (6 Measurement for all Edges)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n                    <tr><td>Glass Thickness Check (Thickness, Side of Coating)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Glass Type Recognition / Coating Type and Thickness Recognition</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Data Matrix Code Interpretation</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                  </tbody>\n                ",
+        "en": "\n                  <colgroup><col><col><col><col></colgroup>\n                  <thead>\n                    <tr><th></th><th><span class=\"ls-col-label\">LSC-V</span></th><th><span class=\"ls-col-label\">LSC-H</span></th><th><span class=\"ls-col-label\">Osprey-25</span></th></tr>\n                  </thead>\n                  <tbody>\n                    <tr><td>Quality Check (Scratches, Inclusions, Finger Prints, Dirt, Coating Voids, Automotive)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Edge Chips</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Sight Line Check for IG Unit, Butyl Defects, Grid Alignement</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n                    <tr><td>Dimension Check (Overall Dimension, Position of Drill Holes, Diameter of Drill Holes, Cut Outs)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Logo Quality Check (Existence and Position of Logo, Quality of Logo)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Distortion Check (Rollerwave, EdgeLift, Pocket Distortion, Center Kink, Picture Framing)</td><td></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Anisotropy Check (Retardation, Isotropy Values)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>WhiteHaze (Prediction, Real Optical effect)</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Load Control (Location of Glasses, Distance, Long and Wide Load, Broken Corners)</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n                    <tr class=\"\"><td>Overall Bending Check (6 Measurement for all Edges)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n                    <tr draggable=\"false\" class=\"\"><td>Data Matrix Code Interpretation</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr><tr class=\"\"><td>Glass Thickness Check (Thickness, Side of Coating)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr class=\"\" draggable=\"false\"><td>Glass Type Recognition / Coating Type and Thickness Recognition</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    \n                  </tbody>\n                ",
         "es": {
           "current": "\n                  <colgroup><col><col><col><col></colgroup>\n                  <thead>\n                    <tr><th></th><th><span class=\"ls-col-label\">LSC-V</span></th><th><span class=\"ls-col-label\">LSC-H</span></th><th><span class=\"ls-col-label\">Osprey-25</span></th></tr>\n                  </thead>\n                  <tbody>\n                    <tr><td>Control de Calidad (Rayones, Inclusiones, Huellas Dactilares, Suciedad, Vacíos de Recubrimiento, Automotriz)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Astillas en los Bordes</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Verificación de Línea de Visión para Unidad IG, Defectos de Butilo, Alineación de Cuadrícula</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n                    <tr><td>Verificación de Dimensiones (Dimensión General, Posición de Orificios de Perforación, Diámetro de Orificios de Perforación, Recortes)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Verificación de Calidad del Logo (Existencia y Posición del Logo, Calidad del Logo)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Verificación de Distorsión (Onda de Rodillo, Levantamiento de Borde, Distorsión de Bolsillo, Pliegue Central, Encuadre de Imagen)</td><td></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Verificación de Anisotropía (Retardación, Valores de Isotropía)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Neblina Blanca (Predicción, Efecto Óptico Real)</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Control de Carga (Ubicación de Vidrios, Distancia, Carga Larga y Ancha, Esquinas Rotas)</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n                    <tr><td>Verificación de Curvatura General (6 Mediciones para Todos los Bordes)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n                    <tr><td>Verificación del Espesor del Vidrio (Espesor, Lado del Recubrimiento)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Reconocimiento del Tipo de Vidrio / Reconocimiento del Tipo y Espesor del Recubrimiento</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Interpretación del Código de Matriz de Datos</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                  </tbody>\n                ",
           "previous": "\n                  <colgroup><col><col><col><col></colgroup>\n                  <thead>\n                    <tr><th></th><th><span class=\"ls-col-label\">LSC-V</span></th><th><span class=\"ls-col-label\">LSC-H</span></th><th><span class=\"ls-col-label\">Osprey-25</span></th></tr>\n                  </thead>\n                  <tbody>\n                    <tr><td>Control de Calidad (Rayones, Inclusiones, Huellas Digitales, Suciedad, Vacíos de Revestimiento, Automotriz)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Astillas en Bordes</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Verificación de Línea de Visión para Unidad IG, Defectos de Butilo, Alineación de Rejilla</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n                    <tr><td>Verificación de Dimensiones (Dimensión General, Posición de Orificios de Perforación, Diámetro de Orificios de Perforación, Recortes)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Verificación de Calidad del Logo (Existencia y Posición del Logo, Calidad del Logo)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Verificación de Distorsión (Onda de Rodillo, Levantamiento de Borde, Distorsión de Bolsa, Pliegue Central, Enmarcado de Imagen)</td><td></td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Verificación de Anisotropía (Retardo, Valores de Isotropía)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Neblina Blanca (Predicción, Efecto Óptico Real)</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Control de Carga (Ubicación de Vidrios, Distancia, Carga Larga y Ancha, Esquinas Rotas)</td><td></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td></tr>\n                    <tr><td>Verificación de Curvatura General (6 Mediciones para Todos los Bordes)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td></td><td></td></tr>\n                    <tr><td>Verificación de Espesor del Vidrio (Espesor, Lado del Revestimiento)</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Reconocimiento del Tipo de Vidrio / Reconocimiento del Tipo de Revestimiento y Espesor</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                    <tr><td>Interpretación del Código Data Matrix</td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td><td><span class=\"ls-dot ls-dot-on\">◆</span></td></tr>\n                  </tbody>\n                ",

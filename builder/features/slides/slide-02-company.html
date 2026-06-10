@@ -100,28 +100,27 @@
             </div>
           </div>
 
-          <!-- Panel 4 — brand/partner cards -->
+          <!-- Panel 4 — partner cards: uploadable logos, add/remove up to 8 (managed by the slide
+               script below). NO per-field data-edit on purpose: the whole panel persists inside the
+               `tabs` blob, so adding/removing a card is captured structurally. The logo is uploadable;
+               the country + product lines are made editable at runtime. The "+ Add partner" and per-card
+               remove buttons are injected by the script (they live OUTSIDE the saved blob). -->
           <div class="ls-tab-panel" data-panel="4">
             <div class="template02-company-iqc">
               <div class="card card-iqc">
-                <div class="card-iqc-logo" data-edit="iqc-1-logo" data-edit-type="image"><img src="/shared/brand/logo.svg" alt="Brand logo"></div>
-                <div class="card-iqc-country" data-edit="iqc-1-country" contenteditable spellcheck="false">Country</div>
-                <ul class="card-iqc-products" data-edit="iqc-1-products"><li>Product one</li><li>Product two</li></ul>
+                <div class="card-iqc-logo" data-edit-type="image"><img src="/shared/brand/logo.svg" alt="Partner logo"></div>
+                <div class="card-iqc-country">Country</div>
+                <ul class="card-iqc-products"><li>Product one</li><li>Product two</li></ul>
               </div>
               <div class="card card-iqc">
-                <div class="card-iqc-logo" data-edit="iqc-2-logo" data-edit-type="image"><img src="/shared/brand/logo.svg" alt="Brand logo"></div>
-                <div class="card-iqc-country" data-edit="iqc-2-country" contenteditable spellcheck="false">Country</div>
-                <ul class="card-iqc-products" data-edit="iqc-2-products"><li>Product one</li><li>Product two</li></ul>
+                <div class="card-iqc-logo" data-edit-type="image"><img src="/shared/brand/logo.svg" alt="Partner logo"></div>
+                <div class="card-iqc-country">Country</div>
+                <ul class="card-iqc-products"><li>Product one</li><li>Product two</li></ul>
               </div>
               <div class="card card-iqc">
-                <div class="card-iqc-logo" data-edit="iqc-3-logo" data-edit-type="image"><img src="/shared/brand/logo.svg" alt="Brand logo"></div>
-                <div class="card-iqc-country" data-edit="iqc-3-country" contenteditable spellcheck="false">Country</div>
-                <ul class="card-iqc-products" data-edit="iqc-3-products"><li>Product one</li><li>Product two</li></ul>
-              </div>
-              <div class="card card-iqc">
-                <div class="card-iqc-logo" data-edit="iqc-4-logo" data-edit-type="image"><img src="/shared/brand/logo.svg" alt="Brand logo"></div>
-                <div class="card-iqc-country" data-edit="iqc-4-country" contenteditable spellcheck="false">Country</div>
-                <ul class="card-iqc-products" data-edit="iqc-4-products"><li>Product one</li><li>Product two</li></ul>
+                <div class="card-iqc-logo" data-edit-type="image"><img src="/shared/brand/logo.svg" alt="Partner logo"></div>
+                <div class="card-iqc-country">Country</div>
+                <ul class="card-iqc-products"><li>Product one</li><li>Product two</li></ul>
               </div>
             </div>
           </div>
@@ -140,8 +139,10 @@
     </div>
   </div>
 
-  <!-- Map file input lives OUTSIDE every data-edit container so its change event never dirties a slot -->
+  <!-- File inputs live OUTSIDE every data-edit container so their change event never dirties a slot.
+       The IQC logo input is shared by all partner cards (delegated by the clicked card). -->
   <input type="file" id="template02-company-map-file" accept="image/*" data-builder-only="" style="display:none;">
+  <input type="file" id="template02-company-iqc-file" accept="image/*" data-builder-only="" style="display:none;">
 
   <style>
     /* Layout-only scoped rules. Every surface composes from .card / .kpi-card / .feature-list,
@@ -179,10 +180,18 @@
     /* Brand/partner cards — .card surface + positional modifier. Auto-fit: more columns when wide,
        fewer (stack) when narrow — width-driven, no breakpoint. */
     .template02-company-iqc { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; padding:12px 0 8px; }
-    .template02-company .card-iqc { display:grid; grid-template-rows:80px auto auto; justify-items:center; align-content:start; padding:16px 14px 14px; gap:8px; text-align:center; }
+    .template02-company .card-iqc { position:relative; display:grid; grid-template-rows:80px auto auto; justify-items:center; align-content:start; padding:16px 14px 14px; gap:8px; text-align:center; }
     .template02-company .card-iqc:hover { transform:none; }
+    /* Builder-only: per-card remove (hover) + the uploadable-logo affordance */
+    .card-iqc-del { position:absolute; top:6px; right:6px; z-index:2; width:18px; height:18px; border-radius:50%; padding:0; display:flex; align-items:center; justify-content:center; font-size:11px; line-height:1; cursor:pointer; background:rgba(var(--accent-rgb),.15); border:1px solid rgba(var(--accent-rgb),.35); color:var(--accent); opacity:0; transition:opacity .2s; }
+    .template02-company .card-iqc:hover .card-iqc-del { opacity:1; }
+    .template02-company-iqc-add { display:block; margin:10px auto 0; padding:6px 16px; border-radius:20px; cursor:pointer; background:transparent; border:1px dashed rgba(var(--accent-rgb),.4); color:var(--accent); font-size:12px; font-weight:700; letter-spacing:.04em; }
+    .template02-company-iqc-add:hover { background:rgba(var(--accent-rgb),.08); }
     .card-iqc-logo { display:flex; align-items:center; justify-content:center; width:100%; }
-    .card-iqc-logo img { max-height:44px; max-width:120px; width:auto; height:auto; object-fit:contain; filter:brightness(0) invert(.7); }
+    .template02-company:not(.template02-company-readonly) .card-iqc-logo { cursor:pointer; }
+    /* Show uploaded logos in their natural colours — no monochrome filter (it greyed colour logos
+       and turned any opaque/white-background logo into a solid rectangle). */
+    .card-iqc-logo img { max-height:44px; max-width:120px; width:auto; height:auto; object-fit:contain; }
     .card-iqc-country { font-size:10px; font-weight:700; color:var(--text-muted); letter-spacing:.07em; text-transform:uppercase; }
     .card-iqc-products { list-style:none; margin:0; padding:0; font-size:11px; color:var(--text-muted); line-height:1; opacity:.75; text-align:left; width:100%; }
     .card-iqc-products li { padding:4px 0; border-bottom:1px solid var(--border); }
@@ -257,6 +266,112 @@
         e.target.value = '';
       });
     }
+
+    /* ── IQC partner cards — uploadable logos + add/remove up to 8 ──────────────
+       The whole IQC panel lives inside the tabs blob (data-edit="tabs"), so we persist by firing a
+       bubbling `input` event: the builder walks up to the nearest [data-edit] (= "tabs") and autosaves
+       the blob — capturing logos, edited text, and added/removed cards together. The +Add and per-card
+       × buttons are injected here (not in the saved markup) so they survive the deck's saved blob and
+       are stripped from what gets saved. Works the same on the generic template and the deck. */
+    (function () {
+      var IQC_MAX = 8;
+      var iqcWrap  = slide.querySelector('.template02-company-iqc');
+      var iqcInput = slide.querySelector('#template02-company-iqc-file');
+      if (!iqcWrap) return;
+      var pendingLogo = null;
+
+      function markDirty() { iqcWrap.dispatchEvent(new Event('input', { bubbles: true })); }
+
+      function normalizeCard(card) {
+        // Logo → <div class="card-iqc-logo" data-edit-type="image"><img></div> (deck blobs store a bare
+        // <img class="card-iqc-logo">; unify so styling + the click target match the template).
+        var logo = card.querySelector('.card-iqc-logo');
+        if (logo && logo.tagName === 'IMG') {
+          var img = logo, box = document.createElement('div');
+          box.className = 'card-iqc-logo';
+          box.setAttribute('data-edit-type', 'image');
+          card.insertBefore(box, img);
+          img.classList.remove('card-iqc-logo');
+          box.appendChild(img);
+          logo = box;
+        } else if (logo) {
+          logo.setAttribute('data-edit-type', 'image');
+          if (!logo.querySelector('img')) {
+            var i = document.createElement('img'); i.src = '/shared/brand/logo.svg'; i.alt = 'Partner logo'; logo.appendChild(i);
+          }
+        }
+        if (window.PB_READONLY) return;
+        // Editable text (no data-edit → bubbles to the tabs blob)
+        var country = card.querySelector('.card-iqc-country');
+        if (country) { country.setAttribute('contenteditable', ''); country.setAttribute('spellcheck', 'false'); }
+        card.querySelectorAll('.card-iqc-products li').forEach(function (li) {
+          li.setAttribute('contenteditable', ''); li.setAttribute('spellcheck', 'false');
+        });
+        // Uploadable logo
+        if (logo && !logo._iqcWired) {
+          logo._iqcWired = true;
+          logo.setAttribute('title', 'Click to upload a logo');
+          logo.addEventListener('click', function () {
+            pendingLogo = logo.querySelector('img');
+            if (iqcInput) iqcInput.click();
+          });
+        }
+        // Remove button
+        if (!card.querySelector('.card-iqc-del')) {
+          var del = document.createElement('button');
+          del.className = 'card-iqc-del'; del.setAttribute('data-builder-only', ''); del.title = 'Remove partner'; del.textContent = '×';
+          del.addEventListener('click', function (e) {
+            e.stopPropagation();
+            card.remove(); updateAddBtn(); markDirty();
+          });
+          card.appendChild(del);
+        }
+      }
+
+      var addBtn = null;
+      function updateAddBtn() {
+        if (window.PB_READONLY) return;
+        var n = iqcWrap.querySelectorAll('.card-iqc').length;
+        if (!addBtn) {
+          addBtn = document.createElement('button');
+          addBtn.className = 'template02-company-iqc-add'; addBtn.setAttribute('data-builder-only', ''); addBtn.textContent = '+ Add partner';
+          addBtn.addEventListener('click', function () {
+            if (iqcWrap.querySelectorAll('.card-iqc').length >= IQC_MAX) return;
+            var card = document.createElement('div');
+            card.className = 'card card-iqc';
+            card.innerHTML = '<div class="card-iqc-logo" data-edit-type="image"><img src="/shared/brand/logo.svg" alt="Partner logo"></div>'
+              + '<div class="card-iqc-country">Country</div>'
+              + '<ul class="card-iqc-products"><li>Product one</li></ul>';
+            iqcWrap.appendChild(card);
+            normalizeCard(card);
+            updateAddBtn(); markDirty();
+          });
+          iqcWrap.parentNode.insertBefore(addBtn, iqcWrap.nextSibling);
+        }
+        addBtn.title = 'Add a partner (max ' + IQC_MAX + ')';
+        addBtn.style.display = n >= IQC_MAX ? 'none' : '';
+      }
+
+      iqcWrap.querySelectorAll('.card-iqc').forEach(normalizeCard);
+      updateAddBtn();
+
+      if (iqcInput) {
+        iqcInput.addEventListener('change', function (e) {
+          if (window.PB_READONLY || !pendingLogo) return;
+          var file = e.target.files[0]; if (!file) return;
+          var img = pendingLogo;
+          img.src = URL.createObjectURL(file);
+          var reader = new FileReader();
+          reader.onload = function (ev) {
+            window.PBUpload(file.name, ev.target.result).then(function (path) {
+              if (path) { img.src = path; markDirty(); }
+            });
+          };
+          reader.readAsDataURL(file);
+          e.target.value = ''; pendingLogo = null;
+        });
+      }
+    })();
 
     setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
   })();

@@ -218,8 +218,10 @@
     /* Product columns are naturally narrow because their headers are vertical, so the capability
        column keeps the room. NO explicit cell width here on purpose: an explicit width stops
        table.js's column-hide (visibility:collapse on the <col>) from collapsing the header cell. */
+    /* Dot cells stay on one line (tiny); the capability label column MUST wrap, otherwise long
+       labels force the table wider than its grid track and it overflows onto the carousel. */
     .template04-products-table tbody td { padding:3px 6px; color:var(--text-muted); border-bottom:1px solid var(--border); text-align:center; vertical-align:middle; white-space:nowrap; }
-    .template04-products-table tbody td:first-child { text-align:left; color:var(--text); line-height:1.25; }
+    .template04-products-table tbody td:first-child { text-align:left; color:var(--text); line-height:1.25; white-space:normal; }
     /* Featured product column — accent treatment, theme-driven */
     .template04-products-table .is-featured { color:var(--accent) !important; background:rgba(var(--accent-rgb),.06); }
     /* Dots follow the theme accent (the table.js component default is a fixed colour) */
