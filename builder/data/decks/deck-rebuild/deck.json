@@ -17,6 +17,11 @@
       "librarySlideId": "lib-company-v2"
     },
     {
+      "id": "deck-products",
+      "visible": true,
+      "librarySlideId": "lib-products"
+    },
+    {
       "id": "deck-lib-1780338645841-1780424554857",
       "visible": true,
       "librarySlideId": "lib-1780338645841"

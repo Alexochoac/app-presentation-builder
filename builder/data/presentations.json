@@ -1,64 +1,21 @@
 {
   "presentations": [
     {
-      "id": "00000029",
-      "createdAt": "2026-06-08",
+      "id": "00000031",
+      "createdAt": "2026-06-10",
       "deckId": "deck-rebuild",
-      "presentationName": "89",
-      "customerName": "89",
-      "contactName": "89",
-      "contactTitle": "",
-      "customerLogoSrc": "/slides/uploads/Anisothropy-Building-Picture--2-.jpg",
-      "slideCount": 4,
-      "slides": [
-        {
-          "id": "deck-cover",
-          "librarySlideId": "lib-cover",
-          "name": "Cover",
-          "visible": true
-        },
-        {
-          "id": "deck-lib-why-us-1780851570888",
-          "librarySlideId": "lib-why-us",
-          "name": "Why Us",
-          "visible": true
-        },
-        {
-          "id": "deck-company",
-          "librarySlideId": "lib-company-v2",
-          "name": "Company Intro",
-          "visible": true
-        },
-        {
-          "id": "deck-lib-1780338645841-1780424554857",
-          "librarySlideId": "lib-1780338645841",
-          "name": "Call to Action-Validated Style",
-          "visible": true
-        }
-      ],
-      "defaultLanguage": "en",
-      "languages": [
-        "en",
-        "es"
-      ],
-      "publishedAt": "2026-06-08T11:08:06.237Z"
-    },
-    {
-      "id": "00000028",
-      "createdAt": "2026-06-07",
-      "deckId": "deck-rebuild",
-      "presentationName": "67",
-      "customerName": "67",
-      "contactName": "67",
+      "presentationName": "Test Presentation",
+      "customerName": "Test",
+      "contactName": "Test Smith",
       "contactTitle": "",
       "customerLogoSrc": "/slides/uploads/CostOfQualityDefects.png",
-      "slideCount": 3,
+      "slideCount": 5,
       "slides": [
         {
           "id": "deck-cover",
           "librarySlideId": "lib-cover",
           "name": "Cover",
-          "visible": false
+          "visible": true
         },
         {
           "id": "deck-lib-why-us-1780851570888",
@@ -73,136 +30,73 @@
           "visible": true
         },
         {
-          "id": "deck-lib-1780338645841-1780424554857",
-          "librarySlideId": "lib-1780338645841",
-          "name": "Call to Action-Validated Style",
-          "visible": true
-        }
-      ],
-      "defaultLanguage": "en",
-      "languages": [
-        "en",
-        "es"
-      ]
-    },
-    {
-      "id": "00000027",
-      "createdAt": "2026-06-07",
-      "deckId": "default",
-      "presentationName": "SoftSolution",
-      "customerName": "General",
-      "contactName": "Alex Ochoa",
-      "contactTitle": "",
-      "customerLogoSrc": "/slides/uploads/Panther_Eye.jpg",
-      "slideCount": 16,
-      "slides": [
-        {
-          "id": "deck-lib-1780488418898-1780488482284",
-          "librarySlideId": "lib-1780488418898",
-          "name": "Cover (Copy)",
-          "visible": true
-        },
-        {
-          "id": "deck-lib-company-1778837870406",
-          "librarySlideId": "lib-company",
-          "name": "Company Intro",
-          "visible": true
-        },
-        {
-          "id": "deck-comparison",
-          "librarySlideId": "lib-comparison",
-          "name": "Why Us",
-          "visible": true
-        },
-        {
-          "id": "deck-capability",
-          "librarySlideId": "lib-capability",
+          "id": "deck-products",
+          "librarySlideId": "lib-products",
           "name": "Products Overview",
           "visible": true
         },
         {
-          "id": "deck-technology",
-          "librarySlideId": "lib-technology",
-          "name": "LineScanner-Technology",
-          "visible": true
-        },
-        {
-          "id": "deck-lib-1777096783950-1777096961176",
-          "librarySlideId": "lib-1777096783950",
-          "name": "Osprey-Technology",
-          "visible": true
-        },
-        {
-          "id": "deck-lib-1780736476040-1780736532132",
-          "librarySlideId": "lib-1780736476040",
-          "name": "CulletScanner-Technology",
-          "visible": true
-        },
-        {
-          "id": "deck-surface",
-          "librarySlideId": "lib-surface",
-          "name": "Surface Types",
-          "visible": true
-        },
-        {
-          "id": "deck-dimension",
-          "librarySlideId": "lib-dimension",
-          "name": "Dimensions",
-          "visible": true
-        },
-        {
-          "id": "deck-screenprint",
-          "librarySlideId": "lib-screenprint",
-          "name": "Screen Printing",
-          "visible": true
-        },
-        {
-          "id": "deck-logo-check",
-          "librarySlideId": "lib-logo-check",
-          "name": "Logo Check",
-          "visible": true
-        },
-        {
-          "id": "deck-database",
-          "librarySlideId": "lib-database",
-          "name": "Traceability",
-          "visible": true
-        },
-        {
-          "id": "deck-sensitivity",
-          "librarySlideId": "lib-sensitivity",
-          "name": "Sensitivity",
-          "visible": true
-        },
-        {
-          "id": "deck-footprint",
-          "librarySlideId": "lib-footprint",
-          "name": "Installation",
-          "visible": true
-        },
-        {
-          "id": "deck-integrations",
-          "librarySlideId": "lib-integrations",
-          "name": "Integrations",
-          "visible": true
-        },
-        {
-          "id": "deck-cta",
-          "librarySlideId": "lib-cta",
-          "name": "Call to Action",
+          "id": "deck-lib-1780338645841-1780424554857",
+          "librarySlideId": "lib-1780338645841",
+          "name": "Call to Action-Validated Style",
           "visible": true
         }
       ],
       "defaultLanguage": "en",
       "languages": [
         "en",
-        "es",
-        "it",
-        "de",
-        "fr",
-        "pt"
+        "es"
       ],
-      "publishedAt": "2026-06-07T09:03:19.110Z"
+      "publishedAt": "2026-06-10T06:41:11.730Z"
+    },
+    {
+      "id": "00000030",
+      "createdAt": "2026-06-09",
+      "deckId": "deck-rebuild",
+      "presentationName": "12",
+      "customerName": "12",
+      "contactName": "12",
+      "contactTitle": "",
+      "customerLogoSrc": "/slides/uploads/Comparison on image taken by Camera Above and LineScanner below of a Ig unit .jpg",
+      "slideCount": 5,
+      "slides": [
+        {
+          "id": "deck-cover",
+          "librarySlideId": "lib-cover",
+          "name": "Cover",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-why-us-1780851570888",
+          "librarySlideId": "lib-why-us",
+          "name": "Why Us",
+          "visible": true
+        },
+        {
+          "id": "deck-company",
+          "librarySlideId": "lib-company-v2",
+          "name": "Company Intro",
+          "visible": true
+        },
+        {
+          "id": "deck-products",
+          "librarySlideId": "lib-products",
+          "name": "Products Overview",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1780338645841-1780424554857",
+          "librarySlideId": "lib-1780338645841",
+          "name": "Call to Action-Validated Style",
+          "visible": true
+        }
+      ],
+      "defaultLanguage": "en",
+      "languages": [
+        "en",
+        "es"
+      ],
+      "publishedAt": "2026-06-10T06:38:53.685Z"
     }
   ]
 }

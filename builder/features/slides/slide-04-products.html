@@ -1,0 +1,367 @@
+<div class="slide content template04-products pb-responsive"
+     data-slide="template04-products"
+     data-slide-mode="sequence">
+
+  <!-- Logo row — defaults to the product logo; deck branding overrides it.
+       data-managed = server-injected, never hand-editable (so auto-save can't serialise it). -->
+  <div class="slide-logo-row" data-edit="logo-row" data-managed>
+    <img src="/shared/brand/logo.svg" alt="Put A Presentation">
+  </div>
+
+  <div class="slide-layout">
+    <span class="softsolution-credit" data-edit="credit" contenteditable spellcheck="false">by YourBrand.com</span>
+
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label" contenteditable spellcheck="false">Section Label</div>
+      <h1 class="slide-title" data-edit="headline" contenteditable spellcheck="false">Product <span class="blue">Capability Overview</span></h1>
+      <p class="slide-subtitle anim-in" data-edit="subtitle" contenteditable spellcheck="false">What each product does — at a glance.</p>
+    </header>
+
+    <div class="slide-body">
+
+      <!-- Tabs (shared tabs.js). The whole structure persists as one blob under data-edit="tabs"
+           (table.js saves the enclosing .ls-tabs[data-edit] wholesale); inner data-edit keys are
+           re-applied on top by applyEditsToHtml. Each matrix is the shared table.js component
+           (data-ls-table): row drag/hide, column hide, ◆ dot-cycling, double-click cell edit. -->
+      <div class="ls-tabs template04-products-tabs" data-edit="tabs" data-track="template04-products:tabs">
+        <div class="ls-tab-list">
+          <button class="ls-tab active" data-panel="1" data-edit="tab-matrix" contenteditable spellcheck="false">Capability Matrix</button>
+          <button class="ls-tab" data-panel="2" data-edit="tab-process" contenteditable spellcheck="false">Where in Your Process</button>
+        </div>
+        <div class="ls-tab-panels">
+
+          <!-- Panel 1 — capability matrix + product carousel -->
+          <div class="ls-tab-panel active" data-panel="1">
+            <div class="template04-products-matrix-grid">
+
+              <!-- Capability matrix (table.js). Fits any width: label column wraps, dot columns
+                   are narrow, font scales with clamp — no inner scroll, the slide scrolls. -->
+              <div class="template04-products-table-wrap anim-in">
+                <table class="template04-products-table" data-ls-table data-edit="capability-matrix">
+                  <colgroup><col><col><col><col><col></colgroup>
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th><span class="ls-col-label">Product A</span></th>
+                      <th class="is-featured"><span class="ls-col-label">Product B</span></th>
+                      <th><span class="ls-col-label">Product C</span></th>
+                      <th><span class="ls-col-label">Product D</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Capability one</td>
+                      <td><span class="ls-dot ls-dot-on">◆</span></td>
+                      <td><span class="ls-dot ls-dot-on">◆</span></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Capability two</td>
+                      <td></td>
+                      <td><span class="ls-dot ls-dot-on">◆</span></td>
+                      <td><span class="ls-dot ls-dot-on">◆</span></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Capability three</td>
+                      <td><span class="ls-dot ls-dot-on">◆</span></td>
+                      <td><span class="ls-dot ls-dot-on">◆</span></td>
+                      <td></td>
+                      <td><span class="ls-dot ls-dot-on">◆</span></td>
+                    </tr>
+                    <tr>
+                      <td>Capability four</td>
+                      <td></td>
+                      <td><span class="ls-dot ls-dot-on">◆</span></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Capability five</td>
+                      <td><span class="ls-dot ls-dot-on">◆</span></td>
+                      <td><span class="ls-dot ls-dot-on">◆</span></td>
+                      <td><span class="ls-dot ls-dot-on">◆</span></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div data-ls-col-restore></div>
+                <div data-ls-row-restore></div>
+                <button data-ls-add-row data-builder-only>+ Add row</button>
+                <div class="template04-products-legend">
+                  <span class="leg-item"><span class="ls-dot ls-dot-on">◆</span> <span data-edit="legend-standard" contenteditable spellcheck="false">Standard</span></span>
+                  <span class="leg-item"><span class="ls-dot ls-dot-off">◇</span> <span data-edit="legend-optional" contenteditable spellcheck="false">Optional</span></span>
+                </div>
+              </div>
+
+              <!-- Product carousel (carousel.js). flex:none in the scoped CSS overrides the
+                   component's inline flex:1 (which collapses to 0 in a content-flow panel). -->
+              <div class="template04-products-carousel">
+                <div class="ls-carousel" data-counter data-edit="products-carousel" data-track="template04-products:carousel" style="flex:1;min-height:0;width:100%;">
+                  <div class="ls-carousel-track" style="transform:translateX(0px);">
+                    <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;flex-direction:column;">
+                      <span style="color:var(--text-muted);font-size:13px;font-style:italic;">Add images with the + Image button</span>
+                      <div class="template04-products-car-label" data-edit="car-label-1" contenteditable spellcheck="false">Product image</div>
+                      <div class="ls-carousel-caption">Product image</div>
+                    </div>
+                  </div>
+                  <div class="ls-carousel-counter"></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Panel 2 — "where in your process": per-line matrix + process-stage image tiles -->
+          <div class="ls-tab-panel" data-panel="2">
+            <div class="template04-products-proc-grid">
+
+              <!-- Process matrix (table.js) — per production-line columns -->
+              <div class="template04-products-table-wrap anim-in">
+                <table class="template04-products-table" data-ls-table data-edit="proc-matrix">
+                  <colgroup><col><col><col><col></colgroup>
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th><span class="ls-col-label">Line A</span></th>
+                      <th><span class="ls-col-label">Line B</span></th>
+                      <th><span class="ls-col-label">Line C</span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Capability one</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td></tr>
+                    <tr><td>Capability two</td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td></tr>
+                    <tr><td>Capability three</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td></tr>
+                    <tr><td>Capability four</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td></tr>
+                    <tr><td>Capability five</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td></tr>
+                  </tbody>
+                </table>
+                <div data-ls-col-restore></div>
+                <div data-ls-row-restore></div>
+                <button data-ls-add-row data-builder-only>+ Add row</button>
+                <div class="template04-products-legend">
+                  <span class="leg-item"><span class="ls-dot ls-dot-on">◆</span> <span data-edit="proc-legend" contenteditable spellcheck="false">Supported on this line</span></span>
+                </div>
+              </div>
+
+              <!-- Process-stage tiles — themeable .card surfaces holding an uploadable image.
+                   Auto-fit grid: more columns when wide, stacks when narrow. -->
+              <div class="template04-products-cards" data-zoom-group>
+                <div class="card card-stage" data-edit="stage-1-image" data-edit-type="image">
+                  <div class="card-stage-imgwrap">
+                    <img class="card-stage-img" src="" alt="Process stage" onerror="this.classList.add('card-stage-img--missing')">
+                    <span class="card-stage-placeholder">Image</span>
+                  </div>
+                  <div class="card-stage-label" data-edit="stage-1-label" contenteditable spellcheck="false">Stage one</div>
+                </div>
+                <div class="card card-stage" data-edit="stage-2-image" data-edit-type="image">
+                  <div class="card-stage-imgwrap">
+                    <img class="card-stage-img" src="" alt="Process stage" onerror="this.classList.add('card-stage-img--missing')">
+                    <span class="card-stage-placeholder">Image</span>
+                  </div>
+                  <div class="card-stage-label" data-edit="stage-2-label" contenteditable spellcheck="false">Stage two</div>
+                </div>
+                <div class="card card-stage" data-edit="stage-3-image" data-edit-type="image">
+                  <div class="card-stage-imgwrap">
+                    <img class="card-stage-img" src="" alt="Process stage" onerror="this.classList.add('card-stage-img--missing')">
+                    <span class="card-stage-placeholder">Image</span>
+                  </div>
+                  <div class="card-stage-label" data-edit="stage-3-label" contenteditable spellcheck="false">Stage three</div>
+                </div>
+                <div class="card card-stage" data-edit="stage-4-image" data-edit-type="image">
+                  <div class="card-stage-imgwrap">
+                    <img class="card-stage-img" src="" alt="Process stage" onerror="this.classList.add('card-stage-img--missing')">
+                    <span class="card-stage-placeholder">Image</span>
+                  </div>
+                  <div class="card-stage-label" data-edit="stage-4-label" contenteditable spellcheck="false">Stage four</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div><!-- /.ls-tab-panels -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Stage-image file input lives OUTSIDE every data-edit container so its change event never dirties a slot -->
+  <input type="file" id="template04-products-stage-file" accept="image/*" data-builder-only style="display:none;">
+
+  <style>
+    /* Layout-only scoped rules. The shared `pb-responsive` root class provides the responsive
+       model — slide-as-sole-scroll-container, safe-center, no inner clip, viewport-fixed controls,
+       fluid corner chrome. Tables/tabs/carousel are shared components (markup owned by their JS).
+       Rules here are positional; colours reference theme variables so a Finish block converts them.
+       The matrix fits any width by wrapping its label column + scaling font — no inner scroll. */
+    .template04-products .slide-body { width:100%; align-items:center; }
+    .template04-products-tabs { width:100%; max-width:980px; }
+
+    /* Panel grids — stacked on narrow screens; table beside carousel / stage cards once the screen
+       allows it (≥769px, below). The wide-screen template gives the table the larger share, and
+       minmax(0,…) lets each column shrink to its track instead of overflowing into its neighbour. */
+    .template04-products-matrix-grid,
+    .template04-products-proc-grid { display:grid; grid-template-columns:1fr; gap:clamp(14px,2vw,24px); align-items:start; padding-top:12px; }
+    .template04-products-table-wrap { display:flex; flex-direction:column; gap:6px; min-width:0; }
+    .template04-products-carousel { min-width:0; }
+
+    /* Capability / process matrix — width:100%, font scales, label column wraps */
+    .template04-products-table { width:100%; border-collapse:collapse; font-size:clamp(10px,1.05vw,13px); }
+    .template04-products-table thead tr { border-bottom:2px solid rgba(var(--accent-rgb),.4); }
+    .template04-products-table th { padding:7px 6px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; font-size:clamp(9px,1vw,11px); color:var(--text-muted); text-align:center; vertical-align:bottom; }
+    .template04-products-table th:first-child { text-align:left; }
+    /* Product headers stay vertical at ALL widths: each column collapses to ~one glyph wide so the
+       capability column keeps the horizontal room and its labels rarely wrap. */
+    .template04-products-table thead th .ls-col-label { display:inline-block; writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap; }
+    /* Product columns are naturally narrow because their headers are vertical, so the capability
+       column keeps the room. NO explicit cell width here on purpose: an explicit width stops
+       table.js's column-hide (visibility:collapse on the <col>) from collapsing the header cell. */
+    .template04-products-table tbody td { padding:3px 6px; color:var(--text-muted); border-bottom:1px solid var(--border); text-align:center; vertical-align:middle; white-space:nowrap; }
+    .template04-products-table tbody td:first-child { text-align:left; color:var(--text); line-height:1.25; }
+    /* Featured product column — accent treatment, theme-driven */
+    .template04-products-table .is-featured { color:var(--accent) !important; background:rgba(var(--accent-rgb),.06); }
+    /* Dots follow the theme accent (the table.js component default is a fixed colour) */
+    .template04-products .ls-dot-on  { color:var(--accent); }
+    .template04-products .ls-dot-off { color:var(--text-muted); opacity:.45; }
+
+    .template04-products-legend { display:flex; flex-wrap:wrap; gap:18px; padding:8px 0 2px; border-top:1px solid var(--border); }
+    .template04-products-legend .leg-item { display:flex; align-items:center; gap:6px; font-size:clamp(10px,1vw,12px); color:var(--text-muted); }
+
+    /* Carousel — flex:none !important beats the component's inline flex:1 (flex-basis:0), which would
+       collapse the carousel to 0 height in a content-flow panel. Mobile-first: tall so the stacked
+       product image is as big as the screen allows; trimmed when side-by-side at min-width:769px. */
+    .template04-products .ls-carousel { height:clamp(300px,62vh,560px) !important; min-height:0 !important; flex:none !important; }
+    .template04-products .ls-carousel-slide { gap:6px; }
+    .template04-products .ls-carousel-slide img { flex:1 1 auto; min-height:0; width:100%; max-height:100%; object-fit:contain; }
+    .template04-products-car-label { padding:8px 12px; font-size:clamp(10px,1vw,12px); font-weight:600; color:var(--text-muted); text-align:center; letter-spacing:.04em; }
+
+    /* Process-stage tiles — .card surface + positional modifier: image area + themeable caption */
+    .template04-products-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; align-content:start; }
+    .template04-products .card-stage { padding:0; overflow:hidden; display:flex; flex-direction:column; }
+    .template04-products .card-stage:hover { transform:none; }
+    /* Builder-only "replace image" control — hover-revealed so it never competes with the zoom click */
+    .card-stage-replace { position:absolute; bottom:6px; right:6px; z-index:3; width:24px; height:24px; border-radius:50%; padding:0; display:flex; align-items:center; justify-content:center; font-size:12px; line-height:1; cursor:pointer; background:rgba(var(--accent-rgb),.18); border:1px solid rgba(var(--accent-rgb),.4); color:var(--accent); opacity:0; transition:opacity .2s; }
+    .card-stage:hover .card-stage-replace { opacity:1; }
+    .card-stage-imgwrap { position:relative; width:100%; height:clamp(90px,13vh,150px); display:flex; align-items:center; justify-content:center; background:rgba(var(--accent-rgb),.05); }
+    .card-stage-img { width:100%; height:100%; object-fit:cover; display:block; }
+    .card-stage-img--missing { display:none; }
+    .card-stage-placeholder { display:none; font-size:11px; font-weight:700; letter-spacing:.04em; color:var(--text-muted); opacity:.5; text-transform:uppercase; }
+    .card-stage-img--missing ~ .card-stage-placeholder { display:block; }
+    .card-stage-label { padding:7px 10px; font-size:clamp(9px,1vw,11px); font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--text-muted); text-align:center; }
+    .card-stage-label:focus { outline:none; }
+    .template04-products-readonly .card-stage { cursor:default; }
+
+    /* Builder-only affordances never show in readonly / published output */
+    .template04-products-readonly [data-builder-only] { display:none; }
+
+    /* Desktop refinement (≥769px): wide enough for horizontal headers and a trimmer carousel that
+       sits beside the matrix. Mobile-first defaults above handle every narrower width. */
+    @media (min-width:769px) {
+      .template04-products .ls-carousel { height:clamp(260px,46vh,420px) !important; }
+      /* Side-by-side: matrix takes the wider share, carousel/stage cards sit beside it */
+      .template04-products-matrix-grid { grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); }
+      .template04-products-proc-grid   { grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); }
+    }
+  </style>
+
+  <script>
+  (function () {
+    var slide = document.currentScript.closest('[data-slide]');
+    if (window.PB_READONLY) slide.classList.add('template04-products-readonly');
+
+    /* Mark empty stage images so the placeholder shows */
+    slide.querySelectorAll('.card-stage-img').forEach(function (img) {
+      if (!img.getAttribute('src')) img.classList.add('card-stage-img--missing');
+    });
+
+    /* Process-stage tiles: click the image → gallery lightbox (data-zoom-group wires prev/next +
+       thumbnails through every filled image). Replacing an image is a builder-only hover button so
+       it never competes with the zoom click. Driven here at runtime so it upgrades the generic
+       template AND the deck's saved tab blob identically. */
+    var stageInput  = slide.querySelector('#template04-products-stage-file');
+    var stageCards  = slide.querySelector('.template04-products-cards');
+    var pendingCard = null;
+
+    function markZoomable(img) {
+      if (img && img.getAttribute('src')) img.setAttribute('data-zoom', '');
+    }
+
+    if (stageCards) {
+      stageCards.setAttribute('data-zoom-group', '');
+      stageCards.querySelectorAll('.card-stage').forEach(function (card) {
+        markZoomable(card.querySelector('.card-stage-img'));
+        if (!window.PB_READONLY && !card.querySelector('.card-stage-replace')) {
+          var host = card.querySelector('.card-stage-imgwrap') || card;
+          var btn  = document.createElement('button');
+          btn.className = 'card-stage-replace';
+          btn.setAttribute('data-builder-only', '');
+          btn.title = 'Replace image';
+          btn.textContent = '✎';
+          btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            pendingCard = card;
+            if (stageInput) stageInput.click();
+          });
+          host.appendChild(btn);
+        }
+      });
+      if (window.Lightbox) Lightbox.init(slide);
+    }
+
+    if (stageInput) {
+      stageInput.addEventListener('change', function (e) {
+        if (window.PB_READONLY || !pendingCard) return;
+        var file = e.target.files[0];
+        if (!file) return;
+        var img = pendingCard.querySelector('.card-stage-img');
+        var editKey = pendingCard.getAttribute('data-edit');
+        img.src = URL.createObjectURL(file);
+        img.classList.remove('card-stage-img--missing');
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+          window.PBUpload(file.name, ev.target.result).then(function (path) {
+            if (path) {
+              img.src = path;
+              markZoomable(img);
+              if (window.Lightbox) Lightbox.init(slide);
+              document.dispatchEvent(new CustomEvent('slide-image-change', {
+                detail: { editKey: editKey, src: path }
+              }));
+            }
+          });
+        };
+        reader.readAsDataURL(file);
+        e.target.value = '';
+        pendingCard = null;
+      });
+    }
+
+    /* Column hide/restore: table.js collapses a column via `visibility:collapse` on its <col>, but
+       WebKit/Blink won't apply that to the <thead> cell — the body collapses while the header lingers.
+       So mirror each <col>'s collapsed state onto every cell in that column (header included) with
+       display:none, keeping header and body perfectly aligned. Runs on the deck's saved blob too. */
+    slide.querySelectorAll('.template04-products-table').forEach(function (table) {
+      function syncHiddenCols() {
+        var cols = table.querySelectorAll('colgroup col');
+        var rows = table.querySelectorAll('tr');
+        cols.forEach(function (col, i) {
+          var hidden = col.classList.contains('ls-col-collapsed');
+          rows.forEach(function (row) {
+            var cell = row.children[i];
+            if (cell) cell.style.display = hidden ? 'none' : '';
+          });
+        });
+      }
+      new MutationObserver(syncHiddenCols).observe(table, {
+        subtree: true, childList: true, attributes: true, attributeFilter: ['class']
+      });
+      syncHiddenCols();
+    });
+
+    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
+  })();
+  </script>
+
+</div>

@@ -48,8 +48,32 @@
 > is a logged future task.
 > **⚠ Pending USER visual verification:** Company across all tabs + the image carousel; Cover gallery button +
 > chrome at small sizes (419×595 / 822×567). Code is committed; these are eyeball checks.
-> **Next:** continue the rebuild loop on **#4 Products Overview (`tpl-new-capability-matrix`)** — build it
-> `pb-responsive` from the start. Roadmap below.
+> **✅ #4 PRODUCTS OVERVIEW — DONE (2026-06-09):** `template04-products` / `slide-04-products.html` / `lib-products` /
+> in `deck-rebuild` (slide 4, after Company). Built `pb-responsive` from the start. **Reuses the shared components**
+> (user's call — the matrices were never bespoke): two tabs (`tabs.js`); Tab 1 = capability matrix (`table.js`/`LSTable`)
+> + product carousel (`carousel.js`); Tab 2 = process matrix (`table.js`) + process-stage image tiles. Generic placeholder
+> content in the template; **real LineScanner data migrated into `deckEdits["deck-rebuild"].tabs` blob** via a one-off node
+> script (since deleted) — kept low-risk because `applyEditsToHtml` makes the blob authoritative for tables (re-injection
+> skips `data-ls-table`) and bakes image `src`s, so deckEdits only needs the 4 top-level text fields + the one tabs blob.
+> **Responsive specifics:** product headers **always vertical** (`writing-mode:vertical-rl`) so the capability column keeps
+> the room and labels don't wrap; **NO explicit cell width** (an explicit width blocks `table.js`'s column-hide); matrix grid
+> **stacks <769px, side-by-side ≥769px** (`minmax(0,1.5fr) minmax(0,1fr)` — `minmax(0,…)` stops the wide table overflowing
+> into the carousel); carousel taller on mobile (`clamp(300px,62vh,560px)`, trimmed to `46vh` ≥769). **Tab 2 lightbox:** stage
+> images get `data-zoom` + container `data-zoom-group` → click = gallery lightbox (prev/next/thumbs); a builder-only **✎ replace**
+> button (delegated upload) keeps zoom and replace from colliding. All wired **at runtime in the cartridge script** so it upgrades
+> the deck's saved blob identically (no JSON edit needed). Validator clean.
+> **Gotcha captured (column-hide):** `table.js` hides a column via `visibility:collapse` on its `<col>`, but WebKit/Blink
+> **won't collapse the `<thead>` cell** (body collapses, header lingers) and CSS can't map `<col>`→`<th>`. Fix lives in the
+> cartridge script: a `MutationObserver` mirrors each `<col>`'s collapsed state onto **every cell in that column incl. the
+> header** via `display:none`. Reusable pattern for any future `table.js` slide.
+> **⚠ Caveat (this session):** a builder server was running (autosaves the data JSONs), so the working tree already held
+> the **user's live-session edits** — `slide-library.json` had **2 lib entries deleted** (`lib-1778837645228` CulletScanner-Technology,
+> `lib-1780653560512`) + `deck-rebuild/translations.json` edited. **Not** from the rebuild; they commit together unless split.
+> Also: editing slide HTML doesn't need a server restart, but **hard-refresh** the browser (Ctrl+Shift+R) or it serves stale cartridge JS.
+> **⚠ Pending USER visual verification (#4):** matrix compactness + vertical headers; column hide/restore; Tab-1 side-by-side
+> vs stacked; Tab-2 lightbox gallery; carousel size on phone/tablet.
+> **Next:** continue the rebuild loop on **#5 LineScanner-Technology (`tpl-new-technology`)** — build it `pb-responsive`
+> from the start. Note #6 Osprey-Technology reuses the SAME template (`tpl-new-technology`). Roadmap below.
 > **Pending verify (older):** publish `deck-rebuild` once and diff the frozen output (confirms `applyEditsToHtml`
 > end-to-end in publish).
 > **Gotcha for new slides:** embedded carousels carry an inline `flex:1` → under pb-responsive give them
@@ -223,7 +247,9 @@ JS twins in `server.js`. Old set stays as a working fallback until then.
 1. New-Cover · `ls01` → **✅ `template01-cover`** · 2. Company Intro · `tpl-new-company` → **✅ `template02-company`** · 3. Why Us ·
 `tpl-new-comparison` → **✅ `template03-why-us`** / `slide-03-why-us.html` / `lib-why-us` / in `deck-rebuild` (problem-vs-benefit
 two-column compare, tier-grouped lists, ✓/✕ markers, gallery server-injected; real LineScanner content in deck; verified live) ·
-4. Products Overview · `tpl-new-capability-matrix` · 5. LineScanner-Technology ·
+4. Products Overview · `tpl-new-capability-matrix` → **✅ `template04-products`** / `slide-04-products.html` / `lib-products` /
+in `deck-rebuild` (two tabs; capability + process matrices reuse `table.js`, product carousel, Tab-2 stage tiles → gallery
+lightbox; always-vertical headers; runtime column-hide-incl-header fix; real LineScanner data in deck) · 5. LineScanner-Technology ·
 `tpl-new-technology` · 6. Osprey-Technology · `tpl-new-technology` *(same template as #5)* ·
 7. CulletScanner-Technology · `ls05-technology` · 8. Surface Types · `tpl-new-defect-gallery` ·
 9. Dimensions · `tpl-new-carousel-cards` · 10. Screen Printing · `tpl-new-checklist-carousel` · 11. Logo
