@@ -2,8 +2,9 @@
 title: Rebuild #5–#7 — Technology (template05-technology) + per-image carousel Fit/Fill
 type: Feature
 priority: H
-status: pending
+status: done
 area: slides
+commit: 9862c17
 ---
 
 One new cartridge for all three scanner-technology slides. Per-image Fit/Fill toggle added to carousel.js.
