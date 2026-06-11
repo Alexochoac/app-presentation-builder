@@ -406,7 +406,7 @@
         }
       },
       "gallery-track": {
-        "en": "\n  \n<div class=\"ls-gallery-slide ls-gallery-slide--text\"><div class=\"ls-gallery-stat\"><span class=\"ls-gallery-label\" contenteditable=\"\" spellcheck=\"false\">Section Title</span><span class=\"ls-gallery-number\" contenteditable=\"\" spellcheck=\"false\">Key Fact</span><span class=\"ls-gallery-body-text\" contenteditable=\"\" spellcheck=\"false\">Description text here</span></div></div><div class=\"ls-gallery-slide\"><img src=\"/slides/uploads/CostOfQualityDefects.png\" alt=\"CostOfQualityDefects\"><div class=\"ls-gallery-caption\" contenteditable=\"\" spellcheck=\"false\">CostOfQualityDefects</div></div>",
+        "en": "\n  \n<div class=\"ls-gallery-slide\"><img src=\"/slides/uploads/CostOfQualityDefects.png\" alt=\"CostOfQualityDefects\"><div class=\"ls-gallery-caption\" contenteditable=\"\" spellcheck=\"false\">CostOfQualityDefects</div></div><div class=\"ls-gallery-slide ls-gallery-slide--text\"><div class=\"ls-gallery-stat\"><span class=\"ls-gallery-label\" contenteditable=\"\" spellcheck=\"false\">Section Title</span><span class=\"ls-gallery-number\" contenteditable=\"\" spellcheck=\"false\">Key Fact</span><span class=\"ls-gallery-body-text\" contenteditable=\"\" spellcheck=\"false\">Description text here</span></div></div>",
         "es": {
           "current": "\n  <div class=\"ls-gallery-slide ls-gallery-slide--text\"><div class=\"ls-gallery-stat\">\n    <span class=\"ls-gallery-label\" contenteditable=\"\" spellcheck=\"false\">Título de sección</span>\n    <span class=\"ls-gallery-number\" contenteditable=\"\" spellcheck=\"false\">Dato clave</span>\n    <span class=\"ls-gallery-body-text\" contenteditable=\"\" spellcheck=\"false\">Texto descriptivo aquí</span>\n  </div></div>\n",
           "previous": null,
@@ -426,81 +426,81 @@
       "headline": {
         "en": "Ready for a<br><span class=\"blue\">live demonstration?</span>",
         "es": {
-          "current": "¿Listo para <span class=\"blue\">empezar?</span>",
+          "current": "¿Listo para una<br><span class=\"blue\">demostración en vivo?</span>",
           "previous": null,
-          "dirty": true
+          "dirty": false
         }
       },
       "intro": {
         "en": "We propose that your team visit our facilities in Austria so we can carry out an on-site demonstration with <strong>your own glass samples</strong> — together.",
         "es": {
-          "current": "Un párrafo breve que presenta el siguiente paso que propone al cliente.",
+          "current": "Le proponemos que su equipo visite nuestras instalaciones en Austria para que podamos realizar una demostración en el sitio con <strong>sus propias muestras de vidrio</strong> — juntos.",
           "previous": null,
-          "dirty": true
+          "dirty": false
         }
       },
       "step1": {
         "en": "Analyse [Customer]'s current production line",
         "es": {
-          "current": "Primer paso en el proceso",
+          "current": "Analizar la línea de producción actual de [Customer]",
           "previous": null,
-          "dirty": true
+          "dirty": false
         }
       },
       "step2": {
         "en": "Live demo with [Customer] glass samples",
         "es": {
-          "current": "Segundo paso en el proceso",
+          "current": "Demostración en vivo con muestras de vidrio de [Customer]",
           "previous": null,
-          "dirty": true
+          "dirty": false
         }
       },
       "step3": {
         "en": "Customised technical and commercial proposal",
         "es": {
-          "current": "Tercer paso en el proceso",
+          "current": "Propuesta técnica y comercial personalizada",
           "previous": null,
-          "dirty": true
+          "dirty": false
         }
       },
       "contact-name": {
         "en": "Alex Ochoa",
         "es": {
-          "current": "Nombre de Contacto",
+          "current": "Alex Ochoa",
           "previous": null,
-          "dirty": true
+          "dirty": false
         }
       },
       "contact-title": {
         "en": "Sales Manager",
         "es": {
-          "current": "Puesto de Trabajo",
+          "current": "Gerente de Ventas",
           "previous": null,
-          "dirty": true
+          "dirty": false
         }
       },
       "contact-addr": {
         "en": "Im Vogelsang 18 · 3340 Waidhofen · Austria",
         "es": {
-          "current": "Calle · Ciudad · País",
+          "current": "Im Vogelsang 18 · 3340 Waidhofen · Austria",
           "previous": null,
-          "dirty": true
+          "dirty": false
         }
       },
       "contact-phone": {
         "en": "+43 676 88040501",
         "es": {
-          "current": "+00 000 000 000",
+          "current": "+43 676 88040501",
           "previous": null,
-          "dirty": true
+          "dirty": false
         }
       },
       "contact-email": {
         "en": "alex.ochoa@softsolution.at",
         "es": {
-          "current": "name@example.com",
+          "current": "alex.ochoa@softsolution.at",
           "previous": null,
-          "dirty": true
+          "dirty": false
         }
       }
     },
@@ -634,7 +634,7 @@
         }
       },
       "gallery-track": {
-        "en": "\n  \n<div class=\"ls-gallery-slide\"><img src=\"/slides/uploads/CostOfQualityDefects.png\" alt=\"CostOfQualityDefects\"><div class=\"ls-gallery-caption\" contenteditable=\"\" spellcheck=\"false\">CostOfQualityDefects</div></div>",
+        "en": "\n  <div class=\"ls-gallery-slide\"><img src=\"/slides/uploads/CostOfQualityDefects.png\" alt=\"CostOfQualityDefects\"><div class=\"ls-gallery-caption\" contenteditable=\"\" spellcheck=\"false\">CostOfQualityDefects</div></div>\n  <div class=\"ls-gallery-slide ls-gallery-slide--text\"><div class=\"ls-gallery-stat\"><span class=\"ls-gallery-label\" contenteditable=\"\" spellcheck=\"false\">Section Title</span><span class=\"ls-gallery-number\" contenteditable=\"\" spellcheck=\"false\">Key Fact</span><span class=\"ls-gallery-body-text\" contenteditable=\"\" spellcheck=\"false\">Description text here</span></div></div>\n",
         "es": {
           "current": "\n  <div class=\"ls-gallery-slide ls-gallery-slide--text\"><div class=\"ls-gallery-stat\">\n    <span class=\"ls-gallery-label\" contenteditable=\"\" spellcheck=\"false\">Título de la Sección</span>\n    <span class=\"ls-gallery-number\" contenteditable=\"\" spellcheck=\"false\">Hecho Clave</span>\n    <span class=\"ls-gallery-body-text\" contenteditable=\"\" spellcheck=\"false\">Texto descriptivo aquí</span>\n  </div></div>\n",
           "previous": "\n  <div class=\"ls-gallery-slide ls-gallery-slide--text\"><div class=\"ls-gallery-stat\">\n    <span class=\"ls-gallery-label\" contenteditable=\"\" spellcheck=\"false\">Título de Sección</span>\n    <span class=\"ls-gallery-number\" contenteditable=\"\" spellcheck=\"false\">Dato Clave</span>\n    <span class=\"ls-gallery-body-text\" contenteditable=\"\" spellcheck=\"false\">Texto descriptivo aquí</span>\n  </div></div>\n",
@@ -671,6 +671,694 @@
           "current": "Impresión Automotriz",
           "previous": "Impresión Automotriz",
           "dirty": true
+        }
+      }
+    },
+    "lib-linescanner-tech": {
+      "credit": {
+        "en": "by GlassQuality.com",
+        "es": {
+          "current": "por GlassQuality.com",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "section-label": {
+        "en": "The Technology - Linescanner",
+        "es": {
+          "current": "La Tecnología - Linescanner",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "headline": {
+        "en": "How <span class=\"blue\">LineScanner sees&nbsp;<span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255);\">what others miss</span><br></span>",
+        "es": {
+          "current": "Cómo <span class=\"blue\">LineScanner ve&nbsp;<span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255);\">lo que otros no ven</span><br></span>",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "subtitle": {
+        "en": "A short line about what makes this technology different.",
+        "es": {
+          "current": "Una breve descripción de lo que hace diferente esta tecnología.",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tab-howitworks": {
+        "en": "How It Works",
+        "es": {
+          "current": "Cómo Funciona",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tab-advantage": {
+        "en": "16-bit Advantage",
+        "es": {
+          "current": "Ventaja de 16-bit",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tab-compare": {
+        "en": "vs Camera Systems",
+        "es": {
+          "current": "vs Sistemas de Cámara",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "hiw-1": {
+        "en": "<strong>Telecentric light:</strong>&nbsp;uniform illumination independent of glass position.",
+        "es": {
+          "current": "<strong>Luz telecéntrica:</strong>&nbsp;iluminación uniforme independiente de la posición del vidrio.",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "hiw-2": {
+        "en": "<strong>Linear image sensor</strong> — real line-by-line scanning, not a snapshot camera",
+        "es": {
+          "current": "<strong>Sensor de imagen lineal</strong> — escaneo real línea por línea, no una cámara de captura instantánea",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "hiw-3": {
+        "en": "<strong>Glass</strong>&nbsp;inspected continuously at full production speed",
+        "es": {
+          "current": "<strong>Vidrio</strong>&nbsp;inspeccionado continuamente a velocidad de producción completa",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "hiw-4": {
+        "en": "<strong>Electronic module</strong> — 16-bit processing at extreme speed",
+        "es": {
+          "current": "<strong>Módulo electrónico</strong> — procesamiento de 16-bit a velocidad extrema",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "adv-1": {
+        "en": "<strong>Low-contrast detection:</strong> Identifies defects 8-bit systems cannot see — subtle inclusions, coating variations, micro-scratches.",
+        "es": {
+          "current": "<strong>Detección de bajo contraste:</strong> Identifica defectos que los sistemas de 8-bit no pueden ver — inclusiones sutiles, variaciones de revestimiento, micro-rasguños.",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "adv-2": {
+        "en": "<strong>Transmission homogenization:</strong> Glass from 15% to 99% processed with the same setup — identical results across all types.",
+        "es": {
+          "current": "<strong>Homogeneización de transmisión:</strong> Vidrio del 15% al 99% procesado con la misma configuración — resultados idénticos en todos los tipos.",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "adv-3": {
+        "en": "<strong>Every pixel is equal:</strong> No variation by position — always consistent, eliminating false positives and unnecessary rejections.",
+        "es": {
+          "current": "<strong>Cada píxel es igual:</strong> Sin variación por posición — siempre consistente, eliminando falsos positivos y rechazos innecesarios.",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "adv-4": {
+        "en": "<strong>Extreme processing speed:</strong> No compromise on throughput. Compatible with automotive and railway production rates.",
+        "es": {
+          "current": "<strong>Velocidad de procesamiento extrema:</strong> Sin compromiso en el rendimiento. Compatible con tasas de producción automotriz y ferroviaria.",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "cmp-bad-head": {
+        "en": "Camera-based Systems",
+        "es": {
+          "current": "Sistemas Basados en Cámara",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "cmp-bad-list": {
+        "en": "\n<li><strong>Snapshot coverage:</strong> Takes periodic frames — gaps between shots mean defects between frames go undetected</li>\n<li><strong>Motion blur at speed:</strong> Fast production lines cause image blur, reducing detection accuracy</li>\n<li><strong>8-bit depth:</strong> Only 256 grey levels — low-contrast defects are invisible</li>\n<li><strong>Position-dependent illumination:</strong> Uneven lighting across the field of view distorts results</li>\n<li><strong>False positives &amp; rejects:</strong> Pixel variation by position triggers unnecessary alarms</li>\n<li><strong>Recalibration required:</strong> Sensitivity must be re-tuned for every glass type and transmission level</li>\n      ",
+        "es": {
+          "current": "\n<li><strong>Cobertura de captura instantánea:</strong> Toma fotogramas periódicos — los espacios entre disparos significan que los defectos entre fotogramas pasan desapercibidos</li>\n<li><strong>Desenfoque de movimiento a velocidad:</strong> Las líneas de producción rápidas causan desenfoque de imagen, reduciendo la precisión de detección</li>\n<li><strong>Profundidad de 8-bit:</strong> Solo 256 niveles de gris — los defectos de bajo contraste son invisibles</li>\n<li><strong>Iluminación dependiente de la posición:</strong> La iluminación desigual en el campo de visión distorsiona los resultados</li>\n<li><strong>Falsos positivos y rechazos:</strong> La variación de píxeles por posición desencadena alarmas innecesarias</li>\n<li><strong>Recalibración requerida:</strong> La sensibilidad debe reajustarse para cada tipo de vidrio y nivel de transmisión</li>\n      ",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "cmp-label-1": {
+        "en": "Drill Hole, Camera vs LineScanner",
+        "es": {
+          "current": "Orificio Taladrado, Cámara vs LineScanner",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "cmp-label-2": {
+        "en": "IG Unit — Camera vs LineScanner",
+        "es": {
+          "current": "Unidad IG — Cámara vs LineScanner",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "cmp-good-head": {
+        "en": "LineScanner",
+        "es": {
+          "current": "LineScanner",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "cmp-good-list": {
+        "en": "\n<li><strong>100% line-by-line scanning:</strong> Every millimetre of glass is inspected — zero gaps, zero blind spots</li>\n<li><strong>No motion blur:</strong> Linear sensor reads one line at a time, perfectly synchronised with production speed</li>\n<li><strong>16-bit depth:</strong> 65,536 grey levels — detects the subtlest inclusions, coating variations and micro-scratches</li>\n<li class=\"\"><strong>Telecentric illumination:</strong> Uniform light field independent of glass position — consistent results everywhere</li>\n<li class=\"\" draggable=\"true\"><strong>Every pixel is equal:</strong> No positional variation — eliminates false positives and unnecessary rejections</li><li class=\"ls-list-dragging ls-list-hidden\" draggable=\"true\">TEST<br></li><li draggable=\"false\" class=\"\"><strong>One setup for all glass:</strong> 15% to 99% transmission handled automatically with the same configuration .....</li>\n\n      ",
+        "es": {
+          "current": "\n<li><strong>Escaneo línea por línea al 100%:</strong> Cada milímetro de vidrio se inspecciona — cero espacios, cero puntos ciegos</li>\n<li><strong>Sin desenfoque de movimiento:</strong> El sensor lineal lee una línea a la vez, perfectamente sincronizado con la velocidad de producción</li>\n<li><strong>Profundidad de 16 bits:</strong> 65.536 niveles de gris — detecta las inclusiones más sutiles, variaciones de recubrimiento y microrrayaduras</li>\n<li class=\"\"><strong>Iluminación telecéntrica:</strong> Campo de luz uniforme independiente de la posición del vidrio — resultados consistentes en todas partes</li>\n<li class=\"\" draggable=\"true\"><strong>Cada píxel es igual:</strong> Sin variación de posición — elimina falsos positivos y rechazos innecesarios</li><li class=\"ls-list-dragging ls-list-hidden\" draggable=\"true\">PRUEBA<br></li><li draggable=\"false\" class=\"\"><strong>Una configuración para todo tipo de vidrio:</strong> Transmisión del 15% al 99% manejada automáticamente con la misma configuración .....</li>\n\n      ",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "gallery-track": {
+        "en": "\n  \n<div class=\"ls-gallery-slide ls-gallery-slide--text\"><div class=\"ls-gallery-stat\"><span class=\"ls-gallery-label\" contenteditable=\"\" spellcheck=\"false\">Section Title</span><span class=\"ls-gallery-number\" contenteditable=\"\" spellcheck=\"false\">5&nbsp;</span><span class=\"ls-gallery-body-text\" contenteditable=\"\" spellcheck=\"false\">Description text here</span></div></div><div class=\"ls-gallery-slide\"><img src=\"/slides/uploads/CostOfQualityDefects.png\" alt=\"CostOfQualityDefects\"><div class=\"ls-gallery-caption\" contenteditable=\"\" spellcheck=\"false\">CostOfQualityDefects</div></div>",
+        "es": {
+          "current": "\n  <div class=\"ls-gallery-slide ls-gallery-slide--text\"><div class=\"ls-gallery-stat\">\n    <span class=\"ls-gallery-label\" contenteditable=\"\" spellcheck=\"false\">Título de sección</span>\n    <span class=\"ls-gallery-number\" contenteditable=\"\" spellcheck=\"false\">Dato clave</span>\n    <span class=\"ls-gallery-body-text\" contenteditable=\"\" spellcheck=\"false\">Texto de descripción aquí</span>\n  </div></div>\n",
+          "previous": null,
+          "dirty": true
+        }
+      }
+    },
+    "lib-osprey-tech": {
+      "credit": {
+        "en": "by GlassQuality.com",
+        "es": {
+          "current": "por GlassQuality.com",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "section-label": {
+        "en": "The Technology - OSPREY",
+        "es": {
+          "current": "La Tecnología - OSPREY",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "headline": {
+        "en": "<span class=\"blue\"><span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255); background-color: rgba(0, 0, 0, 0);\">How&nbsp;</span>Osprey sees&nbsp;<span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255);\">what others miss</span><br></span>",
+        "es": {
+          "current": "<span class=\"blue\"><span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255); background-color: rgba(0, 0, 0, 0);\">Cómo&nbsp;</span>Osprey ve&nbsp;<span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255);\">lo que otros pierden</span><br></span>",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "subtitle": {
+        "en": "A short line about what makes this technology different.",
+        "es": {
+          "current": "Una breve línea sobre lo que hace que esta tecnología sea diferente.",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tab-howitworks": {
+        "en": "How It Works?",
+        "es": {
+          "current": "¿Cómo funciona?",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tab-advantage": {
+        "en": "What&nbsp;we&nbsp;see",
+        "es": {
+          "current": "Lo&nbsp;que&nbsp;vemos",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tab-compare": {
+        "en": "Interface",
+        "es": {
+          "current": "Interfaz",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "hiw-1": {
+        "en": "<font color=\"#ffffff\"><b>Omnidirectional Optical Power Measurement</b></font>&nbsp;— Distortion measured in all directions simultaneously",
+        "es": {
+          "current": "<font color=\"#ffffff\"><b>Medición de potencia óptica omnidireccional</b></font>&nbsp;— Distorsión medida en todas las direcciones simultáneamente",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "hiw-2": {
+        "en": "<font color=\"#ffffff\"><b>Millidiopter (mD)</b></font> —is a unit use in optics and ophthalmology to measure veery small changes in lens power.",
+        "es": {
+          "current": "<font color=\"#ffffff\"><b>Milidioptría (mD)</b></font> — es una unidad utilizada en óptica y oftalmología para medir cambios muy pequeños en la potencia del lente.",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "hiw-3": {
+        "en": "<font color=\"#ffffff\"><b>Unique Technology</b></font>—Projecting&nbsp;",
+        "es": {
+          "current": "<font color=\"#ffffff\"><b>Tecnología única</b></font>— Proyectando&nbsp;",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "hiw-4": {
+        "en": "<strong>Electronic module</strong> —&nbsp;",
+        "es": {
+          "current": "<strong>Módulo electrónico</strong> —&nbsp;",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "adv-1": {
+        "en": "<strong>Low-contrast detection:</strong>",
+        "es": {
+          "current": "<strong>Detección de bajo contraste:</strong>",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "adv-2": {
+        "en": "<strong>Transmission homogenization:</strong> G",
+        "es": {
+          "current": "<strong>Homogeneización de transmisión:</strong> G",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "adv-3": {
+        "en": "<strong>Every pixel is equal</strong>",
+        "es": {
+          "current": "<strong>Cada píxel es igual</strong>",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "adv-4": {
+        "en": "<strong>Extreme processing speed:</strong> No",
+        "es": {
+          "current": "<strong>Velocidad de procesamiento extrema:</strong> No",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "cmp-bad-head": {
+        "en": "Camera-based Systems",
+        "es": {
+          "current": "Sistemas basados en cámara",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-bad-list": {
+        "en": "\n                  <li>A limitation of the alternative approach</li>\n                  <li>Another drawback to call out</li>\n                  <li>A third weakness worth noting</li>\n                ",
+        "es": {
+          "current": "\n                  <li>Una limitación del enfoque alternativo</li>\n                  <li>Otro inconveniente a señalar</li>\n                  <li>Una tercera debilidad que vale la pena señalar</li>\n                ",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-img-1": {
+        "en": "\n                    <div class=\"ls-carousel-track\" style=\"transform:translateX(0px);\">\n                      <div class=\"ls-carousel-slide\" style=\"display:flex;align-items:center;justify-content:center;\">\n                        <span style=\"color:var(--text-muted);font-size:12px;font-style:italic;\">+ Image</span>\n                      </div>\n                    </div>\n                    <div class=\"ls-carousel-counter\"></div>\n                  ",
+        "es": {
+          "current": "\n                    <div class=\"ls-carousel-track\" style=\"transform:translateX(0px);\">\n                      <div class=\"ls-carousel-slide\" style=\"display:flex;align-items:center;justify-content:center;\">\n                        <span style=\"color:var(--text-muted);font-size:12px;font-style:italic;\">+ Imagen</span>\n                      </div>\n                    </div>\n                    <div class=\"ls-carousel-counter\"></div>\n                  ",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-label-1": {
+        "en": "Drill Hole, Camera vs LineScanner",
+        "es": {
+          "current": "Orificio de perforación, Cámara vs Escáner de línea",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-img-2": {
+        "en": "\n                    <div class=\"ls-carousel-track\" style=\"transform:translateX(0px);\">\n                      <div class=\"ls-carousel-slide\" style=\"display:flex;align-items:center;justify-content:center;\">\n                        <span style=\"color:var(--text-muted);font-size:12px;font-style:italic;\">+ Image</span>\n                      </div>\n                    </div>\n                    <div class=\"ls-carousel-counter\"></div>\n                  ",
+        "es": {
+          "current": "\n                    <div class=\"ls-carousel-track\" style=\"transform:translateX(0px);\">\n                      <div class=\"ls-carousel-slide\" style=\"display:flex;align-items:center;justify-content:center;\">\n                        <span style=\"color:var(--text-muted);font-size:12px;font-style:italic;\">+ Imagen</span>\n                      </div>\n                    </div>\n                    <div class=\"ls-carousel-counter\"></div>\n                  ",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-label-2": {
+        "en": "IG Unit — Camera vs LineScanner",
+        "es": {
+          "current": "Unidad IG — Cámara vs Escáner de Línea",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-good-head": {
+        "en": "LineScanner",
+        "es": {
+          "current": "Escáner de Línea",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-good-list": {
+        "en": "\n                  <li>The matching strength of your product</li>\n                  <li>Another clear advantage</li>\n                  <li>A third benefit that wins</li>\n                ",
+        "es": {
+          "current": "\n                  <li>La solidez de coincidencia de su producto</li>\n                  <li>Otra ventaja clara</li>\n                  <li>Un tercer beneficio que gana</li>\n                ",
+          "previous": null,
+          "dirty": false
+        }
+      }
+    },
+    "lib-cullet-tech": {
+      "credit": {
+        "en": "by GlassQuality.com",
+        "es": {
+          "current": "por GlassQuality.com",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "section-label": {
+        "en": "The Technology-Culletscanner",
+        "es": {
+          "current": "La Tecnología-Culletscanner",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "headline": {
+        "en": "<span class=\"blue\"><span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255);\">How make things easier with </span>the CulletScanner</span>",
+        "es": {
+          "current": "<span class=\"blue\"><span style=\"font-size: clamp(26px, 4vw, 50px); letter-spacing: -0.02em; -webkit-text-fill-color: rgb(255, 255, 255);\">Cómo hacer las cosas más fáciles con </span>el CulletScanner</span>",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "subtitle": {
+        "en": "A short line about what makes this technology different.",
+        "es": {
+          "current": "Una breve línea sobre qué hace diferente esta tecnología.",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tab-howitworks": {
+        "en": "How It Woks?",
+        "es": {
+          "current": "¿Cómo funciona?",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tab-advantage": {
+        "en": "How it counts?",
+        "es": {
+          "current": "¿Cómo cuenta?",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "tab-compare": {
+        "en": "vs Camera Systems",
+        "es": {
+          "current": "vs Sistemas de Cámara",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "hiw-1": {
+        "en": "<strong>Telecentric light</strong> — please add your text here so it make sense",
+        "es": {
+          "current": "<strong>Luz telecéntrica</strong> — por favor añade tu texto aquí para que tenga sentido",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "hiw-2": {
+        "en": "<strong>Linear image sensor</strong> — please add your text here so it make sense",
+        "es": {
+          "current": "<strong>Sensor de imagen lineal</strong> — por favor añade tu texto aquí para que tenga sentido",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "hiw-3": {
+        "en": "<strong>Glass</strong> — please add your text here so it make sense",
+        "es": {
+          "current": "<strong>Vidrio</strong> — por favor añade tu texto aquí para que tenga sentido",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "hiw-4": {
+        "en": "<strong>Electronic module</strong> — please add your text here so it make sense",
+        "es": {
+          "current": "<strong>Módulo electrónico</strong> — por favor añade tu texto aquí para que tenga sentido",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "adv-1": {
+        "en": "<strong>Low-contrast detection:</strong>&nbsp;please add your text here so it make sense",
+        "es": {
+          "current": "<strong>Detección de bajo contraste:</strong>&nbsp;por favor añade tu texto aquí para que tenga sentido",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "adv-2": {
+        "en": "<strong>Transmission homogenization:</strong>&nbsp;please add your text here so it make sense",
+        "es": {
+          "current": "<strong>Homogeneización de transmisión:</strong>&nbsp;por favor añade tu texto aquí para que tenga sentido",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "adv-3": {
+        "en": "<strong>Every pixel is equal:</strong>&nbsp;please add your text here so it make sense",
+        "es": {
+          "current": "<strong>Cada píxel es igual:</strong>&nbsp;por favor añade tu texto aquí para que tenga sentido",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "adv-4": {
+        "en": "<strong>Extreme processing speed:</strong>&nbsp;please add your text here so it make sense",
+        "es": {
+          "current": "<strong>Velocidad de procesamiento extrema:</strong>&nbsp;por favor añade tu texto aquí para que tenga sentido",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "cmp-bad-head": {
+        "en": "Camera-based Systems",
+        "es": {
+          "current": "Sistemas Basados en Cámara",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-bad-list": {
+        "en": "\n                  <li>A limitation of the alternative approach</li>\n                  <li>Another drawback to call out</li>\n                  <li>A third weakness worth noting</li>\n                ",
+        "es": {
+          "current": "\n                  <li>Una limitación del enfoque alternativo</li>\n                  <li>Otro inconveniente a destacar</li>\n                  <li>Una tercera debilidad que vale la pena mencionar</li>\n                ",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-img-1": {
+        "en": "\n                    <div class=\"ls-carousel-track\" style=\"transform:translateX(0px);\">\n                      <div class=\"ls-carousel-slide\" style=\"display:flex;align-items:center;justify-content:center;\">\n                        <span style=\"color:var(--text-muted);font-size:12px;font-style:italic;\">+ Image</span>\n                      </div>\n                    </div>\n                    <div class=\"ls-carousel-counter\"></div>\n                  ",
+        "es": {
+          "current": "\n                    <div class=\"ls-carousel-track\" style=\"transform:translateX(0px);\">\n                      <div class=\"ls-carousel-slide\" style=\"display:flex;align-items:center;justify-content:center;\">\n                        <span style=\"color:var(--text-muted);font-size:12px;font-style:italic;\">+ Imagen</span>\n                      </div>\n                    </div>\n                    <div class=\"ls-carousel-counter\"></div>\n                  ",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-label-1": {
+        "en": "Drill Hole, Camera vs LineScanner",
+        "es": {
+          "current": "Orificio de Taladro, Cámara vs Escáner Lineal",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-img-2": {
+        "en": "\n                    <div class=\"ls-carousel-track\" style=\"transform:translateX(0px);\">\n                      <div class=\"ls-carousel-slide\" style=\"display:flex;align-items:center;justify-content:center;\">\n                        <span style=\"color:var(--text-muted);font-size:12px;font-style:italic;\">+ Image</span>\n                      </div>\n                    </div>\n                    <div class=\"ls-carousel-counter\"></div>\n                  ",
+        "es": {
+          "current": "\n                    <div class=\"ls-carousel-track\" style=\"transform:translateX(0px);\">\n                      <div class=\"ls-carousel-slide\" style=\"display:flex;align-items:center;justify-content:center;\">\n                        <span style=\"color:var(--text-muted);font-size:12px;font-style:italic;\">+ Imagen</span>\n                      </div>\n                    </div>\n                    <div class=\"ls-carousel-counter\"></div>\n                  ",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-label-2": {
+        "en": "IG Unit — Camera vs LineScanner",
+        "es": {
+          "current": "Unidad IG — Cámara vs Escáner de Líneas",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-good-head": {
+        "en": "LineScanner",
+        "es": {
+          "current": "Escáner de Líneas",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-good-list": {
+        "en": "\n                  <li>The matching strength of your product</li>\n                  <li>Another clear advantage</li>\n                  <li>A third benefit that wins</li>\n                ",
+        "es": {
+          "current": "\n                  <li>La fortaleza de coincidencia de su producto</li>\n                  <li>Otra ventaja clara</li>\n                  <li>Un tercer beneficio que gana</li>\n                ",
+          "previous": null,
+          "dirty": false
+        }
+      }
+    },
+    "lib-surface-v2": {
+      "credit": {
+        "en": "by GlassQuality.com",
+        "es": {
+          "current": "por GlassQuality.com",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "section-label": {
+        "en": "Surface Quality",
+        "es": {
+          "current": "Calidad de Superficie",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "headline": {
+        "en": "Defect detection with <span class=\"blue\">Artificial Intelligence</span>",
+        "es": {
+          "current": "Detección de defectos con <span class=\"blue\">Inteligencia Artificial</span>",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "subtitle": {
+        "en": "Neural network trained to automatically classify every defect type",
+        "es": {
+          "current": "Red neuronal entrenada para clasificar automáticamente cada tipo de defecto",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "s6-config": {
+        "en": "[{\"id\":\"scratches\",\"label\":\"Scratches\",\"icon\":\"/slides/uploads/defect-icon-0.png\",\"carKey\":\"s6-defect-scratches\"},{\"id\":\"inclusions\",\"label\":\"Inclusions\",\"icon\":\"/slides/uploads/defect-icon-1.png\",\"carKey\":\"s6-defect-inclusions\"},{\"id\":\"dirt\",\"label\":\"Dirt\",\"icon\":\"/slides/uploads/defect-icon-2.png\",\"carKey\":\"s6-defect-dirt\"},{\"id\":\"dust\",\"label\":\"Dust\",\"icon\":\"/slides/uploads/defect-icon-3.png\",\"carKey\":\"s6-defect-dust\"},{\"id\":\"water\",\"label\":\"Water\",\"icon\":\"/slides/uploads/defect-icon-9.png\",\"carKey\":\"s6-defect-water\"},{\"id\":\"fingerprints\",\"label\":\"Fingerprints\",\"icon\":\"/slides/uploads/defect-icon-4.png\",\"carKey\":\"s6-defect-fingerprints\"},{\"id\":\"ignore\",\"label\":\"Ignore\",\"icon\":\"/slides/uploads/defect-icon-5.png\",\"carKey\":\"s6-defect-ignore\"},{\"id\":\"edge-defects\",\"label\":\"Edge defects\",\"icon\":\"/slides/uploads/defect-icon-7.png\",\"carKey\":\"s6-defect-edge-defects\"},{\"id\":\"frame-bars\",\"label\":\"Frame &amp; bars\",\"icon\":\"/slides/uploads/defect-icon-6.png\",\"carKey\":\"s6-defect-frame-bars\"},{\"id\":\"undefined\",\"label\":\"Undefined\",\"icon\":\"/slides/uploads/defect-icon-8.png\",\"carKey\":\"s6-defect-undefined\"},{\"id\":\"coating\",\"label\":\"Coating\",\"icon\":\"/slides/uploads/defect-icon-coating.png\",\"carKey\":\"s6-defect-coating\"},{\"id\":\"s6-defect-x0\",\"label\":\"New defect\",\"icon\":\"/slides/uploads/CostOfQualityDefects.png\",\"carKey\":\"s6-defect-x0\"}]",
+        "es": {
+          "current": "[{\"id\":\"scratches\",\"label\":\"Arañazos\",\"icon\":\"/slides/uploads/defect-icon-0.png\",\"carKey\":\"s6-defect-scratches\"},{\"id\":\"inclusions\",\"label\":\"Inclusiones\",\"icon\":\"/slides/uploads/defect-icon-1.png\",\"carKey\":\"s6-defect-inclusions\"},{\"id\":\"dirt\",\"label\":\"Suciedad\",\"icon\":\"/slides/uploads/defect-icon-2.png\",\"carKey\":\"s6-defect-dirt\"},{\"id\":\"dust\",\"label\":\"Polvo\",\"icon\":\"/slides/uploads/defect-icon-3.png\",\"carKey\":\"s6-defect-dust\"},{\"id\":\"water\",\"label\":\"Agua\",\"icon\":\"/slides/uploads/defect-icon-9.png\",\"carKey\":\"s6-defect-water\"},{\"id\":\"fingerprints\",\"label\":\"Huellas dactilares\",\"icon\":\"/slides/uploads/defect-icon-4.png\",\"carKey\":\"s6-defect-fingerprints\"},{\"id\":\"ignore\",\"label\":\"Ignorar\",\"icon\":\"/slides/uploads/defect-icon-5.png\",\"carKey\":\"s6-defect-ignore\"},{\"id\":\"edge-defects\",\"label\":\"Defectos de borde\",\"icon\":\"/slides/uploads/defect-icon-7.png\",\"carKey\":\"s6-defect-edge-defects\"},{\"id\":\"frame-bars\",\"label\":\"Marco &amp; barras\",\"icon\":\"/slides/uploads/defect-icon-6.png\",\"carKey\":\"s6-defect-frame-bars\"},{\"id\":\"undefined\",\"label\":\"Indefinido\",\"icon\":\"/slides/uploads/defect-icon-8.png\",\"carKey\":\"s6-defect-undefined\"},{\"id\":\"coating\",\"label\":\"Revestimiento\",\"icon\":\"/slides/uploads/defect-icon-coating.png\",\"carKey\":\"s6-defect-coating\"},{\"id\":\"s6-defect-x0\",\"label\":\"Nuevo defecto\",\"icon\":\"/slides/uploads/CostOfQualityDefects.png\",\"carKey\":\"s6-defect-x0\"}]",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "s6-label-0": {
+        "en": "Scratches",
+        "es": {
+          "current": "Arañazos",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "s6-label-1": {
+        "en": "Inclusions",
+        "es": {
+          "current": "Inclusiones",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "s6-label-2": {
+        "en": "Dirt",
+        "es": {
+          "current": "Suciedad",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "s6-label-3": {
+        "en": "Dust",
+        "es": {
+          "current": "Polvo",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "s6-label-4": {
+        "en": "Water",
+        "es": {
+          "current": "Agua",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "s6-label-5": {
+        "en": "Fingerprints",
+        "es": {
+          "current": "Huellas dactilares",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "s6-label-6": {
+        "en": "Ignore",
+        "es": {
+          "current": "Ignorar",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "s6-label-7": {
+        "en": "Edge defects",
+        "es": {
+          "current": "Defectos de borde",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "s6-label-8": {
+        "en": "Frame &amp; bars",
+        "es": {
+          "current": "Marco &amp; barras",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "s6-label-9": {
+        "en": "Undefined",
+        "es": {
+          "current": "Indefinido",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "s6-label-10": {
+        "en": "Coating",
+        "es": {
+          "current": "Revestimiento",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "s6-label-11": {
+        "en": "New defect",
+        "es": {
+          "current": "Nuevo defecto",
+          "previous": null,
+          "dirty": false
         }
       }
     }

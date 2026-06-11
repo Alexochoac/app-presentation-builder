@@ -1,7 +1,7 @@
 ---
 title: Clean leftover test-card cruft + orphan edit keys on lib-surface
 priority: low
-status: pending
+status: done
 area: builder / data — slide-library.json (lib-surface)
 ---
 

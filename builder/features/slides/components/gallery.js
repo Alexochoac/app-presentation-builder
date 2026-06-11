@@ -341,19 +341,29 @@ window.Gallery = (function () {
     var trigger = slideEl.querySelector('[data-ls-gallery-open]');
     if (!trigger) return;
 
+    // Idempotent per store: never wire the same gallery twice. Without this, the
+    // add-buttons would gain a fresh click handler on every init() call.
+    if (store.__galleryInit) return;
+    store.__galleryInit = true;
+
     // Resolve the slide root robustly — init() may be passed the slide element,
     // a container, or `document` (which has no .closest()). Derive from the store.
     var root = store.closest('[data-slide]') || store.parentElement
             || (slideEl.closest && slideEl.closest('[data-slide]')) || slideEl;
     var slideId = ((root.getAttribute && root.getAttribute('data-slide')) || 'gallery').replace(/[^a-z0-9]/gi, '');
+
+    // Each slide instance needs its OWN overlay. A template reused for N slides
+    // hardcodes the same data-slide, so slideId can collide — disambiguate the
+    // overlay id so two slides never share one overlay (and its add-buttons).
     var overlayId = slideId + 'GalleryOverlay';
-
-    if (!document.getElementById(overlayId)) {
-      var overlay = buildOverlay(overlayId);
-      root.insertAdjacentElement('afterend', overlay);
+    if (document.getElementById(overlayId)) {
+      var n = 2;
+      while (document.getElementById(overlayId + '-' + n)) n++;
+      overlayId = overlayId + '-' + n;
     }
+    var overlay = buildOverlay(overlayId);
+    root.insertAdjacentElement('afterend', overlay);
 
-    var overlay = document.getElementById(overlayId);
     var inst = createInstance(overlay, store, slideId);
 
     trigger.addEventListener('click', function () { inst.open(); });
