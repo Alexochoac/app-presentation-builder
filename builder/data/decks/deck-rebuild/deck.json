@@ -37,6 +37,11 @@
       "librarySlideId": "lib-cullet-tech"
     },
     {
+      "id": "deck-surface",
+      "visible": true,
+      "librarySlideId": "lib-surface-v2"
+    },
+    {
       "id": "deck-lib-1780338645841-1780424554857",
       "visible": true,
       "librarySlideId": "lib-1780338645841"

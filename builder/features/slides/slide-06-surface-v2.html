@@ -1,0 +1,311 @@
+<div class="slide content template06-surface pb-responsive"
+     data-slide="template06-surface"
+     data-slide-mode="sequence">
+
+  <!-- Logo row — defaults to the product logo; deck branding overrides it. data-managed = server-injected. -->
+  <div class="slide-logo-row" data-edit="logo-row" data-managed>
+    <img src="/shared/brand/logo.svg" alt="Put A Presentation">
+  </div>
+
+  <div class="slide-layout">
+    <span class="softsolution-credit" data-edit="credit" contenteditable spellcheck="false">by YourBrand.com</span>
+
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label" contenteditable spellcheck="false">Surface Quality</div>
+      <h1 class="slide-title" data-edit="headline" contenteditable spellcheck="false">Defect detection <span class="blue">at a glance</span></h1>
+      <p class="slide-subtitle anim-in" data-edit="subtitle" contenteditable spellcheck="false">Pick a defect type to see real captured examples.</p>
+    </header>
+
+    <div class="slide-body">
+
+      <!-- Config store — JSON list of defect cards [{id,label,icon,carKey}]. contenteditable so it rides
+           the standard focusout→save pipeline; the script reads/writes its textContent. Carousel IMAGES
+           are NOT stored here — each card's carKey points at its own data-edit carousel below. -->
+      <div id="s6-config" data-edit="s6-config" contenteditable spellcheck="false" aria-hidden="true"
+           style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;left:-9999px;top:0;"></div>
+
+      <!-- Defect-type cards (the selector) — built by the script from the config. -->
+      <div class="template06-surface-selector anim-in" id="s6-selector"></div>
+
+      <!-- Default carousel (shown when no card is selected) -->
+      <div class="ls-carousel template06-surface-car" id="s6CarWrap" data-counter data-edit="s6-default-carousel" data-track="template06-surface:default" style="flex:1;min-height:0;width:100%;">
+        <div class="ls-carousel-track" style="transform:translateX(0px);">
+          <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;">
+            <span style="color:var(--text-muted);font-size:13px;font-style:italic;">Add images with the + Image button</span>
+          </div>
+        </div>
+        <div class="ls-carousel-counter"></div>
+      </div>
+
+      <!-- Per-defect carousels — one data-edit slot each (named + spare). Empty in the template; the deck
+           fills them. The script shows the selected card's slot and hides the rest. -->
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-scratches"    data-track="template06-surface:scratches"    style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-inclusions"   data-track="template06-surface:inclusions"   style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-dirt"         data-track="template06-surface:dirt"         style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-dust"         data-track="template06-surface:dust"         style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-water"        data-track="template06-surface:water"        style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-fingerprints" data-track="template06-surface:fingerprints" style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-ignore"       data-track="template06-surface:ignore"       style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-edge-defects" data-track="template06-surface:edge-defects" style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-frame-bars"   data-track="template06-surface:frame-bars"   style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-undefined"    data-track="template06-surface:undefined"    style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-coating"      data-track="template06-surface:coating"      style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-x0"  data-track="template06-surface:x0"  style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-x1"  data-track="template06-surface:x1"  style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-x2"  data-track="template06-surface:x2"  style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-x3"  data-track="template06-surface:x3"  style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-x4"  data-track="template06-surface:x4"  style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-x5"  data-track="template06-surface:x5"  style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-x6"  data-track="template06-surface:x6"  style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-x7"  data-track="template06-surface:x7"  style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-x8"  data-track="template06-surface:x8"  style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-x9"  data-track="template06-surface:x9"  style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter data-edit="s6-defect-x10" data-track="template06-surface:x10" style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+
+    </div>
+  </div>
+
+  <style>
+    /* pb-responsive provides the scroll model + fluid chrome. Rules here are positional; the defect
+       cards compose from `.card` so theme Finish blocks restyle them. Colours use theme variables. */
+    .template06-surface .slide-body { width:100%; align-items:center; }
+
+    /* Defect cards (the selector) — auto-fit row that wraps; each is a themeable .card. */
+    .template06-surface-selector { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; width:100%; max-width:1100px; padding-top:6px; }
+    .template06-surface .s6-defect-btn { position:relative; display:flex; flex-direction:column; align-items:center; gap:6px; min-width:78px; padding:10px 12px; cursor:pointer; background:var(--card-bg); border:1px solid var(--card-border); border-radius:var(--card-radius); transition:border-color .2s, background .2s; }
+    .template06-surface .s6-defect-btn:hover { border-color:rgba(var(--accent-rgb),.4); }
+    .template06-surface .s6-defect-btn.active { border-color:var(--accent); background:rgba(var(--accent-rgb),.08); }
+    .s6-icon-wrap { position:relative; display:inline-flex; flex-shrink:0; }
+    .s6-icon { width:44px; height:44px; border-radius:10px; object-fit:cover; background:rgba(var(--accent-rgb),.12); display:block; }
+    .s6-icon-placeholder { display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:700; color:var(--text-muted); border:1px dashed var(--border); }
+    .s6-defect-label { font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--text-muted); text-align:center; max-width:120px; }
+    .s6-defect-btn.active .s6-defect-label { color:var(--accent); }
+    .s6-defect-label:focus { outline:none; }
+
+    /* Builder-only controls on a card: upload / clear icon + delete card */
+    .s6-icon-ctrls { position:absolute; top:-8px; right:-8px; display:none; gap:3px; z-index:2; }
+    .s6-defect-btn:hover .s6-icon-ctrls { display:flex; }
+    .s6-icon-btn { width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; line-height:1; cursor:pointer; border:1px solid var(--border); }
+    .s6-icon-change { background:rgba(var(--accent-rgb),.18); color:var(--accent); border-color:rgba(var(--accent-rgb),.4); }
+    .s6-icon-del { background:var(--card-bg); color:var(--text-muted); }
+    .s6-card-del { position:absolute; top:-7px; left:-7px; width:18px; height:18px; border-radius:50%; display:none; align-items:center; justify-content:center; font-size:10px; cursor:pointer; background:rgba(var(--accent-rgb),.18); border:1px solid rgba(var(--accent-rgb),.4); color:var(--accent); z-index:2; }
+    .template06-surface:not(.template06-surface-readonly) .s6-defect-btn:hover .s6-card-del { display:flex; }
+    .template06-surface .s6-add-btn { border-style:dashed; opacity:.7; }
+    .template06-surface .s6-add-btn:hover { opacity:1; }
+    .s6-add-icon { width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:300; color:var(--text-muted); border:1px dashed var(--border); }
+
+    /* The active carousel sits below the cards. flex:none + clamp height beats the inline flex:1 that
+       would collapse it to 0 in a content-flow panel; scales with the viewport on big screens. */
+    .template06-surface .template06-surface-car { flex:none !important; min-height:0 !important; height:clamp(260px,52vh,640px) !important; width:100%; max-width:1100px; margin:14px auto 0; }
+    .template06-surface .ls-carousel-slide img { object-fit:contain; }
+
+    /* readonly / published: hide every builder-only affordance */
+    .template06-surface-readonly [data-builder-only],
+    .template06-surface-readonly .s6-icon-ctrls,
+    .template06-surface-readonly .s6-card-del,
+    .template06-surface-readonly .s6-add-btn { display:none !important; }
+  </style>
+
+  <script>
+  (function () {
+    var root = document.currentScript.closest('[data-slide]');
+    var EDIT_MODE = !window.PB_READONLY;
+    if (!EDIT_MODE) root.classList.add('template06-surface-readonly');
+    var slideId  = window.Track ? Track.slideId(root) : 'template06-surface';
+
+    var configEl = root.querySelector('#s6-config');
+    var selector = root.querySelector('#s6-selector');
+    var defWrap  = root.querySelector('#s6CarWrap');
+
+    var MAX_CARDS = 22;
+    var NAMED = ['s6-defect-scratches','s6-defect-inclusions','s6-defect-dirt','s6-defect-dust','s6-defect-water','s6-defect-fingerprints','s6-defect-ignore','s6-defect-edge-defects','s6-defect-frame-bars','s6-defect-undefined','s6-defect-coating'];
+    var SPARES = ['s6-defect-x0','s6-defect-x1','s6-defect-x2','s6-defect-x3','s6-defect-x4','s6-defect-x5','s6-defect-x6','s6-defect-x7','s6-defect-x8','s6-defect-x9','s6-defect-x10'];
+    var ALL_SLOTS = NAMED.concat(SPARES);
+
+    var DEFAULT_CONFIG = [
+      { id: 'type-one',   label: 'Type One',   icon: '', carKey: 's6-defect-scratches' },
+      { id: 'type-two',   label: 'Type Two',   icon: '', carKey: 's6-defect-inclusions' },
+      { id: 'type-three', label: 'Type Three', icon: '', carKey: 's6-defect-dirt' }
+    ];
+
+    function clone(o) { return JSON.parse(JSON.stringify(o)); }
+    var config = loadConfig();
+    var currentIdx = -1;
+
+    function loadConfig() {
+      // Published multi-language decks wrap this element's text in <span data-lang> per language, so
+      // textContent would be both languages concatenated (invalid JSON). Read the default-language span
+      // when present; in the builder it's plain JSON text. Without this the cards fall back to defaults.
+      var enSpan = configEl.querySelector('[data-lang="en"]') || configEl.querySelector('[data-lang]');
+      var raw = ((enSpan ? enSpan.textContent : configEl.textContent) || '').trim();
+      if (!raw) return clone(DEFAULT_CONFIG);
+      try { var c = JSON.parse(raw); return Array.isArray(c) && c.length ? c : clone(DEFAULT_CONFIG); }
+      catch (e) { return clone(DEFAULT_CONFIG); }
+    }
+    function persistConfig() {
+      configEl.textContent = JSON.stringify(config);
+      configEl.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+    }
+    function findCar(carKey) { return root.querySelector('.s6-defect-car[data-edit="' + carKey + '"]'); }
+
+    function showDefault() {
+      root.querySelectorAll('.s6-defect-car').forEach(function (c) { c.style.display = 'none'; });
+      currentIdx = -1;
+      if (defWrap) {
+        defWrap.style.display = '';
+        if (window.Carousel) Carousel.init(defWrap);
+        if (window.Lightbox) Lightbox.init(defWrap);
+      }
+      updateBtns();
+    }
+    function showDefect(idx) {
+      if (idx === currentIdx) { showDefault(); return; }
+      var prev = config[currentIdx]; if (prev) { var pc = findCar(prev.carKey); if (pc) pc.style.display = 'none'; }
+      if (defWrap) defWrap.style.display = 'none';
+      currentIdx = idx;
+      var car = findCar(config[idx].carKey);
+      if (car) {
+        car.style.display = '';
+        if (typeof car._lsGoTo === 'function') car._lsGoTo(0);
+        if (window.Carousel) Carousel.init(car);
+        if (window.Lightbox) Lightbox.init(car);
+      }
+      updateBtns();
+    }
+    function updateBtns() {
+      selector.querySelectorAll('.s6-defect-btn').forEach(function (btn, i) {
+        if (btn.classList.contains('s6-add-btn')) return;
+        btn.classList.toggle('active', i === currentIdx);
+      });
+    }
+
+    function makeIcon(item) {
+      if (item.icon) {
+        var img = document.createElement('img');
+        img.className = 's6-icon'; img.src = item.icon; img.alt = (item.label || '') + ' icon';
+        return img;
+      }
+      var ph = document.createElement('span');
+      ph.className = 's6-icon s6-icon-placeholder'; ph.textContent = '+';
+      return ph;
+    }
+    function replaceIcon(iconWrap, item) {
+      var old = iconWrap.querySelector('.s6-icon');
+      var fresh = makeIcon(item);
+      if (old) iconWrap.replaceChild(fresh, old); else iconWrap.insertBefore(fresh, iconWrap.firstChild);
+    }
+
+    function makeBtn(item, idx) {
+      var btn = document.createElement('button');
+      btn.className = 'card s6-defect-btn';
+      btn.setAttribute('data-defect-id', item.id);
+
+      var iconWrap = document.createElement('span');
+      iconWrap.className = 's6-icon-wrap';
+      iconWrap.appendChild(makeIcon(item));
+
+      if (EDIT_MODE) {
+        var ctrls = document.createElement('span');
+        ctrls.className = 's6-icon-ctrls'; ctrls.setAttribute('data-builder-only', '');
+        var change = document.createElement('span');
+        change.className = 's6-icon-btn s6-icon-change'; change.textContent = '↑'; change.title = 'Upload image';
+        change.addEventListener('click', function (e) {
+          e.stopPropagation(); e.preventDefault();
+          var input = document.createElement('input');
+          input.type = 'file'; input.accept = 'image/*'; input.style.display = 'none';
+          document.body.appendChild(input);
+          input.addEventListener('change', function (ev) {
+            document.body.removeChild(input);
+            var file = ev.target.files[0]; if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function (re) {
+              window.PBUpload(file.name, re.target.result).then(function (p) {
+                if (!p) return; item.icon = p; replaceIcon(iconWrap, item); persistConfig();
+              });
+            };
+            reader.readAsDataURL(file);
+          });
+          input.click();
+        });
+        var clr = document.createElement('span');
+        clr.className = 's6-icon-btn s6-icon-del'; clr.textContent = '✕'; clr.title = 'Clear image';
+        clr.addEventListener('click', function (e) {
+          e.stopPropagation(); e.preventDefault();
+          item.icon = ''; replaceIcon(iconWrap, item); persistConfig();
+        });
+        ctrls.appendChild(change); ctrls.appendChild(clr);
+        iconWrap.appendChild(ctrls);
+      }
+      btn.appendChild(iconWrap);
+
+      var labelEl = document.createElement('span');
+      labelEl.className = 's6-defect-label'; labelEl.textContent = item.label;
+      labelEl.setAttribute('data-edit', 's6-label-' + idx);
+      if (EDIT_MODE) {
+        labelEl.contentEditable = 'true'; labelEl.spellcheck = false;
+        labelEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); labelEl.blur(); } });
+        labelEl.addEventListener('blur', function () { var v = labelEl.textContent.trim(); if (v) item.label = v; persistConfig(); });
+        labelEl.addEventListener('click', function (e) { if (!window.previewLang || window.previewLang === 'en') e.stopPropagation(); });
+      }
+      btn.appendChild(labelEl);
+
+      if (EDIT_MODE) {
+        var cardDel = document.createElement('span');
+        cardDel.className = 's6-card-del'; cardDel.setAttribute('data-builder-only', ''); cardDel.title = 'Delete card'; cardDel.innerHTML = '&#10005;';
+        cardDel.addEventListener('click', function (e) {
+          e.stopPropagation(); e.preventDefault();
+          if (!window.confirm('Delete "' + (item.label || 'this defect') + '" card?')) return;
+          config.splice(idx, 1); renderSelector(); persistConfig();
+        });
+        btn.appendChild(cardDel);
+      }
+
+      btn.addEventListener('click', function () {
+        if (document.activeElement && document.activeElement.isContentEditable) return;
+        showDefect(idx);
+        if (window.Track) Track.click(slideId, item.label);
+      });
+      return btn;
+    }
+
+    function freeSlot() {
+      var used = config.map(function (c) { return c.carKey; });
+      var i, k;
+      for (i = 0; i < SPARES.length; i++) { if (used.indexOf(SPARES[i]) === -1) return SPARES[i]; }
+      for (i = 0; i < ALL_SLOTS.length; i++) { k = ALL_SLOTS[i]; if (used.indexOf(k) === -1) return k; }
+      return null;
+    }
+    function clearSlot(carKey) {
+      var car = findCar(carKey); if (!car) return;
+      var track = car.querySelector('.ls-carousel-track'); if (track) track.innerHTML = '';
+      car._lsCarouselInit = false;
+      document.dispatchEvent(new CustomEvent('slide-carousel-save', { detail: { editKey: carKey, html: '<div class="ls-carousel-track"></div>' } }));
+    }
+
+    function renderSelector() {
+      selector.innerHTML = '';
+      config.forEach(function (item, idx) { selector.appendChild(makeBtn(item, idx)); });
+      if (EDIT_MODE && config.length < MAX_CARDS) {
+        var add = document.createElement('button');
+        add.className = 'card s6-defect-btn s6-add-btn'; add.setAttribute('data-builder-only', ''); add.title = 'Add defect type';
+        var ai = document.createElement('span'); ai.className = 's6-add-icon'; ai.textContent = '+';
+        var al = document.createElement('span'); al.className = 's6-defect-label'; al.textContent = 'Add';
+        add.appendChild(ai); add.appendChild(al);
+        add.addEventListener('click', function () {
+          if (config.length >= MAX_CARDS) return;
+          var slot = freeSlot(); if (!slot) return;
+          clearSlot(slot);
+          config.push({ id: slot, label: 'New defect', icon: '', carKey: slot });
+          renderSelector(); persistConfig();
+        });
+        selector.appendChild(add);
+      }
+      showDefault();
+    }
+
+    renderSelector();
+    setTimeout(function () { if (window.PE) PE.initSlide(root); }, 0);
+  })();
+  </script>
+
+</div>

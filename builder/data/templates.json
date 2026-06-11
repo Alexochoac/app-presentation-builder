@@ -559,5 +559,28 @@
       "tab-advantage": "Key Advantage",
       "tab-compare": "Comparison"
     }
+  },
+  {
+    "id": "template06-surface",
+    "name": "Defect Gallery-Validated",
+    "category": "Visual",
+    "slideMode": "sequence",
+    "components": [
+      "carousel",
+      "cards"
+    ],
+    "file": "features/slides/slide-06-surface-v2.html",
+    "createdAt": "2026-06-11T00:00:00.000Z",
+    "tags": [
+      "Visual",
+      "Validated",
+      "Gallery"
+    ],
+    "defaultEdits": {
+      "credit": "by YourBrand.com",
+      "section-label": "Surface Quality",
+      "headline": "Defect detection <span class=\"blue\">at a glance</span>",
+      "subtitle": "Pick a defect type to see real captured examples."
+    }
   }
 ]
