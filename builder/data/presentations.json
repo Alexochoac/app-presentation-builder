@@ -1,6 +1,226 @@
 {
   "presentations": [
     {
+      "id": "00000036",
+      "createdAt": "2026-06-11",
+      "deckId": "deck-rebuild",
+      "presentationName": "PN101",
+      "customerName": "C101",
+      "contactName": "CN101",
+      "contactTitle": "",
+      "customerLogoSrc": "/slides/uploads/Cullet Scanner Different Norms.jpg",
+      "slideCount": 9,
+      "slides": [
+        {
+          "id": "deck-cover",
+          "librarySlideId": "lib-cover",
+          "name": "Cover-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-why-us-1780851570888",
+          "librarySlideId": "lib-why-us",
+          "name": "Why Us-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-company",
+          "librarySlideId": "lib-company-v2",
+          "name": "Company Intro-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-products",
+          "librarySlideId": "lib-products",
+          "name": "Products Overview-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-linescanner-tech",
+          "librarySlideId": "lib-linescanner-tech",
+          "name": "LineScanner-Technology-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-osprey-tech",
+          "librarySlideId": "lib-osprey-tech",
+          "name": "Osprey-Technology-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-cullet-tech",
+          "librarySlideId": "lib-cullet-tech",
+          "name": "CulletScanner-Technology-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-surface",
+          "librarySlideId": "lib-surface-v2",
+          "name": "Surface Types",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1780338645841-1780424554857",
+          "librarySlideId": "lib-1780338645841",
+          "name": "Call to Action-Validated Style",
+          "visible": true
+        }
+      ],
+      "defaultLanguage": "en",
+      "languages": [
+        "en",
+        "es"
+      ],
+      "publishedAt": "2026-06-11T12:21:00.793Z"
+    },
+    {
+      "id": "00000035",
+      "createdAt": "2026-06-11",
+      "deckId": "deck-rebuild",
+      "presentationName": "PN100",
+      "customerName": "C100",
+      "contactName": "CN100",
+      "contactTitle": "",
+      "customerLogoSrc": "/slides/uploads/Comparison on image taken by Camera Above and LineScanner below of a drillhole .jpg",
+      "slideCount": 9,
+      "slides": [
+        {
+          "id": "deck-cover",
+          "librarySlideId": "lib-cover",
+          "name": "Cover-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-why-us-1780851570888",
+          "librarySlideId": "lib-why-us",
+          "name": "Why Us-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-company",
+          "librarySlideId": "lib-company-v2",
+          "name": "Company Intro-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-products",
+          "librarySlideId": "lib-products",
+          "name": "Products Overview-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-linescanner-tech",
+          "librarySlideId": "lib-linescanner-tech",
+          "name": "LineScanner-Technology-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-osprey-tech",
+          "librarySlideId": "lib-osprey-tech",
+          "name": "Osprey-Technology-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-cullet-tech",
+          "librarySlideId": "lib-cullet-tech",
+          "name": "CulletScanner-Technology-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-surface",
+          "librarySlideId": "lib-surface-v2",
+          "name": "Surface Types",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1780338645841-1780424554857",
+          "librarySlideId": "lib-1780338645841",
+          "name": "Call to Action-Validated Style",
+          "visible": true
+        }
+      ],
+      "defaultLanguage": "en",
+      "languages": [
+        "en",
+        "es"
+      ],
+      "archivedAt": "2026-06-11T12:20:45.364Z"
+    },
+    {
+      "id": "00000034",
+      "createdAt": "2026-06-11",
+      "deckId": "deck-rebuild",
+      "presentationName": "PN99",
+      "customerName": "C99",
+      "contactName": "CN99",
+      "contactTitle": "",
+      "customerLogoSrc": "/slides/uploads/Comparison on image taken by Camera Above and LineScanner below of a Ig unit .jpg",
+      "slideCount": 9,
+      "slides": [
+        {
+          "id": "deck-cover",
+          "librarySlideId": "lib-cover",
+          "name": "Cover-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-why-us-1780851570888",
+          "librarySlideId": "lib-why-us",
+          "name": "Why Us-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-company",
+          "librarySlideId": "lib-company-v2",
+          "name": "Company Intro-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-products",
+          "librarySlideId": "lib-products",
+          "name": "Products Overview-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-linescanner-tech",
+          "librarySlideId": "lib-linescanner-tech",
+          "name": "LineScanner-Technology-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-osprey-tech",
+          "librarySlideId": "lib-osprey-tech",
+          "name": "Osprey-Technology-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-cullet-tech",
+          "librarySlideId": "lib-cullet-tech",
+          "name": "CulletScanner-Technology-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-surface",
+          "librarySlideId": "lib-surface-v2",
+          "name": "Surface Types",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1780338645841-1780424554857",
+          "librarySlideId": "lib-1780338645841",
+          "name": "Call to Action-Validated Style",
+          "visible": true
+        }
+      ],
+      "defaultLanguage": "en",
+      "languages": [
+        "en",
+        "es"
+      ],
+      "publishedAt": "2026-06-11T05:57:35.607Z",
+      "archivedAt": "2026-06-11T12:20:39.411Z"
+    },
+    {
       "id": "00000033",
       "createdAt": "2026-06-11",
       "deckId": "deck-rebuild",
@@ -64,7 +284,9 @@
       "languages": [
         "en",
         "es"
-      ]
+      ],
+      "publishedAt": "2026-06-11T05:42:03.437Z",
+      "archivedAt": "2026-06-11T12:20:42.844Z"
     },
     {
       "id": "00000032",
@@ -131,7 +353,8 @@
         "en",
         "es"
       ],
-      "publishedAt": "2026-06-10T18:14:49.608Z"
+      "publishedAt": "2026-06-10T18:14:49.608Z",
+      "archivedAt": "2026-06-11T12:20:53.226Z"
     },
     {
       "id": "00000031",
@@ -180,7 +403,8 @@
         "en",
         "es"
       ],
-      "publishedAt": "2026-06-10T06:41:11.730Z"
+      "publishedAt": "2026-06-10T06:41:11.730Z",
+      "archivedAt": "2026-06-11T12:20:56.137Z"
     },
     {
       "id": "00000030",
@@ -229,7 +453,8 @@
         "en",
         "es"
       ],
-      "publishedAt": "2026-06-10T06:38:53.685Z"
+      "publishedAt": "2026-06-10T06:38:53.685Z",
+      "archivedAt": "2026-06-11T12:20:59.368Z"
     }
   ]
 }
