@@ -72,8 +72,23 @@
 > Also: editing slide HTML doesn't need a server restart, but **hard-refresh** the browser (Ctrl+Shift+R) or it serves stale cartridge JS.
 > **⚠ Pending USER visual verification (#4):** matrix compactness + vertical headers; column hide/restore; Tab-1 side-by-side
 > vs stacked; Tab-2 lightbox gallery; carousel size on phone/tablet.
-> **Next:** continue the rebuild loop on **#5 LineScanner-Technology (`tpl-new-technology`)** — build it `pb-responsive`
-> from the start. Note #6 Osprey-Technology reuses the SAME template (`tpl-new-technology`). Roadmap below.
+> **✅ #5–#7 TECHNOLOGY — DONE (2026-06-11):** ONE cartridge **`template05-technology`** → **`slide-05-technology-v2.html`**
+> (legacy `slide-05-technology.html` restored, backs orphan `ls05-technology` — flag for final cleanup) serves all three
+> scanner slides: `lib-linescanner-tech`, `lib-osprey-tech`, `lib-cullet-tech`, populated from the legacy content + added to
+> `deck-rebuild` (slides 5–7). 3 tabs (tabs.js): How It Works / Key Advantage (carousel on top + numbered `.card` grid below) ·
+> Comparison (3-col: ✕ list | images | ✓ list, reusing the Why-Us `card-compare` + list.js). Carousels scale with the
+> viewport (`clamp(..,56vh,680px)`, tab width `clamp(940px,80vw,1400px)`); **mixed object-fit** (diagrams `contain`, comparison
+> photos `cover`). **LineScanner is complete; Osprey & CulletScanner carry their legacy content which was only partially filled**
+> (different 3rd tabs, some "please add your text" placeholders) — finish them in the builder. Parity 8/8.
+> **✨ NEW reusable carousel feature — per-image Fit/Fill toggle (`carousel.js`):** a builder-only button next to "+ Image"
+> toggles the **currently-visible image** between `contain` (▣ Fit) and `cover` (⤢ Fill); persists as inline `object-fit` in the
+> saved carousel HTML; label tracks the visible image via `refreshFitLabel()` in `updateNav`. Works on EVERY carousel. Bumped
+> `carousel.js?v=4` (takes effect on next server restart; hard-refresh loads it now).
+> **Carousel gotcha (reusable):** carousels carry inline `flex:1` that collapses to 0 in a content-flow panel — give a
+> catch-all `.<slide> .ls-carousel { flex:none !important; height:clamp(...) !important; }` so a carousel in a NEW tab (tabs.js)
+> doesn't collapse.
+> **Next:** continue the rebuild loop on **#8 Surface Types (`tpl-new-defect-gallery`)** — build it `pb-responsive` from the start.
+> Roadmap below.
 > **Pending verify (older):** publish `deck-rebuild` once and diff the frozen output (confirms `applyEditsToHtml`
 > end-to-end in publish).
 > **Gotcha for new slides:** embedded carousels carry an inline `flex:1` → under pb-responsive give them
@@ -250,8 +265,9 @@ two-column compare, tier-grouped lists, ✓/✕ markers, gallery server-injected
 4. Products Overview · `tpl-new-capability-matrix` → **✅ `template04-products`** / `slide-04-products.html` / `lib-products` /
 in `deck-rebuild` (two tabs; capability + process matrices reuse `table.js`, product carousel, Tab-2 stage tiles → gallery
 lightbox; always-vertical headers; runtime column-hide-incl-header fix; real LineScanner data in deck) · 5. LineScanner-Technology ·
-`tpl-new-technology` · 6. Osprey-Technology · `tpl-new-technology` *(same template as #5)* ·
-7. CulletScanner-Technology · `ls05-technology` · 8. Surface Types · `tpl-new-defect-gallery` ·
+6. Osprey-Technology · 7. CulletScanner-Technology → **✅ all three on `template05-technology`** / `slide-05-technology-v2.html` /
+`lib-{linescanner,osprey,cullet}-tech` / in `deck-rebuild` (carousel+cards stacked; 3-col comparison w/ images between; per-image
+Fit/Fill toggle added to carousel.js; LineScanner complete, Osprey/Cullet partial-legacy) · 8. Surface Types · `tpl-new-defect-gallery` ·
 9. Dimensions · `tpl-new-carousel-cards` · 10. Screen Printing · `tpl-new-checklist-carousel` · 11. Logo
 Check · `tpl-new-carousel-tags` · 12. Traceability · `tpl-new-tabs-carousel` · 13. Sensitivity ·
 `tpl-new-carousel-steps` · 14. Installation · `tpl-new-full-carousel` · 15. Integrations ·

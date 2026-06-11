@@ -22,6 +22,21 @@
       "librarySlideId": "lib-products"
     },
     {
+      "id": "deck-linescanner-tech",
+      "visible": true,
+      "librarySlideId": "lib-linescanner-tech"
+    },
+    {
+      "id": "deck-osprey-tech",
+      "visible": true,
+      "librarySlideId": "lib-osprey-tech"
+    },
+    {
+      "id": "deck-cullet-tech",
+      "visible": true,
+      "librarySlideId": "lib-cullet-tech"
+    },
+    {
       "id": "deck-lib-1780338645841-1780424554857",
       "visible": true,
       "librarySlideId": "lib-1780338645841"

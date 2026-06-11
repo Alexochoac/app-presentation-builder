@@ -532,5 +532,32 @@
       "legend-optional": "Optional",
       "proc-legend": "Supported on this line"
     }
+  },
+  {
+    "id": "template05-technology",
+    "name": "Technology-Validated",
+    "category": "Content",
+    "slideMode": "sequence",
+    "components": [
+      "tabs",
+      "carousel",
+      "list"
+    ],
+    "file": "features/slides/slide-05-technology-v2.html",
+    "createdAt": "2026-06-10T00:00:00.000Z",
+    "tags": [
+      "Content",
+      "Validated",
+      "Technology"
+    ],
+    "defaultEdits": {
+      "credit": "by YourBrand.com",
+      "section-label": "The Technology",
+      "headline": "How it <span class=\"blue\">works</span>",
+      "subtitle": "A short line about what makes this technology different.",
+      "tab-howitworks": "How It Works",
+      "tab-advantage": "Key Advantage",
+      "tab-compare": "Comparison"
+    }
   }
 ]

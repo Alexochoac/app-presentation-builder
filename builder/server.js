@@ -127,7 +127,7 @@ app.get('/slides/deck-preview/:id', function (req, res) {
       readonly ? '  <script>window.PB_READONLY = true;</script>' : '',
       '  <script src="/slides/components/tracker.js?v=2"></script>',
       '  <script src="/slides/components/lightbox.js?v=2"></script>',
-      '  <script src="/slides/components/carousel.js?v=3"></script>',
+      '  <script src="/slides/components/carousel.js?v=4"></script>',
       '  <script src="/slides/components/tabs.js?v=2"></script>',
       '  <script src="/slides/components/list.js?v=2"></script>',
       '  <script src="/slides/components/table.js?v=2"></script>',

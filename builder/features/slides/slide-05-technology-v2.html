@@ -1,0 +1,200 @@
+<div class="slide content template05-technology pb-responsive"
+     data-slide="template05-technology"
+     data-slide-mode="sequence">
+
+  <!-- Logo row — defaults to the product logo; deck branding overrides it. data-managed = server-injected. -->
+  <div class="slide-logo-row" data-edit="logo-row" data-managed>
+    <img src="/shared/brand/logo.svg" alt="Put A Presentation">
+  </div>
+
+  <div class="slide-layout">
+    <span class="softsolution-credit" data-edit="credit" contenteditable spellcheck="false">by YourBrand.com</span>
+
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label" contenteditable spellcheck="false">The Technology</div>
+      <h1 class="slide-title" data-edit="headline" contenteditable spellcheck="false">How it <span class="blue">works</span></h1>
+      <p class="slide-subtitle anim-in" data-edit="subtitle" contenteditable spellcheck="false">A short line about what makes this technology different.</p>
+    </header>
+
+    <div class="slide-body">
+
+      <!-- Tabs (shared tabs.js). Whole structure persists as one blob under data-edit="tabs"; inner keys
+           re-apply on top. Images are carousels (carousel.js → free + Image / zoom); compare lists use
+           list.js. Every surface composes from standard classes so theme Finish blocks restyle them. -->
+      <div class="ls-tabs template05-technology-tabs" data-edit="tabs" data-track="template05-technology:tabs">
+        <div class="ls-tab-list">
+          <button class="ls-tab active" data-panel="1" data-edit="tab-howitworks" contenteditable spellcheck="false">How It Works</button>
+          <button class="ls-tab" data-panel="2" data-edit="tab-advantage" contenteditable spellcheck="false">Key Advantage</button>
+          <button class="ls-tab" data-panel="3" data-edit="tab-compare" contenteditable spellcheck="false">Comparison</button>
+        </div>
+        <div class="ls-tab-panels">
+
+          <!-- Panel 1 — How It Works: diagram + numbered points -->
+          <div class="ls-tab-panel active" data-panel="1">
+            <div class="template05-technology-stack">
+              <div class="template05-technology-media">
+                <div class="ls-carousel" data-counter data-edit="hiw-diagram" data-track="template05-technology:howitworks" style="flex:1;min-height:0;width:100%;">
+                  <div class="ls-carousel-track" style="transform:translateX(0px);">
+                    <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;">
+                      <span style="color:var(--text-muted);font-size:13px;font-style:italic;">Add a diagram with the + Image button</span>
+                      <div class="ls-carousel-caption">Technology diagram</div>
+                    </div>
+                  </div>
+                  <div class="ls-carousel-counter"></div>
+                </div>
+              </div>
+              <div class="template05-technology-cards">
+                <div class="card card-tech anim-in"><span class="card-tech-num">1</span><div class="card-tech-text" data-edit="hiw-1" contenteditable spellcheck="false"><strong>Component one</strong> — short description of the first part.</div></div>
+                <div class="card card-tech anim-in"><span class="card-tech-num">2</span><div class="card-tech-text" data-edit="hiw-2" contenteditable spellcheck="false"><strong>Component two</strong> — short description of the second part.</div></div>
+                <div class="card card-tech anim-in"><span class="card-tech-num">3</span><div class="card-tech-text" data-edit="hiw-3" contenteditable spellcheck="false"><strong>Component three</strong> — short description of the third part.</div></div>
+                <div class="card card-tech anim-in"><span class="card-tech-num">4</span><div class="card-tech-text" data-edit="hiw-4" contenteditable spellcheck="false"><strong>Component four</strong> — short description of the fourth part.</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel 2 — Key Advantage: image + numbered benefits -->
+          <div class="ls-tab-panel" data-panel="2">
+            <div class="template05-technology-stack">
+              <div class="template05-technology-media">
+                <div class="ls-carousel" data-counter data-edit="adv-image" data-track="template05-technology:advantage" style="flex:1;min-height:0;width:100%;">
+                  <div class="ls-carousel-track" style="transform:translateX(0px);">
+                    <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;">
+                      <span style="color:var(--text-muted);font-size:13px;font-style:italic;">Add an image with the + Image button</span>
+                      <div class="ls-carousel-caption">Advantage image</div>
+                    </div>
+                  </div>
+                  <div class="ls-carousel-counter"></div>
+                </div>
+              </div>
+              <div class="template05-technology-cards">
+                <div class="card card-tech anim-in"><span class="card-tech-num">1</span><div class="card-tech-text" data-edit="adv-1" contenteditable spellcheck="false"><strong>Advantage one:</strong> what it means for the customer.</div></div>
+                <div class="card card-tech anim-in"><span class="card-tech-num">2</span><div class="card-tech-text" data-edit="adv-2" contenteditable spellcheck="false"><strong>Advantage two:</strong> what it means for the customer.</div></div>
+                <div class="card card-tech anim-in"><span class="card-tech-num">3</span><div class="card-tech-text" data-edit="adv-3" contenteditable spellcheck="false"><strong>Advantage three:</strong> what it means for the customer.</div></div>
+                <div class="card card-tech anim-in"><span class="card-tech-num">4</span><div class="card-tech-text" data-edit="adv-4" contenteditable spellcheck="false"><strong>Advantage four:</strong> what it means for the customer.</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel 3 — Comparison: two ✕/✓ columns (list.js) + comparison image tiles (carousels) -->
+          <div class="ls-tab-panel" data-panel="3">
+            <div class="template05-technology-compare">
+              <div class="card card-compare card-compare--problem anim-in">
+                <div class="card-compare-head" data-edit="cmp-bad-head" contenteditable spellcheck="false">Alternative Systems</div>
+                <ul class="card-compare-list" data-edit="cmp-bad-list" data-ls-list>
+                  <li>A limitation of the alternative approach</li>
+                  <li>Another drawback to call out</li>
+                  <li>A third weakness worth noting</li>
+                </ul>
+                <div class="compare-restore" data-builder-only data-ls-restore></div>
+                <button class="compare-add" data-builder-only data-ls-add>+ Add item</button>
+              </div>
+              <!-- Center: comparison images sit BETWEEN the two lists (matches the original) -->
+              <div class="template05-technology-shots">
+                <div class="template05-technology-shot">
+                  <div class="ls-carousel" data-counter data-no-caption data-edit="cmp-img-1" data-track="template05-technology:compare-1" style="flex:1;min-height:0;width:100%;">
+                    <div class="ls-carousel-track" style="transform:translateX(0px);">
+                      <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;">
+                        <span style="color:var(--text-muted);font-size:12px;font-style:italic;">+ Image</span>
+                      </div>
+                    </div>
+                    <div class="ls-carousel-counter"></div>
+                  </div>
+                  <div class="template05-technology-shot-label" data-edit="cmp-label-1" contenteditable spellcheck="false">Comparison one</div>
+                </div>
+                <div class="template05-technology-shot">
+                  <div class="ls-carousel" data-counter data-no-caption data-edit="cmp-img-2" data-track="template05-technology:compare-2" style="flex:1;min-height:0;width:100%;">
+                    <div class="ls-carousel-track" style="transform:translateX(0px);">
+                      <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;">
+                        <span style="color:var(--text-muted);font-size:12px;font-style:italic;">+ Image</span>
+                      </div>
+                    </div>
+                    <div class="ls-carousel-counter"></div>
+                  </div>
+                  <div class="template05-technology-shot-label" data-edit="cmp-label-2" contenteditable spellcheck="false">Comparison two</div>
+                </div>
+              </div>
+              <div class="card card-compare card-compare--benefit anim-in">
+                <div class="card-compare-head" data-edit="cmp-good-head" contenteditable spellcheck="false">[Your Product]</div>
+                <ul class="card-compare-list" data-edit="cmp-good-list" data-ls-list>
+                  <li>The matching strength of your product</li>
+                  <li>Another clear advantage</li>
+                  <li>A third benefit that wins</li>
+                </ul>
+                <div class="compare-restore" data-builder-only data-ls-restore></div>
+                <button class="compare-add" data-builder-only data-ls-add>+ Add item</button>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.ls-tab-panels -->
+      </div>
+
+    </div>
+  </div>
+
+  <style>
+    /* Layout-only scoped rules. Responsive model comes from the shared `pb-responsive` root class
+       (slide is the sole scroll container; content stacks; no inner clip; fluid chrome). Surfaces
+       compose from .card / .feature-list / .ls-carousel so theme Finish blocks restyle them. Colours
+       reference theme variables only. */
+    .template05-technology .slide-body { width:100%; align-items:center; }
+    .template05-technology-tabs { width:100%; max-width:clamp(940px,80vw,1400px); }
+
+    /* How It Works / Key Advantage: carousel on top, a grid of numbered text cards stacked below it
+       (auto-fit → 2-up when wide, 1-up when narrow). Matches the legacy carousel + card layout. */
+    .template05-technology-stack { display:flex; flex-direction:column; gap:clamp(12px,1.8vw,18px); padding-top:12px; }
+    .template05-technology-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:10px; }
+    .template05-technology .card-tech { display:flex; align-items:flex-start; gap:10px; padding:12px 14px; }
+    .template05-technology .card-tech:hover { transform:none; }
+    .card-tech-num { width:22px; height:22px; border-radius:50%; flex-shrink:0; background:rgba(var(--accent-rgb),.2); border:1px solid rgba(var(--accent-rgb),.4); color:var(--accent); font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+    .card-tech-text { font-size:clamp(12px,1.1vw,14px); color:var(--text-muted); line-height:1.45; }
+    .card-tech-text strong { color:var(--text); }
+
+    /* Carousels carry an inline flex:1 that collapses to 0 in a content-flow panel — so EVERY carousel
+       in this slide gets flex:none + a default height. This also covers a carousel the user adds inside
+       a brand-new tab (tabs.js). The media/shot rules below override the height for their own contexts. */
+    .template05-technology .ls-carousel { flex:none !important; min-height:0 !important; height:clamp(220px,46vh,540px) !important; }
+    .template05-technology .ls-carousel-slide img { flex:1 1 auto; min-height:0; width:100%; max-height:100%; object-fit:contain; }
+    .template05-technology-media .ls-carousel { height:clamp(260px,56vh,680px) !important; }
+
+    /* Comparison: three columns — list | images | list — side-by-side when wide, stacking when narrow
+       (images stay between the lists in source order either way). Reuses the .card-compare pattern
+       (✕ neutral / ✓ accent), theme-driven. */
+    .template05-technology-compare { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:clamp(14px,2vw,20px); align-items:start; width:100%; max-width:1040px; margin:0 auto; padding-top:12px; }
+    .template05-technology .card-compare { display:flex; flex-direction:column; padding:18px 20px 8px; border-top:3px solid var(--border); }
+    .template05-technology .card-compare:hover { transform:none; }
+    .template05-technology .card-compare-head { font-size:clamp(13px,1.5vw,18px); font-weight:800; letter-spacing:.01em; padding-bottom:10px; margin-bottom:10px; border-bottom:1px solid var(--border); color:var(--text-muted); }
+    .template05-technology .card-compare-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+    .template05-technology .card-compare-list li { position:relative; padding-left:24px; padding-right:40px; font-size:clamp(12px,1.1vw,14px); line-height:1.4; color:var(--text-muted); }
+    .template05-technology .card-compare-list li::before { position:absolute; left:0; top:0; font-weight:800; }
+    .template05-technology .card-compare-list li strong { color:var(--text); }
+    .template05-technology .card-compare--problem .card-compare-list li::before { content:"\2715"; color:var(--text-muted); }
+    .template05-technology .card-compare--benefit { border-top-color:var(--accent); background:rgba(var(--accent-rgb),.04); }
+    .template05-technology .card-compare--benefit .card-compare-head { color:var(--accent); }
+    .template05-technology .card-compare--benefit .card-compare-list li { color:var(--text); }
+    .template05-technology .card-compare--benefit .card-compare-list li::before { content:"\2713"; color:var(--accent); }
+
+    /* Comparison images — the center column: the two image carousels stacked vertically between the lists */
+    .template05-technology-shots { display:flex; flex-direction:column; gap:clamp(10px,1.4vw,16px); min-width:0; }
+    .template05-technology-shot { display:flex; flex-direction:column; gap:6px; min-width:0; }
+    .template05-technology-shot .ls-carousel { height:clamp(180px,32vh,400px) !important; min-height:0 !important; flex:none !important; }
+    /* Comparison shots are photos → fill the box (cover). Diagrams (panels 1-2) stay `contain`. */
+    .template05-technology-shot .ls-carousel-slide img { flex:1 1 auto; min-height:0; width:100%; height:100%; max-height:100%; object-fit:cover; }
+    .template05-technology-shot-label { font-size:clamp(10px,1vw,12px); font-weight:600; letter-spacing:.04em; color:var(--text-muted); text-align:center; }
+
+    /* Builder-only list controls never show in readonly / published output */
+    .template05-technology-readonly [data-ls-add],
+    .template05-technology-readonly [data-ls-restore] { display:none; }
+  </style>
+
+  <script>
+  (function () {
+    var slide = document.currentScript.closest('[data-slide]');
+    if (window.PB_READONLY) slide.classList.add('template05-technology-readonly');
+    /* Editable compare lists — drag-reorder / hide / add / delete via the shared list.js component. */
+    if (window.List) List.init(slide);
+    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
+  })();
+  </script>
+
+</div>

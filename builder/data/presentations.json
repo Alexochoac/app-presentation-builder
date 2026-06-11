@@ -1,6 +1,73 @@
 {
   "presentations": [
     {
+      "id": "00000032",
+      "createdAt": "2026-06-10",
+      "deckId": "deck-rebuild",
+      "presentationName": "33",
+      "customerName": "33",
+      "contactName": "33",
+      "contactTitle": "",
+      "customerLogoSrc": "/slides/uploads/Belt Conveyor Diagram.jpg",
+      "slideCount": 8,
+      "slides": [
+        {
+          "id": "deck-cover",
+          "librarySlideId": "lib-cover",
+          "name": "Cover-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-why-us-1780851570888",
+          "librarySlideId": "lib-why-us",
+          "name": "Why Us-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-company",
+          "librarySlideId": "lib-company-v2",
+          "name": "Company Intro-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-products",
+          "librarySlideId": "lib-products",
+          "name": "Products Overview-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-linescanner-tech",
+          "librarySlideId": "lib-linescanner-tech",
+          "name": "LineScanner-Technology-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-osprey-tech",
+          "librarySlideId": "lib-osprey-tech",
+          "name": "Osprey-Technology-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-cullet-tech",
+          "librarySlideId": "lib-cullet-tech",
+          "name": "CulletScanner-Technology-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1780338645841-1780424554857",
+          "librarySlideId": "lib-1780338645841",
+          "name": "Call to Action-Validated Style",
+          "visible": true
+        }
+      ],
+      "defaultLanguage": "en",
+      "languages": [
+        "en",
+        "es"
+      ],
+      "publishedAt": "2026-06-10T18:14:49.608Z"
+    },
+    {
       "id": "00000031",
       "createdAt": "2026-06-10",
       "deckId": "deck-rebuild",

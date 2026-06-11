@@ -182,6 +182,7 @@ window.Carousel = (function () {
     el.appendChild(prevBtn);
     el.appendChild(nextBtn);
 
+    var refreshFitLabel = function () {};   // reassigned below when the Fit toggle is built (builder only)
     if (!window.PB_READONLY) {
       var addBtn = document.createElement('button');
       addBtn.className = 'ls-carousel-add';
@@ -235,8 +236,58 @@ window.Carousel = (function () {
         }
       });
 
+      // ── Fit / Fill toggle — PER IMAGE: acts on the currently visible slide's image (its own inline
+      //    object-fit, which persists in the saved carousel HTML). Label reflects the visible image and
+      //    refreshes as you navigate (via refreshFitLabel(), called from updateNav). ──
+      var fitBtn = document.createElement('button');
+      fitBtn.className = 'ls-carousel-add';
+      fitBtn.setAttribute('data-builder-only', '');
+      fitBtn.style.cssText = 'right:96px;bottom:8px;';
+      function fitImgs() {
+        var slides = getSlides();
+        var slide = slides[idx] || slides[0];
+        return slide ? Array.from(slide.querySelectorAll('img:not([data-builder-only])')) : [];
+      }
+      function currentFit() {
+        var img = fitImgs()[0];
+        if (img && img.style.objectFit) return img.style.objectFit;   // explicit per-image choice
+        try { if (img) return getComputedStyle(img).objectFit || 'contain'; } catch (e) {}  // else CSS default
+        return 'contain';
+      }
+      function updateFitLabel() {
+        var cover = currentFit() === 'cover';
+        fitBtn.textContent = cover ? '⤢ Fill' : '▣ Fit';
+        fitBtn.title = cover
+          ? 'This image fills the frame (edges may crop) — click to fit the whole image'
+          : 'This image fits inside the frame — click to fill the frame';
+      }
+      refreshFitLabel = updateFitLabel;
+      updateFitLabel();
+      fitBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var next = currentFit() === 'cover' ? 'contain' : 'cover';
+        fitImgs().forEach(function (img) { img.style.objectFit = next; });
+        updateFitLabel();
+        if (el.hasAttribute('data-edit')) {
+          saveCarousel();
+        } else {
+          // carousel lives inside another editable (e.g. a tabs blob) — save that so data-fit embeds
+          var parent = el.parentElement && el.parentElement.closest('[data-edit]:not(.slide)');
+          if (parent) {
+            var clone = parent.cloneNode(true);
+            clone.querySelectorAll('[data-builder-only]').forEach(function (n) { n.remove(); });
+            clone.querySelectorAll('[data-zoom-init]').forEach(function (n) { n.removeAttribute('data-zoom-init'); });
+            clone.querySelectorAll('.ls-carousel-counter').forEach(function (n) { n.remove(); });
+            document.dispatchEvent(new CustomEvent('slide-carousel-save', {
+              detail: { editKey: parent.getAttribute('data-edit'), html: clone.innerHTML }
+            }));
+          }
+        }
+      });
+
       el.appendChild(addBtn);
       el.appendChild(autoBtn);
+      el.appendChild(fitBtn);
     }
 
     // ── Helpers ─────────────────────────────────────────────────────────────
@@ -260,6 +311,7 @@ window.Carousel = (function () {
       if (counterEl) {
         counterEl.textContent = slides.length > 1 ? (idx + 1) + ' / ' + slides.length : '';
       }
+      refreshFitLabel();   // keep the Fit/Fill label in sync with the now-visible image
     }
 
     function resetTimer() {
