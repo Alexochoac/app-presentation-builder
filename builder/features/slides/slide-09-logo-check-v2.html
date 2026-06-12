@@ -60,11 +60,11 @@
 
     /* Image carousel (top) — flex:none + clamp height beats the inline flex that would collapse it to 0
        in a content-flow panel; scales with the viewport on big screens. */
-    .template09-logo-check .template09-logo-check-car { flex:none !important; min-height:0 !important; height:clamp(260px,52vh,620px) !important; width:100%; max-width:1000px; margin:0 auto; }
+    .template09-logo-check .template09-logo-check-car { flex:none !important; min-height:0 !important; height:var(--pb-media-h) !important; width:100%; max-width:var(--pb-content-max); margin:0 auto; }
     .template09-logo-check .ls-carousel-slide img { object-fit:contain; }
 
     /* Tag buttons (bottom) — auto-wrapping row of text chips; each is a themeable .card. */
-    .template09-logo-check-selector { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; width:100%; max-width:1000px; margin:16px auto 0; }
+    .template09-logo-check-selector { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; width:100%; max-width:var(--pb-content-max); margin:16px auto 0; }
     .template09-logo-check .lc-tag-btn { position:relative; display:inline-flex; align-items:center; gap:6px; padding:8px 16px; cursor:pointer; background:var(--card-bg); border:1px solid var(--card-border); border-radius:var(--card-radius); transition:border-color .2s, background .2s; }
     .template09-logo-check .lc-tag-btn:hover { border-color:rgba(var(--accent-rgb),.4); }
     .template09-logo-check .lc-tag-btn.active { border-color:var(--accent); background:rgba(var(--accent-rgb),.08); }
@@ -82,6 +82,15 @@
     .template09-logo-check-readonly [data-builder-only],
     .template09-logo-check-readonly .lc-tag-del,
     .template09-logo-check-readonly .lc-add-btn { display:none !important; }
+
+    /* ≥1200px (laptops/monitors): fit one screen, no scroll — carousel fills the height above the tag buttons. */
+    @media (min-width:1200px) {
+      .slide.content.template09-logo-check.pb-responsive { overflow:hidden; }
+      .template09-logo-check .slide-layout { height:100%; justify-content:flex-start; }
+      .template09-logo-check .slide-body { flex:1 1 auto; min-height:0; }
+      .template09-logo-check-selector { flex:none; }
+      .template09-logo-check .template09-logo-check-car { flex:1 1 auto !important; height:auto !important; min-height:0 !important; }
+    }
   </style>
 
   <script>

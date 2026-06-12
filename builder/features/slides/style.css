@@ -6,6 +6,12 @@
 
 /* ── Brand Variables ── */
 :root {
+  /* Shared content width for pb-responsive slides — one fluid cap so every rebuilt slide
+     expands to the SAME width on large screens (rulebook §3 shared skeleton). */
+  --pb-content-max:  clamp(940px,80vw,1400px);
+  /* Shared height for the PRIMARY image carousel of a pb-responsive slide — so slides fill
+     to the same vertical extent on tall screens. Secondary/special heights stay per-slide. */
+  --pb-media-h:      clamp(280px,56vh,720px);
   --accent:          #F5A623;
   --accent-mid:      #E8890C;
   --accent-light:    var(--accent);

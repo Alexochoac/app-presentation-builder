@@ -151,10 +151,10 @@
        sole scroll container. Content-flow — panels/cards/grids size to their content; nothing
        inner-clips. Rules here are Company-positional; surfaces compose from .card/.kpi-card. */
     .template02-company .slide-body { width:100%; align-items:center; }
-    .template02-company-tabs { width:100%; max-width:860px; }
+    .template02-company-tabs { width:100%; max-width:var(--pb-content-max); }
     /* flex:none !important overrides the carousel's inline flex:1 (flex-basis:0) — in a content-flow
        (auto-height) panel that would collapse the carousel to 0 and hide the "Add images" state. */
-    .template02-company .ls-carousel { height:clamp(240px,42vh,380px) !important; min-height:0 !important; flex:none !important; }
+    .template02-company .ls-carousel { height:var(--pb-media-h) !important; min-height:0 !important; flex:none !important; }
 
     /* Pillars — .card surface + positional modifier (accent bar, giant index number) */
     .template02-company-pillars { display:flex; flex-direction:column; gap:8px; padding:12px 0 8px; }
@@ -199,9 +199,29 @@
     .card-iqc-products li::before { content:"› "; color:var(--accent); font-weight:700; }
 
     /* Stats — auto-fit: 4-up when wide, fewer when narrow */
-    .template02-company-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; width:100%; max-width:860px; padding:10px 0 16px; }
+    .template02-company-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; width:100%; max-width:var(--pb-content-max); padding:10px 0 16px; }
     .template02-company-stats .kpi-card { padding:14px 12px; }
     .template02-company-stats .kpi-value { font-size:clamp(18px,2.2vw,32px); }
+
+    /* ≥1200px (laptops/monitors): lock the slide to one screen so switching tabs never changes the
+       height (NO JUMP). The tabs fill the space above the persistent stats row; every panel is the
+       same height. Image panels (carousel, map) fill it; shorter text/card panels center within it.
+       Overflow stays auto so an unusually tall panel scrolls instead of clipping. Tablets/phones scroll. */
+    @media (min-width:1200px) {
+      .template02-company .slide-layout { height:100%; justify-content:flex-start; }
+      .template02-company .slide-body { flex:1 1 auto; min-height:0; }
+      .template02-company .template02-company-tabs { flex:1 1 auto; min-height:0; }
+      .template02-company .template02-company-stats { flex:none; }
+      .template02-company .ls-tab-panels { flex:1 1 auto; min-height:0; height:auto; }
+      .template02-company .ls-tab-panel.active { height:100%; min-height:0; justify-content:safe center; }
+      .template02-company .ls-tab-panel.active .ls-carousel { height:100% !important; }
+      .template02-company .ls-tab-panel.active .template02-company-map { height:100%; aspect-ratio:auto; margin-top:0; }
+      /* Tab 1 (pillars): cards stretch to fill the panel — substantial, not floating. */
+      .template02-company .ls-tab-panel.active .template02-company-pillars { height:100%; }
+      .template02-company .ls-tab-panel.active .card-pillar { flex:1 1 0; }
+      /* Tab 2 (features): list fills the panel, items distributed with even breathing room. */
+      .template02-company .ls-tab-panel.active .feature-list { height:100%; justify-content:space-evenly; }
+    }
   </style>
 
   <script>

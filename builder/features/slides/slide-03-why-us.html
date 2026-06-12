@@ -71,7 +71,7 @@
 
     /* Columns sit side-by-side only when each has ≥~320px; otherwise they stack. Width-driven
        (auto-fit), not a device breakpoint — adapts to real available space. */
-    .template03-why-us-compare { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:clamp(14px,2vw,20px); width:100%; max-width:920px; margin:0 auto; }
+    .template03-why-us-compare { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:clamp(14px,2vw,20px); width:100%; max-width:var(--pb-content-max); margin:0 auto; }
 
     .template03-why-us .card-compare { display:flex; flex-direction:column; padding:20px 22px 8px; border-top:3px solid var(--border); }
     .template03-why-us .card-compare:hover { transform:none; }

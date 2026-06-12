@@ -138,7 +138,7 @@
        compose from .card / .feature-list / .ls-carousel so theme Finish blocks restyle them. Colours
        reference theme variables only. */
     .template05-technology .slide-body { width:100%; align-items:center; }
-    .template05-technology-tabs { width:100%; max-width:clamp(940px,80vw,1400px); }
+    .template05-technology-tabs { width:100%; max-width:var(--pb-content-max); }
 
     /* How It Works / Key Advantage: carousel on top, a grid of numbered text cards stacked below it
        (auto-fit → 2-up when wide, 1-up when narrow). Matches the legacy carousel + card layout. */
@@ -155,12 +155,12 @@
        a brand-new tab (tabs.js). The media/shot rules below override the height for their own contexts. */
     .template05-technology .ls-carousel { flex:none !important; min-height:0 !important; height:clamp(220px,46vh,540px) !important; }
     .template05-technology .ls-carousel-slide img { flex:1 1 auto; min-height:0; width:100%; max-height:100%; object-fit:contain; }
-    .template05-technology-media .ls-carousel { height:clamp(260px,56vh,680px) !important; }
+    .template05-technology-media .ls-carousel { height:var(--pb-media-h) !important; }
 
     /* Comparison: three columns — list | images | list — side-by-side when wide, stacking when narrow
        (images stay between the lists in source order either way). Reuses the .card-compare pattern
        (✕ neutral / ✓ accent), theme-driven. */
-    .template05-technology-compare { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:clamp(14px,2vw,20px); align-items:start; width:100%; max-width:1040px; margin:0 auto; padding-top:12px; }
+    .template05-technology-compare { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:clamp(14px,2vw,20px); align-items:start; width:100%; max-width:var(--pb-content-max); margin:0 auto; padding-top:12px; }
     .template05-technology .card-compare { display:flex; flex-direction:column; padding:18px 20px 8px; border-top:3px solid var(--border); }
     .template05-technology .card-compare:hover { transform:none; }
     .template05-technology .card-compare-head { font-size:clamp(13px,1.5vw,18px); font-weight:800; letter-spacing:.01em; padding-bottom:10px; margin-bottom:10px; border-bottom:1px solid var(--border); color:var(--text-muted); }
@@ -185,6 +185,21 @@
     /* Builder-only list controls never show in readonly / published output */
     .template05-technology-readonly [data-ls-add],
     .template05-technology-readonly [data-ls-restore] { display:none; }
+
+    /* ≥1200px (laptops/monitors): the active tab panel fills one screen. Carousel panels (How It Works /
+       Key Advantage) fit with NO scroll — the carousel fills the height left after the cards. Overflow
+       stays auto, so a long Comparison panel can still scroll instead of clipping. Tablets/phones scroll. */
+    @media (min-width:1200px) {
+      .template05-technology .slide-layout { height:100%; justify-content:flex-start; }
+      .template05-technology .slide-body { flex:1 1 auto; min-height:0; }
+      .template05-technology .ls-tabs { flex:1 1 auto; min-height:0; }
+      .template05-technology .ls-tab-panels { flex:1 1 auto; min-height:0; height:auto; }
+      .template05-technology .ls-tab-panel.active { height:100%; min-height:0; }
+      .template05-technology .template05-technology-stack { flex:1 1 auto; min-height:0; }
+      .template05-technology .template05-technology-cards { flex:none; }
+      .template05-technology .template05-technology-media { flex:1 1 auto; min-height:0; }
+      .template05-technology .template05-technology-media .ls-carousel { height:100% !important; min-height:0 !important; flex:none !important; }
+    }
   </style>
 
   <script>

@@ -197,7 +197,7 @@
        Rules here are positional; colours reference theme variables so a Finish block converts them.
        The matrix fits any width by wrapping its label column + scaling font — no inner scroll. */
     .template04-products .slide-body { width:100%; align-items:center; }
-    .template04-products-tabs { width:100%; max-width:980px; }
+    .template04-products-tabs { width:100%; max-width:var(--pb-content-max); }
 
     /* Panel grids — stacked on narrow screens; table beside carousel / stage cards once the screen
        allows it (≥769px, below). The wide-screen template gives the table the larger share, and
@@ -234,7 +234,7 @@
     /* Carousel — flex:none !important beats the component's inline flex:1 (flex-basis:0), which would
        collapse the carousel to 0 height in a content-flow panel. Mobile-first: tall so the stacked
        product image is as big as the screen allows; trimmed when side-by-side at min-width:769px. */
-    .template04-products .ls-carousel { height:clamp(300px,62vh,560px) !important; min-height:0 !important; flex:none !important; }
+    .template04-products .ls-carousel { height:var(--pb-media-h) !important; min-height:0 !important; flex:none !important; }
     .template04-products .ls-carousel-slide { gap:6px; }
     .template04-products .ls-carousel-slide img { flex:1 1 auto; min-height:0; width:100%; max-height:100%; object-fit:contain; }
     .template04-products-car-label { padding:8px 12px; font-size:clamp(10px,1vw,12px); font-weight:600; color:var(--text-muted); text-align:center; letter-spacing:.04em; }
@@ -265,6 +265,19 @@
       /* Side-by-side: matrix takes the wider share, carousel/stage cards sit beside it */
       .template04-products-matrix-grid { grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); }
       .template04-products-proc-grid   { grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); }
+    }
+
+    /* ≥1200px (laptops/monitors): lock the slide to one screen so switching the two matrix tabs never
+       jumps. Each panel's matrix|media row fills the height; the carousel fills its cell, the matrix
+       sits at the top of its cell. Overflow stays auto so a tall matrix scrolls instead of clipping. */
+    @media (min-width:1200px) {
+      .template04-products .slide-layout { height:100%; justify-content:flex-start; }
+      .template04-products .slide-body { flex:1 1 auto; min-height:0; }
+      .template04-products .template04-products-tabs { flex:1 1 auto; min-height:0; }
+      .template04-products .ls-tab-panels { flex:1 1 auto; min-height:0; height:auto; }
+      .template04-products .ls-tab-panel.active { height:100%; min-height:0; }
+      .template04-products .ls-tab-panel.active .template04-products-matrix-grid { height:100%; min-height:0; align-items:stretch; }
+      .template04-products .ls-tab-panel.active .ls-carousel { height:100% !important; min-height:0 !important; }
     }
   </style>
 
