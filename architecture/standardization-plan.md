@@ -1,6 +1,6 @@
 # Pipeline Standardization — Decisions & Plan
 
-> ## ▶ RESUME HERE (last worked 2026-06-11)
+> ## ▶ RESUME HERE (last worked 2026-06-12)
 > **Branch:** `master` (the standardization work was merged; we now commit directly to `master`). User
 > pushes from PowerShell (HTTPS, no creds in WSL). As of this handoff: **5 commits ahead of `origin`**.
 > **Method (locked):** RECREATE alongside, in deck order — new template → new `lib-` slide → new
@@ -103,7 +103,39 @@
 > (`deck-rebuild` translations + `slide-library` deckEdits). Committed `765bd99`. **Lesson for any reused template:**
 > features keyed off `data-slide` collide across instances in the builder-preview path — keep per-instance state keyed
 > to the element, not the (shared) template id.
-> **Next:** continue the rebuild loop on **#9 Dimensions (`tpl-new-carousel-cards`)** — build it `pb-responsive` from the start.
+> **✅ #9–#15 — DONE (2026-06-12). REBUILD LOOP COMPLETE — 16/16.** Every roadmap slide is now a clean
+> `pb-responsive` cartridge in `deck-rebuild`:
+> - **#9 Dimensions** → `template07-dimensions` (carousel + 2 checklist cards, list.js).
+> - **#10 Screen Printing** → `template08-screenprinting` (carousel + checklist, side-by-side). Gained a
+>   **✓ / numbered marker toggle** (builder button; persisted in an `sp-marker` store via `slide-carousel-save`).
+> - **#11 Logo Check** → `template09-logo-check` (interactive tag selector — text/emoji buttons on the bottom,
+>   max 10, click a tag → its image; persists via `slide-carousel-save`).
+> - **#12 Traceability** → **reuses `template05-technology`** (2-tab Archive/Console `tabs` blob, comparison tab
+>   dropped — NO new template). *Standardization win: collapsed a near-duplicate `template10-traceability` I'd first
+>   built onto the existing one. Rule of thumb now: reuse an existing template when the layout matches; present
+>   reuse-vs-new explicitly.*
+> - **#13 Sensitivity** → **reuses `template08-screenprinting`** with `sp-marker:number` (numbered steps).
+> - **#14 Installation** → `template10-installation` (full-width carousel).
+> - **#15 Integrations** → `template11-integrations` (config-driven partner-logo grid: add/delete/edit + logo
+>   upload + hover logo zoom).
+> Template catalog now 01–11 + 14-cta (template10-traceability was built then removed; 10 reused for Installation).
+> **🐞 Save-reliability fix (Issue-H, 2026-06-12):** the Builder Preview saves on `input` + `slide-carousel-save`
+> but NOT `focusout` — so component blobs MUST persist via `slide-carousel-save`, never a synthetic `focusout`
+> (the surface config used focusout → deletes/icon-changes were silently lost in the builder; fixed). Findings +
+> remaining suspects (language guard, merge-only `/edits` endpoint) recorded in the Issue-H task.
+> **🐞 Publish fix (2026-06-12):** the publish asset resolver (`imgRoots`, server.js) lacked a `/shared/brand/`
+> mapping, so the rulebook §8/§9 brand-neutral logo (`/shared/brand/logo.svg`) was left unresolved in published
+> output — added.
+> **✅ FIRST SHARED-SKELETON PIECE — big-screen sizing standardization (2026-06-12).** style.css `:root` now defines
+> **`--pb-content-max: clamp(940px,80vw,1400px)`** (uniform content width) and **`--pb-media-h: clamp(280px,56vh,720px)`**
+> (uniform primary-carousel height); every rebuilt template references them, so the whole deck sizes the same on large
+> screens — tune from two lines. Plus a **≥1200px "fill" model** (laptops/monitors): the slide locks to one viewport
+> and the carousel fills the height left after the header/cards → **no scroll**; tab slides (Technology, Company,
+> Products) keep a **constant height so tabs don't jump**. Tablets/phones keep the scroll model. This is the concrete
+> down-payment on the shared skeleton (§3) — extend the same var/utility approach to spacing, card sizes, etc.
+> **Next:** the rebuild loop is done. Two follow-ups remain: **(a) Step H cleanup** — one pass deleting the old
+> templates / `default` deck / welded-in JS twins now that `deck-rebuild` is complete; **(b) extract Finish blocks**
+> (§ Next steps #5) so styles fully convert. Plus the open verifications and Issue-H deeper fix.
 > Roadmap below.
 > **Pending verify (older):** publish `deck-rebuild` once and diff the frozen output (confirms `applyEditsToHtml`
 > end-to-end in publish).
@@ -286,10 +318,14 @@ lightbox; always-vertical headers; runtime column-hide-incl-header fix; real Lin
 Fit/Fill toggle added to carousel.js; LineScanner complete, Osprey/Cullet partial-legacy) · 8. Surface Types ·
 `tpl-new-defect-gallery` → **✅ `template06-surface`** / `slide-06-surface-v2.html` / `lib-surface-v2` / in `deck-rebuild`
 (carousel+cards, `pb-responsive`, gallery server-injected) ·
-9. Dimensions · `tpl-new-carousel-cards` · 10. Screen Printing · `tpl-new-checklist-carousel` · 11. Logo
-Check · `tpl-new-carousel-tags` · 12. Traceability · `tpl-new-tabs-carousel` · 13. Sensitivity ·
-`tpl-new-carousel-steps` · 14. Installation · `tpl-new-full-carousel` · 15. Integrations ·
-`tpl-new-cards-grid` · 16. Call to Action · `template14-cta` ✅ **done (pilot)**.
+9. Dimensions · `tpl-new-carousel-cards` → **✅ `template07-dimensions`** (carousel + 2 checklist cards) ·
+10. Screen Printing · `tpl-new-checklist-carousel` → **✅ `template08-screenprinting`** (carousel + checklist; ✓/numbered
+marker toggle) · 11. Logo Check · `tpl-new-carousel-tags` → **✅ `template09-logo-check`** (interactive tag selector,
+buttons bottom, max 10) · 12. Traceability · `tpl-new-tabs-carousel` → **✅ reuses `template05-technology`** (2-tab blob) ·
+13. Sensitivity · `tpl-new-carousel-steps` → **✅ reuses `template08-screenprinting`** (`sp-marker:number`) ·
+14. Installation · `tpl-new-full-carousel` → **✅ `template10-installation`** (full carousel) · 15. Integrations ·
+`tpl-new-cards-grid` → **✅ `template11-integrations`** (config-driven partner-logo grid) · 16. Call to Action ·
+`template14-cta` ✅ **done (pilot)**.  **▶ ALL 16 REBUILT. Next: Step H cleanup + Finish blocks.**
 
 ## Gallery: make it a universal per-slide feature (decided 2026-06-01)
 
