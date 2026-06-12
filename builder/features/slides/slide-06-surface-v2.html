@@ -143,8 +143,14 @@
       catch (e) { return clone(DEFAULT_CONFIG); }
     }
     function persistConfig() {
+      // Persist the config blob through the SAME channel carousels/galleries use. The Builder
+      // Preview (the source-of-truth editing surface) saves on 'input' and 'slide-carousel-save'
+      // but NOT 'focusout' — so a programmatic change with no typing (delete a card, change an
+      // icon) was silently lost there. slide-carousel-save is handled by both the builder and the
+      // deck/publish render scripts. html = the serialized blob (same content the old focusout
+      // path saved), so the persisted value + round-trip are unchanged.
       configEl.textContent = JSON.stringify(config);
-      configEl.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+      document.dispatchEvent(new CustomEvent('slide-carousel-save', { detail: { editKey: 's6-config', html: configEl.innerHTML } }));
     }
     function findCar(carKey) { return root.querySelector('.s6-defect-car[data-edit="' + carKey + '"]'); }
 
