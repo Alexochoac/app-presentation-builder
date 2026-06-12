@@ -1,15 +1,15 @@
 {
   "presentations": [
     {
-      "id": "00000036",
-      "createdAt": "2026-06-11",
+      "id": "00000005",
+      "createdAt": "2026-06-12",
       "deckId": "deck-rebuild",
-      "presentationName": "PN101",
-      "customerName": "C101",
-      "contactName": "CN101",
+      "presentationName": "PN212",
+      "customerName": "C212",
+      "contactName": "CN212",
       "contactTitle": "",
-      "customerLogoSrc": "/slides/uploads/Cullet Scanner Different Norms.jpg",
-      "slideCount": 9,
+      "customerLogoSrc": "/slides/uploads/Database Archive System 2.jpg",
+      "slideCount": 12,
       "slides": [
         {
           "id": "deck-cover",
@@ -56,7 +56,25 @@
         {
           "id": "deck-surface",
           "librarySlideId": "lib-surface-v2",
-          "name": "Surface Types",
+          "name": "Surface Types-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-dimensions",
+          "librarySlideId": "lib-dimensions-v2",
+          "name": "Dimensions",
+          "visible": true
+        },
+        {
+          "id": "deck-screenprinting",
+          "librarySlideId": "lib-screenprint-v2",
+          "name": "Screen Printing",
+          "visible": true
+        },
+        {
+          "id": "deck-logo-check",
+          "librarySlideId": "lib-logo-check-v2",
+          "name": "Logo Check",
           "visible": true
         },
         {
@@ -71,165 +89,18 @@
         "en",
         "es"
       ],
-      "publishedAt": "2026-06-11T12:21:00.793Z"
+      "publishedAt": "2026-06-12T12:13:18.282Z"
     },
     {
-      "id": "00000035",
-      "createdAt": "2026-06-11",
+      "id": "00000004",
+      "createdAt": "2026-06-12",
       "deckId": "deck-rebuild",
-      "presentationName": "PN100",
-      "customerName": "C100",
-      "contactName": "CN100",
-      "contactTitle": "",
-      "customerLogoSrc": "/slides/uploads/Comparison on image taken by Camera Above and LineScanner below of a drillhole .jpg",
-      "slideCount": 9,
-      "slides": [
-        {
-          "id": "deck-cover",
-          "librarySlideId": "lib-cover",
-          "name": "Cover-Validated",
-          "visible": true
-        },
-        {
-          "id": "deck-lib-why-us-1780851570888",
-          "librarySlideId": "lib-why-us",
-          "name": "Why Us-Validated",
-          "visible": true
-        },
-        {
-          "id": "deck-company",
-          "librarySlideId": "lib-company-v2",
-          "name": "Company Intro-Validated",
-          "visible": true
-        },
-        {
-          "id": "deck-products",
-          "librarySlideId": "lib-products",
-          "name": "Products Overview-Validated",
-          "visible": true
-        },
-        {
-          "id": "deck-linescanner-tech",
-          "librarySlideId": "lib-linescanner-tech",
-          "name": "LineScanner-Technology-Validated",
-          "visible": true
-        },
-        {
-          "id": "deck-osprey-tech",
-          "librarySlideId": "lib-osprey-tech",
-          "name": "Osprey-Technology-Validated",
-          "visible": true
-        },
-        {
-          "id": "deck-cullet-tech",
-          "librarySlideId": "lib-cullet-tech",
-          "name": "CulletScanner-Technology-Validated",
-          "visible": true
-        },
-        {
-          "id": "deck-surface",
-          "librarySlideId": "lib-surface-v2",
-          "name": "Surface Types",
-          "visible": true
-        },
-        {
-          "id": "deck-lib-1780338645841-1780424554857",
-          "librarySlideId": "lib-1780338645841",
-          "name": "Call to Action-Validated Style",
-          "visible": true
-        }
-      ],
-      "defaultLanguage": "en",
-      "languages": [
-        "en",
-        "es"
-      ],
-      "archivedAt": "2026-06-11T12:20:45.364Z"
-    },
-    {
-      "id": "00000034",
-      "createdAt": "2026-06-11",
-      "deckId": "deck-rebuild",
-      "presentationName": "PN99",
-      "customerName": "C99",
-      "contactName": "CN99",
-      "contactTitle": "",
-      "customerLogoSrc": "/slides/uploads/Comparison on image taken by Camera Above and LineScanner below of a Ig unit .jpg",
-      "slideCount": 9,
-      "slides": [
-        {
-          "id": "deck-cover",
-          "librarySlideId": "lib-cover",
-          "name": "Cover-Validated",
-          "visible": true
-        },
-        {
-          "id": "deck-lib-why-us-1780851570888",
-          "librarySlideId": "lib-why-us",
-          "name": "Why Us-Validated",
-          "visible": true
-        },
-        {
-          "id": "deck-company",
-          "librarySlideId": "lib-company-v2",
-          "name": "Company Intro-Validated",
-          "visible": true
-        },
-        {
-          "id": "deck-products",
-          "librarySlideId": "lib-products",
-          "name": "Products Overview-Validated",
-          "visible": true
-        },
-        {
-          "id": "deck-linescanner-tech",
-          "librarySlideId": "lib-linescanner-tech",
-          "name": "LineScanner-Technology-Validated",
-          "visible": true
-        },
-        {
-          "id": "deck-osprey-tech",
-          "librarySlideId": "lib-osprey-tech",
-          "name": "Osprey-Technology-Validated",
-          "visible": true
-        },
-        {
-          "id": "deck-cullet-tech",
-          "librarySlideId": "lib-cullet-tech",
-          "name": "CulletScanner-Technology-Validated",
-          "visible": true
-        },
-        {
-          "id": "deck-surface",
-          "librarySlideId": "lib-surface-v2",
-          "name": "Surface Types",
-          "visible": true
-        },
-        {
-          "id": "deck-lib-1780338645841-1780424554857",
-          "librarySlideId": "lib-1780338645841",
-          "name": "Call to Action-Validated Style",
-          "visible": true
-        }
-      ],
-      "defaultLanguage": "en",
-      "languages": [
-        "en",
-        "es"
-      ],
-      "publishedAt": "2026-06-11T05:57:35.607Z",
-      "archivedAt": "2026-06-11T12:20:39.411Z"
-    },
-    {
-      "id": "00000033",
-      "createdAt": "2026-06-11",
-      "deckId": "deck-rebuild",
-      "presentationName": "88",
-      "customerName": "88",
-      "contactName": "88",
+      "presentationName": "Screen Printing",
+      "customerName": "C10147",
+      "contactName": "Alex Ochoa",
       "contactTitle": "",
       "customerLogoSrc": "/slides/uploads/CostOfQualityDefects.png",
-      "slideCount": 8,
+      "slideCount": 11,
       "slides": [
         {
           "id": "deck-cover",
@@ -274,6 +145,24 @@
           "visible": true
         },
         {
+          "id": "deck-surface",
+          "librarySlideId": "lib-surface-v2",
+          "name": "Surface Types-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-dimensions",
+          "librarySlideId": "lib-dimensions-v2",
+          "name": "Dimensions",
+          "visible": true
+        },
+        {
+          "id": "deck-screenprinting",
+          "librarySlideId": "lib-screenprint-v2",
+          "name": "Screen Printing",
+          "visible": true
+        },
+        {
           "id": "deck-lib-1780338645841-1780424554857",
           "librarySlideId": "lib-1780338645841",
           "name": "Call to Action-Validated Style",
@@ -285,19 +174,18 @@
         "en",
         "es"
       ],
-      "publishedAt": "2026-06-11T05:42:03.437Z",
-      "archivedAt": "2026-06-11T12:20:42.844Z"
+      "publishedAt": "2026-06-12T08:48:24.241Z"
     },
     {
-      "id": "00000032",
-      "createdAt": "2026-06-10",
+      "id": "00000003",
+      "createdAt": "2026-06-12",
       "deckId": "deck-rebuild",
-      "presentationName": "33",
-      "customerName": "33",
-      "contactName": "33",
+      "presentationName": "PN926",
+      "customerName": "C926",
+      "contactName": "CN926",
       "contactTitle": "",
-      "customerLogoSrc": "/slides/uploads/Belt Conveyor Diagram.jpg",
-      "slideCount": 8,
+      "customerLogoSrc": "/slides/uploads/Defect Icons from top to buttom Scratches-Inclusions-dirt-dust-water-fingerprints-ignore-edge defects-dirt on fram and bars-undefined.png",
+      "slideCount": 10,
       "slides": [
         {
           "id": "deck-cover",
@@ -342,6 +230,18 @@
           "visible": true
         },
         {
+          "id": "deck-surface",
+          "librarySlideId": "lib-surface-v2",
+          "name": "Surface Types-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-dimensions",
+          "librarySlideId": "lib-dimensions-v2",
+          "name": "Dimensions",
+          "visible": true
+        },
+        {
           "id": "deck-lib-1780338645841-1780424554857",
           "librarySlideId": "lib-1780338645841",
           "name": "Call to Action-Validated Style",
@@ -353,92 +253,184 @@
         "en",
         "es"
       ],
-      "publishedAt": "2026-06-10T18:14:49.608Z",
-      "archivedAt": "2026-06-11T12:20:53.226Z"
+      "publishedAt": "2026-06-12T07:27:16.678Z"
     },
     {
-      "id": "00000031",
-      "createdAt": "2026-06-10",
-      "deckId": "deck-rebuild",
-      "presentationName": "Test Presentation",
-      "customerName": "Test",
-      "contactName": "Test Smith",
+      "id": "00000002",
+      "createdAt": "2026-06-11",
+      "deckId": "default",
+      "presentationName": "Original",
+      "customerName": "Original",
+      "contactName": "Jane Smith",
       "contactTitle": "",
-      "customerLogoSrc": "/slides/uploads/CostOfQualityDefects.png",
-      "slideCount": 5,
+      "customerLogoSrc": "/slides/uploads/LOGO_Softsolution_Black.jpg",
+      "slideCount": 16,
       "slides": [
         {
-          "id": "deck-cover",
-          "librarySlideId": "lib-cover",
-          "name": "Cover",
+          "id": "deck-lib-1780488418898-1780488482284",
+          "librarySlideId": "lib-1780488418898",
+          "name": "Cover (Copy)",
           "visible": true
         },
         {
-          "id": "deck-lib-why-us-1780851570888",
-          "librarySlideId": "lib-why-us",
-          "name": "Why Us",
-          "visible": true
-        },
-        {
-          "id": "deck-company",
-          "librarySlideId": "lib-company-v2",
+          "id": "deck-lib-company-1778837870406",
+          "librarySlideId": "lib-company",
           "name": "Company Intro",
           "visible": true
         },
         {
-          "id": "deck-products",
-          "librarySlideId": "lib-products",
+          "id": "deck-comparison",
+          "librarySlideId": "lib-comparison",
+          "name": "Why Us",
+          "visible": true
+        },
+        {
+          "id": "deck-capability",
+          "librarySlideId": "lib-capability",
           "name": "Products Overview",
           "visible": true
         },
         {
-          "id": "deck-lib-1780338645841-1780424554857",
-          "librarySlideId": "lib-1780338645841",
-          "name": "Call to Action-Validated Style",
+          "id": "deck-technology",
+          "librarySlideId": "lib-technology",
+          "name": "LineScanner-Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1777096783950-1777096961176",
+          "librarySlideId": "lib-1777096783950",
+          "name": "Osprey-Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-lib-1780736476040-1780736532132",
+          "librarySlideId": "lib-1780736476040",
+          "name": "CulletScanner-Technology",
+          "visible": true
+        },
+        {
+          "id": "deck-surface",
+          "librarySlideId": "lib-surface",
+          "name": "Surface Types",
+          "visible": true
+        },
+        {
+          "id": "deck-dimension",
+          "librarySlideId": "lib-dimension",
+          "name": "Dimensions",
+          "visible": true
+        },
+        {
+          "id": "deck-screenprint",
+          "librarySlideId": "lib-screenprint",
+          "name": "Screen Printing",
+          "visible": true
+        },
+        {
+          "id": "deck-logo-check",
+          "librarySlideId": "lib-logo-check",
+          "name": "Logo Check",
+          "visible": true
+        },
+        {
+          "id": "deck-database",
+          "librarySlideId": "lib-database",
+          "name": "Traceability",
+          "visible": true
+        },
+        {
+          "id": "deck-sensitivity",
+          "librarySlideId": "lib-sensitivity",
+          "name": "Sensitivity",
+          "visible": true
+        },
+        {
+          "id": "deck-footprint",
+          "librarySlideId": "lib-footprint",
+          "name": "Installation",
+          "visible": true
+        },
+        {
+          "id": "deck-integrations",
+          "librarySlideId": "lib-integrations",
+          "name": "Integrations",
+          "visible": true
+        },
+        {
+          "id": "deck-cta",
+          "librarySlideId": "lib-cta",
+          "name": "Call to Action",
           "visible": true
         }
       ],
       "defaultLanguage": "en",
       "languages": [
         "en",
-        "es"
+        "es",
+        "it",
+        "de",
+        "fr",
+        "pt"
       ],
-      "publishedAt": "2026-06-10T06:41:11.730Z",
-      "archivedAt": "2026-06-11T12:20:56.137Z"
+      "publishedAt": "2026-06-11T15:03:46.734Z"
     },
     {
-      "id": "00000030",
-      "createdAt": "2026-06-09",
+      "id": "00000001",
+      "createdAt": "2026-06-11",
       "deckId": "deck-rebuild",
-      "presentationName": "12",
-      "customerName": "12",
-      "contactName": "12",
+      "presentationName": "General Rebuild",
+      "customerName": "SoftSolution",
+      "contactName": "Alex Ochoa",
       "contactTitle": "",
-      "customerLogoSrc": "/slides/uploads/Comparison on image taken by Camera Above and LineScanner below of a Ig unit .jpg",
-      "slideCount": 5,
+      "customerLogoSrc": "/slides/uploads/LOGO-SoftSolution.png",
+      "slideCount": 9,
       "slides": [
         {
           "id": "deck-cover",
           "librarySlideId": "lib-cover",
-          "name": "Cover",
+          "name": "Cover-Validated",
           "visible": true
         },
         {
           "id": "deck-lib-why-us-1780851570888",
           "librarySlideId": "lib-why-us",
-          "name": "Why Us",
+          "name": "Why Us-Validated",
           "visible": true
         },
         {
           "id": "deck-company",
           "librarySlideId": "lib-company-v2",
-          "name": "Company Intro",
+          "name": "Company Intro-Validated",
           "visible": true
         },
         {
           "id": "deck-products",
           "librarySlideId": "lib-products",
-          "name": "Products Overview",
+          "name": "Products Overview-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-linescanner-tech",
+          "librarySlideId": "lib-linescanner-tech",
+          "name": "LineScanner-Technology-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-osprey-tech",
+          "librarySlideId": "lib-osprey-tech",
+          "name": "Osprey-Technology-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-cullet-tech",
+          "librarySlideId": "lib-cullet-tech",
+          "name": "CulletScanner-Technology-Validated",
+          "visible": true
+        },
+        {
+          "id": "deck-surface",
+          "librarySlideId": "lib-surface-v2",
+          "name": "Surface Types",
           "visible": true
         },
         {
@@ -453,8 +445,7 @@
         "en",
         "es"
       ],
-      "publishedAt": "2026-06-10T06:38:53.685Z",
-      "archivedAt": "2026-06-11T12:20:59.368Z"
+      "publishedAt": "2026-06-11T15:04:10.516Z"
     }
   ]
 }
