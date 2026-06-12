@@ -4917,7 +4917,8 @@ function buildFrozenPresentation(presentation) {
     { prefix: '/slides/uploads/', dir: path.join(__dirname, 'features', 'slides', 'uploads') },
     { prefix: '/slides/shared/',  dir: path.join(__dirname, 'shared', 'assets') },
     { prefix: '/slides/assets/',  dir: path.join(__dirname, 'features', 'slides', 'assets') },
-    { prefix: '/shared/assets/',  dir: path.join(__dirname, 'shared', 'assets') }
+    { prefix: '/shared/assets/',  dir: path.join(__dirname, 'shared', 'assets') },
+    { prefix: '/shared/brand/',   dir: path.join(__dirname, 'shared', 'brand') }   // brand-neutral logo-row default (rulebook §8/§9)
   ];
 
   var copiedAssets = {}; // src url → relative path used in output
