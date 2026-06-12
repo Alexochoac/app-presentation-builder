@@ -428,7 +428,7 @@
         "es": {
           "current": "¿Listo para una<br><span class=\"blue\">demostración en vivo?</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "intro": {
@@ -436,7 +436,7 @@
         "es": {
           "current": "Le proponemos que su equipo visite nuestras instalaciones en Austria para que podamos realizar una demostración en el sitio con <strong>sus propias muestras de vidrio</strong> — juntos.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "step1": {
@@ -444,7 +444,7 @@
         "es": {
           "current": "Analizar la línea de producción actual de [Customer]",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "step2": {
@@ -452,7 +452,7 @@
         "es": {
           "current": "Demostración en vivo con muestras de vidrio de [Customer]",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "step3": {
@@ -460,7 +460,7 @@
         "es": {
           "current": "Propuesta técnica y comercial personalizada",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "contact-name": {
@@ -468,7 +468,7 @@
         "es": {
           "current": "Alex Ochoa",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "contact-title": {
@@ -476,7 +476,7 @@
         "es": {
           "current": "Gerente de Ventas",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "contact-addr": {
@@ -484,7 +484,7 @@
         "es": {
           "current": "Im Vogelsang 18 · 3340 Waidhofen · Austria",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "contact-phone": {
@@ -492,7 +492,7 @@
         "es": {
           "current": "+43 676 88040501",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "contact-email": {
@@ -500,7 +500,7 @@
         "es": {
           "current": "alex.ochoa@softsolution.at",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       }
     },
@@ -1230,7 +1230,7 @@
         "es": {
           "current": "por GlassQuality.com",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "section-label": {
@@ -1238,7 +1238,7 @@
         "es": {
           "current": "Calidad de Superficie",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "headline": {
@@ -1246,7 +1246,7 @@
         "es": {
           "current": "Detección de defectos con <span class=\"blue\">Inteligencia Artificial</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "subtitle": {
@@ -1254,15 +1254,15 @@
         "es": {
           "current": "Red neuronal entrenada para clasificar automáticamente cada tipo de defecto",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "s6-config": {
-        "en": "[{\"id\":\"scratches\",\"label\":\"Scratches\",\"icon\":\"/slides/uploads/defect-icon-0.png\",\"carKey\":\"s6-defect-scratches\"},{\"id\":\"inclusions\",\"label\":\"Inclusions\",\"icon\":\"/slides/uploads/defect-icon-1.png\",\"carKey\":\"s6-defect-inclusions\"},{\"id\":\"dirt\",\"label\":\"Dirt\",\"icon\":\"/slides/uploads/defect-icon-2.png\",\"carKey\":\"s6-defect-dirt\"},{\"id\":\"dust\",\"label\":\"Dust\",\"icon\":\"/slides/uploads/defect-icon-3.png\",\"carKey\":\"s6-defect-dust\"},{\"id\":\"water\",\"label\":\"Water\",\"icon\":\"/slides/uploads/defect-icon-9.png\",\"carKey\":\"s6-defect-water\"},{\"id\":\"fingerprints\",\"label\":\"Fingerprints\",\"icon\":\"/slides/uploads/defect-icon-4.png\",\"carKey\":\"s6-defect-fingerprints\"},{\"id\":\"ignore\",\"label\":\"Ignore\",\"icon\":\"/slides/uploads/defect-icon-5.png\",\"carKey\":\"s6-defect-ignore\"},{\"id\":\"edge-defects\",\"label\":\"Edge defects\",\"icon\":\"/slides/uploads/defect-icon-7.png\",\"carKey\":\"s6-defect-edge-defects\"},{\"id\":\"frame-bars\",\"label\":\"Frame &amp; bars\",\"icon\":\"/slides/uploads/defect-icon-6.png\",\"carKey\":\"s6-defect-frame-bars\"},{\"id\":\"undefined\",\"label\":\"Undefined\",\"icon\":\"/slides/uploads/defect-icon-8.png\",\"carKey\":\"s6-defect-undefined\"},{\"id\":\"coating\",\"label\":\"Coating\",\"icon\":\"/slides/uploads/defect-icon-coating.png\",\"carKey\":\"s6-defect-coating\"},{\"id\":\"s6-defect-x0\",\"label\":\"New defect\",\"icon\":\"/slides/uploads/CostOfQualityDefects.png\",\"carKey\":\"s6-defect-x0\"}]",
+        "en": "[{\"id\":\"scratches\",\"label\":\"Scratches\",\"icon\":\"/slides/uploads/defect-icon-0.png\",\"carKey\":\"s6-defect-scratches\"},{\"id\":\"inclusions\",\"label\":\"Inclusions\",\"icon\":\"/slides/uploads/defect-icon-1.png\",\"carKey\":\"s6-defect-inclusions\"},{\"id\":\"dirt\",\"label\":\"Dirt\",\"icon\":\"/slides/uploads/defect-icon-2.png\",\"carKey\":\"s6-defect-dirt\"},{\"id\":\"dust\",\"label\":\"Dust\",\"icon\":\"/slides/uploads/defect-icon-3.png\",\"carKey\":\"s6-defect-dust\"},{\"id\":\"water\",\"label\":\"Water\",\"icon\":\"/slides/uploads/defect-icon-9.png\",\"carKey\":\"s6-defect-water\"},{\"id\":\"fingerprints\",\"label\":\"Fingerprints\",\"icon\":\"/slides/uploads/defect-icon-4.png\",\"carKey\":\"s6-defect-fingerprints\"},{\"id\":\"ignore\",\"label\":\"Ignore\",\"icon\":\"/slides/uploads/defect-icon-5.png\",\"carKey\":\"s6-defect-ignore\"},{\"id\":\"edge-defects\",\"label\":\"Edge defects\",\"icon\":\"/slides/uploads/defect-icon-7.png\",\"carKey\":\"s6-defect-edge-defects\"},{\"id\":\"frame-bars\",\"label\":\"Frame &amp; bars\",\"icon\":\"/slides/uploads/defect-icon-6.png\",\"carKey\":\"s6-defect-frame-bars\"},{\"id\":\"undefined\",\"label\":\"Undefined\",\"icon\":\"/slides/uploads/defect-icon-8.png\",\"carKey\":\"s6-defect-undefined\"},{\"id\":\"coating\",\"label\":\"Coating\",\"icon\":\"/slides/uploads/defect-icon-coating.png\",\"carKey\":\"s6-defect-coating\"}]",
         "es": {
           "current": "[{\"id\":\"scratches\",\"label\":\"Arañazos\",\"icon\":\"/slides/uploads/defect-icon-0.png\",\"carKey\":\"s6-defect-scratches\"},{\"id\":\"inclusions\",\"label\":\"Inclusiones\",\"icon\":\"/slides/uploads/defect-icon-1.png\",\"carKey\":\"s6-defect-inclusions\"},{\"id\":\"dirt\",\"label\":\"Suciedad\",\"icon\":\"/slides/uploads/defect-icon-2.png\",\"carKey\":\"s6-defect-dirt\"},{\"id\":\"dust\",\"label\":\"Polvo\",\"icon\":\"/slides/uploads/defect-icon-3.png\",\"carKey\":\"s6-defect-dust\"},{\"id\":\"water\",\"label\":\"Agua\",\"icon\":\"/slides/uploads/defect-icon-9.png\",\"carKey\":\"s6-defect-water\"},{\"id\":\"fingerprints\",\"label\":\"Huellas dactilares\",\"icon\":\"/slides/uploads/defect-icon-4.png\",\"carKey\":\"s6-defect-fingerprints\"},{\"id\":\"ignore\",\"label\":\"Ignorar\",\"icon\":\"/slides/uploads/defect-icon-5.png\",\"carKey\":\"s6-defect-ignore\"},{\"id\":\"edge-defects\",\"label\":\"Defectos de borde\",\"icon\":\"/slides/uploads/defect-icon-7.png\",\"carKey\":\"s6-defect-edge-defects\"},{\"id\":\"frame-bars\",\"label\":\"Marco &amp; barras\",\"icon\":\"/slides/uploads/defect-icon-6.png\",\"carKey\":\"s6-defect-frame-bars\"},{\"id\":\"undefined\",\"label\":\"Indefinido\",\"icon\":\"/slides/uploads/defect-icon-8.png\",\"carKey\":\"s6-defect-undefined\"},{\"id\":\"coating\",\"label\":\"Revestimiento\",\"icon\":\"/slides/uploads/defect-icon-coating.png\",\"carKey\":\"s6-defect-coating\"},{\"id\":\"s6-defect-x0\",\"label\":\"Nuevo defecto\",\"icon\":\"/slides/uploads/CostOfQualityDefects.png\",\"carKey\":\"s6-defect-x0\"}]",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "s6-label-0": {
@@ -1270,7 +1270,7 @@
         "es": {
           "current": "Arañazos",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "s6-label-1": {
@@ -1278,7 +1278,7 @@
         "es": {
           "current": "Inclusiones",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "s6-label-2": {
@@ -1286,7 +1286,7 @@
         "es": {
           "current": "Suciedad",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "s6-label-3": {
@@ -1294,7 +1294,7 @@
         "es": {
           "current": "Polvo",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "s6-label-4": {
@@ -1302,7 +1302,7 @@
         "es": {
           "current": "Agua",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "s6-label-5": {
@@ -1310,7 +1310,7 @@
         "es": {
           "current": "Huellas dactilares",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "s6-label-6": {
@@ -1318,7 +1318,7 @@
         "es": {
           "current": "Ignorar",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "s6-label-7": {
@@ -1326,7 +1326,7 @@
         "es": {
           "current": "Defectos de borde",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "s6-label-8": {
@@ -1334,7 +1334,7 @@
         "es": {
           "current": "Marco &amp; barras",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "s6-label-9": {
@@ -1342,7 +1342,7 @@
         "es": {
           "current": "Indefinido",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "s6-label-10": {
@@ -1350,7 +1350,7 @@
         "es": {
           "current": "Revestimiento",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "s6-label-11": {
@@ -1359,6 +1359,228 @@
           "current": "Nuevo defecto",
           "previous": null,
           "dirty": false
+        }
+      }
+    },
+    "lib-dimensions-v2": {
+      "credit": {
+        "en": "by GlassQuality.com",
+        "es": {
+          "current": "por GlassQuality.com",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "section-label": {
+        "en": "Dimensional Control",
+        "es": {
+          "current": "Control Dimensional",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "headline": {
+        "en": "Precise measurement of <span class=\"blue\">dimensions and cutouts</span>",
+        "es": {
+          "current": "Medición precisa de <span class=\"blue\">dimensiones y recortes</span>",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "subtitle": {
+        "en": "Geometry, holes and cutouts measured against your DXF model.",
+        "es": {
+          "current": "Geometría, agujeros y recortes medidos contra tu modelo DXF.",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "card-header-1": {
+        "en": "What is measured?",
+        "es": {
+          "current": "¿Qué se mide?",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "card-1-list": {
+        "en": "<li>Overall dimensions of the glass</li><li>Position and size of drill holes</li><li>Cutouts and notches</li><li>Angles and parallelism of edges</li><li>Rotation and position on line</li>",
+        "es": {
+          "current": "<li>Dimensiones generales del vidrio</li><li>Posición y tamaño de agujeros perforados</li><li>Recortes y muescas</li><li>Ángulos y paralelismo de bordes</li><li>Rotación y posición en línea</li>",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "card-header-2": {
+        "en": "Setup &amp; tolerances",
+        "es": {
+          "current": "Configuración y tolerancias",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "card-2-list": {
+        "en": "<li>Compatible with individual tolerances per measurement</li><li>DXF model import</li><li>2-step verification: global + detail</li><li>Compatible with belt conveyors</li><li class=\"\">Parallel light for maximum precision</li><li class=\"ls-list-hidden\">New Item that should be tested<br></li>",
+        "es": {
+          "current": "<li>Compatible con tolerancias individuales por medición</li><li>Importación de modelo DXF</li><li>Verificación de 2 pasos: global + detalle</li><li>Compatible con transportadores de correa</li><li class=\"\">Luz paralela para máxima precisión</li>",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "gallery-track": {
+        "en": "\n  \n<div class=\"ls-gallery-slide ls-gallery-slide--text\"><div class=\"ls-gallery-stat\"><span class=\"ls-gallery-label\" contenteditable=\"\" spellcheck=\"false\">Section Title</span><span class=\"ls-gallery-number\" contenteditable=\"\" spellcheck=\"false\">9</span><span class=\"ls-gallery-body-text\" contenteditable=\"\" spellcheck=\"false\">Description text here</span></div></div><div class=\"ls-gallery-slide ls-gallery-slide--text\"><div class=\"ls-gallery-stat\"><span class=\"ls-gallery-label\" contenteditable=\"\" spellcheck=\"false\">Section Title</span><span class=\"ls-gallery-number\" contenteditable=\"\" spellcheck=\"false\">Key Fact</span><span class=\"ls-gallery-body-text\" contenteditable=\"\" spellcheck=\"false\">Description text here</span></div></div><div class=\"ls-gallery-slide\"><img src=\"/slides/uploads/CostOfQualityDefects.png\" alt=\"CostOfQualityDefects\"><div class=\"ls-gallery-caption\" contenteditable=\"\" spellcheck=\"false\">CostOfQualityDefects</div></div>",
+        "es": {
+          "current": "\n  \n<div class=\"ls-gallery-slide ls-gallery-slide--text\"><div class=\"ls-gallery-stat\"><span class=\"ls-gallery-label\" contenteditable=\"\" spellcheck=\"false\">Título de la Sección</span><span class=\"ls-gallery-number\" contenteditable=\"\" spellcheck=\"false\">9</span><span class=\"ls-gallery-body-text\" contenteditable=\"\" spellcheck=\"false\">Texto de descripción aquí</span></div></div>",
+          "previous": null,
+          "dirty": true
+        }
+      }
+    },
+    "lib-screenprint-v2": {
+      "credit": {
+        "en": "by GlassQuality.com",
+        "es": {
+          "current": "por GlassQuality.com",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "section-label": {
+        "en": "Screen Printing",
+        "es": {
+          "current": "Impresión de pantalla",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "headline": {
+        "en": "Automatic quality control for <span class=\"blue\">screen-printed glass</span>",
+        "es": {
+          "current": "Control de calidad automático para vidrio impreso con pantalla",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "subtitle": {
+        "en": "The quality inspection of logos and screen printing is now standard — fully automated, 100% of the time..",
+        "es": {
+          "current": "La inspección de calidad de logotipos e impresión de pantalla es ahora estándar — totalmente automatizado, el 100% de las veces..",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "col-label": {
+        "en": "What LineScanner checks.",
+        "es": {
+          "current": "Lo que LineScanner verifica.",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "sp-list": {
+        "en": "<li><strong>Correct position</strong> of screen printing</li><li><strong>Missing parts</strong> within a logo</li><li><strong>Print thickness</strong> consistency</li><li><strong>Detail errors</strong> in graphics</li><li><strong>Screen printing errors</strong> &amp; defects</li><li draggable=\"false\" class=\"\"><strong>Logo position &amp; rotation</strong></li>",
+        "es": {
+          "current": "<li><strong>Posición correcta</strong> de la impresión en pantalla</li><li><strong>Partes faltantes</strong> dentro de un logotipo</li><li><strong>Consistencia del grosor de impresión</strong></li><li><strong>Errores de detalle</strong> en gráficos</li><li><strong>Errores de impresión en pantalla</strong> y defectos</li><li draggable=\"false\" class=\"\"><strong>Posición y rotación del logotipo</strong></li>",
+          "previous": null,
+          "dirty": true
+        }
+      }
+    },
+    "lib-logo-check-v2": {
+      "credit": {
+        "en": "by GlassQuality.com",
+        "es": {
+          "current": "por GlassQuality.com",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "section-label": {
+        "en": "Screen Printing &amp; Logo",
+        "es": {
+          "current": "Serigrafía y Logo",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "headline": {
+        "en": "Position and <span class=\"blue\">print quality control</span>",
+        "es": {
+          "current": "Control de <span class=\"blue\">posición y calidad de impresión</span>",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "subtitle": {
+        "en": "Select a check to see a real captured example.",
+        "es": {
+          "current": "Selecciona una opción para ver un ejemplo capturado real.",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "lc-config": {
+        "en": "[{\"id\":\"missing-print\",\"label\":\"❌ Missing print\",\"carKey\":\"lc-tag-x0\"},{\"id\":\"distortion\",\"label\":\"📐 Distortion\",\"carKey\":\"lc-tag-x1\"},{\"id\":\"shiny-ink\",\"label\":\"💡 Shiny ink\",\"carKey\":\"lc-tag-x2\"},{\"id\":\"rotation\",\"label\":\"🔄 Rotation\",\"carKey\":\"lc-tag-x3\"},{\"id\":\"out-of-position\",\"label\":\"📍 Out of position\",\"carKey\":\"lc-tag-x4\"},{\"id\":\"filled-items\",\"label\":\"⬛ \\\"Filled\\\" items\",\"carKey\":\"lc-tag-x5\"},{\"id\":\"lc-tag-x6\",\"label\":\"New tag\",\"carKey\":\"lc-tag-x6\"}]",
+        "es": {
+          "current": "[{\"id\":\"missing-print\",\"label\":\"❌ Impresión faltante\",\"carKey\":\"lc-tag-x0\"},{\"id\":\"distortion\",\"label\":\"📐 Distorsión\",\"carKey\":\"lc-tag-x1\"},{\"id\":\"shiny-ink\",\"label\":\"💡 Tinta brillante\",\"carKey\":\"lc-tag-x2\"},{\"id\":\"rotation\",\"label\":\"🔄 Rotación\",\"carKey\":\"lc-tag-x3\"},{\"id\":\"out-of-position\",\"label\":\"📍 Fuera de posición\",\"carKey\":\"lc-tag-x4\"},{\"id\":\"filled-items\",\"label\":\"⬛ Elementos \\\"rellenos\\\"\",\"carKey\":\"lc-tag-x5\"},{\"id\":\"lc-tag-x6\",\"label\":\"Etiqueta nueva\",\"carKey\":\"lc-tag-x6\"}]",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "lc-label-0": {
+        "en": "❌ Missing print",
+        "es": {
+          "current": "❌ Impresión faltante",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "lc-label-1": {
+        "en": "📐 Distortion",
+        "es": {
+          "current": "📐 Distorsión",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "lc-label-2": {
+        "en": "💡 Shiny ink",
+        "es": {
+          "current": "💡 Tinta brillante",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "lc-label-3": {
+        "en": "🔄 Rotation",
+        "es": {
+          "current": "🔄 Rotación",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "lc-label-4": {
+        "en": "📍 Out of position",
+        "es": {
+          "current": "📍 Fuera de posición",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "lc-label-5": {
+        "en": "⬛ \"Filled\" items",
+        "es": {
+          "current": "⬛ Elementos \"rellenos\"",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "lc-label-6": {
+        "en": "New tag",
+        "es": {
+          "current": "Etiqueta nueva",
+          "previous": null,
+          "dirty": true
         }
       }
     }

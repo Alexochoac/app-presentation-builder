@@ -582,5 +582,71 @@
       "headline": "Defect detection <span class=\"blue\">at a glance</span>",
       "subtitle": "Pick a defect type to see real captured examples."
     }
+  },
+  {
+    "id": "template07-dimensions",
+    "name": "Dimensions-Validated",
+    "category": "Content",
+    "slideMode": "sequence",
+    "components": [
+      "carousel",
+      "list"
+    ],
+    "file": "features/slides/slide-07-dimensions.html",
+    "createdAt": "2026-06-12T00:00:00.000Z",
+    "tags": [
+      "Content",
+      "Validated"
+    ],
+    "defaultEdits": {
+      "credit": "by YourBrand.com",
+      "section-label": "Section Label",
+      "headline": "Your headline <span class=\"blue\">goes here</span>",
+      "subtitle": "A short supporting sentence about this slide."
+    }
+  },
+  {
+    "id": "template08-screenprinting",
+    "name": "Screen Printing-Validated",
+    "category": "Visual",
+    "slideMode": "sequence",
+    "components": [
+      "carousel",
+      "list"
+    ],
+    "file": "features/slides/slide-08-screenprinting-v2.html",
+    "createdAt": "2026-06-12T00:00:00.000Z",
+    "tags": [
+      "Visual",
+      "Validated"
+    ],
+    "defaultEdits": {
+      "credit": "by YourBrand.com",
+      "section-label": "Section Label",
+      "headline": "Your headline <span class=\"blue\">goes here</span>",
+      "subtitle": "A short supporting sentence about this slide."
+    }
+  },
+  {
+    "id": "template09-logo-check",
+    "name": "Logo Check-Validated",
+    "category": "Visual",
+    "slideMode": "sequence",
+    "components": [
+      "carousel",
+      "tags"
+    ],
+    "file": "features/slides/slide-09-logo-check-v2.html",
+    "createdAt": "2026-06-12T00:00:00.000Z",
+    "tags": [
+      "Visual",
+      "Validated"
+    ],
+    "defaultEdits": {
+      "credit": "by YourBrand.com",
+      "section-label": "Section Label",
+      "headline": "Your headline <span class=\"blue\">goes here</span>",
+      "subtitle": "A short supporting sentence about this slide."
+    }
   }
 ]

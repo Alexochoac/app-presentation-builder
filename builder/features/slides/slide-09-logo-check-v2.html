@@ -1,0 +1,233 @@
+<div class="slide content template09-logo-check pb-responsive"
+     data-slide="template09-logo-check"
+     data-slide-mode="sequence">
+
+  <!-- Logo row — defaults to the product logo; deck branding overrides it. data-managed = server-injected. -->
+  <div class="slide-logo-row" data-edit="logo-row" data-managed>
+    <img src="/shared/brand/logo.svg" alt="Put A Presentation">
+  </div>
+
+  <div class="slide-layout">
+    <span class="softsolution-credit" data-edit="credit" contenteditable spellcheck="false">by YourBrand.com</span>
+
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label" contenteditable spellcheck="false">Section Label</div>
+      <h1 class="slide-title" data-edit="headline" contenteditable spellcheck="false">Your headline <span class="blue">goes here</span></h1>
+      <p class="slide-subtitle anim-in" data-edit="subtitle" contenteditable spellcheck="false">A short supporting sentence about this slide.</p>
+    </header>
+
+    <div class="slide-body">
+
+      <!-- Image display (TOP). Default carousel shows when no tag is selected; each tag has its
+           own carousel slot below, shown/hidden by the script. Per-image Fit/Fill + lightbox via carousel.js. -->
+      <div class="ls-carousel template09-logo-check-car anim-in" id="lcDefaultCar" data-counter data-edit="lc-default-carousel" data-track="template09-logo-check:default" style="flex:none;min-height:0;width:100%;">
+        <div class="ls-carousel-track" style="transform:translateX(0px);">
+          <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;">
+            <span style="color:var(--text-muted);font-size:13px;font-style:italic;">Add images with the + Image button</span>
+          </div>
+        </div>
+        <div class="ls-carousel-counter"></div>
+      </div>
+
+      <!-- Per-tag carousels — one data-edit slot each (max 10). Empty in the template; the deck fills them. -->
+      <div class="ls-carousel template09-logo-check-car lc-tag-car" data-counter data-edit="lc-tag-x0" data-track="template09-logo-check:x0" style="display:none;flex:none;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template09-logo-check-car lc-tag-car" data-counter data-edit="lc-tag-x1" data-track="template09-logo-check:x1" style="display:none;flex:none;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template09-logo-check-car lc-tag-car" data-counter data-edit="lc-tag-x2" data-track="template09-logo-check:x2" style="display:none;flex:none;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template09-logo-check-car lc-tag-car" data-counter data-edit="lc-tag-x3" data-track="template09-logo-check:x3" style="display:none;flex:none;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template09-logo-check-car lc-tag-car" data-counter data-edit="lc-tag-x4" data-track="template09-logo-check:x4" style="display:none;flex:none;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template09-logo-check-car lc-tag-car" data-counter data-edit="lc-tag-x5" data-track="template09-logo-check:x5" style="display:none;flex:none;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template09-logo-check-car lc-tag-car" data-counter data-edit="lc-tag-x6" data-track="template09-logo-check:x6" style="display:none;flex:none;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template09-logo-check-car lc-tag-car" data-counter data-edit="lc-tag-x7" data-track="template09-logo-check:x7" style="display:none;flex:none;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template09-logo-check-car lc-tag-car" data-counter data-edit="lc-tag-x8" data-track="template09-logo-check:x8" style="display:none;flex:none;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+      <div class="ls-carousel template09-logo-check-car lc-tag-car" data-counter data-edit="lc-tag-x9" data-track="template09-logo-check:x9" style="display:none;flex:none;min-height:0;width:100%;"><div class="ls-carousel-track"></div></div>
+
+      <!-- Config store — JSON list of tags [{id,label,carKey}]. contenteditable so it rides the
+           standard save pipeline; the script reads/writes its textContent. Images live in the
+           per-tag carousels above, NOT here. -->
+      <div id="lc-config" data-edit="lc-config" contenteditable spellcheck="false" aria-hidden="true"
+           style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;left:-9999px;top:0;"></div>
+
+      <!-- Tag buttons (BOTTOM) — built by the script from the config. Text/emoji labels, no icons. -->
+      <div class="template09-logo-check-selector anim-in" id="lc-selector"></div>
+
+    </div>
+  </div>
+
+  <style>
+    /* pb-responsive provides the scroll model + fluid chrome. Rules here are positional; tags compose
+       from `.card` so theme Finish blocks restyle them. Colours use theme variables only. */
+    .template09-logo-check .slide-body { width:100%; display:flex; flex-direction:column; align-items:center; }
+
+    /* Image carousel (top) — flex:none + clamp height beats the inline flex that would collapse it to 0
+       in a content-flow panel; scales with the viewport on big screens. */
+    .template09-logo-check .template09-logo-check-car { flex:none !important; min-height:0 !important; height:clamp(260px,52vh,620px) !important; width:100%; max-width:1000px; margin:0 auto; }
+    .template09-logo-check .ls-carousel-slide img { object-fit:contain; }
+
+    /* Tag buttons (bottom) — auto-wrapping row of text chips; each is a themeable .card. */
+    .template09-logo-check-selector { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; width:100%; max-width:1000px; margin:16px auto 0; }
+    .template09-logo-check .lc-tag-btn { position:relative; display:inline-flex; align-items:center; gap:6px; padding:8px 16px; cursor:pointer; background:var(--card-bg); border:1px solid var(--card-border); border-radius:var(--card-radius); transition:border-color .2s, background .2s; }
+    .template09-logo-check .lc-tag-btn:hover { border-color:rgba(var(--accent-rgb),.4); }
+    .template09-logo-check .lc-tag-btn.active { border-color:var(--accent); background:rgba(var(--accent-rgb),.08); }
+    .lc-tag-label { font-size:13px; font-weight:700; letter-spacing:.02em; color:var(--text-muted); }
+    .lc-tag-btn.active .lc-tag-label { color:var(--accent); }
+    .lc-tag-label:focus { outline:none; }
+
+    /* Builder-only: delete a tag + add a tag */
+    .lc-tag-del { position:absolute; top:-7px; right:-7px; width:18px; height:18px; border-radius:50%; display:none; align-items:center; justify-content:center; font-size:10px; cursor:pointer; background:rgba(var(--accent-rgb),.18); border:1px solid rgba(var(--accent-rgb),.4); color:var(--accent); z-index:2; }
+    .template09-logo-check:not(.template09-logo-check-readonly) .lc-tag-btn:hover .lc-tag-del { display:flex; }
+    .template09-logo-check .lc-add-btn { border-style:dashed; opacity:.7; }
+    .template09-logo-check .lc-add-btn:hover { opacity:1; }
+
+    /* readonly / published: hide every builder-only affordance */
+    .template09-logo-check-readonly [data-builder-only],
+    .template09-logo-check-readonly .lc-tag-del,
+    .template09-logo-check-readonly .lc-add-btn { display:none !important; }
+  </style>
+
+  <script>
+  (function () {
+    var root = document.currentScript.closest('[data-slide]');
+    var EDIT_MODE = !window.PB_READONLY;
+    if (!EDIT_MODE) root.classList.add('template09-logo-check-readonly');
+    var slideId  = window.Track ? Track.slideId(root) : 'template09-logo-check';
+
+    var configEl = root.querySelector('#lc-config');
+    var selector = root.querySelector('#lc-selector');
+    var defWrap  = root.querySelector('#lcDefaultCar');
+
+    var MAX_TAGS = 10;
+    var SLOTS = ['lc-tag-x0','lc-tag-x1','lc-tag-x2','lc-tag-x3','lc-tag-x4','lc-tag-x5','lc-tag-x6','lc-tag-x7','lc-tag-x8','lc-tag-x9'];
+
+    var DEFAULT_CONFIG = [
+      { id: 'tag-one',   label: 'Tag One',   carKey: 'lc-tag-x0' },
+      { id: 'tag-two',   label: 'Tag Two',   carKey: 'lc-tag-x1' },
+      { id: 'tag-three', label: 'Tag Three', carKey: 'lc-tag-x2' }
+    ];
+
+    function clone(o) { return JSON.parse(JSON.stringify(o)); }
+    var config = loadConfig();
+    var currentIdx = -1;
+
+    function loadConfig() {
+      // Published multi-language decks wrap this element's text in <span data-lang> per language, so
+      // textContent would be both languages concatenated (invalid JSON). Read the default-language span
+      // when present; in the builder it's plain JSON text.
+      var enSpan = configEl.querySelector('[data-lang="en"]') || configEl.querySelector('[data-lang]');
+      var raw = ((enSpan ? enSpan.textContent : configEl.textContent) || '').trim();
+      if (!raw) return clone(DEFAULT_CONFIG);
+      try { var c = JSON.parse(raw); return Array.isArray(c) && c.length ? c : clone(DEFAULT_CONFIG); }
+      catch (e) { return clone(DEFAULT_CONFIG); }
+    }
+    function persistConfig() {
+      // Persist via slide-carousel-save (honored by both the Builder Preview and the deck/publish
+      // render scripts) — never a synthetic focusout, which the builder ignores. html = serialized blob.
+      configEl.textContent = JSON.stringify(config);
+      document.dispatchEvent(new CustomEvent('slide-carousel-save', { detail: { editKey: 'lc-config', html: configEl.innerHTML } }));
+    }
+    function findCar(carKey) { return root.querySelector('.lc-tag-car[data-edit="' + carKey + '"]'); }
+
+    function showDefault() {
+      root.querySelectorAll('.lc-tag-car').forEach(function (c) { c.style.display = 'none'; });
+      currentIdx = -1;
+      if (defWrap) {
+        defWrap.style.display = '';
+        if (window.Carousel) Carousel.init(defWrap);
+        if (window.Lightbox) Lightbox.init(defWrap);
+      }
+      updateBtns();
+    }
+    function showTag(idx) {
+      if (idx === currentIdx) { showDefault(); return; }
+      var prev = config[currentIdx]; if (prev) { var pc = findCar(prev.carKey); if (pc) pc.style.display = 'none'; }
+      if (defWrap) defWrap.style.display = 'none';
+      currentIdx = idx;
+      var car = findCar(config[idx].carKey);
+      if (car) {
+        car.style.display = '';
+        if (typeof car._lsGoTo === 'function') car._lsGoTo(0);
+        if (window.Carousel) Carousel.init(car);
+        if (window.Lightbox) Lightbox.init(car);
+      }
+      updateBtns();
+    }
+    function updateBtns() {
+      selector.querySelectorAll('.lc-tag-btn').forEach(function (btn, i) {
+        if (btn.classList.contains('lc-add-btn')) return;
+        btn.classList.toggle('active', i === currentIdx);
+      });
+    }
+
+    function makeBtn(item, idx) {
+      var btn = document.createElement('button');
+      btn.className = 'card lc-tag-btn';
+      btn.setAttribute('data-tag-id', item.id);
+
+      var labelEl = document.createElement('span');
+      labelEl.className = 'lc-tag-label';
+      labelEl.textContent = item.label;
+      labelEl.setAttribute('data-edit', 'lc-label-' + idx);
+      if (EDIT_MODE) {
+        labelEl.contentEditable = 'true'; labelEl.spellcheck = false;
+        labelEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); labelEl.blur(); } });
+        labelEl.addEventListener('blur', function () { var v = labelEl.textContent.trim(); if (v) item.label = v; persistConfig(); });
+        labelEl.addEventListener('click', function (e) { if (!window.previewLang || window.previewLang === 'en') e.stopPropagation(); });
+      }
+      btn.appendChild(labelEl);
+
+      if (EDIT_MODE) {
+        var del = document.createElement('span');
+        del.className = 'lc-tag-del'; del.setAttribute('data-builder-only', ''); del.title = 'Delete tag'; del.innerHTML = '&#10005;';
+        del.addEventListener('click', function (e) {
+          e.stopPropagation(); e.preventDefault();
+          if (!window.confirm('Delete "' + (item.label || 'this tag') + '"?')) return;
+          config.splice(idx, 1); renderSelector(); persistConfig();
+        });
+        btn.appendChild(del);
+      }
+
+      btn.addEventListener('click', function () {
+        if (document.activeElement && document.activeElement.isContentEditable) return;
+        showTag(idx);
+        if (window.Track) Track.click(slideId, item.label);
+      });
+      return btn;
+    }
+
+    function freeSlot() {
+      var used = config.map(function (c) { return c.carKey; });
+      for (var i = 0; i < SLOTS.length; i++) { if (used.indexOf(SLOTS[i]) === -1) return SLOTS[i]; }
+      return null;
+    }
+    function clearSlot(carKey) {
+      var car = findCar(carKey); if (!car) return;
+      var track = car.querySelector('.ls-carousel-track'); if (track) track.innerHTML = '';
+      car._lsCarouselInit = false;
+      document.dispatchEvent(new CustomEvent('slide-carousel-save', { detail: { editKey: carKey, html: '<div class="ls-carousel-track"></div>' } }));
+    }
+
+    function renderSelector() {
+      selector.innerHTML = '';
+      config.forEach(function (item, idx) { selector.appendChild(makeBtn(item, idx)); });
+      if (EDIT_MODE && config.length < MAX_TAGS) {
+        var add = document.createElement('button');
+        add.className = 'card lc-tag-btn lc-add-btn'; add.setAttribute('data-builder-only', ''); add.title = 'Add tag';
+        var al = document.createElement('span'); al.className = 'lc-tag-label'; al.textContent = '+ Add';
+        add.appendChild(al);
+        add.addEventListener('click', function () {
+          if (config.length >= MAX_TAGS) return;
+          var slot = freeSlot(); if (!slot) return;
+          clearSlot(slot);
+          config.push({ id: slot, label: 'New tag', carKey: slot });
+          renderSelector(); persistConfig();
+        });
+        selector.appendChild(add);
+      }
+      showDefault();
+    }
+
+    renderSelector();
+    setTimeout(function () { if (window.PE) PE.initSlide(root); }, 0);
+  })();
+  </script>
+
+</div>

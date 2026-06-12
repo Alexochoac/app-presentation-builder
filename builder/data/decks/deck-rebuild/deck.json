@@ -42,6 +42,21 @@
       "librarySlideId": "lib-surface-v2"
     },
     {
+      "id": "deck-dimensions",
+      "visible": true,
+      "librarySlideId": "lib-dimensions-v2"
+    },
+    {
+      "id": "deck-screenprinting",
+      "visible": true,
+      "librarySlideId": "lib-screenprint-v2"
+    },
+    {
+      "id": "deck-logo-check",
+      "visible": true,
+      "librarySlideId": "lib-logo-check-v2"
+    },
+    {
       "id": "deck-lib-1780338645841-1780424554857",
       "visible": true,
       "librarySlideId": "lib-1780338645841"

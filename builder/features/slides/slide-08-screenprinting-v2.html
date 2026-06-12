@@ -1,0 +1,95 @@
+<div class="slide content template08-screenprinting pb-responsive"
+     data-slide="template08-screenprinting"
+     data-slide-mode="sequence">
+
+  <!-- Logo row — defaults to the product logo; deck branding overrides it. data-managed = server-injected. -->
+  <div class="slide-logo-row" data-edit="logo-row" data-managed>
+    <img src="/shared/brand/logo.svg" alt="Put A Presentation">
+  </div>
+
+  <div class="slide-layout">
+    <span class="softsolution-credit" data-edit="credit" contenteditable spellcheck="false">by YourBrand.com</span>
+
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label" contenteditable spellcheck="false">Section Label</div>
+      <h1 class="slide-title" data-edit="headline" contenteditable spellcheck="false">Your headline <span class="blue">goes here</span></h1>
+      <p class="slide-subtitle anim-in" data-edit="subtitle" contenteditable spellcheck="false">A short supporting sentence about this slide.</p>
+    </header>
+
+    <div class="slide-body">
+      <!-- Two regions side-by-side ≥769px, stacked below: image carousel + a single checklist card. -->
+      <div class="template08-screenprinting-grid">
+
+        <!-- Image carousel — empty in the template; the deck fills it via the + Image button.
+             Per-image Fit/Fill toggle + lightbox come from the shared carousel.js. -->
+        <div class="ls-carousel template08-screenprinting-car anim-in" data-counter data-edit="sp-carousel" data-track="template08-screenprinting:carousel" style="flex:none;min-height:0;width:100%;">
+          <div class="ls-carousel-track" style="transform:translateX(0px);">
+            <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;">
+              <span style="color:var(--text-muted);font-size:13px;font-style:italic;">Add images with the + Image button</span>
+            </div>
+          </div>
+          <div class="ls-carousel-counter"></div>
+        </div>
+
+        <!-- Checklist card. The list is a list.js component (data-ls-list): items get drag-reorder /
+             hide / add / delete; the whole <ul> innerHTML persists as one blob under its data-edit key. -->
+        <div class="card template08-screenprinting-card anim-in">
+          <div class="sp-card-head" data-edit="col-label" contenteditable spellcheck="false">Checklist</div>
+          <ul class="sp-list" data-edit="sp-list" data-ls-list>
+            <li>First check goes here</li>
+            <li>Second check goes here</li>
+            <li>Third check goes here</li>
+            <li>Fourth check goes here</li>
+          </ul>
+          <div class="sp-restore" data-builder-only data-ls-restore></div>
+          <button class="sp-add" data-builder-only data-ls-add>+ Add item</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* pb-responsive provides the scroll model + fluid chrome. Rules here are positional only;
+       the card composes from `.card` so theme Finish blocks restyle it. Colours use theme variables. */
+    .template08-screenprinting .slide-body { width:100%; display:flex; flex-direction:column; align-items:center; }
+
+    /* Carousel left, checklist right ≥769px; stacked <769px. minmax(0,…) stops the carousel
+       overflowing its column. */
+    .template08-screenprinting-grid { display:grid; grid-template-columns:1fr; gap:clamp(14px,2vw,22px); width:100%; max-width:1040px; margin:0 auto; align-items:start; }
+    @media (min-width:769px) {
+      .template08-screenprinting-grid { grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); }
+    }
+
+    /* Carousel — flex:none + clamp height beats the inline flex that would collapse it to 0 in a
+       content-flow panel; scales with the viewport on big screens. */
+    .template08-screenprinting .template08-screenprinting-car { flex:none !important; min-height:0 !important; height:clamp(240px,46vh,560px) !important; width:100%; }
+    .template08-screenprinting .ls-carousel-slide img { object-fit:contain; }
+
+    .template08-screenprinting .template08-screenprinting-card { display:flex; flex-direction:column; padding:18px 22px 8px; border-top:3px solid var(--accent); }
+    .template08-screenprinting .template08-screenprinting-card:hover { transform:none; }
+    .sp-card-head { font-size:clamp(14px,1.6vw,20px); font-weight:800; letter-spacing:.01em; padding-bottom:10px; margin-bottom:12px; border-bottom:1px solid var(--border); color:var(--accent); }
+
+    .sp-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+    /* List items — room on the left for the ✓ marker, on the right for list.js drag/hide controls. */
+    .sp-list li { position:relative; padding-left:24px; padding-right:40px; font-size:clamp(12px,1.15vw,15px); line-height:1.4; color:var(--text-muted); }
+    .sp-list li::before { content:"\2713"; position:absolute; left:0; top:0; font-weight:800; color:var(--accent); }
+
+    /* Builder-only list controls never show in readonly / published output. */
+    .template08-screenprinting-readonly [data-ls-add],
+    .template08-screenprinting-readonly [data-ls-restore] { display:none; }
+  </style>
+
+  <script>
+  (function () {
+    var slide = document.currentScript.closest('[data-slide]');
+    if (window.PB_READONLY) slide.classList.add('template08-screenprinting-readonly');
+    /* Editable list + image carousel (with lightbox) via the shared components. */
+    if (window.List)     List.init(slide);
+    if (window.Carousel) Carousel.init(slide);
+    if (window.Lightbox) Lightbox.init(slide);
+    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
+  })();
+  </script>
+
+</div>

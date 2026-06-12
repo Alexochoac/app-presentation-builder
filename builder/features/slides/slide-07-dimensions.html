@@ -1,0 +1,103 @@
+<div class="slide content template07-dimensions pb-responsive"
+     data-slide="template07-dimensions"
+     data-slide-mode="sequence">
+
+  <!-- Logo row — defaults to the product logo; deck branding overrides it. data-managed = server-injected. -->
+  <div class="slide-logo-row" data-edit="logo-row" data-managed>
+    <img src="/shared/brand/logo.svg" alt="Put A Presentation">
+  </div>
+
+  <div class="slide-layout">
+    <span class="softsolution-credit" data-edit="credit" contenteditable spellcheck="false">by YourBrand.com</span>
+
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label" contenteditable spellcheck="false">Section Label</div>
+      <h1 class="slide-title" data-edit="headline" contenteditable spellcheck="false">Your headline <span class="blue">goes here</span></h1>
+      <p class="slide-subtitle anim-in" data-edit="subtitle" contenteditable spellcheck="false">A short supporting sentence about this slide.</p>
+    </header>
+
+    <div class="slide-body">
+
+      <!-- Image carousel — empty in the template; the deck fills it via the + Image button.
+           Per-image Fit/Fill toggle + lightbox come from the shared carousel.js. -->
+      <div class="ls-carousel template07-dimensions-car anim-in" data-counter data-edit="dim-carousel" data-track="template07-dimensions:carousel" style="flex:none;min-height:0;width:100%;">
+        <div class="ls-carousel-track" style="transform:translateX(0px);">
+          <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;">
+            <span style="color:var(--text-muted);font-size:13px;font-style:italic;">Add images with the + Image button</span>
+          </div>
+        </div>
+        <div class="ls-carousel-counter"></div>
+      </div>
+
+      <!-- Two info cards. Each list is a list.js component (data-ls-list): items get drag-reorder /
+           hide / add / delete; the whole <ul> innerHTML persists as one blob under its data-edit key. -->
+      <div class="template07-dimensions-grid">
+
+        <div class="card template07-dimensions-card anim-in">
+          <div class="dim-card-head" data-edit="card-header-1" contenteditable spellcheck="false">Group One</div>
+          <ul class="dim-list" data-edit="card-1-list" data-ls-list>
+            <li>First point goes here</li>
+            <li>Second point goes here</li>
+            <li>Third point goes here</li>
+            <li>Fourth point goes here</li>
+          </ul>
+          <div class="dim-restore" data-builder-only data-ls-restore></div>
+          <button class="dim-add" data-builder-only data-ls-add>+ Add item</button>
+        </div>
+
+        <div class="card template07-dimensions-card anim-in">
+          <div class="dim-card-head" data-edit="card-header-2" contenteditable spellcheck="false">Group Two</div>
+          <ul class="dim-list" data-edit="card-2-list" data-ls-list>
+            <li>First point goes here</li>
+            <li>Second point goes here</li>
+            <li>Third point goes here</li>
+            <li>Fourth point goes here</li>
+          </ul>
+          <div class="dim-restore" data-builder-only data-ls-restore></div>
+          <button class="dim-add" data-builder-only data-ls-add>+ Add item</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* pb-responsive provides the scroll model + fluid chrome. Rules here are positional only;
+       cards compose from `.card` so theme Finish blocks restyle them. Colours use theme variables. */
+    .template07-dimensions .slide-body { width:100%; display:flex; flex-direction:column; align-items:center; gap:clamp(14px,2vw,20px); }
+
+    /* Carousel — flex:none + clamp height beats the inline flex that would collapse it to 0 in a
+       content-flow panel; scales with the viewport on big screens. */
+    .template07-dimensions .template07-dimensions-car { flex:none !important; min-height:0 !important; height:clamp(240px,46vh,560px) !important; width:100%; max-width:1000px; margin:0 auto; }
+    .template07-dimensions .ls-carousel-slide img { object-fit:contain; }
+
+    /* Two-card grid — stacks <769px, side-by-side ≥769px via auto-fit. */
+    .template07-dimensions-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:clamp(14px,2vw,20px); width:100%; max-width:920px; margin:0 auto; }
+
+    .template07-dimensions .template07-dimensions-card { display:flex; flex-direction:column; padding:18px 22px 8px; border-top:3px solid var(--accent); }
+    .template07-dimensions .template07-dimensions-card:hover { transform:none; }
+    .dim-card-head { font-size:clamp(14px,1.6vw,20px); font-weight:800; letter-spacing:.01em; padding-bottom:10px; margin-bottom:12px; border-bottom:1px solid var(--border); color:var(--accent); }
+
+    .dim-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+    /* List items — room on the left for the ✓ marker, on the right for list.js drag/hide controls. */
+    .dim-list li { position:relative; padding-left:24px; padding-right:40px; font-size:clamp(12px,1.15vw,15px); line-height:1.4; color:var(--text-muted); }
+    .dim-list li::before { content:"\2713"; position:absolute; left:0; top:0; font-weight:800; color:var(--accent); }
+
+    /* Builder-only list controls never show in readonly / published output. */
+    .template07-dimensions-readonly [data-ls-add],
+    .template07-dimensions-readonly [data-ls-restore] { display:none; }
+  </style>
+
+  <script>
+  (function () {
+    var slide = document.currentScript.closest('[data-slide]');
+    if (window.PB_READONLY) slide.classList.add('template07-dimensions-readonly');
+    /* Editable lists + image carousel (with lightbox) via the shared components. */
+    if (window.List)     List.init(slide);
+    if (window.Carousel) Carousel.init(slide);
+    if (window.Lightbox) Lightbox.init(slide);
+    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
+  })();
+  </script>
+
+</div>
