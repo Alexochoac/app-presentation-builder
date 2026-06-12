@@ -57,6 +57,26 @@
       "librarySlideId": "lib-logo-check-v2"
     },
     {
+      "id": "deck-traceability",
+      "visible": true,
+      "librarySlideId": "lib-traceability-v2"
+    },
+    {
+      "id": "deck-sensitivity",
+      "visible": true,
+      "librarySlideId": "lib-sensitivity-v2"
+    },
+    {
+      "id": "deck-installation",
+      "visible": true,
+      "librarySlideId": "lib-installation-v2"
+    },
+    {
+      "id": "deck-integrations",
+      "visible": true,
+      "librarySlideId": "lib-integrations-v2"
+    },
+    {
       "id": "deck-lib-1780338645841-1780424554857",
       "visible": true,
       "librarySlideId": "lib-1780338645841"

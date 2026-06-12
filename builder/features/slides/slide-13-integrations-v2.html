@@ -1,0 +1,200 @@
+<div class="slide content template11-integrations pb-responsive"
+     data-slide="template11-integrations"
+     data-slide-mode="sequence">
+
+  <!-- Logo row — defaults to the product logo; deck branding overrides it. data-managed = server-injected. -->
+  <div class="slide-logo-row" data-edit="logo-row" data-managed>
+    <img src="/shared/brand/logo.svg" alt="Put A Presentation">
+  </div>
+
+  <div class="slide-layout">
+    <span class="softsolution-credit" data-edit="credit" contenteditable spellcheck="false">by YourBrand.com</span>
+
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label" contenteditable spellcheck="false">Section Label</div>
+      <h1 class="slide-title" data-edit="headline" contenteditable spellcheck="false">Your headline <span class="blue">goes here</span></h1>
+      <p class="slide-subtitle anim-in" data-edit="subtitle" contenteditable spellcheck="false">A short supporting sentence about this slide.</p>
+    </header>
+
+    <div class="slide-body">
+      <!-- Config store — JSON list of partner cards [{id,name,type,logo}]. contenteditable so it rides the
+           standard save pipeline; the script reads/writes its textContent and renders the grid below. -->
+      <div id="int-config" data-edit="int-config" contenteditable spellcheck="false" aria-hidden="true"
+           style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;left:-9999px;top:0;"></div>
+
+      <!-- Partner-logo cards — built by the script from the config. -->
+      <div class="template11-integrations-grid anim-in" id="int-grid"></div>
+    </div>
+  </div>
+
+  <style>
+    /* pb-responsive provides the scroll model + fluid chrome. Rules here are positional; cards compose
+       from `.card` so theme Finish blocks restyle them. Colours reference theme variables only. */
+    .template11-integrations .slide-body { width:100%; display:flex; flex-direction:column; align-items:center; }
+
+    /* Responsive auto-fit grid of partner cards. */
+    .template11-integrations-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:clamp(10px,1.5vw,16px); width:100%; max-width:var(--pb-content-max); margin:0 auto; }
+    .template11-integrations .int-card { position:relative; display:flex; flex-direction:column; align-items:center; gap:5px; padding:16px 14px; text-align:center; }
+    .template11-integrations .int-card:hover { transform:none; }
+
+    .int-logo-wrap { position:relative; display:flex; align-items:center; justify-content:center; height:48px; margin-bottom:4px; }
+    .int-logo { max-height:48px; max-width:130px; object-fit:contain; display:block; transition:transform .25s ease; transform-origin:center; }
+    /* Hover: the logo expands via transform (no reflow → card size + grid stay fixed); z-index lifts it above neighbours. */
+    .template11-integrations .int-card:hover { z-index:5; }
+    .template11-integrations .int-card:hover .int-logo { transform:translateY(-6px) scale(1.7); }
+    .int-logo--placeholder { width:48px; height:48px; border-radius:10px; background:rgba(var(--accent-rgb),.12); border:1px dashed var(--border); display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800; color:var(--text-muted); }
+    .int-name { font-size:clamp(13px,1.3vw,16px); font-weight:800; color:var(--text); }
+    .int-type { font-size:clamp(10px,1vw,12px); font-weight:600; letter-spacing:.03em; color:var(--text-muted); }
+    .int-name:focus, .int-type:focus { outline:none; }
+
+    /* Builder controls: logo upload / clear + delete card. */
+    .int-logo-ctrls { position:absolute; top:-8px; right:-8px; display:none; gap:3px; z-index:2; }
+    .int-logo-wrap:hover .int-logo-ctrls { display:flex; }
+    .int-ic { width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer; background:rgba(var(--accent-rgb),.18); border:1px solid rgba(var(--accent-rgb),.4); color:var(--accent); }
+    .int-card-del { position:absolute; top:-7px; left:-7px; width:18px; height:18px; border-radius:50%; display:none; align-items:center; justify-content:center; font-size:10px; cursor:pointer; background:rgba(var(--accent-rgb),.18); border:1px solid rgba(var(--accent-rgb),.4); color:var(--accent); z-index:2; }
+    .template11-integrations:not(.template11-integrations-readonly) .int-card:hover .int-card-del { display:flex; }
+    .template11-integrations .int-add { border-style:dashed; opacity:.7; justify-content:center; }
+    .template11-integrations .int-add:hover { opacity:1; }
+    .int-add-icon { width:48px; height:48px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:24px; color:var(--text-muted); border:1px dashed var(--border); margin-bottom:4px; }
+
+    /* readonly / published: hide every builder-only affordance. */
+    .template11-integrations-readonly [data-builder-only],
+    .template11-integrations-readonly .int-card-del,
+    .template11-integrations-readonly .int-add { display:none !important; }
+  </style>
+
+  <script>
+  (function () {
+    var root = document.currentScript.closest('[data-slide]');
+    var EDIT_MODE = !window.PB_READONLY;
+    if (!EDIT_MODE) root.classList.add('template11-integrations-readonly');
+    var slideId  = window.Track ? Track.slideId(root) : 'template11-integrations';
+
+    var configEl = root.querySelector('#int-config');
+    var grid     = root.querySelector('#int-grid');
+    var MAX = 24;
+
+    var DEFAULT_CONFIG = [
+      { id: 'one',   name: 'Partner One',   type: 'Category', logo: '' },
+      { id: 'two',   name: 'Partner Two',   type: 'Category', logo: '' },
+      { id: 'three', name: 'Partner Three', type: 'Category', logo: '' }
+    ];
+
+    function clone(o) { return JSON.parse(JSON.stringify(o)); }
+    var config = loadConfig();
+
+    function loadConfig() {
+      var enSpan = configEl.querySelector('[data-lang="en"]') || configEl.querySelector('[data-lang]');
+      var raw = ((enSpan ? enSpan.textContent : configEl.textContent) || '').trim();
+      if (!raw) return clone(DEFAULT_CONFIG);
+      try { var c = JSON.parse(raw); return Array.isArray(c) && c.length ? c : clone(DEFAULT_CONFIG); }
+      catch (e) { return clone(DEFAULT_CONFIG); }
+    }
+    function persist() {
+      // Persist via slide-carousel-save (honored by both the Builder Preview and the deck/publish
+      // render scripts) — never a synthetic focusout, which the builder ignores.
+      configEl.textContent = JSON.stringify(config);
+      document.dispatchEvent(new CustomEvent('slide-carousel-save', { detail: { editKey: 'int-config', html: configEl.innerHTML } }));
+    }
+
+    function makeLogo(item) {
+      if (item.logo) {
+        var img = document.createElement('img');
+        img.className = 'int-logo'; img.src = item.logo; img.alt = (item.name || '') + ' logo';
+        return img;
+      }
+      var ph = document.createElement('span');
+      ph.className = 'int-logo int-logo--placeholder';
+      ph.textContent = ((item.name || '?').trim().charAt(0) || '+').toUpperCase();
+      return ph;
+    }
+    function refreshLogo(wrap, item) {
+      var old = wrap.querySelector('.int-logo');
+      var fresh = makeLogo(item);
+      if (old) wrap.replaceChild(fresh, old); else wrap.insertBefore(fresh, wrap.firstChild);
+    }
+
+    function makeCard(item, idx) {
+      var card = document.createElement('div');
+      card.className = 'card int-card';
+
+      var logoWrap = document.createElement('div');
+      logoWrap.className = 'int-logo-wrap';
+      logoWrap.appendChild(makeLogo(item));
+
+      if (EDIT_MODE) {
+        var ctrls = document.createElement('div');
+        ctrls.className = 'int-logo-ctrls'; ctrls.setAttribute('data-builder-only', '');
+        var up = document.createElement('span');
+        up.className = 'int-ic'; up.textContent = '↑'; up.title = 'Upload logo';
+        up.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var input = document.createElement('input');
+          input.type = 'file'; input.accept = 'image/*'; input.style.display = 'none';
+          document.body.appendChild(input);
+          input.addEventListener('change', function (ev) {
+            document.body.removeChild(input);
+            var f = ev.target.files[0]; if (!f) return;
+            var r = new FileReader();
+            r.onload = function (re) {
+              window.PBUpload(f.name, re.target.result).then(function (p) {
+                if (!p) return; item.logo = p; refreshLogo(logoWrap, item); persist();
+              });
+            };
+            r.readAsDataURL(f);
+          });
+          input.click();
+        });
+        var clr = document.createElement('span');
+        clr.className = 'int-ic'; clr.textContent = '✕'; clr.title = 'Clear logo';
+        clr.addEventListener('click', function (e) { e.stopPropagation(); item.logo = ''; refreshLogo(logoWrap, item); persist(); });
+        ctrls.appendChild(up); ctrls.appendChild(clr);
+        logoWrap.appendChild(ctrls);
+      }
+      card.appendChild(logoWrap);
+
+      var name = document.createElement('div'); name.className = 'int-name'; name.textContent = item.name;
+      var type = document.createElement('div'); type.className = 'int-type'; type.textContent = item.type;
+      if (EDIT_MODE) {
+        [['name', name], ['type', type]].forEach(function (p) {
+          p[1].contentEditable = 'true'; p[1].spellcheck = false;
+          p[1].addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); p[1].blur(); } });
+          p[1].addEventListener('blur', function () { item[p[0]] = p[1].textContent.trim(); persist(); });
+        });
+        var del = document.createElement('span');
+        del.className = 'int-card-del'; del.setAttribute('data-builder-only', ''); del.title = 'Delete'; del.innerHTML = '&#10005;';
+        del.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (!window.confirm('Delete "' + (item.name || 'this integration') + '"?')) return;
+          config.splice(idx, 1); render(); persist();
+        });
+        card.appendChild(del);
+      }
+      card.appendChild(name); card.appendChild(type);
+      return card;
+    }
+
+    function render() {
+      grid.innerHTML = '';
+      config.forEach(function (item, idx) { grid.appendChild(makeCard(item, idx)); });
+      if (EDIT_MODE && config.length < MAX) {
+        var add = document.createElement('button');
+        add.className = 'card int-card int-add'; add.setAttribute('data-builder-only', ''); add.title = 'Add integration';
+        var ai = document.createElement('span'); ai.className = 'int-add-icon'; ai.textContent = '+';
+        var al = document.createElement('span'); al.className = 'int-type'; al.textContent = 'Add';
+        add.appendChild(ai); add.appendChild(al);
+        add.addEventListener('click', function () {
+          if (config.length >= MAX) return;
+          config.push({ id: 'i' + config.length, name: 'New partner', type: 'Category', logo: '' });
+          render(); persist();
+        });
+        grid.appendChild(add);
+      }
+    }
+
+    render();
+    setTimeout(function () { if (window.PE) PE.initSlide(root); }, 0);
+  })();
+  </script>
+
+</div>

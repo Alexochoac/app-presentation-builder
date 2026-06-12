@@ -1,0 +1,62 @@
+<div class="slide content template10-installation pb-responsive"
+     data-slide="template10-installation"
+     data-slide-mode="sequence">
+
+  <!-- Logo row — defaults to the product logo; deck branding overrides it. data-managed = server-injected. -->
+  <div class="slide-logo-row" data-edit="logo-row" data-managed>
+    <img src="/shared/brand/logo.svg" alt="Put A Presentation">
+  </div>
+
+  <div class="slide-layout">
+    <span class="softsolution-credit" data-edit="credit" contenteditable spellcheck="false">by YourBrand.com</span>
+
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label" contenteditable spellcheck="false">Section Label</div>
+      <h1 class="slide-title" data-edit="headline" contenteditable spellcheck="false">Your headline <span class="blue">goes here</span></h1>
+      <p class="slide-subtitle anim-in" data-edit="subtitle" contenteditable spellcheck="false">A short supporting sentence about this slide.</p>
+    </header>
+
+    <div class="slide-body">
+      <!-- A single full-width image carousel is the whole slide. Empty in the template; the deck fills it
+           via the + Image button. Per-image Fit/Fill toggle + lightbox come from the shared carousel.js. -->
+      <div class="ls-carousel template10-installation-car anim-in" data-counter data-edit="install-carousel" data-track="template10-installation:carousel" style="flex:none;min-height:0;width:100%;">
+        <div class="ls-carousel-track" style="transform:translateX(0px);">
+          <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;">
+            <span style="color:var(--text-muted);font-size:13px;font-style:italic;">Add images with the + Image button</span>
+          </div>
+        </div>
+        <div class="ls-carousel-counter"></div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* pb-responsive provides the scroll model + fluid chrome. Rules here are positional only.
+       Colours reference theme variables. */
+    .template10-installation .slide-body { width:100%; display:flex; flex-direction:column; align-items:center; }
+
+    /* Full-width carousel — flex:none + a generous clamp height (it's the slide's main content) beats the
+       inline flex that would collapse it to 0 in a content-flow panel; scales with the viewport. */
+    .template10-installation .template10-installation-car { flex:none !important; min-height:0 !important; height:var(--pb-media-h) !important; width:100%; max-width:var(--pb-content-max); margin:0 auto; }
+    .template10-installation .ls-carousel-slide img { object-fit:contain; }
+
+    /* ≥1200px (laptops/monitors): fit one screen, no scroll — the carousel fills the slide body. */
+    @media (min-width:1200px) {
+      .slide.content.template10-installation.pb-responsive { overflow:hidden; }
+      .template10-installation .slide-layout { height:100%; justify-content:flex-start; }
+      .template10-installation .slide-body { flex:1 1 auto; min-height:0; }
+      .template10-installation .template10-installation-car { flex:1 1 auto !important; height:auto !important; min-height:0 !important; }
+    }
+  </style>
+
+  <script>
+  (function () {
+    var slide = document.currentScript.closest('[data-slide]');
+    if (window.PB_READONLY) slide.classList.add('template10-installation-readonly');
+    if (window.Carousel) Carousel.init(slide);
+    if (window.Lightbox) Lightbox.init(slide);
+    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
+  })();
+  </script>
+
+</div>

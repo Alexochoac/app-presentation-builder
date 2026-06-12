@@ -648,5 +648,48 @@
       "headline": "Your headline <span class=\"blue\">goes here</span>",
       "subtitle": "A short supporting sentence about this slide."
     }
+  },
+  {
+    "id": "template10-installation",
+    "name": "Installation-Validated",
+    "category": "Visual",
+    "slideMode": "sequence",
+    "components": [
+      "carousel"
+    ],
+    "file": "features/slides/slide-10-installation.html",
+    "createdAt": "2026-06-12T00:00:00.000Z",
+    "tags": [
+      "Visual",
+      "Validated"
+    ],
+    "defaultEdits": {
+      "credit": "by YourBrand.com",
+      "section-label": "Section Label",
+      "headline": "Your headline <span class=\"blue\">goes here</span>",
+      "subtitle": "A short supporting sentence about this slide."
+    }
+  },
+  {
+    "id": "template11-integrations",
+    "name": "Integrations-Validated",
+    "category": "Content",
+    "slideMode": "sequence",
+    "components": [
+      "logo",
+      "grid"
+    ],
+    "file": "features/slides/slide-13-integrations-v2.html",
+    "createdAt": "2026-06-12T00:00:00.000Z",
+    "tags": [
+      "Content",
+      "Validated"
+    ],
+    "defaultEdits": {
+      "credit": "by YourBrand.com",
+      "section-label": "Section Label",
+      "headline": "Your headline <span class=\"blue\">goes here</span>",
+      "subtitle": "A short supporting sentence about this slide."
+    }
   }
 ]

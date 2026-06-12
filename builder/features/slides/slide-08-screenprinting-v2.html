@@ -17,7 +17,7 @@
     </header>
 
     <div class="slide-body">
-      <!-- Two regions side-by-side ≥769px, stacked below: image carousel + a single checklist card. -->
+      <!-- Two regions side-by-side ≥769px, stacked below: image carousel + a single list card. -->
       <div class="template08-screenprinting-grid">
 
         <!-- Image carousel — empty in the template; the deck fills it via the + Image button.
@@ -31,15 +31,22 @@
           <div class="ls-carousel-counter"></div>
         </div>
 
-        <!-- Checklist card. The list is a list.js component (data-ls-list): items get drag-reorder /
-             hide / add / delete; the whole <ul> innerHTML persists as one blob under its data-edit key. -->
+        <!-- List card. The list is a list.js component (data-ls-list): items get drag-reorder /
+             hide / add / delete; the whole <ul> innerHTML persists as one blob under its data-edit key.
+             The ✓ / numbered marker is toggled by the builder-only button and persisted in sp-marker. -->
         <div class="card template08-screenprinting-card anim-in">
-          <div class="sp-card-head" data-edit="col-label" contenteditable spellcheck="false">Checklist</div>
+          <div class="sp-card-head-row">
+            <div class="sp-card-head" data-edit="col-label" contenteditable spellcheck="false">Checklist</div>
+            <button class="sp-marker-toggle" data-builder-only type="button" title="Switch list markers between ✓ and numbered">✓ / №</button>
+          </div>
+          <!-- Marker-mode store ("check" | "number"): re-injected on render, read by the script to set the
+               list style, persisted via slide-carousel-save when toggled. Ships to published output (not builder-only). -->
+          <span class="sp-marker-store" data-edit="sp-marker" style="display:none;">check</span>
           <ul class="sp-list" data-edit="sp-list" data-ls-list>
-            <li>First check goes here</li>
-            <li>Second check goes here</li>
-            <li>Third check goes here</li>
-            <li>Fourth check goes here</li>
+            <li>First item goes here</li>
+            <li>Second item goes here</li>
+            <li>Third item goes here</li>
+            <li>Fourth item goes here</li>
           </ul>
           <div class="sp-restore" data-builder-only data-ls-restore></div>
           <button class="sp-add" data-builder-only data-ls-add>+ Add item</button>
@@ -54,30 +61,51 @@
        the card composes from `.card` so theme Finish blocks restyle it. Colours use theme variables. */
     .template08-screenprinting .slide-body { width:100%; display:flex; flex-direction:column; align-items:center; }
 
-    /* Carousel left, checklist right ≥769px; stacked <769px. minmax(0,…) stops the carousel
+    /* Carousel left, list right ≥769px; stacked <769px. minmax(0,…) stops the carousel
        overflowing its column. */
-    .template08-screenprinting-grid { display:grid; grid-template-columns:1fr; gap:clamp(14px,2vw,22px); width:100%; max-width:1040px; margin:0 auto; align-items:start; }
+    .template08-screenprinting-grid { display:grid; grid-template-columns:1fr; gap:clamp(14px,2vw,22px); width:100%; max-width:var(--pb-content-max); margin:0 auto; align-items:start; }
     @media (min-width:769px) {
       .template08-screenprinting-grid { grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); }
     }
 
     /* Carousel — flex:none + clamp height beats the inline flex that would collapse it to 0 in a
        content-flow panel; scales with the viewport on big screens. */
-    .template08-screenprinting .template08-screenprinting-car { flex:none !important; min-height:0 !important; height:clamp(240px,46vh,560px) !important; width:100%; }
+    .template08-screenprinting .template08-screenprinting-car { flex:none !important; min-height:0 !important; height:var(--pb-media-h) !important; width:100%; }
     .template08-screenprinting .ls-carousel-slide img { object-fit:contain; }
 
     .template08-screenprinting .template08-screenprinting-card { display:flex; flex-direction:column; padding:18px 22px 8px; border-top:3px solid var(--accent); }
     .template08-screenprinting .template08-screenprinting-card:hover { transform:none; }
-    .sp-card-head { font-size:clamp(14px,1.6vw,20px); font-weight:800; letter-spacing:.01em; padding-bottom:10px; margin-bottom:12px; border-bottom:1px solid var(--border); color:var(--accent); }
+
+    /* Header row: editable label + marker toggle, with the divider beneath both. */
+    .sp-card-head-row { display:flex; align-items:baseline; justify-content:space-between; gap:10px; padding-bottom:10px; margin-bottom:12px; border-bottom:1px solid var(--border); }
+    .sp-card-head { font-size:clamp(14px,1.6vw,20px); font-weight:800; letter-spacing:.01em; color:var(--accent); }
+    .sp-marker-toggle { flex-shrink:0; font-size:10px; font-weight:700; letter-spacing:.04em; padding:3px 9px; border-radius:14px; cursor:pointer; background:rgba(var(--accent-rgb),.08); border:1px solid var(--card-border); color:var(--text-muted); transition:background .2s,border-color .2s,color .2s; }
+    .sp-marker-toggle:hover { background:rgba(var(--accent-rgb),.15); border-color:var(--accent); color:var(--accent); }
 
     .sp-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
-    /* List items — room on the left for the ✓ marker, on the right for list.js drag/hide controls. */
-    .sp-list li { position:relative; padding-left:24px; padding-right:40px; font-size:clamp(12px,1.15vw,15px); line-height:1.4; color:var(--text-muted); }
+    /* List items — room on the left for the marker, on the right for list.js drag/hide controls. */
+    .sp-list li { position:relative; padding-left:26px; padding-right:40px; font-size:clamp(12px,1.15vw,15px); line-height:1.4; color:var(--text-muted); }
+    /* Default marker: ✓ */
     .sp-list li::before { content:"\2713"; position:absolute; left:0; top:0; font-weight:800; color:var(--accent); }
+    /* Numbered marker: a small accent badge with the item's number (toggle persisted in sp-marker). */
+    .sp-list--numbered { counter-reset:sp-step; }
+    .sp-list--numbered li::before { content:counter(sp-step); counter-increment:sp-step; top:-1px; width:18px; height:18px; border-radius:50%; background:rgba(var(--accent-rgb),.2); border:1px solid rgba(var(--accent-rgb),.4); display:flex; align-items:center; justify-content:center; font-size:10px; line-height:1; }
 
-    /* Builder-only list controls never show in readonly / published output. */
+    /* Builder-only controls never show in readonly / published output. */
     .template08-screenprinting-readonly [data-ls-add],
-    .template08-screenprinting-readonly [data-ls-restore] { display:none; }
+    .template08-screenprinting-readonly [data-ls-restore],
+    .template08-screenprinting-readonly .sp-marker-toggle { display:none; }
+
+    /* ≥1200px (laptops/monitors): fit one screen, no scroll — the carousel|list row fills the body;
+       the carousel fills its cell, the list stays top-aligned. */
+    @media (min-width:1200px) {
+      .slide.content.template08-screenprinting.pb-responsive { overflow:hidden; }
+      .template08-screenprinting .slide-layout { height:100%; justify-content:flex-start; }
+      .template08-screenprinting .slide-body { flex:1 1 auto; min-height:0; }
+      .template08-screenprinting-grid { flex:1 1 auto; min-height:0; align-items:stretch; }
+      .template08-screenprinting .template08-screenprinting-car { height:100% !important; min-height:0 !important; }
+      .template08-screenprinting .template08-screenprinting-card { align-self:start; }
+    }
   </style>
 
   <script>
@@ -88,6 +116,26 @@
     if (window.List)     List.init(slide);
     if (window.Carousel) Carousel.init(slide);
     if (window.Lightbox) Lightbox.init(slide);
+
+    /* Marker mode: read the persisted store and style the list. /number/ test is robust to the
+       per-language <span> wrapping the publisher may add (value is identical across languages). */
+    var list  = slide.querySelector('.sp-list');
+    var store = slide.querySelector('[data-edit="sp-marker"]');
+    function applyMarker() {
+      var numbered = !!(store && /number/.test(store.textContent));
+      if (list) list.classList.toggle('sp-list--numbered', numbered);
+    }
+    applyMarker();
+    var toggle = slide.querySelector('.sp-marker-toggle');
+    if (toggle && !window.PB_READONLY) {
+      toggle.addEventListener('click', function () {
+        var mode = (store && /number/.test(store.textContent)) ? 'check' : 'number';
+        if (store) store.textContent = mode;
+        applyMarker();
+        document.dispatchEvent(new CustomEvent('slide-carousel-save', { detail: { editKey: 'sp-marker', html: mode } }));
+      });
+    }
+
     setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
   })();
   </script>
