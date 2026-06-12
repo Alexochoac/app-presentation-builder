@@ -1,6 +1,6 @@
 # Pipeline Standardization — Decisions & Plan
 
-> ## ▶ RESUME HERE (last worked 2026-06-09)
+> ## ▶ RESUME HERE (last worked 2026-06-11)
 > **Branch:** `master` (the standardization work was merged; we now commit directly to `master`). User
 > pushes from PowerShell (HTTPS, no creds in WSL). As of this handoff: **5 commits ahead of `origin`**.
 > **Method (locked):** RECREATE alongside, in deck order — new template → new `lib-` slide → new
@@ -87,7 +87,23 @@
 > **Carousel gotcha (reusable):** carousels carry inline `flex:1` that collapses to 0 in a content-flow panel — give a
 > catch-all `.<slide> .ls-carousel { flex:none !important; height:clamp(...) !important; }` so a carousel in a NEW tab (tabs.js)
 > doesn't collapse.
-> **Next:** continue the rebuild loop on **#8 Surface Types (`tpl-new-defect-gallery`)** — build it `pb-responsive` from the start.
+> **✅ #8 SURFACE TYPES — DONE (2026-06-11):** `template06-surface` ("Defect Gallery-Validated", category Visual,
+> slideMode sequence, components carousel+cards) → **`slide-06-surface-v2.html`** / **`lib-surface-v2`** ("Surface
+> Types", `galleryEnabled`) / added to `deck-rebuild` as `deck-surface` (slide 8, after Technology). Built
+> `pb-responsive` from the start; gallery server-injected (flag on the lib slide, no gallery markup in the cartridge);
+> validator-clean, passed the pre-commit slide gate. Committed `a6bad66`. **Note:** built in a prior working session
+> (untracked at this handoff) — internal completeness + live visual verification are still the user's to confirm.
+> **🐞 Gallery gotcha (reusable, fixed 2026-06-11):** when ONE template backs N deck slides (e.g. `template05-technology`
+> → slides 5–7), every instance renders the cartridge's hardcoded `data-slide`, so `gallery.js` derived the SAME
+> `overlayId` for all N → they shared one overlay and `init()` re-wired the +Image/+Text handlers on each call, so one
+> click appended N slides (the user hit 3× on slides 5–7). Fix in `gallery.js init()`: (a) per-store idempotency flag
+> (`store.__galleryInit`) so a gallery is never wired twice; (b) disambiguate `overlayId` (`-2`, `-3`…) when it
+> collides, so each slide gets its OWN overlay. The publish path was already safe (it rewrites `data-slide` to a
+> name-slug, server.js ~5033). Also deduped the already-accumulated duplicate gallery slides in the stored data
+> (`deck-rebuild` translations + `slide-library` deckEdits). Committed `765bd99`. **Lesson for any reused template:**
+> features keyed off `data-slide` collide across instances in the builder-preview path — keep per-instance state keyed
+> to the element, not the (shared) template id.
+> **Next:** continue the rebuild loop on **#9 Dimensions (`tpl-new-carousel-cards`)** — build it `pb-responsive` from the start.
 > Roadmap below.
 > **Pending verify (older):** publish `deck-rebuild` once and diff the frozen output (confirms `applyEditsToHtml`
 > end-to-end in publish).
@@ -267,7 +283,9 @@ in `deck-rebuild` (two tabs; capability + process matrices reuse `table.js`, pro
 lightbox; always-vertical headers; runtime column-hide-incl-header fix; real LineScanner data in deck) · 5. LineScanner-Technology ·
 6. Osprey-Technology · 7. CulletScanner-Technology → **✅ all three on `template05-technology`** / `slide-05-technology-v2.html` /
 `lib-{linescanner,osprey,cullet}-tech` / in `deck-rebuild` (carousel+cards stacked; 3-col comparison w/ images between; per-image
-Fit/Fill toggle added to carousel.js; LineScanner complete, Osprey/Cullet partial-legacy) · 8. Surface Types · `tpl-new-defect-gallery` ·
+Fit/Fill toggle added to carousel.js; LineScanner complete, Osprey/Cullet partial-legacy) · 8. Surface Types ·
+`tpl-new-defect-gallery` → **✅ `template06-surface`** / `slide-06-surface-v2.html` / `lib-surface-v2` / in `deck-rebuild`
+(carousel+cards, `pb-responsive`, gallery server-injected) ·
 9. Dimensions · `tpl-new-carousel-cards` · 10. Screen Printing · `tpl-new-checklist-carousel` · 11. Logo
 Check · `tpl-new-carousel-tags` · 12. Traceability · `tpl-new-tabs-carousel` · 13. Sensitivity ·
 `tpl-new-carousel-steps` · 14. Installation · `tpl-new-full-carousel` · 15. Integrations ·
