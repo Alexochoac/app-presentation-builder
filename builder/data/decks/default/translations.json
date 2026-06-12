@@ -3505,83 +3505,83 @@
         "es": {
           "current": "Serigrafía.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "Stampa serigrafica.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "Siebdruck.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "Sérigraphie.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "Impressão em tela.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "headline": {
-        "en": "Automatic quality control for.&nbsp;<span class=\"blue\">screen-printed glass.</span>",
+        "en": "Automatic quality control for&nbsp;<span class=\"blue\">screen-printed glass.</span>",
         "es": {
           "current": "Control de calidad automático para.&nbsp;<span class=\"blue\">vidrio serigrafíado.</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "Controllo qualità automatico per.&nbsp;<span class=\"blue\">vetro serigrafato.</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "Automatische Qualitätskontrolle für.&nbsp;<span class=\"blue\">siebgedrucktes Glas.</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "Contrôle de qualité automatique pour.&nbsp;<span class=\"blue\">verre sérigraphié.</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "Controle automático de qualidade para.&nbsp;<span class=\"blue\">vidro com impressão em tela.</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "subtitle": {
-        "en": "The quality inspection of logos and screen printing is now standard — fully automated, 100% of the time..",
+        "en": "The quality inspection of logos and screen printing is now standard, fully automated, 100% of the time..",
         "es": {
           "current": "La inspección de calidad de logos e impresión serigráfica ahora es estándar — completamente automatizada, el 100% del tiempo..",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "L'ispezione qualitativa di loghi e stampa serigrafica è ora standard — completamente automatizzata, il 100% delle volte.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "Die Qualitätsprüfung von Logos und Siebdruck ist nun Standard — vollständig automatisiert, 100% der Zeit..",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "L'inspection de qualité des logos et de la sérigraphie est désormais standard — entièrement automatisée, 100 % du temps..",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "A inspeção de qualidade de logotipos e impressão em tela agora é padrão — totalmente automatizada, 100% do tempo.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "col-label": {
@@ -3589,27 +3589,27 @@
         "es": {
           "current": "Qué verifica LineScanner.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "Cosa controlla LineScanner.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "Was LineScanner prüft.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "Ce que LineScanner vérifie.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "O que o LineScanner verifica.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "col-item-1": {
@@ -3617,27 +3617,27 @@
         "es": {
           "current": "<strong>Posición correcta</strong> de la serigrafía",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Posizione corretta</strong> della stampa serigrafica",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Korrekte Position</strong> des Siebdrucks",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Position correcte</strong> de la sérigraphie",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Posição correta</strong> da impressão em tela",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "col-item-2": {
@@ -3645,27 +3645,27 @@
         "es": {
           "current": "<strong>Partes faltantes</strong> dentro de un logo",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Parti mancanti</strong> all'interno di un logo",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Fehlende Teile</strong> in einem Logo",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Pièces manquantes</strong> dans un logo",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Peças faltantes</strong> em um logotipo",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "col-item-3": {
@@ -3673,27 +3673,27 @@
         "es": {
           "current": "<strong>Consistencia del grosor</strong> de impresión",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Coerenza dello spessore</strong> di stampa",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Druckdicke</strong> Konsistenz",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Cohérence de l'épaisseur</strong> d'impression",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Consistência da espessura</strong> da impressão",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "col-item-4": {
@@ -3701,27 +3701,27 @@
         "es": {
           "current": "<strong>Errores de detalle</strong> en gráficos.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Errori di dettaglio</strong> nella grafica.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Detailfehler</strong> in Grafiken.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Erreurs de détail</strong> dans les graphiques.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Erros de detalhe</strong> em gráficos.",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "col-item-5": {
@@ -3729,27 +3729,27 @@
         "es": {
           "current": "<strong>Errores &amp; defectos</strong> de serigrafía",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Errori &amp; difetti di stampa serigrafica</strong>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Siebdruckfehler</strong> &amp; Mängel",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Erreurs de sérigraphie</strong> &amp; défauts",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Erros e defeitos</strong> de impressão em tela &amp;",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "col-item-6": {
@@ -3757,27 +3757,27 @@
         "es": {
           "current": "<strong>Posición &amp; rotación</strong> del logo",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Posizione &amp; rotazione del logo</strong>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Logo-Position &amp; Rotation</strong>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Position et rotation du logo</strong>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Posição e rotação</strong> do logotipo &amp;",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       }
     },
@@ -4013,27 +4013,27 @@
         "es": {
           "current": "Trazabilidad y Gestión .",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "Tracciabilità &amp; Gestione .",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "Rückverfolgbarkeit &amp; Verwaltung .",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "Traçabilité et gestion .",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "Rastreabilidade &amp; Gerenciamento .",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "headline": {
@@ -4041,27 +4041,27 @@
         "es": {
           "current": "Decisiones basadas en <span class=\"blue\">datos reales .</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "Decisioni basate su <span class=\"blue\">dati reali .</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "Entscheidungen basierend auf <span class=\"blue\">echten Daten .</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "Décisions basées sur <span class=\"blue\">des données réelles .</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "Decisões baseadas em <span class=\"blue\">dados reais .</span>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "archive-item-1": {
@@ -4069,27 +4069,27 @@
         "es": {
           "current": "<strong>Historial completo</strong> — cada pieza inspeccionada almacenada y búsqueda",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Cronologia completa</strong> — ogni pezzo ispezionato archiviato e ricercabile",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Vollständige Historie</strong> — jedes geprüfte Stück gespeichert und durchsuchbar",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Historique complet</strong> — chaque pièce inspectée enregistrée et recherchable",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Histórico completo</strong> — cada peça inspecionada armazenada e pesquisável",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "archive-item-2": {
@@ -4097,27 +4097,27 @@
         "es": {
           "current": "<strong>Filtrar por fecha, línea o tipo de defecto</strong> — resultados instantáneos",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Filtra per data, linea o tipo di difetto</strong> — risultati istantanei",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Nach Datum, Linie oder Fehlertyp filtern</strong> — sofortige Ergebnisse",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Filtrer par date, ligne ou type de défaut</strong> — résultats instantanés",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Filtrar por data, linha ou tipo de defeito</strong> — resultados instantâneos",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "archive-item-3": {
@@ -4125,27 +4125,27 @@
         "es": {
           "current": "<strong>Exportar reportes</strong> — PDF o CSV para auditorías de calidad",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Esporta report</strong> — PDF o CSV per audit di qualità",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Berichte exportieren</strong> — PDF oder CSV für Qualitätsprüfungen",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Exporter des rapports</strong> — PDF ou CSV pour les audits qualité",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Exportar relatórios</strong> — PDF ou CSV para auditorias de qualidade",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "archive-item-4": {
@@ -4153,27 +4153,27 @@
         "es": {
           "current": "<strong>Reproducción de imágenes</strong> — revisar imágenes de escaneo originales en cualquier momento",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Riproduzione immagini</strong> — rivedi le immagini di scansione originali in qualsiasi momento",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Bildwiedergabe</strong> — Originalscans jederzeit überprüfen",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Lecture d'images</strong> — examiner les images de scan originales à tout moment",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Reprodução de imagem</strong> — revisar imagens de varredura originais a qualquer momento",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "console-item-1": {
@@ -4181,27 +4181,27 @@
         "es": {
           "current": "<strong>Vista en Vivo</strong> — monitoreo de producción en tiempo real",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Vista Live</strong> — monitoraggio della produzione in tempo reale",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Live-Ansicht</strong> — Echtzeit-Produktionsüberwachung",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Vue en direct</strong> — surveillance de la production en temps réel",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Visualização em Tempo Real</strong> — monitoramento de produção em tempo real",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "console-item-2": {
@@ -4209,27 +4209,27 @@
         "es": {
           "current": "<strong>Alertas</strong> — por cantidad, relación bueno/malo, períodos flexibles",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Avvisi</strong> — per quantità, rapporto buono/difettoso, periodi flessibili",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Warnmeldungen</strong> — nach Menge, Gut-/Schlecht-Verhältnis, flexible Zeiträume",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Alertes</strong> — par quantité, ratio bon/mauvais, périodes flexibles",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Alertas</strong> — por quantidade, proporção bom/ruim, períodos flexíveis",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "console-item-3": {
@@ -4237,27 +4237,27 @@
         "es": {
           "current": "<strong>Múltiples destinatarios</strong> por regla de alerta",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Più destinatari</strong> per regola di avviso",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Mehrere Empfänger</strong> pro Warnregel",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Destinataires multiples</strong> par règle d'alerte",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Múltiplos destinatários</strong> por regra de alerta",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "console-item-4": {
@@ -4265,83 +4265,83 @@
         "es": {
           "current": "<strong>Configuración centralizada</strong> — gestionar todas las unidades LineScanner desde un lugar",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "it": {
           "current": "<strong>Impostazioni centrali</strong> — gestisci tutte le unità LineScanner da un unico luogo",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "<strong>Zentrale Einstellungen</strong> — verwalten Sie alle LineScanner-Geräte von einem Ort aus",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<strong>Paramètres centralisés</strong> — gérez toutes les unités LineScanner depuis un seul endroit",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "<strong>Configurações centralizadas</strong> — gerencie todas as unidades LineScanner de um só lugar",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "tab-console": {
         "es": {
           "current": "Consola de administracion<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "en": "Management Console",
         "it": {
           "current": "Console di Gestione",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "Verwaltungskonsole",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "Console de gestion",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "Console de Gerenciamento",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "tab-archive": {
         "es": {
           "current": "Archivo<button class=\"ls-tab-del\" data-builder-only=\"\" contenteditable=\"false\" title=\"Delete tab\">✕</button>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "en": "Archive",
         "it": {
           "current": "Archivio",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "de": {
           "current": "Archiv",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "Archive",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "pt": {
           "current": "Arquivo",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       }
     },

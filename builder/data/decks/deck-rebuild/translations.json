@@ -1420,7 +1420,7 @@
         }
       },
       "card-2-list": {
-        "en": "<li>Compatible with individual tolerances per measurement</li><li>DXF model import</li><li>2-step verification: global + detail</li><li>Compatible with belt conveyors</li><li class=\"\">Parallel light for maximum precision</li><li class=\"ls-list-hidden\">New Item that should be tested<br></li>",
+        "en": "<li>Compatible with individual tolerances per measurement</li><li>DXF model import</li><li>2-step verification: global + detail</li><li>Compatible with belt conveyors</li><li class=\"\">Parallel light for maximum precision</li>",
         "es": {
           "current": "<li>Compatible con tolerancias individuales por medición</li><li>Importación de modelo DXF</li><li>Verificación de 2 pasos: global + detalle</li><li>Compatible con transportadores de correa</li><li class=\"\">Luz paralela para máxima precisión</li>",
           "previous": null,
@@ -1483,6 +1483,14 @@
           "current": "<li><strong>Posición correcta</strong> de la impresión en pantalla</li><li><strong>Partes faltantes</strong> dentro de un logotipo</li><li><strong>Consistencia del grosor de impresión</strong></li><li><strong>Errores de detalle</strong> en gráficos</li><li><strong>Errores de impresión en pantalla</strong> y defectos</li><li draggable=\"false\" class=\"\"><strong>Posición y rotación del logotipo</strong></li>",
           "previous": null,
           "dirty": true
+        }
+      },
+      "sp-marker": {
+        "en": "check",
+        "es": {
+          "current": "verificar",
+          "previous": null,
+          "dirty": false
         }
       }
     },
@@ -1581,6 +1589,334 @@
           "current": "Etiqueta nueva",
           "previous": null,
           "dirty": true
+        }
+      }
+    },
+    "lib-traceability-v2": {
+      "credit": {
+        "en": "by GlassQuality.com",
+        "es": {
+          "current": "por GlassQuality.com",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "section-label": {
+        "en": "Traceability &amp; Management",
+        "es": {
+          "current": "Trazabilidad y Gestión",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "headline": {
+        "en": "Decisions based on <span class=\"blue\">real data</span>",
+        "es": {
+          "current": "Decisiones basadas en <span class=\"blue\">datos reales</span>",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "subtitle": {
+        "en": "Every inspection stored, searchable, and monitored in real time.",
+        "es": {
+          "current": "Cada inspección almacenada, buscable y monitoreada en tiempo real.",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "tab-howitworks": {
+        "en": "Archive",
+        "es": {
+          "current": "Archivo",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "tab-advantage": {
+        "en": "Management Console",
+        "es": {
+          "current": "Consola de Gestión",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "tab-compare": {
+        "en": "Comparison",
+        "es": {
+          "current": "Comparación",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "hiw-1": {
+        "en": "<strong>Full history</strong> — every inspected piece stored and searchable",
+        "es": {
+          "current": "<strong>Historial completo</strong> — cada pieza inspeccionada almacenada y buscable",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "hiw-2": {
+        "en": "<strong>Filter by date, line, or defect type</strong> — instant results",
+        "es": {
+          "current": "<strong>Filtrar por fecha, línea o tipo de defecto</strong> — resultados instantáneos",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "hiw-3": {
+        "en": "<strong>Export reports</strong> — PDF or CSV for quality audits",
+        "es": {
+          "current": "<strong>Exportar informes</strong> — PDF o CSV para auditorías de calidad",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "hiw-4": {
+        "en": "<strong>Image playback</strong> — review original scan images any time",
+        "es": {
+          "current": "<strong>Reproducción de imágenes</strong> — revisar imágenes de escaneo original en cualquier momento",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "adv-1": {
+        "en": "<strong>Live View</strong> — real-time production monitoring",
+        "es": {
+          "current": "<strong>Vista en Vivo</strong> — monitoreo de producción en tiempo real",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "adv-2": {
+        "en": "<strong>Alerts</strong> — by quantity, good/bad ratio, flexible periods",
+        "es": {
+          "current": "<strong>Alertas</strong> — por cantidad, relación bueno/malo, períodos flexibles",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "adv-3": {
+        "en": "<strong>Multiple recipients</strong> per alert rule",
+        "es": {
+          "current": "<strong>Múltiples destinatarios</strong> por regla de alerta",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "adv-4": {
+        "en": "<strong>Central settings</strong> — manage all units from one place",
+        "es": {
+          "current": "<strong>Configuración centralizada</strong> — gestiona todas las unidades desde un solo lugar",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-bad-head": {
+        "en": "Alternative Systems",
+        "es": {
+          "current": "Sistemas Alternativos",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-bad-list": {
+        "en": "\n                  <li>A limitation of the alternative approach</li>\n                  <li>Another drawback to call out</li>\n                  <li>A third weakness worth noting</li>\n                ",
+        "es": {
+          "current": "\n                  <li>Una limitación del enfoque alternativo</li>\n                  <li>Otro inconveniente a destacar</li>\n                  <li>Una tercera debilidad que vale la pena señalar</li>\n                ",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-img-1": {
+        "en": "\n                    <div class=\"ls-carousel-track\" style=\"transform:translateX(0px);\">\n                      <div class=\"ls-carousel-slide\" style=\"display:flex;align-items:center;justify-content:center;\">\n                        <span style=\"color:var(--text-muted);font-size:12px;font-style:italic;\">+ Image</span>\n                      </div>\n                    </div>\n                    <div class=\"ls-carousel-counter\"></div>\n                  ",
+        "es": {
+          "current": "\n                    <div class=\"ls-carousel-track\" style=\"transform:translateX(0px);\">\n                      <div class=\"ls-carousel-slide\" style=\"display:flex;align-items:center;justify-content:center;\">\n                        <span style=\"color:var(--text-muted);font-size:12px;font-style:italic;\">+ Imagen</span>\n                      </div>\n                    </div>\n                    <div class=\"ls-carousel-counter\"></div>\n                  ",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-label-1": {
+        "en": "Comparison one",
+        "es": {
+          "current": "Comparación uno",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-img-2": {
+        "en": "\n                    <div class=\"ls-carousel-track\" style=\"transform:translateX(0px);\">\n                      <div class=\"ls-carousel-slide\" style=\"display:flex;align-items:center;justify-content:center;\">\n                        <span style=\"color:var(--text-muted);font-size:12px;font-style:italic;\">+ Image</span>\n                      </div>\n                    </div>\n                    <div class=\"ls-carousel-counter\"></div>\n                  ",
+        "es": {
+          "current": "\n                    <div class=\"ls-carousel-track\" style=\"transform:translateX(0px);\">\n                      <div class=\"ls-carousel-slide\" style=\"display:flex;align-items:center;justify-content:center;\">\n                        <span style=\"color:var(--text-muted);font-size:12px;font-style:italic;\">+ Imagen</span>\n                      </div>\n                    </div>\n                    <div class=\"ls-carousel-counter\"></div>\n                  ",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-label-2": {
+        "en": "Comparison two",
+        "es": {
+          "current": "Comparación dos",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-good-head": {
+        "en": "[Your Product]",
+        "es": {
+          "current": "[Tu Producto]",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "cmp-good-list": {
+        "en": "\n                  <li>The matching strength of your product</li>\n                  <li>Another clear advantage</li>\n                  <li>A third benefit that wins</li>\n                ",
+        "es": {
+          "current": "\n                  <li>La fortaleza coincidente de tu producto</li>\n                  <li>Otra ventaja clara</li>\n                  <li>Un tercer beneficio que gana</li>\n                ",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "gallery-track": {
+        "en": "\n  <div class=\"ls-gallery-slide ls-gallery-slide--text\"><div class=\"ls-gallery-stat\">\n    <span class=\"ls-gallery-label\" contenteditable=\"\" spellcheck=\"false\">Section Title</span>\n    <span class=\"ls-gallery-number\" contenteditable=\"\" spellcheck=\"false\">12</span>\n    <span class=\"ls-gallery-body-text\" contenteditable=\"\" spellcheck=\"false\">Description text here</span>\n  </div></div>\n",
+        "es": {
+          "current": "\n  <div class=\"ls-gallery-slide ls-gallery-slide--text\"><div class=\"ls-gallery-stat\">\n    <span class=\"ls-gallery-label\" contenteditable=\"\" spellcheck=\"false\">Título de Sección</span>\n    <span class=\"ls-gallery-number\" contenteditable=\"\" spellcheck=\"false\">12</span>\n    <span class=\"ls-gallery-body-text\" contenteditable=\"\" spellcheck=\"false\">Texto de descripción aquí</span>\n  </div></div>\n",
+          "previous": null,
+          "dirty": false
+        }
+      }
+    },
+    "lib-sensitivity-v2": {
+      "credit": {
+        "en": "by GlassQuality.com",
+        "es": {
+          "current": "por GlassQuality.com",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "section-label": {
+        "en": "Sensitivity Adjustment",
+        "es": {
+          "current": "Ajuste de Sensibilidad",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "headline": {
+        "en": "Fully automatic <span class=\"blue\">sensitivity adjustment</span>",
+        "es": {
+          "current": "Ajuste de sensibilidad <span class=\"blue\">completamente automático</span>",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "subtitle": {
+        "en": "LineScanner — as easy as a smart-phone",
+        "es": {
+          "current": "LineScanner — tan fácil como un teléfono inteligente",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "col-label": {
+        "en": "Automatic Quality Recipe Selection",
+        "es": {
+          "current": "Selección Automática de Receta de Calidad",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "sp-marker": {
+        "en": "number",
+        "es": {
+          "current": "número",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "sp-list": {
+        "en": "<li>Receives glass info via interface (transfer file, PLC…)</li><li>Logo detected → selects Tempered Glass sensitivity</li><li>GSS sensor detects laminated lite → Laminated Glass settings</li><li>Coating detected → Coated Glass sensitivity setting</li><li>Any other case → Default quality &amp; sensitivity settings</li>",
+        "es": {
+          "current": "<li>Recibe información de vidrio a través de interfaz (archivo de transferencia, PLC…)</li><li>Logo detectado → selecciona sensibilidad de Vidrio Templado</li><li>Sensor GSS detecta lámina laminada → configuración de Vidrio Laminado</li><li>Recubrimiento detectado → configuración de sensibilidad de Vidrio Recubierto</li><li>Cualquier otro caso → configuración de calidad y sensibilidad por defecto</li>",
+          "previous": null,
+          "dirty": false
+        }
+      }
+    },
+    "lib-installation-v2": {
+      "credit": {
+        "en": "by YourBrand.com",
+        "es": {
+          "current": "por YourBrand.com",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "section-label": {
+        "en": "Installation",
+        "es": {
+          "current": "Instalación",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "headline": {
+        "en": "Modular based — <span class=\"blue\">minimum footprint</span>",
+        "es": {
+          "current": "Basado en módulos — <span class=\"blue\">huella mínima</span>",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "subtitle": {
+        "en": "unique · worldwide",
+        "es": {
+          "current": "único · mundial",
+          "previous": null,
+          "dirty": false
+        }
+      }
+    },
+    "lib-integrations-v2": {
+      "credit": {
+        "en": "by YourBrand.com",
+        "es": {
+          "current": "por YourBrand.com",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "section-label": {
+        "en": "Integrations",
+        "es": {
+          "current": "Integraciones",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "headline": {
+        "en": "Compatible with <span class=\"blue\">your current machinery</span>",
+        "es": {
+          "current": "Compatible con <span class=\"blue\">tu maquinaria actual</span>",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "subtitle": {
+        "en": "LineScanner is already integrated with the leading glass machinery manufacturers — if you already run any of these lines, integration is direct.",
+        "es": {
+          "current": "LineScanner ya está integrado con los principales fabricantes de maquinaria para vidrio — si ya utilizas cualquiera de estas líneas, la integración es directa.",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "int-config": {
+        "en": "[{\"id\":\"i1\",\"name\":\"LiSEC\",\"type\":\"Processing lines\",\"logo\":\"/slides/uploads/LOGO%20LISEC.png\"},{\"id\":\"i2\",\"name\":\"FOREL\",\"type\":\"Architectural glass\",\"logo\":\"/slides/uploads/LOGO FOREL.jpg\"},{\"id\":\"i3\",\"name\":\"Benteler\",\"type\":\"Automotive glass\",\"logo\":\"/slides/uploads/LOGO%20Benteler.jpg\"},{\"id\":\"i4\",\"name\":\"CMS Tecglass\",\"type\":\"Digital printing\",\"logo\":\"/slides/uploads/LOGO-CMS.png\"},{\"id\":\"i5\",\"name\":\"Bystronic\",\"type\":\"Cutting and processing\",\"logo\":\"/slides/uploads/LOGO-Bystronic.png\"},{\"id\":\"i6\",\"name\":\"Hegla\",\"type\":\"Cutting and storage\",\"logo\":\"/slides/uploads/LOGO-HEGLA.jpeg\"},{\"id\":\"i7\",\"name\":\"Glaston\",\"type\":\"Tempering and bending\",\"logo\":\"/slides/uploads/LOGO-GLASTON.png\"},{\"id\":\"i9\",\"name\":\"Erdman\",\"type\":\"Automated lines\",\"logo\":\"/slides/uploads/LOGO%20ERDMAN.png\"}]",
+        "es": {
+          "current": "[{\"id\":\"i1\",\"name\":\"LiSEC\",\"type\":\"Líneas de procesamiento\",\"logo\":\"/slides/uploads/LOGO%20LISEC.png\"},{\"id\":\"i2\",\"name\":\"FOREL\",\"type\":\"Vidrio arquitectónico\",\"logo\":\"/slides/uploads/LOGO FOREL.jpg\"},{\"id\":\"i3\",\"name\":\"Benteler\",\"type\":\"Vidrio automotriz\",\"logo\":\"/slides/uploads/LOGO%20Benteler.jpg\"},{\"id\":\"i4\",\"name\":\"CMS Tecglass\",\"type\":\"Impresión digital\",\"logo\":\"/slides/uploads/LOGO-CMS.png\"},{\"id\":\"i5\",\"name\":\"Bystronic\",\"type\":\"Corte y procesamiento\",\"logo\":\"/slides/uploads/LOGO-Bystronic.png\"},{\"id\":\"i6\",\"name\":\"Hegla\",\"type\":\"Corte y almacenamiento\",\"logo\":\"/slides/uploads/LOGO-HEGLA.jpeg\"},{\"id\":\"i7\",\"name\":\"Glaston\",\"type\":\"Templado y curvado\",\"logo\":\"/slides/uploads/LOGO-GLASTON.png\"},{\"id\":\"i9\",\"name\":\"Erdman\",\"type\":\"Líneas automatizadas\",\"logo\":\"/slides/uploads/LOGO%20ERDMAN.png\"}]",
+          "previous": null,
+          "dirty": false
         }
       }
     }
