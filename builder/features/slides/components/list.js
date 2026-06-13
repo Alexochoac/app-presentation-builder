@@ -61,7 +61,28 @@ window.List = (function () {
     var parent      = ul.parentElement;
     var restoreArea = parent ? parent.querySelector('[data-ls-restore]') : null;
     var addBtn      = parent ? parent.querySelector('[data-ls-add]')     : null;
+
+    // Self-heal: tabs.js strips data-builder-only when saving a tabs blob, which removes
+    // [data-ls-restore] and [data-ls-add] from saved state. Recreate them if missing so
+    // the list stays functional even after a stale tabs save.
+    if (parent && !restoreArea) {
+      restoreArea = document.createElement('div');
+      restoreArea.setAttribute('data-ls-restore', '');
+      parent.insertBefore(restoreArea, ul.nextSibling);
+    }
+    if (parent && !addBtn && !window.PB_READONLY) {
+      addBtn = document.createElement('button');
+      addBtn.setAttribute('data-ls-add', '');
+      addBtn.textContent = '+ Add item';
+      parent.appendChild(addBtn);
+    }
     var dragSrc     = null;
+
+    function itemLabel(li) {
+      var c = li.cloneNode(true);
+      c.querySelectorAll('[data-builder-only]').forEach(function (n) { n.remove(); });
+      return c.textContent.trim().substring(0, 40);
+    }
 
     function saveList() {
       var clone = ul.cloneNode(true);
@@ -103,7 +124,7 @@ window.List = (function () {
             li.remove();
             saveList();
           } else {
-            var text = li.innerText.replace('⠿×', '').trim().substring(0, 40);
+            var text = itemLabel(li);
             li.classList.add('ls-list-hidden');
             saveList();
             if (restoreArea) {
@@ -182,7 +203,7 @@ window.List = (function () {
     if (restoreArea) {
       restoreArea.innerHTML = '';
       ul.querySelectorAll('li.ls-list-hidden').forEach(function (li) {
-        var text = li.innerText.replace('⠿×', '').trim().substring(0, 40);
+        var text = itemLabel(li);
         var chip = document.createElement('button');
         chip.className = 'ls-list-restore-chip';
         chip.textContent = '+ ' + text;
