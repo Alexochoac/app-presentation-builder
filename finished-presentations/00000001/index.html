@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SoftSolution</title>
+  <title>EXTRAS</title>
   <style>
 /*
   Presentation Builder — Softsolution
@@ -13,6 +13,12 @@
 
 /* ── Brand Variables ── */
 :root {
+  /* Shared content width for pb-responsive slides — one fluid cap so every rebuilt slide
+     expands to the SAME width on large screens (rulebook §3 shared skeleton). */
+  --pb-content-max:  clamp(940px,80vw,1400px);
+  /* Shared height for the PRIMARY image carousel of a pb-responsive slide — so slides fill
+     to the same vertical extent on tall screens. Secondary/special heights stay per-slide. */
+  --pb-media-h:      clamp(280px,56vh,720px);
   --accent:          #F5A623;
   --accent-mid:      #E8890C;
   --accent-light:    var(--accent);
@@ -691,11 +697,11 @@ window.PBUpload = function (filename, dataUrl) {
     <a href="https://glassquality.com" id="fp-dash-btn">Go to Glassquality.com</a>
     <div style="width:1px;height:20px;background:#333;flex-shrink:0;"></div>
     <button class="fp-nav-btn" id="fp-prev" disabled>&#8249;</button>
-    <div id="fp-counter">1 / 9</div>
+    <div id="fp-counter">1 / 16</div>
     <button class="fp-nav-btn" id="fp-next">&#8250;</button>
     <div id="fp-lang-drop"><button id="fp-lang-btn" onclick="fpLangToggle()"><span id="fp-lang-label">EN</span><svg width="8" height="8" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg></button><div id="fp-lang-menu"><button data-lang="en" onclick="fpLangSelect('en')">EN — English</button><button data-lang="es" onclick="fpLangSelect('es')">ES — Español</button></div></div>
     <div id="fp-header-spacer"></div>
-    <div id="fp-title">SoftSolution</div>
+    <div id="fp-title">EXTRAS</div>
     <button class="fp-share-btn" id="fp-share-btn-hdr" title="Share presentation"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
   </div>
   <div id="fp-viewer">
@@ -716,7 +722,7 @@ window.PBUpload = function (filename, dataUrl) {
   <!-- Customer logo uploader — the one cover-unique feature (positioning is scoped, never themed) -->
   <div class="template01-cover-customer-logo" data-edit="customer-logo" data-edit-type="image">
     
-    <img class="template01-cover-cust-img" src="../shared/LOGO-SoftSolution.png" alt="Customer Logo" onerror="this.classList.add('template01-cover-cust-img--missing')">
+    <img class="template01-cover-cust-img" src="../shared/CostOfQualityDefects.png" alt="Customer Logo" onerror="this.classList.add('template01-cover-cust-img--missing')">
     <label class="template01-cover-cust-placeholder">
       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="3"></rect>
@@ -734,7 +740,7 @@ window.PBUpload = function (filename, dataUrl) {
   <div class="hero-content">
     <div class="brand-badge" data-edit="badge"><span data-lang="en">LINESCANNER · OSPREY<span style="letter-spacing: 1.2px;">· CULLETSCANNER&nbsp;<span style="letter-spacing: 1.2px;">·</span></span>Solution</span><span data-lang="es" hidden="">LINESCANNER · OSPREY<span style="letter-spacing: 1.2px;">· CULLETSCANNER&nbsp;<span style="letter-spacing: 1.2px;">·</span></span>Solución</span></div>
     <h1 data-edit="headline"><span data-lang="en">Quality Inspection&nbsp;<span class="blue">for Flat Glass</span></span><span data-lang="es" hidden="">Inspección de Calidad&nbsp;&nbsp;<span class="blue">para Vidrio Plano</span></span></h1>
-    <h2 data-edit="subheadline"><span data-lang="en">Proposal for SoftSolution · Alex Ochoa</span><span data-lang="es" hidden="">Propuesta para SoftSolution · Alex Ochoa</span></h2>
+    <h2 data-edit="subheadline"><span data-lang="en">Proposal for EXTRAS · Jane</span><span data-lang="es" hidden="">Propuesta para EXTRAS · Jane</span></h2>
   </div>
 
   <style>
@@ -878,7 +884,7 @@ window.PBUpload = function (filename, dataUrl) {
 </button>
 <div data-ls-gallery="" data-edit="gallery-track" data-autoplay="8" style="display:none;">
   
-<div class="ls-gallery-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects"><div class="ls-gallery-caption">CostOfQualityDefects</div></div></div></div>
+<div class="ls-gallery-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects"><div class="ls-gallery-caption">CostOfQualityDefects</div></div><div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">COSTS</span><span class="ls-gallery-number">Rule 1+10+100</span><span class="ls-gallery-body-text">The <strong data-start="4" data-end="21">1+10+100 rule</strong> shows why quality matters in the glass industry. A defect prevented during production may cost <strong data-start="117" data-end="122">1</strong> to fix. If found later during inspection, it can cost <strong data-start="177" data-end="183">10</strong>. If it reaches the customer, the cost may rise to <strong data-start="234" data-end="241">100</strong> because of replacements, complaints, and lost trust. The message is clear: <strong data-start="317" data-end="365" data-is-last-node="">find problems early, or pay much more later.</strong></span></div></div><div class="ls-gallery-slide"><img src="../shared/EfficiencyCliff.png" alt="EfficiencyCliff"><div class="ls-gallery-caption">EfficiencyCliff</div></div><div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">The impossible task</span><span class="ls-gallery-number">The human limit&nbsp;</span><span class="ls-gallery-body-text">Inspecting glass manually is extremely difficult. Defects are often tiny, products move fast, and concentration drops over time. Even skilled operators can miss flaws, making consistent 100% quality inspection impossible.</span></div></div></div></div>
 </div>
 <div class="fp-slide" data-slide-index="1" style="display:none;">
 <div class="slide content template03-why-us pb-responsive" data-slide="why-us-validated" data-slide-mode="sequence">
@@ -908,7 +914,7 @@ window.PBUpload = function (filename, dataUrl) {
         <!-- Problem / status-quo column -->
         <div class="card card-compare card-compare--problem anim-in">
           <div class="card-compare-head" data-edit="col-header-prob"><span data-lang="en">Without Inspection Automation</span><span data-lang="es" hidden="">Sin automatización de inspección</span></div>
-          <ul class="card-compare-list" data-ls-list="" data-lang="en"><div class="compare-tier" data-edit="tier-label-1">Human Limitations</div><li class="">Operator fatigue — detection rates drop significantly over long shifts</li><li>As line speed increases, operator effectiveness declines — more throughput means more defects slip through</li><li>100% manual inspection is impossible at production speed</li><li>Distortion &amp; anisotropy are <strong>invisible to the naked eye</strong> — no matter how skilled the operator</li><div class="compare-tier" data-edit="tier-label-2">Business Impact</div><li>Inconsistent quality &amp; frequent customer complaints</li><li>Construction-site rejections — glass already delivered &amp; installed means transport, rework &amp; project delays</li><li class="">Increased liability risks &amp; reputational damage</li><li class="">Automotive: one defect triggers a full batch return — shipping &amp; material costs on the entire load</li></ul><ul class="card-compare-list" data-ls-list="" data-lang="es" hidden=""><div class="compare-tier" data-edit="tier-label-1">Limitaciones humanas</div><li class="">Fatiga del operador — las tasas de detección disminuyen significativamente durante turnos largos</li><li>A medida que aumenta la velocidad de la línea, la efectividad del operador disminuye — mayor rendimiento significa que más defectos pasan desapercibidos</li><li>La inspección manual al 100% es imposible a velocidad de producción</li><li>La distorsión y la anisotropía son <strong>invisibles al ojo desnudo</strong> — sin importar cuán hábil sea el operador</li><div class="compare-tier" data-edit="tier-label-2">Impacto comercial</div><li>Calidad inconsistente y quejas frecuentes de clientes</li><li>Rechazos en la obra — vidrio ya entregado e instalado significa transporte, rework y retrasos en proyectos</li><li class="">Riesgos de responsabilidad civil aumentados y daño reputacional</li><li class="">Automoción: un defecto desencadena el retorno de todo un lote — costos de envío y material de toda la carga</li></ul>
+          <ul class="card-compare-list" data-ls-list="" data-lang="en"><div class="compare-tier" data-edit="tier-label-1">Human Limitations</div><li class="">Operator fatigue — detection rates drop significantly over long shifts</li><li>As line speed increases, operator effectiveness declines — more throughput means more defects slip through</li><li>100% manual inspection is impossible at production speed</li><li>Distortion &amp; anisotropy are <strong>invisible to the naked eye</strong> — no matter how skilled the operator</li><div class="compare-tier" data-edit="tier-label-2">Business Impact</div><li>Inconsistent quality &amp; frequent customer complaints</li><li>Construction-site rejections — glass already delivered &amp; installed means transport, rework &amp; project delays</li><li class="">Increased liability risks &amp; reputational damage</li><li class="">Automotive: one defect triggers a full batch return — shipping &amp; material costs on the entire load</li><li class="">New item</li></ul><ul class="card-compare-list" data-ls-list="" data-lang="es" hidden=""><div class="compare-tier" data-edit="tier-label-1">Limitaciones humanas</div><li class="">Fatiga del operador — las tasas de detección disminuyen significativamente durante turnos largos</li><li>A medida que aumenta la velocidad de la línea, la efectividad del operador disminuye — mayor rendimiento significa que más defectos pasan desapercibidos</li><li>La inspección manual al 100% es imposible a velocidad de producción</li><li>La distorsión y la anisotropía son <strong>invisibles al ojo desnudo</strong> — sin importar cuán hábil sea el operador</li><div class="compare-tier" data-edit="tier-label-2">Impacto comercial</div><li>Calidad inconsistente y quejas frecuentes de clientes</li><li>Rechazos en la obra — vidrio ya entregado e instalado significa transporte, rework y retrasos en proyectos</li><li class="">Riesgos de responsabilidad civil aumentados y daño reputacional</li><li class="">Automoción: un defecto desencadena el retorno de todo un lote — costos de envío y material de toda la carga</li></ul>
           
           
         </div>
@@ -916,7 +922,7 @@ window.PBUpload = function (filename, dataUrl) {
         <!-- Benefit / solution column -->
         <div class="card card-compare card-compare--benefit anim-in">
           <div class="card-compare-head" data-edit="col-header-ben"><span data-lang="en">LineScanner &amp; Osprey</span><span data-lang="es" hidden="">LineScanner y Osprey</span></div>
-          <ul class="card-compare-list" data-ls-list="" data-lang="en"><li>100% inspection of every glass, every shift — no fatigue, no blind spots</li><li>Real-time process control &amp; quality feedback</li><li>Prove quality to customers — a documented defense against claims</li><li>Database &amp; archive for shift accountability and CpK analysis</li><li>Detects distortion, anisotropy &amp; surface defects <strong>invisible to the human eye</strong></li><li class="">Acceptance procedures for new machinery (e.g. furnaces)</li><li draggable="false" class="">Mandatory as per industry standards</li><li class="">Increase throughput &amp; reduce costly downstream rejects</li><li class="">New item lo que sea&nbsp;</li></ul><ul class="card-compare-list" data-ls-list="" data-lang="es" hidden=""><li>Inspección del 100% de cada vidrio, cada turno — sin fatiga, sin puntos ciegos</li><li>Control de proceso en tiempo real y retroalimentación de calidad</li><li>Demuestre calidad a los clientes — una defensa documentada contra reclamaciones</li><li>Base de datos y archivo para rendición de cuentas por turno y análisis CpK</li><li>Detecta distorsión, anisotropía y defectos superficiales <strong>invisibles al ojo humano</strong></li><li class="">Procedimientos de aceptación para maquinaria nueva (p. ej. hornos)</li><li draggable="false" class="">Obligatorio según estándares de la industria</li><li class="">Aumentar el rendimiento y reducir rechazos costosos aguas abajo</li><li class="">Nuevo elemento lo que sea&nbsp;</li></ul>
+          <ul class="card-compare-list" data-ls-list="" data-lang="en"><li>100% inspection of every glass, every shift — no fatigue, no blind spots</li><li>Real-time process control &amp; quality feedback</li><li>Prove quality to customers — a documented defense against claims</li><li>Database &amp; archive for shift accountability and CpK analysis</li><li>Detects distortion, anisotropy &amp; surface defects <strong>invisible to the human eye</strong></li><li class="">Acceptance procedures for new machinery (e.g. furnaces)</li><li draggable="false" class="">Mandatory as per industry standards</li><li class="">Increase throughput &amp; reduce costly downstream rejects</li><li class="ls-list-hidden">New item lo que sea&nbsp;</li><li class="">New item</li><li class="">New item</li></ul><ul class="card-compare-list" data-ls-list="" data-lang="es" hidden=""><li>Inspección del 100% de cada vidrio, cada turno — sin fatiga, sin puntos ciegos</li><li>Control de proceso en tiempo real y retroalimentación de calidad</li><li>Demuestre calidad a los clientes — una defensa documentada contra reclamaciones</li><li>Base de datos y archivo para rendición de cuentas por turno y análisis CpK</li><li>Detecta distorsión, anisotropía y defectos superficiales <strong>invisibles al ojo humano</strong></li><li class="">Procedimientos de aceptación para maquinaria nueva (p. ej. hornos)</li><li draggable="false" class="">Obligatorio según estándares de la industria</li><li class="">Aumentar el rendimiento y reducir rechazos costosos aguas abajo</li><li class="">Nuevo elemento lo que sea&nbsp;</li></ul>
           
           
         </div>
@@ -936,7 +942,7 @@ window.PBUpload = function (filename, dataUrl) {
 
     /* Columns sit side-by-side only when each has ≥~320px; otherwise they stack. Width-driven
        (auto-fit), not a device breakpoint — adapts to real available space. */
-    .template03-why-us-compare { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:clamp(14px,2vw,20px); width:100%; max-width:920px; margin:0 auto; }
+    .template03-why-us-compare { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:clamp(14px,2vw,20px); width:100%; max-width:var(--pb-content-max); margin:0 auto; }
 
     .template03-why-us .card-compare { display:flex; flex-direction:column; padding:20px 22px 8px; border-top:3px solid var(--border); }
     .template03-why-us .card-compare:hover { transform:none; }
@@ -981,7 +987,7 @@ window.PBUpload = function (filename, dataUrl) {
 </button>
 <div data-ls-gallery="" data-edit="gallery-track" data-autoplay="8" style="display:none;">
   
-<div class="ls-gallery-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects"><div class="ls-gallery-caption">CostOfQualityDefects</div></div><div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">Section Title</span><span class="ls-gallery-number">Key Fact</span><span class="ls-gallery-body-text">Description text here</span></div></div></div></div>
+<div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">Section Title</span><span class="ls-gallery-number">2</span><span class="ls-gallery-body-text">Description text here</span></div></div></div></div>
 </div>
 <div class="fp-slide" data-slide-index="2" style="display:none;">
 <div class="slide content template02-company pb-responsive" data-slide="company-intro-validated" data-slide-mode="sequence">
@@ -1006,25 +1012,25 @@ window.PBUpload = function (filename, dataUrl) {
            image carousel and has NO tab button — it is revealed by clicking the active tab. -->
       <div class="ls-tabs template02-company-tabs" data-edit="tabs" data-track="template02-company:tabs">
         <div class="ls-tab-list">
-          <button class="ls-tab active" data-panel="1" data-edit="tab-about" style=""><span data-lang="en">About Us</span><span data-lang="es" hidden="">Acerca de Nosotros</span></button>
+          <button class="ls-tab" data-panel="1" data-edit="tab-about" style=""><span data-lang="en">About Us</span><span data-lang="es" hidden="">Acerca de Nosotros</span></button>
           <button class="ls-tab" data-panel="2" data-edit="tab-technologies"><span data-lang="en">Technologies</span><span data-lang="es" hidden="">Tecnologías</span></button>
           <button class="ls-tab" data-panel="3" data-edit="tab-network"><span data-lang="en">Global Network</span><span data-lang="es" hidden="">Red Global</span></button>
           <button class="ls-tab" data-panel="4" data-edit="tab-iqc" style=""><span data-lang="en">IQC Group</span><span data-lang="es" hidden="">Grupo IQC</span></button>
-        </div>
+        <button class="ls-tab" data-panel="5" style="">Extra</button></div>
         <div class="ls-tab-panels">
 
           <!-- Panel 0 — team carousel (revealed by clicking the active tab) -->
-          <div class="ls-tab-panel" data-panel="0" style="padding-top:12px;">
+          <div class="ls-tab-panel active" data-panel="0" style="padding-top:12px;">
             <div class="ls-carousel" data-counter="" data-edit="company-carousel" data-track="template02-company:carousel" style="flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform:translateX(0px);" data-fit="cover">
                 <div class="ls-carousel-slide">
                   <img src="../shared/Group-Picture-of-the-Team-members-.png" alt="Group Picture of the Team members" data-zoom="">
                   
-                </div>
-              </div></div>
+                <div class="ls-carousel-caption">Group Picture of the Team members</div></div>
+              </div><div class="ls-carousel-counter"></div></div>
           </div>
 
           <!-- Panel 1 — About: three pillar cards -->
-          <div class="ls-tab-panel active" data-panel="1"><div class="template02-company-pillars"><div class="card card-pillar anim-in" style=""><div class="card-pillar-num">01</div><div class="card-pillar-content"><div class="card-pillar-title" data-edit="pillar-1-title"><span data-lang="en">One Partner.</span><span data-lang="es" hidden="">Un Socio</span></div><div class="card-pillar-desc" data-edit="pillar-1-desc"><span data-lang="en">for all your quality inspection needs — surface, geometry, dimension, and more.</span><span data-lang="es" hidden="">para todas sus necesidades de inspección de calidad — superficie, geometría, dimensión y más</span></div></div></div><div class="card card-pillar anim-in" style=""><div class="card-pillar-num">02</div><div class="card-pillar-content"><div class="card-pillar-title" data-edit="pillar-2-title"><span data-lang="en">Global Presence</span><span data-lang="es" hidden="">Presencia Global</span></div><div class="card-pillar-desc" data-edit="pillar-2-desc"><span data-lang="en">global support hubs with local experts in 23 countries across 6 continents</span><span data-lang="es" hidden="">centros de apoyo global con expertos locales en 23 países en 6 continentes</span></div></div></div><div class="card card-pillar anim-in" style=""><div class="card-pillar-num">03</div><div class="card-pillar-content"><div class="card-pillar-title" data-edit="pillar-3-title"><span data-lang="en">Technological Leadership</span><span data-lang="es" hidden="">Liderazgo Tecnológico</span></div><div class="card-pillar-desc" data-edit="pillar-3-desc"><span data-lang="en">true scanning · bright-field · dark-field · reflection · spectrometer</span><span data-lang="es" hidden="">escaneo verdadero · campo claro · campo oscuro · reflexión · espectrómetro</span></div></div></div></div></div>
+          <div class="ls-tab-panel" data-panel="1"><div class="template02-company-pillars"><div class="card card-pillar anim-in" style=""><div class="card-pillar-num">01</div><div class="card-pillar-content"><div class="card-pillar-title" data-edit="pillar-1-title"><span data-lang="en">One Partner.</span><span data-lang="es" hidden="">Un Socio</span></div><div class="card-pillar-desc" data-edit="pillar-1-desc"><span data-lang="en">for all your quality inspection needs — surface, geometry, dimension, and more.</span><span data-lang="es" hidden="">para todas sus necesidades de inspección de calidad — superficie, geometría, dimensión y más</span></div></div></div><div class="card card-pillar anim-in" style=""><div class="card-pillar-num">02</div><div class="card-pillar-content"><div class="card-pillar-title" data-edit="pillar-2-title"><span data-lang="en">Global Presence</span><span data-lang="es" hidden="">Presencia Global</span></div><div class="card-pillar-desc" data-edit="pillar-2-desc"><span data-lang="en">global support hubs with local experts in 23 countries across 6 continents</span><span data-lang="es" hidden="">centros de apoyo global con expertos locales en 23 países en 6 continentes</span></div></div></div><div class="card card-pillar anim-in" style=""><div class="card-pillar-num">03</div><div class="card-pillar-content"><div class="card-pillar-title" data-edit="pillar-3-title"><span data-lang="en">Technological Leadership</span><span data-lang="es" hidden="">Liderazgo Tecnológico</span></div><div class="card-pillar-desc" data-edit="pillar-3-desc"><span data-lang="en">true scanning · bright-field · dark-field · reflection · spectrometer</span><span data-lang="es" hidden="">escaneo verdadero · campo claro · campo oscuro · reflexión · espectrómetro</span></div></div></div></div></div>
 
           <!-- Panel 2 — Technologies: feature list -->
           <div class="ls-tab-panel" data-panel="2"><div class="feature-list" style="margin:12px 0 0;gap:8px;"><div class="feature-item anim-in" style=""><div class="feature-num">1</div><div class="feature-text"><strong data-edit="tech-1-name"><span data-lang="en">90° Parallel-Light System</span><span data-lang="es" hidden="">Sistema de Luz Paralela 90°</span></strong><span data-edit="tech-1-desc"><span data-lang="en"> — Sensor-based technology using a 90° parallel-light beam to detect surface defects.</span><span data-lang="es" hidden="">— Tecnología basada en sensores que utiliza un haz de luz paralela de 90° para detectar defectos de superficie.</span></span></div></div><div class="feature-item anim-in" style=""><div class="feature-num">2</div><div class="feature-text"><strong data-edit="tech-2-name"><span data-lang="en">Bright-field &amp; Dark-field</span><span data-lang="es" hidden="">Campo claro y campo oscuro</span></strong><span data-edit="tech-2-desc"><span data-lang="en"> — Camera-based technology combining both illumination modes.</span><span data-lang="es" hidden="">— Tecnología basada en cámara que combina ambos modos de iluminación.</span></span></div></div><div class="feature-item anim-in" style=""><div class="feature-num">3</div><div class="feature-text"><strong data-edit="tech-3-name"><span data-lang="en">Reflexion Technology</span><span data-lang="es" hidden="">Tecnología de Reflexión</span></strong><span data-edit="tech-3-desc"><span data-lang="en"> — Sensor and stray-light technology using reflexion principles.</span><span data-lang="es" hidden="">— Tecnología de sensor y luz parásita utilizando principios de reflexión.</span></span></div></div><div class="feature-item anim-in" style=""><div class="feature-num">4</div><div class="feature-text"><strong data-edit="tech-4-name"><span data-lang="en">Spectrometer</span><span data-lang="es" hidden="">Espectrómetro</span></strong><span data-edit="tech-4-desc"><span data-lang="en"> — Polarized filter sensor-technology for spectral analysi</span><span data-lang="es" hidden="">— Tecnología de sensor con filtro polarizado para análisis espectral.</span></span></div></div></div></div>
@@ -1055,7 +1061,7 @@ window.PBUpload = function (filename, dataUrl) {
             <div class="card card-iqc"><div class="card-iqc-logo" data-edit-type="image" title="Click to upload a logo"><img src="../shared/image114.png" alt="Partner logo"></div><div class="card-iqc-country">New</div><ul class="card-iqc-products"><li>Coming soon...</li></ul></div></div>
           </div>
 
-        </div><!-- /.ls-tab-panels -->
+        <div class="ls-tab-panel" data-panel="5"><div class="ls-carousel" data-counter="" data-zoom-group="" style="flex:1;min-height:0;width:100%;">  <div class="ls-carousel-track" style="transform: translateX(0px);">      <div class="ls-carousel-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects" data-zoom=""><div class="ls-carousel-caption">CostOfQualityDefects</div></div></div><div class="ls-carousel-counter"></div></div></div></div><!-- /.ls-tab-panels -->
       </div>
 
       <!-- Stats row -->
@@ -1081,10 +1087,10 @@ window.PBUpload = function (filename, dataUrl) {
        sole scroll container. Content-flow — panels/cards/grids size to their content; nothing
        inner-clips. Rules here are Company-positional; surfaces compose from .card/.kpi-card. */
     .template02-company .slide-body { width:100%; align-items:center; }
-    .template02-company-tabs { width:100%; max-width:860px; }
+    .template02-company-tabs { width:100%; max-width:var(--pb-content-max); }
     /* flex:none !important overrides the carousel's inline flex:1 (flex-basis:0) — in a content-flow
        (auto-height) panel that would collapse the carousel to 0 and hide the "Add images" state. */
-    .template02-company .ls-carousel { height:clamp(240px,42vh,380px) !important; min-height:0 !important; flex:none !important; }
+    .template02-company .ls-carousel { height:var(--pb-media-h) !important; min-height:0 !important; flex:none !important; }
 
     /* Pillars — .card surface + positional modifier (accent bar, giant index number) */
     .template02-company-pillars { display:flex; flex-direction:column; gap:8px; padding:12px 0 8px; }
@@ -1129,9 +1135,29 @@ window.PBUpload = function (filename, dataUrl) {
     .card-iqc-products li::before { content:"› "; color:var(--accent); font-weight:700; }
 
     /* Stats — auto-fit: 4-up when wide, fewer when narrow */
-    .template02-company-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; width:100%; max-width:860px; padding:10px 0 16px; }
+    .template02-company-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; width:100%; max-width:var(--pb-content-max); padding:10px 0 16px; }
     .template02-company-stats .kpi-card { padding:14px 12px; }
     .template02-company-stats .kpi-value { font-size:clamp(18px,2.2vw,32px); }
+
+    /* ≥1200px (laptops/monitors): lock the slide to one screen so switching tabs never changes the
+       height (NO JUMP). The tabs fill the space above the persistent stats row; every panel is the
+       same height. Image panels (carousel, map) fill it; shorter text/card panels center within it.
+       Overflow stays auto so an unusually tall panel scrolls instead of clipping. Tablets/phones scroll. */
+    @media (min-width:1200px) {
+      .template02-company .slide-layout { height:100%; justify-content:flex-start; }
+      .template02-company .slide-body { flex:1 1 auto; min-height:0; }
+      .template02-company .template02-company-tabs { flex:1 1 auto; min-height:0; }
+      .template02-company .template02-company-stats { flex:none; }
+      .template02-company .ls-tab-panels { flex:1 1 auto; min-height:0; height:auto; }
+      .template02-company .ls-tab-panel.active { height:100%; min-height:0; justify-content:safe center; }
+      .template02-company .ls-tab-panel.active .ls-carousel { height:100% !important; }
+      .template02-company .ls-tab-panel.active .template02-company-map { height:100%; aspect-ratio:auto; margin-top:0; }
+      /* Tab 1 (pillars): cards stretch to fill the panel — substantial, not floating. */
+      .template02-company .ls-tab-panel.active .template02-company-pillars { height:100%; }
+      .template02-company .ls-tab-panel.active .card-pillar { flex:1 1 0; }
+      /* Tab 2 (features): list fills the panel, items distributed with even breathing room. */
+      .template02-company .ls-tab-panel.active .feature-list { height:100%; justify-content:space-evenly; }
+    }
   </style>
 
   <script>
@@ -1269,7 +1295,7 @@ window.PBUpload = function (filename, dataUrl) {
             if (iqcWrap.querySelectorAll('.card-iqc').length >= IQC_MAX) return;
             var card = document.createElement('div');
             card.className = 'card card-iqc';
-            card.innerHTML = '<div class="card-iqc-logo" data-edit-type="image"><img src="/shared/brand/logo.svg" alt="Partner logo"></div>'
+            card.innerHTML = '<div class="card-iqc-logo" data-edit-type="image"><img src="../shared/logo.svg" alt="Partner logo"></div>'
               + '<div class="card-iqc-country">Country</div>'
               + '<ul class="card-iqc-products"><li>Product one</li></ul>';
             iqcWrap.appendChild(card);
@@ -1312,10 +1338,10 @@ window.PBUpload = function (filename, dataUrl) {
   Gallery
 </button>
 <div data-ls-gallery="" data-edit="gallery-track" data-autoplay="8" style="display:none;">
-  <div class="ls-gallery-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects"><div class="ls-gallery-caption">CostOfQualityDefects</div></div>
+  
   <div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat">
     <span class="ls-gallery-label">Section Title</span>
-    <span class="ls-gallery-number">Key Fact</span>
+    <span class="ls-gallery-number">3</span>
     <span class="ls-gallery-body-text">Description text here</span>
   </div></div>
 </div></div>
@@ -1344,12 +1370,12 @@ window.PBUpload = function (filename, dataUrl) {
            (data-ls-table): row drag/hide, column hide, ◆ dot-cycling, double-click cell edit. -->
       <div class="ls-tabs template04-products-tabs" data-edit="tabs" data-track="template04-products:tabs">
         <div class="ls-tab-list">
-          <button class="ls-tab active" data-panel="1" data-edit="tab-matrix" style=""><span data-lang="en">Capability Matrix</span><span data-lang="es" hidden="">Matriz de Capacidades</span></button>
+          <button class="ls-tab" data-panel="1" data-edit="tab-matrix" style=""><span data-lang="en">Capability Matrix</span><span data-lang="es" hidden="">Matriz de Capacidades</span></button>
           <button class="ls-tab" data-panel="2" data-edit="tab-process"><span data-lang="en">Where in Your Process</span><span data-lang="es" hidden="">Dónde en Su Proceso</span></button>
-        <button class="ls-tab" data-panel="3" style="">New Tab</button></div>
+        <button class="ls-tab active" data-panel="3" style="">Extra</button></div>
         <div class="ls-tab-panels">
 
-          <div class="ls-tab-panel active" data-panel="1">
+          <div class="ls-tab-panel" data-panel="1">
             <div class="template04-products-matrix-grid">
               <div class="template04-products-table-wrap anim-in" style="">
                 <table class="template04-products-table" data-ls-table="" data-lang="en">
@@ -1420,7 +1446,7 @@ window.PBUpload = function (filename, dataUrl) {
                       <div class="template04-products-car-label" data-edit="car-label-3"><span data-lang="en">Osprey</span><span data-lang="es" hidden="">Osprey</span></div>
                       
                     <div class="ls-carousel-caption">Osprey</div></div>
-                  </div><div class="ls-carousel-counter">1 / 3</div></div>
+                  <div class="ls-carousel-slide"><img src="../shared/Cullet_Scanner_Picture.png" alt="Cullet_Scanner_Picture" data-zoom=""><div class="ls-carousel-caption">Cullet_Scanner_Picture</div></div></div><div class="ls-carousel-counter">1 / 4</div></div>
               </div>
             </div>
           </div>
@@ -1445,7 +1471,7 @@ window.PBUpload = function (filename, dataUrl) {
                     <tr><td>Load Control (Location of Glasses, Distance, Long and Wide Load, Broken Corners)</td><td></td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td></tr>
                     <tr class=""><td>Overall Bending Check (6 Measurement for all Edges)</td><td><span class="ls-dot ls-dot-on">◆</span></td><td></td><td></td></tr>
                     <tr draggable="false" class=""><td>Data Matrix Code Interpretation</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td></tr><tr class=""><td>Glass Thickness Check (Thickness, Side of Coating)</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td></tr>
-                    <tr class="" draggable="false"><td>Glass Type Recognition / Coating Type and Thickness Recognition</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td></tr>
+                    <tr class="" draggable="true"><td>Glass Type Recognition / Coating Type and Thickness Recognition</td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td><td><span class="ls-dot ls-dot-on">◆</span></td></tr>
                     
                   </tbody>
                 </table><table class="template04-products-table" data-ls-table="" data-lang="es" hidden="">
@@ -1523,7 +1549,7 @@ window.PBUpload = function (filename, dataUrl) {
             </div>
           </div>
 
-        <div class="ls-tab-panel" data-panel="3"><div class="ls-carousel" data-counter="" data-zoom-group="" style="flex:1;min-height:0;width:100%;">  <div class="ls-carousel-track" style="transform: translateX(0px);">    <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;">      <span style="color:rgba(255,255,255,.2);font-size:13px;font-style:italic;">Add images with the + Image button</span>    </div>  </div><div class="ls-carousel-counter"></div></div></div></div>
+        <div class="ls-tab-panel active" data-panel="3"><div class="ls-carousel" data-counter="" data-zoom-group="" style="flex:1;min-height:0;width:100%;">  <div class="ls-carousel-track" style="transform: translateX(0px);">      <div class="ls-carousel-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects" data-zoom=""><div class="ls-carousel-caption">CostOfQualityDefects</div></div></div><div class="ls-carousel-counter"></div></div></div></div>
       </div>
 
     </div>
@@ -1539,7 +1565,7 @@ window.PBUpload = function (filename, dataUrl) {
        Rules here are positional; colours reference theme variables so a Finish block converts them.
        The matrix fits any width by wrapping its label column + scaling font — no inner scroll. */
     .template04-products .slide-body { width:100%; align-items:center; }
-    .template04-products-tabs { width:100%; max-width:980px; }
+    .template04-products-tabs { width:100%; max-width:var(--pb-content-max); }
 
     /* Panel grids — stacked on narrow screens; table beside carousel / stage cards once the screen
        allows it (≥769px, below). The wide-screen template gives the table the larger share, and
@@ -1576,7 +1602,7 @@ window.PBUpload = function (filename, dataUrl) {
     /* Carousel — flex:none !important beats the component's inline flex:1 (flex-basis:0), which would
        collapse the carousel to 0 height in a content-flow panel. Mobile-first: tall so the stacked
        product image is as big as the screen allows; trimmed when side-by-side at min-width:769px. */
-    .template04-products .ls-carousel { height:clamp(300px,62vh,560px) !important; min-height:0 !important; flex:none !important; }
+    .template04-products .ls-carousel { height:var(--pb-media-h) !important; min-height:0 !important; flex:none !important; }
     .template04-products .ls-carousel-slide { gap:6px; }
     .template04-products .ls-carousel-slide img { flex:1 1 auto; min-height:0; width:100%; max-height:100%; object-fit:contain; }
     .template04-products-car-label { padding:8px 12px; font-size:clamp(10px,1vw,12px); font-weight:600; color:var(--text-muted); text-align:center; letter-spacing:.04em; }
@@ -1607,6 +1633,19 @@ window.PBUpload = function (filename, dataUrl) {
       /* Side-by-side: matrix takes the wider share, carousel/stage cards sit beside it */
       .template04-products-matrix-grid { grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); }
       .template04-products-proc-grid   { grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); }
+    }
+
+    /* ≥1200px (laptops/monitors): lock the slide to one screen so switching the two matrix tabs never
+       jumps. Each panel's matrix|media row fills the height; the carousel fills its cell, the matrix
+       sits at the top of its cell. Overflow stays auto so a tall matrix scrolls instead of clipping. */
+    @media (min-width:1200px) {
+      .template04-products .slide-layout { height:100%; justify-content:flex-start; }
+      .template04-products .slide-body { flex:1 1 auto; min-height:0; }
+      .template04-products .template04-products-tabs { flex:1 1 auto; min-height:0; }
+      .template04-products .ls-tab-panels { flex:1 1 auto; min-height:0; height:auto; }
+      .template04-products .ls-tab-panel.active { height:100%; min-height:0; }
+      .template04-products .ls-tab-panel.active .template04-products-matrix-grid { height:100%; min-height:0; align-items:stretch; }
+      .template04-products .ls-tab-panel.active .ls-carousel { height:100% !important; min-height:0 !important; }
     }
   </style>
 
@@ -1713,8 +1752,8 @@ window.PBUpload = function (filename, dataUrl) {
   Gallery
 </button>
 <div data-ls-gallery="" data-edit="gallery-track" data-autoplay="8" style="display:none;">
-  <div class="ls-gallery-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects"><div class="ls-gallery-caption">CostOfQualityDefects</div></div>
-  <div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">Section Title</span><span class="ls-gallery-number">Key Fact</span><span class="ls-gallery-body-text">Description text here</span></div></div>
+  
+  <div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">Section Title</span><span class="ls-gallery-number">4</span><span class="ls-gallery-body-text">Description text here</span></div></div>
 </div></div>
 </div>
 <div class="fp-slide" data-slide-index="4" style="display:none;">
@@ -1742,7 +1781,7 @@ window.PBUpload = function (filename, dataUrl) {
           <button class="ls-tab active" data-panel="1" data-edit="tab-howitworks"><span data-lang="en">How It Works</span><span data-lang="es" hidden="">Cómo Funciona</span></button>
           <button class="ls-tab" data-panel="2" data-edit="tab-advantage"><span data-lang="en">16-bit Advantage</span><span data-lang="es" hidden="">Ventaja de 16-bit</span></button>
           <button class="ls-tab" data-panel="3" data-edit="tab-compare"><span data-lang="en">vs Camera Systems</span><span data-lang="es" hidden="">vs Sistemas de Cámara</span></button>
-        <button class="ls-tab" data-panel="4" style="">New Tab</button></div>
+        <button class="ls-tab" data-panel="4" style="">Extra</button></div>
         <div class="ls-tab-panels">
 
           <!-- Panel 1 — How It Works: diagram + numbered points -->
@@ -1786,7 +1825,7 @@ window.PBUpload = function (filename, dataUrl) {
 <li><strong>8-bit depth:</strong> Only 256 grey levels — low-contrast defects are invisible</li>
 <li><strong>Position-dependent illumination:</strong> Uneven lighting across the field of view distorts results</li>
 <li><strong>False positives &amp; rejects:</strong> Pixel variation by position triggers unnecessary alarms</li>
-<li><strong>Recalibration required:</strong> Sensitivity must be re-tuned for every glass type and transmission level</li>
+<li class="ls-list-hidden"><strong>Recalibration required:</strong> Sensitivity must be re-tuned for every glass type and transmission level</li>
       </ul><ul class="card-compare-list" data-ls-list="" data-lang="es" hidden=""><li><strong>Cobertura de captura instantánea:</strong> Toma fotogramas periódicos — los espacios entre disparos significan que los defectos entre fotogramas pasan desapercibidos</li>
 <li><strong>Desenfoque de movimiento a velocidad:</strong> Las líneas de producción rápidas causan desenfoque de imagen, reduciendo la precisión de detección</li>
 <li><strong>Profundidad de 8-bit:</strong> Solo 256 niveles de gris — los defectos de bajo contraste son invisibles</li>
@@ -1830,7 +1869,7 @@ window.PBUpload = function (filename, dataUrl) {
             </div>
           </div>
 
-        <div class="ls-tab-panel" data-panel="4"><div class="ls-carousel" data-counter="" data-zoom-group="" style="flex:1;min-height:0;width:100%;">  <div class="ls-carousel-track" style="transform: translateX(0px);">    <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;">      <span style="color:rgba(255,255,255,.2);font-size:13px;font-style:italic;">Add images with the + Image button</span>    </div>  </div><div class="ls-carousel-counter"></div></div></div></div><!-- /.ls-tab-panels -->
+        <div class="ls-tab-panel" data-panel="4"><div class="ls-carousel" data-counter="" data-zoom-group="" style="flex:1;min-height:0;width:100%;">  <div class="ls-carousel-track" style="transform: translateX(0px);">      <div class="ls-carousel-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects" data-zoom=""><div class="ls-carousel-caption">CostOfQualityDefects</div></div></div><div class="ls-carousel-counter"></div></div></div></div><!-- /.ls-tab-panels -->
       </div>
 
     </div>
@@ -1842,7 +1881,7 @@ window.PBUpload = function (filename, dataUrl) {
        compose from .card / .feature-list / .ls-carousel so theme Finish blocks restyle them. Colours
        reference theme variables only. */
     .template05-technology .slide-body { width:100%; align-items:center; }
-    .template05-technology-tabs { width:100%; max-width:clamp(940px,80vw,1400px); }
+    .template05-technology-tabs { width:100%; max-width:var(--pb-content-max); }
 
     /* How It Works / Key Advantage: carousel on top, a grid of numbered text cards stacked below it
        (auto-fit → 2-up when wide, 1-up when narrow). Matches the legacy carousel + card layout. */
@@ -1859,12 +1898,12 @@ window.PBUpload = function (filename, dataUrl) {
        a brand-new tab (tabs.js). The media/shot rules below override the height for their own contexts. */
     .template05-technology .ls-carousel { flex:none !important; min-height:0 !important; height:clamp(220px,46vh,540px) !important; }
     .template05-technology .ls-carousel-slide img { flex:1 1 auto; min-height:0; width:100%; max-height:100%; object-fit:contain; }
-    .template05-technology-media .ls-carousel { height:clamp(260px,56vh,680px) !important; }
+    .template05-technology-media .ls-carousel { height:var(--pb-media-h) !important; }
 
     /* Comparison: three columns — list | images | list — side-by-side when wide, stacking when narrow
        (images stay between the lists in source order either way). Reuses the .card-compare pattern
        (✕ neutral / ✓ accent), theme-driven. */
-    .template05-technology-compare { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:clamp(14px,2vw,20px); align-items:start; width:100%; max-width:1040px; margin:0 auto; padding-top:12px; }
+    .template05-technology-compare { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:clamp(14px,2vw,20px); align-items:start; width:100%; max-width:var(--pb-content-max); margin:0 auto; padding-top:12px; }
     .template05-technology .card-compare { display:flex; flex-direction:column; padding:18px 20px 8px; border-top:3px solid var(--border); }
     .template05-technology .card-compare:hover { transform:none; }
     .template05-technology .card-compare-head { font-size:clamp(13px,1.5vw,18px); font-weight:800; letter-spacing:.01em; padding-bottom:10px; margin-bottom:10px; border-bottom:1px solid var(--border); color:var(--text-muted); }
@@ -1889,6 +1928,21 @@ window.PBUpload = function (filename, dataUrl) {
     /* Builder-only list controls never show in readonly / published output */
     .template05-technology-readonly [data-ls-add],
     .template05-technology-readonly [data-ls-restore] { display:none; }
+
+    /* ≥1200px (laptops/monitors): the active tab panel fills one screen. Carousel panels (How It Works /
+       Key Advantage) fit with NO scroll — the carousel fills the height left after the cards. Overflow
+       stays auto, so a long Comparison panel can still scroll instead of clipping. Tablets/phones scroll. */
+    @media (min-width:1200px) {
+      .template05-technology .slide-layout { height:100%; justify-content:flex-start; }
+      .template05-technology .slide-body { flex:1 1 auto; min-height:0; }
+      .template05-technology .ls-tabs { flex:1 1 auto; min-height:0; }
+      .template05-technology .ls-tab-panels { flex:1 1 auto; min-height:0; height:auto; }
+      .template05-technology .ls-tab-panel.active { height:100%; min-height:0; }
+      .template05-technology .template05-technology-stack { flex:1 1 auto; min-height:0; }
+      .template05-technology .template05-technology-cards { flex:none; }
+      .template05-technology .template05-technology-media { flex:1 1 auto; min-height:0; }
+      .template05-technology .template05-technology-media .ls-carousel { height:100% !important; min-height:0 !important; flex:none !important; }
+    }
   </style>
 
   <script>
@@ -1907,7 +1961,7 @@ window.PBUpload = function (filename, dataUrl) {
 </button>
 <div data-ls-gallery="" data-edit="gallery-track" data-autoplay="8" style="display:none;">
   
-<div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">Section Title</span><span class="ls-gallery-number">5&nbsp;</span><span class="ls-gallery-body-text">Description text here</span></div></div><div class="ls-gallery-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects"><div class="ls-gallery-caption">CostOfQualityDefects</div></div></div></div>
+<div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">Section Title</span><span class="ls-gallery-number">5&nbsp;</span><span class="ls-gallery-body-text">Description text here</span></div></div></div></div>
 </div>
 <div class="fp-slide" data-slide-index="5" style="display:none;">
 <div class="slide content template05-technology pb-responsive" data-slide="osprey-technology-validated" data-slide-mode="sequence">
@@ -1934,14 +1988,14 @@ window.PBUpload = function (filename, dataUrl) {
           <button class="ls-tab active" data-panel="1" data-edit="tab-howitworks"><span data-lang="en">How It Works?</span><span data-lang="es" hidden="">¿Cómo funciona?</span></button>
           <button class="ls-tab" data-panel="2" data-edit="tab-advantage"><span data-lang="en">What&nbsp;we&nbsp;see</span><span data-lang="es" hidden="">Lo&nbsp;que&nbsp;vemos</span></button>
           
-        <button class="ls-tab" data-panel="4" style="">Avoid this<br></button><button class="ls-tab" data-panel="5" style="">New Tab</button></div>
+        <button class="ls-tab" data-panel="4" style="">Avoid this<br></button><button class="ls-tab" data-panel="5" style="">Extra<br></button></div>
         <div class="ls-tab-panels">
 
           <!-- Panel 1 — How It Works: diagram + numbered points -->
           <div class="ls-tab-panel active" data-panel="1">
             <div class="template05-technology-stack">
               <div class="template05-technology-media">
-                <div class="ls-carousel" data-counter="" data-edit="hiw-diagram" data-track="template05-technology:howitworks" style="flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform:translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/Slide21.jpg" alt="Slide21" data-zoom="" style="object-fit: contain;"><div class="ls-carousel-caption">Slide21</div></div></div><div class="ls-carousel-counter"></div></div>
+                <div class="ls-carousel" data-counter="" data-edit="hiw-diagram" data-track="template05-technology:howitworks" style="flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform:translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/Slide21.jpg" alt="Slide21" data-zoom="" style="object-fit: cover;"><div class="ls-carousel-caption">Slide21</div></div></div><div class="ls-carousel-counter"></div></div>
               </div>
               <div class="template05-technology-cards">
                 <div class="card card-tech anim-in" style=""><span class="card-tech-num">1</span><div class="card-tech-text" data-edit="hiw-1"><span data-lang="en"><font color="#ffffff"><b>Omnidirectional Optical Power Measurement</b></font>&nbsp;— Distortion measured in all directions simultaneously</span><span data-lang="es" hidden=""><font color="#ffffff"><b>Medición de potencia óptica omnidireccional</b></font>&nbsp;— Distorsión medida en todas las direcciones simultáneamente</span></div></div>
@@ -1970,7 +2024,7 @@ window.PBUpload = function (filename, dataUrl) {
           <!-- Panel 3 — Comparison: two ✕/✓ columns (list.js) + comparison image tiles (carousels) -->
           
 
-        <div class="ls-tab-panel" data-panel="4"><div class="ls-carousel" data-counter="" data-zoom-group="" style="flex:1;min-height:0;width:100%;">  <div class="ls-carousel-track" style="transform: translateX(0px);" data-fit="cover">    <div class="ls-carousel-slide ls-compare ls-split" data-compare-mode="split"><div class="ls-cmp-side ls-cmp-side-left"><img src="../shared/Anisothropy-Building-Picture--2-.jpg" alt="Anisothropy-Building-Picture--2-" data-zoom="" class="ls-cmp-left" style="object-fit: cover;"></div><div class="ls-cmp-side ls-cmp-side-right"><img src="../shared/Anisothropy-Building-Picture--3-.jpg" alt="Anisothropy-Building-Picture--3-" class="ls-cmp-right" data-zoom="" style="object-fit: cover;"></div><div class="ls-cmp-handle" style="display: none;"><div class="ls-cmp-handle-grip">⇔</div></div></div>  <div class="ls-carousel-slide ls-compare ls-split" data-compare-mode="split"><div class="ls-cmp-side ls-cmp-side-left"><img src="../shared/Anisothropy-Building-Picture--4-.JPG" alt="Anisothropy-Building-Picture--4-" data-zoom="" class="ls-cmp-left" style="object-fit: cover;"></div><div class="ls-cmp-side ls-cmp-side-right"><img src="../shared/Anisothropy-Building-Picture--5-.jpg" alt="Anisothropy-Building-Picture--5-" class="ls-cmp-right" data-zoom="" style="object-fit: cover;"></div><div class="ls-cmp-handle" style="display: none;"><div class="ls-cmp-handle-grip">⇔</div></div></div><div class="ls-carousel-slide"><img src="../shared/Anisothropy-Building-Picture--6-.jpg" alt="Anisothropy-Building-Picture--6-" data-zoom="" style="object-fit: cover;"><div class="ls-carousel-caption">Anisothropy-Building-Picture--6-</div></div></div><div class="ls-carousel-counter">1 / 3</div></div></div><div class="ls-tab-panel" data-panel="5"><div class="ls-carousel" data-counter="" data-zoom-group="" style="flex:1;min-height:0;width:100%;">  <div class="ls-carousel-track" style="transform: translateX(0px);">    <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;">      <span style="color:rgba(255,255,255,.2);font-size:13px;font-style:italic;">Add images with the + Image button</span>    </div>  </div><div class="ls-carousel-counter"></div></div></div></div><!-- /.ls-tab-panels -->
+        <div class="ls-tab-panel" data-panel="4"><div class="ls-carousel" data-counter="" data-zoom-group="" style="flex:1;min-height:0;width:100%;">  <div class="ls-carousel-track" style="transform: translateX(-2800px);" data-fit="cover">    <div class="ls-carousel-slide ls-compare ls-split" data-compare-mode="split"><div class="ls-cmp-side ls-cmp-side-left"><img src="../shared/Anisothropy-Building-Picture--2-.jpg" alt="Anisothropy-Building-Picture--2-" data-zoom="" class="ls-cmp-left" style="object-fit: cover;"></div><div class="ls-cmp-side ls-cmp-side-right"><img src="../shared/Anisothropy-Building-Picture--3-.jpg" alt="Anisothropy-Building-Picture--3-" class="ls-cmp-right" data-zoom="" style="object-fit: cover;"></div><div class="ls-cmp-handle" style="display: none;"><div class="ls-cmp-handle-grip">⇔</div></div></div>  <div class="ls-carousel-slide ls-compare ls-split" data-compare-mode="split"><div class="ls-cmp-side ls-cmp-side-left"><img src="../shared/Anisothropy-Building-Picture--4-.JPG" alt="Anisothropy-Building-Picture--4-" data-zoom="" class="ls-cmp-left" style="object-fit: cover;"></div><div class="ls-cmp-side ls-cmp-side-right"><img src="../shared/Anisothropy-Building-Picture--5-.jpg" alt="Anisothropy-Building-Picture--5-" class="ls-cmp-right" data-zoom="" style="object-fit: cover;"></div><div class="ls-cmp-handle" style="display: none;"><div class="ls-cmp-handle-grip">⇔</div></div></div><div class="ls-carousel-slide"><img src="../shared/Anisothropy-Building-Picture--6-.jpg" alt="Anisothropy-Building-Picture--6-" data-zoom="" style="object-fit: cover;"><div class="ls-carousel-caption">Anisothropy-Building-Picture--6-</div></div></div><div class="ls-carousel-counter">3 / 3</div></div></div><div class="ls-tab-panel" data-panel="5"><div class="ls-carousel" data-counter="" data-zoom-group="" style="flex:1;min-height:0;width:100%;">  <div class="ls-carousel-track" style="transform: translateX(0px);">    <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;">      <span style="color:rgba(255,255,255,.2);font-size:13px;font-style:italic;">Add images with the + Image button</span>    </div>  <div class="ls-carousel-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects" data-zoom=""><div class="ls-carousel-caption">CostOfQualityDefects</div></div></div><div class="ls-carousel-counter">1 / 2</div></div></div></div><!-- /.ls-tab-panels -->
       </div>
 
     </div>
@@ -1982,7 +2036,7 @@ window.PBUpload = function (filename, dataUrl) {
        compose from .card / .feature-list / .ls-carousel so theme Finish blocks restyle them. Colours
        reference theme variables only. */
     .template05-technology .slide-body { width:100%; align-items:center; }
-    .template05-technology-tabs { width:100%; max-width:clamp(940px,80vw,1400px); }
+    .template05-technology-tabs { width:100%; max-width:var(--pb-content-max); }
 
     /* How It Works / Key Advantage: carousel on top, a grid of numbered text cards stacked below it
        (auto-fit → 2-up when wide, 1-up when narrow). Matches the legacy carousel + card layout. */
@@ -1999,12 +2053,12 @@ window.PBUpload = function (filename, dataUrl) {
        a brand-new tab (tabs.js). The media/shot rules below override the height for their own contexts. */
     .template05-technology .ls-carousel { flex:none !important; min-height:0 !important; height:clamp(220px,46vh,540px) !important; }
     .template05-technology .ls-carousel-slide img { flex:1 1 auto; min-height:0; width:100%; max-height:100%; object-fit:contain; }
-    .template05-technology-media .ls-carousel { height:clamp(260px,56vh,680px) !important; }
+    .template05-technology-media .ls-carousel { height:var(--pb-media-h) !important; }
 
     /* Comparison: three columns — list | images | list — side-by-side when wide, stacking when narrow
        (images stay between the lists in source order either way). Reuses the .card-compare pattern
        (✕ neutral / ✓ accent), theme-driven. */
-    .template05-technology-compare { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:clamp(14px,2vw,20px); align-items:start; width:100%; max-width:1040px; margin:0 auto; padding-top:12px; }
+    .template05-technology-compare { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:clamp(14px,2vw,20px); align-items:start; width:100%; max-width:var(--pb-content-max); margin:0 auto; padding-top:12px; }
     .template05-technology .card-compare { display:flex; flex-direction:column; padding:18px 20px 8px; border-top:3px solid var(--border); }
     .template05-technology .card-compare:hover { transform:none; }
     .template05-technology .card-compare-head { font-size:clamp(13px,1.5vw,18px); font-weight:800; letter-spacing:.01em; padding-bottom:10px; margin-bottom:10px; border-bottom:1px solid var(--border); color:var(--text-muted); }
@@ -2029,6 +2083,21 @@ window.PBUpload = function (filename, dataUrl) {
     /* Builder-only list controls never show in readonly / published output */
     .template05-technology-readonly [data-ls-add],
     .template05-technology-readonly [data-ls-restore] { display:none; }
+
+    /* ≥1200px (laptops/monitors): the active tab panel fills one screen. Carousel panels (How It Works /
+       Key Advantage) fit with NO scroll — the carousel fills the height left after the cards. Overflow
+       stays auto, so a long Comparison panel can still scroll instead of clipping. Tablets/phones scroll. */
+    @media (min-width:1200px) {
+      .template05-technology .slide-layout { height:100%; justify-content:flex-start; }
+      .template05-technology .slide-body { flex:1 1 auto; min-height:0; }
+      .template05-technology .ls-tabs { flex:1 1 auto; min-height:0; }
+      .template05-technology .ls-tab-panels { flex:1 1 auto; min-height:0; height:auto; }
+      .template05-technology .ls-tab-panel.active { height:100%; min-height:0; }
+      .template05-technology .template05-technology-stack { flex:1 1 auto; min-height:0; }
+      .template05-technology .template05-technology-cards { flex:none; }
+      .template05-technology .template05-technology-media { flex:1 1 auto; min-height:0; }
+      .template05-technology .template05-technology-media .ls-carousel { height:100% !important; min-height:0 !important; flex:none !important; }
+    }
   </style>
 
   <script>
@@ -2047,7 +2116,7 @@ window.PBUpload = function (filename, dataUrl) {
 </button>
 <div data-ls-gallery="" data-edit="gallery-track" data-autoplay="8" style="display:none;">
   
-<div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">Section Title</span><span class="ls-gallery-number">6</span><span class="ls-gallery-body-text">Description text here</span></div></div><div class="ls-gallery-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects"><div class="ls-gallery-caption">CostOfQualityDefects</div></div><div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">Section Title</span><span class="ls-gallery-number">Key Fact</span><span class="ls-gallery-body-text">Description text here</span></div></div></div></div>
+<div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">Section Title</span><span class="ls-gallery-number">6</span><span class="ls-gallery-body-text">Description text here</span></div></div></div></div>
 </div>
 <div class="fp-slide" data-slide-index="6" style="display:none;">
 <div class="slide content template05-technology pb-responsive" data-slide="culletscanner-technology-validated" data-slide-mode="sequence">
@@ -2074,7 +2143,7 @@ window.PBUpload = function (filename, dataUrl) {
           <button class="ls-tab active" data-panel="1" data-edit="tab-howitworks"><span data-lang="en">How It Woks?</span><span data-lang="es" hidden="">¿Cómo funciona?</span></button>
           <button class="ls-tab" data-panel="2" data-edit="tab-advantage"><span data-lang="en">How it counts?</span><span data-lang="es" hidden="">¿Cómo cuenta?</span></button>
           
-        <button class="ls-tab" data-panel="3" style="">New Tab</button></div>
+        <button class="ls-tab" data-panel="3" style="">Extra<br></button></div>
         <div class="ls-tab-panels">
 
           <!-- Panel 1 — How It Works: diagram + numbered points -->
@@ -2110,7 +2179,7 @@ window.PBUpload = function (filename, dataUrl) {
           <!-- Panel 3 — Comparison: two ✕/✓ columns (list.js) + comparison image tiles (carousels) -->
           
 
-        <div class="ls-tab-panel" data-panel="3"><div class="ls-carousel" data-counter="" data-zoom-group="" style="flex:1;min-height:0;width:100%;">  <div class="ls-carousel-track" style="transform: translateX(0px);">    <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;">      <span style="color:rgba(255,255,255,.2);font-size:13px;font-style:italic;">Add images with the + Image button</span>    </div>  </div><div class="ls-carousel-counter"></div></div></div></div><!-- /.ls-tab-panels -->
+        <div class="ls-tab-panel" data-panel="3"><div class="ls-carousel" data-counter="" data-zoom-group="" style="flex:1;min-height:0;width:100%;">  <div class="ls-carousel-track" style="transform: translateX(0px);">      <div class="ls-carousel-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects" data-zoom=""><div class="ls-carousel-caption">CostOfQualityDefects</div></div></div><div class="ls-carousel-counter"></div></div></div></div><!-- /.ls-tab-panels -->
       </div>
 
     </div>
@@ -2122,7 +2191,7 @@ window.PBUpload = function (filename, dataUrl) {
        compose from .card / .feature-list / .ls-carousel so theme Finish blocks restyle them. Colours
        reference theme variables only. */
     .template05-technology .slide-body { width:100%; align-items:center; }
-    .template05-technology-tabs { width:100%; max-width:clamp(940px,80vw,1400px); }
+    .template05-technology-tabs { width:100%; max-width:var(--pb-content-max); }
 
     /* How It Works / Key Advantage: carousel on top, a grid of numbered text cards stacked below it
        (auto-fit → 2-up when wide, 1-up when narrow). Matches the legacy carousel + card layout. */
@@ -2139,12 +2208,12 @@ window.PBUpload = function (filename, dataUrl) {
        a brand-new tab (tabs.js). The media/shot rules below override the height for their own contexts. */
     .template05-technology .ls-carousel { flex:none !important; min-height:0 !important; height:clamp(220px,46vh,540px) !important; }
     .template05-technology .ls-carousel-slide img { flex:1 1 auto; min-height:0; width:100%; max-height:100%; object-fit:contain; }
-    .template05-technology-media .ls-carousel { height:clamp(260px,56vh,680px) !important; }
+    .template05-technology-media .ls-carousel { height:var(--pb-media-h) !important; }
 
     /* Comparison: three columns — list | images | list — side-by-side when wide, stacking when narrow
        (images stay between the lists in source order either way). Reuses the .card-compare pattern
        (✕ neutral / ✓ accent), theme-driven. */
-    .template05-technology-compare { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:clamp(14px,2vw,20px); align-items:start; width:100%; max-width:1040px; margin:0 auto; padding-top:12px; }
+    .template05-technology-compare { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:clamp(14px,2vw,20px); align-items:start; width:100%; max-width:var(--pb-content-max); margin:0 auto; padding-top:12px; }
     .template05-technology .card-compare { display:flex; flex-direction:column; padding:18px 20px 8px; border-top:3px solid var(--border); }
     .template05-technology .card-compare:hover { transform:none; }
     .template05-technology .card-compare-head { font-size:clamp(13px,1.5vw,18px); font-weight:800; letter-spacing:.01em; padding-bottom:10px; margin-bottom:10px; border-bottom:1px solid var(--border); color:var(--text-muted); }
@@ -2169,6 +2238,21 @@ window.PBUpload = function (filename, dataUrl) {
     /* Builder-only list controls never show in readonly / published output */
     .template05-technology-readonly [data-ls-add],
     .template05-technology-readonly [data-ls-restore] { display:none; }
+
+    /* ≥1200px (laptops/monitors): the active tab panel fills one screen. Carousel panels (How It Works /
+       Key Advantage) fit with NO scroll — the carousel fills the height left after the cards. Overflow
+       stays auto, so a long Comparison panel can still scroll instead of clipping. Tablets/phones scroll. */
+    @media (min-width:1200px) {
+      .template05-technology .slide-layout { height:100%; justify-content:flex-start; }
+      .template05-technology .slide-body { flex:1 1 auto; min-height:0; }
+      .template05-technology .ls-tabs { flex:1 1 auto; min-height:0; }
+      .template05-technology .ls-tab-panels { flex:1 1 auto; min-height:0; height:auto; }
+      .template05-technology .ls-tab-panel.active { height:100%; min-height:0; }
+      .template05-technology .template05-technology-stack { flex:1 1 auto; min-height:0; }
+      .template05-technology .template05-technology-cards { flex:none; }
+      .template05-technology .template05-technology-media { flex:1 1 auto; min-height:0; }
+      .template05-technology .template05-technology-media .ls-carousel { height:100% !important; min-height:0 !important; flex:none !important; }
+    }
   </style>
 
   <script>
@@ -2187,10 +2271,10 @@ window.PBUpload = function (filename, dataUrl) {
 </button>
 <div data-ls-gallery="" data-edit="gallery-track" data-autoplay="8" style="display:none;">
   
-<div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">Section Title</span><span class="ls-gallery-number">7</span><span class="ls-gallery-body-text">Description text here</span></div></div><div class="ls-gallery-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects"><div class="ls-gallery-caption">CostOfQualityDefects</div></div></div></div>
+<div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">Section Title</span><span class="ls-gallery-number">7</span><span class="ls-gallery-body-text">Description text here</span></div></div></div></div>
 </div>
 <div class="fp-slide" data-slide-index="7" style="display:none;">
-<div class="slide content template06-surface pb-responsive" data-slide="surface-types" data-slide-mode="sequence">
+<div class="slide content template06-surface pb-responsive" data-slide="surface-types-validated" data-slide-mode="sequence">
 
   <!-- Logo row — defaults to the product logo; deck branding overrides it. data-managed = server-injected. -->
   <div class="slide-logo-row" data-edit="logo-row" data-managed=""><span data-lang="en"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span><span data-lang="es" hidden=""><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span></div>
@@ -2209,7 +2293,7 @@ window.PBUpload = function (filename, dataUrl) {
       <!-- Config store — JSON list of defect cards [{id,label,icon,carKey}]. contenteditable so it rides
            the standard focusout→save pipeline; the script reads/writes its textContent. Carousel IMAGES
            are NOT stored here — each card's carKey points at its own data-edit carousel below. -->
-      <div id="s6-config" data-edit="s6-config" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;left:-9999px;top:0;"><span data-lang="en">[{"id":"scratches","label":"Scratches","icon":"/slides/uploads/defect-icon-0.png","carKey":"s6-defect-scratches"},{"id":"inclusions","label":"Inclusions","icon":"/slides/uploads/defect-icon-1.png","carKey":"s6-defect-inclusions"},{"id":"dirt","label":"Dirt","icon":"/slides/uploads/defect-icon-2.png","carKey":"s6-defect-dirt"},{"id":"dust","label":"Dust","icon":"/slides/uploads/defect-icon-3.png","carKey":"s6-defect-dust"},{"id":"water","label":"Water","icon":"/slides/uploads/defect-icon-9.png","carKey":"s6-defect-water"},{"id":"fingerprints","label":"Fingerprints","icon":"/slides/uploads/defect-icon-4.png","carKey":"s6-defect-fingerprints"},{"id":"ignore","label":"Ignore","icon":"/slides/uploads/defect-icon-5.png","carKey":"s6-defect-ignore"},{"id":"edge-defects","label":"Edge defects","icon":"/slides/uploads/defect-icon-7.png","carKey":"s6-defect-edge-defects"},{"id":"frame-bars","label":"Frame &amp; bars","icon":"/slides/uploads/defect-icon-6.png","carKey":"s6-defect-frame-bars"},{"id":"undefined","label":"Undefined","icon":"/slides/uploads/defect-icon-8.png","carKey":"s6-defect-undefined"},{"id":"coating","label":"Coating","icon":"/slides/uploads/defect-icon-coating.png","carKey":"s6-defect-coating"},{"id":"s6-defect-x0","label":"New defect","icon":"/slides/uploads/CostOfQualityDefects.png","carKey":"s6-defect-x0"}]</span><span data-lang="es" hidden="">[{"id":"scratches","label":"Arañazos","icon":"/slides/uploads/defect-icon-0.png","carKey":"s6-defect-scratches"},{"id":"inclusions","label":"Inclusiones","icon":"/slides/uploads/defect-icon-1.png","carKey":"s6-defect-inclusions"},{"id":"dirt","label":"Suciedad","icon":"/slides/uploads/defect-icon-2.png","carKey":"s6-defect-dirt"},{"id":"dust","label":"Polvo","icon":"/slides/uploads/defect-icon-3.png","carKey":"s6-defect-dust"},{"id":"water","label":"Agua","icon":"/slides/uploads/defect-icon-9.png","carKey":"s6-defect-water"},{"id":"fingerprints","label":"Huellas dactilares","icon":"/slides/uploads/defect-icon-4.png","carKey":"s6-defect-fingerprints"},{"id":"ignore","label":"Ignorar","icon":"/slides/uploads/defect-icon-5.png","carKey":"s6-defect-ignore"},{"id":"edge-defects","label":"Defectos de borde","icon":"/slides/uploads/defect-icon-7.png","carKey":"s6-defect-edge-defects"},{"id":"frame-bars","label":"Marco &amp; barras","icon":"/slides/uploads/defect-icon-6.png","carKey":"s6-defect-frame-bars"},{"id":"undefined","label":"Indefinido","icon":"/slides/uploads/defect-icon-8.png","carKey":"s6-defect-undefined"},{"id":"coating","label":"Revestimiento","icon":"/slides/uploads/defect-icon-coating.png","carKey":"s6-defect-coating"},{"id":"s6-defect-x0","label":"Nuevo defecto","icon":"/slides/uploads/CostOfQualityDefects.png","carKey":"s6-defect-x0"}]</span></div>
+      <div id="s6-config" data-edit="s6-config" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;left:-9999px;top:0;"><span data-lang="en">[{"id":"scratches","label":"Scratches","icon":"/slides/uploads/defect-icon-0.png","carKey":"s6-defect-scratches"},{"id":"inclusions","label":"Inclusions","icon":"/slides/uploads/defect-icon-1.png","carKey":"s6-defect-inclusions"},{"id":"dirt","label":"Dirt","icon":"/slides/uploads/defect-icon-2.png","carKey":"s6-defect-dirt"},{"id":"dust","label":"Dust","icon":"/slides/uploads/defect-icon-3.png","carKey":"s6-defect-dust"},{"id":"water","label":"Water","icon":"/slides/uploads/defect-icon-9.png","carKey":"s6-defect-water"},{"id":"fingerprints","label":"Fingerprints","icon":"/slides/uploads/defect-icon-4.png","carKey":"s6-defect-fingerprints"},{"id":"ignore","label":"Ignore","icon":"/slides/uploads/defect-icon-5.png","carKey":"s6-defect-ignore"},{"id":"edge-defects","label":"Edge defects","icon":"/slides/uploads/defect-icon-7.png","carKey":"s6-defect-edge-defects"},{"id":"frame-bars","label":"Frame &amp; bars","icon":"/slides/uploads/defect-icon-6.png","carKey":"s6-defect-frame-bars"},{"id":"undefined","label":"Undefined","icon":"/slides/uploads/defect-icon-8.png","carKey":"s6-defect-undefined"},{"id":"coating","label":"Coating","icon":"/slides/uploads/defect-icon-coating.png","carKey":"s6-defect-coating"},{"id":"s6-defect-x0","label":"New defect","icon":"","carKey":"s6-defect-x0"}]</span><span data-lang="es" hidden="">[{"id":"scratches","label":"Arañazos","icon":"/slides/uploads/defect-icon-0.png","carKey":"s6-defect-scratches"},{"id":"inclusions","label":"Inclusiones","icon":"/slides/uploads/defect-icon-1.png","carKey":"s6-defect-inclusions"},{"id":"dirt","label":"Suciedad","icon":"/slides/uploads/defect-icon-2.png","carKey":"s6-defect-dirt"},{"id":"dust","label":"Polvo","icon":"/slides/uploads/defect-icon-3.png","carKey":"s6-defect-dust"},{"id":"water","label":"Agua","icon":"/slides/uploads/defect-icon-9.png","carKey":"s6-defect-water"},{"id":"fingerprints","label":"Huellas dactilares","icon":"/slides/uploads/defect-icon-4.png","carKey":"s6-defect-fingerprints"},{"id":"ignore","label":"Ignorar","icon":"/slides/uploads/defect-icon-5.png","carKey":"s6-defect-ignore"},{"id":"edge-defects","label":"Defectos de borde","icon":"/slides/uploads/defect-icon-7.png","carKey":"s6-defect-edge-defects"},{"id":"frame-bars","label":"Marco &amp; barras","icon":"/slides/uploads/defect-icon-6.png","carKey":"s6-defect-frame-bars"},{"id":"undefined","label":"Indefinido","icon":"/slides/uploads/defect-icon-8.png","carKey":"s6-defect-undefined"},{"id":"coating","label":"Revestimiento","icon":"/slides/uploads/defect-icon-coating.png","carKey":"s6-defect-coating"},{"id":"s6-defect-x0","label":"Nuevo defecto","icon":"/slides/uploads/CostOfQualityDefects.png","carKey":"s6-defect-x0"}]</span></div>
 
       <!-- Defect-type cards (the selector) — built by the script from the config. -->
       <div class="template06-surface-selector anim-in" id="s6-selector"></div>
@@ -2217,43 +2301,43 @@ window.PBUpload = function (filename, dataUrl) {
       <!-- Default carousel (shown when no card is selected) -->
       <div class="ls-carousel template06-surface-car" id="s6CarWrap" data-counter="" data-edit="s6-default-carousel" data-track="template06-surface:default" style="flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);">
   
-<div class="ls-carousel-slide"><img src="../shared/Details_Surface-Quality-Control.jpg" alt="Details_Surface Quality Control" data-zoom=""><div class="ls-carousel-caption">Details_Surface Quality Control</div></div></div><div class="ls-carousel-counter"></div></div>
+<div class="ls-carousel-slide"><img src="../shared/Details_Surface-Quality-Control.jpg" alt="Details_Surface Quality Control" data-zoom="" style="object-fit: contain;"><div class="ls-carousel-caption">Details_Surface Quality Control</div></div></div><div class="ls-carousel-counter"></div></div>
 
       <!-- Per-defect carousels — one data-edit slot each (named + spare). Empty in the template; the deck
            fills them. The script shows the selected card's slot and hides the rest. -->
-      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter="" data-edit="s6-defect-scratches" data-track="template06-surface:scratches" style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(-1100px);">
-  <div class="ls-carousel-slide ls-compare ls-reveal" data-compare-mode="reveal"><img src="../shared/Defect_of_a_Coating_Camera_image.png" alt="Camera" data-zoom="" class="ls-cmp-left" style="object-fit: cover;"><img src="../shared/Defect_of_a_Coating_image_LineScanner_Raw_Image.png" alt="Defect of a Coating image LineScanner Raw Image" class="ls-cmp-right" data-zoom="" style="object-fit: cover;"></div><div class="ls-carousel-slide ls-compare ls-reveal" data-compare-mode="reveal"><img src="../shared/Defect_of_a_Coating_Camera_image_2.png" alt="Camera" data-zoom="" class="ls-cmp-left" style="object-fit: cover;"><img src="../shared/Defect_of_a_Coating_image_LineScanner_Raw_Image.png" alt="Defect of a Coating image LineScanner Raw Image" class="ls-cmp-right" data-zoom="" style="object-fit: cover;"></div>
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter="" data-edit="s6-defect-scratches" data-track="template06-surface:scratches" style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);">
+  <div class="ls-carousel-slide ls-compare ls-reveal" data-compare-mode="reveal"><div class="ls-cmp-side ls-cmp-side-left"><img src="../shared/Defect_of_a_Coating_Camera_image.png" alt="Camera" data-zoom="" class="ls-cmp-left" style="object-fit: cover;"></div><div class="ls-cmp-side ls-cmp-side-right" style="clip-path: inset(0px 0px 0px 50%);"><img src="../shared/Defect_of_a_Coating_image_LineScanner_Raw_Image.png" alt="Defect of a Coating image LineScanner Raw Image" class="ls-cmp-right" data-zoom="" style="object-fit: cover;"></div><div class="ls-cmp-handle" style="left: 50%;"><div class="ls-cmp-handle-grip">⇔</div></div></div><div class="ls-carousel-slide ls-compare ls-reveal" data-compare-mode="reveal"><div class="ls-cmp-side ls-cmp-side-left"><img src="../shared/Defect_of_a_Coating_Camera_image_2.png" alt="Camera" data-zoom="" class="ls-cmp-left" style="object-fit: cover;"></div><div class="ls-cmp-side ls-cmp-side-right" style="clip-path: inset(0px 0px 0px 50%);"><img src="../shared/Defect_of_a_Coating_image_LineScanner_Raw_Image.png" alt="Defect of a Coating image LineScanner Raw Image" class="ls-cmp-right" data-zoom="" style="object-fit: cover;"></div><div class="ls-cmp-handle" style="left: 50%;"><div class="ls-cmp-handle-grip">⇔</div></div></div>
   
-</div></div>
+</div><div class="ls-carousel-counter">1 / 2</div></div>
       <div class="ls-carousel template06-surface-car s6-defect-car" data-counter="" data-edit="s6-defect-inclusions" data-track="template06-surface:inclusions" style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);">
-  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Inclusion.bmp" alt="Defect Piece Inclusion" data-zoom="" style="object-fit: cover;"></div>
-  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Inclusion-Screenshot-2.jpg" alt="Defect Piece Inclusion Screenshot 2" data-zoom=""></div>
-  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Inclusion-Screenshot-2.png" alt="Defect Piece Inclusion Screenshot 2" data-zoom=""></div>
-  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Inclusion-Screenshot.png" alt="Defect Piece Inclusion Screenshot" data-zoom=""></div>
-</div></div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Inclusion.bmp" alt="Defect Piece Inclusion" data-zoom="" style="object-fit: cover;"><div class="ls-carousel-caption">Defect Piece Inclusion</div></div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Inclusion-Screenshot-2.jpg" alt="Defect Piece Inclusion Screenshot 2" data-zoom=""><div class="ls-carousel-caption">Defect Piece Inclusion Screenshot 2</div></div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Inclusion-Screenshot-2.png" alt="Defect Piece Inclusion Screenshot 2" data-zoom=""><div class="ls-carousel-caption">Defect Piece Inclusion Screenshot 2</div></div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Inclusion-Screenshot.png" alt="Defect Piece Inclusion Screenshot" data-zoom=""><div class="ls-carousel-caption">Defect Piece Inclusion Screenshot</div></div>
+</div><div class="ls-carousel-counter">1 / 4</div></div>
       <div class="ls-carousel template06-surface-car s6-defect-car" data-counter="" data-edit="s6-defect-dirt" data-track="template06-surface:dirt" style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);">
-  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Dirt-Screenshot.png" alt="Defect Piece Dirt Screenshot" data-zoom="" style="object-fit: cover;"></div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Dirt-Screenshot.png" alt="Defect Piece Dirt Screenshot" data-zoom="" style="object-fit: cover;"><div class="ls-carousel-caption">Defect Piece Dirt Screenshot</div></div>
   
-</div></div>
+</div><div class="ls-carousel-counter"></div></div>
       <div class="ls-carousel template06-surface-car s6-defect-car" data-counter="" data-edit="s6-defect-dust" data-track="template06-surface:dust" style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/Details_Surface-Quality-Control.jpg" alt="Details_Surface Quality Control" data-zoom=""><div class="ls-carousel-caption">Details_Surface Quality Control</div></div></div><div class="ls-carousel-counter"></div></div>
-      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter="" data-edit="s6-defect-water" data-track="template06-surface:water" style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(-1100px);">
+      <div class="ls-carousel template06-surface-car s6-defect-car" data-counter="" data-edit="s6-defect-water" data-track="template06-surface:water" style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);">
   
-  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Water-Drops.png" alt="Defect Piece Water Drops" data-zoom="" style="object-fit: contain;"></div>
-<div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Water-Drops-Screenshot.png" alt="Defect Piece Water Drops Screenshot" data-zoom="" style="object-fit: cover;"></div></div></div>
+  <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Water-Drops.png" alt="Defect Piece Water Drops" data-zoom="" style="object-fit: contain;"><div class="ls-carousel-caption">Defect Piece Water Drops</div></div>
+<div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Water-Drops-Screenshot.png" alt="Defect Piece Water Drops Screenshot" data-zoom="" style="object-fit: cover;"><div class="ls-carousel-caption">Defect Piece Water Drops Screenshot</div></div></div><div class="ls-carousel-counter">1 / 2</div></div>
       <div class="ls-carousel template06-surface-car s6-defect-car" data-counter="" data-edit="s6-defect-fingerprints" data-track="template06-surface:fingerprints" style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);">
       <div class="ls-carousel-slide">
         <img src="../shared/Defect_of_a_Finger_prints_LineScanner_Raw_Image.png" alt="RAW scan — fingerprint defect" data-zoom="" data-track="s6:zoom:raw-scan-fingerprint-defect" style="object-fit: contain;">
-      </div>
-    <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Finger-Print.bmp" alt="Defect Piece Finger Print" data-zoom="" data-track="s6:zoom:defect-piece-finger-print-1"></div><div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Finger-Print-2.bmp" alt="Defect Piece Finger Print 2" data-zoom="" data-track="s6:zoom:defect-piece-finger-print-2"></div></div></div>
+      <div class="ls-carousel-caption">RAW scan — fingerprint defect</div></div>
+    <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Finger-Print.bmp" alt="Defect Piece Finger Print" data-zoom="" data-track="s6:zoom:defect-piece-finger-print-1"><div class="ls-carousel-caption">Defect Piece Finger Print</div></div><div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Finger-Print-2.bmp" alt="Defect Piece Finger Print 2" data-zoom="" data-track="s6:zoom:defect-piece-finger-print-2"><div class="ls-carousel-caption">Defect Piece Finger Print 2</div></div></div><div class="ls-carousel-counter">1 / 3</div></div>
       <div class="ls-carousel template06-surface-car s6-defect-car" data-counter="" data-edit="s6-defect-ignore" data-track="template06-surface:ignore" style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/Details_Surface-Quality-Control.jpg" alt="Details_Surface Quality Control" data-zoom=""><div class="ls-carousel-caption">Details_Surface Quality Control</div></div></div><div class="ls-carousel-counter"></div></div>
       <div class="ls-carousel template06-surface-car s6-defect-car" data-counter="" data-edit="s6-defect-edge-defects" data-track="template06-surface:edge-defects" style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);">
       <div class="ls-carousel-slide">
         <img src="../shared/Defect_of_micro_edge_chips_on_a_cutout_detction_marks.png" alt="Micro edge chips — cutout detection marks" data-zoom="" data-track="s6:zoom:micro-edge-chips-cutout-detection-marks" style="object-fit: contain;">
-      </div>
+      <div class="ls-carousel-caption">Micro edge chips — cutout detection marks</div></div>
       <div class="ls-carousel-slide">
         <img src="../shared/image52.png" alt="Edge defect" data-zoom="" data-track="s6:zoom:edge-defect">
-      </div>
-    <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-3.PNG" alt="Defect Piece Edge Chip 3" data-zoom="" data-track="s6:zoom:defect-piece-edge-chip-3"></div><div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-2.PNG" alt="Defect Piece Edge Chip 2" data-zoom="" data-track="s6:zoom:defect-piece-edge-chip-2"></div><div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-4.PNG" alt="Defect Piece Edge Chip 4" data-zoom="" data-track="s6:zoom:defect-piece-edge-chip-4"></div><div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-Screenshot--1-.jpg" alt="Defect Piece Edge Chip Screenshot (1)" data-zoom="" data-track="s6:zoom:defect-piece-edge-chip-screenshot-1"></div><div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-Screenshot--2-.jpg" alt="Defect Piece Edge Chip Screenshot (2)" data-zoom="" data-track="s6:zoom:defect-piece-edge-chip-screenshot-2"></div><div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-Screenshot--3-.jpg" alt="Defect Piece Edge Chip Screenshot (3)" data-zoom="" data-track="s6:zoom:defect-piece-edge-chip-screenshot-3"></div><div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-Screenshot--4-.jpg" alt="Defect Piece Edge Chip Screenshot (4)" data-zoom="" data-track="s6:zoom:defect-piece-edge-chip-screenshot-4"></div><div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-Screenshot--6-.jpg" alt="Defect Piece Edge Chip Screenshot (6)" data-zoom="" data-track="s6:zoom:defect-piece-edge-chip-screenshot-6"></div><div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-Screenshot--7-.jpg" alt="Defect Piece Edge Chip Screenshot (7)" data-zoom="" data-track="s6:zoom:defect-piece-edge-chip-screenshot-7"></div></div></div>
+      <div class="ls-carousel-caption">Edge defect</div></div>
+    <div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-3.PNG" alt="Defect Piece Edge Chip 3" data-zoom="" data-track="s6:zoom:defect-piece-edge-chip-3"><div class="ls-carousel-caption">Defect Piece Edge Chip 3</div></div><div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-2.PNG" alt="Defect Piece Edge Chip 2" data-zoom="" data-track="s6:zoom:defect-piece-edge-chip-2"><div class="ls-carousel-caption">Defect Piece Edge Chip 2</div></div><div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-4.PNG" alt="Defect Piece Edge Chip 4" data-zoom="" data-track="s6:zoom:defect-piece-edge-chip-4"><div class="ls-carousel-caption">Defect Piece Edge Chip 4</div></div><div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-Screenshot--1-.jpg" alt="Defect Piece Edge Chip Screenshot (1)" data-zoom="" data-track="s6:zoom:defect-piece-edge-chip-screenshot-1"><div class="ls-carousel-caption">Defect Piece Edge Chip Screenshot (1)</div></div><div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-Screenshot--2-.jpg" alt="Defect Piece Edge Chip Screenshot (2)" data-zoom="" data-track="s6:zoom:defect-piece-edge-chip-screenshot-2"><div class="ls-carousel-caption">Defect Piece Edge Chip Screenshot (2)</div></div><div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-Screenshot--3-.jpg" alt="Defect Piece Edge Chip Screenshot (3)" data-zoom="" data-track="s6:zoom:defect-piece-edge-chip-screenshot-3"><div class="ls-carousel-caption">Defect Piece Edge Chip Screenshot (3)</div></div><div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-Screenshot--4-.jpg" alt="Defect Piece Edge Chip Screenshot (4)" data-zoom="" data-track="s6:zoom:defect-piece-edge-chip-screenshot-4"><div class="ls-carousel-caption">Defect Piece Edge Chip Screenshot (4)</div></div><div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-Screenshot--6-.jpg" alt="Defect Piece Edge Chip Screenshot (6)" data-zoom="" data-track="s6:zoom:defect-piece-edge-chip-screenshot-6"><div class="ls-carousel-caption">Defect Piece Edge Chip Screenshot (6)</div></div><div class="ls-carousel-slide"><img src="../shared/Defect-Piece-Edge-Chip-Screenshot--7-.jpg" alt="Defect Piece Edge Chip Screenshot (7)" data-zoom="" data-track="s6:zoom:defect-piece-edge-chip-screenshot-7"><div class="ls-carousel-caption">Defect Piece Edge Chip Screenshot (7)</div></div></div><div class="ls-carousel-counter">1 / 11</div></div>
       <div class="ls-carousel template06-surface-car s6-defect-car" data-counter="" data-edit="s6-defect-frame-bars" data-track="template06-surface:frame-bars" style="display:none;flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);">
       <div class="ls-carousel-slide">
         <img src="../shared/Defect_on_an_IGU_Insulated_Glass_Secondary_Seal_inside_the_unit.jpeg" alt="Sightline defect — IGU secondary seal" data-zoom="" data-track="s6:zoom:sightline-defect-igu-secondary-seal">
@@ -2290,7 +2374,7 @@ window.PBUpload = function (filename, dataUrl) {
     .template06-surface .slide-body { width:100%; align-items:center; }
 
     /* Defect cards (the selector) — auto-fit row that wraps; each is a themeable .card. */
-    .template06-surface-selector { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; width:100%; max-width:1100px; padding-top:6px; }
+    .template06-surface-selector { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; width:100%; max-width:var(--pb-content-max); padding-top:6px; }
     .template06-surface .s6-defect-btn { position:relative; display:flex; flex-direction:column; align-items:center; gap:6px; min-width:78px; padding:10px 12px; cursor:pointer; background:var(--card-bg); border:1px solid var(--card-border); border-radius:var(--card-radius); transition:border-color .2s, background .2s; }
     .template06-surface .s6-defect-btn:hover { border-color:rgba(var(--accent-rgb),.4); }
     .template06-surface .s6-defect-btn.active { border-color:var(--accent); background:rgba(var(--accent-rgb),.08); }
@@ -2315,7 +2399,7 @@ window.PBUpload = function (filename, dataUrl) {
 
     /* The active carousel sits below the cards. flex:none + clamp height beats the inline flex:1 that
        would collapse it to 0 in a content-flow panel; scales with the viewport on big screens. */
-    .template06-surface .template06-surface-car { flex:none !important; min-height:0 !important; height:clamp(260px,52vh,640px) !important; width:100%; max-width:1100px; margin:14px auto 0; }
+    .template06-surface .template06-surface-car { flex:none !important; min-height:0 !important; height:var(--pb-media-h) !important; width:100%; max-width:var(--pb-content-max); margin:14px auto 0; }
     .template06-surface .ls-carousel-slide img { object-fit:contain; }
 
     /* readonly / published: hide every builder-only affordance */
@@ -2323,6 +2407,15 @@ window.PBUpload = function (filename, dataUrl) {
     .template06-surface-readonly .s6-icon-ctrls,
     .template06-surface-readonly .s6-card-del,
     .template06-surface-readonly .s6-add-btn { display:none !important; }
+
+    /* ≥1200px (laptops/monitors): fit one screen, no scroll — carousel fills the height below the selector. */
+    @media (min-width:1200px) {
+      .slide.content.template06-surface.pb-responsive { overflow:hidden; }
+      .template06-surface .slide-layout { height:100%; justify-content:flex-start; }
+      .template06-surface .slide-body { flex:1 1 auto; min-height:0; }
+      .template06-surface-selector { flex:none; }
+      .template06-surface .template06-surface-car { flex:1 1 auto !important; height:auto !important; min-height:0 !important; }
+    }
   </style>
 
   <script>
@@ -2362,8 +2455,14 @@ window.PBUpload = function (filename, dataUrl) {
       catch (e) { return clone(DEFAULT_CONFIG); }
     }
     function persistConfig() {
+      // Persist the config blob through the SAME channel carousels/galleries use. The Builder
+      // Preview (the source-of-truth editing surface) saves on 'input' and 'slide-carousel-save'
+      // but NOT 'focusout' — so a programmatic change with no typing (delete a card, change an
+      // icon) was silently lost there. slide-carousel-save is handled by both the builder and the
+      // deck/publish render scripts. html = the serialized blob (same content the old focusout
+      // path saved), so the persisted value + round-trip are unchanged.
       configEl.textContent = JSON.stringify(config);
-      configEl.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+      document.dispatchEvent(new CustomEvent('slide-carousel-save', { detail: { editKey: 's6-config', html: configEl.innerHTML } }));
     }
     function findCar(carKey) { return root.querySelector('.s6-defect-car[data-edit="' + carKey + '"]'); }
 
@@ -2533,9 +2632,1007 @@ window.PBUpload = function (filename, dataUrl) {
 </button>
 <div data-ls-gallery="" data-edit="gallery-track" data-autoplay="8" style="display:none;">
   
-<div class="ls-gallery-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects"><div class="ls-gallery-caption">CostOfQualityDefects</div></div><div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">Section Title</span><span class="ls-gallery-number">Key Fact</span><span class="ls-gallery-body-text">Description text here</span></div></div></div></div>
+<div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">Section Title</span><span class="ls-gallery-number">8</span><span class="ls-gallery-body-text">Description text here</span></div></div></div></div>
 </div>
 <div class="fp-slide" data-slide-index="8" style="display:none;">
+<div class="slide content template07-dimensions pb-responsive" data-slide="dimensions" data-slide-mode="sequence">
+
+  <!-- Logo row — defaults to the product logo; deck branding overrides it. data-managed = server-injected. -->
+  <div class="slide-logo-row" data-edit="logo-row" data-managed=""><span data-lang="en"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span><span data-lang="es" hidden=""><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span></div>
+
+  <div class="slide-layout">
+    <span class="softsolution-credit" data-edit="credit"><span data-lang="en">by GlassQuality.com</span><span data-lang="es" hidden="">por GlassQuality.com</span></span>
+
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label"><span data-lang="en">Dimensional Control</span><span data-lang="es" hidden="">Control Dimensional</span></div>
+      <h1 class="slide-title" data-edit="headline"><span data-lang="en">Precise measurement of <span class="blue">dimensions and cutouts</span></span><span data-lang="es" hidden="">Medición precisa de <span class="blue">dimensiones y recortes</span></span></h1>
+      <p class="slide-subtitle anim-in" data-edit="subtitle"><span data-lang="en">Geometry, holes and cutouts measured against your DXF model.</span><span data-lang="es" hidden="">Geometría, agujeros y recortes medidos contra tu modelo DXF.</span></p>
+    </header>
+
+    <div class="slide-body">
+
+      <!-- Image carousel — empty in the template; the deck fills it via the + Image button.
+           Per-image Fit/Fill toggle + lightbox come from the shared carousel.js. -->
+      <div class="ls-carousel template07-dimensions-car anim-in" data-counter="" data-edit="dim-carousel" data-track="template07-dimensions:carousel" style="flex:none;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/Screenshot_Scanned_Piece_of_glass_with_cutouts_and_a_shape_and_defects.png" alt="Scanned piece of glass with cutouts" data-zoom="" style="object-fit: cover;"><div class="ls-carousel-caption">Scanned piece of glass with cutouts</div></div><div class="ls-carousel-slide"><img src="../shared/Dimension_control_screenshot_drillhole_alignment.jpg" alt="Drillhole alignment" data-zoom=""><div class="ls-carousel-caption">Drillhole alignment</div></div><div class="ls-carousel-slide"><img src="../shared/Dimension_control_screenshot_shape_piece_of_glass_with_and_scratch_and_a_inclusion.jpg" alt="Shape with scratch and inclusion" data-zoom=""><div class="ls-carousel-caption">Shape with scratch and inclusion</div></div><div class="ls-carousel-slide"><img src="../shared/Dimension_control_Cutouts_Drillholes_and_a_Door.jpg" alt="Cutouts, drillholes and a door" data-zoom=""><div class="ls-carousel-caption">Cutouts, drillholes and a door</div></div></div><div class="ls-carousel-counter">1 / 4</div></div>
+
+      <!-- Two info cards. Each list is a list.js component (data-ls-list): items get drag-reorder /
+           hide / add / delete; the whole <ul> innerHTML persists as one blob under its data-edit key. -->
+      <div class="template07-dimensions-grid">
+
+        <div class="card template07-dimensions-card anim-in">
+          <div class="dim-card-head" data-edit="card-header-1"><span data-lang="en">What is measured?</span><span data-lang="es" hidden="">¿Qué se mide?</span></div>
+          <ul class="dim-list" data-ls-list="" data-lang="en"><li>Overall dimensions of the glass</li><li>Position and size of drill holes</li><li>Cutouts and notches</li><li>Angles and parallelism of edges</li><li>Rotation and position on line</li><li class="">EXTRA New item<br></li><li class="">EXTRA New item<br></li></ul><ul class="dim-list" data-ls-list="" data-lang="es" hidden=""><li>Dimensiones generales del vidrio</li><li>Posición y tamaño de agujeros perforados</li><li>Recortes y muescas</li><li>Ángulos y paralelismo de bordes</li><li>Rotación y posición en línea</li></ul>
+          
+          
+        </div>
+
+        <div class="card template07-dimensions-card anim-in">
+          <div class="dim-card-head" data-edit="card-header-2"><span data-lang="en">Setup &amp; tolerances</span><span data-lang="es" hidden="">Configuración y tolerancias</span></div>
+          <ul class="dim-list" data-ls-list="" data-lang="en"><li>Compatible with individual tolerances per measurement</li><li>DXF model import</li><li>2-step verification: global + detail</li><li>Compatible with belt conveyors</li><li class="">Parallel light for maximum precision</li><li class="" draggable="true">EXTRA New item</li><li class="">EXTRA New item 2<br></li></ul><ul class="dim-list" data-ls-list="" data-lang="es" hidden=""><li>Compatible con tolerancias individuales por medición</li><li>Importación de modelo DXF</li><li>Verificación de 2 pasos: global + detalle</li><li>Compatible con transportadores de correa</li><li class="">Luz paralela para máxima precisión</li></ul>
+          
+          
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* pb-responsive provides the scroll model + fluid chrome. Rules here are positional only;
+       cards compose from `.card` so theme Finish blocks restyle them. Colours use theme variables. */
+    .template07-dimensions .slide-body { width:100%; display:flex; flex-direction:column; align-items:center; gap:clamp(14px,2vw,20px); }
+
+    /* Carousel — flex:none + clamp height beats the inline flex that would collapse it to 0 in a
+       content-flow panel; scales with the viewport on big screens. */
+    .template07-dimensions .template07-dimensions-car { flex:none !important; min-height:0 !important; height:var(--pb-media-h) !important; width:100%; max-width:var(--pb-content-max); margin:0 auto; }
+    .template07-dimensions .ls-carousel-slide img { object-fit:contain; }
+
+    /* Two-card grid — stacks <769px, side-by-side ≥769px via auto-fit. */
+    .template07-dimensions-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:clamp(14px,2vw,20px); width:100%; max-width:var(--pb-content-max); margin:0 auto; }
+
+    .template07-dimensions .template07-dimensions-card { display:flex; flex-direction:column; padding:18px 22px 8px; border-top:3px solid var(--accent); }
+    .template07-dimensions .template07-dimensions-card:hover { transform:none; }
+    .dim-card-head { font-size:clamp(14px,1.6vw,20px); font-weight:800; letter-spacing:.01em; padding-bottom:10px; margin-bottom:12px; border-bottom:1px solid var(--border); color:var(--accent); }
+
+    .dim-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+    /* List items — room on the left for the ✓ marker, on the right for list.js drag/hide controls. */
+    .dim-list li { position:relative; padding-left:24px; padding-right:40px; font-size:clamp(12px,1.15vw,15px); line-height:1.4; color:var(--text-muted); }
+    .dim-list li::before { content:"\2713"; position:absolute; left:0; top:0; font-weight:800; color:var(--accent); }
+
+    /* Builder-only list controls never show in readonly / published output. */
+    .template07-dimensions-readonly [data-ls-add],
+    .template07-dimensions-readonly [data-ls-restore] { display:none; }
+
+    /* ≥1200px (laptops / monitors): fit one screen, no scroll. The slide becomes exactly one
+       viewport tall and the carousel FILLS the height left after the header + cards (flex) instead
+       of the fixed vh — so it self-sizes and never scrolls. Tablets/phones keep the scroll model. */
+    @media (min-width:1200px) {
+      .slide.content.template07-dimensions.pb-responsive { overflow:hidden; }
+      .template07-dimensions .slide-layout { height:100%; justify-content:flex-start; }
+      .template07-dimensions .slide-body { flex:1 1 auto; min-height:0; }
+      .template07-dimensions .template07-dimensions-grid { flex:none; }
+      .template07-dimensions .template07-dimensions-car { flex:1 1 auto !important; height:auto !important; min-height:0 !important; }
+    }
+  </style>
+
+  <script>
+  (function () {
+    var slide = document.currentScript.closest('[data-slide]');
+    if (window.PB_READONLY) slide.classList.add('template07-dimensions-readonly');
+    /* Editable lists + image carousel (with lightbox) via the shared components. */
+    if (window.List)     List.init(slide);
+    if (window.Carousel) Carousel.init(slide);
+    if (window.Lightbox) Lightbox.init(slide);
+    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
+  })();
+  </script>
+
+<button class="pb-gallery-btn" data-ls-gallery-open="" data-builder-feature="gallery" title="Open gallery">
+  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+  Gallery
+</button>
+<div data-ls-gallery="" data-edit="gallery-track" data-autoplay="8" style="display:none;">
+  
+<div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">Section Title</span><span class="ls-gallery-number">9</span><span class="ls-gallery-body-text">Description text here</span></div></div></div></div>
+</div>
+<div class="fp-slide" data-slide-index="9" style="display:none;">
+<div class="slide content template08-screenprinting pb-responsive" data-slide="screen-printing" data-slide-mode="sequence">
+
+  <!-- Logo row — defaults to the product logo; deck branding overrides it. data-managed = server-injected. -->
+  <div class="slide-logo-row" data-edit="logo-row" data-managed=""><span data-lang="en"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span><span data-lang="es" hidden=""><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span></div>
+
+  <div class="slide-layout">
+    <span class="softsolution-credit" data-edit="credit"><span data-lang="en">by GlassQuality.com</span><span data-lang="es" hidden="">por GlassQuality.com</span></span>
+
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label"><span data-lang="en">Screen Printing</span><span data-lang="es" hidden="">Impresión de pantalla</span></div>
+      <h1 class="slide-title" data-edit="headline"><span data-lang="en">Automatic quality control for <span class="blue">screen-printed glass</span></span><span data-lang="es" hidden="">Control de calidad automático para vidrio impreso con pantalla</span></h1>
+      <p class="slide-subtitle anim-in" data-edit="subtitle"><span data-lang="en">The quality inspection of logos and screen printing is now standard — fully automated, 100% of the time..</span><span data-lang="es" hidden="">La inspección de calidad de logotipos e impresión de pantalla es ahora estándar — totalmente automatizado, el 100% de las veces..</span></p>
+    </header>
+
+    <div class="slide-body">
+      <!-- Two regions side-by-side ≥769px, stacked below: image carousel + a single list card. -->
+      <div class="template08-screenprinting-grid">
+
+        <!-- Image carousel — empty in the template; the deck fills it via the + Image button.
+             Per-image Fit/Fill toggle + lightbox come from the shared carousel.js. -->
+        <div class="ls-carousel template08-screenprinting-car anim-in" data-counter="" data-edit="sp-carousel" data-track="template08-screenprinting:carousel" style="flex:none;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/image82.png" alt="Screen printing inspection" data-zoom="" style="object-fit: cover;"><div class="ls-carousel-caption">Screen printing inspection</div></div><div class="ls-carousel-slide"><img src="../shared/image83.png" alt="Screen printing inspection" data-zoom=""><div class="ls-carousel-caption">Screen printing inspection</div></div></div><div class="ls-carousel-counter">1 / 2</div></div>
+
+        <!-- List card. The list is a list.js component (data-ls-list): items get drag-reorder /
+             hide / add / delete; the whole <ul> innerHTML persists as one blob under its data-edit key.
+             The ✓ / numbered marker is toggled by the builder-only button and persisted in sp-marker. -->
+        <div class="card template08-screenprinting-card anim-in">
+          <div class="sp-card-head-row">
+            <div class="sp-card-head" data-edit="col-label"><span data-lang="en">What LineScanner checks.</span><span data-lang="es" hidden="">Lo que LineScanner verifica.</span></div>
+            
+          </div>
+          <!-- Marker-mode store ("check" | "number"): re-injected on render, read by the script to set the
+               list style, persisted via slide-carousel-save when toggled. Ships to published output (not builder-only). -->
+          <span class="sp-marker-store" data-edit="sp-marker" style="display:none;"><span data-lang="en">check</span><span data-lang="es" hidden="">verificar</span></span>
+          <ul class="sp-list" data-ls-list="" data-lang="en"><li><strong>Correct position</strong> of screen printing</li><li><strong>Missing parts</strong> within a logo</li><li><strong>Print thickness</strong> consistency</li><li><strong>Detail errors</strong> in graphics</li><li><strong>Screen printing errors</strong> &amp; defects</li><li draggable="false" class=""><strong>Logo position &amp; rotation</strong></li><li class="">EXTRA New item</li><li class="">EXTRA New Item 2<br></li></ul><ul class="sp-list" data-ls-list="" data-lang="es" hidden=""><li><strong>Posición correcta</strong> de la impresión en pantalla</li><li><strong>Partes faltantes</strong> dentro de un logotipo</li><li><strong>Consistencia del grosor de impresión</strong></li><li><strong>Errores de detalle</strong> en gráficos</li><li><strong>Errores de impresión en pantalla</strong> y defectos</li><li draggable="false" class=""><strong>Posición y rotación del logotipo</strong></li></ul>
+          
+          
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* pb-responsive provides the scroll model + fluid chrome. Rules here are positional only;
+       the card composes from `.card` so theme Finish blocks restyle it. Colours use theme variables. */
+    .template08-screenprinting .slide-body { width:100%; display:flex; flex-direction:column; align-items:center; }
+
+    /* Carousel left, list right ≥769px; stacked <769px. minmax(0,…) stops the carousel
+       overflowing its column. */
+    .template08-screenprinting-grid { display:grid; grid-template-columns:1fr; gap:clamp(14px,2vw,22px); width:100%; max-width:var(--pb-content-max); margin:0 auto; align-items:start; }
+    @media (min-width:769px) {
+      .template08-screenprinting-grid { grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); }
+    }
+
+    /* Carousel — flex:none + clamp height beats the inline flex that would collapse it to 0 in a
+       content-flow panel; scales with the viewport on big screens. */
+    .template08-screenprinting .template08-screenprinting-car { flex:none !important; min-height:0 !important; height:var(--pb-media-h) !important; width:100%; }
+    .template08-screenprinting .ls-carousel-slide img { object-fit:contain; }
+
+    .template08-screenprinting .template08-screenprinting-card { display:flex; flex-direction:column; padding:18px 22px 8px; border-top:3px solid var(--accent); }
+    .template08-screenprinting .template08-screenprinting-card:hover { transform:none; }
+
+    /* Header row: editable label + marker toggle, with the divider beneath both. */
+    .sp-card-head-row { display:flex; align-items:baseline; justify-content:space-between; gap:10px; padding-bottom:10px; margin-bottom:12px; border-bottom:1px solid var(--border); }
+    .sp-card-head { font-size:clamp(14px,1.6vw,20px); font-weight:800; letter-spacing:.01em; color:var(--accent); }
+    .sp-marker-toggle { flex-shrink:0; font-size:10px; font-weight:700; letter-spacing:.04em; padding:3px 9px; border-radius:14px; cursor:pointer; background:rgba(var(--accent-rgb),.08); border:1px solid var(--card-border); color:var(--text-muted); transition:background .2s,border-color .2s,color .2s; }
+    .sp-marker-toggle:hover { background:rgba(var(--accent-rgb),.15); border-color:var(--accent); color:var(--accent); }
+
+    .sp-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+    /* List items — room on the left for the marker, on the right for list.js drag/hide controls. */
+    .sp-list li { position:relative; padding-left:26px; padding-right:40px; font-size:clamp(12px,1.15vw,15px); line-height:1.4; color:var(--text-muted); }
+    /* Default marker: ✓ */
+    .sp-list li::before { content:"\2713"; position:absolute; left:0; top:0; font-weight:800; color:var(--accent); }
+    /* Numbered marker: a small accent badge with the item's number (toggle persisted in sp-marker). */
+    .sp-list--numbered { counter-reset:sp-step; }
+    .sp-list--numbered li::before { content:counter(sp-step); counter-increment:sp-step; top:-1px; width:18px; height:18px; border-radius:50%; background:rgba(var(--accent-rgb),.2); border:1px solid rgba(var(--accent-rgb),.4); display:flex; align-items:center; justify-content:center; font-size:10px; line-height:1; }
+
+    /* Builder-only controls never show in readonly / published output. */
+    .template08-screenprinting-readonly [data-ls-add],
+    .template08-screenprinting-readonly [data-ls-restore],
+    .template08-screenprinting-readonly .sp-marker-toggle { display:none; }
+
+    /* ≥1200px (laptops/monitors): fit one screen, no scroll — the carousel|list row fills the body;
+       the carousel fills its cell, the list stays top-aligned. */
+    @media (min-width:1200px) {
+      .slide.content.template08-screenprinting.pb-responsive { overflow:hidden; }
+      .template08-screenprinting .slide-layout { height:100%; justify-content:flex-start; }
+      .template08-screenprinting .slide-body { flex:1 1 auto; min-height:0; }
+      .template08-screenprinting-grid { flex:1 1 auto; min-height:0; align-items:stretch; }
+      .template08-screenprinting .template08-screenprinting-car { height:100% !important; min-height:0 !important; }
+      .template08-screenprinting .template08-screenprinting-card { align-self:start; }
+    }
+  </style>
+
+  <script>
+  (function () {
+    var slide = document.currentScript.closest('[data-slide]');
+    if (window.PB_READONLY) slide.classList.add('template08-screenprinting-readonly');
+    /* Editable list + image carousel (with lightbox) via the shared components. */
+    if (window.List)     List.init(slide);
+    if (window.Carousel) Carousel.init(slide);
+    if (window.Lightbox) Lightbox.init(slide);
+
+    /* Marker mode: read the persisted store and style the list. /number/ test is robust to the
+       per-language <span> wrapping the publisher may add (value is identical across languages). */
+    var list  = slide.querySelector('.sp-list');
+    var store = slide.querySelector('[data-edit="sp-marker"]');
+    function applyMarker() {
+      var numbered = !!(store && /number/.test(store.textContent));
+      if (list) list.classList.toggle('sp-list--numbered', numbered);
+    }
+    applyMarker();
+    var toggle = slide.querySelector('.sp-marker-toggle');
+    if (toggle && !window.PB_READONLY) {
+      toggle.addEventListener('click', function () {
+        var mode = (store && /number/.test(store.textContent)) ? 'check' : 'number';
+        if (store) store.textContent = mode;
+        applyMarker();
+        document.dispatchEvent(new CustomEvent('slide-carousel-save', { detail: { editKey: 'sp-marker', html: mode } }));
+      });
+    }
+
+    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
+  })();
+  </script>
+
+<button class="pb-gallery-btn" data-ls-gallery-open="" data-builder-feature="gallery" title="Open gallery">
+  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+  Gallery
+</button>
+<div data-ls-gallery="" data-edit="gallery-track" data-autoplay="8" style="display:none;">
+  <div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat">
+    <span class="ls-gallery-label">Section Title</span>
+    <span class="ls-gallery-number">10</span>
+    <span class="ls-gallery-body-text">Description text here</span>
+  </div></div>
+</div></div>
+</div>
+<div class="fp-slide" data-slide-index="10" style="display:none;">
+<div class="slide content template09-logo-check pb-responsive" data-slide="logo-check" data-slide-mode="sequence">
+
+  <!-- Logo row — defaults to the product logo; deck branding overrides it. data-managed = server-injected. -->
+  <div class="slide-logo-row" data-edit="logo-row" data-managed=""><span data-lang="en"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span><span data-lang="es" hidden=""><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span></div>
+
+  <div class="slide-layout">
+    <span class="softsolution-credit" data-edit="credit"><span data-lang="en">by GlassQuality.com</span><span data-lang="es" hidden="">por GlassQuality.com</span></span>
+
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label"><span data-lang="en">Screen Printing &amp; Logo</span><span data-lang="es" hidden="">Serigrafía y Logo</span></div>
+      <h1 class="slide-title" data-edit="headline"><span data-lang="en">Position and <span class="blue">print quality control</span></span><span data-lang="es" hidden="">Control de <span class="blue">posición y calidad de impresión</span></span></h1>
+      <p class="slide-subtitle anim-in" data-edit="subtitle"><span data-lang="en">Select a check to see a real captured example.</span><span data-lang="es" hidden="">Selecciona una opción para ver un ejemplo capturado real.</span></p>
+    </header>
+
+    <div class="slide-body">
+
+      <!-- Image display (TOP). Default carousel shows when no tag is selected; each tag has its
+           own carousel slot below, shown/hidden by the script. Per-image Fit/Fill + lightbox via carousel.js. -->
+      <div class="ls-carousel template09-logo-check-car anim-in" id="lcDefaultCar" data-counter="" data-edit="lc-default-carousel" data-track="template09-logo-check:default" style="flex:none;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/image89.png" alt="Print/logo inspection example" data-zoom=""><div class="ls-carousel-caption">Print/logo inspection example</div></div><div class="ls-carousel-slide"><img src="../shared/image90.png" alt="Print/logo inspection example" data-zoom=""><div class="ls-carousel-caption">Print/logo inspection example</div></div><div class="ls-carousel-slide"><img src="../shared/image91.png" alt="Print/logo inspection example" data-zoom=""><div class="ls-carousel-caption">Print/logo inspection example</div></div><div class="ls-carousel-slide"><img src="../shared/image92.png" alt="Print/logo inspection example" data-zoom=""><div class="ls-carousel-caption">Print/logo inspection example</div></div><div class="ls-carousel-slide"><img src="../shared/image96.png" alt="Print/logo inspection example" data-zoom=""><div class="ls-carousel-caption">Print/logo inspection example</div></div></div><div class="ls-carousel-counter">1 / 5</div></div>
+
+      <!-- Per-tag carousels — one data-edit slot each (max 10). Empty in the template; the deck fills them. -->
+      <div class="ls-carousel template09-logo-check-car lc-tag-car" data-counter="" data-edit="lc-tag-x0" data-track="template09-logo-check:x0" style="display:none;flex:none;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/image89.png" alt="Logo check example" data-zoom=""><div class="ls-carousel-caption">Logo check example</div></div></div><div class="ls-carousel-counter"></div></div>
+      <div class="ls-carousel template09-logo-check-car lc-tag-car" data-counter="" data-edit="lc-tag-x1" data-track="template09-logo-check:x1" style="display:none;flex:none;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/image90.png" alt="Logo check example" data-zoom=""><div class="ls-carousel-caption">Logo check example</div></div></div><div class="ls-carousel-counter"></div></div>
+      <div class="ls-carousel template09-logo-check-car lc-tag-car" data-counter="" data-edit="lc-tag-x2" data-track="template09-logo-check:x2" style="display:none;flex:none;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/image89.png" alt="Logo check example" data-zoom=""><div class="ls-carousel-caption">Logo check example</div></div></div><div class="ls-carousel-counter"></div></div>
+      <div class="ls-carousel template09-logo-check-car lc-tag-car" data-counter="" data-edit="lc-tag-x3" data-track="template09-logo-check:x3" style="display:none;flex:none;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/image91.png" alt="Logo check example" data-zoom=""><div class="ls-carousel-caption">Logo check example</div></div></div><div class="ls-carousel-counter"></div></div>
+      <div class="ls-carousel template09-logo-check-car lc-tag-car" data-counter="" data-edit="lc-tag-x4" data-track="template09-logo-check:x4" style="display:none;flex:none;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/image92.png" alt="Logo check example" data-zoom="" style="object-fit: contain;"><div class="ls-carousel-caption">Logo check example</div></div></div><div class="ls-carousel-counter"></div></div>
+      <div class="ls-carousel template09-logo-check-car lc-tag-car" data-counter="" data-edit="lc-tag-x5" data-track="template09-logo-check:x5" style="display:none;flex:none;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/image89.png" alt="Logo check example" data-zoom=""><div class="ls-carousel-caption">Logo check example</div></div></div><div class="ls-carousel-counter"></div></div>
+      <div class="ls-carousel template09-logo-check-car lc-tag-car" data-counter="" data-edit="lc-tag-x6" data-track="template09-logo-check:x6" style="display:none;flex:none;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects" data-zoom=""><div class="ls-carousel-caption">CostOfQualityDefects</div></div></div><div class="ls-carousel-counter"></div></div>
+      <div class="ls-carousel template09-logo-check-car lc-tag-car" data-counter="" data-edit="lc-tag-x7" data-track="template09-logo-check:x7" style="display:none;flex:none;min-height:0;width:100%;"><div class="ls-carousel-track"></div><div class="ls-carousel-counter"></div></div>
+      <div class="ls-carousel template09-logo-check-car lc-tag-car" data-counter="" data-edit="lc-tag-x8" data-track="template09-logo-check:x8" style="display:none;flex:none;min-height:0;width:100%;"><div class="ls-carousel-track"></div><div class="ls-carousel-counter"></div></div>
+      <div class="ls-carousel template09-logo-check-car lc-tag-car" data-counter="" data-edit="lc-tag-x9" data-track="template09-logo-check:x9" style="display:none;flex:none;min-height:0;width:100%;"><div class="ls-carousel-track"></div><div class="ls-carousel-counter"></div></div>
+
+      <!-- Config store — JSON list of tags [{id,label,carKey}]. contenteditable so it rides the
+           standard save pipeline; the script reads/writes its textContent. Images live in the
+           per-tag carousels above, NOT here. -->
+      <div id="lc-config" data-edit="lc-config" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;left:-9999px;top:0;"><span data-lang="en">[{"id":"missing-print","label":"❌ Missing print","carKey":"lc-tag-x0"},{"id":"distortion","label":"📐 Distortion","carKey":"lc-tag-x1"},{"id":"shiny-ink","label":"💡 Shiny ink","carKey":"lc-tag-x2"},{"id":"rotation","label":"🔄 Rotation","carKey":"lc-tag-x3"},{"id":"out-of-position","label":"📍 Out of position","carKey":"lc-tag-x4"},{"id":"filled-items","label":"⬛ \"Filled\" items","carKey":"lc-tag-x5"},{"id":"lc-tag-x6","label":"Extra","carKey":"lc-tag-x6"}]</span><span data-lang="es" hidden="">[{"id":"missing-print","label":"❌ Impresión faltante","carKey":"lc-tag-x0"},{"id":"distortion","label":"📐 Distorsión","carKey":"lc-tag-x1"},{"id":"shiny-ink","label":"💡 Tinta brillante","carKey":"lc-tag-x2"},{"id":"rotation","label":"🔄 Rotación","carKey":"lc-tag-x3"},{"id":"out-of-position","label":"📍 Fuera de posición","carKey":"lc-tag-x4"},{"id":"filled-items","label":"⬛ Elementos \"rellenos\"","carKey":"lc-tag-x5"},{"id":"lc-tag-x6","label":"Etiqueta nueva","carKey":"lc-tag-x6"}]</span></div>
+
+      <!-- Tag buttons (BOTTOM) — built by the script from the config. Text/emoji labels, no icons. -->
+      <div class="template09-logo-check-selector anim-in" id="lc-selector"></div>
+
+    </div>
+  </div>
+
+  <style>
+    /* pb-responsive provides the scroll model + fluid chrome. Rules here are positional; tags compose
+       from `.card` so theme Finish blocks restyle them. Colours use theme variables only. */
+    .template09-logo-check .slide-body { width:100%; display:flex; flex-direction:column; align-items:center; }
+
+    /* Image carousel (top) — flex:none + clamp height beats the inline flex that would collapse it to 0
+       in a content-flow panel; scales with the viewport on big screens. */
+    .template09-logo-check .template09-logo-check-car { flex:none !important; min-height:0 !important; height:var(--pb-media-h) !important; width:100%; max-width:var(--pb-content-max); margin:0 auto; }
+    .template09-logo-check .ls-carousel-slide img { object-fit:contain; }
+
+    /* Tag buttons (bottom) — auto-wrapping row of text chips; each is a themeable .card. */
+    .template09-logo-check-selector { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; width:100%; max-width:var(--pb-content-max); margin:16px auto 0; }
+    .template09-logo-check .lc-tag-btn { position:relative; display:inline-flex; align-items:center; gap:6px; padding:8px 16px; cursor:pointer; background:var(--card-bg); border:1px solid var(--card-border); border-radius:var(--card-radius); transition:border-color .2s, background .2s; }
+    .template09-logo-check .lc-tag-btn:hover { border-color:rgba(var(--accent-rgb),.4); }
+    .template09-logo-check .lc-tag-btn.active { border-color:var(--accent); background:rgba(var(--accent-rgb),.08); }
+    .lc-tag-label { font-size:13px; font-weight:700; letter-spacing:.02em; color:var(--text-muted); }
+    .lc-tag-btn.active .lc-tag-label { color:var(--accent); }
+    .lc-tag-label:focus { outline:none; }
+
+    /* Builder-only: delete a tag + add a tag */
+    .lc-tag-del { position:absolute; top:-7px; right:-7px; width:18px; height:18px; border-radius:50%; display:none; align-items:center; justify-content:center; font-size:10px; cursor:pointer; background:rgba(var(--accent-rgb),.18); border:1px solid rgba(var(--accent-rgb),.4); color:var(--accent); z-index:2; }
+    .template09-logo-check:not(.template09-logo-check-readonly) .lc-tag-btn:hover .lc-tag-del { display:flex; }
+    .template09-logo-check .lc-add-btn { border-style:dashed; opacity:.7; }
+    .template09-logo-check .lc-add-btn:hover { opacity:1; }
+
+    /* readonly / published: hide every builder-only affordance */
+    .template09-logo-check-readonly [data-builder-only],
+    .template09-logo-check-readonly .lc-tag-del,
+    .template09-logo-check-readonly .lc-add-btn { display:none !important; }
+
+    /* ≥1200px (laptops/monitors): fit one screen, no scroll — carousel fills the height above the tag buttons. */
+    @media (min-width:1200px) {
+      .slide.content.template09-logo-check.pb-responsive { overflow:hidden; }
+      .template09-logo-check .slide-layout { height:100%; justify-content:flex-start; }
+      .template09-logo-check .slide-body { flex:1 1 auto; min-height:0; }
+      .template09-logo-check-selector { flex:none; }
+      .template09-logo-check .template09-logo-check-car { flex:1 1 auto !important; height:auto !important; min-height:0 !important; }
+    }
+  </style>
+
+  <script>
+  (function () {
+    var root = document.currentScript.closest('[data-slide]');
+    var EDIT_MODE = !window.PB_READONLY;
+    if (!EDIT_MODE) root.classList.add('template09-logo-check-readonly');
+    var slideId  = window.Track ? Track.slideId(root) : 'template09-logo-check';
+
+    var configEl = root.querySelector('#lc-config');
+    var selector = root.querySelector('#lc-selector');
+    var defWrap  = root.querySelector('#lcDefaultCar');
+
+    var MAX_TAGS = 10;
+    var SLOTS = ['lc-tag-x0','lc-tag-x1','lc-tag-x2','lc-tag-x3','lc-tag-x4','lc-tag-x5','lc-tag-x6','lc-tag-x7','lc-tag-x8','lc-tag-x9'];
+
+    var DEFAULT_CONFIG = [
+      { id: 'tag-one',   label: 'Tag One',   carKey: 'lc-tag-x0' },
+      { id: 'tag-two',   label: 'Tag Two',   carKey: 'lc-tag-x1' },
+      { id: 'tag-three', label: 'Tag Three', carKey: 'lc-tag-x2' }
+    ];
+
+    function clone(o) { return JSON.parse(JSON.stringify(o)); }
+    var config = loadConfig();
+    var currentIdx = -1;
+
+    function loadConfig() {
+      // Published multi-language decks wrap this element's text in <span data-lang> per language, so
+      // textContent would be both languages concatenated (invalid JSON). Read the default-language span
+      // when present; in the builder it's plain JSON text.
+      var enSpan = configEl.querySelector('[data-lang="en"]') || configEl.querySelector('[data-lang]');
+      var raw = ((enSpan ? enSpan.textContent : configEl.textContent) || '').trim();
+      if (!raw) return clone(DEFAULT_CONFIG);
+      try { var c = JSON.parse(raw); return Array.isArray(c) && c.length ? c : clone(DEFAULT_CONFIG); }
+      catch (e) { return clone(DEFAULT_CONFIG); }
+    }
+    function persistConfig() {
+      // Persist via slide-carousel-save (honored by both the Builder Preview and the deck/publish
+      // render scripts) — never a synthetic focusout, which the builder ignores. html = serialized blob.
+      configEl.textContent = JSON.stringify(config);
+      document.dispatchEvent(new CustomEvent('slide-carousel-save', { detail: { editKey: 'lc-config', html: configEl.innerHTML } }));
+    }
+    function findCar(carKey) { return root.querySelector('.lc-tag-car[data-edit="' + carKey + '"]'); }
+
+    function showDefault() {
+      root.querySelectorAll('.lc-tag-car').forEach(function (c) { c.style.display = 'none'; });
+      currentIdx = -1;
+      if (defWrap) {
+        defWrap.style.display = '';
+        if (window.Carousel) Carousel.init(defWrap);
+        if (window.Lightbox) Lightbox.init(defWrap);
+      }
+      updateBtns();
+    }
+    function showTag(idx) {
+      if (idx === currentIdx) { showDefault(); return; }
+      var prev = config[currentIdx]; if (prev) { var pc = findCar(prev.carKey); if (pc) pc.style.display = 'none'; }
+      if (defWrap) defWrap.style.display = 'none';
+      currentIdx = idx;
+      var car = findCar(config[idx].carKey);
+      if (car) {
+        car.style.display = '';
+        if (typeof car._lsGoTo === 'function') car._lsGoTo(0);
+        if (window.Carousel) Carousel.init(car);
+        if (window.Lightbox) Lightbox.init(car);
+      }
+      updateBtns();
+    }
+    function updateBtns() {
+      selector.querySelectorAll('.lc-tag-btn').forEach(function (btn, i) {
+        if (btn.classList.contains('lc-add-btn')) return;
+        btn.classList.toggle('active', i === currentIdx);
+      });
+    }
+
+    function makeBtn(item, idx) {
+      var btn = document.createElement('button');
+      btn.className = 'card lc-tag-btn';
+      btn.setAttribute('data-tag-id', item.id);
+
+      var labelEl = document.createElement('span');
+      labelEl.className = 'lc-tag-label';
+      labelEl.textContent = item.label;
+      labelEl.setAttribute('data-edit', 'lc-label-' + idx);
+      if (EDIT_MODE) {
+        labelEl.contentEditable = 'true'; labelEl.spellcheck = false;
+        labelEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); labelEl.blur(); } });
+        labelEl.addEventListener('blur', function () { var v = labelEl.textContent.trim(); if (v) item.label = v; persistConfig(); });
+        labelEl.addEventListener('click', function (e) { if (!window.previewLang || window.previewLang === 'en') e.stopPropagation(); });
+      }
+      btn.appendChild(labelEl);
+
+      if (EDIT_MODE) {
+        var del = document.createElement('span');
+        del.className = 'lc-tag-del'; del.setAttribute('data-builder-only', ''); del.title = 'Delete tag'; del.innerHTML = '&#10005;';
+        del.addEventListener('click', function (e) {
+          e.stopPropagation(); e.preventDefault();
+          if (!window.confirm('Delete "' + (item.label || 'this tag') + '"?')) return;
+          config.splice(idx, 1); renderSelector(); persistConfig();
+        });
+        btn.appendChild(del);
+      }
+
+      btn.addEventListener('click', function () {
+        if (document.activeElement && document.activeElement.isContentEditable) return;
+        showTag(idx);
+        if (window.Track) Track.click(slideId, item.label);
+      });
+      return btn;
+    }
+
+    function freeSlot() {
+      var used = config.map(function (c) { return c.carKey; });
+      for (var i = 0; i < SLOTS.length; i++) { if (used.indexOf(SLOTS[i]) === -1) return SLOTS[i]; }
+      return null;
+    }
+    function clearSlot(carKey) {
+      var car = findCar(carKey); if (!car) return;
+      var track = car.querySelector('.ls-carousel-track'); if (track) track.innerHTML = '';
+      car._lsCarouselInit = false;
+      document.dispatchEvent(new CustomEvent('slide-carousel-save', { detail: { editKey: carKey, html: '<div class="ls-carousel-track"></div>' } }));
+    }
+
+    function renderSelector() {
+      selector.innerHTML = '';
+      config.forEach(function (item, idx) { selector.appendChild(makeBtn(item, idx)); });
+      if (EDIT_MODE && config.length < MAX_TAGS) {
+        var add = document.createElement('button');
+        add.className = 'card lc-tag-btn lc-add-btn'; add.setAttribute('data-builder-only', ''); add.title = 'Add tag';
+        var al = document.createElement('span'); al.className = 'lc-tag-label'; al.textContent = '+ Add';
+        add.appendChild(al);
+        add.addEventListener('click', function () {
+          if (config.length >= MAX_TAGS) return;
+          var slot = freeSlot(); if (!slot) return;
+          clearSlot(slot);
+          config.push({ id: slot, label: 'New tag', carKey: slot });
+          renderSelector(); persistConfig();
+        });
+        selector.appendChild(add);
+      }
+      showDefault();
+    }
+
+    renderSelector();
+    setTimeout(function () { if (window.PE) PE.initSlide(root); }, 0);
+  })();
+  </script>
+
+<button class="pb-gallery-btn" data-ls-gallery-open="" data-builder-feature="gallery" title="Open gallery">
+  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+  Gallery
+</button>
+<div data-ls-gallery="" data-edit="gallery-track" data-autoplay="8" style="display:none;">
+  <div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat">
+    <span class="ls-gallery-label">Section Title</span>
+    <span class="ls-gallery-number">11</span>
+    <span class="ls-gallery-body-text">Description text here</span>
+  </div></div>
+</div></div>
+</div>
+<div class="fp-slide" data-slide-index="11" style="display:none;">
+<div class="slide content template05-technology pb-responsive" data-slide="traceability" data-slide-mode="sequence">
+
+  <!-- Logo row — defaults to the product logo; deck branding overrides it. data-managed = server-injected. -->
+  <div class="slide-logo-row" data-edit="logo-row" data-managed=""><span data-lang="en"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span><span data-lang="es" hidden=""><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span></div>
+
+  <div class="slide-layout">
+    <span class="softsolution-credit" data-edit="credit"><span data-lang="en">by GlassQuality.com</span><span data-lang="es" hidden="">por GlassQuality.com</span></span>
+
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label"><span data-lang="en">Traceability &amp; Management</span><span data-lang="es" hidden="">Trazabilidad y Gestión</span></div>
+      <h1 class="slide-title" data-edit="headline"><span data-lang="en">Decisions based on <span class="blue">real data</span></span><span data-lang="es" hidden="">Decisiones basadas en <span class="blue">datos reales</span></span></h1>
+      <p class="slide-subtitle anim-in" data-edit="subtitle"><span data-lang="en">Every inspection stored, searchable, and monitored in real time.</span><span data-lang="es" hidden="">Cada inspección almacenada, buscable y monitoreada en tiempo real.</span></p>
+    </header>
+
+    <div class="slide-body">
+
+      <!-- Tabs (shared tabs.js). Whole structure persists as one blob under data-edit="tabs"; inner keys
+           re-apply on top. Images are carousels (carousel.js → free + Image / zoom); compare lists use
+           list.js. Every surface composes from standard classes so theme Finish blocks restyle them. -->
+      <div class="ls-tabs template05-technology-tabs" data-edit="tabs" data-track="template05-technology:tabs"><div class="ls-tab-list"><button class="ls-tab active" data-panel="1" data-edit="tab-howitworks"><span data-lang="en">Archive</span><span data-lang="es" hidden="">Archivo</span></button><button class="ls-tab" data-panel="2" data-edit="tab-advantage"><span data-lang="en">Management Console</span><span data-lang="es" hidden="">Consola de Gestión</span></button><button class="ls-tab" data-panel="3" style="">Extra</button></div><div class="ls-tab-panels"><div class="ls-tab-panel active" data-panel="1"><div class="template05-technology-stack"><div class="template05-technology-media"><div class="ls-carousel" data-counter="" data-edit="hiw-diagram" data-track="template05-technology:howitworks" style="flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform:translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/Slide90.jpg" alt="Archive screen" data-zoom="" style="object-fit: cover;"><div class="ls-carousel-caption">Archive screen</div></div><div class="ls-carousel-slide"><img src="../shared/Slide88.jpg" alt="Archive screen" data-zoom=""><div class="ls-carousel-caption">Archive screen</div></div><div class="ls-carousel-slide"><img src="../shared/Slide87.jpg" alt="Archive screen" data-zoom=""><div class="ls-carousel-caption">Archive screen</div></div><div class="ls-carousel-slide"><img src="../shared/Slide89.jpg" alt="Archive screen" data-zoom=""><div class="ls-carousel-caption">Archive screen</div></div></div><div class="ls-carousel-counter">1 / 4</div></div></div><div class="template05-technology-cards"><div class="card card-tech anim-in"><span class="card-tech-num">1</span><div class="card-tech-text" data-edit="hiw-1"><span data-lang="en"><strong>Full history</strong> — every inspected piece stored and searchable</span><span data-lang="es" hidden=""><strong>Historial completo</strong> — cada pieza inspeccionada almacenada y buscable</span></div></div><div class="card card-tech anim-in"><span class="card-tech-num">2</span><div class="card-tech-text" data-edit="hiw-2"><span data-lang="en"><strong>Filter by date, line, or defect type</strong> — instant results</span><span data-lang="es" hidden=""><strong>Filtrar por fecha, línea o tipo de defecto</strong> — resultados instantáneos</span></div></div><div class="card card-tech anim-in"><span class="card-tech-num">3</span><div class="card-tech-text" data-edit="hiw-3"><span data-lang="en"><strong>Export reports</strong> — PDF or CSV for quality audits</span><span data-lang="es" hidden=""><strong>Exportar informes</strong> — PDF o CSV para auditorías de calidad</span></div></div><div class="card card-tech anim-in"><span class="card-tech-num">4</span><div class="card-tech-text" data-edit="hiw-4"><span data-lang="en"><strong>Image playback</strong> — review original scan images any time</span><span data-lang="es" hidden=""><strong>Reproducción de imágenes</strong> — revisar imágenes de escaneo original en cualquier momento</span></div></div></div></div></div><div class="ls-tab-panel" data-panel="2"><div class="template05-technology-stack"><div class="template05-technology-media"><div class="ls-carousel" data-counter="" data-edit="adv-image" data-track="template05-technology:advantage" style="flex:1;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform:translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/image108.png" alt="Management console" data-zoom=""><div class="ls-carousel-caption">Management console</div></div></div><div class="ls-carousel-counter"></div></div></div><div class="template05-technology-cards"><div class="card card-tech anim-in"><span class="card-tech-num">1</span><div class="card-tech-text" data-edit="adv-1"><span data-lang="en"><strong>Live View</strong> — real-time production monitoring</span><span data-lang="es" hidden=""><strong>Vista en Vivo</strong> — monitoreo de producción en tiempo real</span></div></div><div class="card card-tech anim-in"><span class="card-tech-num">2</span><div class="card-tech-text" data-edit="adv-2"><span data-lang="en"><strong>Alerts</strong> — by quantity, good/bad ratio, flexible periods</span><span data-lang="es" hidden=""><strong>Alertas</strong> — por cantidad, relación bueno/malo, períodos flexibles</span></div></div><div class="card card-tech anim-in"><span class="card-tech-num">3</span><div class="card-tech-text" data-edit="adv-3"><span data-lang="en"><strong>Multiple recipients</strong> per alert rule</span><span data-lang="es" hidden=""><strong>Múltiples destinatarios</strong> por regla de alerta</span></div></div><div class="card card-tech anim-in"><span class="card-tech-num">4</span><div class="card-tech-text" data-edit="adv-4"><span data-lang="en"><strong>Central settings</strong> — manage all units from one place</span><span data-lang="es" hidden=""><strong>Configuración centralizada</strong> — gestiona todas las unidades desde un solo lugar</span></div></div></div></div></div><div class="ls-tab-panel" data-panel="3"><div class="ls-carousel" data-counter="" data-zoom-group="" style="flex:1;min-height:0;width:100%;">  <div class="ls-carousel-track" style="transform: translateX(-1400px);">    <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;">      <span style="color:rgba(255,255,255,.2);font-size:13px;font-style:italic;">Add images with the + Image button</span>    </div>  <div class="ls-carousel-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects" data-zoom=""><div class="ls-carousel-caption">CostOfQualityDefects</div></div></div><div class="ls-carousel-counter">2 / 2</div></div></div></div></div>
+
+    </div>
+  </div>
+
+  <style>
+    /* Layout-only scoped rules. Responsive model comes from the shared `pb-responsive` root class
+       (slide is the sole scroll container; content stacks; no inner clip; fluid chrome). Surfaces
+       compose from .card / .feature-list / .ls-carousel so theme Finish blocks restyle them. Colours
+       reference theme variables only. */
+    .template05-technology .slide-body { width:100%; align-items:center; }
+    .template05-technology-tabs { width:100%; max-width:var(--pb-content-max); }
+
+    /* How It Works / Key Advantage: carousel on top, a grid of numbered text cards stacked below it
+       (auto-fit → 2-up when wide, 1-up when narrow). Matches the legacy carousel + card layout. */
+    .template05-technology-stack { display:flex; flex-direction:column; gap:clamp(12px,1.8vw,18px); padding-top:12px; }
+    .template05-technology-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:10px; }
+    .template05-technology .card-tech { display:flex; align-items:flex-start; gap:10px; padding:12px 14px; }
+    .template05-technology .card-tech:hover { transform:none; }
+    .card-tech-num { width:22px; height:22px; border-radius:50%; flex-shrink:0; background:rgba(var(--accent-rgb),.2); border:1px solid rgba(var(--accent-rgb),.4); color:var(--accent); font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+    .card-tech-text { font-size:clamp(12px,1.1vw,14px); color:var(--text-muted); line-height:1.45; }
+    .card-tech-text strong { color:var(--text); }
+
+    /* Carousels carry an inline flex:1 that collapses to 0 in a content-flow panel — so EVERY carousel
+       in this slide gets flex:none + a default height. This also covers a carousel the user adds inside
+       a brand-new tab (tabs.js). The media/shot rules below override the height for their own contexts. */
+    .template05-technology .ls-carousel { flex:none !important; min-height:0 !important; height:clamp(220px,46vh,540px) !important; }
+    .template05-technology .ls-carousel-slide img { flex:1 1 auto; min-height:0; width:100%; max-height:100%; object-fit:contain; }
+    .template05-technology-media .ls-carousel { height:var(--pb-media-h) !important; }
+
+    /* Comparison: three columns — list | images | list — side-by-side when wide, stacking when narrow
+       (images stay between the lists in source order either way). Reuses the .card-compare pattern
+       (✕ neutral / ✓ accent), theme-driven. */
+    .template05-technology-compare { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:clamp(14px,2vw,20px); align-items:start; width:100%; max-width:var(--pb-content-max); margin:0 auto; padding-top:12px; }
+    .template05-technology .card-compare { display:flex; flex-direction:column; padding:18px 20px 8px; border-top:3px solid var(--border); }
+    .template05-technology .card-compare:hover { transform:none; }
+    .template05-technology .card-compare-head { font-size:clamp(13px,1.5vw,18px); font-weight:800; letter-spacing:.01em; padding-bottom:10px; margin-bottom:10px; border-bottom:1px solid var(--border); color:var(--text-muted); }
+    .template05-technology .card-compare-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+    .template05-technology .card-compare-list li { position:relative; padding-left:24px; padding-right:40px; font-size:clamp(12px,1.1vw,14px); line-height:1.4; color:var(--text-muted); }
+    .template05-technology .card-compare-list li::before { position:absolute; left:0; top:0; font-weight:800; }
+    .template05-technology .card-compare-list li strong { color:var(--text); }
+    .template05-technology .card-compare--problem .card-compare-list li::before { content:"\2715"; color:var(--text-muted); }
+    .template05-technology .card-compare--benefit { border-top-color:var(--accent); background:rgba(var(--accent-rgb),.04); }
+    .template05-technology .card-compare--benefit .card-compare-head { color:var(--accent); }
+    .template05-technology .card-compare--benefit .card-compare-list li { color:var(--text); }
+    .template05-technology .card-compare--benefit .card-compare-list li::before { content:"\2713"; color:var(--accent); }
+
+    /* Comparison images — the center column: the two image carousels stacked vertically between the lists */
+    .template05-technology-shots { display:flex; flex-direction:column; gap:clamp(10px,1.4vw,16px); min-width:0; }
+    .template05-technology-shot { display:flex; flex-direction:column; gap:6px; min-width:0; }
+    .template05-technology-shot .ls-carousel { height:clamp(180px,32vh,400px) !important; min-height:0 !important; flex:none !important; }
+    /* Comparison shots are photos → fill the box (cover). Diagrams (panels 1-2) stay `contain`. */
+    .template05-technology-shot .ls-carousel-slide img { flex:1 1 auto; min-height:0; width:100%; height:100%; max-height:100%; object-fit:cover; }
+    .template05-technology-shot-label { font-size:clamp(10px,1vw,12px); font-weight:600; letter-spacing:.04em; color:var(--text-muted); text-align:center; }
+
+    /* Builder-only list controls never show in readonly / published output */
+    .template05-technology-readonly [data-ls-add],
+    .template05-technology-readonly [data-ls-restore] { display:none; }
+
+    /* ≥1200px (laptops/monitors): the active tab panel fills one screen. Carousel panels (How It Works /
+       Key Advantage) fit with NO scroll — the carousel fills the height left after the cards. Overflow
+       stays auto, so a long Comparison panel can still scroll instead of clipping. Tablets/phones scroll. */
+    @media (min-width:1200px) {
+      .template05-technology .slide-layout { height:100%; justify-content:flex-start; }
+      .template05-technology .slide-body { flex:1 1 auto; min-height:0; }
+      .template05-technology .ls-tabs { flex:1 1 auto; min-height:0; }
+      .template05-technology .ls-tab-panels { flex:1 1 auto; min-height:0; height:auto; }
+      .template05-technology .ls-tab-panel.active { height:100%; min-height:0; }
+      .template05-technology .template05-technology-stack { flex:1 1 auto; min-height:0; }
+      .template05-technology .template05-technology-cards { flex:none; }
+      .template05-technology .template05-technology-media { flex:1 1 auto; min-height:0; }
+      .template05-technology .template05-technology-media .ls-carousel { height:100% !important; min-height:0 !important; flex:none !important; }
+    }
+  </style>
+
+  <script>
+  (function () {
+    var slide = document.currentScript.closest('[data-slide]');
+    if (window.PB_READONLY) slide.classList.add('template05-technology-readonly');
+    /* Editable compare lists — drag-reorder / hide / add / delete via the shared list.js component. */
+    if (window.List) List.init(slide);
+    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
+  })();
+  </script>
+
+<button class="pb-gallery-btn" data-ls-gallery-open="" data-builder-feature="gallery" title="Open gallery">
+  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+  Gallery
+</button>
+<div data-ls-gallery="" data-edit="gallery-track" data-autoplay="8" style="display:none;">
+  <div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat">
+    <span class="ls-gallery-label">Section Title</span>
+    <span class="ls-gallery-number">12</span>
+    <span class="ls-gallery-body-text">Description text here</span>
+  </div></div>
+</div></div>
+</div>
+<div class="fp-slide" data-slide-index="12" style="display:none;">
+<div class="slide content template08-screenprinting pb-responsive" data-slide="sensitivity" data-slide-mode="sequence">
+
+  <!-- Logo row — defaults to the product logo; deck branding overrides it. data-managed = server-injected. -->
+  <div class="slide-logo-row" data-edit="logo-row" data-managed=""><span data-lang="en"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span><span data-lang="es" hidden=""><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span></div>
+
+  <div class="slide-layout">
+    <span class="softsolution-credit" data-edit="credit"><span data-lang="en">by GlassQuality.com</span><span data-lang="es" hidden="">por GlassQuality.com</span></span>
+
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label"><span data-lang="en">Sensitivity Adjustment</span><span data-lang="es" hidden="">Ajuste de Sensibilidad</span></div>
+      <h1 class="slide-title" data-edit="headline"><span data-lang="en">Fully automatic <span class="blue">sensitivity adjustment</span></span><span data-lang="es" hidden="">Ajuste de sensibilidad <span class="blue">completamente automático</span></span></h1>
+      <p class="slide-subtitle anim-in" data-edit="subtitle"><span data-lang="en">LineScanner — as easy as a smart-phone</span><span data-lang="es" hidden="">LineScanner — tan fácil como un teléfono inteligente</span></p>
+    </header>
+
+    <div class="slide-body">
+      <!-- Two regions side-by-side ≥769px, stacked below: image carousel + a single list card. -->
+      <div class="template08-screenprinting-grid">
+
+        <!-- Image carousel — empty in the template; the deck fills it via the + Image button.
+             Per-image Fit/Fill toggle + lightbox come from the shared carousel.js. -->
+        <div class="ls-carousel template08-screenprinting-car anim-in" data-counter="" data-edit="sp-carousel" data-track="template08-screenprinting:carousel" style="flex:none;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(0px);"><div class="ls-carousel-slide"><img src="../shared/Slide62.jpg" alt="Sensitivity adjustment" data-zoom="" style="object-fit: contain;"><div class="ls-carousel-caption">Sensitivity adjustment</div></div><div class="ls-carousel-slide"><img src="../shared/Slide63.jpg" alt="Sensitivity adjustment" data-zoom="" style="object-fit: cover;"><div class="ls-carousel-caption">Sensitivity adjustment</div></div><div class="ls-carousel-slide"><img src="../shared/Slide64.jpg" alt="Sensitivity adjustment" data-zoom=""><div class="ls-carousel-caption">Sensitivity adjustment</div></div><div class="ls-carousel-slide"><img src="../shared/Slide65.jpg" alt="Sensitivity adjustment" data-zoom=""><div class="ls-carousel-caption">Sensitivity adjustment</div></div></div><div class="ls-carousel-counter">1 / 4</div></div>
+
+        <!-- List card. The list is a list.js component (data-ls-list): items get drag-reorder /
+             hide / add / delete; the whole <ul> innerHTML persists as one blob under its data-edit key.
+             The ✓ / numbered marker is toggled by the builder-only button and persisted in sp-marker. -->
+        <div class="card template08-screenprinting-card anim-in">
+          <div class="sp-card-head-row">
+            <div class="sp-card-head" data-edit="col-label"><span data-lang="en">Automatic Quality Recipe Selection</span><span data-lang="es" hidden="">Selección Automática de Receta de Calidad</span></div>
+            
+          </div>
+          <!-- Marker-mode store ("check" | "number"): re-injected on render, read by the script to set the
+               list style, persisted via slide-carousel-save when toggled. Ships to published output (not builder-only). -->
+          <span class="sp-marker-store" data-edit="sp-marker" style="display:none;"><span data-lang="en">number</span><span data-lang="es" hidden="">número</span></span>
+          <ul class="sp-list" data-ls-list="" data-lang="en"><li>Receives glass info via interface (transfer file, PLC…)</li><li>Logo detected → selects Tempered Glass sensitivity</li><li>GSS sensor detects laminated lite → Laminated Glass settings</li><li>Coating detected → Coated Glass sensitivity setting</li><li>Any other case → Default quality &amp; sensitivity settings</li><li class="">New itemsd</li><li class="">New itemsd&nbsp;</li></ul><ul class="sp-list" data-ls-list="" data-lang="es" hidden=""><li>Recibe información de vidrio a través de interfaz (archivo de transferencia, PLC…)</li><li>Logo detectado → selecciona sensibilidad de Vidrio Templado</li><li>Sensor GSS detecta lámina laminada → configuración de Vidrio Laminado</li><li>Recubrimiento detectado → configuración de sensibilidad de Vidrio Recubierto</li><li>Cualquier otro caso → configuración de calidad y sensibilidad por defecto</li></ul>
+          
+          
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* pb-responsive provides the scroll model + fluid chrome. Rules here are positional only;
+       the card composes from `.card` so theme Finish blocks restyle it. Colours use theme variables. */
+    .template08-screenprinting .slide-body { width:100%; display:flex; flex-direction:column; align-items:center; }
+
+    /* Carousel left, list right ≥769px; stacked <769px. minmax(0,…) stops the carousel
+       overflowing its column. */
+    .template08-screenprinting-grid { display:grid; grid-template-columns:1fr; gap:clamp(14px,2vw,22px); width:100%; max-width:var(--pb-content-max); margin:0 auto; align-items:start; }
+    @media (min-width:769px) {
+      .template08-screenprinting-grid { grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); }
+    }
+
+    /* Carousel — flex:none + clamp height beats the inline flex that would collapse it to 0 in a
+       content-flow panel; scales with the viewport on big screens. */
+    .template08-screenprinting .template08-screenprinting-car { flex:none !important; min-height:0 !important; height:var(--pb-media-h) !important; width:100%; }
+    .template08-screenprinting .ls-carousel-slide img { object-fit:contain; }
+
+    .template08-screenprinting .template08-screenprinting-card { display:flex; flex-direction:column; padding:18px 22px 8px; border-top:3px solid var(--accent); }
+    .template08-screenprinting .template08-screenprinting-card:hover { transform:none; }
+
+    /* Header row: editable label + marker toggle, with the divider beneath both. */
+    .sp-card-head-row { display:flex; align-items:baseline; justify-content:space-between; gap:10px; padding-bottom:10px; margin-bottom:12px; border-bottom:1px solid var(--border); }
+    .sp-card-head { font-size:clamp(14px,1.6vw,20px); font-weight:800; letter-spacing:.01em; color:var(--accent); }
+    .sp-marker-toggle { flex-shrink:0; font-size:10px; font-weight:700; letter-spacing:.04em; padding:3px 9px; border-radius:14px; cursor:pointer; background:rgba(var(--accent-rgb),.08); border:1px solid var(--card-border); color:var(--text-muted); transition:background .2s,border-color .2s,color .2s; }
+    .sp-marker-toggle:hover { background:rgba(var(--accent-rgb),.15); border-color:var(--accent); color:var(--accent); }
+
+    .sp-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+    /* List items — room on the left for the marker, on the right for list.js drag/hide controls. */
+    .sp-list li { position:relative; padding-left:26px; padding-right:40px; font-size:clamp(12px,1.15vw,15px); line-height:1.4; color:var(--text-muted); }
+    /* Default marker: ✓ */
+    .sp-list li::before { content:"\2713"; position:absolute; left:0; top:0; font-weight:800; color:var(--accent); }
+    /* Numbered marker: a small accent badge with the item's number (toggle persisted in sp-marker). */
+    .sp-list--numbered { counter-reset:sp-step; }
+    .sp-list--numbered li::before { content:counter(sp-step); counter-increment:sp-step; top:-1px; width:18px; height:18px; border-radius:50%; background:rgba(var(--accent-rgb),.2); border:1px solid rgba(var(--accent-rgb),.4); display:flex; align-items:center; justify-content:center; font-size:10px; line-height:1; }
+
+    /* Builder-only controls never show in readonly / published output. */
+    .template08-screenprinting-readonly [data-ls-add],
+    .template08-screenprinting-readonly [data-ls-restore],
+    .template08-screenprinting-readonly .sp-marker-toggle { display:none; }
+
+    /* ≥1200px (laptops/monitors): fit one screen, no scroll — the carousel|list row fills the body;
+       the carousel fills its cell, the list stays top-aligned. */
+    @media (min-width:1200px) {
+      .slide.content.template08-screenprinting.pb-responsive { overflow:hidden; }
+      .template08-screenprinting .slide-layout { height:100%; justify-content:flex-start; }
+      .template08-screenprinting .slide-body { flex:1 1 auto; min-height:0; }
+      .template08-screenprinting-grid { flex:1 1 auto; min-height:0; align-items:stretch; }
+      .template08-screenprinting .template08-screenprinting-car { height:100% !important; min-height:0 !important; }
+      .template08-screenprinting .template08-screenprinting-card { align-self:start; }
+    }
+  </style>
+
+  <script>
+  (function () {
+    var slide = document.currentScript.closest('[data-slide]');
+    if (window.PB_READONLY) slide.classList.add('template08-screenprinting-readonly');
+    /* Editable list + image carousel (with lightbox) via the shared components. */
+    if (window.List)     List.init(slide);
+    if (window.Carousel) Carousel.init(slide);
+    if (window.Lightbox) Lightbox.init(slide);
+
+    /* Marker mode: read the persisted store and style the list. /number/ test is robust to the
+       per-language <span> wrapping the publisher may add (value is identical across languages). */
+    var list  = slide.querySelector('.sp-list');
+    var store = slide.querySelector('[data-edit="sp-marker"]');
+    function applyMarker() {
+      var numbered = !!(store && /number/.test(store.textContent));
+      if (list) list.classList.toggle('sp-list--numbered', numbered);
+    }
+    applyMarker();
+    var toggle = slide.querySelector('.sp-marker-toggle');
+    if (toggle && !window.PB_READONLY) {
+      toggle.addEventListener('click', function () {
+        var mode = (store && /number/.test(store.textContent)) ? 'check' : 'number';
+        if (store) store.textContent = mode;
+        applyMarker();
+        document.dispatchEvent(new CustomEvent('slide-carousel-save', { detail: { editKey: 'sp-marker', html: mode } }));
+      });
+    }
+
+    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
+  })();
+  </script>
+
+<button class="pb-gallery-btn" data-ls-gallery-open="" data-builder-feature="gallery" title="Open gallery">
+  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+  Gallery
+</button>
+<div data-ls-gallery="" data-edit="gallery-track" data-autoplay="8" style="display:none;">
+  <div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat">
+    <span class="ls-gallery-label">Section Title</span>
+    <span class="ls-gallery-number">13</span>
+    <span class="ls-gallery-body-text">Description text here</span>
+  </div></div><div class="ls-gallery-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects"><div class="ls-gallery-caption">CostOfQualityDefects</div></div>
+</div></div>
+</div>
+<div class="fp-slide" data-slide-index="13" style="display:none;">
+<div class="slide content template10-installation pb-responsive" data-slide="installation" data-slide-mode="sequence">
+
+  <!-- Logo row — defaults to the product logo; deck branding overrides it. data-managed = server-injected. -->
+  <div class="slide-logo-row" data-edit="logo-row" data-managed=""><span data-lang="en"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span><span data-lang="es" hidden=""><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span></div>
+
+  <div class="slide-layout">
+    <span class="softsolution-credit" data-edit="credit"><span data-lang="en">by GlassQuality.com</span><span data-lang="es" hidden="">por YourBrand.com</span></span>
+
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label"><span data-lang="en">Installation</span><span data-lang="es" hidden="">Instalación</span></div>
+      <h1 class="slide-title" data-edit="headline"><span data-lang="en">Modular based — <span class="blue">minimum footprint</span></span><span data-lang="es" hidden="">Basado en módulos — <span class="blue">huella mínima</span></span></h1>
+      <p class="slide-subtitle anim-in" data-edit="subtitle"><span data-lang="en">unique · worldwide</span><span data-lang="es" hidden="">único · mundial</span></p>
+    </header>
+
+    <div class="slide-body">
+      <!-- A single full-width image carousel is the whole slide. Empty in the template; the deck fills it
+           via the + Image button. Per-image Fit/Fill toggle + lightbox come from the shared carousel.js. -->
+      <div class="ls-carousel template10-installation-car anim-in" data-counter="" data-edit="install-carousel" data-track="template10-installation:carousel" style="flex:none;min-height:0;width:100%;"><div class="ls-carousel-track" style="transform: translateX(-1400px);"><div class="ls-carousel-slide"><img src="../shared/Slide66.jpg" alt="Modular installation footprint" data-zoom=""><div class="ls-carousel-caption">Modular installation footprint</div></div><div class="ls-carousel-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects" data-zoom=""><div class="ls-carousel-caption">CostOfQualityDefects</div></div></div><div class="ls-carousel-counter">2 / 2</div></div>
+    </div>
+  </div>
+
+  <style>
+    /* pb-responsive provides the scroll model + fluid chrome. Rules here are positional only.
+       Colours reference theme variables. */
+    .template10-installation .slide-body { width:100%; display:flex; flex-direction:column; align-items:center; }
+
+    /* Full-width carousel — flex:none + a generous clamp height (it's the slide's main content) beats the
+       inline flex that would collapse it to 0 in a content-flow panel; scales with the viewport. */
+    .template10-installation .template10-installation-car { flex:none !important; min-height:0 !important; height:var(--pb-media-h) !important; width:100%; max-width:var(--pb-content-max); margin:0 auto; }
+    .template10-installation .ls-carousel-slide img { object-fit:contain; }
+
+    /* ≥1200px (laptops/monitors): fit one screen, no scroll — the carousel fills the slide body. */
+    @media (min-width:1200px) {
+      .slide.content.template10-installation.pb-responsive { overflow:hidden; }
+      .template10-installation .slide-layout { height:100%; justify-content:flex-start; }
+      .template10-installation .slide-body { flex:1 1 auto; min-height:0; }
+      .template10-installation .template10-installation-car { flex:1 1 auto !important; height:auto !important; min-height:0 !important; }
+    }
+  </style>
+
+  <script>
+  (function () {
+    var slide = document.currentScript.closest('[data-slide]');
+    if (window.PB_READONLY) slide.classList.add('template10-installation-readonly');
+    if (window.Carousel) Carousel.init(slide);
+    if (window.Lightbox) Lightbox.init(slide);
+    setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
+  })();
+  </script>
+
+<button class="pb-gallery-btn" data-ls-gallery-open="" data-builder-feature="gallery" title="Open gallery">
+  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+  Gallery
+</button>
+<div data-ls-gallery="" data-edit="gallery-track" data-autoplay="8" style="display:none;">
+  <div class="ls-gallery-slide"><img src="../shared/CostOfQualityDefects.png" alt="CostOfQualityDefects"><div class="ls-gallery-caption">CostOfQualityDefects</div></div><div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat">
+    <span class="ls-gallery-label">Section Title</span>
+    <span class="ls-gallery-number">Key Fact</span>
+    <span class="ls-gallery-body-text">Description text here</span>
+  </div></div>
+</div></div>
+</div>
+<div class="fp-slide" data-slide-index="14" style="display:none;">
+<div class="slide content template11-integrations pb-responsive" data-slide="integrations" data-slide-mode="sequence">
+
+  <!-- Logo row — defaults to the product logo; deck branding overrides it. data-managed = server-injected. -->
+  <div class="slide-logo-row" data-edit="logo-row" data-managed=""><span data-lang="en"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span><span data-lang="es" hidden=""><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span></div>
+
+  <div class="slide-layout">
+    <span class="softsolution-credit" data-edit="credit"><span data-lang="en">by GlassQuality.com</span><span data-lang="es" hidden="">por YourBrand.com</span></span>
+
+    <header class="slide-head">
+      <div class="section-label" data-edit="section-label"><span data-lang="en">Integrations</span><span data-lang="es" hidden="">Integraciones</span></div>
+      <h1 class="slide-title" data-edit="headline"><span data-lang="en">Compatible with <span class="blue">your current machinery</span></span><span data-lang="es" hidden="">Compatible con <span class="blue">tu maquinaria actual</span></span></h1>
+      <p class="slide-subtitle anim-in" data-edit="subtitle"><span data-lang="en">LineScanner is already integrated with the leading glass machinery manufacturers — if you already run any of these lines, integration is direct.</span><span data-lang="es" hidden="">LineScanner ya está integrado con los principales fabricantes de maquinaria para vidrio — si ya utilizas cualquiera de estas líneas, la integración es directa.</span></p>
+    </header>
+
+    <div class="slide-body">
+      <!-- Config store — JSON list of partner cards [{id,name,type,logo}]. contenteditable so it rides the
+           standard save pipeline; the script reads/writes its textContent and renders the grid below. -->
+      <div id="int-config" data-edit="int-config" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;left:-9999px;top:0;"><span data-lang="en">[{"id":"i1","name":"LiSEC","type":"Processing lines","logo":"/slides/uploads/LOGO%20LISEC.png"},{"id":"i2","name":"FOREL","type":"Architectural glass","logo":"/slides/uploads/LOGO FOREL.jpg"},{"id":"i3","name":"Benteler","type":"Automotive glass","logo":"/slides/uploads/LOGO%20Benteler.jpg"},{"id":"i4","name":"CMS Tecglass","type":"Digital printing","logo":"/slides/uploads/LOGO-CMS.png"},{"id":"i5","name":"Bystronic","type":"Cutting and processing","logo":"/slides/uploads/LOGO-Bystronic.png"},{"id":"i6","name":"Hegla","type":"Cutting and storage","logo":"/slides/uploads/LOGO-HEGLA.jpeg"},{"id":"i7","name":"Glaston","type":"Tempering and bending","logo":"/slides/uploads/LOGO-GLASTON.png"},{"id":"i9","name":"Erdman","type":"Automated lines","logo":"/slides/uploads/LOGO%20ERDMAN.png"},{"id":"i8","name":"New partner","type":"Category","logo":"/slides/uploads/CostOfQualityDefects.png"}]</span><span data-lang="es" hidden="">[{"id":"i1","name":"LiSEC","type":"Líneas de procesamiento","logo":"/slides/uploads/LOGO%20LISEC.png"},{"id":"i2","name":"FOREL","type":"Vidrio arquitectónico","logo":"/slides/uploads/LOGO FOREL.jpg"},{"id":"i3","name":"Benteler","type":"Vidrio automotriz","logo":"/slides/uploads/LOGO%20Benteler.jpg"},{"id":"i4","name":"CMS Tecglass","type":"Impresión digital","logo":"/slides/uploads/LOGO-CMS.png"},{"id":"i5","name":"Bystronic","type":"Corte y procesamiento","logo":"/slides/uploads/LOGO-Bystronic.png"},{"id":"i6","name":"Hegla","type":"Corte y almacenamiento","logo":"/slides/uploads/LOGO-HEGLA.jpeg"},{"id":"i7","name":"Glaston","type":"Templado y curvado","logo":"/slides/uploads/LOGO-GLASTON.png"},{"id":"i9","name":"Erdman","type":"Líneas automatizadas","logo":"/slides/uploads/LOGO%20ERDMAN.png"}]</span></div>
+
+      <!-- Partner-logo cards — built by the script from the config. -->
+      <div class="template11-integrations-grid anim-in" id="int-grid"></div>
+    </div>
+  </div>
+
+  <style>
+    /* pb-responsive provides the scroll model + fluid chrome. Rules here are positional; cards compose
+       from `.card` so theme Finish blocks restyle them. Colours reference theme variables only. */
+    .template11-integrations .slide-body { width:100%; display:flex; flex-direction:column; align-items:center; }
+
+    /* Responsive auto-fit grid of partner cards. */
+    .template11-integrations-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:clamp(10px,1.5vw,16px); width:100%; max-width:var(--pb-content-max); margin:0 auto; }
+    .template11-integrations .int-card { position:relative; display:flex; flex-direction:column; align-items:center; gap:5px; padding:16px 14px; text-align:center; }
+    .template11-integrations .int-card:hover { transform:none; }
+
+    .int-logo-wrap { position:relative; display:flex; align-items:center; justify-content:center; height:48px; margin-bottom:4px; }
+    .int-logo { max-height:48px; max-width:130px; object-fit:contain; display:block; transition:transform .25s ease; transform-origin:center; }
+    /* Hover: the logo expands via transform (no reflow → card size + grid stay fixed); z-index lifts it above neighbours. */
+    .template11-integrations .int-card:hover { z-index:5; }
+    .template11-integrations .int-card:hover .int-logo { transform:translateY(-6px) scale(1.7); }
+    .int-logo--placeholder { width:48px; height:48px; border-radius:10px; background:rgba(var(--accent-rgb),.12); border:1px dashed var(--border); display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800; color:var(--text-muted); }
+    .int-name { font-size:clamp(13px,1.3vw,16px); font-weight:800; color:var(--text); }
+    .int-type { font-size:clamp(10px,1vw,12px); font-weight:600; letter-spacing:.03em; color:var(--text-muted); }
+    .int-name:focus, .int-type:focus { outline:none; }
+
+    /* Builder controls: logo upload / clear + delete card. */
+    .int-logo-ctrls { position:absolute; top:-8px; right:-8px; display:none; gap:3px; z-index:2; }
+    .int-logo-wrap:hover .int-logo-ctrls { display:flex; }
+    .int-ic { width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer; background:rgba(var(--accent-rgb),.18); border:1px solid rgba(var(--accent-rgb),.4); color:var(--accent); }
+    .int-card-del { position:absolute; top:-7px; left:-7px; width:18px; height:18px; border-radius:50%; display:none; align-items:center; justify-content:center; font-size:10px; cursor:pointer; background:rgba(var(--accent-rgb),.18); border:1px solid rgba(var(--accent-rgb),.4); color:var(--accent); z-index:2; }
+    .template11-integrations:not(.template11-integrations-readonly) .int-card:hover .int-card-del { display:flex; }
+    .template11-integrations .int-add { border-style:dashed; opacity:.7; justify-content:center; }
+    .template11-integrations .int-add:hover { opacity:1; }
+    .int-add-icon { width:48px; height:48px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:24px; color:var(--text-muted); border:1px dashed var(--border); margin-bottom:4px; }
+
+    /* readonly / published: hide every builder-only affordance. */
+    .template11-integrations-readonly [data-builder-only],
+    .template11-integrations-readonly .int-card-del,
+    .template11-integrations-readonly .int-add { display:none !important; }
+  </style>
+
+  <script>
+  (function () {
+    var root = document.currentScript.closest('[data-slide]');
+    var EDIT_MODE = !window.PB_READONLY;
+    if (!EDIT_MODE) root.classList.add('template11-integrations-readonly');
+    var slideId  = window.Track ? Track.slideId(root) : 'template11-integrations';
+
+    var configEl = root.querySelector('#int-config');
+    var grid     = root.querySelector('#int-grid');
+    var MAX = 24;
+
+    var DEFAULT_CONFIG = [
+      { id: 'one',   name: 'Partner One',   type: 'Category', logo: '' },
+      { id: 'two',   name: 'Partner Two',   type: 'Category', logo: '' },
+      { id: 'three', name: 'Partner Three', type: 'Category', logo: '' }
+    ];
+
+    function clone(o) { return JSON.parse(JSON.stringify(o)); }
+    var config = loadConfig();
+
+    function loadConfig() {
+      var enSpan = configEl.querySelector('[data-lang="en"]') || configEl.querySelector('[data-lang]');
+      var raw = ((enSpan ? enSpan.textContent : configEl.textContent) || '').trim();
+      if (!raw) return clone(DEFAULT_CONFIG);
+      try { var c = JSON.parse(raw); return Array.isArray(c) && c.length ? c : clone(DEFAULT_CONFIG); }
+      catch (e) { return clone(DEFAULT_CONFIG); }
+    }
+    function persist() {
+      // Persist via slide-carousel-save (honored by both the Builder Preview and the deck/publish
+      // render scripts) — never a synthetic focusout, which the builder ignores.
+      configEl.textContent = JSON.stringify(config);
+      document.dispatchEvent(new CustomEvent('slide-carousel-save', { detail: { editKey: 'int-config', html: configEl.innerHTML } }));
+    }
+
+    function makeLogo(item) {
+      if (item.logo) {
+        var img = document.createElement('img');
+        img.className = 'int-logo'; img.src = item.logo; img.alt = (item.name || '') + ' logo';
+        return img;
+      }
+      var ph = document.createElement('span');
+      ph.className = 'int-logo int-logo--placeholder';
+      ph.textContent = ((item.name || '?').trim().charAt(0) || '+').toUpperCase();
+      return ph;
+    }
+    function refreshLogo(wrap, item) {
+      var old = wrap.querySelector('.int-logo');
+      var fresh = makeLogo(item);
+      if (old) wrap.replaceChild(fresh, old); else wrap.insertBefore(fresh, wrap.firstChild);
+    }
+
+    function makeCard(item, idx) {
+      var card = document.createElement('div');
+      card.className = 'card int-card';
+
+      var logoWrap = document.createElement('div');
+      logoWrap.className = 'int-logo-wrap';
+      logoWrap.appendChild(makeLogo(item));
+
+      if (EDIT_MODE) {
+        var ctrls = document.createElement('div');
+        ctrls.className = 'int-logo-ctrls'; ctrls.setAttribute('data-builder-only', '');
+        var up = document.createElement('span');
+        up.className = 'int-ic'; up.textContent = '↑'; up.title = 'Upload logo';
+        up.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var input = document.createElement('input');
+          input.type = 'file'; input.accept = 'image/*'; input.style.display = 'none';
+          document.body.appendChild(input);
+          input.addEventListener('change', function (ev) {
+            document.body.removeChild(input);
+            var f = ev.target.files[0]; if (!f) return;
+            var r = new FileReader();
+            r.onload = function (re) {
+              window.PBUpload(f.name, re.target.result).then(function (p) {
+                if (!p) return; item.logo = p; refreshLogo(logoWrap, item); persist();
+              });
+            };
+            r.readAsDataURL(f);
+          });
+          input.click();
+        });
+        var clr = document.createElement('span');
+        clr.className = 'int-ic'; clr.textContent = '✕'; clr.title = 'Clear logo';
+        clr.addEventListener('click', function (e) { e.stopPropagation(); item.logo = ''; refreshLogo(logoWrap, item); persist(); });
+        ctrls.appendChild(up); ctrls.appendChild(clr);
+        logoWrap.appendChild(ctrls);
+      }
+      card.appendChild(logoWrap);
+
+      var name = document.createElement('div'); name.className = 'int-name'; name.textContent = item.name;
+      var type = document.createElement('div'); type.className = 'int-type'; type.textContent = item.type;
+      if (EDIT_MODE) {
+        [['name', name], ['type', type]].forEach(function (p) {
+          p[1].contentEditable = 'true'; p[1].spellcheck = false;
+          p[1].addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); p[1].blur(); } });
+          p[1].addEventListener('blur', function () { item[p[0]] = p[1].textContent.trim(); persist(); });
+        });
+        var del = document.createElement('span');
+        del.className = 'int-card-del'; del.setAttribute('data-builder-only', ''); del.title = 'Delete'; del.innerHTML = '&#10005;';
+        del.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (!window.confirm('Delete "' + (item.name || 'this integration') + '"?')) return;
+          config.splice(idx, 1); render(); persist();
+        });
+        card.appendChild(del);
+      }
+      card.appendChild(name); card.appendChild(type);
+      return card;
+    }
+
+    function render() {
+      grid.innerHTML = '';
+      config.forEach(function (item, idx) { grid.appendChild(makeCard(item, idx)); });
+      if (EDIT_MODE && config.length < MAX) {
+        var add = document.createElement('button');
+        add.className = 'card int-card int-add'; add.setAttribute('data-builder-only', ''); add.title = 'Add integration';
+        var ai = document.createElement('span'); ai.className = 'int-add-icon'; ai.textContent = '+';
+        var al = document.createElement('span'); al.className = 'int-type'; al.textContent = 'Add';
+        add.appendChild(ai); add.appendChild(al);
+        add.addEventListener('click', function () {
+          if (config.length >= MAX) return;
+          config.push({ id: 'i' + config.length, name: 'New partner', type: 'Category', logo: '' });
+          render(); persist();
+        });
+        grid.appendChild(add);
+      }
+    }
+
+    render();
+    setTimeout(function () { if (window.PE) PE.initSlide(root); }, 0);
+  })();
+  </script>
+
+</div>
+</div>
+<div class="fp-slide" data-slide-index="15" style="display:none;">
 <div class="slide content template14-cta pb-responsive" data-slide="call-to-action-validated-style" data-slide-mode="sequence">
   <img class="cta-bg" src="../shared/image112.png" alt="" aria-hidden="true">
   <div class="slide-logo-row" data-edit="logo-row" data-managed=""><span data-lang="en"><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span><span data-lang="es" hidden=""><img src="../shared/LOGO_SoftSolution_grays.png" alt="Softsolution"><span class="slide-logo-sep"></span><img src="../shared/LOGO_LiteSentry_Greys.png" alt="LOGO_LiteSentry_Greys" class="slide-logo-ls"></span></div>
@@ -2579,7 +3676,7 @@ window.PBUpload = function (filename, dataUrl) {
   <style>
     /* Responsive model comes from the shared `pb-responsive` root class (see style.css). */
     .template14-cta .cta-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:.06; pointer-events:none; z-index:0; }
-    .template14-cta .cta-box { display:flex; flex-direction:column; padding-bottom:24px; max-width:680px; width:100%; text-align:left; }
+    .template14-cta .cta-box { display:flex; flex-direction:column; padding-bottom:24px; max-width:var(--pb-content-max); width:100%; text-align:left; }
 
     .cta-contact {
       display:flex; flex-direction:column; align-items:flex-start; gap:14px;
@@ -2674,18 +3771,7 @@ window.PBUpload = function (filename, dataUrl) {
     setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
   })();
   </script>
-<button class="pb-gallery-btn" data-ls-gallery-open="" data-builder-feature="gallery" title="Open gallery">
-  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-  Gallery
-</button>
-<div data-ls-gallery="" data-edit="gallery-track" data-autoplay="8" style="display:none;">
-  <div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat">
-    <span class="ls-gallery-label">Section Title</span>
-    <span class="ls-gallery-number">Key Fact</span>
-    <span class="ls-gallery-body-text">Description text here</span>
-  </div></div>
-  <div class="ls-gallery-slide"><img src="../shared/CostOfQualityDefects.png" alt="Benteler_Conveyor_Picture_"><div class="ls-gallery-caption">Benteler_Conveyor_Picture_</div></div>
-<div class="ls-gallery-slide ls-gallery-slide--text"><div class="ls-gallery-stat"><span class="ls-gallery-label">Section Title</span><span class="ls-gallery-number">Key Fact</span><span class="ls-gallery-body-text">Description text here</span></div></div></div></div>
+</div>
 </div>
 
     </div>
@@ -2701,8 +3787,15 @@ window.PBUpload = function (filename, dataUrl) {
         <button class="fp-nm-item" data-main="4">LineScanner-Technology-Validated</button>
         <button class="fp-nm-item" data-main="5">Osprey-Technology-Validated</button>
         <button class="fp-nm-item" data-main="6">CulletScanner-Technology-Validated</button>
-        <button class="fp-nm-item" data-main="7">Surface Types</button>
-        <button class="fp-nm-item" data-main="8">Call to Action-Validated Style</button>
+        <button class="fp-nm-item" data-main="7">Surface Types-Validated</button>
+        <button class="fp-nm-item" data-main="8">Dimensions</button>
+        <button class="fp-nm-item" data-main="9">Screen Printing</button>
+        <button class="fp-nm-item" data-main="10">Logo Check</button>
+        <button class="fp-nm-item" data-main="11">Traceability</button>
+        <button class="fp-nm-item" data-main="12">Sensitivity</button>
+        <button class="fp-nm-item" data-main="13">Installation</button>
+        <button class="fp-nm-item" data-main="14">Integrations</button>
+        <button class="fp-nm-item" data-main="15">Call to Action-Validated Style</button>
 
       </div>
       <button id="fp-nav-menu-btn" title="Slide navigation"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
@@ -5441,7 +6534,7 @@ window.PBUpload = function (filename, dataUrl) {
 (function () {
   var mainSlides = document.querySelectorAll(".fp-slide:not(.fp-optional)");
   var optSlides  = document.querySelectorAll(".fp-slide.fp-optional");
-  var mainNames  = ["Cover-Validated","Why Us-Validated","Company Intro-Validated","Products Overview-Validated","LineScanner-Technology-Validated","Osprey-Technology-Validated","CulletScanner-Technology-Validated","Surface Types","Call to Action-Validated Style"];
+  var mainNames  = ["Cover-Validated","Why Us-Validated","Company Intro-Validated","Products Overview-Validated","LineScanner-Technology-Validated","Osprey-Technology-Validated","CulletScanner-Technology-Validated","Surface Types-Validated","Dimensions","Screen Printing","Logo Check","Traceability","Sensitivity","Installation","Integrations","Call to Action-Validated Style"];
   var optNames   = [];
   var total      = mainSlides.length;
   var idx        = 0;
