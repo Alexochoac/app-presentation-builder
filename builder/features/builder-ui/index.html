@@ -2247,10 +2247,7 @@
         .then(function (r) { return r.json(); })
         .then(function (res) {
           if (!res.success) { alert('Publish failed'); return; }
-          var msg = res.warning
-            ? 'Published locally (not on GitHub).\n\n' + res.warning + '\n\n' + res.url + '\n\nOpen local link?'
-            : 'Published!\n\n' + res.url + '\n\nOpen link?';
-          if (confirm(msg)) window.open(res.url, '_blank');
+          if (confirm('Published!\n\n' + res.url + '\n\nOpen link?')) window.open(res.url, '_blank');
           loadFinishedPresentations();
         })
         .catch(function () { alert('Publish failed'); });

@@ -9,33 +9,15 @@ const http     = require('http');
 const cheerio  = require('cheerio');
 const session  = require('express-session');
 const { requireAuth, registerAuthRoutes } = require('./features/auth/auth');
-const { execFile, execSync } = require('child_process');
 const { translate } = require('./lib/translator');
 const { generateHtml } = require('./lib/template-generator');
 
 // ── Deployment config ─────────────────────────────────────────────────────────
-// REPO_ROOT: path to the git repo root — used for git add/commit/push and for
-// writing finished-presentations. Defaults to the project root in local dev.
-// In Docker, set REPO_ROOT=/repo and mount the git repo there.
+// REPO_ROOT: path to the git repo root — used for writing finished-presentations.
+// Defaults to the project root in local dev. In Docker, set REPO_ROOT=/repo and
+// mount the repo there.
 const REPO_ROOT       = process.env.REPO_ROOT       || path.join(__dirname, '..');
 const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL  || 'http://localhost:3000';
-
-// Configure git credentials on startup if GITHUB_TOKEN is provided.
-// This lets the Docker container push to GitHub without needing SSH keys.
-if (process.env.GITHUB_TOKEN) {
-  try {
-    execSync('git config user.email "builder@put-a-presentation.app"', { cwd: REPO_ROOT });
-    execSync('git config user.name "Put.A.Presentation Builder"',      { cwd: REPO_ROOT });
-    var currentRemote = execSync('git remote get-url origin', { cwd: REPO_ROOT }).toString().trim();
-    // Strip any existing credentials (greedy .+ catches all accumulated user:pass@ segments)
-    var cleanRemote = currentRemote.replace(/https:\/\/.+@/, 'https://');
-    var tokenizedRemote = cleanRemote.replace('https://', 'https://Alexochoac:' + process.env.GITHUB_TOKEN + '@');
-    execSync('git remote set-url origin ' + tokenizedRemote, { cwd: REPO_ROOT });
-    console.log('[git] credentials configured for', cleanRemote);
-  } catch (e) {
-    console.warn('[git] credential setup warning:', e.message);
-  }
-}
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -6045,47 +6027,28 @@ app.post('/api/presentations/:id/publish', function (req, res) {
   var pres = (data.presentations || []).find(function (p) { return p.id === id; });
   if (!pres) return res.status(404).json({ success: false, error: 'Presentation not found' });
 
-  var repoRoot  = REPO_ROOT;
-  var folderArg = 'finished-presentations/' + id;
-  var commitMsg = 'publish: ' + (pres.customerName || id) + (pres.presentationName ? ' — ' + pres.presentationName : '') + ' (' + id + ')';
   var publicUrl = PUBLIC_BASE_URL + '/public/' + id;
 
-  function run(cmd, args, cwd, cb) {
-    execFile(cmd, args, { cwd: cwd }, function (err, stdout, stderr) {
-      cb(err, stdout, stderr);
-    });
-  }
-
-  // Rebuild the frozen HTML with current code/settings before committing
+  // Freeze the deck to finished-presentations/<id>/index.html — this is the file the
+  // app-served public link (/public/:id/) reads. (The legacy git add/commit/push to
+  // GitHub Pages was removed: publishing no longer touches git.)
   try {
     buildFrozenPresentation(pres);
   } catch (buildErr) {
     return res.status(500).json({ success: false, error: 'Build failed: ' + buildErr.message });
   }
 
-  run('git', ['add', folderArg, 'finished-presentations/shared'], repoRoot, function (err) {
-    if (err) return res.status(500).json({ success: false, error: 'git add failed: ' + err.message });
-    run('git', ['commit', '-m', commitMsg], repoRoot, function (err, stdout, stderr) {
-      var combined = (stdout || '') + (stderr || '');
-      var nothingToCommit = combined.includes('nothing to commit') || combined.includes('nothing added to commit') || combined.includes('no changes added to commit');
-      if (err && !nothingToCommit) return res.status(500).json({ success: false, error: 'git commit failed: ' + err.message });
-      run('git', ['push'], repoRoot, function (err) {
-        var pushWarning = err ? 'Not pushed to GitHub (' + (err.message || '').split('\n')[0] + '). Local link works for preview only.' : null;
-        // Record publishedAt on first publish (keep existing value on republish)
-        try {
-          var pdata = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
-          var prec  = (pdata.presentations || []).find(function (p) { return p.id === id; });
-          if (prec && !prec.publishedAt) {
-            prec.publishedAt = new Date().toISOString();
-            fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(pdata, null, 2), 'utf8');
-          }
-        } catch (e) { /* non-fatal */ }
-        var result = { success: true, url: publicUrl, alreadyPublished: !!nothingToCommit };
-        if (pushWarning) result.warning = pushWarning;
-        res.json(result);
-      });
-    });
-  });
+  // Record publishedAt on first publish (keep existing value on republish)
+  try {
+    var pdata = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var prec  = (pdata.presentations || []).find(function (p) { return p.id === id; });
+    if (prec && !prec.publishedAt) {
+      prec.publishedAt = new Date().toISOString();
+      fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(pdata, null, 2), 'utf8');
+    }
+  } catch (e) { /* non-fatal */ }
+
+  res.json({ success: true, url: publicUrl });
 });
 
 // GET /finished/:id/ — internal preview (protected by global requireAuth middleware)
