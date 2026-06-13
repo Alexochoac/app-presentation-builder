@@ -31,7 +31,7 @@ window.List = (function () {
       '.ls-list-item-controls{position:absolute;right:2px;top:50%;transform:translateY(-50%);display:flex;gap:3px;opacity:0;transition:opacity .2s;z-index:2;}',
       'li:hover .ls-list-item-controls{opacity:1;}',
       '.ls-list-item-btn{width:15px;height:15px;border-radius:3px;padding:0;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.45);font-size:8px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-family:inherit;line-height:1;}',
-      '.ls-list-drag-btn{cursor:grab;font-size:10px;}',
+      '.ls-list-drag-btn{cursor:grab;font-size:10px;user-select:none;}',
       '.ls-list-drag-btn:active{cursor:grabbing;}',
       // Hide btn: red on hover, darker red on shift
       '.ls-list-hide-btn:hover{background:rgba(239,68,68,.5);color:#fff;border-color:rgba(239,68,68,.4);}',
@@ -107,8 +107,12 @@ window.List = (function () {
         dragBtn.className = 'ls-list-item-btn ls-list-drag-btn';
         dragBtn.textContent = '⠿';
         dragBtn.title = 'Drag to reorder';
-        dragBtn.addEventListener('mousedown', function () { li.draggable = true; });
-        dragBtn.addEventListener('mouseup',   function () { li.draggable = false; });
+        var _handlePressed = false;
+        dragBtn.draggable = false; // prevent the icon itself from being a drag source
+        dragBtn.addEventListener('mousedown', function () { _handlePressed = true; });
+        dragBtn.addEventListener('mouseup',   function () { _handlePressed = false; });
+        dragBtn.addEventListener('click',     function (e) { e.stopPropagation(); });
+        dragBtn.addEventListener('dblclick',  function (e) { e.stopPropagation(); });
 
         // ── Hide / Delete button ─────────────────────────────────────────────
         // Normal click  → hide (restoreable)
@@ -145,6 +149,7 @@ window.List = (function () {
         ctrl.appendChild(dragBtn);
         ctrl.appendChild(hideBtn);
         li.appendChild(ctrl);
+        li.draggable = true; // permanently draggable; dragstart guards against non-handle drags
 
         // ── Double-click to edit ─────────────────────────────────────────────
         // Suppresses onclick (e.g. popover) during editing
@@ -168,12 +173,13 @@ window.List = (function () {
 
         // ── Drag & drop reorder ──────────────────────────────────────────────
         li.addEventListener('dragstart', function (ev) {
+          if (!_handlePressed) { ev.dataTransfer.effectAllowed = 'none'; return; }
           ev.dataTransfer.effectAllowed = 'move';
           dragSrc = li;
           setTimeout(function () { li.classList.add('ls-list-dragging'); }, 0);
         });
         li.addEventListener('dragend', function () {
-          li.draggable = false;
+          _handlePressed = false;
           li.classList.remove('ls-list-dragging');
           ul.querySelectorAll('li').forEach(function (r) { r.classList.remove('ls-list-dragover'); });
         });

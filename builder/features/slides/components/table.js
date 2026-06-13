@@ -153,6 +153,17 @@ window.LSTable = (function () {
     var rowRestore  = wrap ? wrap.querySelector('[data-ls-row-restore]') : null;
     var addRowBtn   = wrap ? wrap.querySelector('[data-ls-add-row]')     : null;
 
+    // Self-heal: saveTable strips [data-builder-only] (incl. [data-ls-add-row]) when saving
+    // the tabs blob. Recreate it if missing so the table stays functional after a stale save.
+    if (wrap && !addRowBtn && !window.PB_READONLY) {
+      addRowBtn = document.createElement('button');
+      addRowBtn.setAttribute('data-ls-add-row', '');
+      addRowBtn.setAttribute('data-builder-only', '');
+      addRowBtn.textContent = '+ Add row';
+      if (rowRestore) rowRestore.after(addRowBtn);
+      else wrap.appendChild(addRowBtn);
+    }
+
     // ── First column resize handle ────────────────────────────────────────
     if (!window.PB_READONLY) {
       (function () {
@@ -242,18 +253,24 @@ window.LSTable = (function () {
         drag.setAttribute('data-builder-only', '');
         drag.textContent = '⠿';
         drag.title = 'Drag to reorder';
-        drag.addEventListener('mousedown', function () { tr.draggable = true; });
-        drag.addEventListener('mouseup',   function () { tr.draggable = false; });
+        var _handlePressed = false;
+        drag.draggable = false; // prevent the icon itself from being a drag source
+        drag.addEventListener('mousedown', function () { _handlePressed = true; });
+        drag.addEventListener('mouseup',   function () { _handlePressed = false; });
+        drag.addEventListener('click',     function (e) { e.stopPropagation(); });
+        drag.addEventListener('dblclick',  function (e) { e.stopPropagation(); });
         firstTd.insertBefore(drag, firstTd.firstChild);
+        tr.draggable = true; // permanently draggable; dragstart guards against non-handle drags
 
         // Row drag & drop
         tr.addEventListener('dragstart', function (ev) {
+          if (!_handlePressed) { ev.dataTransfer.effectAllowed = 'none'; return; }
           ev.dataTransfer.effectAllowed = 'move';
           tr.classList.add('ls-row-dragging');
           tbody._dragSrc = tr;
         });
         tr.addEventListener('dragend', function () {
-          tr.draggable = false;
+          _handlePressed = false;
           tr.classList.remove('ls-row-dragging');
           tbody.querySelectorAll('tr').forEach(function (r) { r.classList.remove('ls-row-dragover'); });
           saveTable(table);
@@ -307,6 +324,7 @@ window.LSTable = (function () {
 
         // Double-click first cell to edit label text
         firstTd.addEventListener('dblclick', function (ev) {
+          if (ev.target.closest('.ls-row-drag, .ls-row-hide-btn')) return;
           ev.stopPropagation();
           firstTd.contentEditable = 'true';
           firstTd.focus();
