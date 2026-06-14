@@ -1,0 +1,461 @@
+{
+  "languages": [
+    "en",
+    "es",
+    "fr"
+  ],
+  "defaultLanguage": "en",
+  "slides": {
+    "lib-1781437185165": {
+      "credit": {
+        "en": "by Put A Presentation",
+        "es": {
+          "current": "por Put A Presentation",
+          "previous": "por Put A Presentation",
+          "dirty": true
+        },
+        "fr": {
+          "current": "par Put A Presentation",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "badge": {
+        "en": "Sales Enablement · 2026",
+        "es": {
+          "current": "Habilitación de Ventas · 2026",
+          "previous": "Sales Enablement · 2026",
+          "dirty": true
+        },
+        "fr": {
+          "current": "Activation des ventes · 2026",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "headline": {
+        "en": "Stop using PowerPoint&nbsp;<div>Start using&nbsp;<span class=\"blue\">Put A Presentation</span><br></div>",
+        "es": {
+          "current": "Deja de usar PowerPoint&nbsp;<div>Empieza a usar&nbsp;<span class=\"blue\">Put A Presentation</span><br></div>",
+          "previous": "Deja de usar <span class=\"blue\">PowerPoint</span>.<br>Comienza a usar Put A Presentation",
+          "dirty": true
+        },
+        "fr": {
+          "current": "Arrêtez d'utiliser PowerPoint&nbsp;<div>Commencez à utiliser&nbsp;<span class=\"blue\">Put A Presentation</span><br></div>",
+          "previous": null,
+          "dirty": true
+        }
+      },
+      "subheadline": {
+        "en": "The web-native way to build, share, and track sales presentations — no files, no plugins, no version chaos.",
+        "es": {
+          "current": "La forma nativa de la web para crear, compartir y rastrear presentaciones de ventas — sin archivos, sin complementos, sin caos de versiones.",
+          "previous": "La forma nativa de la web para crear, compartir y rastrear presentaciones de ventas — sin archivos, sin complementos, sin caos de versiones.",
+          "dirty": true
+        },
+        "fr": {
+          "current": "Le moyen natif du web pour créer, partager et suivre les présentations commerciales — sans fichiers, sans plugins, sans chaos de versions.",
+          "previous": null,
+          "dirty": true
+        }
+      }
+    },
+    "lib-1781437185430": {
+      "credit": {
+        "en": "by YourBrand.com",
+        "es": {
+          "current": "por YourBrand.com",
+          "previous": null,
+          "dirty": false
+        },
+        "fr": {
+          "current": "par YourBrand.com",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "section-label": {
+        "en": "THE HONEST COMPARISON",
+        "es": {
+          "current": "LA COMPARACIÓN HONESTA",
+          "previous": null,
+          "dirty": false
+        },
+        "fr": {
+          "current": "LA COMPARAISON HONNÊTE",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "headline": {
+        "en": "PowerPoint vs <span class=\"blue\">Put A Presentation</span>",
+        "es": {
+          "current": "PowerPoint vs <span class=\"blue\">Put A Presentation</span>",
+          "previous": null,
+          "dirty": false
+        },
+        "fr": {
+          "current": "PowerPoint vs <span class=\"blue\">Put A Presentation</span>",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "subtitle": {
+        "en": "Same pitch. Wildly different experience.",
+        "es": {
+          "current": "El mismo discurso. Experiencia totalmente diferente.",
+          "previous": null,
+          "dirty": false
+        },
+        "fr": {
+          "current": "Le même pitch. Une expérience radicalement différente.",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "col-header-prob": {
+        "en": "PowerPoint",
+        "es": {
+          "current": "PowerPoint",
+          "previous": null,
+          "dirty": false
+        },
+        "fr": {
+          "current": "PowerPoint",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "prob-list": {
+        "en": "<li>Email a 40MB .pptx and hope it opens</li><li>Fonts and layouts break on every other machine</li><li>\"Which version is the latest one?\"</li><li>No idea if the client ever opened it</li><li>Every edit means re-sending the whole file</li>",
+        "es": {
+          "current": "<li>Envía un .pptx de 40MB y espera que se abra</li><li>Las fuentes y diseños se rompen en casi todas las máquinas</li><li>\"¿Cuál es la versión más reciente?\"</li><li>No tienes idea si el cliente lo abrió alguna vez</li><li>Cada edición significa reenviar el archivo completo</li>",
+          "previous": null,
+          "dirty": false
+        },
+        "fr": {
+          "current": "<li>Envoyer un fichier .pptx de 40 Mo par e-mail et espérer qu'il s'ouvre</li><li>Les polices et les mises en page se cassent sur chaque autre ordinateur</li><li>« Quelle est la dernière version ? »</li><li>Aucune idée si le client l'a jamais ouvert</li><li>Chaque modification signifie renvoyer le fichier entier</li>",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "tier-label-1": {
+        "en": "Day-to-Day Limitations",
+        "es": {
+          "current": "Limitaciones del día a día",
+          "previous": null,
+          "dirty": false
+        },
+        "fr": {
+          "current": "Limitations quotidiennes",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "tier-label-2": {
+        "en": "Business Impact",
+        "es": {
+          "current": "Impacto empresarial",
+          "previous": null,
+          "dirty": false
+        },
+        "fr": {
+          "current": "Impact commercial",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "col-header-ben": {
+        "en": "Put A Presentation",
+        "es": {
+          "current": "Put A Presentation",
+          "previous": null,
+          "dirty": false
+        },
+        "fr": {
+          "current": "Put A Presentation",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "ben-list": {
+        "en": "<li>Share a link that always works</li><li>Pixel-perfect in every browser</li><li>One live version, always current</li><li>See exactly who viewed what</li><li>Edit once — the link updates instantly</li>",
+        "es": {
+          "current": "<li>Comparte un enlace que siempre funciona</li><li>Perfecta resolución en todos los navegadores</li><li>Una versión en vivo, siempre actualizada</li><li>Ve exactamente quién vio qué</li><li>Edita una vez — el enlace se actualiza al instante</li>",
+          "previous": null,
+          "dirty": false
+        },
+        "fr": {
+          "current": "<li>Partager un lien qui fonctionne toujours</li><li>Impeccable dans chaque navigateur</li><li>Une seule version active, toujours à jour</li><li>Voir exactement qui a regardé quoi</li><li>Modifier une fois — le lien se met à jour instantanément</li>",
+          "previous": null,
+          "dirty": false
+        }
+      }
+    },
+    "lib-1781437185692": {
+      "credit": {
+        "en": "by YourBrand.com",
+        "es": {
+          "current": "por YourBrand.com",
+          "previous": "por YourBrand.com",
+          "dirty": false
+        },
+        "fr": {
+          "current": "par YourBrand.com",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "section-label": {
+        "en": "YOUR COMMAND CENTER",
+        "es": {
+          "current": "TU CENTRO DE CONTROL",
+          "previous": "TU CENTRO DE CONTROL",
+          "dirty": false
+        },
+        "fr": {
+          "current": "VOTRE CENTRE DE COMMANDE",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "headline": {
+        "en": "Meet the Dashboard",
+        "es": {
+          "current": "Conoce el Panel de Control",
+          "previous": "Conoce el Panel",
+          "dirty": false
+        },
+        "fr": {
+          "current": "Découvrez le Tableau de Bord",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "subtitle": {
+        "en": "Every presentation in one place. See what’s published, who’s viewing, and which slides are landing, at a glance. Call the viewers when they are engaged!&nbsp;",
+        "es": {
+          "current": "Todas las presentaciones en un solo lugar. Ve qué se ha publicado, quién está viendo y qué diapositivas están teniendo impacto, de un vistazo. ¡Llama a los espectadores cuando estén comprometidos!&nbsp;",
+          "previous": "Todas las presentaciones en un solo lugar. Ve qué se publica, quién está viendo y qué decks tienen éxito, de un vistazo. [ Coloca tu captura de pantalla del Panel en el espacio a continuación. ]",
+          "dirty": false
+        },
+        "fr": {
+          "current": "Toutes les présentations en un seul endroit. Voyez ce qui est publié, qui regarde et quelles diapositives ont du succès, en un coup d'œil. Appelez les spectateurs quand ils sont engagés !&nbsp;",
+          "previous": null,
+          "dirty": false
+        }
+      }
+    },
+    "lib-1781437185912": {
+      "credit": {
+        "en": "by YourBrand.com",
+        "es": {
+          "current": "por YourBrand.com",
+          "previous": "por YourBrand.com",
+          "dirty": false
+        },
+        "fr": {
+          "current": "par YourBrand.com",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "section-label": {
+        "en": "BUILD WITHOUT DESIGN SKILLS",
+        "es": {
+          "current": "CONSTRUYE SIN HABILIDADES DE DISEÑO",
+          "previous": "CONSTRUIR SIN HABILIDADES DE DISEÑO",
+          "dirty": false
+        },
+        "fr": {
+          "current": "CRÉEZ SANS COMPÉTENCES EN DESIGN",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "headline": {
+        "en": "Inside the Builder",
+        "es": {
+          "current": "Dentro del Constructor",
+          "previous": "Dentro del Constructor",
+          "dirty": false
+        },
+        "fr": {
+          "current": "À l'intérieur du Builder",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "subtitle": {
+        "en": "Click any element and edit it live. Swap logos, text and images in seconds — every slide stays on-brand automatically. Have your translation translated with a click and the power of AI.",
+        "es": {
+          "current": "Haz clic en cualquier elemento y edítalo en vivo. Intercambia logotipos, texto e imágenes en segundos — cada diapositiva se mantiene en línea con la marca automáticamente. Traduce tu contenido con un clic y el poder de la IA.",
+          "previous": "Haz clic en cualquier elemento y edítalo en vivo. Cambia logotipos, texto e imágenes en segundos — cada diapositiva se mantiene en marca automáticamente. [ Suelta tu captura de pantalla del Constructor en la ranura a continuación. ]",
+          "dirty": false
+        },
+        "fr": {
+          "current": "Cliquez sur n'importe quel élément et modifiez-le en direct. Échangez logos, textes et images en quelques secondes — chaque diapositive reste automatiquement conforme à votre marque. Faites traduire votre traduction en un clic grâce à la puissance de l'IA.",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "install-carousel": {
+        "en": "\n        <div class=\"ls-carousel-track\" style=\"transform: translateX(0px);\">\n          <div class=\"ls-carousel-slide\"><img src=\"/slides/uploads/Translation---Add-Items-or-reorder-lists.png\" alt=\"Translation &amp; Add Items or reorder lists\" data-zoom=\"\" style=\"object-fit: contain;\"><div class=\"ls-carousel-caption\">Translation &amp; Add Items or reorder lists</div></div><div class=\"ls-carousel-slide\"><img src=\"/slides/uploads/Translation-Center-Put-A-Presentation-.png\" alt=\"Translation Center Put A Presentation \" data-zoom=\"\" style=\"object-fit: cover;\"><div class=\"ls-carousel-caption\">Translation Center Put A Presentation </div></div>\n        </div>\n        \n      <div class=\"ls-carousel-counter\">1 / 2</div>",
+        "es": {
+          "current": "\n        <div class=\"ls-carousel-track\" style=\"transform:translateX(0px);\">\n          <div class=\"ls-carousel-slide\" style=\"display:flex;align-items:center;justify-content:center;\">\n            <span style=\"color:var(--text-muted);font-size:13px;font-style:italic;\">Agregar imágenes con el botón + Imagen</span>\n          </div>\n        </div>\n        <div class=\"ls-carousel-counter\"></div>\n      ",
+          "previous": null,
+          "dirty": true
+        }
+      }
+    },
+    "lib-1781437186095": {
+      "section-label": {
+        "en": "READY?",
+        "es": {
+          "current": "¿LISTO?",
+          "previous": "¿LISTO?",
+          "dirty": false
+        },
+        "fr": {
+          "current": "PRÊT ?",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "headline": {
+        "en": "Put your next presentation online",
+        "es": {
+          "current": "Pon tu próxima presentación en línea",
+          "previous": "Pon tu próxima presentación en línea",
+          "dirty": false
+        },
+        "fr": {
+          "current": "Mettez votre prochaine présentation en ligne",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "intro": {
+        "en": "Stop attaching files. Start sharing links that win.",
+        "es": {
+          "current": "Deja de adjuntar archivos. Comienza a compartir enlaces que ganan.",
+          "previous": "Deja de adjuntar archivos. Comienza a compartir enlaces que ganen.",
+          "dirty": false
+        },
+        "fr": {
+          "current": "Arrêtez de joindre des fichiers. Commencez à partager des liens gagnants.",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "step1": {
+        "en": "Build your deck from on-brand templates",
+        "es": {
+          "current": "Construye tu presentación a partir de plantillas de marca",
+          "previous": "Construye tu presentación a partir de plantillas personalizadas",
+          "dirty": false
+        },
+        "fr": {
+          "current": "Créez votre deck à partir de modèles de marque",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "step2": {
+        "en": "Customize it for each customer in minutes",
+        "es": {
+          "current": "Personalízala para cada cliente en minutos",
+          "previous": "Personalízalo para cada cliente en minutos",
+          "dirty": false
+        },
+        "fr": {
+          "current": "Personnalisez-le pour chaque client en quelques minutes",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "step3": {
+        "en": "Share a link — and watch who engages",
+        "es": {
+          "current": "Comparte un enlace y observa quién se compromete",
+          "previous": "Comparte un enlace y mira quién se compromete",
+          "dirty": false
+        },
+        "fr": {
+          "current": "Partagez un lien — et voyez qui s'engage",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "contact-name": {
+        "en": "Put A Presentation",
+        "es": {
+          "current": "Put A Presentation",
+          "previous": "Put A Presentation",
+          "dirty": false
+        },
+        "fr": {
+          "current": "Put A Presentation",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "contact-title": {
+        "en": "Sales Enablement Platform",
+        "es": {
+          "current": "Plataforma de Habilitación de Ventas",
+          "previous": "Plataforma de Habilitación de Ventas",
+          "dirty": false
+        },
+        "fr": {
+          "current": "Plateforme d'activation commerciale",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "contact-addr": {
+        "en": "Rue des A · Luxembourg · Luxembourg",
+        "es": {
+          "current": "Rue des A · Luxembourg · Luxembourg",
+          "previous": "Calle · Ciudad · País",
+          "dirty": false
+        },
+        "fr": {
+          "current": "Rue des A · Luxembourg · Luxembourg",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "contact-phone": {
+        "en": "+352 691345342",
+        "es": {
+          "current": "+352 691345342",
+          "previous": "+00 000 000 000",
+          "dirty": false
+        },
+        "fr": {
+          "current": "+352 691345342",
+          "previous": null,
+          "dirty": false
+        }
+      },
+      "contact-email": {
+        "en": "alex@wbtm.io",
+        "es": {
+          "current": "alex@wbtm.io",
+          "previous": "hello@putapresentation.app",
+          "dirty": false
+        },
+        "fr": {
+          "current": "alex@wbtm.io",
+          "previous": null,
+          "dirty": false
+        }
+      }
+    }
+  },
+  "favorites": [
+    "es",
+    "fr"
+  ]
+}

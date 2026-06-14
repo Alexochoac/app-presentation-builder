@@ -647,6 +647,162 @@
         }
       ],
       "galleryEnabled": false
+    },
+    {
+      "id": "lib-1781437185165",
+      "name": "Cover",
+      "templateId": "template01-cover",
+      "templateVersion": 1,
+      "edits": {
+        "credit": "by YourBrand.com",
+        "badge": "Product · Solution.",
+        "headline": "Your Presentation <span class=\"blue\">Headline.</span>",
+        "subheadline": "Proposal for [Customer] · [Name], [Title]."
+      },
+      "decks": [
+        {
+          "id": "deck-1781437185102-felpw",
+          "name": "Why Switch from PowerPoint"
+        }
+      ],
+      "deckEdits": {
+        "deck-1781437185102-felpw": {
+          "badge": "Sales Enablement · 2026",
+          "headline": "Stop using PowerPoint&nbsp;<div>Start using&nbsp;<span class=\"blue\">Put A Presentation</span><br></div>",
+          "subheadline": "The web-native way to build, share, and track sales presentations — no files, no plugins, no version chaos.",
+          "credit": "by Put A Presentation",
+          "customer-logo": "/slides/uploads/Stephane-Blanc.jpg"
+        }
+      }
+    },
+    {
+      "id": "lib-1781437185430",
+      "name": "PowerPoint vs Us",
+      "templateId": "template03-why-us",
+      "templateVersion": 1,
+      "edits": {
+        "credit": "by YourBrand.com",
+        "section-label": "Section Label",
+        "headline": "The Case for <span class=\"blue\">Change</span>",
+        "subtitle": "A side-by-side look at the status quo versus a better way.",
+        "col-header-prob": "Without [Your Solution]",
+        "prob-list": "<div class=\"compare-tier\" data-edit=\"tier-label-1\" contenteditable=\"\" spellcheck=\"false\">Day-to-Day Limitations</div><li>A recurring problem that slows the team down</li><li>Inconsistent results that are hard to predict</li><li>Work that can't keep up at full speed</li><div class=\"compare-tier\" data-edit=\"tier-label-2\" contenteditable=\"\" spellcheck=\"false\">Business Impact</div><li>Avoidable cost that adds up over time</li><li>Risk that reaches the customer undetected</li>",
+        "tier-label-1": "Day-to-Day Limitations",
+        "tier-label-2": "Business Impact",
+        "col-header-ben": "With [Your Solution]",
+        "ben-list": "<li>A clear advantage delivered every shift, automatically</li><li>Consistent, dependable results you can stand behind</li><li>Keeps pace at full speed with no blind spots</li><li>A documented trail you can show to customers</li><li>Lower cost of quality and fewer downstream surprises</li>"
+      },
+      "decks": [
+        {
+          "id": "deck-1781437185102-felpw",
+          "name": "Why Switch from PowerPoint"
+        }
+      ],
+      "deckEdits": {
+        "deck-1781437185102-felpw": {
+          "section-label": "THE HONEST COMPARISON",
+          "headline": "PowerPoint vs <span class=\"blue\">Put A Presentation</span>",
+          "subtitle": "Same pitch. Wildly different experience.",
+          "col-header-prob": "PowerPoint",
+          "prob-list": "<li>Email a 40MB .pptx and hope it opens</li><li>Fonts and layouts break on every other machine</li><li>\"Which version is the latest one?\"</li><li>No idea if the client ever opened it</li><li>Every edit means re-sending the whole file</li>",
+          "col-header-ben": "Put A Presentation",
+          "ben-list": "<li>Share a link that always works</li><li>Pixel-perfect in every browser</li><li>One live version, always current</li><li>See exactly who viewed what</li><li>Edit once — the link updates instantly</li>"
+        }
+      }
+    },
+    {
+      "id": "lib-1781437185692",
+      "name": "Meet the Dashboard",
+      "templateId": "template10-installation",
+      "templateVersion": 1,
+      "edits": {
+        "credit": "by YourBrand.com",
+        "section-label": "Section Label",
+        "headline": "Your headline <span class=\"blue\">goes here</span>",
+        "subtitle": "A short supporting sentence about this slide."
+      },
+      "decks": [
+        {
+          "id": "deck-1781437185102-felpw",
+          "name": "Why Switch from PowerPoint"
+        }
+      ],
+      "deckEdits": {
+        "deck-1781437185102-felpw": {
+          "section-label": "YOUR COMMAND CENTER",
+          "headline": "Meet the Dashboard",
+          "subtitle": "Every presentation in one place. See what’s published, who’s viewing, and which slides are landing, at a glance. Call the viewers when they are engaged!&nbsp;",
+          "install-carousel": "<div class=\"ls-carousel-track\" style=\"transform: translateX(-1052px);\">\n          \n        <div class=\"ls-carousel-slide\"><img src=\"/slides/uploads/Dashboard-Put-A-Presentation.png\" alt=\"Dashboard Put A Presentation\" data-zoom=\"\"><div class=\"ls-carousel-caption\">Dashboard Put A Presentation</div></div><div class=\"ls-carousel-slide\"><img src=\"/slides/uploads/Dashboard-Put-A-Presentation-Per-Slide.png\" alt=\"Dashboard Put A Presentation Per Slide\" data-zoom=\"\"><div class=\"ls-carousel-caption\">Dashboard Put A Presentation Per Slide</div></div></div><div class=\"ls-carousel-counter\">2 / 2</div>",
+          "credit": "by YourBrand.com"
+        }
+      }
+    },
+    {
+      "id": "lib-1781437185912",
+      "name": "Inside the Builder",
+      "templateId": "template10-installation",
+      "templateVersion": 1,
+      "edits": {
+        "credit": "by YourBrand.com",
+        "section-label": "Section Label",
+        "headline": "Your headline <span class=\"blue\">goes here</span>",
+        "subtitle": "A short supporting sentence about this slide."
+      },
+      "decks": [
+        {
+          "id": "deck-1781437185102-felpw",
+          "name": "Why Switch from PowerPoint"
+        }
+      ],
+      "deckEdits": {
+        "deck-1781437185102-felpw": {
+          "section-label": "BUILD WITHOUT DESIGN SKILLS",
+          "headline": "Inside the Builder",
+          "subtitle": "Click any element and edit it live. Swap logos, text and images in seconds — every slide stays on-brand automatically. Have your translation translated with a click and the power of AI.",
+          "install-carousel": "\n        <div class=\"ls-carousel-track\" style=\"transform: translateX(0px);\">\n          <div class=\"ls-carousel-slide\"><img src=\"/slides/uploads/Translation---Add-Items-or-reorder-lists.png\" alt=\"Translation &amp; Add Items or reorder lists\" data-zoom=\"\" style=\"object-fit: contain;\"><div class=\"ls-carousel-caption\">Translation &amp; Add Items or reorder lists</div></div><div class=\"ls-carousel-slide\"><img src=\"/slides/uploads/Translation-Center-Put-A-Presentation-.png\" alt=\"Translation Center Put A Presentation \" data-zoom=\"\" style=\"object-fit: cover;\"><div class=\"ls-carousel-caption\">Translation Center Put A Presentation </div></div>\n        </div>\n        \n      <div class=\"ls-carousel-counter\">1 / 2</div>",
+          "credit": "by YourBrand.com"
+        }
+      }
+    },
+    {
+      "id": "lib-1781437186095",
+      "name": "Call to Action",
+      "templateId": "template14-cta",
+      "templateVersion": 1,
+      "edits": {
+        "section-label": "Next Steps",
+        "headline": "Ready to <span class=\"blue\">get started?</span>",
+        "intro": "A short paragraph introducing the next step you propose to the customer.",
+        "step1": "First step in the process",
+        "step2": "Second step in the process",
+        "step3": "Third step in the process",
+        "contact-name": "Contact Name",
+        "contact-title": "Job Title",
+        "contact-addr": "Street · City · Country",
+        "contact-phone": "+00 000 000 000",
+        "contact-email": "yourname@example.com"
+      },
+      "decks": [
+        {
+          "id": "deck-1781437185102-felpw",
+          "name": "Why Switch from PowerPoint"
+        }
+      ],
+      "deckEdits": {
+        "deck-1781437185102-felpw": {
+          "section-label": "READY?",
+          "headline": "Put your next presentation online",
+          "intro": "Stop attaching files. Start sharing links that win.",
+          "step1": "Build your deck from on-brand templates",
+          "step2": "Customize it for each customer in minutes",
+          "step3": "Share a link — and watch who engages",
+          "contact-name": "Put A Presentation",
+          "contact-title": "Sales Enablement Platform",
+          "contact-email": "alex@wbtm.io",
+          "contact-addr": "Rue des A · Luxembourg · Luxembourg",
+          "contact-phone": "+352 691345342"
+        }
+      }
     }
   ]
 }

@@ -4,9 +4,9 @@
     {
       "id": "deck-rebuild",
       "name": "SoftSolution (rebuild)",
-      "theme": "dark",
+      "theme": "light",
       "createdAt": "2026-06-01T00:00:00.000Z",
-      "updatedAt": "2026-06-12T15:20:58.416Z",
+      "updatedAt": "2026-06-14T05:27:53.162Z",
       "logo": "/slides/uploads/LOGO_Softsolution_Black.jpg",
       "heroBg": "/slides/uploads/Panther_Eye.jpeg",
       "heroBgFocal": "25% 50%",
@@ -20,6 +20,19 @@
       "heroBgOpacity": 100,
       "heroBgType": "image",
       "brandCredit": "GlassQuality.com"
+    },
+    {
+      "id": "deck-1781437185102-felpw",
+      "name": "Why Switch from PowerPoint",
+      "theme": "dark",
+      "createdAt": "2026-06-14T11:39:45.102Z",
+      "updatedAt": "2026-06-14T12:12:22.532Z",
+      "logo": "/slides/uploads/logo.svg",
+      "heroBg": null,
+      "heroBgFocal": "50% 50%",
+      "colors": {
+        "primary": "#F5A623"
+      }
     }
   ]
 }
