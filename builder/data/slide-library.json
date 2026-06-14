@@ -365,7 +365,7 @@
           "__attr:s6-defect-frame-bars:data-autoplay": "15000",
           "__attr:s6-defect-undefined:data-autoplay": "15000",
           "__attr:s6-defect-coating:data-autoplay": "15000",
-          "__attr:s6-defect-scratches:data-autoplay": "15000",
+          "__attr:s6-defect-scratches:data-autoplay": "0",
           "s6-defect-coating": "<div class=\"ls-carousel-track\" style=\"transform: translateX(0px);\">\n  <div class=\"ls-carousel-slide ls-compare ls-split\" data-compare-mode=\"split\"><div class=\"ls-cmp-side ls-cmp-side-left\"><img class=\"ls-cmp-left\" src=\"/slides/uploads/Defect of a Coating 2 Camera image.png\" alt=\"Camera\" data-zoom=\"\"></div><div class=\"ls-cmp-side ls-cmp-side-right\"><img class=\"ls-cmp-right\" src=\"/slides/uploads/Defect of a Coating 2 Camera image LineScanner Raw Image.png\" alt=\"LineScanner\" data-zoom=\"\"></div><div class=\"ls-cmp-handle\" style=\"display: none;\"><div class=\"ls-cmp-handle-grip\">⇔</div></div></div>\n</div><div class=\"ls-carousel-counter\"></div>",
           "s6-label-0": "Scratches",
           "s6-label-1": "Inclusions",
