@@ -4,12 +4,8 @@
   "homepageLabel": "Go to Glassquality.com",
   "logos": [
     {
-      "src": "/slides/shared/LOGO SoftSolution grays.png",
-      "alt": "Softsolution"
-    },
-    {
-      "src": "/slides/uploads/LOGO_LiteSentry_Greys.png",
-      "alt": "LOGO_LiteSentry_Greys"
+      "src": "/slides/uploads/logo.svg",
+      "alt": "logo"
     }
   ],
   "logosOnAllSlides": true,
