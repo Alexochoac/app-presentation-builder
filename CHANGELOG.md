@@ -5,6 +5,35 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [v1.3.0] — 2026-06-14
+
+### Added
+- **Slides** — rebuilt #9 Dimensions, #10 Screen Printing, #11 Logo Check, #12 Traceability, #13 Sensitivity, #14 Installation, #15 Integrations
+- **Responsive model** — `pb-responsive` shared model propagated to Cover, Company, CTA, Why Us slides
+- **Big-screen sizing** — shared CSS vars + desktop fill model standardized across all slides
+- **Publish system** — replaced GitHub-push with local freeze & serve `/public/` model; presentations served from the builder itself
+- **Translation Center** — per-line list editing in the translation panel
+- **Demo deck** — "Why Switch from PowerPoint" dogfood presentation
+- **Surface** — Defect Gallery slide (template06) added to deck
+
+### Fixed
+- Products table drag handle reliability + row-control self-heal on missing markup
+- List slide hide-chip/restore labels cleaned up via `itemLabel()` helper
+- Products Overview overlap, Company IQC uploadable logos, CTA content + contact UX
+- Surface defect-button config now persists via `slide-carousel-save`
+- Gallery overlays now unique per slide; duplicate stored gallery slides deduplicated
+- Company Tab 1/2 content restored in deck-rebuild; Technology label fixed; empty tab dropped
+- Cover: transform trap on `pb-chrome` released so gallery button is no longer clipped
+- Company image carousel height constrained under `pb-responsive`
+- LineScanner "How It Works" tab content restored after save-bug data loss
+
+### Removed
+- Legacy canvas render path + default deck (Step H Tier 2)
+- Orphan legacy templates and cartridges (Step H Tier 1)
+- Abandoned legacy published presentations
+
+---
+
 ## [v1.2.0] — 2026-06-06
 
 ### Added
