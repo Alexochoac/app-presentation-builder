@@ -12,5 +12,6 @@
   "heroBg": "/slides/uploads/Panther_Eye.jpeg",
   "heroBgFocal": "25% 75%",
   "heroBgFocalGrid": 5,
-  "defaultPrimaryColor": "#b62525"
+  "defaultPrimaryColor": "#b62525",
+  "defaultDeckTheme": "dark"
 }
