@@ -53,6 +53,7 @@ app.get('/api/settings', function (_req, res) {
 // Public static assets — must be before requireAuth so shared/readonly presentations can load images
 app.use('/slides/uploads', express.static(path.join(__dirname, 'features/slides/uploads')));
 app.use('/slides/shared',  express.static(path.join(__dirname, 'shared/assets')));
+app.get('/favicon.ico',    function (_req, res) { res.sendFile(path.join(__dirname, 'shared', 'brand', 'icon.svg')); });
 
 // ── Protect everything below this line ───────────────────────────────────────
 app.use(requireAuth);
@@ -2232,6 +2233,7 @@ function buildFrozenPresentation(presentation) {
     '  <meta charset="UTF-8">',
     '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
     '  <title>' + (presentation.customerName || 'Presentation') + '</title>',
+    '  <link rel="icon" type="image/svg+xml" href="' + PUBLIC_BASE_URL + '/favicon.ico">',
     '  <style>',
     slidesCss,
     presDeck.styleCss || '',

@@ -5,6 +5,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [v1.3.1] — 2026-06-15
+
+### Fixed
+- Favicon 404 — `icon.svg` now served at `/favicon.ico` (public, no auth required)
+- Published presentations include `<link rel="icon">` pointing to the brand icon
+
+---
+
 ## [v1.3.0] — 2026-06-14
 
 ### Added
