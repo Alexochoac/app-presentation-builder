@@ -1,6 +1,6 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-06-06 (session 21)
+Last updated: 2026-06-15 (session 22)
 
 ---
 
@@ -8,10 +8,11 @@ Last updated: 2026-06-06 (session 21)
 
 A local web app for building customized sales presentations for Softsolution's LineScanner glass inspection product. Sales reps log in, manage slide decks, customize slides, and publish to GitHub Pages / Cloudflare Pages.
 
-**Status:** Active — Phase 1 in development
+**Status:** Active — Phase 1 in development. Current prod version: **v1.3.1**
 **Runs locally at:** `http://localhost:3000`
 **Start command:** `cd builder && node server.js`
 **Prod URL:** `https://put-a-presentation.wbtm.io` (Docker + Cloudflare Tunnel)
+**Publish model:** Presentations freeze locally → served at `/public/:id/` from the builder itself (GitHub Pages publish removed in v1.3.0)
 **Flow:** Login → Dashboard → Builder (`/builder`) → Slides (`/slides`) → Settings (`/settings`)
 
 ---
@@ -303,10 +304,12 @@ Global-only settings (per-deck settings moved to Builder deck drawer):
 | POST | `/api/presentations/:id/archive` | Soft delete (sets `archivedAt`) |
 | POST | `/api/presentations/:id/unarchive` | Restore from archive |
 | POST | `/api/presentations/:id/duplicate` | Clone with new customer info |
-| POST | `/api/presentations/:id/publish` | git add→commit→push; returns `{ success, url, alreadyPublished }` |
+| POST | `/api/presentations/:id/publish` | Freeze deck → `finished-presentations/:id/index.html`; returns `{ success, url }` |
 | POST | `/api/presentations/rebuild-all` | Regenerate all frozen HTML files |
-| GET | `/finished/:presId/` | Static: serves frozen output |
+| GET | `/public/:presId/` | **Public, no auth** — static: serves frozen output (images via `../shared/`) |
+| GET | `/finished/:presId/` | Static: serves frozen output (auth required) |
 | GET | `/view/:id` | Redirect to `/finished/:id/` if frozen exists; else live viewer |
+| GET | `/favicon.ico` | **Public** — serves `shared/brand/icon.svg` |
 
 ### Analytics (Umami proxy + direct Postgres)
 | Method | Path | What it does |
@@ -414,24 +417,28 @@ slide-templates.json  →  slide-library.json  →  decks/[id]/deck.json
 
 ---
 
-## Slide Render Functions (14 active)
+## Slide Render System
 
-| Template ID | Render Function |
-|-------------|----------------|
-| tpl-new-cover | renderHeroLayout |
-| tpl-new-company | renderCompanyLayout |
-| tpl-new-comparison | renderComparisonLayout |
-| tpl-new-capability-matrix | renderCapabilityLayout |
-| tpl-new-technology | renderTechnologyLayout |
-| tpl-new-defect-gallery | renderDefectGalleryLayout |
-| tpl-new-carousel-cards | renderCarouselCardsLayout |
-| tpl-new-checklist-carousel | renderChecklistCarouselLayout |
-| tpl-new-carousel-tags | renderCarouselTagsLayout |
-| tpl-new-tabs-carousel | renderTabsCarouselLayout |
-| tpl-new-carousel-steps | renderCarouselStepsLayout |
-| tpl-new-full-carousel | renderFullCarouselLayout |
-| tpl-new-cards-grid | renderCardsGridLayout |
-| tpl-new-cta | renderCtaLayout |
+All slides now use the **cartridge model** via `renderCartridge(resolved, opts)`. Slide HTML lives in `.html` files; `server.js` reads and applies edits — no server-side string-builder functions.
+
+| Template file | Slide # | Name |
+|---|---|---|
+| `slide-01-cover-v2.html` | #1 | Cover |
+| `slide-02-company-v2.html` | #2 | Company |
+| `slide-03-why-us-v2.html` | #3 | Why Us |
+| `slide-04-products-v2.html` | #4 | Products Overview |
+| `slide-05-technology-v2.html` | #5–7 | Technology |
+| `slide-06-surface-v2.html` | #8 | Surface Quality Control |
+| `slide-07-dimensions-v2.html` | #9 | Dimensions |
+| `slide-08-screenprinting-v2.html` | #10 | Screen Printing |
+| `slide-09-logocheck-v2.html` | #11 | Logo Check |
+| `slide-10-traceability-v2.html` | #12 | Traceability |
+| `slide-11-sensitivity-v2.html` | #13 | Sensitivity |
+| `slide-12-installation-v2.html` | #14 | Installation |
+| `slide-13-integrations-v2.html` | #15 | Integrations |
+| `slide-cta-v2.html` | CTA | Call to Action |
+
+**Legacy render functions** (`renderHeroLayout`, etc.) are still in `server.js` for any old templates not yet rebuilt. New cartridges take priority — `resolveTemplate()` checks for a `.html` file first.
 
 ---
 
@@ -489,14 +496,13 @@ slide-templates.json  →  slide-library.json  →  decks/[id]/deck.json
 
 ## Known Issues / Open Items
 
-- **3-layer CSS conflict** — style.css, per-slide `<style>` blocks, inline styles. Design system refactor planned
-- **Tablet landscape responsive issue** — `Issue-M-2026-04-30-slides-css-responsive-layout-tablet-landscape-image-display.md`
-- **dashboard.css** — legacy file, should be deleted
-- **Translation — Preview navigate fix** — language re-apply on slide navigate uses `setTimeout(50)`; not yet replaced with reliable slide-ready signal
-- **Template update notifications** — when template rows change, library slides don't show an "Update available" badge yet (`Feature-L-2026-05-10-template-update-notifications-diff-and-review-flow.md`)
-- **Umami API token** — user's self-hosted Umami is v1 (no API key UI); using username/password auth + direct Postgres for filtered queries. Credentials in `.env` as `UMAMI_USERNAME` + `UMAMI_PASSWORD` + `UMAMI_DB_URL`
-- **fpDelete modal** — Finished Presentations delete in builder-ui still uses native `confirm()` instead of proper modal
-- **Tabs language switch** — ✅ fixed in v1.1.2: `applyPreviewLang` resets `_lsTabsInit` and re-calls `Tabs.init` after every language switch; `tabs.js` removes duplicate `ls-tab-add` buttons on re-init
+- **Save reliability (H)** — `preview.html` only saves on `input`, `slide-carousel-save`, `slide-image-change`, `beforeunload`. Language guard blocks saves in non-English preview. Root cause documented in `Issue-H-2026-06-12-builder-slide-editor-save-reliability-inconsistent.md`. Fix: MutationObserver safety net + remove language guard.
+- **Translation Center — HTML formatting lost (H)** — `stripHtmlTags()` strips inline HTML before textarea render; plain text saved back, losing bold/italic/spans. Fix: merge plain text back into English HTML structure on save (same as `linesToListHtml()` for lists). `Issue-H-2026-06-12`.
+- **Drag-and-drop review (H)** — list/table row drag handle not reliably clickable; CSS hover overlay competes with pointer events. Needs full diagnosis before fix. `Issue-H-2026-06-13`.
+- **3-layer CSS conflict** — style.css, per-slide `<style>` blocks, inline styles. Design system refactor planned.
+- **Translation — Preview navigate fix** — language re-apply on slide navigate uses `setTimeout(50)`; not yet replaced with reliable slide-ready signal.
+- **fpDelete modal** — Finished Presentations delete in builder-ui still uses native `confirm()` instead of proper modal.
+- **Umami API token** — self-hosted Umami v1 (no API key UI); using username/password auth + direct Postgres. Credentials: `UMAMI_USERNAME`, `UMAMI_PASSWORD`, `UMAMI_DB_URL`.
 
 ---
 
@@ -504,32 +510,37 @@ slide-templates.json  →  slide-library.json  →  decks/[id]/deck.json
 
 - **Dockerfile:** `builder/Dockerfile` — Node 20 Alpine, `npm install --omit=dev`, `node server.js`
 - **Dev compose:** `docker-compose.yml` (project root) — builds from source, mounts `builder/data/` + `builder/.../uploads/` + `finished-presentations/`
-- **Prod compose:** `C:/Users/Alex/n8n-projects/docker-compose.yml` — `presentation-builder` service using `ghcr.io/alexochoac/app-presentation-builder:latest`, mounts `prod/` folders
-- **Image registry:** `ghcr.io/alexochoac/app-presentation-builder` — v1.2.1 + latest published
-- **Current prod version:** v1.2.1 (running in `v1.1.0/` folder — updated in-place)
+- **Image registry:** `ghcr.io/alexochoac/app-presentation-builder` — v1.3.1 + latest published
+- **Current prod version:** v1.3.1 (running in `v1.1.0/` folder — updated builder in-place)
 - **Prod stack:** `C:/Users/Alex/put-a-presentation/v1.1.0/` — project `put-a-presentation-v1-1-0`; builder on port 3005, umami on 3004, umami-db on 5434
-- **Data sync:** prod data at `C:/Users/Alex/put-a-presentation/v1.1.0/data/` and `uploads/` — sync from local with robocopy (no /MIR for uploads to preserve prod-only files)
-- **Release workflow:** documented in `.claude/commands/release.md` — includes Step 7b (scrub localhost URLs) and Step 8b (update sidebar version label in 5 files)
+- **Data source:** prod data is a full copy of master working files (`builder/data/`, `builder/features/slides/uploads/`, `finished-presentations/`) — copied in at release time
+- **Release workflow:** documented in `.claude/commands/release.md`. ⚠️ Sidebar version label must be updated in 5 HTML files BEFORE `docker build` (baked into image)
+- **Cloudflare Access:** `/public/*` is bypassed (no auth) so published presentations load without login
 
 **Volume mounts (prod):**
-| Host | Container |
+| Host path | Container path |
 |------|-----------|
-| `prod/data/` | `/app/data` |
-| `prod/uploads/` | `/app/features/slides/uploads` |
-| `prod/finished-presentations/` | `/finished-presentations` |
+| `put-a-presentation/v1.1.0/data/` | `/app/data` |
+| `put-a-presentation/v1.1.0/uploads/` | `/app/features/slides/uploads` |
+| `put-a-presentation/v1.1.0/finished-presentations/` | `/finished-presentations` |
 
 ---
 
 ## What's Next
 
-1. **Chore — Surface slide cruft cleanup** — remove leftover defect-card code from the old canvas renderer (`Chore-L-2026-06-06`)
-2. **Hero bg color fix** — opacity/color not updating in canvas (`Issue-H-2026-05-17`)
-3. **Translation — Preview navigate fix** — replace `setTimeout(50)` with reliable slide-ready signal
-4. **Dashboard — Engagement chart filter** — live-only filter, multi-select checkbox dropdown, card image shortcut (`Feature-M-2026-05-22`)
-5. **Dashboard — Events chart** — slide popularity + time-series + drill-down sub-events (`Feature-M-2026-05-22`)
-6. **fpDelete modal** — replace native `confirm()` with proper modal in builder-ui Finished Presentations
-7. **Design system refactor** — eliminate 3-layer CSS conflict (partially addressed by 24-var theme system)
-8. **Template update notifications** — "Update available" badge in My Library when template rows change
-9. **App UI icons standardise** — minimalist icon set across all pages
-10. **Slide 11 tag carousel double-stack** — empty-state CSS flex refactor causes two carousels to stack on tag button click (`Issue-M-2026-05-25`)
-11. **Sidebar version label** — currently hardcoded in 5 HTML files; could be wired dynamically from `/api/settings`
+**H-priority (bugs to fix first):**
+1. **Save reliability** — MutationObserver safety net + remove language-guard block (`Issue-H-2026-06-12`)
+2. **Translation Center — HTML formatting** — merge plain text back into English HTML on save (`Issue-H-2026-06-12`)
+3. **Drag-and-drop review** — diagnose pointer-events stacking before fixing (`Issue-H-2026-06-13`)
+
+**M-priority features:**
+4. **Carousel video support** — add video items to carousel component (`Feature-M-2026-06-14`)
+5. **Universal features detail expand popup** — per-feature expand modal (`Feature-M-2026-06-12`)
+6. **Viewer fullscreen** — native Fullscreen API for published presentations (`Feature-M-2026-06-12`)
+7. **Dashboard — Engagement chart filter** — live-only filter, multi-select dropdown (`Feature-M`)
+8. **Dashboard — Events chart** — slide popularity + time-series + drill-down sub-events
+
+**L-priority / ideas:**
+9. **Template update notifications** — "Update available" badge in My Library
+10. **App UI icons standardise** — minimalist icon set across all pages
+11. **fpDelete modal** — replace native `confirm()` with proper modal

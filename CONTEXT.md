@@ -191,6 +191,20 @@ All content slides now use this structure:
 - [x] **v1.2.0 released** — Docker image pushed to ghcr.io, in-place deploy on production stack, GitHub Release created (2026-06-06)
 - [x] **v1.2.1 hotfix** — `/slides/uploads` and `/slides/shared` moved before `requireAuth` so shared/readonly presentations can load images without a session cookie; localhost URLs scrubbed from data files (2026-06-06)
 - [x] **Sidebar version label** — `v{version}` shown below Log out in all 5 sidebar pages; `.sidebar-version` CSS class in `app-style.css`; release checklist updated (2026-06-06)
+- [x] **Single render path** — `renderCartridge()` is the sole render function; Why Us rebuilt as slide #3 (2026-06-08)
+- [x] **pb-responsive model** — shared responsive model propagated to Cover, Company, CTA, Why Us (2026-06-09)
+- [x] **Translation Center per-line list editing** — individual list item editing in TC panel (2026-06-10)
+- [x] **Slide rebuilds #4–15** — Products (#4), Technology (#5–7), Surface (#8), Dimensions (#9), Screen Printing (#10), Logo Check (#11), Traceability (#12), Sensitivity (#13), Installation (#14), Integrations (#15) — all on named template cartridges (2026-06-06 to 2026-06-12)
+- [x] **Big-screen sizing standardization** — shared CSS vars + desktop fill model across all slides (2026-06-11)
+- [x] **Surface Defect Gallery** — template06 Defect Gallery slide added to deck (2026-06-10)
+- [x] **Step H cleanup** — Tier 1: orphan legacy templates + cartridges removed; Tier 2: default deck + legacy canvas render path removed; finished-presentations de-git'd (2026-06-12)
+- [x] **Publish system refactor** — dropped GitHub-push; presentations freeze & serve at `/public/:id/` directly from the builder (2026-06-12)
+- [x] **"Why Switch from PowerPoint" demo deck** — dogfood presentation built (2026-06-13)
+- [x] **Various fixes** — drag handle reliability + products-table row-control self-heal; list hide-chip/restore labels via `itemLabel()`; surface defect-button config persistence; gallery overlay dedup; Company tab content restore (2026-06-12)
+- [x] **v1.3.0 released** — Docker image pushed, standalone compose updated, GitHub Release created (2026-06-14)
+- [x] **Favicon** — `icon.svg` served at `/favicon.ico` (public, no auth); published presentations include `<link rel="icon">` (2026-06-15)
+- [x] **Cloudflare Access bypass** — `/public/*` exempt from Zero Trust auth so presentations load without login (2026-06-15)
+- [x] **v1.3.1 released** — favicon patch, Docker image updated in-place on production stack (2026-06-15)
 
 ## Phase Roadmap
 - **Phase 1** (current) — Local app, single user, build + publish
@@ -198,4 +212,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-06-06 (session 21)
+Last updated: 2026-06-15 (session 22)
