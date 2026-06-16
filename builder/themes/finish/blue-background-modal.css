@@ -1,0 +1,127 @@
+/* ============================================================
+   Finish block — Blue Background Modal
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/blue-background-modal.css). Adds what a CSS
+   variable can't express: the deep radial-blue field with drifting
+   blobs the cards float over, and the modal-style elevation —
+   translucent light frosted panels with soft drop shadows + an
+   inset top highlight, generous rounded radii.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   ============================================================ */
+
+/* ── The blue field + drifting light blobs (the world the modals float over) ── */
+@keyframes bbm-float { 0%,100%{transform:translate3d(0,0,0) scale(1)} 50%{transform:translate3d(0,-2vmax,0) scale(1.04)} }
+
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background:
+    radial-gradient(1200px 800px at 20% -10%, #13335a 0%, transparent 60%),
+    radial-gradient(1000px 700px at 120% 20%, #1f2c52 0%, transparent 70%),
+    linear-gradient(120deg, #0e1016, #121826 40%, #0c1424) !important;
+  /* Field is deep blue ⇒ light ink across the slide. Re-skins all var(--text). */
+  --text: #e9eefb;
+  --text-muted: #b7c0d9;
+}
+/* Soft drifting blobs laid over the field without touching the markup */
+.slide::before,
+.slide::after {
+  content: "";
+  position: absolute;
+  z-index: -1; pointer-events: none;   /* behind in-flow content, above the field — no child rules, corner chrome keeps its pin */
+  width: 46vmax; height: 46vmax;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: .22;
+  mix-blend-mode: screen;
+  background: radial-gradient(circle at 30% 30%, #3aa0ff 0%, transparent 60%);
+  animation: bbm-float 26s ease-in-out infinite;
+}
+.slide::before { left: -10vmax; top: -8vmax; }
+.slide::after  { right: -12vmax; bottom: -8vmax;
+  background: radial-gradient(circle at 70% 70%, #00ffe5 0%, transparent 60%);
+  animation-duration: 32s; }
+.slide > * { z-index: 1; }            /* in-flow content rides above the blobs */
+.glow-orb { display: none; }          /* dark-theme artifact — the blobs replace it */
+
+/* ── Modal-style floating surfaces (translucent light glass + soft elevation) ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.ls-tabs,
+.ls-carousel {
+  background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06)) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  backdrop-filter: blur(14px) saturate(120%);
+  border: 1px solid rgba(255,255,255,.12) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,.45),
+              inset 0 1px 0 rgba(255,255,255,.12) !important;
+  /* Surface stays a light-translucent panel over a dark field ⇒ ink STAYS light.
+     Re-declared so the panel never inherits a stray dark --text. */
+  --text: #eaf1ff;
+  --text-muted: #cbd7f1;
+}
+
+/* Lift higher on hover (the modal "rises") */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.10)) !important;
+  border-color: rgba(255,255,255,.22) !important;
+  box-shadow: 0 28px 72px rgba(0,0,0,.50),
+              inset 0 1px 0 rgba(255,255,255,.18) !important;
+  transform: translateY(-4px);
+}
+
+/* ── Gradient-clipped heading (blue → cyan), per the reference DNA ── */
+.slide-title {
+  background: linear-gradient(90deg, #6aa8ff, #8af5ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 6px 30px rgba(106,168,255,.25));
+}
+.slide-subtitle { color: var(--text-muted); }
+.section-label  { color: #8af5ff; letter-spacing: .08em; }
+
+/* Divider as a soft light seam */
+.divider {
+  background: linear-gradient(90deg, rgba(255,255,255,.45), rgba(255,255,255,.06)) !important;
+}
+
+/* ── Card text (sits on light-translucent panels ⇒ light ink) ── */
+.card-title  { color: var(--text); }
+.card-desc   { color: var(--text-muted); }
+.kpi-value   { color: #8af5ff; }
+.kpi-label   { color: var(--text-muted); }
+.feature-text{ color: var(--text); }
+
+/* ── Frosted pill chips: badges, tags, CTA buttons ── */
+.badge,
+.tag {
+  background: rgba(255,255,255,.10) !important;
+  border: 1px solid rgba(255,255,255,.18) !important;
+  border-radius: 999px !important;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 10px 30px rgba(0,0,0,.25);
+  color: #ebf3ff !important;
+}
+
+.cta-btn-wa,
+.cta-btn-email {
+  border-radius: 14px !important;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.30);
+  color: #e8f0ff !important;
+}
+
+/* Logo row reads as a floating glass bar */

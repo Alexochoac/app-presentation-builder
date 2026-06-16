@@ -1,0 +1,108 @@
+/* ============================================================
+   Finish block — Isometric 3D
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/isometric-3d.css). Adds what a CSS variable
+   can't express: the isometric blueprint grid the slide sits on,
+   the iso-tilt (skew/rotate) of the surfaces, and the chunky
+   offset hard-shadow that extrudes each card into a 3D block.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   ============================================================ */
+
+/* ── Light backdrop + isometric grid (the floor the blocks stand on) ── */
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+  perspective: 1400px;
+  /* Finish owns the field ⇒ Finish owns the ink (re-skins all var(--text) text) */
+  --text: #1e293b;
+  --text-muted: #475569;
+}
+/* Isometric diamond grid laid over the field without touching the markup */
+.slide::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1; pointer-events: none;   /* behind in-flow content, above the field — corner chrome keeps its absolute pin */
+  background-image:
+    linear-gradient(30deg,  rgba(var(--accent-rgb), .10) 1px, transparent 1px),
+    linear-gradient(-30deg, rgba(var(--accent-rgb), .10) 1px, transparent 1px);
+  background-size: 46px 80px;
+}
+.slide > * { z-index: 1; }
+.glow-orb { display: none; }            /* dark-theme artifact — not wanted over a bright iso floor */
+
+/* ── Extruded iso-tilt surfaces (skewed card + chunky offset hard shadow) ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.ls-tabs,
+.ls-carousel {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 4px !important;
+  transform: rotate(-1deg) skewX(-3deg);
+  transform-origin: center;
+  /* the side-extrusion: stacked hard offsets read as a solid 3D block edge */
+  box-shadow:
+     4px  4px 0 #cbd5e1,
+     8px  8px 0 #94a3b8,
+    12px 12px 0 rgba(var(--accent-rgb), .22) !important;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+/* Lift the block toward the viewer on hover (deeper extrusion) */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  transform: rotate(-1deg) skewX(-3deg) translate(-3px, -3px);
+  box-shadow:
+     6px  6px 0 #cbd5e1,
+    12px 12px 0 #94a3b8,
+    18px 18px 0 rgba(var(--accent-rgb), .30) !important;
+}
+
+/* Counter-skew the inner text so copy stays upright on a tilted block */
+.card-title,  .card-desc,
+.kpi-value,   .kpi-label,
+.feature-text {
+  transform: skewX(3deg);
+}
+
+/* ── Headings get a hard drop-shadow so they read as raised plates ── */
+.slide-title {
+  text-shadow: 4px 4px 0 rgba(var(--accent-rgb), .18);
+  letter-spacing: -.02em;
+}
+.section-label,
+.slide-subtitle { color: var(--text-muted); }
+.kpi-value { text-shadow: 3px 3px 0 rgba(var(--accent-rgb), .20); }
+
+/* ── Badges / tags / pill buttons read as little extruded chips ── */
+.badge,
+.tag,
+.cta-btn-wa,
+.cta-btn-email {
+  transform: skewX(-3deg);
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 3px 3px 0 rgba(var(--accent-rgb), .25) !important;
+}
+.cta-btn-wa:hover,
+.cta-btn-email:hover {
+  transform: skewX(-3deg) translate(-2px, -2px);
+  box-shadow: 5px 5px 0 rgba(var(--accent-rgb), .35) !important;
+}
+
+/* Divider becomes an extruded ledge */
+.divider {
+  background: var(--accent) !important;
+  box-shadow: 0 3px 0 #94a3b8;
+}
+
+/* Light field ⇒ flip the (mono) brand logo to dark ink for contrast (overrides the base white default) */
+.slide { --logo-filter: brightness(0); }

@@ -1,0 +1,112 @@
+/* ============================================================
+   Finish block — Black Neon Glow
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/black-neon-glow.css). Adds what a CSS variable
+   can't express: the pure-black field with deep radial neon halos,
+   the intense glow read on every border and headline, and the lit
+   accent seams. This is a DARK glow theme — the .glow-orb pair is
+   KEPT (not hidden) and re-tinted to the accent so the orbs read as
+   the glowing light sources the neon plays off.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   ============================================================ */
+
+/* ── Pure-black field with deep neon halos (the void the glow burns against) ── */
+@keyframes bng-orb-pulse { 0%,100%{opacity:.55} 50%{opacity:.9} }
+
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(var(--accent-rgb), .14) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 50%, rgba(var(--accent-rgb), .10) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 100%, rgba(var(--accent-rgb), .08) 0%, transparent 40%),
+    linear-gradient(180deg, #000000 0%, #07070a 50%, #000000 100%) !important;
+  /* Finish owns the field ⇒ Finish owns the ink (white/near-white on pure black) */
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, .62);
+}
+/* Soft outer glow vignette so the halos bleed into the black without a hard edge */
+.slide::after {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.6) 100%);
+}
+.slide > * { z-index: 1; }
+
+/* Keep the orbs — re-tint to the accent so they read as the neon light sources */
+.glow-orb {
+  background: radial-gradient(circle, rgba(var(--accent-rgb), .45) 0%, transparent 70%) !important;
+  animation: float 12s ease-in-out infinite, bng-orb-pulse 6s ease-in-out infinite;
+}
+
+/* ── Glowing surfaces (jet-black panel + neon edge + inner/outer glow) ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.ls-tabs,
+.ls-carousel {
+  background: rgba(0, 0, 0, 0.78) !important;
+  border: 1px solid rgba(var(--accent-rgb), 0.50) !important;
+  border-radius: var(--card-radius) !important;
+  box-shadow: 0 0 26px rgba(var(--accent-rgb), 0.30),
+              inset 0 0 20px rgba(var(--accent-rgb), 0.08) !important;
+  /* repainted surface ⇒ re-declare ink (kept white on the black panel) */
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, .60);
+}
+
+/* Brighten the neon on hover (the surface "powers up") */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 40px rgba(var(--accent-rgb), 0.60),
+              inset 0 0 26px rgba(var(--accent-rgb), 0.16) !important;
+  transform: translateY(-3px);
+}
+
+/* ── Neon-glow headings + values ── */
+.slide-title {
+  text-shadow: 0 0 12px rgba(var(--accent-rgb), .55),
+               0 0 28px rgba(var(--accent-rgb), .35),
+               0 0 6px rgba(255, 255, 255, .35);
+}
+.section-label {
+  text-shadow: 0 0 10px rgba(var(--accent-rgb), .9),
+               0 0 22px rgba(var(--accent-rgb), .55);
+}
+.slide-subtitle { text-shadow: 0 0 14px rgba(255, 255, 255, .25); }
+.kpi-value { text-shadow: 0 0 16px rgba(var(--accent-rgb), .75); }
+.kpi-label,
+.card-desc,
+.feature-text { text-shadow: 0 0 8px rgba(0, 0, 0, .6); }
+.card-title { text-shadow: 0 0 10px rgba(var(--accent-rgb), .35); }
+
+/* ── Pill buttons / tags / badges read as lit neon chips ── */
+.cta-btn-wa,
+.cta-btn-email,
+.badge,
+.tag {
+  border: 1px solid rgba(var(--accent-rgb), 0.6) !important;
+  box-shadow: 0 0 16px rgba(var(--accent-rgb), 0.45),
+              inset 0 0 10px rgba(var(--accent-rgb), 0.14);
+  text-shadow: 0 0 9px rgba(var(--accent-rgb), .7);
+}
+.cta-btn-wa:hover,
+.cta-btn-email:hover {
+  box-shadow: 0 0 30px rgba(var(--accent-rgb), 0.7),
+              inset 0 0 14px rgba(var(--accent-rgb), 0.20);
+}
+
+/* Divider becomes a glowing neon seam */
+.divider {
+  background: linear-gradient(90deg, transparent, var(--accent), transparent) !important;
+  box-shadow: 0 0 12px rgba(var(--accent-rgb), .8);
+}

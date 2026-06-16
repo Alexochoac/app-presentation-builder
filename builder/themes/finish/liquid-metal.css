@@ -1,0 +1,149 @@
+/* ============================================================
+   Finish block — Liquid Metal
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/liquid-metal.css). Adds what a CSS variable
+   can't express: the dark mirror-room backdrop, the chrome/mercury
+   metallic gradients, the glossy reflective sheen sweep, and the
+   brushed-metal borders on every surface. Targets the standard
+   slide skeleton classes (+ legacy card aliases .int-card/
+   .col-card/.feature-item so it works before those slides are
+   rebuilt).
+   ============================================================ */
+
+/* ── Dark mirror-room backdrop (the world the chrome reflects) ── */
+@keyframes lm-pool {
+  0%,100% { background-position: 0% 50%, 100% 50%, 50% 50%; }
+  50%     { background-position: 100% 50%, 0% 50%, 50% 50%; }
+}
+@keyframes lm-sheen { 0%,100% { transform: translateX(-120%); } 50% { transform: translateX(120%); } }
+
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background:
+    radial-gradient(circle at 20% 80%, rgba(102,126,234,.22) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(245,87,108,.20) 0%, transparent 50%),
+    linear-gradient(145deg, #0a0a0f 0%, #1a1a1f 50%, #0a0a0f 100%) !important;
+  background-size: 160% 160%, 160% 160%, 100% 100% !important;
+  animation: lm-pool 22s ease-in-out infinite;
+  /* Finish owns the field ⇒ Finish owns the ink. Mid backdrop tone is near-black,
+     so ink stays light; the muted tone is a cool brushed-silver grey. */
+  --text: #f4f6f8;
+  --text-muted: rgba(214, 220, 228, .72);
+}
+.glow-orb { display: none; }   /* replaced by the mirror-room gradient pools */
+
+/* Brushed-chrome backsheen laid over the slide without touching markup */
+.slide::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1; pointer-events: none;
+  background: linear-gradient(115deg,
+    transparent 30%, rgba(255,255,255,.05) 48%,
+    rgba(255,255,255,.10) 50%, rgba(255,255,255,.05) 52%, transparent 70%);
+  background-size: 250% 100%;
+  animation: lm-sheen 9s ease-in-out infinite;
+}
+.slide > * { z-index: 1; }   /* backsheen sits at z-index:-1; do NOT force position here — it clobbers the absolutely-pinned logo-row / credit / gallery button */
+
+/* ── Chrome typography: mercury-poured title, brushed-metal heads ── */
+h1.slide-title {
+  /* mercury: silver→white→silver — base rule clips this gradient to the glyphs */
+  background: linear-gradient(145deg, #b8c0c8 0%, #ffffff 45%, #9aa3ad 55%, #e8edf2 100%) !important;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 10px rgba(255,255,255,.18)) drop-shadow(0 4px 14px rgba(0,0,0,.6));
+}
+.slide-subtitle { text-shadow: 0 1px 6px rgba(0,0,0,.6); }
+.section-label  { text-shadow: 0 0 10px rgba(var(--accent-rgb), .55), 0 1px 3px rgba(0,0,0,.6); }
+
+/* Divider becomes a polished chrome bar */
+.divider {
+  background: linear-gradient(90deg, #8a929c 0%, #ffffff 50%, #8a929c 100%) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.6);
+}
+
+/* ── Liquid-metal surfaces (brushed gradient + glossy top sheen + metal rim) ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.ls-tabs,
+.ls-carousel {
+  background:
+    linear-gradient(165deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.02) 18%,
+                            rgba(10,12,16,.55) 55%, rgba(0,0,0,.30) 100%) !important;
+  border: 1px solid rgba(255,255,255,.22) !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,.55),
+              inset 0 1px 0 rgba(255,255,255,.40),
+              inset 0 -1px 0 rgba(0,0,0,.45) !important;
+  position: relative;
+  overflow: hidden;
+}
+/* Inverted (dark glossy) surface ⇒ re-declare ink so contrast holds */
+.card, .int-card, .kpi-card, .col-card, .feature-item, .cta-box {
+  --text: #f4f6f8;
+  --text-muted: rgba(210, 217, 226, .74);
+}
+
+/* Polished top reflection skimming each surface */
+.card::before,
+.int-card::before,
+.kpi-card::before,
+.col-card::before,
+.feature-item::before,
+.cta-box::before {
+  content: "";
+  position: absolute; top: 0; left: 0; right: 0; height: 45%;
+  background: linear-gradient(180deg, rgba(255,255,255,.18) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Catch more light on hover (the metal tilts toward you) */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  border-color: rgba(255,255,255,.42) !important;
+  box-shadow: 0 18px 44px rgba(0,0,0,.6),
+              inset 0 1px 0 rgba(255,255,255,.6),
+              inset 0 -1px 0 rgba(0,0,0,.45) !important;
+  transform: translateY(-3px);
+}
+
+/* ── Surface text: brushed-metal value, legible labels ── */
+.card-title    { text-shadow: 0 1px 3px rgba(0,0,0,.55); }
+.card-desc, .feature-text, .kpi-label { text-shadow: 0 1px 2px rgba(0,0,0,.5); }
+.kpi-value {
+  /* mercury fill clipped to glyphs (base rule already clips its gradient to text) */
+  background: linear-gradient(145deg, #c2cad2 0%, #ffffff 48%, #aab2bc 100%) !important;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.5));
+}
+
+/* ── Pill chips / buttons read as poured-mercury tabs ── */
+.badge,
+.tag,
+.cta-btn-wa,
+.cta-btn-email {
+  background: linear-gradient(145deg, #d8dde3 0%, #ffffff 50%, #c0c6cd 100%) !important;
+  /* inverted to a bright chrome surface ⇒ flip ink to near-black for contrast */
+  color: #14171c !important;
+  --text: #14171c;
+  --text-muted: rgba(20, 23, 28, .7);
+  border: 1px solid rgba(255,255,255,.6) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.85);
+  text-shadow: 0 1px 0 rgba(255,255,255,.4);
+}
+.badge:hover,
+.tag:hover,
+.cta-btn-wa:hover,
+.cta-btn-email:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,1);
+  transform: translateY(-2px);
+}
+
+/* Logo row reads as a floating brushed-metal bar */

@@ -1,0 +1,148 @@
+/* ============================================================
+   Finish block — Apple Keynote Style (Light)
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/apple-keynote-style-light.css). Adds what a CSS
+   variable can't express: the soft white→silver stage the slide
+   sits on, the airy translucent cards with deep-soft shadows, the
+   dark vertical-gradient headings, and the glossy blue accent pills.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   LIGHT THEME: the field is bright, so all skeleton ink is forced
+   DARK (re-declared --text/--text-muted), and surfaces that invert
+   to the accent (pills) re-declare light ink locally.
+   ============================================================ */
+
+/* ── The soft white "stage" the slide reads against ── */
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background: linear-gradient(135deg, #ffffff 0%, #f5f5f7 100%) !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Finish owns the field ⇒ Finish owns the ink. Base ships WHITE text
+     (--text:#fff) which would vanish on this bright field — force DARK. */
+  --text: #1d1d1f;
+  --text-muted: #6e6e73;
+}
+/* Faint event-style vignette laid over the slide without touching markup */
+.slide::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1; pointer-events: none;   /* behind in-flow content, above the field — no child rules, so corner chrome keeps its absolute pin */
+  background: linear-gradient(135deg, transparent 0%, rgba(245, 245, 247, 0.5) 80%);
+}
+/* One muted accent halo, top-left, very soft — Apple-event glow */
+.slide::after {
+  content: "";
+  position: absolute;
+  top: -260px; left: -260px;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--accent-rgb), .10) 0%, transparent 70%);
+  filter: blur(80px);
+  z-index: -1; pointer-events: none;
+}
+.glow-orb { display: none; }   /* base dark-theme artifact — replaced by the soft halo above */
+
+/* ── Headings: dark vertical-gradient ink (the Keynote h1 look) ── */
+.slide-title {
+  background: linear-gradient(180deg, #1d1d1f 0%, #424245 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -.02em;
+}
+.section-label { letter-spacing: .13em; }
+.slide-subtitle { color: var(--text-muted); }
+
+/* Hairline accent divider */
+.divider {
+  background: linear-gradient(90deg, var(--accent), var(--accent-light)) !important;
+  border-radius: 2px;
+}
+
+/* ── Frosted-white surfaces with deep-soft shadow ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.ls-tabs,
+.ls-carousel {
+  background: rgba(255, 255, 255, 0.8) !important;
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* Lift + brighten on hover (the card "rises toward the light") */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+}
+
+/* Tinted accent panel for the CTA — light field, so keep DARK ink */
+.cta-box {
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), .08) 0%, rgba(var(--accent-rgb), .03) 100%) !important;
+  border: 1px solid rgba(var(--accent-rgb), .20) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 16px 48px rgba(var(--accent-rgb), .15);
+  --text: #1d1d1f;
+  --text-muted: #6e6e73;
+}
+
+/* ── KPI value keeps the blue accent gradient; label stays muted-dark ── */
+.kpi-value {
+  background: linear-gradient(180deg, #1d1d1f 0%, #424245 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+.card-title { color: var(--text); }
+.card-desc,
+.kpi-label,
+.feature-text { color: var(--text-muted); }
+
+/* ── Chips / tags: frosted-white pill ── */
+.badge,
+.tag {
+  background: rgba(255, 255, 255, 0.8) !important;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.10) !important;
+  border-radius: 100px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  color: var(--text) !important;
+}
+
+/* ── CTA pills: glossy blue accent → INVERTS, so re-declare LIGHT ink ── */
+.cta-btn-wa,
+.cta-btn-email {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%) !important;
+  border: none !important;
+  border-radius: 100px !important;
+  box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.25);
+  /* surface inverts to a saturated accent → force LIGHT ink on it */
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, .85);
+  color: #ffffff !important;
+  transition: all .3s ease;
+}
+.cta-btn-wa:hover,
+.cta-btn-email:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 48px rgba(var(--accent-rgb), 0.35);
+}
+
+/* Logo row reads as a floating frosted bar */
+
+/* Light field ⇒ flip the (mono) brand logo to dark ink for contrast (overrides the base white default) */
+.slide { --logo-filter: brightness(0); }

@@ -1,0 +1,176 @@
+/* ============================================================
+   Finish block — Editorial Magazine
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/editorial-magazine.css). Adds what a CSS variable
+   can't express: the printed-page feel — serif display heads with a
+   gold rule under them, hairline column rules, a drop-cap on body
+   copy, masthead-style uppercase labels, and flat paper-stock cards
+   with a thick accent margin instead of glow. Restrained light field.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   ============================================================ */
+
+/* ── The paper field + hairline page frame (the magazine "stock") ── */
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background: var(--bg) !important;
+  /* Light paper ⇒ dark ink. Re-declare the ink that all skeleton text reads from. */
+  --text: #1a1a1a;
+  --text-muted: rgba(0, 0, 0, .55);
+}
+/* Thin printer's rule framing the page (top + bottom hairlines, gold top edge) */
+.slide::before {
+  content: "";
+  position: absolute;
+  inset: 26px 34px;
+  z-index: 0; pointer-events: none;   /* behind in-flow content, no child rules ⇒ corner chrome keeps its pin */
+  border-top: 3px solid var(--accent);
+  border-bottom: 1px solid var(--card-border);
+}
+.slide > * { z-index: 1; }
+.glow-orb { display: none; }   /* no glow on a paper field */
+
+/* ── Display typography — the masthead serif voice ── */
+.slide-title {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+}
+.slide-subtitle {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--text-muted);
+}
+/* Masthead kicker — uppercase, tracked-out, gold, with a tick rule */
+.section-label {
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-weight: 700;
+  color: var(--accent);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--card-border);
+}
+/* Section divider becomes a centred printer's rule */
+.divider {
+  background: var(--accent) !important;
+  height: 3px;
+  max-width: 110px;
+}
+
+/* ── Paper-stock cards: flat, hairline border, thick gold left margin ── */
+.card,
+.int-card,
+.col-card,
+.feature-item,
+.cta-box {
+  background: var(--white, #ffffff) !important;
+  border: 1px solid var(--card-border) !important;
+  border-left: 5px solid var(--accent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  /* Card sits on light stock ⇒ keep dark ink */
+  --text: #1a1a1a;
+  --text-muted: rgba(0, 0, 0, .58);
+}
+/* KPI / stat cards read as a top-ruled figure column (no side margin) */
+.kpi-card {
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 3px solid var(--accent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  --text: #1a1a1a;
+  --text-muted: rgba(0, 0, 0, .58);
+}
+
+/* Lift to an ink drop-shadow on hover (the page "turns") */
+.card:hover,
+.int-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12) !important;
+  transform: translateY(-4px);
+}
+
+/* ── Card text — serif title, justified column body, gold figures ── */
+.card-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--text);
+}
+.card-desc,
+.feature-text {
+  font-family: var(--font-body);
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+/* Drop-cap on the first card's body copy — classic magazine open */
+.card-desc::first-letter {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 2.6em;
+  float: left;
+  line-height: 0.82;
+  padding: 4px 8px 0 0;
+  color: var(--accent);
+}
+.kpi-value {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--accent);
+}
+.kpi-label {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* ── Logo row / component frames as bordered plates ── */
+.ls-tabs,
+.ls-carousel {
+  background: var(--white, #ffffff) !important;
+  border: 1px solid var(--card-border) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  --text: #1a1a1a;
+  --text-muted: rgba(0, 0, 0, .58);
+}
+
+/* ── Badges / tags as set-in-caps editorial labels ── */
+.badge,
+.tag {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 700;
+  border-radius: 0 !important;
+}
+
+/* ── CTA buttons: ink-block (primary) + ruled outline (secondary), squared ── */
+.cta-btn-wa {
+  background: var(--text) !important;
+  color: var(--bg) !important;
+  border-radius: 0 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+.cta-btn-wa:hover { background: var(--accent) !important; color: #1a1a1a !important; }
+.cta-btn-email {
+  background: transparent !important;
+  color: var(--text) !important;
+  border: 1px solid var(--text) !important;
+  border-radius: 0 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+.cta-btn-email:hover { border-color: var(--accent) !important; color: var(--accent) !important; }
+
+/* Light field ⇒ flip the (mono) brand logo to dark ink for contrast (overrides the base white default) */
+.slide { --logo-filter: brightness(0); }

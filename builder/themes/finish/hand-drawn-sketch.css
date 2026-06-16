@@ -1,0 +1,80 @@
+/* ============================================================
+   Finish block — Hand-Drawn Sketch
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/hand-drawn-sketch.css). Adds what a CSS variable
+   can't express: the warm paper grain, ink-outlined surfaces with
+   a slight wobble (tilt + asymmetric corners), hard un-blurred
+   "pencil" shadows, and a dashed inner doodle line.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases so it works before those slides are rebuilt).
+   ============================================================ */
+
+/* ── Warm paper with a faint ruled grid ── */
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } */
+  background:
+    linear-gradient(rgba(0,0,0,.035) 1px, transparent 1px) 0 0 / 100% 28px,
+    #fef9f3 !important;
+  /* Finish owns the field ⇒ Finish owns the ink (re-skins all var(--text) text) */
+  --text: #2c2c2c;
+  --text-muted: rgba(0, 0, 0, .55);
+}
+.glow-orb { display: none; }
+
+/* ── Ink-outlined paper cards: 2-3px ink border, wobble, pencil shadow ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box {
+  background: #fffdf8 !important;
+  border: 2.5px solid #2c2c2c !important;
+  border-radius: 0 15px 0 15px !important;     /* hand-cut asymmetric corners */
+  box-shadow: 3px 3px 0 rgba(0,0,0,.18) !important;
+  transform: rotate(1deg);
+}
+
+.kpi-card { transform: rotate(-1deg); border-radius: 15px 0 15px 0 !important; }
+
+/* A dashed doodle line just inside the card */
+.card::after,
+.kpi-card::after {
+  content: ""; position: absolute; inset: 6px;
+  border: 1px dashed rgba(0,0,0,.22);
+  border-radius: inherit; pointer-events: none;
+}
+.card { position: relative; }
+
+/* Straighten + a deeper pencil shadow on hover */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  transform: rotate(0deg) translateY(-4px);
+  box-shadow: 5px 5px 0 rgba(0,0,0,.22) !important;
+}
+
+/* ── Headings get a soft hand-sketched offset ── */
+.slide-title { text-shadow: 2px 2px 0 rgba(0,0,0,.10); transform: rotate(-1deg); }
+.section-label { transform: rotate(0.5deg); }
+
+/* ── Buttons / tags / badges: rounded ink pills with a pencil shadow ── */
+.cta-btn-wa,
+.cta-btn-email,
+.badge,
+.tag {
+  border: 2px solid #2c2c2c !important;
+  border-radius: 50px !important;
+  box-shadow: 2px 2px 0 rgba(0,0,0,.18) !important;
+  transform: rotate(-0.5deg);
+}
+
+.divider {
+  height: 3px !important;
+  background: repeating-linear-gradient(90deg, #2c2c2c 0 14px, transparent 14px 22px) !important;
+}
+
+/* Light field ⇒ flip the (mono) brand logo to dark ink for contrast (overrides the base white default) */
+.slide { --logo-filter: brightness(0); }

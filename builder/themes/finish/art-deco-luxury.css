@@ -1,0 +1,147 @@
+/* ============================================================
+   Finish block — Art Deco Luxury
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/art-deco-luxury.css). Adds what a CSS variable
+   can't express: the dark luxe field with a faint gold geometric
+   weave, gold sunburst-rule ornament on titles, thin double-rule
+   framing + clipped corners on surfaces, and metallic gold accents.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   ============================================================ */
+
+/* ── The dark luxe field + faint gold geometric weave (the palette flattens this away) ── */
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background:
+    linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 50%, #1a1a1a 100%) !important;
+  /* Finish owns the field ⇒ Finish owns the ink (re-skins all var(--text) text) */
+  --text: #fffdd0;
+  --text-muted: rgba(247, 231, 206, .68);
+}
+/* Faint Art Deco line-weave + symmetric gold corner fans, painted without touching markup */
+.slide::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1; pointer-events: none;   /* behind in-flow content; corner chrome keeps its absolute pin */
+  opacity: .06;
+  background-image:
+    repeating-linear-gradient(60deg,  var(--accent) 0 1px, transparent 1px 32px),
+    repeating-linear-gradient(120deg, var(--accent) 0 1px, transparent 1px 32px);
+}
+.slide::after {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1; pointer-events: none;
+  background:
+    linear-gradient(135deg, rgba(var(--accent-rgb), .22) 0%, transparent 18%),
+    linear-gradient(315deg, rgba(var(--accent-rgb), .22) 0%, transparent 18%);
+}
+.slide > * { z-index: 1; }   /* ornament sits at z-index:-1; do NOT force position here — it clobbers the absolutely-pinned logo-row / credit / gallery button */
+.glow-orb { display: none; }                      /* dark-theme blur artifact — replaced by the deco weave */
+
+/* ── Gold double-rule sunburst ornament on the headings ── */
+.section-label { color: var(--accent); }
+.slide-title {
+  letter-spacing: .03em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .5);
+}
+/* Thin gold double rule framing the title, the signature Deco move */
+.slide-title::before,
+.slide-title::after {
+  content: "";
+  display: block;
+  width: 180px; height: 1px;
+  margin: 14px auto;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  box-shadow: 0 3px 0 -1px rgba(var(--accent-rgb), .55);   /* second hairline ⇒ double rule */
+}
+.slide-subtitle { font-style: italic; letter-spacing: .04em; }
+
+/* Divider becomes a centred gold seam with a diamond stop */
+.divider {
+  background: linear-gradient(90deg, transparent, var(--accent), transparent) !important;
+  width: 120px !important;
+  height: 1px !important;
+  position: relative;
+}
+.divider::after {
+  content: "";
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 7px; height: 7px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: var(--accent);
+}
+
+/* ── Surfaces: dark luxe panels, thin gold border, clipped Deco corners ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.ls-tabs,
+.ls-carousel {
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), .08) 0%, rgba(26, 26, 26, .88) 100%) !important;
+  border: 1px solid var(--accent) !important;
+  border-radius: 0 !important;
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .5),
+              inset 0 1px 0 rgba(var(--accent-rgb), .30) !important;
+  /* repainted surface ⇒ re-declare the ink for contrast against the dark gold panel */
+  --text: #fffdd0;
+  --text-muted: rgba(247, 231, 206, .72);
+}
+
+/* Lift + gild on hover (the panel "catches light") */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  border-color: var(--accent-light) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, .7),
+              0 0 40px rgba(var(--accent-rgb), .25) !important;
+  transform: translateY(-4px);
+}
+
+/* ── Card / KPI / feature text: gold display headings on the dark panel ── */
+.card-title { font-family: var(--font-heading); color: var(--accent); letter-spacing: .04em; }
+.card-desc  { color: var(--text-muted); line-height: 1.7; }
+.kpi-value  { letter-spacing: .01em; }   /* already a gold gradient in base — leave the clip intact */
+.kpi-label  { text-transform: uppercase; letter-spacing: .18em; color: var(--text-muted); }
+.feature-text strong { color: var(--accent); }
+
+/* ── Badges / tags read as engraved gold chips ── */
+.badge,
+.tag {
+  border: 1px solid var(--accent) !important;
+  border-radius: 0 !important;
+  background: rgba(var(--accent-rgb), .10) !important;
+  color: var(--accent) !important;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+}
+
+/* ── CTA buttons: solid metallic gold bar, dark ink, angled Deco cut ── */
+.cta-btn-wa,
+.cta-btn-email {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%) !important;
+  color: #1a1a1a !important;                       /* dark ink ⇒ contrast against the bright gold fill */
+  border: none !important;
+  border-radius: 0 !important;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  font-weight: 600;
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  box-shadow: 0 8px 25px rgba(var(--accent-rgb), .40),
+              inset 0 1px 0 rgba(255, 255, 255, .3);
+}
+.cta-btn-wa:hover,
+.cta-btn-email:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(var(--accent-rgb), .6),
+              inset 0 2px 0 rgba(255, 255, 255, .4);
+}

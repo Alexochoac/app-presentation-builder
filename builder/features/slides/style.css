@@ -49,6 +49,9 @@
   --logo-bg:               transparent;
   --logo-border:           rgba(255,255,255,.18);
   --logo-radius:           20px;
+  /* Chrome (brand-logo) contrast: filter applied to the logo image so it flips with the field.
+     Default = dark field ⇒ force the logo white. Light-field Finish themes override to brightness(0). */
+  --logo-filter:           brightness(0) invert(1);
 }
 
 /* ── Reset ── */
@@ -130,7 +133,7 @@ body {
   background:linear-gradient(to top, rgba(var(--slide-hero-rgb),.97) 0%, rgba(var(--slide-hero-rgb),.55) 55%, rgba(var(--slide-hero-rgb),.15) 100%);
 }
 .hero-content { position:relative; z-index:2; }
-.softsolution-credit { position:absolute; top:42px; right:80px; z-index:3; font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,.30); }
+.softsolution-credit { position:absolute; top:42px; right:80px; z-index:3; font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); opacity:.65; }
 
 .brand-badge {
   display:inline-flex; align-items:center; gap:10px;
@@ -167,6 +170,7 @@ body {
 .slide-logo-row img {
   height: 28px;
   width: auto;
+  filter: var(--logo-filter);   /* flips light/dark with the field (see --logo-filter) */
 }
 .slide-logo-sep {
   width: 1px;
@@ -177,6 +181,19 @@ body {
 .slide-logo-ls {
   height: 26px !important;
 }
+/* GUARD — the logo row is pinned chrome, NOT a card. Finish themes wrongly group it with their
+   surfaces (giving it position/padding/box that displaces the logo). This higher-specificity rule
+   (.slide .slide-logo-row = 0,2,0) overrides any theme '.slide-logo-row' (0,1,0) even with !important,
+   keeping it pinned, un-padded and un-boxed everywhere. Logo contrast is handled by --logo-filter. */
+.slide .slide-logo-row {
+  position: absolute !important;   /* re-pin (themes set position:relative); top/left stay with base/pb-chrome */
+  padding: 0 !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  clip-path: none !important;
+  transform: none !important;
+}
 
 /* ── Content Slides ── */
 .slide.content {
@@ -186,7 +203,7 @@ body {
   padding-bottom:70px !important;
   background:var(--bg);
 }
-.slide-logo { position:absolute; top:22px; left:36px; z-index:5; height:24px; width:auto; opacity:.45; transition:opacity .3s; }
+.slide-logo { position:absolute; top:22px; left:36px; z-index:5; height:24px; width:auto; opacity:.45; transition:opacity .3s; filter: var(--logo-filter); }
 .slide-logo:hover { opacity:.8; }
 
 .section-label { font-size:11px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin-bottom:12px; text-align:center; }
@@ -494,6 +511,6 @@ h1.slide-title { font-size:clamp(22px,6vw,38px); }
    the first/classless logo won't shrink). */
 .pb-responsive .slide-logo-row, .pb-chrome .slide-logo-row { top: clamp(12px,3vw,22px); left: clamp(12px,3vw,36px); gap: clamp(5px,1.2vw,10px); }
 .pb-responsive .slide-logo-row img, .pb-responsive .slide-logo-ls,
-.pb-chrome .slide-logo-row img, .pb-chrome .slide-logo-ls { height: clamp(15px,4vw,30px) !important; width: auto !important; }
-.pb-responsive .slide-logo-sep, .pb-chrome .slide-logo-sep { height: clamp(12px,3vw,24px); }
+.pb-chrome .slide-logo-row img, .pb-chrome .slide-logo-ls { height: clamp(15px,4vw,60px) !important; width: auto !important; }   /* desktop cap doubled (30→60) so the brand logo is 2x on big screens; small/mid screens keep the 15px min + 4vw ramp */
+.pb-responsive .slide-logo-sep, .pb-chrome .slide-logo-sep { height: clamp(12px,3vw,48px); }   /* separator cap doubled in step with the logo */
 .pb-responsive .softsolution-credit, .pb-chrome .softsolution-credit { top: clamp(12px,3vw,42px); right: clamp(10px,4vw,80px); font-size: clamp(7px,1.6vw,11px); max-width: 38%; text-align: right; line-height: 1.2; }

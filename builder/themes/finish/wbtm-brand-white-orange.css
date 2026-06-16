@@ -1,0 +1,152 @@
+/* ============================================================
+   Finish block — WBTM Brand (White + Orange, Light)
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/wbtm-brand-white-orange.css). Adds what a CSS
+   variable can't express: the clean white "What Bitcoin Taught Me"
+   brand field, the dark-pill badge that earns its contrast against
+   white, the light-gray bordered cards with an orange hover seam,
+   and the solid bitcoin-orange CTA pills. Targets the standard
+   slide skeleton classes (+ legacy card aliases .int-card/.col-card/
+   .feature-item so it works before those slides are rebuilt).
+   LIGHT THEME: the field is bright, so all skeleton ink is forced
+   DARK (re-declared --text/--text-muted), and surfaces that invert
+   to the accent (CTA pills, dark badge) re-declare their ink locally.
+   ============================================================ */
+
+/* ── The clean white WBTM "stage" the slide reads against ── */
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background: #ffffff !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Finish owns the field ⇒ Finish owns the ink. Base ships WHITE text
+     (--text:#fff) which would vanish on this white field — force DARK. */
+  --text: #0a0a0a;
+  --text-muted: rgba(0, 0, 0, .45);
+}
+/* Faint warm vignette laid over the slide without touching markup */
+.slide::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1; pointer-events: none;   /* behind in-flow content, above the field — no child rules, so corner chrome keeps its absolute pin */
+  background: radial-gradient(ellipse at center, transparent 35%, rgba(0, 0, 0, .03) 100%);
+}
+/* One soft bitcoin-orange halo, bottom-right — the brand's quiet glow */
+.slide::after {
+  content: "";
+  position: absolute;
+  right: -200px; bottom: -160px;
+  width: 540px; height: 540px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--accent-rgb), .14) 0%, transparent 70%);
+  filter: blur(110px);
+  z-index: -1; pointer-events: none;
+}
+.glow-orb { display: none; }   /* base dark-theme artifact — replaced by the soft halo above */
+
+/* ── Headings: near-black ink (the WBTM h1 look) ── */
+.slide-title {
+  background: none !important;
+  -webkit-text-fill-color: var(--text);
+  color: var(--text);
+  letter-spacing: -.02em;
+}
+.section-label { letter-spacing: .15em; color: var(--accent-mid); }
+.slide-subtitle { color: var(--text-muted); }
+
+/* Bitcoin-orange hairline divider */
+.divider {
+  background: linear-gradient(90deg, var(--accent), var(--accent-mid)) !important;
+  border-radius: 2px;
+}
+
+/* ── Light-gray bordered surfaces (cards: light bg, thin border) ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.ls-tabs,
+.ls-carousel {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* Orange hover seam — the card "warms" toward the brand accent */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  background: rgba(var(--accent-rgb), 0.06) !important;
+  border-color: rgba(var(--accent-rgb), 0.40) !important;
+  box-shadow: 0 12px 36px rgba(var(--accent-rgb), 0.14);
+  transform: translateY(-3px);
+}
+
+/* Tinted accent panel for the CTA — light field, so keep DARK ink */
+.cta-box {
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), .10) 0%, rgba(var(--accent-rgb), .03) 100%) !important;
+  border: 1px solid rgba(var(--accent-rgb), .25) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 12px 36px rgba(var(--accent-rgb), .14);
+  --text: #0a0a0a;
+  --text-muted: rgba(0, 0, 0, .45);
+}
+
+/* ── KPI value keeps the bitcoin-orange gradient; label stays muted-dark ── */
+.kpi-value {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-mid) 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+.card-title { color: var(--text); }
+.card-desc,
+.kpi-label,
+.feature-text { color: var(--text-muted); }
+
+/* ── Dark pill badge — high contrast on white, orange ink (brand DNA) ── */
+/* Surface inverts to near-black → re-declare LIGHT/ORANGE ink locally. */
+.badge {
+  background: #0a0a0a !important;
+  border: 1px solid rgba(var(--accent-rgb), .50) !important;
+  border-radius: 100px !important;
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, .85);
+  color: var(--accent) !important;
+}
+
+/* ── Tags: light orange-tinted pill, dark-on-orange ink ── */
+.tag {
+  background: rgba(var(--accent-rgb), .10) !important;
+  border: 1px solid rgba(var(--accent-rgb), .28) !important;
+  border-radius: 100px !important;
+  color: var(--accent-mid) !important;
+}
+
+/* ── CTA pills: solid bitcoin-orange → INVERTS, so re-declare LIGHT ink ── */
+.cta-btn-wa,
+.cta-btn-email {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-mid) 100%) !important;
+  border: none !important;
+  border-radius: 100px !important;
+  box-shadow: 0 8px 28px rgba(var(--accent-rgb), 0.30);
+  /* surface inverts to a saturated accent → force LIGHT ink on it */
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, .85);
+  color: #ffffff !important;
+  transition: all .3s ease;
+}
+.cta-btn-wa:hover,
+.cta-btn-email:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(var(--accent-rgb), 0.40);
+}
+
+/* Logo row reads as a floating light bar */
+
+/* Light field ⇒ flip the (mono) brand logo to dark ink for contrast (overrides the base white default) */
+.slide { --logo-filter: brightness(0); }

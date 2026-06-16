@@ -1,0 +1,77 @@
+/* ============================================================
+   Finish block — Neumorphism
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/neumorphism.css). Adds what a CSS variable can't
+   express: the soft monochrome environment where every surface is
+   the SAME colour as the background and reads only through paired
+   light/dark shadows (extruded "soft UI"). It also corrects the
+   auto-generated palette's dark identity (the look needs a light
+   field + dark text).
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases so it works before those slides are rebuilt).
+   ============================================================ */
+
+/* ── Soft light field + dark ink (palette ships dark — override it) ── */
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } */
+  background: linear-gradient(135deg, #e3e3e3 0%, #f0f0f0 50%, #e8e8e8 100%) !important;
+  /* Finish owns the field ⇒ Finish owns the ink. The palette ships a DARK identity
+     (--text:#fff) which would vanish on this light field — re-ink in one place and
+     every var(--text)/var(--text-muted) element re-skins. */
+  --text: #3a3a45;
+  /* darkened from #8a8a95 (2.7:1, sub-readable) so muted text clears AA on the soft light field */
+  --text-muted: #6a6a7a;
+  color: var(--text) !important;
+}
+.glow-orb { display: none; }   /* no glow in soft-UI */
+
+/* ── Extruded surfaces: same colour as the field, no border, dual shadow ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.ls-tabs,
+.ls-carousel {
+  background: #e8e8e8 !important;
+  border: none !important;
+  border-radius: 24px !important;
+  box-shadow: 12px 12px 24px #c2c2c2, -12px -12px 24px #ffffff !important;
+}
+
+/* Press in slightly on hover (the soft-UI "push") */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  box-shadow: inset 8px 8px 16px #c2c2c2, inset -8px -8px 16px #ffffff !important;
+}
+
+/* ── Buttons / tags / badges: soft extruded pebbles ── */
+.cta-btn-wa,
+.cta-btn-email,
+.badge,
+.tag {
+  background: #e8e8e8 !important;
+  border: none !important;
+  border-radius: 50px !important;
+  color: var(--accent) !important;
+  box-shadow: 6px 6px 12px #c2c2c2, -6px -6px 12px #ffffff !important;
+  text-shadow: none !important;
+}
+.cta-btn-wa:hover,
+.cta-btn-email:hover {
+  box-shadow: inset 4px 4px 8px #c2c2c2, inset -4px -4px 8px #ffffff !important;
+}
+
+/* Divider becomes a soft engraved channel */
+.divider {
+  background: #e8e8e8 !important;
+  height: 6px !important; border-radius: 6px;
+  box-shadow: inset 2px 2px 4px #c2c2c2, inset -2px -2px 4px #ffffff;
+}
+
+/* Light field ⇒ flip the (mono) brand logo to dark ink for contrast (overrides the base white default) */
+.slide { --logo-filter: brightness(0); }

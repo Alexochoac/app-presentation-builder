@@ -276,6 +276,39 @@ every slide uniformly. The injection pipe already exists (server.js:111, `effect
 machinery needed. This is only possible once slides are standardized (#3, #5, shared classes); that's why
 full style-conversion is the payoff of standardization, not a separate feature.
 
+**The Finish-block recipe (per theme).** Read the theme's `style-references/<name>.html` for its *signature
+DNA* — the look a CSS variable can't carry (signature backdrop, blur/glow, slab borders, hard offset
+shadows, tilt, etc.) — then re-express that DNA as CSS targeting the **skeleton classes** (`.slide`,
+`.card`/`.kpi-card`/`.cta-box`/`.slide-logo-row`, `.slide-title`, `.divider`, `.badge`, `.tag`, …). Drive
+it off the palette vars (`rgba(var(--accent-rgb), …)`) so it stays colour-coherent; use `!important` only
+where it must beat a base rule (notably `.slide` background beats `.slide.content { background: var(--bg) }`).
+Decorative backdrops go on `.slide::before` / `::after` (no markup needed) at **`z-index:-1`** so in-flow
+content paints above them automatically (`.slide` always forms a stacking context via its `transform:scale`).
+**NEVER put `position` in the `.slide > *` lift rule** — `.slide > * { z-index:1 }` is fine, but
+`position:relative` there clobbers the absolutely-/fixed-pinned slide chrome (`.slide-logo-row`,
+`.softsolution-credit`, `.pb-gallery-btn`) and knocks the logo/credit/gallery button out of place.
+Glassmorphism + cyberpunk-neon are the reference exemplars.
+
+**Contrast rule (HARD — readability).** A Finish block repaints backgrounds, but the skeleton draws *all*
+text from `var(--text)` / `var(--text-muted)` (see `features/slides/style.css`). So **whenever a Finish
+changes a surface's background it MUST re-declare `--text` and `--text-muted`** to colours that contrast
+that surface — set once on `.slide` and every title/label/card re-inks via the cascade. Where a single
+surface inverts against the field (e.g. an accent KPI card on a white field), re-declare the vars on *that*
+surface too. Skipping this is what makes text vanish same-on-same. **Seatbelt:** `node
+scripts/check-finish-contrast.js [--strict]` estimates field-vs-`--text` contrast per Finish and warns
+below 3:1 (large-text AA); it also flags any Finish that repaints `.slide` without re-declaring `--text`.
+
+**Chrome contrast (logo / credit / gallery button).** The slide chrome must flip with the field too. The
+*text* chrome already does — `.softsolution-credit` and `.pb-gallery-btn` draw from `var(--text-muted)` /
+`var(--text)`, so they re-ink via the same cascade. The *brand logo* is an `<img>` (can't take a colour
+var), so it flips via a filter: base `:root` sets `--logo-filter: brightness(0) invert(1)` (dark field ⇒
+white logo) and `.slide-logo-row img` / `.slide-logo` apply it. **A light-field Finish MUST set
+`.slide { --logo-filter: brightness(0); }`** (light field ⇒ dark logo). This is a deliberate mono flip —
+the logo renders solid white or solid black regardless of its source colours. **The `.slide-logo-row`
+is pinned chrome, not a card** — do NOT give it `position`, `padding`, or a card box. A base guard
+(`.slide .slide-logo-row`, specificity 0,2,0) re-pins/strips it and overrides any Finish rule, so theming
+it as a surface is inert (and was the bug that displaced the logo in terminal-code et al.).
+
 ---
 
 ### ✅ #6 — Deck model: isolated copies (Model A)
@@ -559,6 +592,12 @@ enables isolated test instances).
    (run once per clone); bypass with `git commit --no-verify`. Tested: blocks a bad slide, passes clean/
    no-slide commits. TODO later: flip to a strict whole-set gate once the backlog is rebuilt; also gate the
    server template-save API.
-5. **Extract the Finish blocks** from each `style-references/*.html` into its theme (~35 styles).
+5. ~~**Extract the Finish blocks** from each `style-references/*.html` into its theme (~35 styles).~~ ✅ done
+   (2026-06-16) — **34/34** themes now have a Finish block in `builder/themes/finish/` (the lone skip is the
+   byte-identical `cluely-style copy.*` dupe — a deletion candidate). Each was authored from the Finish-block
+   recipe with the HARD contrast rule baked in (every repainted surface re-declares `--text`/`--text-muted`).
+   Gate: `node scripts/check-finish-contrast.js` → 0 warnings across all 34 (4 text-shadow-mitigated NOTEs on
+   bright-gradient fields; 2 SKIPs that defer the field to the palette-half `--bg`, verified by hand). Caveat:
+   the seatbelt verifies *contrast*, not *visual fidelity* — a real in-app visual pass is still owed before merge.
 6. Migrate legacy welded-in JS slides → cartridges, and old IDs → the new convention, incrementally.
 7. Implement Model-A copy-on-add + the template guardrails (build on the existing template-update diff flow).

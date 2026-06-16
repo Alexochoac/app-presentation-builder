@@ -1,0 +1,156 @@
+/* ============================================================
+   Finish block — Minimalist Clean
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/minimalist-clean.css). Captures what a CSS
+   variable can't: the restraint. A flat white field with no
+   backdrop, hairline borders, near-zero shadow, crisp type and a
+   single sparse blue accent (a top hairline that wipes in on hover).
+   The signature here is SUBTRACTION — strip the dark-theme glows,
+   gradients and heavy radii the skeleton ships with.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   ============================================================ */
+
+/* ── Flat white field, no backdrop (the palette already sets --bg white) ── */
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background: var(--bg) !important;
+  /* Finish owns the field ⇒ Finish owns the ink. Dark ink on white; muted is a soft grey. */
+  --text: #111827;
+  --text-muted: #6b7280;
+}
+.slide::before, .slide::after { display: none; }   /* no decorative backdrop layers */
+.slide > * { z-index: 1; }
+.glow-orb { display: none; }                        /* no glow in a minimalist field */
+
+/* ── Crisp type — kill the gradient-as-color the skeleton uses for headings ── */
+.slide-title {
+  -webkit-text-fill-color: var(--text) !important;
+  background: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+.slide-subtitle { color: var(--text-muted); font-weight: 400; }
+.section-label  { color: var(--accent); letter-spacing: .14em; font-weight: 600; }
+
+/* Hairline accent divider — short, sparse, no gradient */
+.divider {
+  width: 56px; height: 2px;
+  background: var(--accent) !important;
+  border-radius: 0;
+}
+
+/* ── Surfaces: off-white fill, hairline border, no shadow ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.ls-tabs,
+.ls-carousel {
+  /* Repaint ⇒ re-declare ink so text stays contrasting on the light surface */
+  --text: #111827;
+  --text-muted: #6b7280;
+  background: var(--card-bg) !important;
+  border: 1px solid var(--card-border) !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+}
+
+/* The one ornament: a sparse accent hairline along the card top, revealed on hover */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item {
+  position: relative;
+  overflow: hidden;
+}
+.card::before,
+.int-card::before,
+.kpi-card::before,
+.col-card::before,
+.feature-item::before {
+  content: "";
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .45s cubic-bezier(.25,.46,.45,.94);
+}
+.card:hover::before,
+.int-card:hover::before,
+.kpi-card:hover::before,
+.col-card:hover::before,
+.feature-item:hover::before { transform: scaleX(1); }
+
+/* Restrained hover: a hair lighter, a touch firmer border — no neon, no big lift */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  background: var(--bg) !important;
+  border-color: var(--accent) !important;
+  transform: translateY(-2px);
+}
+
+/* ── Surface text — explicit contrast on the light fill ── */
+.card-title,
+.kpi-label,
+.feature-text strong { color: var(--text); }
+.card-desc,
+.feature-text { color: var(--text-muted); }
+/* KPI value: solid accent, not the skeleton's gradient fill */
+.kpi-value {
+  -webkit-text-fill-color: var(--accent) !important;
+  background: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  color: var(--accent);
+}
+
+/* Logo row reads as a quiet bordered chip */
+
+/* ── Badges & tags: outlined, low-saturation chips ── */
+.badge,
+.tag {
+  --text: #111827;
+  background: var(--badge-bg) !important;
+  border: 1px solid var(--badge-border) !important;
+  border-radius: 4px !important;
+  color: var(--accent) !important;
+  box-shadow: none !important;
+  letter-spacing: .04em;
+}
+
+/* ── CTA buttons: solid dark ink, invert to accent on hover (the reference button) ── */
+.cta-btn-wa,
+.cta-btn-email {
+  /* Inverted dark surface ⇒ light ink re-declared so it stays legible */
+  --text: #ffffff;
+  --text-muted: rgba(255,255,255,.80);
+  background: var(--text) !important;            /* note: --text here is the slide-level dark ink */
+  background: #111827 !important;
+  color: #ffffff !important;
+  border: 1px solid #111827 !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+  letter-spacing: .04em;
+  transition: background .3s, border-color .3s;
+}
+.cta-btn-wa:hover,
+.cta-btn-email:hover {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #ffffff !important;
+}
+
+/* Light field ⇒ flip the (mono) brand logo to dark ink for contrast (overrides the base white default) */
+.slide { --logo-filter: brightness(0); }

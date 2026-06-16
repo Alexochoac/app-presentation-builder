@@ -1,0 +1,148 @@
+/* ============================================================
+   Finish block — Animated Gradients
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/animated-gradients.css). Adds what a CSS variable
+   can't express: the perpetually-shifting six-stop rainbow field,
+   the floating blurred colour orbs drifting over it, the frosted
+   translucent surfaces with a sweeping sheen, and gradient-clipped
+   headings / glowing pill buttons.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   ============================================================ */
+
+/* ── The shifting rainbow field + drifting colour orbs ── */
+@keyframes ag-shift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+@keyframes ag-float { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(30px,-30px) scale(1.1)} 66%{transform:translate(-20px,20px) scale(.9)} }
+
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe) !important;
+  background-size: 600% 600% !important;
+  animation: ag-shift 12s ease infinite;
+  /* Finish owns the field ⇒ Finish owns the ink. The gradient runs bright in places,
+     so white text + the legibility shadow below keeps it readable everywhere. */
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, .88);
+}
+/* Two large blurred colour orbs drift over the field (the reference's signature motion).
+   Kept behind in-flow content (z-index:0; .slide > * { z-index:1 } in the skeleton). */
+.slide::before {
+  content: "";
+  position: absolute; top: 8%; left: 6%;
+  width: 340px; height: 340px; border-radius: 50%;
+  z-index: -1; pointer-events: none;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  filter: blur(60px); opacity: .55;
+  animation: ag-float 7s ease-in-out infinite;
+}
+.slide::after {
+  content: "";
+  position: absolute; bottom: 10%; right: 12%;
+  width: 420px; height: 420px; border-radius: 50%;
+  z-index: -1; pointer-events: none;
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  filter: blur(70px); opacity: .50;
+  animation: ag-float 9s ease-in-out infinite; animation-delay: -3s;
+}
+.slide > * { z-index: 1; }   /* orbs sit at z-index:-1; do NOT force position here — it clobbers the absolutely-pinned logo-row / credit / gallery button */
+.glow-orb { display: none; }   /* dark-theme artifact — replaced by the colour orbs above */
+
+/* Legibility shadow so white text never washes out over the light gradient stops */
+.slide-title, .slide-subtitle, .section-label,
+.card-title, .card-desc, .kpi-value, .kpi-label, .feature-text {
+  text-shadow: 0 2px 12px rgba(0, 0, 0, .35);
+}
+
+/* ── Frosted translucent surfaces with a sweeping sheen ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.ls-tabs,
+.ls-carousel {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.12) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.22),
+              inset 0 1px 0 rgba(255, 255, 255, 0.30);
+  /* surfaces invert against the bright field with their own translucent skin —
+     keep text white/near-white so it contrasts the glass, not the field beneath */
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, .90);
+}
+
+/* Sweeping light sheen across each surface (reference .gradient-card::before) */
+.card::before,
+.int-card::before,
+.kpi-card::before,
+.col-card::before,
+.feature-item::before,
+.cta-box::before {
+  content: "";
+  position: absolute; top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
+  transition: left .6s ease;
+  pointer-events: none;
+}
+
+/* Lift + sweep on hover (the surface "catches the light") */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  background: rgba(255, 255, 255, 0.20) !important;
+  border-color: rgba(255, 255, 255, 0.40) !important;
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.28),
+              inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  transform: translateY(-6px);
+}
+.card:hover::before,
+.int-card:hover::before,
+.kpi-card:hover::before,
+.col-card:hover::before,
+.feature-item:hover::before,
+.cta-box:hover::before {
+  left: 100%;
+}
+
+/* ── Gradient-clipped headings + KPI values (the reference's signature text fill) ── */
+.kpi-value {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%) !important;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+/* ── Pill buttons / tags / badges read as vivid gradient chips with colour glow ── */
+.cta-btn-wa,
+.tag,
+.badge {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 25px rgba(240, 147, 251, 0.40);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.cta-btn-email {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 25px rgba(79, 172, 254, 0.40);
+}
+.cta-btn-wa:hover,
+.cta-btn-email:hover { transform: translateY(-3px); }
+
+/* Logo row reads as a floating frosted bar */
+
+/* Divider becomes a luminous gradient seam */
+.divider {
+  background: linear-gradient(90deg, #f093fb, #4facfe) !important;
+  box-shadow: 0 0 12px rgba(255, 255, 255, .35);
+}

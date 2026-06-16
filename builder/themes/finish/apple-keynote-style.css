@@ -1,0 +1,130 @@
+/* ============================================================
+   Finish block — Apple Keynote Style
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/apple-keynote-style.css). Adds what a CSS variable
+   can't express: the pitch-black radial "event stage" the slide sits
+   on with drifting glow orbs, the frosted blur-20 translucent cards
+   with hairline white edges, the faint perspective tilt, and the
+   pill chips / blue-glow CTA buttons.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   ============================================================ */
+
+/* ── The Apple-event stage: black radial vignette the orbs float over ── */
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background: radial-gradient(ellipse at center, #1a1a1a 0%, #000000 100%) !important;
+  /* Finish owns the field ⇒ Finish owns the ink. Stage is near-black, so light ink. */
+  --text: #ffffff;
+  --text-muted: #a1a1a1;
+}
+/* Soft inner vignette so content reads against a darkened frame (no markup needed) */
+.slide::after {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: 0; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,.6) 85%);
+}
+.slide > * { z-index: 1; }
+
+/* ── Glow orbs kept (the event-stage signature) — recoloured Apple blue + purple ── */
+.glow-orb { display: block; opacity: .9; }
+.glow-orb.a { background: radial-gradient(circle, rgba(0,122,255,.30) 0%, transparent 70%); }
+.glow-orb.b { background: radial-gradient(circle, rgba(175,82,222,.30) 0%, transparent 70%); }
+
+/* ── Headlines: the silver-gradient Keynote title sheen ── */
+.slide-title {
+  letter-spacing: -.02em;
+}
+.section-label { letter-spacing: .13em; }
+.slide-subtitle { color: var(--text-muted); }
+
+/* Divider becomes a thin Apple-blue seam */
+.divider {
+  background: linear-gradient(90deg, #5ac8fa, #007aff) !important;
+}
+
+/* ── Frosted translucent surfaces (the Keynote glass card) ──
+   Repainted to translucent white ⇒ must re-declare --text/--text-muted
+   so card text stays light against the dark glass. */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.ls-tabs,
+.ls-carousel {
+  background: rgba(255, 255, 255, 0.05) !important;
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  border-radius: var(--card-radius) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  --text: #ffffff;
+  --text-muted: #a1a1a1;
+}
+
+/* CTA box gets the highlighted blue-tint variant from the reference */
+.cta-box {
+  background: linear-gradient(135deg, rgba(90,200,250,.10) 0%, rgba(0,122,255,.10) 100%) !important;
+  border-color: rgba(0,122,255,.30) !important;
+}
+
+/* Faint perspective tilt + lift on hover — the Apple device-showcase move */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item {
+  transform: perspective(1000px) rotateX(3deg);
+  transition: transform .6s ease, background .3s ease, border-color .3s ease, box-shadow .3s ease;
+}
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.20) !important;
+  transform: perspective(1000px) rotateX(0deg) translateY(-4px);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.55);
+}
+
+/* Surface text tones (explicit, in case a surface var cascade is bypassed) */
+.card-title, .int-name { color: var(--text); }
+.card-desc, .feature-text, .kpi-label { color: var(--text-muted); }
+
+/* KPI / metric values: the silver Keynote number gradient */
+.kpi-value {
+  background: linear-gradient(180deg, #ffffff 0%, #c7c7c7 100%) !important;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+/* ── Pill chips: frosted, rounded-100px, with the lit-pill primary variant ── */
+.badge,
+.tag {
+  border-radius: 100px !important;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,.10) !important;
+  border: 1px solid rgba(255,255,255,.20) !important;
+  color: #ffffff !important;
+}
+
+/* ── CTA buttons: Apple-blue gradient pill with blue glow ── */
+.cta-btn-wa,
+.cta-btn-email {
+  border-radius: 100px !important;
+  background: linear-gradient(135deg, #007aff 0%, #5ac8fa 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 32px rgba(0, 122, 255, 0.30);
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+.cta-btn-wa:hover,
+.cta-btn-email:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 48px rgba(0, 122, 255, 0.40);
+}

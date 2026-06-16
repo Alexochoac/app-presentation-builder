@@ -1,0 +1,108 @@
+/* ============================================================
+   Finish block — Dark Glowing Style
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/dark-glowing-style.css). Adds what a CSS variable
+   can't express: the deep-black field with soft accent halos bleeding
+   in from the edges, the glowing card borders, and the ambient
+   inner/outer light on every surface. KEEPS the .glow-orb — the
+   floating halos ARE the look here. Targets the standard slide
+   skeleton classes (+ legacy card aliases .int-card/.col-card/
+   .feature-item so it works before those slides are rebuilt).
+   ============================================================ */
+
+/* ── Deep-black field + soft ambient accent halos (the dark the glow reads against) ── */
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(var(--accent-rgb), .16) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 50%, rgba(var(--accent-rgb), .12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 100%, rgba(var(--accent-rgb), .08) 0%, transparent 40%),
+    linear-gradient(180deg, #000000 0%, #0a0a0f 50%, #000000 100%) !important;
+  /* Finish owns the field ⇒ Finish owns the ink (re-skins all var(--text) text) */
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, .68);
+}
+/* Keep in-flow content above the ::before halo layer (base rule, restated for safety) */
+.slide > * { z-index: 1; }   /* halo sits at z-index:-1; do NOT force position here — it clobbers the absolutely-pinned logo-row / credit / gallery button */
+
+/* Extra drifting halo painted onto the slide without touching the markup */
+.slide::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1; pointer-events: none;   /* behind in-flow content, above the field */
+  background:
+    radial-gradient(circle at 70% 25%, rgba(var(--accent-rgb), .12) 0%, transparent 45%),
+    radial-gradient(circle at 30% 80%, rgba(var(--accent-rgb), .09) 0%, transparent 45%);
+}
+/* .glow-orb is the signature — keep it, just make the halos track the accent */
+.glow-orb.a { background: radial-gradient(circle, rgba(var(--accent-rgb), .14) 0%, transparent 70%); }
+.glow-orb.b { background: radial-gradient(circle, rgba(var(--accent-rgb), .10) 0%, transparent 70%); }
+
+/* ── Glowing surfaces (lit edge + soft inner/outer halo on near-black glass) ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.ls-tabs,
+.ls-carousel {
+  background: linear-gradient(135deg, rgba(255,255,255,.05) 0%, rgba(255,255,255,.02) 100%) !important;
+  border: 1px solid rgba(var(--accent-rgb), 0.30) !important;
+  border-radius: var(--card-radius) !important;
+  box-shadow: 0 0 40px rgba(var(--accent-rgb), 0.14),
+              inset 0 0 24px rgba(var(--accent-rgb), 0.05) !important;
+  /* near-black glass surface — text stays light, same as the field */
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, .68);
+}
+
+/* Surface "lights up" on hover (the halo swells, the edge brightens) */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  border-color: rgba(var(--accent-rgb), 0.55) !important;
+  box-shadow: 0 0 70px rgba(var(--accent-rgb), 0.30),
+              inset 0 0 32px rgba(var(--accent-rgb), 0.09) !important;
+  transform: translateY(-4px);
+}
+
+/* ── Glowing headings + values (soft accent bloom around the ink) ── */
+.slide-title {
+  text-shadow: 0 0 24px rgba(var(--accent-rgb), .35);
+}
+.slide-subtitle {
+  text-shadow: 0 0 18px rgba(var(--accent-rgb), .22);
+}
+.section-label {
+  text-shadow: 0 0 14px rgba(var(--accent-rgb), .55);
+}
+.card-title { text-shadow: 0 0 16px rgba(var(--accent-rgb), .30); }
+.kpi-value  { text-shadow: 0 0 28px rgba(var(--accent-rgb), .55); }
+.kpi-label,
+.card-desc,
+.feature-text { color: var(--text-muted); }
+
+/* ── Pill buttons / tags / badges read as lit chips floating in the dark ── */
+.cta-btn-wa,
+.cta-btn-email,
+.badge,
+.tag {
+  border: 1px solid rgba(var(--accent-rgb), 0.45) !important;
+  box-shadow: 0 0 24px rgba(var(--accent-rgb), 0.30),
+              inset 0 0 12px rgba(var(--accent-rgb), 0.08);
+  text-shadow: 0 0 10px rgba(var(--accent-rgb), .45);
+}
+.cta-btn-wa:hover,
+.cta-btn-email:hover {
+  box-shadow: 0 0 44px rgba(var(--accent-rgb), 0.55),
+              inset 0 0 16px rgba(var(--accent-rgb), 0.14);
+}
+
+/* Divider becomes a glowing seam fading into the dark */
+.divider {
+  background: linear-gradient(90deg, var(--accent), transparent) !important;
+  box-shadow: 0 0 14px rgba(var(--accent-rgb), .55);
+}

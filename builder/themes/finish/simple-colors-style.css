@@ -1,0 +1,117 @@
+/* ============================================================
+   Finish block — Simple Colors Style
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/simple-colors-style.css). Adds what a CSS variable
+   can't express: the airy off-white field, bold FLAT solid-colour
+   blocks on the accent surfaces (CTA, badge, buttons), crisp
+   rounded geometry, and a soft minimal drop-shadow on white cards.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   ============================================================ */
+
+/* ── The airy off-white field everything sits on (the palette flattens this away) ── */
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background: linear-gradient(135deg, #f7f7f2 0%, #ebebe4 100%) !important;
+  /* Light field ⇒ dark ink. Re-skin all var(--text) so the default surface reads correctly. */
+  --text: #1d1d1f;
+  --text-muted: #6e6e73;
+}
+.glow-orb { display: none; }   /* soft-blur orbs don't belong in a flat, crisp look */
+
+/* ── Clean white cards: bold flat fill, big radius, ONE soft minimal shadow ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item {
+  background: #ffffff !important;
+  border: none !important;
+  border-radius: 22px !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.07) !important;
+  /* white surface ⇒ dark ink (re-declare even though it matches .slide — guards future palette swaps) */
+  --text: #1d1d1f;
+  --text-muted: #6e6e73;
+}
+
+/* Crisp lift on hover — geometry shifts, shadow deepens (no blur, no glow) */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  background: #ffffff !important;
+  transform: translateY(-6px);
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* ── The bold flat colour block: CTA box reads as one solid accent slab ── */
+.cta-box {
+  background: var(--accent) !important;
+  border: none !important;
+  border-radius: 28px !important;
+  box-shadow: 0 20px 50px rgba(var(--accent-rgb), 0.30) !important;
+  /* HARD CONTRAST: bold accent fill inverts the surface ⇒ light ink */
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.88);
+}
+.cta-box p { color: rgba(255, 255, 255, 0.88); }
+.cta-box strong { color: #ffffff; }
+
+/* ── Headings: flat, confident, dark on the light field ── */
+.slide-title { color: var(--text); }
+h1.slide-title {
+  -webkit-text-fill-color: var(--text);   /* override base gradient-clip → flat solid ink */
+  background: none;
+}
+.slide-subtitle { color: var(--text-muted); }
+.section-label  { color: var(--accent); }
+.card-title     { color: var(--text); }
+.card-desc      { color: var(--text-muted); }
+.feature-text   { color: var(--text-muted); }
+.feature-text strong { color: var(--text); }
+
+/* KPI value: keep it a bold solid accent number (override base gradient-clip) */
+.kpi-value {
+  background: none !important;
+  -webkit-text-fill-color: var(--accent);
+  color: var(--accent);
+}
+.kpi-label { color: var(--text-muted); }
+
+/* ── Divider: a short solid accent bar (flat, no fade) ── */
+.divider {
+  background: var(--accent) !important;
+  border-radius: 50px;
+}
+
+/* ── Bold-colour chips: solid accent pill, white ink ── */
+.badge,
+.tag {
+  background: var(--accent) !important;
+  border: none !important;
+  border-radius: 50px !important;
+  color: #ffffff !important;   /* HARD CONTRAST: solid accent chip ⇒ light ink */
+  box-shadow: 0 8px 20px rgba(var(--accent-rgb), 0.22);
+}
+.cta-btn-wa,
+.cta-btn-email {
+  border-radius: 50px !important;
+  box-shadow: 0 12px 28px rgba(var(--accent-rgb), 0.25);
+  color: #ffffff !important;   /* HARD CONTRAST: filled button ⇒ light ink */
+}
+
+/* ── Logo row + interactive shells: clean white plates, soft shadow ── */
+.ls-tabs,
+.ls-carousel {
+  background: #ffffff !important;
+  border: none !important;
+  border-radius: 18px !important;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.06) !important;
+  --text: #1d1d1f;
+  --text-muted: #6e6e73;
+}
+
+/* Light field ⇒ flip the (mono) brand logo to dark ink for contrast (overrides the base white default) */
+.slide { --logo-filter: brightness(0); }
