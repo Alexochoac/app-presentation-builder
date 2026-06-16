@@ -304,7 +304,10 @@ below 3:1 (large-text AA); it also flags any Finish that repaints `.slide` witho
 var), so it flips via a filter: base `:root` sets `--logo-filter: brightness(0) invert(1)` (dark field ⇒
 white logo) and `.slide-logo-row img` / `.slide-logo` apply it. **A light-field Finish MUST set
 `.slide { --logo-filter: brightness(0); }`** (light field ⇒ dark logo). This is a deliberate mono flip —
-the logo renders solid white or solid black regardless of its source colours.
+the logo renders solid white or solid black regardless of its source colours. **The `.slide-logo-row`
+is pinned chrome, not a card** — do NOT give it `position`, `padding`, or a card box. A base guard
+(`.slide .slide-logo-row`, specificity 0,2,0) re-pins/strips it and overrides any Finish rule, so theming
+it as a surface is inert (and was the bug that displaced the logo in terminal-code et al.).
 
 ---
 

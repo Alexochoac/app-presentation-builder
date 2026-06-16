@@ -181,6 +181,20 @@ body {
 .slide-logo-ls {
   height: 26px !important;
 }
+/* GUARD — the logo row is pinned chrome, NOT a card. Finish themes wrongly group it with their
+   surfaces (giving it position/padding/box that displaces the logo). This higher-specificity rule
+   (.slide .slide-logo-row = 0,2,0) overrides any theme '.slide-logo-row' (0,1,0) even with !important,
+   keeping it pinned, un-padded and un-boxed everywhere. Logo contrast is handled by --logo-filter. */
+.slide .slide-logo-row {
+  position: absolute !important;
+  top: 22px !important; left: 36px !important;
+  padding: 0 !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  clip-path: none !important;
+  transform: none !important;
+}
 
 /* ── Content Slides ── */
 .slide.content {
