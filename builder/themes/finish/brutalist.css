@@ -33,15 +33,6 @@
   transform: rotate(-1deg);
 }
 
-/* Logo chip: hard-edged like a card, but NEVER transformed — it's pinned in the corner */
-.slide-logo-row {
-  background: #ffffff !important;
-  border: 3px solid #000000 !important;
-  border-radius: 0 !important;
-  box-shadow: 4px 4px 0 #000000 !important;
-  padding: 6px 10px;
-  transform: none !important;
-}
 /* The accent KPI card inverts the field — re-ink its text white so children re-skin too */
 .kpi-card {
   transform: rotate(1.5deg);

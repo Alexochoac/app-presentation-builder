@@ -51,7 +51,6 @@
 .col-card,
 .feature-item,
 .cta-box,
-.slide-logo-row,
 .ls-tabs,
 .ls-carousel {
   /* Repaint ⇒ re-declare ink so text stays contrasting on the light surface */
@@ -118,7 +117,6 @@
 }
 
 /* Logo row reads as a quiet bordered chip */
-.slide-logo-row { padding: 8px 14px; }
 
 /* ── Badges & tags: outlined, low-saturation chips ── */
 .badge,

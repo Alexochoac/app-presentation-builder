@@ -69,7 +69,6 @@ h1.slide-title {
 .col-card,
 .feature-item,
 .cta-box,
-.slide-logo-row,
 .ls-tabs,
 .ls-carousel {
   background:
@@ -148,4 +147,3 @@ h1.slide-title {
 }
 
 /* Logo row reads as a floating brushed-metal bar */
-.slide-logo-row { padding: 10px 18px; }

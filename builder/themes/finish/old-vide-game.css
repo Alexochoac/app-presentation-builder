@@ -64,13 +64,6 @@
   image-rendering: pixelated;
 }
 
-/* Logo chip: blocky like a card, but NEVER transformed — it's pinned in the corner */
-.slide-logo-row {
-  background: var(--slide-hero-bg) !important;
-  border: 3px solid var(--accent) !important;
-  border-radius: 0 !important;
-  box-shadow: 4px 4px 0 var(--accent) !important;
-}
 
 /* Accent KPI card inverts the field — re-ink its text dark so children re-skin too */
 .kpi-card {

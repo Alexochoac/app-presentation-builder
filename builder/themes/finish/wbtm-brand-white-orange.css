@@ -66,7 +66,6 @@
 .kpi-card,
 .col-card,
 .feature-item,
-.slide-logo-row,
 .ls-tabs,
 .ls-carousel {
   background: rgba(0, 0, 0, 0.04) !important;
@@ -148,7 +147,6 @@
 }
 
 /* Logo row reads as a floating light bar */
-.slide-logo-row { padding: 10px 18px; }
 
 /* Light field ⇒ flip the (mono) brand logo to dark ink for contrast (overrides the base white default) */
 .slide { --logo-filter: brightness(0); }

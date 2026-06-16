@@ -50,15 +50,6 @@
 }
 .kpi-card { transform: rotate(1.2deg); }   /* alternate the tilt for rhythm */
 
-/* Logo chip: themed like a card, but NEVER transformed — it's pinned in the corner */
-.slide-logo-row {
-  background: #ffffff !important;
-  border: 3px solid #1a1a1a !important;
-  border-radius: 0 14px 0 14px !important;
-  box-shadow: 4px 4px 0 rgba(var(--accent-rgb), 1) !important;
-  padding: 6px 10px;
-  transform: none !important;
-}
 
 /* Straighten + pop on hover */
 .card:hover,

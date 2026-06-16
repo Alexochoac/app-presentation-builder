@@ -108,14 +108,6 @@
   box-shadow: 0 11px 0 #090a14, 0 14px 32px rgba(0,0,0,.6) !important;
 }
 
-/* Logo chip: blocky like a card, never transformed (pinned in corner) */
-.slide-logo-row {
-  background: linear-gradient(145deg, #1a1f3a, #0e1426) !important;
-  border: 3px solid #2a365c !important;
-  border-radius: 0 !important;
-  box-shadow: 0 6px 0 #090a14 !important;
-  transform: none !important;
-}
 
 /* KPI card: arcade scoreboard — orange-lit, inverts the field, so re-ink text */
 .kpi-card {

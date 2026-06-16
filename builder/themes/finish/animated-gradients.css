@@ -61,7 +61,6 @@
 .col-card,
 .feature-item,
 .cta-box,
-.slide-logo-row,
 .ls-tabs,
 .ls-carousel {
   position: relative;
@@ -141,7 +140,6 @@
 .cta-btn-email:hover { transform: translateY(-3px); }
 
 /* Logo row reads as a floating frosted bar */
-.slide-logo-row { padding: 10px 18px; }
 
 /* Divider becomes a luminous gradient seam */
 .divider {

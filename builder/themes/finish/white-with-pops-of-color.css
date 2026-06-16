@@ -73,7 +73,6 @@
 .int-card,
 .col-card,
 .feature-item,
-.slide-logo-row,
 .ls-tabs,
 .ls-carousel {
   background: #ffffff !important;
@@ -161,7 +160,6 @@
 }
 
 /* Logo row reads as a clean floating white bar */
-.slide-logo-row { padding: 10px 18px; }
 
 /* Light field ⇒ flip the (mono) brand logo to dark ink for contrast (overrides the base white default) */
 .slide { --logo-filter: brightness(0); }

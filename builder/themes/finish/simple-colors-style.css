@@ -103,7 +103,6 @@ h1.slide-title {
 }
 
 /* ── Logo row + interactive shells: clean white plates, soft shadow ── */
-.slide-logo-row,
 .ls-tabs,
 .ls-carousel {
   background: #ffffff !important;

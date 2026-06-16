@@ -81,7 +81,6 @@
 .col-card,
 .feature-item,
 .cta-box,
-.slide-logo-row,
 .ls-tabs,
 .ls-carousel {
   background: linear-gradient(135deg, rgba(var(--accent-rgb), .08) 0%, rgba(26, 26, 26, .88) 100%) !important;

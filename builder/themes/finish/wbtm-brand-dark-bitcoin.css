@@ -76,13 +76,6 @@
   transform: translateY(-3px);
 }
 
-/* ── Logo row: floating dark bar with orange hairline ── */
-.slide-logo-row {
-  background: rgba(0,0,0,.45);
-  border: 1px solid rgba(247,147,26,.18);
-  border-radius: var(--card-radius);
-  padding: 8px 14px;
-}
 
 /* ── KPI stats: gold numbers on dark (the brand's signature stat box) ── */
 .kpi-card {
