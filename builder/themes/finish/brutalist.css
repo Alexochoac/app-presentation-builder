@@ -1,0 +1,86 @@
+/* ============================================================
+   Finish block — Brutalist
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/brutalist.css). Adds what a CSS variable can't
+   express: stark high-contrast surfaces with thick black borders,
+   hard (un-blurred) offset shadows, slight tilt, and UPPERCASE
+   shouty headings.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases so it works before those slides are rebuilt).
+   ============================================================ */
+
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } */
+  background: #ffffff !important;
+  /* Finish owns the field ⇒ Finish owns the ink (re-skins all var(--text) text) */
+  --text: #000000;
+  --text-muted: rgba(0, 0, 0, .6);
+}
+.glow-orb { display: none; }   /* no soft glow in a brutalist world */
+
+/* ── Hard-edged surfaces: thick black border + solid offset shadow ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.ls-tabs {
+  background: #ffffff !important;
+  border: 4px solid #000000 !important;
+  border-radius: 0 !important;                 /* brutalism = no rounding */
+  box-shadow: 8px 8px 0 #000000 !important;    /* hard shadow, zero blur */
+  transform: rotate(-1deg);
+}
+
+/* Logo chip: hard-edged like a card, but NEVER transformed — it's pinned in the corner */
+.slide-logo-row {
+  background: #ffffff !important;
+  border: 3px solid #000000 !important;
+  border-radius: 0 !important;
+  box-shadow: 4px 4px 0 #000000 !important;
+  padding: 6px 10px;
+  transform: none !important;
+}
+/* The accent KPI card inverts the field — re-ink its text white so children re-skin too */
+.kpi-card {
+  transform: rotate(1.5deg);
+  background: rgba(var(--accent-rgb), 1) !important;
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, .85);
+  color: #fff !important;
+}
+
+/* Snap straight + slam the shadow shut on hover */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  transform: rotate(0deg) translate(4px, 4px);
+  box-shadow: 2px 2px 0 #000000 !important;
+}
+
+/* ── Shouty headings ── */
+.slide-title,
+.section-label,
+.card-title,
+.kpi-label {
+  text-transform: uppercase !important;
+  letter-spacing: .02em;
+}
+.slide-title { text-shadow: 4px 4px 0 rgba(var(--accent-rgb), 1); }
+
+/* ── Buttons / tags / badges: square, black outline, hard shadow ── */
+.cta-btn-wa,
+.cta-btn-email,
+.badge,
+.tag {
+  border: 3px solid #000000 !important;
+  border-radius: 0 !important;
+  box-shadow: 4px 4px 0 #000000 !important;
+  text-transform: uppercase !important;
+  font-weight: 800 !important;
+}
+
+.divider { height: 6px !important; background: #000000 !important; border-radius: 0; }

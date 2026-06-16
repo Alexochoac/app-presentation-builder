@@ -17,8 +17,18 @@
   background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%) !important;
   background-size: 400% 400% !important;
   animation: gm-shift 15s ease infinite;
+  /* Finish owns the field ⇒ Finish owns the ink. White is the glass aesthetic, but
+     the gradient runs light in places — the text-shadow below guarantees legibility. */
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, .85);
 }
 .glow-orb { display: none; }   /* dark-theme artifact — not wanted over a bright gradient */
+
+/* Legibility shadow so white text never washes out over the light gradient stops */
+.slide-title, .slide-subtitle, .section-label,
+.card-title, .card-desc, .kpi-value, .kpi-label, .feature-text {
+  text-shadow: 0 1px 4px rgba(0, 0, 0, .35);
+}
 
 /* ── Frosted-glass surfaces ── */
 .card,

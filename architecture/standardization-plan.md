@@ -276,6 +276,24 @@ every slide uniformly. The injection pipe already exists (server.js:111, `effect
 machinery needed. This is only possible once slides are standardized (#3, #5, shared classes); that's why
 full style-conversion is the payoff of standardization, not a separate feature.
 
+**The Finish-block recipe (per theme).** Read the theme's `style-references/<name>.html` for its *signature
+DNA* — the look a CSS variable can't carry (signature backdrop, blur/glow, slab borders, hard offset
+shadows, tilt, etc.) — then re-express that DNA as CSS targeting the **skeleton classes** (`.slide`,
+`.card`/`.kpi-card`/`.cta-box`/`.slide-logo-row`, `.slide-title`, `.divider`, `.badge`, `.tag`, …). Drive
+it off the palette vars (`rgba(var(--accent-rgb), …)`) so it stays colour-coherent; use `!important` only
+where it must beat a base rule (notably `.slide` background beats `.slide.content { background: var(--bg) }`).
+Decorative backdrops go on `.slide::before` / `::after` (no markup needed); keep `.slide > * { z-index:1 }`.
+Glassmorphism + cyberpunk-neon are the reference exemplars.
+
+**Contrast rule (HARD — readability).** A Finish block repaints backgrounds, but the skeleton draws *all*
+text from `var(--text)` / `var(--text-muted)` (see `features/slides/style.css`). So **whenever a Finish
+changes a surface's background it MUST re-declare `--text` and `--text-muted`** to colours that contrast
+that surface — set once on `.slide` and every title/label/card re-inks via the cascade. Where a single
+surface inverts against the field (e.g. an accent KPI card on a white field), re-declare the vars on *that*
+surface too. Skipping this is what makes text vanish same-on-same. **Seatbelt:** `node
+scripts/check-finish-contrast.js [--strict]` estimates field-vs-`--text` contrast per Finish and warns
+below 3:1 (large-text AA); it also flags any Finish that repaints `.slide` without re-declaring `--text`.
+
 ---
 
 ### ✅ #6 — Deck model: isolated copies (Model A)

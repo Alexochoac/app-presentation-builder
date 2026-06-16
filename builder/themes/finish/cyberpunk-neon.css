@@ -1,0 +1,89 @@
+/* ============================================================
+   Finish block — Cyberpunk Neon
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/cyberpunk-neon.css). Adds what a CSS variable
+   can't express: the dark scanline grid the slide sits on, the
+   neon-glow text/borders, and the inner+outer glow on surfaces.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   ============================================================ */
+
+/* ── Dark backdrop + animated neon grid (the world the neon reads against) ── */
+@keyframes cn-grid-pulse { 0%,100%{opacity:.10} 50%{opacity:.28} }
+
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background:
+    radial-gradient(ellipse at center, rgba(var(--accent-rgb), .10) 0%, transparent 70%),
+    linear-gradient(45deg, #0a0a0f 0%, #1a1a2e 50%, #0a0a0f 100%) !important;
+  /* Finish owns the field ⇒ Finish owns the ink (re-skins all var(--text) text) */
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, .62);
+}
+/* Scanline grid laid over the slide without touching the markup */
+.slide::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1; pointer-events: none;   /* behind in-flow content, above the field — no child rules, so corner chrome keeps its absolute pin */
+  background-image:
+    linear-gradient(rgba(0,255,255,.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,255,.18) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: cn-grid-pulse 4s ease-in-out infinite;
+}
+.glow-orb { display: none; }                    /* replaced by the grid */
+
+/* ── Glowing surfaces (neon edge + inner/outer glow) ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.slide-logo-row,
+.ls-tabs,
+.ls-carousel {
+  background: rgba(10, 10, 20, 0.72) !important;
+  border: 1px solid rgba(var(--accent-rgb), 0.55) !important;
+  border-radius: var(--card-radius) !important;
+  box-shadow: 0 0 22px rgba(var(--accent-rgb), 0.28),
+              inset 0 0 18px rgba(var(--accent-rgb), 0.10) !important;
+}
+
+/* Brighten the neon on hover (the surface "powers up") */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 34px rgba(var(--accent-rgb), 0.55),
+              inset 0 0 22px rgba(var(--accent-rgb), 0.18) !important;
+  transform: translateY(-3px);
+}
+
+/* ── Neon-glow headings ── */
+.slide-title,
+.section-label {
+  text-shadow: 0 0 10px rgba(var(--accent-rgb), .9),
+               0 0 22px rgba(var(--accent-rgb), .55);
+}
+.kpi-value { text-shadow: 0 0 12px rgba(var(--accent-rgb), .75); }
+
+/* ── Pill buttons / tags / badges read as lit neon chips ── */
+.cta-btn-wa,
+.cta-btn-email,
+.badge,
+.tag {
+  border: 1px solid rgba(var(--accent-rgb), 0.6) !important;
+  box-shadow: 0 0 14px rgba(var(--accent-rgb), 0.4),
+              inset 0 0 10px rgba(var(--accent-rgb), 0.12);
+  text-shadow: 0 0 8px rgba(var(--accent-rgb), .7);
+}
+
+/* Divider becomes a glowing neon seam */
+.divider {
+  background: linear-gradient(90deg, var(--accent), transparent) !important;
+  box-shadow: 0 0 10px rgba(var(--accent-rgb), .7);
+}

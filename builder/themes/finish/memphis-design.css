@@ -1,0 +1,87 @@
+/* ============================================================
+   Finish block — Memphis Design
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/memphis-design.css). Adds what a CSS variable
+   can't express: the playful dotted backdrop + floating geometric
+   shapes, the bold 4px black outlines, slight tilt, hard offset
+   shadows, and offset-color title shadows.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases so it works before those slides are rebuilt).
+   ============================================================ */
+
+/* ── Bright dotted backdrop + floating shapes (no markup needed) ── */
+@keyframes mem-float { 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-22px) rotate(180deg)} }
+
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } */
+  background:
+    radial-gradient(rgba(var(--accent-rgb), .14) 2px, transparent 2px) 0 0 / 26px 26px,
+    #ffffff !important;
+  /* Finish owns the field ⇒ Finish owns the ink (re-skins all var(--text) text) */
+  --text: #1a1a1a;
+  --text-muted: rgba(0, 0, 0, .55);
+}
+.slide::before {   /* a bold circle drifting top-right */
+  content: ""; position: absolute; top: 6%; right: 7%;
+  width: 90px; height: 90px; border-radius: 50%;
+  background: #ff5d8f; z-index: -1; pointer-events: none;   /* behind content; no child rules so corner chrome stays pinned */
+  animation: mem-float 9s ease-in-out infinite;
+}
+.slide::after {    /* a tilted square drifting bottom-left */
+  content: ""; position: absolute; bottom: 9%; left: 6%;
+  width: 70px; height: 70px; transform: rotate(45deg);
+  background: #ffd166; z-index: -1; pointer-events: none;
+  animation: mem-float 11s ease-in-out infinite reverse;
+}
+.glow-orb { display: none; }
+
+/* ── Bold outlined surfaces: thick black border, tilt, hard shadow ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box {
+  background: #ffffff !important;
+  border: 4px solid #1a1a1a !important;
+  border-radius: 0 22px 0 22px !important;
+  box-shadow: 8px 8px 0 rgba(var(--accent-rgb), 1) !important;
+  transform: rotate(-1.2deg);
+}
+.kpi-card { transform: rotate(1.2deg); }   /* alternate the tilt for rhythm */
+
+/* Logo chip: themed like a card, but NEVER transformed — it's pinned in the corner */
+.slide-logo-row {
+  background: #ffffff !important;
+  border: 3px solid #1a1a1a !important;
+  border-radius: 0 14px 0 14px !important;
+  box-shadow: 4px 4px 0 rgba(var(--accent-rgb), 1) !important;
+  padding: 6px 10px;
+  transform: none !important;
+}
+
+/* Straighten + pop on hover */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  transform: rotate(0deg) translateY(-6px);
+  box-shadow: 12px 12px 0 #1a1a1a !important;
+}
+
+/* ── Chunky title with an offset color shadow ── */
+.slide-title { text-shadow: 3px 3px 0 rgba(var(--accent-rgb), .9); transform: rotate(-1deg); }
+.section-label { transform: rotate(1deg); }
+
+/* ── Buttons / tags / badges: pill, black outline, hard shadow ── */
+.cta-btn-wa,
+.cta-btn-email,
+.badge,
+.tag {
+  border: 3px solid #1a1a1a !important;
+  border-radius: 50px !important;
+  box-shadow: 4px 4px 0 #1a1a1a !important;
+}
+
+.divider { height: 5px !important; background: #1a1a1a !important; border-radius: 50px; }
