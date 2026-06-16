@@ -84,3 +84,6 @@
 }
 
 .divider { height: 6px !important; background: #000000 !important; border-radius: 0; }
+
+/* Light field ⇒ flip the (mono) brand logo to dark ink for contrast (overrides the base white default) */
+.slide { --logo-filter: brightness(0); }

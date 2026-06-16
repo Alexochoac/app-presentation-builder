@@ -122,3 +122,6 @@
 .divider {
   background: linear-gradient(90deg, var(--accent), rgba(var(--accent-rgb), 0)) !important;
 }
+
+/* Light field ⇒ flip the (mono) brand logo to dark ink for contrast (overrides the base white default) */
+.slide { --logo-filter: brightness(0); }

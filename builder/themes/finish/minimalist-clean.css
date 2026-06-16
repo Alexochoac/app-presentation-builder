@@ -153,3 +153,6 @@
   border-color: var(--accent) !important;
   color: #ffffff !important;
 }
+
+/* Light field ⇒ flip the (mono) brand logo to dark ink for contrast (overrides the base white default) */
+.slide { --logo-filter: brightness(0); }

@@ -113,3 +113,6 @@ h1.slide-title {
   --text: #1d1d1f;
   --text-muted: #6e6e73;
 }
+
+/* Light field ⇒ flip the (mono) brand logo to dark ink for contrast (overrides the base white default) */
+.slide { --logo-filter: brightness(0); }

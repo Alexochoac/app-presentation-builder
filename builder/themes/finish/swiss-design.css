@@ -200,3 +200,6 @@
 }
 .cta-btn-wa:hover::before,
 .cta-btn-email:hover::before { display: none; }
+
+/* Light field ⇒ flip the (mono) brand logo to dark ink for contrast (overrides the base white default) */
+.slide { --logo-filter: brightness(0); }

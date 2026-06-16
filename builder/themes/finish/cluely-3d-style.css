@@ -147,3 +147,6 @@
   background: linear-gradient(90deg, var(--accent), var(--accent-light)) !important;
   box-shadow: 0 1px 0 rgba(255,255,255,.7);
 }
+
+/* Light field ⇒ flip the (mono) brand logo to dark ink for contrast (overrides the base white default) */
+.slide { --logo-filter: brightness(0); }

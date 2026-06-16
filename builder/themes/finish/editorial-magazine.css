@@ -172,3 +172,6 @@
   font-weight: 700;
 }
 .cta-btn-email:hover { border-color: var(--accent) !important; color: var(--accent) !important; }
+
+/* Light field ⇒ flip the (mono) brand logo to dark ink for contrast (overrides the base white default) */
+.slide { --logo-filter: brightness(0); }

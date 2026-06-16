@@ -49,6 +49,9 @@
   --logo-bg:               transparent;
   --logo-border:           rgba(255,255,255,.18);
   --logo-radius:           20px;
+  /* Chrome (brand-logo) contrast: filter applied to the logo image so it flips with the field.
+     Default = dark field ⇒ force the logo white. Light-field Finish themes override to brightness(0). */
+  --logo-filter:           brightness(0) invert(1);
 }
 
 /* ── Reset ── */
@@ -167,6 +170,7 @@ body {
 .slide-logo-row img {
   height: 28px;
   width: auto;
+  filter: var(--logo-filter);   /* flips light/dark with the field (see --logo-filter) */
 }
 .slide-logo-sep {
   width: 1px;
@@ -186,7 +190,7 @@ body {
   padding-bottom:70px !important;
   background:var(--bg);
 }
-.slide-logo { position:absolute; top:22px; left:36px; z-index:5; height:24px; width:auto; opacity:.45; transition:opacity .3s; }
+.slide-logo { position:absolute; top:22px; left:36px; z-index:5; height:24px; width:auto; opacity:.45; transition:opacity .3s; filter: var(--logo-filter); }
 .slide-logo:hover { opacity:.8; }
 
 .section-label { font-size:11px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin-bottom:12px; text-align:center; }

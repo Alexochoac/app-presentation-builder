@@ -112,3 +112,6 @@ h1.slide-title {
 }
 .cta-btn-wa:hover   { box-shadow: 0 4px 14px rgba(var(--accent-rgb), .28); transform: translateY(-1px); }
 .cta-btn-email:hover { border-color: rgba(0, 0, 0, .22) !important; }
+
+/* Light field ⇒ flip the (mono) brand logo to dark ink for contrast (overrides the base white default) */
+.slide { --logo-filter: brightness(0); }

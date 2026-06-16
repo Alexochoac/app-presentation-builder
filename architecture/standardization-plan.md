@@ -298,6 +298,14 @@ surface too. Skipping this is what makes text vanish same-on-same. **Seatbelt:**
 scripts/check-finish-contrast.js [--strict]` estimates field-vs-`--text` contrast per Finish and warns
 below 3:1 (large-text AA); it also flags any Finish that repaints `.slide` without re-declaring `--text`.
 
+**Chrome contrast (logo / credit / gallery button).** The slide chrome must flip with the field too. The
+*text* chrome already does — `.softsolution-credit` and `.pb-gallery-btn` draw from `var(--text-muted)` /
+`var(--text)`, so they re-ink via the same cascade. The *brand logo* is an `<img>` (can't take a colour
+var), so it flips via a filter: base `:root` sets `--logo-filter: brightness(0) invert(1)` (dark field ⇒
+white logo) and `.slide-logo-row img` / `.slide-logo` apply it. **A light-field Finish MUST set
+`.slide { --logo-filter: brightness(0); }`** (light field ⇒ dark logo). This is a deliberate mono flip —
+the logo renders solid white or solid black regardless of its source colours.
+
 ---
 
 ### ✅ #6 — Deck model: isolated copies (Model A)
