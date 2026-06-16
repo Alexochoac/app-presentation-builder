@@ -36,9 +36,27 @@
       <span>Customer Logo</span>
       <small>Click to upload</small>
     </label>
+
+    <!-- Builder-only controls — Fit/Fill toggle + size picker (1x/2x/3x); stripped from customer output -->
+    <div class="template01-cover-size-ctrl" data-builder-only="">
+      <button class="template01-cover-size-btn template01-cover-fit-btn" title="Toggle Fit / Fill">⤢ Fill</button>
+      <span class="template01-cover-ctrl-sep"></span>
+      <button class="template01-cover-size-btn" data-cl-size="1" title="1x size">1x</button>
+      <button class="template01-cover-size-btn" data-cl-size="2" title="2x size">2x</button>
+      <button class="template01-cover-size-btn" data-cl-size="3" title="3x size">3x</button>
+    </div>
   </div>
   <!-- File input lives OUTSIDE the data-edit container so its change event never dirties the slot -->
   <input type="file" id="template01-cover-logo-file" accept="image/*" data-builder-only="" style="display:none;">
+
+  <!-- Persisted size choice (1/2/3). data-edit so it rides the standard save pipeline; the
+       script reads it in the builder AND in published output to re-apply the card size. -->
+  <div id="cl-size" data-edit="cover-logo-size" contenteditable spellcheck="false" aria-hidden="true"
+       style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;left:-9999px;top:0;">1</div>
+
+  <!-- Persisted Fit/Fill choice (fill = cover, fit = contain). Same pipeline as #cl-size. -->
+  <div id="cl-fit" data-edit="cover-logo-fit" contenteditable spellcheck="false" aria-hidden="true"
+       style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;left:-9999px;top:0;">fill</div>
 
   <!-- Main hero content — composed from the standard hero scaffold (.hero-content / .brand-badge / .blue) -->
   <div class="hero-content">
@@ -63,13 +81,19 @@
       background: var(--logo-bg);
       border: 1px solid var(--logo-border);
       border-radius: var(--logo-radius);
-      padding: 16px;
+      padding: 0;                         /* no inset — the image fills the whole card */
       width: 100px;
       height: 100px;
       margin: 8px auto 0;
       cursor: pointer;
     }
-    .template01-cover-cust-img { width: 90%; height: 90%; object-fit: contain; }
+    /* Size variants — chosen via the builder-only [1x][2x][3x] control, persisted in #cl-size */
+    .template01-cover-customer-logo.cl-size-2 { width: 200px; height: 200px; }
+    .template01-cover-customer-logo.cl-size-3 { width: 300px; height: 300px; }
+    /* Uploaded logo/picture fills the card, clipped to the card radius. Default = Fill (cover);
+       the Fit/Fill toggle adds .cl-fit to switch to contain (whole image visible, no crop). */
+    .template01-cover-cust-img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--logo-radius); }
+    .template01-cover-customer-logo.cl-fit .template01-cover-cust-img { object-fit: contain; }
     .template01-cover-cust-img--missing { display: none; }
     .template01-cover-cust-img--missing ~ .template01-cover-cust-placeholder { display: flex; }
     .template01-cover-cust-placeholder {
@@ -108,17 +132,51 @@
     }
     .template01-cover-readonly .template01-cover-customer-logo { cursor: default; }
 
+    /* Size control — builder-only [1x][2x][3x] chips below the card; stripped from customer output */
+    .template01-cover-size-ctrl {
+      position: absolute;
+      left: 50%;
+      bottom: -34px;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 4px;
+      z-index: 4;
+    }
+    .template01-cover-size-btn {
+      min-width: 28px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1;
+      border-radius: 6px;
+      cursor: pointer;
+      background: var(--logo-bg);
+      border: 1px solid var(--logo-border);
+      color: var(--text-muted);
+    }
+    .template01-cover-size-btn:hover { border-color: var(--accent); }
+    .template01-cover-size-btn.active { background: rgba(var(--accent-rgb), .12); border-color: var(--accent); color: var(--accent); }
+    .template01-cover-ctrl-sep { width: 1px; align-self: stretch; background: var(--logo-border); margin: 2px 2px; }
+
     @media (min-width: 769px) {
       .template01-cover-customer-logo {
         position: absolute;
         left: 75%;
-        top: 50%;
+        top: 42%;                         /* nudged up so it clears the bottom-anchored text */
         transform: translate(-50%, -50%);
         margin: 0;
         width: clamp(140px, 15vw, 240px);
         height: clamp(140px, 15vw, 240px);
-        padding: 24px;
+        padding: 0;
       }
+      .template01-cover-customer-logo.cl-size-2 { width: calc(clamp(140px, 15vw, 240px) * 2); height: calc(clamp(140px, 15vw, 240px) * 2); }
+      .template01-cover-customer-logo.cl-size-3 { width: calc(clamp(140px, 15vw, 240px) * 3); height: calc(clamp(140px, 15vw, 240px) * 3); }
+
+      /* Guardrail: cap the hero text width so it stays in the left column and never runs under the
+         logo — holds for any language (e.g. longer French copy). Bigger logo = narrower text column. */
+      .template01-cover .hero-content { max-width: 58%; }
+      .template01-cover-customer-logo.cl-size-2 ~ .hero-content { max-width: 48%; }
+      .template01-cover-customer-logo.cl-size-3 ~ .hero-content { max-width: 40%; }
     }
   </style>
 
@@ -144,6 +202,7 @@
       logoContainer.addEventListener('click', function (e) {
         if (window.PB_READONLY) return;
         if (e.target.closest('.template01-cover-logo-del')) return; // delete button handles its own click
+        if (e.target.closest('.template01-cover-size-ctrl')) return; // size picker handles its own clicks
         logoInput.click();
       });
 
@@ -181,6 +240,75 @@
         detail: { editKey: 'customer-logo', src: '' }
       }));
     };
+
+    /* Customer-logo size (1x/2x/3x) — persisted in #cl-size, applied in builder + published */
+    var sizeEl   = slide.querySelector('#cl-size');
+    var sizeCtrl = slide.querySelector('.template01-cover-size-ctrl');
+
+    function readSize() {
+      // Published multi-language decks wrap the text in <span data-lang>; read the default span.
+      var langSpan = sizeEl && (sizeEl.querySelector('[data-lang="en"]') || sizeEl.querySelector('[data-lang]'));
+      var raw = ((langSpan ? langSpan.textContent : (sizeEl ? sizeEl.textContent : '')) || '').trim();
+      var n = parseInt(raw, 10);
+      return (n === 2 || n === 3) ? n : 1;
+    }
+    function applySize(n) {
+      logoContainer.classList.remove('cl-size-2', 'cl-size-3');
+      if (n === 2 || n === 3) logoContainer.classList.add('cl-size-' + n);
+      if (sizeCtrl) sizeCtrl.querySelectorAll('.template01-cover-size-btn').forEach(function (b) {
+        b.classList.toggle('active', b.getAttribute('data-cl-size') === String(n));
+      });
+    }
+    if (logoContainer) applySize(readSize());
+
+    if (sizeCtrl && !window.PB_READONLY) {
+      sizeCtrl.addEventListener('click', function (e) {
+        var btn = e.target.closest('.template01-cover-size-btn[data-cl-size]');
+        if (!btn) return;
+        e.stopPropagation(); e.preventDefault();
+        var n = parseInt(btn.getAttribute('data-cl-size'), 10) || 1;
+        applySize(n);
+        if (sizeEl) sizeEl.textContent = String(n);
+        document.dispatchEvent(new CustomEvent('slide-carousel-save', {
+          detail: { editKey: 'cover-logo-size', html: String(n) }
+        }));
+        if (window.Track) Track.click(slideId, 'logo-size-' + n + 'x');
+      });
+    }
+
+    /* Fit / Fill toggle (fill = cover, fit = contain) — persisted in #cl-fit, same as size */
+    var fitEl  = slide.querySelector('#cl-fit');
+    var fitBtn = slide.querySelector('.template01-cover-fit-btn');
+
+    function readFit() {
+      var langSpan = fitEl && (fitEl.querySelector('[data-lang="en"]') || fitEl.querySelector('[data-lang]'));
+      var raw = ((langSpan ? langSpan.textContent : (fitEl ? fitEl.textContent : '')) || '').trim().toLowerCase();
+      return raw === 'fit' ? 'fit' : 'fill';
+    }
+    function applyFit(mode) {
+      logoContainer.classList.toggle('cl-fit', mode === 'fit');
+      if (fitBtn) {
+        // Label shows the CURRENT mode (matches the carousel's Fit/Fill button)
+        fitBtn.textContent = mode === 'fit' ? '▣ Fit' : '⤢ Fill';
+        fitBtn.title = mode === 'fit'
+          ? 'Whole logo/picture is visible (no crop) — click to fill the card'
+          : 'Logo/picture fills the card (edges may crop) — click to fit the whole image';
+      }
+    }
+    if (logoContainer) applyFit(readFit());
+
+    if (fitBtn && !window.PB_READONLY) {
+      fitBtn.addEventListener('click', function (e) {
+        e.stopPropagation(); e.preventDefault();
+        var next = readFit() === 'fit' ? 'fill' : 'fit';
+        applyFit(next);
+        if (fitEl) fitEl.textContent = next;
+        document.dispatchEvent(new CustomEvent('slide-carousel-save', {
+          detail: { editKey: 'cover-logo-fit', html: next }
+        }));
+        if (window.Track) Track.click(slideId, 'logo-' + next);
+      });
+    }
 
     setTimeout(function () { if (window.PE) PE.initSlide(slide); }, 0);
   })();

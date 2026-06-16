@@ -2602,7 +2602,7 @@ function buildFrozenPresentation(presentation) {
     '  var label = document.getElementById("_pb-back-label");',
     '  var websiteUrl = ' + JSON.stringify(presDeck.websiteUrl || '') + ';',
     '  if (window.location.pathname.indexOf("/finished/") === 0) {',
-    '    label.textContent = "Back to Dashboard";',
+    '    label.textContent = "Back";',
     '    btn.href = "/";',
     '  } else if (websiteUrl) {',
     '    label.textContent = "Company Webpage";',
