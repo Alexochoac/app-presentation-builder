@@ -26,13 +26,13 @@
   --text-muted: #bdb4a8;
   font-family: 'Press Start 2P', ui-monospace, Menlo, Monaco, monospace;
 }
-.slide > * { z-index: 1; position: relative; }   /* keep content above the CRT overlays */
+.slide > * { z-index: 1; }   /* CRT overlays sit at z-index:-1; do NOT force position here — it clobbers the absolutely-pinned logo-row / credit / gallery button */
 
 /* Faint pixel starfield behind everything */
 .slide::before {
   content: "";
   position: absolute; inset: 0;
-  z-index: 0; pointer-events: none;
+  z-index: -1; pointer-events: none;
   background-image:
     radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,.7) 50%, transparent 51%),
     radial-gradient(1px 1px at 70% 15%, rgba(168,178,255,.6) 50%, transparent 51%),
@@ -45,7 +45,7 @@
 .slide::after {
   content: "";
   position: absolute; inset: 0;
-  z-index: 0; pointer-events: none;
+  z-index: -1; pointer-events: none;
   background-image: repeating-linear-gradient(
     0deg, rgba(0,0,0,.22) 0 1px, transparent 1px 3px);
   opacity: .55;

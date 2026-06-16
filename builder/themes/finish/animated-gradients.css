@@ -31,7 +31,7 @@
   content: "";
   position: absolute; top: 8%; left: 6%;
   width: 340px; height: 340px; border-radius: 50%;
-  z-index: 0; pointer-events: none;
+  z-index: -1; pointer-events: none;
   background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
   filter: blur(60px); opacity: .55;
   animation: ag-float 7s ease-in-out infinite;
@@ -40,12 +40,12 @@
   content: "";
   position: absolute; bottom: 10%; right: 12%;
   width: 420px; height: 420px; border-radius: 50%;
-  z-index: 0; pointer-events: none;
+  z-index: -1; pointer-events: none;
   background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
   filter: blur(70px); opacity: .50;
   animation: ag-float 9s ease-in-out infinite; animation-delay: -3s;
 }
-.slide > * { position: relative; z-index: 1; }
+.slide > * { z-index: 1; }   /* orbs sit at z-index:-1; do NOT force position here — it clobbers the absolutely-pinned logo-row / credit / gallery button */
 .glow-orb { display: none; }   /* dark-theme artifact — replaced by the colour orbs above */
 
 /* Legibility shadow so white text never washes out over the light gradient stops */

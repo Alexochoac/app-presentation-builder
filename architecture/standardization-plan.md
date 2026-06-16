@@ -282,7 +282,11 @@ shadows, tilt, etc.) — then re-express that DNA as CSS targeting the **skeleto
 `.card`/`.kpi-card`/`.cta-box`/`.slide-logo-row`, `.slide-title`, `.divider`, `.badge`, `.tag`, …). Drive
 it off the palette vars (`rgba(var(--accent-rgb), …)`) so it stays colour-coherent; use `!important` only
 where it must beat a base rule (notably `.slide` background beats `.slide.content { background: var(--bg) }`).
-Decorative backdrops go on `.slide::before` / `::after` (no markup needed); keep `.slide > * { z-index:1 }`.
+Decorative backdrops go on `.slide::before` / `::after` (no markup needed) at **`z-index:-1`** so in-flow
+content paints above them automatically (`.slide` always forms a stacking context via its `transform:scale`).
+**NEVER put `position` in the `.slide > *` lift rule** — `.slide > * { z-index:1 }` is fine, but
+`position:relative` there clobbers the absolutely-/fixed-pinned slide chrome (`.slide-logo-row`,
+`.softsolution-credit`, `.pb-gallery-btn`) and knocks the logo/credit/gallery button out of place.
 Glassmorphism + cyberpunk-neon are the reference exemplars.
 
 **Contrast rule (HARD — readability).** A Finish block repaints backgrounds, but the skeleton draws *all*

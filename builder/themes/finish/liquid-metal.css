@@ -43,7 +43,7 @@
   background-size: 250% 100%;
   animation: lm-sheen 9s ease-in-out infinite;
 }
-.slide > * { position: relative; z-index: 1; }   /* keep in-flow content above the backsheen */
+.slide > * { z-index: 1; }   /* backsheen sits at z-index:-1; do NOT force position here — it clobbers the absolutely-pinned logo-row / credit / gallery button */
 
 /* ── Chrome typography: mercury-poured title, brushed-metal heads ── */
 h1.slide-title {

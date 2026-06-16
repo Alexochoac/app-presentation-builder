@@ -23,7 +23,7 @@
 .slide::before {
   content: "";
   position: absolute; inset: 0;
-  z-index: 0; pointer-events: none;   /* behind in-flow content (.slide>* lifts to z-index:1); corner chrome keeps its absolute pin */
+  z-index: -1; pointer-events: none;   /* behind in-flow content; corner chrome keeps its absolute pin */
   opacity: .06;
   background-image:
     repeating-linear-gradient(60deg,  var(--accent) 0 1px, transparent 1px 32px),
@@ -32,12 +32,12 @@
 .slide::after {
   content: "";
   position: absolute; inset: 0;
-  z-index: 0; pointer-events: none;
+  z-index: -1; pointer-events: none;
   background:
     linear-gradient(135deg, rgba(var(--accent-rgb), .22) 0%, transparent 18%),
     linear-gradient(315deg, rgba(var(--accent-rgb), .22) 0%, transparent 18%);
 }
-.slide > * { position: relative; z-index: 1; }   /* keep content above the ornament layers */
+.slide > * { z-index: 1; }   /* ornament sits at z-index:-1; do NOT force position here — it clobbers the absolutely-pinned logo-row / credit / gallery button */
 .glow-orb { display: none; }                      /* dark-theme blur artifact — replaced by the deco weave */
 
 /* ── Gold double-rule sunburst ornament on the headings ── */

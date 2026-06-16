@@ -23,13 +23,13 @@
   --text-muted: rgba(255, 255, 255, .68);
 }
 /* Keep in-flow content above the ::before halo layer (base rule, restated for safety) */
-.slide > * { position: relative; z-index: 1; }
+.slide > * { z-index: 1; }   /* halo sits at z-index:-1; do NOT force position here — it clobbers the absolutely-pinned logo-row / credit / gallery button */
 
 /* Extra drifting halo painted onto the slide without touching the markup */
 .slide::before {
   content: "";
   position: absolute; inset: 0;
-  z-index: 0; pointer-events: none;   /* behind in-flow content, above the field */
+  z-index: -1; pointer-events: none;   /* behind in-flow content, above the field */
   background:
     radial-gradient(circle at 70% 25%, rgba(var(--accent-rgb), .12) 0%, transparent 45%),
     radial-gradient(circle at 30% 80%, rgba(var(--accent-rgb), .09) 0%, transparent 45%);
