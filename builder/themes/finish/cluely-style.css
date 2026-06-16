@@ -1,0 +1,124 @@
+/* ============================================================
+   Finish block — Cluely Style
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/cluely-style.css). Adds what a CSS variable
+   can't express: the soft light gradient field with a faint dot
+   grid, the elevated rounded cards with refined layered shadows,
+   and the friendly blue accent / lift-on-hover motion.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   LIGHT FIELD ⇒ dark ink. Every repainted surface re-declares
+   --text/--text-muted so skeleton text stays legible.
+   ============================================================ */
+
+/* ── The soft light field everything floats on (the palette flattens this to a flat --bg) ── */
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e0 100%) !important;
+  /* Light field ⇒ dark ink. Base style.css sets --text:#fff (dark theme); re-skin to dark here
+     so ALL var(--text)/var(--text-muted) skeleton text reads against the pale gradient. */
+  --text: #1a202c;
+  --text-muted: rgba(26, 32, 44, .60);
+}
+/* Faint dot grid laid over the field without touching the markup */
+.slide::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1; pointer-events: none;   /* behind in-flow content, above the field — corner chrome keeps its absolute pin */
+  background-image: radial-gradient(circle at 1px 1px, rgba(74, 85, 104, .55) 1px, transparent 0);
+  background-size: 22px 22px;
+  opacity: .06;
+}
+.glow-orb { display: none; }   /* dark-theme artifact — not wanted over a bright field */
+
+/* ── Headings: tight, refined, friendly ── */
+.slide-title { letter-spacing: -.025em; }
+.section-label { letter-spacing: .14em; }
+.slide-subtitle { color: var(--text-muted); }
+
+/* ── Elevated rounded cards — frosted white with refined layered shadow ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.slide-logo-row,
+.ls-tabs,
+.ls-carousel {
+  background: rgba(255, 255, 255, 0.72) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.08),
+              0 1px 2px rgba(15, 23, 42, 0.04),
+              inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+  /* Repainted surface ⇒ re-declare ink: these cards are light, so dark text. */
+  --text: #1a202c;
+  --text-muted: rgba(26, 32, 44, .62);
+}
+
+/* Lift + deepen the shadow on hover (the card "rises toward you") */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  background: rgba(255, 255, 255, 0.88) !important;
+  border-color: rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 16px 48px rgba(15, 23, 42, 0.14),
+              0 2px 6px rgba(15, 23, 42, 0.06),
+              inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  transform: translateY(-3px);
+}
+
+/* Card text colours (explicit, so they never inherit a stray white) */
+.card-title,
+.kpi-label,
+.feature-text strong { color: var(--text); }
+.card-desc,
+.feature-text { color: var(--text-muted); }
+/* KPI value keeps the palette gradient (accent → accent-light) — friendly accent pop */
+.kpi-value {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+/* Logo row reads as a small floating white bar */
+.slide-logo-row { padding: 8px 16px; }
+
+/* ── Pills & chips — soft rounded, friendly accent ── */
+.badge,
+.tag {
+  background: rgba(255, 255, 255, 0.7) !important;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(var(--accent-rgb), 0.28) !important;
+  border-radius: 100px !important;
+  color: var(--accent) !important;
+}
+
+/* ── CTA buttons — solid accent gradient (INVERTED surface) ── */
+.cta-btn-wa,
+.cta-btn-email {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%) !important;
+  border: none !important;
+  border-radius: 10px !important;
+  box-shadow: 0 6px 20px rgba(var(--accent-rgb), 0.3) !important;
+  /* INVERTED surface (saturated accent) ⇒ re-declare ink to light so labels read on the button. */
+  color: #ffffff !important;
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, .85);
+}
+.cta-btn-wa:hover,
+.cta-btn-email:hover {
+  box-shadow: 0 10px 28px rgba(var(--accent-rgb), 0.42) !important;
+  transform: translateY(-2px);
+}
+
+/* Divider: soft accent seam fading to nothing */
+.divider {
+  background: linear-gradient(90deg, var(--accent), rgba(var(--accent-rgb), 0)) !important;
+}

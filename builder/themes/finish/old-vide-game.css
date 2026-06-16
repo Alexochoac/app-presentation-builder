@@ -1,0 +1,143 @@
+/* ============================================================
+   Finish block — Old Vide Game
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/old-vide-game.css). Adds what a CSS variable
+   can't express: the 8-bit arcade look — a pixel font, hard chunky
+   borders with NO rounding, blocky un-blurred offset shadows, a
+   CRT scanline overlay on the slide, and crisp (un-anti-aliased)
+   pixel-art rendering.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   ============================================================ */
+
+/* ── The arcade CRT field + global pixel font ── */
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background: var(--bg) !important;
+  /* Finish owns the field ⇒ Finish owns the ink (re-skins all var(--text) text) */
+  --text: #f0eadc;
+  --text-muted: rgba(240, 234, 220, .68);
+  font-family: "Courier New", "Lucida Console", monospace !important;
+  image-rendering: pixelated;          /* no smoothing — hard pixel edges */
+}
+.slide * { font-family: inherit; }      /* drag the pixel/mono font through every child */
+
+/* CRT scanlines: repeating dark horizontal lines laid over the field */
+.slide::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1; pointer-events: none;   /* behind in-flow content, above the field — corner chrome keeps its pin */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, .28) 0px,
+    rgba(0, 0, 0, .28) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+}
+/* Vignette + faint pixel-grid corner glow (the screen curvature) */
+.slide::after {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,.45) 100%),
+    linear-gradient(90deg, rgba(var(--accent-rgb), .06) 1px, transparent 1px) 0 0 / 8px 8px;
+}
+.glow-orb { display: none; }            /* no soft blur in an 8-bit world */
+
+/* ── Blocky pixel surfaces: hard chunky border + solid offset shadow ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.ls-tabs,
+.ls-carousel {
+  background: var(--slide-hero-bg) !important;
+  border: 3px solid var(--accent) !important;
+  border-radius: 0 !important;                       /* pixels have no curves */
+  box-shadow: 6px 6px 0 var(--accent),               /* hard, zero-blur pixel shadow */
+              0 0 0 6px rgba(0, 0, 0, .35) !important;
+  image-rendering: pixelated;
+}
+
+/* Logo chip: blocky like a card, but NEVER transformed — it's pinned in the corner */
+.slide-logo-row {
+  background: var(--slide-hero-bg) !important;
+  border: 3px solid var(--accent) !important;
+  border-radius: 0 !important;
+  box-shadow: 4px 4px 0 var(--accent) !important;
+}
+
+/* Accent KPI card inverts the field — re-ink its text dark so children re-skin too */
+.kpi-card {
+  background: var(--accent) !important;
+  --text: #14121f;
+  --text-muted: rgba(20, 18, 31, .82);
+  color: #14121f !important;
+}
+
+/* Slam the pixel shadow shut on hover (the block "presses in") */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  transform: translate(3px, 3px);
+  box-shadow: 3px 3px 0 var(--accent),
+              0 0 0 3px rgba(0, 0, 0, .35) !important;
+}
+
+/* ── Pixel-font headings: solid colour + blocky offset text-shadow ── */
+.slide-title,
+.section-label,
+.card-title,
+.kpi-label,
+.feature-text {
+  text-transform: uppercase !important;
+  letter-spacing: .04em !important;
+}
+/* Cancel the base gradient-as-color clip so the pixel text reads as a solid block */
+.slide-title {
+  -webkit-text-fill-color: var(--text) !important;
+  -webkit-background-clip: border-box !important;
+  background: none !important;
+  text-shadow: 4px 4px 0 var(--accent);              /* chunky 8-bit drop shadow */
+}
+.section-label { color: var(--accent); }
+.card-title { color: var(--text) !important; }
+.card-desc  { color: var(--text-muted) !important; }
+
+/* KPI value: solid arcade-score look, not a gradient */
+.kpi-value {
+  -webkit-text-fill-color: var(--text) !important;
+  -webkit-background-clip: border-box !important;
+  background: none !important;
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, .4);
+}
+.kpi-label { color: var(--text-muted) !important; }
+
+/* ── Buttons / tags / badges: square pixel chips with hard shadow ── */
+.cta-btn-wa,
+.cta-btn-email,
+.badge,
+.tag {
+  border: 3px solid var(--accent) !important;
+  border-radius: 0 !important;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, .45) !important;
+  text-transform: uppercase !important;
+  letter-spacing: .04em !important;
+  font-weight: 700 !important;
+  image-rendering: pixelated;
+}
+
+/* Divider becomes a chunky pixel bar (no anti-aliased gradient) */
+.slide-subtitle { color: var(--text-muted) !important; }
+.divider {
+  height: 6px !important;
+  background: var(--accent) !important;
+  border-radius: 0 !important;
+}

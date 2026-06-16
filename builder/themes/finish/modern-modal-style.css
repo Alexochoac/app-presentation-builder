@@ -1,0 +1,122 @@
+/* ============================================================
+   Finish block — Modern Modal Style
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/modern-modal-style.css). Adds what a CSS variable
+   can't express: the dimmed backdrop the cards float over, plus the
+   modal-grade elevation, big rounded corners and crisp layered
+   shadows that make every surface read as a lifted dialog over a
+   darkened field.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   ============================================================ */
+
+/* ── The dimmed field the modal cards float over ── */
+/* The reference runs white modal cards over a soft field. We keep the palette's
+   dark field (--bg #0a0a0f) and dim it further with a vignette so the white
+   cards read as elevated dialogs against a darkened backdrop. */
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(106,168,255,.10), transparent 60%),
+    linear-gradient(160deg, #14171f 0%, #0a0a0f 60%, #07080c 100%) !important;
+  /* Field is dark ⇒ field text is light. (Re-declared dark on the white modal
+     surfaces below — the #1 contrast rule.) */
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, .60);
+}
+/* Backdrop dimming layer (the "scrim" a modal sits on) — no markup needed */
+.slide::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1; pointer-events: none;   /* behind in-flow content, above the field */
+  background: radial-gradient(140% 120% at 50% 0%, transparent 40%, rgba(0,0,0,.45) 100%);
+}
+.slide > * { z-index: 1; }              /* keep real content above the scrim */
+.glow-orb { display: none; }            /* no glow in the modal look — the scrim owns the field */
+
+/* ── Floating modal surfaces (white card, strong elevation, rounded) ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.ls-tabs,
+.ls-carousel {
+  background: #ffffff !important;
+  border: 1px solid rgba(10, 14, 20, 0.06) !important;
+  border-radius: 28px !important;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45),
+              0 8px 24px rgba(0, 0, 0, 0.25),
+              inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+  /* HARD CONTRAST RULE: white modal surface ⇒ dark ink for all skeleton text */
+  --text: #0e1116;
+  --text-muted: #64728a;
+}
+
+/* Logo row reads as a small floating modal bar */
+.slide-logo-row {
+  background: #ffffff !important;
+  border: 1px solid rgba(10, 14, 20, 0.06) !important;
+  border-radius: 9999px !important;
+  padding: 8px 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+/* Lift higher on hover (the dialog "pops" toward you) */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  background: #ffffff !important;
+  border-color: rgba(106, 168, 255, 0.45) !important;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.55),
+              0 12px 30px rgba(0, 0, 0, 0.30),
+              inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+  transform: translateY(-5px);
+}
+
+/* ── Headings on the dark field stay light; on white cards inherit dark ── */
+/* slide-title / subtitle / section-label sit on the dimmed field → keep light + soft lift */
+.slide-title,
+.slide-subtitle,
+.section-label {
+  text-shadow: 0 2px 8px rgba(0, 0, 0, .45);
+}
+
+/* Card-local text uses the re-declared dark --text/--text-muted (set on surfaces above) */
+.card-title { color: var(--text); }
+.card-desc  { color: var(--text-muted); }
+.kpi-label  { color: var(--text-muted); }
+.feature-text { color: var(--text-muted); }
+.feature-text strong { color: var(--text); }
+/* kpi-value keeps its accent gradient from the base — no override needed */
+
+/* ── Divider: crisp seam fading from accent ── */
+.divider {
+  background: linear-gradient(90deg, var(--accent), rgba(106,168,255,.15)) !important;
+}
+
+/* ── Pills / tags / badges read as solid floating chips ── */
+.badge,
+.tag {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+}
+
+/* CTA buttons get full modal-button elevation */
+.cta-btn-wa,
+.cta-btn-email {
+  border-radius: 9999px !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35),
+              inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition: transform .12s ease, box-shadow .22s ease;
+}
+.cta-btn-wa:hover,
+.cta-btn-email:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.45),
+              inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}

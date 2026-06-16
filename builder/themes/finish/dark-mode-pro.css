@@ -1,0 +1,127 @@
+/* ============================================================
+   Finish block — Dark Mode Pro
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/dark-mode-pro.css). Adds what a CSS variable
+   can't express: the refined near-black field with a soft layered
+   depth gradient, crisp 1px hairline borders, restrained elevation
+   shadows, and the indigo accent top-edge that reveals on hover —
+   the polished "product UI" feel, not neon. Targets the standard
+   slide skeleton classes (+ legacy card aliases .int-card/
+   .col-card/.feature-item so it works before those slides are
+   rebuilt).
+   ============================================================ */
+
+/* ── Deep charcoal field with quiet layered depth (no animation — restraint is the look) ── */
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(var(--accent-rgb), .06) 0%, transparent 55%),
+    linear-gradient(135deg, #0a0a0f 0%, #14141c 55%, #0a0a0f 100%) !important;
+  /* Finish owns the field ⇒ Finish owns the ink (re-skins all var(--text) text) */
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, .60);
+}
+/* Hairline top sheen + barely-there vignette so the dark field reads as crafted, not flat */
+.slide::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1; pointer-events: none;   /* behind in-flow content, above the field — no child rules, so corner chrome keeps its absolute pin */
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .03) 0%, transparent 8%),
+    radial-gradient(ellipse at 50% 120%, rgba(0, 0, 0, .45) 0%, transparent 60%);
+}
+.glow-orb { display: none; }   /* dark-pro is restrained — no soft glow blobs */
+
+/* ── Refined surfaces: near-black panel, crisp hairline border, soft elevation ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.slide-logo-row,
+.ls-tabs,
+.ls-carousel {
+  background: #1e1e2e !important;
+  border: 1px solid #3a3a4a !important;
+  border-radius: var(--card-radius) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .40),
+              0 1px 2px rgba(0, 0, 0, .30) !important;
+}
+
+/* Accent top-edge that reveals on hover — the signature pro-card tell */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item {
+  position: relative;
+  overflow: hidden;
+}
+.card::before,
+.int-card::before,
+.kpi-card::before,
+.col-card::before,
+.feature-item::before {
+  content: "";
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .4s ease;
+}
+
+/* Lift + brighter border + revealed edge on hover (the surface "elevates") */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  background: #2a2a3a !important;
+  border-color: #4a4a5a !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, .50),
+              0 4px 6px -2px rgba(0, 0, 0, .35) !important;
+  transform: translateY(-3px);
+}
+.card:hover::before,
+.int-card:hover::before,
+.kpi-card:hover::before,
+.col-card:hover::before,
+.feature-item:hover::before {
+  transform: scaleX(1);
+}
+
+/* ── Inverted CTA box: lit accent panel — must re-declare ink for contrast over the indigo fill ── */
+.cta-box {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+  border: 1px solid rgba(255, 255, 255, .18) !important;
+  box-shadow: 0 10px 25px -5px rgba(99, 102, 241, .45) !important;
+  /* repainted surface ⇒ re-skin the ink so .cta-box p / strong stay legible */
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, .82);
+}
+
+/* ── Typography: crisp, restrained — no glow ── */
+.slide-title { letter-spacing: -0.01em; }
+.kpi-value,
+.kpi-label { font-family: 'JetBrains Mono', monospace; }
+.section-label { color: var(--accent); }
+
+/* Divider as a clean accent seam */
+.divider {
+  background: linear-gradient(90deg, var(--accent), var(--accent-light)) !important;
+}
+
+/* ── Chips: subtle tinted fills with hairline borders (lit but not glowing) ── */
+.badge,
+.tag {
+  border: 1px solid rgba(var(--accent-rgb), .35) !important;
+  background: rgba(var(--accent-rgb), .12) !important;
+}
+
+/* CTA pills sit on the inverted accent box ⇒ flip to a solid light chip for contrast */
+.cta-btn-wa,
+.cta-btn-email {
+  border: 1px solid rgba(255, 255, 255, .30) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+}

@@ -1,0 +1,150 @@
+/* ============================================================
+   Finish block — Modern Tech Startup
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/modern-tech-startup.css). Adds what a CSS variable
+   can't express: the deep-navy field lit by drifting vivid gradient
+   orbs, gradient-clipped headings, rounded glass-on-dark cards with
+   a gradient top-seam, and energetic gradient pill buttons.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   ============================================================ */
+
+/* ── Deep-navy field + drifting vivid gradient orbs (the energy the palette flattens away) ── */
+@keyframes mts-float {
+  0%,100% { transform: translate(0,0) scale(1); }
+  33%     { transform: translate(40px,-30px) scale(1.12); }
+  66%     { transform: translate(-30px,35px) scale(.9); }
+}
+
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background: linear-gradient(135deg, #0a0b14 0%, #151828 50%, #1f2347 100%) !important;
+  overflow: hidden;
+  /* Finish owns the dark field ⇒ Finish owns the ink (re-skins all var(--text) text) */
+  --text: #ffffff;
+  --text-muted: #b8bdf0;
+}
+/* Two blurred gradient orbs drift behind the content — pure backdrop, no markup */
+.slide::before,
+.slide::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: .38;
+  z-index: -1;
+  pointer-events: none;
+}
+.slide::before {
+  width: 420px; height: 420px;
+  top: -180px; left: -160px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  animation: mts-float 9s ease-in-out infinite;
+}
+.slide::after {
+  width: 360px; height: 360px;
+  bottom: -160px; right: -140px;
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  animation: mts-float 11s ease-in-out infinite reverse;
+}
+.slide > * { z-index: 1; }      /* in-flow content rides above the orbs */
+.glow-orb { display: none; }    /* replaced by the gradient orbs above */
+
+/* ── Gradient-clipped hero headings (the startup signature) ── */
+.slide-title {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 24px rgba(102,126,234,.5));
+}
+.kpi-value {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 18px rgba(79,172,254,.45));
+}
+.section-label {
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ── Rounded glass-on-dark cards with a vivid gradient top-seam ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.slide-logo-row,
+.ls-tabs,
+.ls-carousel {
+  position: relative;
+  background: rgba(36, 43, 84, 0.45) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.30),
+              inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+.card::before,
+.int-card::before,
+.kpi-card::before,
+.col-card::before,
+.feature-item::before,
+.cta-box::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 20px 20px 0 0;
+  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+}
+
+/* Lift + light up on hover (the card "energizes") */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  background: rgba(42, 49, 96, 0.60) !important;
+  border-color: rgba(102, 126, 234, 0.45) !important;
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.40),
+              0 0 48px rgba(102, 126, 234, 0.30),
+              inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transform: translateY(-6px);
+}
+
+/* ── Gradient pill buttons / lit chips ── */
+.cta-btn-wa {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 28px rgba(102, 126, 234, 0.40);
+}
+.cta-btn-email {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+  border: none !important;
+  color: #0a0b14 !important;
+  box-shadow: 0 8px 28px rgba(79, 172, 254, 0.40);
+}
+.cta-btn-wa:hover,
+.cta-btn-email:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+.badge,
+.tag {
+  background: rgba(102, 126, 234, 0.18) !important;
+  border: 1px solid rgba(139, 92, 246, 0.40) !important;
+  color: var(--accent-light) !important;
+}
+
+/* ── Vivid gradient divider seam ── */
+.divider {
+  background: linear-gradient(90deg, #667eea, #f093fb, transparent) !important;
+}

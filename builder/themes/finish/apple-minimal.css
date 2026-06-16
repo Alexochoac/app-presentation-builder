@@ -1,0 +1,114 @@
+/* ============================================================
+   Finish block — Apple Minimal
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/apple-minimal.css). Adds what a CSS variable
+   can't express: the near-white field with one faint cool wash,
+   the hairline borders + barely-there shadows, refined letter-
+   spacing, and the restrained accent dot/seam. Restraint is the
+   aesthetic — generous whitespace, no glow, no animation.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   ============================================================ */
+
+/* ── The field: clean white with one faint cool diagonal wash ── */
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background:
+    radial-gradient(ellipse at 75% -10%, rgba(var(--accent-rgb), .04) 0%, transparent 45%),
+    linear-gradient(160deg, #ffffff 0%, #f5f5f7 100%) !important;
+  /* Light field ⇒ dark ink. Re-declare here so all var(--text)/var(--text-muted)
+     skeleton text matches the white surface. */
+  --text: #1d1d1f;
+  --text-muted: rgba(0, 0, 0, .50);
+}
+.glow-orb { display: none; }   /* dark-theme artifact — restraint over a near-white field */
+
+/* ── Type: tight tracking, lighter weights — the Apple wordmark feel ── */
+.slide-title,
+h1.slide-title {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.slide-subtitle {
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: var(--text-muted);
+}
+.section-label {
+  font-weight: 600;
+  letter-spacing: .14em;
+  color: var(--text-muted);   /* muted, not loud — minimal label */
+}
+
+/* ── Divider: a single hairline seam, not a coloured bar ── */
+.divider {
+  height: 1px;
+  background: rgba(0, 0, 0, .12) !important;
+  border-radius: 0;
+}
+
+/* ── Surfaces: faint fill, hairline border, whisper-soft shadow ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.slide-logo-row,
+.ls-tabs,
+.ls-carousel {
+  background: rgba(0, 0, 0, 0.02) !important;
+  border: 1px solid rgba(0, 0, 0, 0.07) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .04) !important;
+  /* surface stays near-white ⇒ keep dark ink (matches .slide) */
+  --text: #1d1d1f;
+  --text-muted: rgba(0, 0, 0, .50);
+}
+
+/* Lift gently on hover — a soft, diffuse shadow, no transform jolt */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  background: rgba(0, 0, 0, 0.035) !important;
+  border-color: rgba(0, 0, 0, 0.10) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .08) !important;
+  transform: translateY(-2px);
+}
+
+/* ── Card / kpi / feature text ── */
+.card-title  { font-weight: 600; letter-spacing: -0.01em; color: var(--text); }
+.card-desc   { color: var(--text-muted); line-height: 1.5; }
+.kpi-value   { font-weight: 700; letter-spacing: -0.03em; }
+.kpi-label   { font-weight: 500; color: var(--text-muted); }
+.feature-text { color: var(--text-muted); }
+
+/* ── Badge / tag: hairline pebbles, accent ink only ── */
+.badge,
+.tag {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: var(--accent) !important;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+
+/* ── CTA buttons: solid accent + ghost, both restrained ── */
+.cta-btn-wa {
+  background: var(--accent) !important;
+  border: 1px solid var(--accent) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .08);
+  /* inverted (accent) surface ⇒ white ink for contrast */
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, .85);
+  color: var(--text) !important;
+}
+.cta-btn-email {
+  background: transparent !important;
+  border: 1px solid rgba(0, 0, 0, .12) !important;
+  color: var(--accent) !important;
+}
+.cta-btn-wa:hover   { box-shadow: 0 4px 14px rgba(var(--accent-rgb), .28); transform: translateY(-1px); }
+.cta-btn-email:hover { border-color: rgba(0, 0, 0, .22) !important; }

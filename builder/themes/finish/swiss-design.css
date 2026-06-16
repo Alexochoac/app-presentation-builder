@@ -1,0 +1,202 @@
+/* ============================================================
+   Finish block — Swiss / International Typographic Style
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/swiss-design.css). Adds what a CSS variable
+   can't express: the faint modular grid + thick black rule lines
+   the slide is composed on, the flush-left bold-caps headings, the
+   flat red accent corners, and the hard square edges (zero shadow,
+   zero glow — Swiss is anti-decoration).
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   ============================================================ */
+
+/* ── Field: clean white paper + faint modular grid + rule lines ── */
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background: #ffffff !important;
+  /* Swiss = flat red accent, not the palette blue. Re-point accent locally. */
+  --accent: #ff0000;
+  --accent-rgb: 255, 0, 0;
+  /* Finish owns the field ⇒ Finish owns the ink: black ink on white paper */
+  --text: #000000;
+  --text-muted: #707070;
+}
+/* Faint 24px modular grid — the substructure everything aligns to */
+.slide::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1; pointer-events: none;   /* behind in-flow content; corner chrome keeps its absolute pin */
+  background-image:
+    linear-gradient(to right, rgba(0,0,0,.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+/* Thick black framing rule along the top — the signature Swiss bar */
+.slide::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 6px;
+  background: #000000;
+  z-index: 0;
+  pointer-events: none;
+}
+.slide > * { z-index: 1; }            /* keep in-flow content above the rule */
+.glow-orb { display: none; }          /* Swiss = no glow, ever */
+
+/* ── Typography: big, bold, flush-left, uppercase ── */
+.slide-title {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+  text-align: left;
+}
+.slide-subtitle {
+  font-weight: 300;
+  text-align: left;
+  color: var(--text-muted);
+}
+.section-label {
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);            /* flat red eyebrow */
+  text-align: left;
+}
+
+/* Divider: hard black rule with a stubby red tick at the start */
+.divider {
+  height: 1px !important;
+  background: #000000 !important;
+  position: relative;
+}
+.divider::before {
+  content: "";
+  position: absolute;
+  left: 0; top: -2px;
+  width: 48px; height: 5px;
+  background: var(--accent);
+}
+
+/* ── Surfaces: square, outlined in black, flat, no shadow ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.slide-logo-row,
+.ls-tabs,
+.ls-carousel {
+  background: #ffffff !important;
+  border: 1px solid #000000 !important;
+  border-radius: 0 !important;       /* Swiss = right angles */
+  box-shadow: none !important;       /* Swiss = no shadow */
+}
+/* Red accent corner mark — the swiss-card signature notch */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item {
+  position: relative;
+}
+.card::before,
+.int-card::before,
+.kpi-card::before,
+.col-card::before,
+.feature-item::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 12px; height: 12px;
+  background: var(--accent);
+  z-index: 2;
+}
+/* Hover: hard offset shift with a flat black "printed" drop — no soft blur */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  transform: translate(2px, -2px);
+  box-shadow: -3px 3px 0 #000000 !important;
+}
+
+/* ── Card text: bold uppercase title, muted body, mono-ish red KPI ── */
+.card-title,
+.feature-text {
+  font-weight: 600;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--text);
+}
+.card-desc {
+  color: var(--text-muted);
+  text-align: left;
+}
+.kpi-card {
+  border-left: 4px solid var(--accent) !important;   /* the stat-swiss red rule */
+}
+.kpi-value {
+  font-family: 'JetBrains Mono', var(--font-body), monospace;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.kpi-label {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* ── Badges / tags: flat red block, white ink (inverted surface) ── */
+.badge,
+.tag {
+  background: var(--accent) !important;
+  border: none !important;
+  border-radius: 0 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+  /* inverted surface ⇒ re-declare ink to white for contrast */
+  --text: #ffffff;
+  --text-muted: rgba(255,255,255,.85);
+  color: #ffffff !important;
+}
+
+/* ── Buttons: solid black block, white ink, flat red edge bar ── */
+.cta-btn-wa,
+.cta-btn-email {
+  background: #000000 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+  position: relative;
+  box-shadow: none !important;
+  /* inverted surface ⇒ re-declare ink to white for contrast */
+  --text: #ffffff;
+  --text-muted: rgba(255,255,255,.85);
+  color: #ffffff !important;
+}
+.cta-btn-wa::before,
+.cta-btn-email::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 6px; height: 100%;
+  background: var(--accent);
+}
+.cta-btn-wa:hover,
+.cta-btn-email:hover {
+  background: var(--accent) !important;
+  transform: translate(1px, -1px);
+  box-shadow: -2px 2px 0 #000000 !important;
+}
+.cta-btn-wa:hover::before,
+.cta-btn-email:hover::before { display: none; }

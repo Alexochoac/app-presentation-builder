@@ -1,0 +1,134 @@
+/* ============================================================
+   Finish block — Retro Synthwave
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/retro-synthwave.css). Adds what a CSS variable
+   can't express: the 80s sunset sky the slide sits under, the
+   neon perspective grid receding to the horizon, plus the chrome
+   glow on outrun headings and lit-neon surfaces.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   ============================================================ */
+
+/* ── Sunset sky + neon horizon grid (the world the neon reads against) ── */
+@keyframes rs-grid-scroll { 0%{background-position:0 0} 100%{background-position:0 40px} }
+
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0).
+     A magenta→purple→orange sunset, dropping to deep space at the floor. */
+  background:
+    radial-gradient(ellipse 60% 45% at 50% 62%, rgba(var(--accent-rgb), .28) 0%, transparent 65%),
+    linear-gradient(180deg,
+      #2e1065 0%,
+      #5b1a8a 28%,
+      #c026a8 52%,
+      #ff6600 66%,
+      #1a0a2e 78%,
+      #0a0a0f 100%) !important;
+  /* Finish owns the field ⇒ Finish owns the ink (re-skins all var(--text) text).
+     Light neon-tinted whites read against the dark sunset + space floor. */
+  --text: #f5e6ff;
+  --text-muted: rgba(0, 255, 255, .72);
+}
+
+/* Perspective floor: a cyan neon grid scrolling toward a glowing horizon */
+.slide::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1; pointer-events: none;  /* behind in-flow content, above the field — corner chrome keeps its absolute pin */
+  background-image:
+    linear-gradient(rgba(0,255,255,.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,255,.35) 1px, transparent 1px);
+  background-size: 40px 40px;
+  /* lower half only, raked back into perspective toward the horizon */
+  -webkit-mask-image: linear-gradient(180deg, transparent 58%, #000 70%, #000 100%);
+          mask-image: linear-gradient(180deg, transparent 58%, #000 70%, #000 100%);
+  transform: perspective(420px) rotateX(70deg) scale(2.2);
+  transform-origin: 50% 100%;
+  animation: rs-grid-scroll 1.2s linear infinite;
+}
+
+/* Sun-glow horizon seam + faint top scanlines */
+.slide::after {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1; pointer-events: none;
+  background:
+    /* horizon glow line where the sun meets the grid */
+    linear-gradient(180deg, transparent 57%, rgba(var(--accent-rgb), .55) 58%, transparent 60%),
+    /* CRT scanlines over the sky */
+    repeating-linear-gradient(0deg, transparent 0 2px, rgba(0,0,0,.10) 2px 4px);
+}
+
+.glow-orb {                                  /* synthwave is glow-heavy — keep, re-tint to the neon sun */
+  background: radial-gradient(circle, rgba(var(--accent-rgb), .55) 0%, transparent 70%) !important;
+  filter: blur(40px);
+}
+
+/* ── Lit-neon surfaces (sharp neon edge + inner/outer glow, outrun chrome) ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.slide-logo-row,
+.ls-tabs,
+.ls-carousel {
+  background: rgba(10, 6, 24, 0.72) !important;
+  border: 1px solid rgba(var(--accent-rgb), 0.6) !important;
+  border-radius: var(--card-radius) !important;
+  box-shadow: 0 0 22px rgba(var(--accent-rgb), 0.30),
+              inset 0 0 18px rgba(0, 255, 255, 0.08) !important;
+  /* inverted surface ⇒ re-declare ink so var(--text) stays legible on the panel */
+  --text: #f5e6ff;
+  --text-muted: rgba(0, 255, 255, .72);
+}
+
+/* Power up on hover — the panel flips to cyan neon */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  border-color: #00ffff !important;
+  box-shadow: 0 0 34px rgba(0, 255, 255, 0.55),
+              inset 0 0 22px rgba(var(--accent-rgb), 0.16) !important;
+  transform: translateY(-3px);
+}
+
+/* ── Chrome / neon outrun headings ── */
+.slide-title {
+  text-shadow: 0 0 12px rgba(0, 255, 255, .9),
+               0 0 26px rgba(0, 255, 255, .55),
+               0 2px 0 rgba(var(--accent-rgb), .6);
+}
+.slide-subtitle { text-shadow: 0 0 10px rgba(var(--accent-rgb), .6); }
+.section-label  { text-shadow: 0 0 10px rgba(var(--accent-rgb), .9),
+                               0 0 20px rgba(var(--accent-rgb), .5); }
+.card-title     { text-shadow: 0 0 8px rgba(0, 255, 255, .6); }
+.kpi-value {
+  color: #39ff14;                            /* neon-green readout, the synthwave stat colour */
+  text-shadow: 0 0 12px rgba(57, 255, 20, .8),
+               0 0 24px rgba(57, 255, 20, .45);
+}
+.kpi-label  { text-shadow: 0 0 6px rgba(0, 255, 255, .4); }
+.feature-text { text-shadow: 0 0 6px rgba(0, 255, 255, .3); }
+
+/* ── Pill buttons / tags / badges read as lit neon chips ── */
+.cta-btn-wa,
+.cta-btn-email,
+.badge,
+.tag {
+  border: 1px solid rgba(var(--accent-rgb), 0.65) !important;
+  box-shadow: 0 0 14px rgba(var(--accent-rgb), 0.42),
+              inset 0 0 10px rgba(0, 255, 255, 0.10);
+  text-shadow: 0 0 8px rgba(var(--accent-rgb), .7);
+}
+
+/* Divider becomes the magenta→cyan neon seam from the reference */
+.divider {
+  background: linear-gradient(90deg, var(--accent), #00ffff) !important;
+  box-shadow: 0 0 10px rgba(var(--accent-rgb), .7),
+              0 0 10px rgba(0, 255, 255, .5);
+}

@@ -1,0 +1,118 @@
+/* ============================================================
+   Finish block — What Bitcoin Taught Me (Brand)
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/whatbitcointaughtme-brand.css). Adds what a CSS
+   variable can't express: the true-black radial field the brand
+   sits on, the Bitcoin-orange glow on every surface, the GOLD
+   (#FFD700) accent reserved for stats/numbers, and the orange→gold
+   gradient seams. Targets the standard slide skeleton classes
+   (+ legacy card aliases .int-card/.col-card/.feature-item so it
+   works before those slides are rebuilt).
+
+   Brand DNA: true black #000 · Bitcoin orange #F7931A/#E8691A ·
+   gold #FFD700 for numbers · near-white #e8e8e8 body · cards = #1a1a1a
+   + thin orange border · orange drop-shadow halo · pill badges.
+   ============================================================ */
+
+/* Gold is the brand's number/stat accent — not in the palette vars, declared here */
+:root { --wbtm-gold: #FFD700; }
+
+/* ── True-black brand field (radial center-to-charcoal, like the hero) ── */
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background:
+    radial-gradient(ellipse at center, #000000 0%, #1a1a1a 100%) !important;
+  /* Finish owns the field ⇒ Finish owns the ink (matches the near-black field) */
+  --text: #ffffff;
+  --text-muted: #e8e8e8;
+}
+/* Faint Bitcoin-orange aura bleeding up from the lower edge — the brand's warm glow */
+.slide::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1; pointer-events: none;   /* behind in-flow content, above the field — corner chrome keeps its absolute pin */
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 100%, rgba(var(--accent-rgb), .14) 0%, transparent 70%);
+}
+.glow-orb { display: none; }   /* superseded by the brand radial field */
+
+/* ── Surfaces: charcoal cards with a thin orange edge + warm halo ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.slide-logo-row,
+.ls-tabs,
+.ls-carousel {
+  background: #1a1a1a !important;
+  border: 1px solid rgba(var(--accent-rgb), 0.18) !important;
+  border-radius: var(--card-radius) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45) !important;
+}
+/* charcoal surface is darker than the field — re-assert near-white ink so text contrasts */
+.card, .int-card, .kpi-card, .col-card, .feature-item, .cta-box {
+  --text: #ffffff;
+  --text-muted: #e8e8e8;
+}
+
+/* CTA box gets the brand's warm orange wash instead of flat charcoal */
+.cta-box {
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), .12), rgba(var(--accent-rgb), .04)) !important;
+  border: 1px solid rgba(var(--accent-rgb), 0.30) !important;
+}
+
+/* Orange edge ignites + lifts on hover (the surface "warms up") */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  border-color: var(--accent) !important;
+  box-shadow: 0 8px 28px rgba(var(--accent-rgb), 0.22) !important;
+  transform: translateY(-3px);
+}
+
+/* ── Headings carry the Bitcoin-orange drop-shadow halo (the logo motif) ── */
+.slide-title,
+.slide-subtitle,
+.section-label,
+.divider {
+  filter: drop-shadow(0 0 18px rgba(var(--accent-rgb), .30));
+}
+
+/* ── Stats/numbers are GOLD — the brand's reserved highlight ── */
+.kpi-value {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--wbtm-gold) 100%) !important;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  text-shadow: 0 0 14px rgba(255, 215, 0, .25);
+}
+.kpi-label { letter-spacing: .05em; text-transform: uppercase; }
+
+/* ── Pills: badges read as lit orange chips, tags as soft orange ── */
+.badge,
+.tag {
+  text-transform: uppercase; letter-spacing: .05em;
+  box-shadow: 0 0 12px rgba(var(--accent-rgb), .22);
+}
+
+/* CTA buttons — solid Bitcoin orange (primary) / outlined orange (email) per brand */
+.cta-btn-wa {
+  background: var(--accent) !important;
+  color: #000 !important;
+  box-shadow: 0 0 18px rgba(var(--accent-rgb), .35) !important;
+}
+.cta-btn-wa:hover { background: var(--wbtm-gold) !important; transform: translateY(-2px); }
+.cta-btn-email {
+  background: transparent !important;
+  border: 2px solid var(--accent) !important;
+  color: var(--accent) !important;
+}
+.cta-btn-email:hover { background: var(--accent) !important; color: #000 !important; transform: translateY(-2px); }
+
+/* ── Divider becomes the brand's orange→gold seam ── */
+.divider {
+  background: linear-gradient(90deg, var(--accent), var(--wbtm-gold)) !important;
+  box-shadow: 0 0 12px rgba(var(--accent-rgb), .55);
+}

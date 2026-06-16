@@ -1,0 +1,137 @@
+/* ============================================================
+   Finish block — WBTM Brand · Dark Bitcoin
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/wbtm-brand-dark-bitcoin.css). Adds what a CSS
+   variable can't express: the true-black brand field with the
+   bitcoin-orange radial glow the logo reads against, the gold-on-
+   orange stat treatment, and the orange-bordered card surfaces.
+   DNA: "What Bitcoin Taught Me" — true black #000 / #111 / #1a1a1a,
+   bitcoin orange #F7931A, deeper orange #E8691A, gold #FFD700,
+   near-white #e8e8e8 body text. Targets the standard slide skeleton
+   classes (+ legacy card aliases .int-card/.col-card/.feature-item
+   so it works before those slides are rebuilt).
+   ============================================================ */
+
+/* ── True-black brand field + bitcoin-orange glow (the world the orange reads against) ── */
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background:
+    radial-gradient(ellipse 80% 80% at 50% 40%, rgba(247,147,26,.10) 0%, transparent 60%),
+    radial-gradient(ellipse at bottom, #1a1a1a 0%, #000000 70%) !important;
+  /* Finish owns the field ⇒ Finish owns the ink (light-on-dark, no blue tint) */
+  --text: #f0f0f0;
+  --text-muted: #a8a8a8;
+}
+/* Bitcoin-orange seam along the top edge — the brand's accent signature */
+.slide::after {
+  content: "";
+  position: absolute; inset: 0 0 auto 0;
+  height: 2px; z-index: -1; pointer-events: none;
+  background: linear-gradient(90deg, transparent, #E8691A 25%, #F7931A 50%, #FFD700 75%, transparent);
+  opacity: .55;
+}
+.slide > * { z-index: 1; }
+/* Keep the orbs — they reinforce the orange glow rather than fight it */
+.glow-orb.a { background: radial-gradient(circle, rgba(247,147,26,.14) 0%, transparent 70%); }
+.glow-orb.b { background: radial-gradient(circle, rgba(232,105,26,.10) 0%, transparent 70%); }
+
+/* ── Headings: bitcoin-orange labels, gradient hero title ── */
+.section-label { color: #F7931A; }
+.slide-title {
+  /* override base's text→text-muted gradient with the brand's orange→gold */
+  background: linear-gradient(135deg, #F7931A 0%, #FFD700 100%) !important;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.slide-subtitle { color: var(--text-muted); }
+/* Divider becomes the orange → gold brand seam */
+.divider {
+  background: linear-gradient(90deg, #E8691A, #F7931A, #FFD700) !important;
+  box-shadow: 0 0 10px rgba(247,147,26,.4);
+}
+
+/* ── Surfaces: #1a1a1a card field + low-opacity orange border (brand DNA) ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.ls-tabs,
+.ls-carousel {
+  background: #1a1a1a !important;
+  border: 1px solid rgba(247,147,26,.15) !important;
+  border-radius: var(--card-radius) !important;
+  box-shadow: none !important;
+  /* dark surface ⇒ re-declare ink light (contrast rule) */
+  --text: #f0f0f0;
+  --text-muted: #a8a8a8;
+}
+/* Hover: border lights to full orange + orange glow lift (brand .card:hover) */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  border-color: #F7931A !important;
+  box-shadow: 0 8px 24px rgba(247,147,26,.18) !important;
+  transform: translateY(-3px);
+}
+
+/* ── Logo row: floating dark bar with orange hairline ── */
+.slide-logo-row {
+  background: rgba(0,0,0,.45);
+  border: 1px solid rgba(247,147,26,.18);
+  border-radius: var(--card-radius);
+  padding: 8px 14px;
+}
+
+/* ── KPI stats: gold numbers on dark (the brand's signature stat box) ── */
+.kpi-card {
+  background: rgba(247,147,26,.07) !important;
+  border-color: rgba(247,147,26,.20) !important;
+}
+.kpi-value {
+  background: none !important;
+  -webkit-text-fill-color: #FFD700 !important;
+  color: #FFD700 !important;
+}
+.kpi-label { color: var(--text-muted); }
+
+/* ── Card / feature text stays light on the dark surface ── */
+.card-title  { color: var(--text); }
+.card-desc   { color: var(--text-muted); }
+.feature-text { color: var(--text-muted); }
+.feature-text strong { color: var(--text); }
+
+/* ── Badges & tags: orange-tinted brand chips ── */
+.badge,
+.tag {
+  background: rgba(247,147,26,.15) !important;
+  border: 1px solid rgba(247,147,26,.30) !important;
+  color: #F7931A !important;
+}
+.tag:hover { background: rgba(247,147,26,.22) !important; border-color: #F7931A !important; }
+
+/* ── CTA box: orange→gold gradient slab; INVERTED ⇒ dark ink (contrast rule #1 defect) ── */
+.cta-box {
+  background: linear-gradient(135deg, #F7931A 0%, #E8691A 100%) !important;
+  border: 1px solid rgba(255,215,0,.45) !important;
+  /* on the bright orange slab, repaint text dark so it stays legible */
+  --text: #0a0a0a;
+  --text-muted: rgba(0,0,0,.62);
+}
+.cta-box p      { color: var(--text-muted); }
+.cta-box strong { color: var(--text); }
+
+/* ── CTA buttons: solid bitcoin-orange (primary) / outlined orange (secondary) ── */
+.cta-btn-wa {
+  background: #F7931A !important;
+  color: #0a0a0a !important;          /* dark ink on bright orange button */
+  border: 1px solid #F7931A !important;
+}
+.cta-btn-wa:hover { background: #FFD700 !important; border-color: #FFD700 !important; }
+.cta-btn-email {
+  background: transparent !important;
+  color: #F7931A !important;
+  border: 2px solid #F7931A !important;
+}
+.cta-btn-email:hover { background: #F7931A !important; color: #0a0a0a !important; }

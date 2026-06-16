@@ -577,6 +577,12 @@ enables isolated test instances).
    (run once per clone); bypass with `git commit --no-verify`. Tested: blocks a bad slide, passes clean/
    no-slide commits. TODO later: flip to a strict whole-set gate once the backlog is rebuilt; also gate the
    server template-save API.
-5. **Extract the Finish blocks** from each `style-references/*.html` into its theme (~35 styles).
+5. ~~**Extract the Finish blocks** from each `style-references/*.html` into its theme (~35 styles).~~ ✅ done
+   (2026-06-16) — **34/34** themes now have a Finish block in `builder/themes/finish/` (the lone skip is the
+   byte-identical `cluely-style copy.*` dupe — a deletion candidate). Each was authored from the Finish-block
+   recipe with the HARD contrast rule baked in (every repainted surface re-declares `--text`/`--text-muted`).
+   Gate: `node scripts/check-finish-contrast.js` → 0 warnings across all 34 (4 text-shadow-mitigated NOTEs on
+   bright-gradient fields; 2 SKIPs that defer the field to the palette-half `--bg`, verified by hand). Caveat:
+   the seatbelt verifies *contrast*, not *visual fidelity* — a real in-app visual pass is still owed before merge.
 6. Migrate legacy welded-in JS slides → cartridges, and old IDs → the new convention, incrementally.
 7. Implement Model-A copy-on-add + the template guardrails (build on the existing template-update diff flow).

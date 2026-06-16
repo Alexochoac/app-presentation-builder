@@ -1,0 +1,125 @@
+/* ============================================================
+   Finish block — Modern SaaS Dark
+   The "signature" half of the two-block theme model (palette half
+   lives in themes/modern-saas-dark.css). Adds what a CSS variable
+   can't express: the deep navy/charcoal field with a soft gradient
+   mesh, the gradient-accent buttons, the soft glow on hero numbers
+   and headings, and the clean rounded cards with a faint accent rim.
+   Targets the standard slide skeleton classes (+ legacy card
+   aliases .int-card/.col-card/.feature-item so it works before
+   those slides are rebuilt).
+   ============================================================ */
+
+/* ── Deep navy field + soft gradient mesh (the polished SaaS-dark world) ── */
+@keyframes ms-mesh-drift { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-3%,2%)} }
+
+.slide {
+  /* !important: beats .slide.content { background: var(--bg) } (specificity 0,2,0) */
+  background:
+    radial-gradient(circle at 20% 18%, rgba(var(--accent-rgb), .14) 0%, transparent 42%),
+    radial-gradient(circle at 82% 88%, rgba(var(--accent-rgb), .10) 0%, transparent 46%),
+    linear-gradient(135deg, #0a0a12 0%, #141426 50%, #101a30 100%) !important;
+  /* Finish owns the field ⇒ Finish owns the ink (re-skins all var(--text) text) */
+  --text: #f4f6fb;
+  --text-muted: rgba(244, 246, 251, .62);
+}
+/* Slow-drifting mesh overlay laid over the slide without touching the markup */
+.slide::before {
+  content: "";
+  position: absolute; inset: -10%;
+  z-index: -1; pointer-events: none;   /* behind in-flow content, above the field — no child rules, so corner chrome keeps its absolute pin */
+  background:
+    radial-gradient(circle at 70% 25%, rgba(var(--accent-rgb), .10) 0%, transparent 38%),
+    radial-gradient(circle at 28% 78%, rgba(120, 140, 255, .08) 0%, transparent 40%);
+  animation: ms-mesh-drift 18s ease-in-out infinite;
+}
+.glow-orb { display: none; }   /* the mesh + radial glows replace the single orb */
+
+/* ── Clean rounded cards (soft surface, faint accent rim, gentle depth) ── */
+.card,
+.int-card,
+.kpi-card,
+.col-card,
+.feature-item,
+.cta-box,
+.slide-logo-row,
+.ls-tabs,
+.ls-carousel {
+  background: rgba(255, 255, 255, 0.045) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.40),
+              inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Lift + warm accent rim on hover (the card "comes forward") */
+.card:hover,
+.int-card:hover,
+.kpi-card:hover,
+.col-card:hover,
+.feature-item:hover {
+  border-color: rgba(var(--accent-rgb), 0.45) !important;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.48),
+              0 0 28px rgba(var(--accent-rgb), 0.20),
+              inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+  transform: translateY(-4px);
+}
+
+/* ── Gradient-accent headings + soft glow on hero figures ── */
+.slide-title {
+  background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 60px rgba(var(--accent-rgb), .25);
+}
+.kpi-value {
+  background: linear-gradient(135deg, var(--accent-light), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 50px rgba(var(--accent-rgb), .35);
+}
+.section-label { color: var(--accent); letter-spacing: .12em; }
+
+/* ── Gradient-accent CTA / pill buttons (inverted surface ⇒ re-declare ink) ── */
+.cta-btn-wa,
+.cta-btn-email {
+  background: linear-gradient(135deg, var(--accent), var(--accent-mid)) !important;
+  border: none !important;
+  border-radius: 50px !important;
+  box-shadow: 0 6px 22px rgba(var(--accent-rgb), 0.38) !important;
+  /* gradient-accent surface runs light ⇒ force dark ink on it */
+  --text: #0a0a12;
+  --text-muted: rgba(10, 10, 18, .7);
+  color: #0a0a12 !important;
+}
+.cta-btn-wa:hover,
+.cta-btn-email:hover {
+  box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.55) !important;
+  transform: translateY(-2px);
+}
+
+/* ── Badges / tags read as soft tinted chips ── */
+.badge,
+.tag {
+  background: rgba(var(--accent-rgb), 0.14) !important;
+  border: 1px solid rgba(var(--accent-rgb), 0.35) !important;
+  border-radius: 50px !important;
+  color: var(--accent-light) !important;
+}
+
+/* CTA box gets a touch more glow than a plain card */
+.cta-box {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.40),
+              0 0 36px rgba(var(--accent-rgb), 0.18),
+              inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Divider becomes a soft gradient-accent seam */
+.divider {
+  background: linear-gradient(90deg, var(--accent), transparent) !important;
+  box-shadow: 0 0 12px rgba(var(--accent-rgb), .4);
+}
