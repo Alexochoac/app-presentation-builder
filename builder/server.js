@@ -1724,7 +1724,7 @@ app.put('/api/decks/:id', function (req, res) {
     var store = readDecks();
     var idx = store.decks.findIndex(function (d) { return d.id === id; });
     if (idx === -1) return res.status(404).json({ success: false, error: 'Deck not found' });
-    var allowed = ['name', 'theme', 'logo', 'heroBg', 'heroBgFocal', 'heroBgFocalGrid', 'heroBgFit', 'heroBgOpacity', 'heroBgType', 'heroBgColor', 'colors', 'brandCredit'];
+    var allowed = ['name', 'theme', 'logo', 'heroBg', 'heroBgFocal', 'heroBgFocalGrid', 'heroBgFit', 'heroBgOpacity', 'heroBgType', 'heroBgColor', 'colors', 'brandCredit', 'websiteUrl'];
     var body = req.body || {};
     allowed.forEach(function (key) {
       if (body[key] !== undefined) store.decks[idx][key] = body[key];
@@ -1962,6 +1962,13 @@ function buildFrozenPresentation(presentation) {
   var appSettings = readSettings();
   var presDeck  = getDeckConfig(presentation.deckId || getActiveDeckId());
   var accentCss = deckAccentCss(presDeck);
+
+  // Company-webpage back link: force an absolute href so a bare domain (e.g. "example.com")
+  // isn't treated as a relative path; show the URL itself as the label (protocol/trailing
+  // slash stripped for readability).
+  var rawWebsite   = (presDeck.websiteUrl || '').trim();
+  var websiteHref  = rawWebsite && !/^https?:\/\//i.test(rawWebsite) ? 'https://' + rawWebsite : rawWebsite;
+  var websiteLabel = rawWebsite.replace(/^https?:\/\//i, '').replace(/\/+$/, '');
 
   // Language baking setup
   var presLanguages    = Array.isArray(presentation.languages) ? presentation.languages : [];
@@ -2600,12 +2607,13 @@ function buildFrozenPresentation(presentation) {
     '(function () {',
     '  var btn   = document.getElementById("_pb-back-btn");',
     '  var label = document.getElementById("_pb-back-label");',
-    '  var websiteUrl = ' + JSON.stringify(presDeck.websiteUrl || '') + ';',
+    '  var websiteUrl   = ' + JSON.stringify(websiteHref) + ';',
+    '  var websiteLabel = ' + JSON.stringify(websiteLabel) + ';',
     '  if (window.location.pathname.indexOf("/finished/") === 0) {',
     '    label.textContent = "Back";',
     '    btn.href = "/";',
     '  } else if (websiteUrl) {',
-    '    label.textContent = "Company Webpage";',
+    '    label.textContent = websiteLabel;',
     '    btn.href = websiteUrl;',
     '    btn.target = "_blank";',
     '    btn.rel = "noopener noreferrer";',
