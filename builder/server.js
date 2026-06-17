@@ -1985,13 +1985,18 @@ function buildFrozenPresentation(presentation) {
   var websiteHref  = rawWebsite && !/^https?:\/\//i.test(rawWebsite) ? 'https://' + rawWebsite : rawWebsite;
   var websiteLabel = rawWebsite.replace(/^https?:\/\//i, '').replace(/\/+$/, '');
 
-  // Language baking setup
+  // Language baking setup. Ordered, deduped set with the default language first.
   var presLanguages    = Array.isArray(presentation.languages) ? presentation.languages : [];
   var presDefaultLang  = presentation.defaultLanguage || 'en';
-  var isMultiLang      = presLanguages.some(function (l) { return l !== presDefaultLang; });
-  var allLangs         = isMultiLang ? [presDefaultLang].concat(presLanguages.filter(function (l) { return l !== presDefaultLang; })) : [];
-  var translationsData  = isMultiLang ? readTranslations(presentation.deckId || getActiveDeckId()) : null;
-  var langSwitcherCode  = isMultiLang ? fs.readFileSync(path.join(__dirname, 'features', 'slides', 'components', 'language-switcher.js'), 'utf8') : '';
+  var allLangs         = [presDefaultLang].concat(presLanguages.filter(function (l) { return l && l !== presDefaultLang; }));
+  allLangs             = allLangs.filter(function (l, i) { return allLangs.indexOf(l) === i; });
+  // Switcher only appears when there's more than one language to choose from.
+  var showSwitcher     = allLangs.length > 1;
+  // Content must be translated whenever it isn't plain English — i.e. more than one language OR a
+  // non-English default (e.g. a single Spanish presentation). Otherwise the English source shows.
+  var needsBaking      = showSwitcher || presDefaultLang !== 'en';
+  var translationsData = needsBaking ? readTranslations(presentation.deckId || getActiveDeckId()) : null;
+  var langSwitcherCode = showSwitcher ? fs.readFileSync(path.join(__dirname, 'features', 'slides', 'components', 'language-switcher.js'), 'utf8') : '';
 
   // Wraps all [data-edit] text elements in a cheerio-loaded slide with <span data-lang> per language.
   // ul/ol/table containers cannot use <span> wrappers (invalid HTML), so they are duplicated per
@@ -2038,7 +2043,7 @@ function buildFrozenPresentation(presentation) {
   }
 
   function bakeLanguageSpans($, librarySlideId) {
-    if (!isMultiLang || !translationsData) return;
+    if (!needsBaking || !translationsData) return;
     var slideStore = (translationsData.slides && translationsData.slides[librarySlideId]) || {};
 
     $('[data-edit]').each(function () {
@@ -2173,7 +2178,7 @@ function buildFrozenPresentation(presentation) {
 
     // For cover slides in multi-lang presentations, replace subheadline placeholders
     // ([Cliente], [Nombre], etc.) in each translation with actual customer data.
-    if (isCoverSlide && isMultiLang && translationsData && translationsData.slides && presentation.customerName) {
+    if (isCoverSlide && needsBaking && translationsData && translationsData.slides && presentation.customerName) {
       var coverSlideStore = translationsData.slides[s.librarySlideId];
       if (coverSlideStore && coverSlideStore.subheadline) {
         var coverTokens = [presentation.customerName, presentation.contactName, presentation.contactTitle].filter(Boolean);
@@ -2352,7 +2357,10 @@ function buildFrozenPresentation(presentation) {
     '<script>window.PB_READONLY = true;</script>',
     '<script>' + trackerJs + '</script>',
     '</head>',
-    (isMultiLang ? '<body data-default-lang="' + presDefaultLang + '" data-pres-id="' + presId + '">' : '<body>'),
+    // data-default-lang is needed whenever content is baked — the always-bundled language-switcher
+    // script reads it; without it a single non-English presentation would default to 'en' and hide
+    // all its (es/de/…) spans. The switcher *dropdown UI* still only appears when showSwitcher.
+    (needsBaking ? '<body data-default-lang="' + presDefaultLang + '" data-pres-id="' + presId + '">' : '<body>'),
     '<div id="fp-shell">',
     '  <div id="fp-header">',
     '    <a href="' + (appSettings.homepageUrl || '/') + '" id="fp-dash-btn">' + (appSettings.homepageLabel ? appSettings.homepageLabel : '&#8592; Dashboard') + '</a>',
@@ -2360,7 +2368,7 @@ function buildFrozenPresentation(presentation) {
     '    <button class="fp-nav-btn" id="fp-prev" disabled>&#8249;</button>',
     '    <div id="fp-counter">1 / ' + totalSlides + '</div>',
     '    <button class="fp-nav-btn" id="fp-next"' + (totalSlides <= 1 ? ' disabled' : '') + '>&#8250;</button>',
-    (isMultiLang ? (function () {
+    (showSwitcher ? (function () {
       var langNames = { en: 'English', es: 'Español', de: 'Deutsch', fr: 'Français', pt: 'Português', it: 'Italiano', zh: '中文', ja: '日本語', ar: 'العربية', ru: 'Русский' };
       var chevron = '<svg width="8" height="8" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 1 5 5 9 1"/></svg>';
       var items = allLangs.map(function (l) {
@@ -2424,7 +2432,7 @@ function buildFrozenPresentation(presentation) {
     '(function(){var h=window.location.hostname;if(h==="localhost"||h==="127.0.0.1"){var b=document.getElementById("fp-dash-btn");if(b){b.href="/";b.textContent="← Dashboard";b.target="_top";}}})();',
     inlineJs,
     // language-switcher runs after <body> exists (it reads document.body at load)
-    (isMultiLang ? langSwitcherCode : ''),
+    (showSwitcher ? langSwitcherCode : ''),
     '(function () {',
     '  var mainSlides = document.querySelectorAll(".fp-slide:not(.fp-optional)");',
     '  var optSlides  = document.querySelectorAll(".fp-slide.fp-optional");',
