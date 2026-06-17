@@ -784,6 +784,77 @@
     </div>
   </div>
 
+  <!-- Presentation Edit modal (text fields only; image/languages live in the builder) -->
+  <div id="fpEditModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:99999;align-items:center;justify-content:center;">
+    <div class="fp-modal-box" style="max-width:420px;">
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;">Edit Presentation</div>
+      <p style="font-size:12px;color:var(--muted);margin:0 0 16px;line-height:1.5;">Image and languages are edited in the builder.</p>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <label style="font-size:12px;color:var(--muted);">Presentation Name
+          <input id="fpEditName" type="text" maxlength="100" autocomplete="off"
+            style="width:100%;box-sizing:border-box;margin-top:5px;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;outline:none;font-family:inherit;">
+        </label>
+        <label style="font-size:12px;color:var(--muted);">Company Name (Recipient)
+          <input id="fpEditCompany" type="text" maxlength="100" autocomplete="off"
+            style="width:100%;box-sizing:border-box;margin-top:5px;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;outline:none;font-family:inherit;">
+        </label>
+        <label style="font-size:12px;color:var(--muted);">Contact Name
+          <input id="fpEditContact" type="text" maxlength="100" autocomplete="off"
+            style="width:100%;box-sizing:border-box;margin-top:5px;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;outline:none;font-family:inherit;">
+        </label>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px;">
+        <button id="fpEditCancel" style="padding:7px 18px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;cursor:pointer;font-family:inherit;">Cancel</button>
+        <button id="fpEditSave" style="padding:7px 18px;border-radius:var(--radius-btn);border:1px solid var(--accent);background:var(--accent);color:#fff;font-size:13px;cursor:pointer;font-family:inherit;">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Republish modal: pick a deck (default = current) + edit details, then Republish or Edit on Builder -->
+  <div id="fpRepublishModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:99999;align-items:center;justify-content:center;">
+    <div class="fp-modal-box" style="max-width:440px;max-height:90vh;overflow-y:auto;">
+      <div id="fpRepublishTitle" style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;">Republish Presentation</div>
+      <p style="font-size:12px;color:var(--muted);margin:0 0 14px;line-height:1.5;">Rebuild from a deck's current slides. The public link stays the same — only the content changes. Image &amp; slides are edited via <em>Edit on Builder</em>.</p>
+      <label for="fpRepublishDeckSelect" style="display:block;font-size:12px;color:var(--muted);margin-bottom:6px;">Rebuild from deck</label>
+      <select id="fpRepublishDeckSelect" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;outline:none;font-family:inherit;margin-bottom:12px;"></select>
+      <div id="fpRepublishDisclaimer" style="display:none;background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.35);border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:12px;color:#f97316;line-height:1.5;">
+        ⚠ This rebuilds the live link from a <strong>different deck</strong> than the original. The content customers see at the existing link will change. You'll be asked to confirm.
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;">
+        <label style="font-size:12px;color:var(--muted);">Presentation Name
+          <input id="fpReName" type="text" maxlength="100" autocomplete="off" style="width:100%;box-sizing:border-box;margin-top:5px;padding:8px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;outline:none;font-family:inherit;">
+        </label>
+        <label style="font-size:12px;color:var(--muted);">Company Name (Recipient)
+          <input id="fpReCompany" type="text" maxlength="100" autocomplete="off" style="width:100%;box-sizing:border-box;margin-top:5px;padding:8px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;outline:none;font-family:inherit;">
+        </label>
+        <label style="font-size:12px;color:var(--muted);">Contact Name
+          <input id="fpReContact" type="text" maxlength="100" autocomplete="off" style="width:100%;box-sizing:border-box;margin-top:5px;padding:8px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;outline:none;font-family:inherit;">
+        </label>
+        <div style="font-size:12px;color:var(--muted);">Presentation Image
+          <div style="display:flex;align-items:center;gap:10px;margin-top:5px;">
+            <div id="fpReImgPreview" style="width:46px;height:46px;border-radius:8px;border:1px solid var(--border);background:var(--bg);overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;">
+              <img id="fpReImg" src="" alt="" style="width:100%;height:100%;object-fit:contain;display:none;">
+              <span id="fpReImgPlaceholder" style="font-size:18px;color:var(--muted);">🖼</span>
+            </div>
+            <button type="button" id="fpReImgBtn" style="padding:6px 12px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:12px;cursor:pointer;font-family:inherit;">Change image</button>
+            <input type="file" id="fpReImgFile" accept="image/*" style="display:none;">
+          </div>
+        </div>
+        <label style="font-size:12px;color:var(--muted);">Default Language
+          <select id="fpReDefaultLang" style="width:100%;box-sizing:border-box;margin-top:5px;padding:8px 11px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;outline:none;font-family:inherit;"></select>
+        </label>
+        <div style="font-size:12px;color:var(--muted);">Additional Languages
+          <div id="fpReLangChips" style="margin-top:6px;"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;">
+        <button id="fpRepublishCancel" style="padding:7px 16px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;cursor:pointer;font-family:inherit;">Cancel</button>
+        <button id="fpRepublishTweak" style="padding:7px 16px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;cursor:pointer;font-family:inherit;">Edit on Builder</button>
+        <button id="fpRepublishNow" style="padding:7px 16px;border-radius:var(--radius-btn);border:1px solid var(--accent);background:var(--accent);color:#fff;font-size:13px;cursor:pointer;font-family:inherit;">Republish</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script>
@@ -2191,10 +2262,9 @@
           clickTimer = setTimeout(function () {
             clickTimer = null;
             navigator.clipboard.writeText(viewUrl).catch(function () {});
-            var orig = span.textContent;
             span.textContent = 'Copied!';
             span.classList.add('copied');
-            setTimeout(function () { span.textContent = orig; span.classList.remove('copied'); }, 1500);
+            setTimeout(function () { span.textContent = LABEL; span.classList.remove('copied'); }, 1500);
           }, 240);
         });
         span.addEventListener('dblclick', function (e) {
@@ -2240,8 +2310,9 @@
           dropdown.appendChild(fpDropDivider());
           dropdown.appendChild(fpDropItem('Permanently Delete', function () { fpPermanentDelete(p); }, true));
         } else {
+          dropdown.appendChild(fpDropItem('Edit', function () { openFpEditModal(p); }));
           dropdown.appendChild(fpDropItem('Duplicate', function () { fpDuplicate(p); }));
-          dropdown.appendChild(fpDropItem(p.publishedAt ? 'Republish' : 'Publish', function () { fpPublish(p.id); }));
+          dropdown.appendChild(fpDropItem(p.publishedAt ? 'Republish' : 'Publish', function () { openFpRepublishModal(p); }));
           dropdown.appendChild(fpDropDivider());
           dropdown.appendChild(fpDropItem('History', function () { fpHistory(p); }));
           dropdown.appendChild(fpDropDivider());
@@ -2276,6 +2347,219 @@
           .then(function (r) { if (r.success) refreshFromApi(); })
           .catch(function () {});
       }
+
+      // ── Edit (text fields only; rebuilds the frozen file from the presentation's OWN deck) ──
+      var _fpEditTarget = null;
+      function openFpEditModal(p) {
+        _fpEditTarget = p;
+        document.getElementById('fpEditName').value    = p.presentationName || '';
+        document.getElementById('fpEditCompany').value = p.customerName || '';
+        document.getElementById('fpEditContact').value = p.contactName || '';
+        document.getElementById('fpEditModal').style.display = 'flex';
+        setTimeout(function () { document.getElementById('fpEditName').focus(); }, 50);
+      }
+      function closeFpEditModal() {
+        document.getElementById('fpEditModal').style.display = 'none';
+        _fpEditTarget = null;
+      }
+      document.getElementById('fpEditCancel').addEventListener('click', closeFpEditModal);
+      document.getElementById('fpEditModal').addEventListener('click', function (e) {
+        if (e.target === this) closeFpEditModal();
+      });
+      document.getElementById('fpEditSave').addEventListener('click', function () {
+        if (!_fpEditTarget) return;
+        var company = document.getElementById('fpEditCompany').value.trim();
+        if (!company) { document.getElementById('fpEditCompany').focus(); return; }
+        var btn = this; btn.disabled = true; btn.textContent = 'Saving…';
+        fetch('/api/presentations/' + _fpEditTarget.id + '/edit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            presentationName: document.getElementById('fpEditName').value.trim(),
+            customerName:     company,
+            contactName:      document.getElementById('fpEditContact').value.trim()
+          })
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            btn.disabled = false; btn.textContent = 'Save';
+            if (!res.success) { alert('Save failed: ' + (res.error || '')); return; }
+            closeFpEditModal();
+            refreshFromApi();
+          })
+          .catch(function () { btn.disabled = false; btn.textContent = 'Save'; alert('Save failed'); });
+      });
+
+      // ── Republish (deck dropdown + editable details → Republish / Edit on Builder) ──
+      var _fpRepublishTarget = null;
+      var _rpAvailLangs = [];
+      var _rpSelectedLangs = [];
+      var _rpLogoData = '';      // base64 of a newly uploaded image (empty = keep current)
+      var _rpLogoFilename = '';
+      function rpSetImgPreview(src) {
+        var img = document.getElementById('fpReImg');
+        var ph  = document.getElementById('fpReImgPlaceholder');
+        if (src) { img.src = src; img.style.display = ''; ph.style.display = 'none'; }
+        else     { img.src = ''; img.style.display = 'none'; ph.style.display = ''; }
+      }
+      function fpRepublishUpdateDisclaimer() {
+        var sel = document.getElementById('fpRepublishDeckSelect');
+        var diff = _fpRepublishTarget && sel.value && sel.value !== _fpRepublishTarget.deckId;
+        document.getElementById('fpRepublishDisclaimer').style.display = diff ? 'block' : 'none';
+      }
+      function rpRenderLangChips() {
+        var container = document.getElementById('fpReLangChips');
+        var def = document.getElementById('fpReDefaultLang').value || 'en';
+        var nonDefault = _rpAvailLangs.filter(function (l) { return l !== def; });
+        if (!nonDefault.length) { container.innerHTML = '<span style="font-size:11px;color:var(--muted);">No additional languages configured.</span>'; return; }
+        container.innerHTML = '';
+        nonDefault.forEach(function (lang) {
+          var on = _rpSelectedLangs.indexOf(lang) !== -1;
+          var chip = document.createElement('span');
+          chip.textContent = lang.toUpperCase();
+          chip.style.cssText = 'display:inline-block;padding:3px 11px;border-radius:999px;font-size:11px;font-weight:600;cursor:pointer;margin:0 5px 5px 0;border:1px solid ' + (on ? 'var(--accent)' : 'var(--border)') + ';color:' + (on ? 'var(--accent)' : 'var(--muted)') + ';';
+          chip.addEventListener('click', function () {
+            var idx = _rpSelectedLangs.indexOf(lang);
+            if (idx === -1) _rpSelectedLangs.push(lang); else _rpSelectedLangs.splice(idx, 1);
+            rpRenderLangChips();
+          });
+          container.appendChild(chip);
+        });
+      }
+      function openFpRepublishModal(p) {
+        _fpRepublishTarget = p;
+        document.getElementById('fpRepublishTitle').textContent = p.publishedAt ? 'Republish Presentation' : 'Publish Presentation';
+        document.getElementById('fpRepublishNow').textContent   = p.publishedAt ? 'Republish' : 'Publish';
+        // Prefill editable details with current values
+        document.getElementById('fpReName').value    = p.presentationName || '';
+        document.getElementById('fpReCompany').value = p.customerName || '';
+        document.getElementById('fpReContact').value = p.contactName || '';
+        _rpLogoData = ''; _rpLogoFilename = '';
+        rpSetImgPreview(p.customerLogoSrc || '');
+        var sel = document.getElementById('fpRepublishDeckSelect');
+        sel.innerHTML = '<option value="">Loading decks…</option>';
+        document.getElementById('fpRepublishDisclaimer').style.display = 'none';
+        document.getElementById('fpRepublishModal').style.display = 'flex';
+        fetch('/api/decks').then(function (r) { return r.json(); }).then(function (res) {
+          var decks = (res.success && res.data && res.data.decks) || [];
+          sel.innerHTML = '';
+          if (!decks.length) { sel.innerHTML = '<option value="">No decks available</option>'; return; }
+          var currentExists = decks.some(function (d) { return d.id === p.deckId; });
+          decks.forEach(function (d) {
+            var opt = document.createElement('option');
+            opt.value = d.id;
+            opt.textContent = (d.name || d.title || d.id) + (d.id === p.deckId ? ' (current)' : '');
+            if (currentExists ? d.id === p.deckId : false) opt.selected = true;
+            sel.appendChild(opt);
+          });
+          fpRepublishUpdateDisclaimer();
+        }).catch(function () { sel.innerHTML = '<option value="">Failed to load decks</option>'; });
+        // Languages — default + additional, prefilled from the presentation
+        var langSel = document.getElementById('fpReDefaultLang');
+        langSel.innerHTML = '<option value="' + (p.defaultLanguage || 'en') + '">' + (p.defaultLanguage || 'en').toUpperCase() + '</option>';
+        _rpAvailLangs = []; _rpSelectedLangs = [];
+        fetch('/api/translations').then(function (r) { return r.json(); }).then(function (res) {
+          var data = (res.success && res.data) || {};
+          var langs = data.languages || [];
+          _rpAvailLangs = langs.indexOf('en') === -1 ? ['en'].concat(langs) : langs;
+          var def = p.defaultLanguage || 'en';
+          langSel.innerHTML = '';
+          _rpAvailLangs.forEach(function (l) {
+            var opt = document.createElement('option');
+            opt.value = l; opt.textContent = l.toUpperCase();
+            if (l === def) opt.selected = true;
+            langSel.appendChild(opt);
+          });
+          _rpSelectedLangs = (p.languages || []).filter(function (l) { return l !== def; });
+          rpRenderLangChips();
+        }).catch(function () { rpRenderLangChips(); });
+      }
+      document.getElementById('fpRepublishDeckSelect').addEventListener('change', fpRepublishUpdateDisclaimer);
+      document.getElementById('fpReDefaultLang').addEventListener('change', rpRenderLangChips);
+      document.getElementById('fpReImgBtn').addEventListener('click', function () { document.getElementById('fpReImgFile').click(); });
+      document.getElementById('fpReImgPreview').addEventListener('click', function () { document.getElementById('fpReImgFile').click(); });
+      document.getElementById('fpReImgFile').addEventListener('change', function () {
+        var file = this.files && this.files[0];
+        if (!file) return;
+        _rpLogoFilename = file.name;
+        var reader = new FileReader();
+        reader.onload = function (e) { _rpLogoData = e.target.result; rpSetImgPreview(_rpLogoData); };
+        reader.readAsDataURL(file);
+        this.value = '';
+      });
+      function closeFpRepublishModal() {
+        document.getElementById('fpRepublishModal').style.display = 'none';
+        _fpRepublishTarget = null;
+      }
+      // Confirm when the chosen deck differs from the presentation's original deck.
+      function fpRepublishConfirmIfDifferent(deckId) {
+        if (deckId === _fpRepublishTarget.deckId) return true;
+        return window.confirm('This rebuilds the live link from a different deck than the original. The content at the existing link will change. Continue?');
+      }
+      document.getElementById('fpRepublishCancel').addEventListener('click', closeFpRepublishModal);
+      document.getElementById('fpRepublishModal').addEventListener('click', function (e) { if (e.target === this) closeFpRepublishModal(); });
+      document.getElementById('fpRepublishTweak').addEventListener('click', function () {
+        if (!_fpRepublishTarget) return;
+        var deckId = document.getElementById('fpRepublishDeckSelect').value;
+        if (!deckId) { alert('Pick a deck first.'); return; }
+        var company = document.getElementById('fpReCompany').value.trim();
+        if (!company) { document.getElementById('fpReCompany').focus(); return; }
+        if (!fpRepublishConfirmIfDifferent(deckId)) return;
+        var def   = document.getElementById('fpReDefaultLang').value || 'en';
+        var langs = [def].concat(_rpSelectedLangs.filter(function (l) { return l !== def; }));
+        // Carry the already-filled details to the builder so it doesn't re-ask them.
+        var payload = {
+          presId:           _fpRepublishTarget.id,
+          deckId:           deckId,
+          presentationName: document.getElementById('fpReName').value.trim(),
+          customerName:     company,
+          contactName:      document.getElementById('fpReContact').value.trim(),
+          defaultLanguage:  def,
+          languages:        langs,
+          logoFilename:     _rpLogoFilename,
+          logoData:         _rpLogoData
+        };
+        try {
+          sessionStorage.setItem('pb-republish-payload', JSON.stringify(payload));
+        } catch (e) {
+          // Image too large for sessionStorage — carry everything except the image (server keeps current)
+          payload.logoData = ''; payload.logoFilename = '';
+          try { sessionStorage.setItem('pb-republish-payload', JSON.stringify(payload)); } catch (e2) {}
+        }
+        window.location.href = '/builder/?republish=' + encodeURIComponent(_fpRepublishTarget.id) + '&deck=' + encodeURIComponent(deckId);
+      });
+      document.getElementById('fpRepublishNow').addEventListener('click', function () {
+        if (!_fpRepublishTarget) return;
+        var deckId = document.getElementById('fpRepublishDeckSelect').value;
+        if (!deckId) { alert('Pick a deck first.'); return; }
+        var company = document.getElementById('fpReCompany').value.trim();
+        if (!company) { document.getElementById('fpReCompany').focus(); return; }
+        if (!fpRepublishConfirmIfDifferent(deckId)) return;
+        var def   = document.getElementById('fpReDefaultLang').value || 'en';
+        var langs = [def].concat(_rpSelectedLangs.filter(function (l) { return l !== def; }));
+        var btn = this; btn.disabled = true; var orig = btn.textContent; btn.textContent = 'Publishing…';
+        fetch('/api/presentations/' + _fpRepublishTarget.id + '/republish', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            deckId:           deckId,
+            presentationName: document.getElementById('fpReName').value.trim(),
+            customerName:     company,
+            contactName:      document.getElementById('fpReContact').value.trim(),
+            logoFilename:     _rpLogoFilename,
+            logoData:         _rpLogoData,
+            defaultLanguage:  def,
+            languages:        langs
+          })
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            btn.disabled = false; btn.textContent = orig;
+            if (!res.success) { alert('Republish failed: ' + (res.error || '')); return; }
+            closeFpRepublishModal();
+            refreshFromApi();
+          })
+          .catch(function () { btn.disabled = false; btn.textContent = orig; alert('Republish failed'); });
+      });
 
       var _deleteTarget = null;
       var _deleteMode   = 'archive'; // 'archive' | 'permanent'

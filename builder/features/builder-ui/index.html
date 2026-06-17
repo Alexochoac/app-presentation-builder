@@ -1108,6 +1108,9 @@
             <button id="savePresBtn" class="btn-primary" style="font-size:12px;padding:6px 14px;">
               Save as Presentation
             </button>
+            <button id="republishPublishBtn" class="btn-primary" style="display:none;font-size:12px;padding:6px 14px;background:#16a34a;border-color:#16a34a;">
+              Publish &rarr; <span id="republishPresLabel"></span>
+            </button>
           </div>
         </div>
         <div class="canvas-frame-wrap" id="canvasFrameWrap">
@@ -1612,7 +1615,17 @@
       }
       initDeckControls();
       initDeckSidebarHover();
-      loadDecks();
+      var rpPresId = params.get('republish');
+      var rpDeckId = params.get('deck');
+      if (rpPresId && rpDeckId) {
+        // Republish mode (arrived from the dashboard): force the chosen deck active, then load.
+        fetch('/api/decks/active', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: rpDeckId }) })
+          .then(function () { loadDecks(); })
+          .catch(function () { loadDecks(); });
+        setupRepublishButton(rpPresId);
+      } else {
+        loadDecks();
+      }
       bindModals();
       bindSavePresModal();
       initFinishedPanel();
@@ -1634,6 +1647,66 @@
         loadDeckSlides();
       }).catch(function () {
         document.getElementById('deckList').innerHTML = '<div class="deck-empty">Failed to load.</div>';
+      });
+    }
+
+    // Republish mode: reveal the "Publish → #id" button (hides normal Save). The dashboard's
+    // "Edit on Builder" carries the already-filled details (name/company/contact/image/languages)
+    // in sessionStorage, so here you only tweak slides — clicking Publish commits directly from the
+    // CURRENT active deck to the same id (no second form), then returns to the dashboard. If no
+    // carried details exist (e.g. opened directly), it falls back to opening the edit form.
+    function setupRepublishButton(presId) {
+      var btn  = document.getElementById('republishPublishBtn');
+      var save = document.getElementById('savePresBtn');
+      if (!btn) return;
+      if (save) save.style.display = 'none';
+      var labelEl = document.getElementById('republishPresLabel');
+      if (labelEl) labelEl.textContent = '#' + presId;
+      btn.style.display = '';
+
+      var carried = null;
+      try {
+        var raw = sessionStorage.getItem('pb-republish-payload');
+        if (raw) { var pj = JSON.parse(raw); if (pj && pj.presId === presId) carried = pj; }
+      } catch (e) { /* ignore */ }
+
+      btn.addEventListener('click', function () {
+        if (carried) {
+          // Commit directly with the carried details + the current active deck (slides tweaked here)
+          btn.disabled = true;
+          var orig = btn.innerHTML;
+          btn.textContent = 'Publishing…';
+          fetch('/api/presentations/' + presId + '/republish', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              deckId:           activeDeckId,
+              presentationName: carried.presentationName,
+              customerName:     carried.customerName,
+              contactName:      carried.contactName,
+              defaultLanguage:  carried.defaultLanguage,
+              languages:        carried.languages,
+              logoFilename:     carried.logoFilename || '',
+              logoData:         carried.logoData || ''
+            })
+          })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+              if (!res.success) { btn.disabled = false; btn.innerHTML = orig; alert('Publish failed: ' + (res.error || '')); return; }
+              try { sessionStorage.removeItem('pb-republish-payload'); } catch (e) {}
+              window.location.href = '/';
+            })
+            .catch(function () { btn.disabled = false; btn.innerHTML = orig; alert('Publish failed'); });
+          return;
+        }
+        // Fallback: no carried details — open the edit form, save republishes to the same id
+        fetch('/api/presentations/' + presId)
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res.success || !res.data) { alert('Could not load presentation #' + presId); return; }
+            openSavePresModal(res.data);
+            window._republishReturnToDashboard = true;   // set AFTER open (which clears it)
+          })
+          .catch(function () { alert('Could not load presentation #' + presId); });
       });
     }
 
@@ -2457,6 +2530,7 @@
 
     function openSavePresModal(editPres) {
       var modal = document.getElementById('savePresModal');
+      window._republishReturnToDashboard = false;   // cleared on every open; republish flow re-sets it after
       pendingReplaceId = editPres ? editPres.id : null;
       document.getElementById('savePresModalTitle').textContent = editPres ? 'Edit Presentation' : 'Save as Presentation';
       document.getElementById('savePresCompany').value = editPres ? (editPres.customerName     || '') : '';
@@ -2607,7 +2681,8 @@
             coverLogoSrc:     deckCoverLogoSrc || '',
             showCoverLogo:    deckCoverHasLogoSlot ? saveShowOnCover : false,
             defaultLanguage:  defaultLang,
-            languages:        allLangs
+            languages:        allLangs,
+            publish:          !!window._republishReturnToDashboard
           })
         }).then(function (r) { return r.json(); }).then(function (res) {
           btn.disabled = false;
@@ -2615,6 +2690,8 @@
           if (!res.success) { alert('Save failed: ' + (res.error || '')); return; }
           pendingReplaceId = null;
           modal.classList.remove('open');
+          // Republish mode (arrived from the dashboard): go back to the dashboard after saving.
+          if (window._republishReturnToDashboard) { window._republishReturnToDashboard = false; window.location.href = '/'; return; }
           var panelBody  = document.getElementById('finishedPanelBody');
           var toggleBtn  = document.getElementById('finishedToggleBtn');
           if (!panelBody.classList.contains('open')) {

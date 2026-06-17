@@ -3017,15 +3017,24 @@ app.post('/api/presentations', function (req, res) {
       var repDefaultLang = (body.defaultLanguage || 'en').trim();
       var repLanguages   = Array.isArray(body.languages) ? body.languages.filter(Boolean) : [];
       existing.presentationName = presentationName;
+      existing.customerName     = customerName;
       existing.contactName      = contactName;
       existing.contactTitle     = contactTitle;
       if (customerLogoSrc) existing.customerLogoSrc = customerLogoSrc;
       existing.showCoverLogo    = body.showCoverLogo !== false;
+      existing.deckId          = activeDeckId;   // re-snapshotted from the active deck
       existing.slideCount     = slides.filter(function (s) { return s.visible; }).length;
       existing.slides         = slides;
       existing.defaultLanguage = repDefaultLang;
       existing.languages       = repLanguages;
-      existing.replacedAt     = new Date().toISOString();
+      var repNow        = new Date().toISOString();
+      var repWasPub     = !!existing.publishedAt;
+      var repFirstPub   = body.publish && !repWasPub;   // builder publish of a not-yet-live draft
+      if (repFirstPub) existing.publishedAt = repNow;
+      else if (repWasPub) existing.replacedAt = repNow;  // re-publish of an already-live presentation
+      var repDeckName = (deckMeta && deckMeta.name) || activeDeckId;
+      pushPresEvent(existing, repFirstPub ? 'published' : (repWasPub ? 'republished' : 'edited'),
+        { deckId: activeDeckId, deckName: repDeckName });
       fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
       try {
         buildFrozenPresentation(existing);
@@ -3262,6 +3271,119 @@ app.post('/api/presentations/:id/publish', function (req, res) {
   } catch (e) { /* non-fatal */ }
 
   res.json({ success: true, url: publicUrl });
+});
+
+// POST /api/presentations/:id/edit — update text fields (name / company / contact) only, then
+// rebuild the frozen file from the presentation's OWN deckId + slide snapshot (never the active
+// deck). The public link/id is preserved; only the content (e.g. cover "Proposal for <customer>")
+// is refreshed. Slides/branding are NOT re-snapshotted here — that's what Republish is for.
+app.post('/api/presentations/:id/edit', function (req, res) {
+  var id = req.params.id;
+  if (!/^[a-z0-9-]+$/i.test(id)) {
+    return res.status(400).json({ success: false, error: 'Invalid presentation id' });
+  }
+  try {
+    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pres = (data.presentations || []).find(function (p) { return p.id === id; });
+    if (!pres) return res.status(404).json({ success: false, error: 'Presentation not found' });
+    if (pres.archivedAt) return res.status(400).json({ success: false, error: 'Cannot edit an archived presentation' });
+
+    var body = req.body || {};
+    var customerName = (body.customerName || '').trim();
+    if (!customerName) return res.status(400).json({ success: false, error: 'customerName is required' });
+
+    pres.presentationName = (body.presentationName || '').trim();
+    pres.customerName     = customerName;
+    pres.contactName      = (body.contactName || '').trim();
+    pres.editedAt         = new Date().toISOString();
+    pushPresEvent(pres, 'edited');
+    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+
+    // Refresh the frozen file so the new name shows on the cover — but only if the source deck
+    // still exists (rebuilding from a deleted deck would strip deck-specific content).
+    var deckExists = (readDecks().decks || []).some(function (d) { return d.id === pres.deckId; });
+    if (deckExists) {
+      try { buildFrozenPresentation(pres); }
+      catch (buildErr) { console.error('Frozen rebuild failed:', buildErr.message); }
+    }
+
+    res.json({ success: true, data: pres });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/presentations/:id/republish { deckId } — rebuild the presentation from the chosen
+// deck's CURRENT slides + branding (re-snapshot), keeping the same id / public link / metadata.
+// Used by the dashboard "Republish now" and the builder's republish-mode Publish button.
+app.post('/api/presentations/:id/republish', function (req, res) {
+  var id = req.params.id;
+  if (!/^[a-z0-9-]+$/i.test(id)) {
+    return res.status(400).json({ success: false, error: 'Invalid presentation id' });
+  }
+  try {
+    var deckId = ((req.body || {}).deckId || '').trim();
+    if (!deckId) return res.status(400).json({ success: false, error: 'deckId is required' });
+
+    var decks = (readDecks().decks || []);
+    if (!decks.some(function (d) { return d.id === deckId; })) {
+      return res.status(404).json({ success: false, error: 'Deck not found' });
+    }
+
+    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pres = (data.presentations || []).find(function (p) { return p.id === id; });
+    if (!pres) return res.status(404).json({ success: false, error: 'Presentation not found' });
+    if (pres.archivedAt) return res.status(400).json({ success: false, error: 'Cannot republish an archived presentation' });
+
+    // Re-snapshot the chosen deck's slides (mirrors the Save-as-Presentation snapshot)
+    var deck    = readDeckById(deckId);
+    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var slides  = (deck.slides || []).map(function (s) {
+      var lib = library.slides.find(function (l) { return l.id === s.librarySlideId; });
+      return { id: s.id, librarySlideId: s.librarySlideId, name: (lib && lib.name) || s.id, visible: s.visible !== false };
+    });
+
+    pres.deckId     = deckId;
+    pres.slides     = slides;
+    pres.slideCount = slides.filter(function (s) { return s.visible; }).length;
+
+    // Optional detail edits made in the Republish form (default to existing values)
+    var rpBody = req.body || {};
+    if (rpBody.customerName !== undefined) {
+      var rpCustomer = (rpBody.customerName || '').trim();
+      if (rpCustomer) pres.customerName = rpCustomer;
+    }
+    if (rpBody.presentationName !== undefined) pres.presentationName = (rpBody.presentationName || '').trim();
+    if (rpBody.contactName !== undefined)      pres.contactName      = (rpBody.contactName || '').trim();
+    if (rpBody.defaultLanguage)                pres.defaultLanguage  = String(rpBody.defaultLanguage).trim();
+    if (Array.isArray(rpBody.languages))       pres.languages        = rpBody.languages.filter(Boolean);
+    // Optional new image uploaded from the Republish form
+    var rpLogoFilename = (rpBody.logoFilename || '').trim();
+    var rpLogoData     = (rpBody.logoData || '').trim();
+    if (rpLogoFilename && rpLogoData) {
+      var rpM = rpLogoData.match(/^data:([A-Za-z0-9+/]+);base64,(.+)$/);
+      if (rpM) {
+        var rpBuf  = Buffer.from(rpM[2], 'base64');
+        var rpSafe = dedupUpload(path.basename(rpLogoFilename), rpBuf).split('/').pop();
+        pres.customerLogoSrc = '/slides/uploads/' + rpSafe;
+      }
+    }
+
+    var rpNow      = new Date().toISOString();
+    var rpWasPub   = !!pres.publishedAt;
+    if (!rpWasPub) pres.publishedAt = rpNow;   // first publish
+    else pres.replacedAt = rpNow;              // actual re-publish
+    var rpDeckName = (decks.find(function (d) { return d.id === deckId; }) || {}).name || deckId;
+    pushPresEvent(pres, rpWasPub ? 'republished' : 'published', { deckId: deckId, deckName: rpDeckName });
+    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+
+    try { buildFrozenPresentation(pres); }
+    catch (buildErr) { return res.status(500).json({ success: false, error: 'Build failed: ' + buildErr.message }); }
+
+    res.json({ success: true, url: PUBLIC_BASE_URL + '/public/' + id });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 // GET /finished/:id/ — internal preview (protected by global requireAuth middleware)
