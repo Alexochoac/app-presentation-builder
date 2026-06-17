@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Settings — Presentation Builder</title>
+  <title>Settings â€” Presentation Builder</title>
   <link rel="stylesheet" href="/shared/app-style.css">
   <style>
     .toggle-group { display:flex; gap:6px; margin-top:8px; }
@@ -51,7 +51,7 @@
     </ul>
     <div class="sidebar-logout">
       <a href="/auth/logout" class="sidebar-nav-item"><span class="nav-icon">&#8617;</span><span class="nav-label">Log out</span></a>
-      <div class="sidebar-version">v1.3.1</div>
+      <div class="sidebar-version">v1.4.0</div>
     </div>
     <button class="sidebar-toggle" id="sidebarToggle" aria-label="Collapse sidebar">
       <span class="toggle-icon">&#8249;</span>
@@ -176,7 +176,7 @@
       initSidebar();
     });
 
-    // ── New Deck Defaults ─────────────────────────────────────────────────────
+    // â”€â”€ New Deck Defaults â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function initDefaultsSection() {
       var saveStatus = document.getElementById('defaultsSaveStatus');
       var themeGroup = document.getElementById('defaultThemeGroup');
@@ -230,7 +230,7 @@
       });
     }
 
-    // ── Company Logo ──────────────────────────────────────────────────────────
+    // â”€â”€ Company Logo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function initLogoSection() {
       var list       = document.getElementById('logoList');
       var uploadBtn  = document.getElementById('uploadLogoBtn');
@@ -290,7 +290,7 @@
       });
     }
 
-    // ── Sidebar ───────────────────────────────────────────────────────────────
+    // â”€â”€ Sidebar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function initSidebar() {
       var sidebar   = document.getElementById('sidebar');
       var overlay   = document.getElementById('sidebarOverlay');

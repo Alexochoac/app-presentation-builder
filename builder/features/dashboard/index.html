@@ -1,13 +1,13 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard — Presentation Builder</title>
+  <title>Dashboard â€” Presentation Builder</title>
   <link rel="stylesheet" href="/shared/app-style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <style>
-    /* ── Flatpickr dark-mode overrides ── */
+    /* â”€â”€ Flatpickr dark-mode overrides â”€â”€ */
     .flatpickr-calendar {
       background: #111 !important;
       border: 1px solid rgba(255,255,255,0.12) !important;
@@ -58,7 +58,7 @@
     .flatpickr-months .flatpickr-prev-month svg,
     .flatpickr-months .flatpickr-next-month svg { fill: #fff !important; }
 
-    /* ── Filter bar ── */
+    /* â”€â”€ Filter bar â”€â”€ */
     #filterBar {
       display: flex;
       gap: 8px;
@@ -105,7 +105,7 @@
     }
     #filterDateClear:hover { color: var(--text); }
 
-    /* ── Custom sort dropdown ── */
+    /* â”€â”€ Custom sort dropdown â”€â”€ */
     #sortDropdown { position: relative; }
     #sortTrigger { cursor: pointer; user-select: none; }
     #sortTrigger .chevron { font-size: 10px; opacity: .5; transition: transform .15s; }
@@ -135,7 +135,7 @@
     .sort-option:hover { background: rgba(255,255,255,.08); color: #fff; }
     .sort-option.selected { color: #F5A623; font-weight: 600; }
 
-    /* ── Views Overview ── */
+    /* â”€â”€ Views Overview â”€â”€ */
     .coming-soon-badge {
       display: inline-flex;
       align-items: center;
@@ -263,7 +263,7 @@
     }
     .pres-thumb-clickable:hover::after { opacity: 1; }
 
-    /* ── Summary cards ── */
+    /* â”€â”€ Summary cards â”€â”€ */
     .summary-cards {
       display: flex;
       gap: 12px;
@@ -290,7 +290,7 @@
     .summary-card--last .summary-card-value { font-size: 16px; font-weight: 600; }
     .summary-card-label { font-size: 12px; color: var(--muted); margin-top: 5px; }
 
-    /* ── Recent activity ── */
+    /* â”€â”€ Recent activity â”€â”€ */
     .activity-list { list-style: none; margin: 0; padding: 0; }
     .activity-item {
       display: flex;
@@ -307,7 +307,7 @@
     .activity-time { color: var(--muted); font-size: 12px; white-space: nowrap; }
     .activity-empty { padding: 12px 0; font-size: 13px; color: var(--muted); }
 
-    /* ── Finished Presentations panel ── */
+    /* â”€â”€ Finished Presentations panel â”€â”€ */
     .fp-list { list-style: none; margin: 0; padding: 0; }
     .fp-card {
       display: flex;
@@ -391,7 +391,7 @@
     .fp-pagination button:hover:not(:disabled) { border-color: var(--accent); }
     .fp-pagination button:disabled { opacity: .35; cursor: default; }
 
-    /* ── View toggle ── */
+    /* â”€â”€ View toggle â”€â”€ */
     .fp-view-toggle {
       display: flex; border: 1px solid var(--border);
       border-radius: var(--radius-btn); overflow: hidden; flex-shrink: 0;
@@ -405,7 +405,7 @@
     .fp-view-btn:hover:not(.active) { background: rgba(255,255,255,.06); color: var(--text); }
     [data-theme="light"] .fp-view-btn:hover:not(.active) { background: rgba(0,0,0,.05); }
 
-    /* ── Grid mode ── */
+    /* â”€â”€ Grid mode â”€â”€ */
     .fp-list.fp-grid-mode {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -445,7 +445,7 @@
     .fp-card-id  { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
     .fp-card-ago { font-size: 10px; color: var(--muted); opacity: .8; }
 
-    /* ── Metrics strip ── */
+    /* â”€â”€ Metrics strip â”€â”€ */
     .fp-metrics {
       display: flex; gap: 14px; font-size: 11px; color: var(--muted);
       flex-wrap: wrap; margin-top: 2px;
@@ -454,7 +454,7 @@
     .fp-metric-val { color: var(--text); font-weight: 600; }
     .fp-metric-loading { opacity: .4; font-style: italic; }
 
-    /* ── Modal boxes ── */
+    /* â”€â”€ Modal boxes â”€â”€ */
     .fp-modal-box {
       background: #1c1c1e;
       border: 1px solid rgba(255,255,255,.14);
@@ -525,7 +525,7 @@
         <span class="nav-icon">&#8617;</span>
         <span class="nav-label">Log out</span>
       </a>
-      <div class="sidebar-version">v1.3.1</div>
+      <div class="sidebar-version">v1.4.0</div>
     </div>
 
     <button class="sidebar-toggle" id="sidebarToggle" aria-label="Collapse sidebar">
@@ -544,7 +544,7 @@
       <div class="panel-header" style="cursor:pointer;" id="engActHeader">
         <div>
           <h2 class="panel-title">Engagement Activity</h2>
-          <p class="panel-subtitle">Pageviews and visitors · Umami</p>
+          <p class="panel-subtitle">Pageviews and visitors Â· Umami</p>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
           <div id="engDateDropdown">
@@ -557,7 +557,7 @@
               <div class="sort-option" data-value="24h">Last 24 hours</div>
               <div class="sort-option selected" data-value="7d">Last 7 days</div>
               <div class="sort-option" data-value="30d">Last 30 days</div>
-              <div class="sort-option" data-value="custom">Custom…</div>
+              <div class="sort-option" data-value="custom">Customâ€¦</div>
             </div>
             <input id="engDateInput" type="text" readonly style="position:absolute;bottom:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none;">
           </div>
@@ -617,7 +617,7 @@
           <button id="engCustomDateBtn" type="button">
             <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.7;flex-shrink:0;"><rect x="2" y="4" width="16" height="14" rx="2"/><line x1="2" y1="8" x2="18" y2="8"/><line x1="6" y1="2" x2="6" y2="6"/><line x1="14" y1="2" x2="14" y2="6"/></svg>
             <span id="engCustomDateLabel">Pick dates</span>
-            <span style="opacity:.5;cursor:pointer;" id="engCustomDateClear" title="Clear">×</span>
+            <span style="opacity:.5;cursor:pointer;" id="engCustomDateClear" title="Clear">Ã—</span>
           </button>
         </div>
       </div>
@@ -628,7 +628,7 @@
       <div class="panel-header">
         <div>
           <h2 class="panel-title">Finished Presentations</h2>
-          <p class="panel-subtitle" id="fpSubtitle">Loading…</p>
+          <p class="panel-subtitle" id="fpSubtitle">Loadingâ€¦</p>
         </div>
         <div class="fp-view-toggle">
           <button id="fpViewGrid" class="fp-view-btn" title="Grid view">&#x229E;</button>
@@ -638,7 +638,7 @@
       <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
         <label class="filter-pill" style="flex:1;min-width:160px;max-width:300px;">
           <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.4;flex-shrink:0;"><circle cx="9" cy="9" r="6"/><line x1="14" y1="14" x2="18" y2="18"/></svg>
-          <input type="search" id="fpSearch" placeholder="Search name or customer…" style="flex:1;min-width:0;">
+          <input type="search" id="fpSearch" placeholder="Search name or customerâ€¦" style="flex:1;min-width:0;">
         </label>
         <div id="fpStatusDropdown" style="position:relative;">
           <button id="fpStatusTrigger" class="filter-pill" type="button" style="cursor:pointer;user-select:none;">
@@ -654,7 +654,7 @@
         <button id="fpDateBtn" class="filter-pill" type="button" style="white-space:nowrap;cursor:pointer;">
           <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.4;flex-shrink:0;"><rect x="2" y="4" width="16" height="14" rx="2"/><line x1="2" y1="8" x2="18" y2="8"/><line x1="6" y1="2" x2="6" y2="6"/><line x1="14" y1="2" x2="14" y2="6"/></svg>
           <span id="fpDateLabel">Date range</span>
-          <span id="fpDateClear" style="display:none;font-size:15px;line-height:1;color:var(--muted);cursor:pointer;padding:0 2px;" title="Clear">×</span>
+          <span id="fpDateClear" style="display:none;font-size:15px;line-height:1;color:var(--muted);cursor:pointer;padding:0 2px;" title="Clear">Ã—</span>
         </button>
         <input id="fpDateInput" type="text" readonly style="position:absolute;bottom:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none;">
         <div id="fpSortDropdown" style="position:relative;">
@@ -665,7 +665,7 @@
           <div id="fpSortMenu" class="views-floating-menu">
             <div class="sort-option selected" data-value="newest">Newest first</div>
             <div class="sort-option" data-value="oldest">Oldest first</div>
-            <div class="sort-option" data-value="name">Name A–Z</div>
+            <div class="sort-option" data-value="name">Name Aâ€“Z</div>
           </div>
         </div>
       </div>
@@ -691,7 +691,7 @@
               <div class="sort-option selected" data-value="7d">Last 7 days</div>
               <div class="sort-option" data-value="24h">Last 24 hours</div>
               <div class="sort-option" data-value="30d">Last 30 days</div>
-              <div class="sort-option" data-value="custom">Custom…</div>
+              <div class="sort-option" data-value="custom">Customâ€¦</div>
             </div>
             <input id="viewsDateInput" type="text" readonly style="position:absolute;bottom:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none;">
           </div>
@@ -701,15 +701,15 @@
       <div id="pubActBody" style="display:none;">
         <div id="summaryCards" class="summary-cards">
           <div class="summary-card">
-            <div class="summary-card-value" id="cardTotalPubs">—</div>
+            <div class="summary-card-value" id="cardTotalPubs">â€”</div>
             <div class="summary-card-label">Presentations published</div>
           </div>
           <div class="summary-card">
-            <div class="summary-card-value" id="cardTotalDecks">—</div>
+            <div class="summary-card-value" id="cardTotalDecks">â€”</div>
             <div class="summary-card-label">Total decks</div>
           </div>
           <div class="summary-card summary-card--last">
-            <div class="summary-card-value" id="cardLastPubName">—</div>
+            <div class="summary-card-value" id="cardLastPubName">â€”</div>
             <div class="summary-card-label" id="cardLastPubLabel">Last published</div>
           </div>
         </div>
@@ -729,7 +729,7 @@
           <button id="viewsCustomDateBtn" type="button">
             <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.7;flex-shrink:0;"><rect x="2" y="4" width="16" height="14" rx="2"/><line x1="2" y1="8" x2="18" y2="8"/><line x1="6" y1="2" x2="6" y2="6"/><line x1="14" y1="2" x2="14" y2="6"/></svg>
             <span id="viewsCustomDateLabel">Pick dates</span>
-            <span style="opacity:.5;cursor:pointer;" id="viewsCustomDateClear" title="Clear">×</span>
+            <span style="opacity:.5;cursor:pointer;" id="viewsCustomDateClear" title="Clear">Ã—</span>
           </button>
         </div>
 
@@ -814,11 +814,11 @@
   <div id="fpRepublishModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:99999;align-items:center;justify-content:center;">
     <div class="fp-modal-box" style="max-width:440px;max-height:90vh;overflow-y:auto;">
       <div id="fpRepublishTitle" style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;">Republish Presentation</div>
-      <p style="font-size:12px;color:var(--muted);margin:0 0 14px;line-height:1.5;">Rebuild from a deck's current slides. The public link stays the same — only the content changes. Image &amp; slides are edited via <em>Edit on Builder</em>.</p>
+      <p style="font-size:12px;color:var(--muted);margin:0 0 14px;line-height:1.5;">Rebuild from a deck's current slides. The public link stays the same â€” only the content changes. Image &amp; slides are edited via <em>Edit on Builder</em>.</p>
       <label for="fpRepublishDeckSelect" style="display:block;font-size:12px;color:var(--muted);margin-bottom:6px;">Rebuild from deck</label>
       <select id="fpRepublishDeckSelect" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:13px;outline:none;font-family:inherit;margin-bottom:12px;"></select>
       <div id="fpRepublishDisclaimer" style="display:none;background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.35);border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:12px;color:#f97316;line-height:1.5;">
-        ⚠ This rebuilds the live link from a <strong>different deck</strong> than the original. The content customers see at the existing link will change. You'll be asked to confirm.
+        âš  This rebuilds the live link from a <strong>different deck</strong> than the original. The content customers see at the existing link will change. You'll be asked to confirm.
       </div>
       <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;">
         <label style="font-size:12px;color:var(--muted);">Presentation Name
@@ -834,7 +834,7 @@
           <div style="display:flex;align-items:center;gap:10px;margin-top:5px;">
             <div id="fpReImgPreview" style="width:46px;height:46px;border-radius:8px;border:1px solid var(--border);background:var(--bg);overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;">
               <img id="fpReImg" src="" alt="" style="width:100%;height:100%;object-fit:contain;display:none;">
-              <span id="fpReImgPlaceholder" style="font-size:18px;color:var(--muted);">🖼</span>
+              <span id="fpReImgPlaceholder" style="font-size:18px;color:var(--muted);">ðŸ–¼</span>
             </div>
             <button type="button" id="fpReImgBtn" style="padding:6px 12px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:12px;cursor:pointer;font-family:inherit;">Change image</button>
             <input type="file" id="fpReImgFile" accept="image/*" style="display:none;">
@@ -881,7 +881,7 @@
       });
     })();
 
-    // ── Sidebar JS ──────────────────────────────────────────────
+    // â”€â”€ Sidebar JS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     (function () {
       var sidebar  = document.getElementById('sidebar');
       var overlay  = document.getElementById('sidebarOverlay');
@@ -928,7 +928,7 @@
       return isoStr ? localDate(new Date(isoStr)) : '';
     }
 
-    // ── Views Overview Chart ────────────────────────────────────────
+    // â”€â”€ Views Overview Chart â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     (function () {
       var presentations = [];   // populated from API via event
       var checkedIds = [];      // which presentation IDs are selected; empty = all
@@ -937,7 +937,7 @@
       var customDates = null;
       var chartInstance = null;
 
-      // ── Real data: publications per day ─────────────────────────
+      // â”€â”€ Real data: publications per day â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       function pubsForRange(presIds) {
         var days = getDays();
         var labels = [], data = [];
@@ -996,7 +996,7 @@
 
       function isDark() { return document.documentElement.getAttribute('data-theme') !== 'light'; }
 
-      // ── Chart rendering ──────────────────────────────────────────
+      // â”€â”€ Chart rendering â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       function buildChart() {
         var canvas = document.getElementById('viewsChart');
         var ids = getActiveIds();
@@ -1037,7 +1037,7 @@
         });
       }
 
-      // ── Presentations dropdown ───────────────────────────────────
+      // â”€â”€ Presentations dropdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       function syncPresLabel() {
         var label = document.getElementById('viewsPresLabel');
         if (isOverview || checkedIds.length === presentations.length || checkedIds.length === 0) {
@@ -1059,7 +1059,7 @@
         searchWrap.style.cssText = 'padding:6px 8px 4px;';
         var searchInput = document.createElement('input');
         searchInput.type = 'search';
-        searchInput.placeholder = 'Search presentations…';
+        searchInput.placeholder = 'Search presentationsâ€¦';
         searchInput.style.cssText = 'width:100%;box-sizing:border-box;padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:12px;outline:none;';
         searchWrap.appendChild(searchInput);
         menu.appendChild(searchWrap);
@@ -1074,7 +1074,7 @@
           var q = (filter || '').toLowerCase();
           var any = false;
           presentations.forEach(function (p) {
-            var name = (p.presentationName ? p.customerName + ' — ' + p.presentationName : p.customerName) || p.id;
+            var name = (p.presentationName ? p.customerName + ' â€” ' + p.presentationName : p.customerName) || p.id;
             if (q && name.toLowerCase().indexOf(q) === -1) return;
             any = true;
             var row = document.createElement('label');
@@ -1132,7 +1132,7 @@
         presTrigger.classList.toggle('open', open);
       });
 
-      // ── Overview tab ─────────────────────────────────────────────
+      // â”€â”€ Overview tab â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       document.querySelector('.views-tab[data-id="all"]').addEventListener('click', function () {
         isOverview = true;
         checkedIds = presentations.map(function (p) { return p.id; });
@@ -1142,7 +1142,7 @@
         buildChart();
       });
 
-      // ── Filter from logo click in finished presentations ──────────
+      // â”€â”€ Filter from logo click in finished presentations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       document.addEventListener('viewsFilterByPres', function (e) {
         var id = e.detail;
         isOverview = false;
@@ -1154,7 +1154,7 @@
         document.getElementById('viewsChart').closest('.panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
 
-      // ── Date range dropdown ──────────────────────────────────────
+      // â”€â”€ Date range dropdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       var dateTrigger = document.getElementById('viewsDateTrigger');
       var dateMenu    = document.getElementById('viewsDateMenu');
 
@@ -1190,7 +1190,7 @@
 
       presMenu.addEventListener('click', function (e) { e.stopPropagation(); });
 
-      // ── Flatpickr custom range ───────────────────────────────────
+      // â”€â”€ Flatpickr custom range â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       var fpViews = flatpickr('#viewsDateInput', {
         mode: 'range', dateFormat: 'Y-m-d', disableMobile: true,
         onChange: function (selectedDates) {
@@ -1200,7 +1200,7 @@
           var btn = document.getElementById('viewsCustomDateBtn');
           btn.style.display = 'flex';
           function fmt(d) { return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); }
-          document.getElementById('viewsCustomDateLabel').textContent = fmt(selectedDates[0]) + ' → ' + fmt(selectedDates[1]);
+          document.getElementById('viewsCustomDateLabel').textContent = fmt(selectedDates[0]) + ' â†’ ' + fmt(selectedDates[1]);
           document.getElementById('viewsDateLabel').textContent = 'Custom';
           dateMenu.querySelectorAll('.sort-option').forEach(function (o) {
             o.classList.toggle('selected', o.dataset.value === 'custom');
@@ -1221,7 +1221,7 @@
         buildChart();
       });
 
-      // ── Time ago helper ──────────────────────────────────────────
+      // â”€â”€ Time ago helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       function timeAgo(isoStr) {
         if (!isoStr) return '';
         var diff = Date.now() - new Date(isoStr).getTime();
@@ -1236,25 +1236,25 @@
         return months + ' month' + (months === 1 ? '' : 's') + ' ago';
       }
 
-      // ── Summary cards ────────────────────────────────────────────
+      // â”€â”€ Summary cards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       function buildSummaryCards(pres, deckCount) {
         var totalEl = document.getElementById('cardTotalPubs');
         var decksEl = document.getElementById('cardTotalDecks');
         var lastEl  = document.getElementById('cardLastPubName');
         var lastLbl = document.getElementById('cardLastPubLabel');
         if (totalEl) totalEl.textContent = pres.length;
-        if (decksEl) decksEl.textContent = (deckCount != null) ? deckCount : '—';
+        if (decksEl) decksEl.textContent = (deckCount != null) ? deckCount : 'â€”';
         var sorted = pres.slice().sort(function (a, b) {
           return (b.publishedAt || b.createdAt || '') > (a.publishedAt || a.createdAt || '') ? 1 : -1;
         });
         if (sorted.length > 0 && lastEl) {
           var last = sorted[sorted.length - 1];
-          lastEl.textContent  = last.presentationName || last.customerName || '—';
-          if (lastLbl) lastLbl.textContent = 'Last published — ' + timeAgo(last.publishedAt || last.createdAt);
+          lastEl.textContent  = last.presentationName || last.customerName || 'â€”';
+          if (lastLbl) lastLbl.textContent = 'Last published â€” ' + timeAgo(last.publishedAt || last.createdAt);
         }
       }
 
-      // ── Recent activity list ─────────────────────────────────────
+      // â”€â”€ Recent activity list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       function buildRecentActivity(pres) {
         var list = document.getElementById('recentActivity');
         if (!list) return;
@@ -1290,7 +1290,7 @@
         });
       }
 
-      // ── Bootstrap: wait for presentations to load ────────────────
+      // â”€â”€ Bootstrap: wait for presentations to load â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       function init(items, decks, deckCount) {
         presentations = items;
         checkedIds = items.map(function (p) { return p.id; });
@@ -1313,7 +1313,7 @@
   </script>
 
   <script>
-    // ── Publication Activity collapse ─────────────────────────────
+    // â”€â”€ Publication Activity collapse â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     (function () {
       var header  = document.getElementById('pubActHeader');
       var body    = document.getElementById('pubActBody');
@@ -1335,7 +1335,7 @@
   </script>
 
   <script>
-    // ── Engagement Activity card ───────────────────────────────────
+    // â”€â”€ Engagement Activity card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     (function () {
       var engChart       = null;
       var _engBreakdown  = []; // per-presentation series for tooltip breakdown
@@ -1343,15 +1343,15 @@
       var engRange       = '7d';
       var engCustom      = null;  // [Date, Date] when custom range active
       var engPresIds     = [];    // [] = all from current deck; [id,...] = specific subset
-      var _engAllLivePres = [];   // master list — all Live presentations, never filtered
-      var _engLivePres   = [];    // active list — filtered to current deck
+      var _engAllLivePres = [];   // master list â€” all Live presentations, never filtered
+      var _engLivePres   = [];    // active list â€” filtered to current deck
       var engDeckId      = null;  // null = all decks; 'deck-xxx' = specific deck
       var _engDecks      = [];    // list of all decks
       var engMode       = 'pageviews'; // 'pageviews' | 'events'
       var engEventsMode = 'popularity'; // 'popularity' | 'timeseries'
       var engDrillSlide = null;  // null | event name string when in drill-down
       var eventsChart   = null;
-      var engYMax       = 0;     // y-axis max — grows via niceMax, never shrinks
+      var engYMax       = 0;     // y-axis max â€” grows via niceMax, never shrinks
       var SLIDE_COLORS  = ['#6366f1','#f59e0b','#10b981','#ef4444','#3b82f6','#a855f7','#14b8a6','#f97316','#84cc16','#ec4899','#06b6d4','#8b5cf6'];
 
       function niceMax(val) {
@@ -1370,7 +1370,7 @@
         return engYMax;
       }
 
-      // ── Collapse ─────────────────────────────────────────────────
+      // â”€â”€ Collapse â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       var header  = document.getElementById('engActHeader');
       var body    = document.getElementById('engActBody');
       var chevron = document.getElementById('engActChevron');
@@ -1391,8 +1391,8 @@
         setOpen(body.style.display === 'none');
       });
 
-      // ── Build chart ───────────────────────────────────────────────
-      // Set up tooltip show/hide once — canvas element persists across chart rebuilds
+      // â”€â”€ Build chart â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // Set up tooltip show/hide once â€” canvas element persists across chart rebuilds
       (function () {
         var canvas = document.getElementById('engBarChart');
         var tip    = document.getElementById('engChartTooltip');
@@ -1511,7 +1511,7 @@
         });
       }
 
-      // ── Load data ─────────────────────────────────────────────────
+      // â”€â”€ Load data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       function getEngDates() {
         if (engCustom) {
           return { startAt: engCustom[0].getTime(), endAt: engCustom[1].getTime() };
@@ -1522,7 +1522,7 @@
       }
 
       // Returns the presIds to send to the API.
-      // [] means "all Live" to the server — only safe when no deck is selected.
+      // [] means "all Live" to the server â€” only safe when no deck is selected.
       // When a deck IS selected, explicitly send its presentation IDs.
       // Returns null when a deck is selected but has no Live presentations (render empty).
       function getActivePresIds() {
@@ -1555,7 +1555,7 @@
         else loadPageviewsChart();
       }
 
-      // ── Events chart ──────────────────────────────────────────────
+      // â”€â”€ Events chart â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       function showEventsSpinner(show) {
         var el = document.getElementById('engEventsSpinner');
         if (el) el.style.display = show ? 'flex' : 'none';
@@ -1789,7 +1789,7 @@
         }
       }
 
-      // ── Date range dropdown ───────────────────────────────────────
+      // â”€â”€ Date range dropdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       var dateTrigger = document.getElementById('engDateTrigger');
       var dateMenu    = document.getElementById('engDateMenu');
       dateTrigger.addEventListener('click', function (e) {
@@ -1810,8 +1810,8 @@
           var btn = document.getElementById('engCustomDateBtn');
           btn.style.display = 'flex';
           function fmt(d) { return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); }
-          document.getElementById('engCustomDateLabel').textContent = fmt(selectedDates[0]) + ' → ' + fmt(selectedDates[1]);
-          document.getElementById('engDateLabel').textContent = fmt(selectedDates[0]) + ' → ' + fmt(selectedDates[1]);
+          document.getElementById('engCustomDateLabel').textContent = fmt(selectedDates[0]) + ' â†’ ' + fmt(selectedDates[1]);
+          document.getElementById('engDateLabel').textContent = fmt(selectedDates[0]) + ' â†’ ' + fmt(selectedDates[1]);
           dateMenu.querySelectorAll('.sort-option').forEach(function (o) { o.classList.remove('selected'); });
           loadEngagement();
         }
@@ -1848,12 +1848,12 @@
         loadEngagement();
       });
 
-      // ── Back to Pageviews ─────────────────────────────────────────
+      // â”€â”€ Back to Pageviews â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       document.getElementById('engBackToPageviews').addEventListener('click', function () {
         switchEngMode('pageviews');
       });
 
-      // ── Sub-mode toggle (single button: Popularity ↔ Over time) ──
+      // â”€â”€ Sub-mode toggle (single button: Popularity â†” Over time) â”€â”€
       document.getElementById('engSubModeBtn').addEventListener('click', function () {
         engEventsMode = engEventsMode === 'popularity' ? 'timeseries' : 'popularity';
         document.getElementById('engEventsLegend').style.display = engEventsMode === 'timeseries' ? 'flex' : 'none';
@@ -1862,7 +1862,7 @@
         loadEventsChart();
       });
 
-      // ── Drill-down back (returns to popularity) ───────────────────
+      // â”€â”€ Drill-down back (returns to popularity) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       document.getElementById('engDrillBack').addEventListener('click', function () {
         engDrillSlide = null;
         document.getElementById('engDrillHeader').style.display = 'none';
@@ -1871,8 +1871,8 @@
         loadEventsChart();
       });
 
-      // ── Presentation filter (checkbox dropdown) ───────────────────
-      // Uses _engLivePres — set by deck filter (or _engAllLivePres when no deck selected)
+      // â”€â”€ Presentation filter (checkbox dropdown) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // Uses _engLivePres â€” set by deck filter (or _engAllLivePres when no deck selected)
       function buildEngPresMenu() {
         var menu = document.getElementById('engPresMenu');
         menu.innerHTML = '';
@@ -1882,7 +1882,7 @@
         searchWrap.style.cssText = 'padding:6px 8px 4px;';
         var searchInput = document.createElement('input');
         searchInput.type = 'search';
-        searchInput.placeholder = 'Search…';
+        searchInput.placeholder = 'Searchâ€¦';
         searchInput.style.cssText = 'width:100%;box-sizing:border-box;padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:12px;outline:none;';
         searchWrap.appendChild(searchInput);
         menu.appendChild(searchWrap);
@@ -1908,7 +1908,7 @@
         menu.appendChild(listWrap);
 
         function presName(p) {
-          return (p.presentationName ? p.customerName + ' — ' + p.presentationName : p.customerName) || p.id;
+          return (p.presentationName ? p.customerName + ' â€” ' + p.presentationName : p.customerName) || p.id;
         }
 
         function renderRows(filter) {
@@ -1989,7 +1989,7 @@
         loadEngagement();
       });
 
-      // ── Deck filter dropdown ──────────────────────────────────────
+      // â”€â”€ Deck filter dropdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       function buildEngDeckMenu() {
         var menu = document.getElementById('engDeckMenu');
         menu.innerHTML = '';
@@ -2069,7 +2069,7 @@
   </script>
 
   <script>
-    // ── Recent Activity collapse ──────────────────────────────────
+    // â”€â”€ Recent Activity collapse â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     (function () {
       var header  = document.getElementById('recentActHeader');
       var body    = document.getElementById('recentActBody');
@@ -2090,7 +2090,7 @@
   </script>
 
   <script>
-    // ── Finished Presentations panel ──────────────────────────────
+    // â”€â”€ Finished Presentations panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     (function () {
       var allPres       = [];
       var currentSort   = 'newest';
@@ -2158,7 +2158,7 @@
         return out;
       }
 
-      // ── Batch analytics fetch ─────────────────────────────────────
+      // â”€â”€ Batch analytics fetch â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       var _batchTimer = null;
       function scheduleBatchFetch() {
         clearTimeout(_batchTimer);
@@ -2184,20 +2184,20 @@
           var id = el.dataset.presId;
           var d  = batchData[id];
           if (!d) { el.innerHTML = '<span style="opacity:.35;font-size:11px;">no data yet</span>'; return; }
-          var visitors  = d.visitors  != null ? d.visitors  : '—';
-          var pageviews = d.pageviews != null ? d.pageviews : '—';
-          var visits    = '—';
-          var bounce    = '—';
-          var duration  = '—';
+          var visitors  = d.visitors  != null ? d.visitors  : 'â€”';
+          var pageviews = d.pageviews != null ? d.pageviews : 'â€”';
+          var visits    = 'â€”';
+          var bounce    = 'â€”';
+          var duration  = 'â€”';
           el.innerHTML =
-            '<span class="fp-metric">👤 <span class="fp-metric-val">' + visitors + '</span> visitors</span>' +
-            '<span class="fp-metric">👁 <span class="fp-metric-val">' + pageviews + '</span> views</span>' +
-            '<span class="fp-metric">↩ <span class="fp-metric-val">' + bounce + '</span> bounce</span>' +
-            '<span class="fp-metric">⏱ <span class="fp-metric-val">' + duration + '</span></span>';
+            '<span class="fp-metric">ðŸ‘¤ <span class="fp-metric-val">' + visitors + '</span> visitors</span>' +
+            '<span class="fp-metric">ðŸ‘ <span class="fp-metric-val">' + pageviews + '</span> views</span>' +
+            '<span class="fp-metric">â†© <span class="fp-metric-val">' + bounce + '</span> bounce</span>' +
+            '<span class="fp-metric">â± <span class="fp-metric-val">' + duration + '</span></span>';
         });
       }
 
-      // ── Menu helpers ──────────────────────────────────────────────
+      // â”€â”€ Menu helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       function closeAllFpMenus() {
         document.querySelectorAll('.fp-dropdown.open').forEach(function (d) { d.classList.remove('open'); });
       }
@@ -2211,7 +2211,7 @@
 
       document.addEventListener('click', function () { closeAllFpMenus(); });
 
-      // ── Card builders ─────────────────────────────────────────────
+      // â”€â”€ Card builders â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       function buildFpLogoEl(p) {
         var wrap = document.createElement('div');
         wrap.className = 'fp-item-logo';
@@ -2242,7 +2242,7 @@
           }
           document.dispatchEvent(new CustomEvent('viewsFilterByPres', { detail: p.id }));
         });
-        wrap.title = 'Click to filter engagement chart · Double-click to view in Publication Activity';
+        wrap.title = 'Click to filter engagement chart Â· Double-click to view in Publication Activity';
         return wrap;
       }
 
@@ -2252,9 +2252,9 @@
         var viewUrl = publicBaseUrl + '/public/' + p.id + '/';
         var span = document.createElement('span');
         span.className = 'fp-share-link';
-        var LABEL = '🔗 Share public link';
+        var LABEL = 'ðŸ”— Share public link';
         span.textContent = LABEL;
-        span.title = viewUrl + '\n\nClick to copy · Double-click to open';
+        span.title = viewUrl + '\n\nClick to copy Â· Double-click to open';
         var clickTimer = null;
         span.addEventListener('click', function (e) {
           e.stopPropagation();
@@ -2298,7 +2298,7 @@
         var gearBtn = document.createElement('button');
         gearBtn.className = 'fp-gear-btn';
         gearBtn.title = 'Actions';
-        gearBtn.textContent = '⚙';
+        gearBtn.textContent = 'âš™';
         gearBtn.addEventListener('click', function (e) { e.stopPropagation(); toggleFpMenu(gearBtn); });
 
         var dropdown = document.createElement('div');
@@ -2325,7 +2325,7 @@
         return wrap;
       }
 
-      // ── Actions ───────────────────────────────────────────────────
+      // â”€â”€ Actions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       function fpPublish(id) {
         fetch('/api/presentations/' + id + '/publish', { method: 'POST' })
           .then(function (r) { return r.json(); })
@@ -2348,7 +2348,7 @@
           .catch(function () {});
       }
 
-      // ── Edit (text fields only; rebuilds the frozen file from the presentation's OWN deck) ──
+      // â”€â”€ Edit (text fields only; rebuilds the frozen file from the presentation's OWN deck) â”€â”€
       var _fpEditTarget = null;
       function openFpEditModal(p) {
         _fpEditTarget = p;
@@ -2370,7 +2370,7 @@
         if (!_fpEditTarget) return;
         var company = document.getElementById('fpEditCompany').value.trim();
         if (!company) { document.getElementById('fpEditCompany').focus(); return; }
-        var btn = this; btn.disabled = true; btn.textContent = 'Saving…';
+        var btn = this; btn.disabled = true; btn.textContent = 'Savingâ€¦';
         fetch('/api/presentations/' + _fpEditTarget.id + '/edit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -2390,7 +2390,7 @@
           .catch(function () { btn.disabled = false; btn.textContent = 'Save'; alert('Save failed'); });
       });
 
-      // ── Republish (deck dropdown + editable details → Republish / Edit on Builder) ──
+      // â”€â”€ Republish (deck dropdown + editable details â†’ Republish / Edit on Builder) â”€â”€
       var _fpRepublishTarget = null;
       var _rpAvailLangs = [];
       var _rpSelectedLangs = [];
@@ -2437,7 +2437,7 @@
         _rpLogoData = ''; _rpLogoFilename = '';
         rpSetImgPreview(p.customerLogoSrc || '');
         var sel = document.getElementById('fpRepublishDeckSelect');
-        sel.innerHTML = '<option value="">Loading decks…</option>';
+        sel.innerHTML = '<option value="">Loading decksâ€¦</option>';
         document.getElementById('fpRepublishDisclaimer').style.display = 'none';
         document.getElementById('fpRepublishModal').style.display = 'flex';
         fetch('/api/decks').then(function (r) { return r.json(); }).then(function (res) {
@@ -2454,7 +2454,7 @@
           });
           fpRepublishUpdateDisclaimer();
         }).catch(function () { sel.innerHTML = '<option value="">Failed to load decks</option>'; });
-        // Languages — default + additional, prefilled from the presentation
+        // Languages â€” default + additional, prefilled from the presentation
         var langSel = document.getElementById('fpReDefaultLang');
         langSel.innerHTML = '<option value="' + (p.defaultLanguage || 'en') + '">' + (p.defaultLanguage || 'en').toUpperCase() + '</option>';
         _rpAvailLangs = []; _rpSelectedLangs = [];
@@ -2522,7 +2522,7 @@
         try {
           sessionStorage.setItem('pb-republish-payload', JSON.stringify(payload));
         } catch (e) {
-          // Image too large for sessionStorage — carry everything except the image (server keeps current)
+          // Image too large for sessionStorage â€” carry everything except the image (server keeps current)
           payload.logoData = ''; payload.logoFilename = '';
           try { sessionStorage.setItem('pb-republish-payload', JSON.stringify(payload)); } catch (e2) {}
         }
@@ -2537,7 +2537,7 @@
         if (!fpRepublishConfirmIfDifferent(deckId)) return;
         var def   = document.getElementById('fpReDefaultLang').value || 'en';
         var langs = [def].concat(_rpSelectedLangs.filter(function (l) { return l !== def; }));
-        var btn = this; btn.disabled = true; var orig = btn.textContent; btn.textContent = 'Publishing…';
+        var btn = this; btn.disabled = true; var orig = btn.textContent; btn.textContent = 'Publishingâ€¦';
         fetch('/api/presentations/' + _fpRepublishTarget.id + '/republish', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -2572,11 +2572,11 @@
 
         if (mode === 'archive') {
           document.getElementById('fpDeleteModalTitle').textContent = 'Archive Presentation';
-          document.getElementById('fpDeleteModalDesc').textContent  = '“' + name + '” will be moved to archive and hidden from your active list. You can restore it at any time.';
+          document.getElementById('fpDeleteModalDesc').textContent  = 'â€œ' + name + 'â€ will be moved to archive and hidden from your active list. You can restore it at any time.';
 
           if (wasPublished) {
             document.getElementById('fpDeleteModalWarnTitle').textContent = 'This presentation is Live';
-            document.getElementById('fpDeleteModalWarnBody').textContent  = 'Customers with the link can still access it — archiving only hides it from your active list. The published file stays on the server until you permanently delete it.';
+            document.getElementById('fpDeleteModalWarnBody').textContent  = 'Customers with the link can still access it â€” archiving only hides it from your active list. The published file stays on the server until you permanently delete it.';
             document.getElementById('fpDeleteModalWarning').style.display = 'block';
           } else {
             document.getElementById('fpDeleteModalWarning').style.display = 'none';
@@ -2589,7 +2589,7 @@
 
         } else {
           document.getElementById('fpDeleteModalTitle').textContent = 'Permanently Delete';
-          document.getElementById('fpDeleteModalDesc').textContent  = '“' + name + '” will be permanently removed from the server. This cannot be undone.';
+          document.getElementById('fpDeleteModalDesc').textContent  = 'â€œ' + name + 'â€ will be permanently removed from the server. This cannot be undone.';
           document.getElementById('fpDeleteModalWarning').style.display    = 'block';
           document.getElementById('fpDeleteModalInputWrap').style.display  = 'block';
           document.getElementById('fpDeleteModalConfirm').disabled          = true;
@@ -2599,14 +2599,14 @@
             document.getElementById('fpDeleteModalWarnTitle').textContent = 'This presentation is Live';
             document.getElementById('fpDeleteModalWarnBody').innerHTML =
               'This presentation has a public link that customers may have saved or shared. ' +
-              '<strong style=”color:var(--text);”>Permanently deleting it will break that link immediately</strong> ' +
-              '— anyone visiting it will see a 404 error and the URL will stop working forever. ' +
-              'To confirm, type <strong style=”color:var(--text);letter-spacing:.05em;”>DELETE</strong> below.';
+              '<strong style=â€color:var(--text);â€>Permanently deleting it will break that link immediately</strong> ' +
+              'â€” anyone visiting it will see a 404 error and the URL will stop working forever. ' +
+              'To confirm, type <strong style=â€color:var(--text);letter-spacing:.05em;â€>DELETE</strong> below.';
           } else {
             document.getElementById('fpDeleteModalWarnTitle').textContent = 'This action is irreversible';
             document.getElementById('fpDeleteModalWarnBody').innerHTML =
               'All data and files for this presentation will be removed from the server with no way to recover them. ' +
-              'To confirm, type <strong style=”color:var(--text);letter-spacing:.05em;”>DELETE</strong> below.';
+              'To confirm, type <strong style=â€color:var(--text);letter-spacing:.05em;â€>DELETE</strong> below.';
           }
 
           setTimeout(function () { document.getElementById('fpDeleteModalInput').focus(); }, 50);
@@ -2662,10 +2662,10 @@
 
         var rows = [
           ['ID', '#' + esc(p.id)],
-          ['Name', esc(p.presentationName) || '—'],
-          ['Customer', esc(p.customerName) || '—'],
-          ['Slides', p.slideCount != null ? p.slideCount : '—'],
-          ['Languages', esc((p.languages || []).join(', ')) || '—']
+          ['Name', esc(p.presentationName) || 'â€”'],
+          ['Customer', esc(p.customerName) || 'â€”'],
+          ['Slides', p.slideCount != null ? p.slideCount : 'â€”'],
+          ['Languages', esc((p.languages || []).join(', ')) || 'â€”']
         ];
         var summaryHtml = rows.map(function (r) {
           return '<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);">' +
@@ -2673,7 +2673,7 @@
             '<span style="flex:1;color:var(--text);word-break:break-all;">' + r[1] + '</span></div>';
         }).join('');
 
-        // Event timeline — real log, or synthesized from timestamps for older presentations
+        // Event timeline â€” real log, or synthesized from timestamps for older presentations
         var events = (Array.isArray(p.events) && p.events.length) ? p.events.slice() : (function () {
           var out = [];
           if (p.createdAt)   out.push({ type: 'created',     at: p.createdAt });
@@ -2687,7 +2687,7 @@
         function fmt(at) {
           if (!at) return '';
           var d = new Date(at.length <= 10 ? at + 'T00:00:00' : at);
-          return isNaN(d.getTime()) ? esc(at) : d.toLocaleDateString() + ' · ' + timeAgo(at);
+          return isNaN(d.getTime()) ? esc(at) : d.toLocaleDateString() + ' Â· ' + timeAgo(at);
         }
 
         var timelineHtml = '<div style="margin-top:14px;margin-bottom:4px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">History</div>';
@@ -2696,7 +2696,7 @@
         } else {
           timelineHtml += events.map(function (ev) {
             var label = LABELS[ev.type] || esc(ev.type);
-            var extra = (ev.deckName && (ev.type === 'republished' || ev.type === 'published')) ? ' · from “' + esc(ev.deckName) + '”' : '';
+            var extra = (ev.deckName && (ev.type === 'republished' || ev.type === 'published')) ? ' Â· from â€œ' + esc(ev.deckName) + 'â€' : '';
             return '<div style="display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);">' +
               '<span style="flex:1;color:var(--text);">' + label + extra + '</span>' +
               '<span style="color:var(--muted);white-space:nowrap;">' + fmt(ev.at) + '</span></div>';
@@ -2711,7 +2711,7 @@
         document.getElementById('fpHistoryModal').style.display = 'none';
       });
 
-      // ── Render ────────────────────────────────────────────────────
+      // â”€â”€ Render â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       function render() {
         var filtered   = getFiltered();
         var total      = filtered.length;
@@ -2771,7 +2771,7 @@
             if (!p.archivedAt && hasRepublish) {
               var rep = document.createElement('span');
               rep.className = 'fp-status-badge fp-status-badge--republished';
-              rep.textContent = '↻ Republished';
+              rep.textContent = 'â†» Republished';
               if (p.replacedAt) rep.title = 'Last republished ' + timeAgo(p.replacedAt);
               row1.appendChild(rep);
             }
@@ -2793,7 +2793,7 @@
             var metricsEl = document.createElement('div');
             metricsEl.className = 'fp-metrics';
             metricsEl.dataset.presId = p.id;
-            metricsEl.innerHTML = '<span class="fp-metric-loading">loading metrics…</span>';
+            metricsEl.innerHTML = '<span class="fp-metric-loading">loading metricsâ€¦</span>';
             info.appendChild(metricsEl);
 
             // Footer: live-only share link (left) + plain #id and "created x ago" (right)
@@ -2837,7 +2837,7 @@
         container.innerHTML = '';
         if (totalPages <= 1) return;
         var prev = document.createElement('button');
-        prev.textContent = '← Prev';
+        prev.textContent = 'â† Prev';
         prev.disabled = currentPage === 1;
         prev.addEventListener('click', function () { currentPage--; render(); });
         container.appendChild(prev);
@@ -2845,7 +2845,7 @@
         info.textContent = 'Page ' + currentPage + ' of ' + totalPages;
         container.appendChild(info);
         var next = document.createElement('button');
-        next.textContent = 'Next →';
+        next.textContent = 'Next â†’';
         next.disabled = currentPage === totalPages;
         next.addEventListener('click', function () { currentPage++; render(); });
         container.appendChild(next);
@@ -2862,14 +2862,14 @@
           .catch(function () { render(); });
       }
 
-      // ── Search ──────────────────────────────────────────────────
+      // â”€â”€ Search â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       document.getElementById('fpSearch').addEventListener('input', function () {
         currentSearch = this.value;
         currentPage   = 1;
         render();
       });
 
-      // ── Status filter dropdown ───────────────────────────────────
+      // â”€â”€ Status filter dropdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       var statusTrigger = document.getElementById('fpStatusTrigger');
       var statusMenu    = document.getElementById('fpStatusMenu');
       statusTrigger.addEventListener('click', function (e) {
@@ -2892,7 +2892,7 @@
       });
       statusMenu.addEventListener('click', function (e) { e.stopPropagation(); });
 
-      // ── Sort dropdown ────────────────────────────────────────────
+      // â”€â”€ Sort dropdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       var sortTrigger = document.getElementById('fpSortTrigger');
       var sortMenu    = document.getElementById('fpSortMenu');
       sortTrigger.addEventListener('click', function (e) {
@@ -2920,7 +2920,7 @@
       });
       sortMenu.addEventListener('click', function (e) { e.stopPropagation(); });
 
-      // ── Date filter (flatpickr) ──────────────────────────────────
+      // â”€â”€ Date filter (flatpickr) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       var fpDate = flatpickr('#fpDateInput', {
         mode: 'range', dateFormat: 'Y-m-d', disableMobile: true,
         onChange: function (dates) {
@@ -2929,7 +2929,7 @@
           var end   = new Date(dates[1]); end.setHours(23, 59, 59, 999);
           dateRange = [start, end];
           function fmt(d) { return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); }
-          document.getElementById('fpDateLabel').textContent = fmt(dates[0]) + ' → ' + fmt(dates[1]);
+          document.getElementById('fpDateLabel').textContent = fmt(dates[0]) + ' â†’ ' + fmt(dates[1]);
           document.getElementById('fpDateClear').style.display = 'inline';
           document.getElementById('fpDateBtn').classList.add('active');
           currentPage = 1;
@@ -2948,7 +2948,7 @@
         render();
       });
 
-      // ── Init ─────────────────────────────────────────────────────
+      // â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       if (window._viewsPresentations) {
         allPres = window._viewsPresentations;
         settingsReady.then(function () { render(); });

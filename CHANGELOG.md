@@ -5,6 +5,29 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [v1.4.0] — 2026-06-17
+
+### Added
+- **Presentations** — Edit + Republish flow; builder Publish flow
+- **Presentations** — Image flow + single-bar public view
+- **Dashboard** — Image-forward finished cards + republished badge + history
+- **Themes** — Finish blocks for all 34 themes (§5 complete)
+- **Themes** — Adaptive brand-logo contrast via `--logo-filter`
+- **Chrome** — 2× brand logo on large screens
+- **Cover** — Customer-logo fill/fit + size controls + text guardrail
+
+### Fixed
+- Single-language non-English presentations now render in the correct language when published
+- `websiteUrl` persists in decks; company-webpage back link fixed
+- Brand logo stays pinned — `.slide-logo-row` guarded as chrome
+- Finish lift rule no longer displaces slide chrome
+
+### Removed
+- Retired `wbtm/whatbitcointaughtme` theme references and Finish files
+- Orphaned `cluely` duplicate and dead `.slide-logo-row` rules
+
+---
+
 ## [v1.3.1] — 2026-06-15
 
 ### Fixed

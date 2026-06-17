@@ -1,13 +1,13 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Builder — Presentation Builder</title>
+  <title>Builder â€” Presentation Builder</title>
   <link rel="stylesheet" href="/shared/app-style.css">
   <style>
 
-    /* ── Deck list ── */
+    /* â”€â”€ Deck list â”€â”€ */
     #deckList {
       display: flex;
       flex-direction: column;
@@ -101,7 +101,7 @@
       padding: 40px 24px; text-align: center; color: var(--muted); font-size: 14px;
     }
 
-    /* ── Deck controls bar ── */
+    /* â”€â”€ Deck controls bar â”€â”€ */
     .deck-controls {
       display: flex;
       align-items: center;
@@ -157,14 +157,14 @@
     .deck-sort-select:focus { border-color: var(--accent); }
     .deck-sort-select option { background: #1a1a1a; color: #ffffff; }
     [data-theme="light"] .deck-sort-select option { background: #ffffff; color: #1d1d1f; }
-    /* ── Deck pin icon ── */
+    /* â”€â”€ Deck pin icon â”€â”€ */
     .deck-pin-icon {
       font-size: 11px;
       flex-shrink: 0;
       opacity: 0.7;
       line-height: 1;
     }
-    /* ── Deck drag-to-reorder ── */
+    /* â”€â”€ Deck drag-to-reorder â”€â”€ */
     .deck-row.deck-draggable { cursor: grab; }
     .deck-row.deck-draggable:active { cursor: grabbing; }
     .deck-row.dragging { opacity: 0.4; }
@@ -173,7 +173,7 @@
       border-top: 2px solid var(--accent);
     }
 
-    /* ── Modals ── */
+    /* â”€â”€ Modals â”€â”€ */
     .modal-backdrop {
       display: none; position: fixed; inset: 0;
       background: rgba(0,0,0,.6); backdrop-filter: blur(4px);
@@ -217,7 +217,7 @@
     .modal-field { display: flex; flex-direction: column; gap: 4px; }
     .modal-label { font-size: 12px; color: var(--muted); }
 
-    /* ── Save Presentation modal extras ── */
+    /* â”€â”€ Save Presentation modal extras â”€â”€ */
     .modal-divider {
       height: 1px; background: var(--border); margin: 4px 0;
     }
@@ -270,7 +270,7 @@
     .lang-chip-check { font-size: 10px; }
     .no-langs-hint { font-size: 12px; color: var(--muted); }
 
-    /* ── Premium modal ── */
+    /* â”€â”€ Premium modal â”€â”€ */
     #premiumModal .modal-box { text-align: center; }
     .premium-icon { font-size: 40px; margin-bottom: 12px; }
     .premium-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
@@ -281,7 +281,7 @@
       color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
     }
 
-    /* ── Builder sidebar submenu ── */
+    /* â”€â”€ Builder sidebar submenu â”€â”€ */
     .sidebar-nav-group { list-style: none; }
     .sidebar-submenu { list-style: none; margin: 0; padding: 0; }
     .sidebar.collapsed .sidebar-submenu { display: none; }
@@ -296,7 +296,7 @@
     .sidebar-sub-item:hover { color: var(--text); }
     .sidebar-sub-item.active { color: var(--accent); font-weight: 600; }
 
-    /* ── Builder page layout ── */
+    /* â”€â”€ Builder page layout â”€â”€ */
     .builder-app {
       display: flex;
       height: 100vh;
@@ -415,7 +415,7 @@
       overflow: hidden;
     }
 
-    /* ── Slide-level features button (circled "f") + popover ── */
+    /* â”€â”€ Slide-level features button (circled "f") + popover â”€â”€ */
     .feature-fab {
       position: absolute; right: 18px; bottom: 18px; z-index: 30;
       width: 34px; height: 34px; border-radius: 50%;
@@ -738,7 +738,7 @@
       text-align: center;
     }
 
-    /* ── Deck gear btn ── */
+    /* â”€â”€ Deck gear btn â”€â”€ */
     .deck-gear-btn {
       width: 28px; height: 28px;
       border: none; background: transparent;
@@ -750,7 +750,7 @@
     }
     .deck-gear-btn:hover { background: var(--surface-hov); color: var(--text); }
 
-    /* ── Deck settings drawer ── */
+    /* â”€â”€ Deck settings drawer â”€â”€ */
     .drawer-backdrop {
       display: none;
       position: fixed; inset: 0;
@@ -892,7 +892,7 @@
 
     .drawer-save-status { font-size: 11px; color: var(--accent); margin-left: auto; }
 
-    /* ── Style Picker Modal ── */
+    /* â”€â”€ Style Picker Modal â”€â”€ */
     .style-picker-modal {
       display: none;
       position: fixed; inset: 0;
@@ -1053,7 +1053,7 @@
         <span class="nav-icon">&#8617;</span>
         <span class="nav-label">Log out</span>
       </a>
-      <div class="sidebar-version">v1.3.1</div>
+      <div class="sidebar-version">v1.4.0</div>
     </div>
 
     <button class="sidebar-toggle" id="sidebarToggle" aria-label="Collapse sidebar">
@@ -1063,7 +1063,7 @@
 
   <div class="app-body builder-app" id="appBody">
 
-    <!-- ── Deck List Sidebar ── -->
+    <!-- â”€â”€ Deck List Sidebar â”€â”€ -->
     <aside class="deck-sidebar collapsed">
       <div class="deck-sidebar-header">
         <span class="deck-sidebar-title">
@@ -1075,13 +1075,13 @@
       <div class="deck-controls" id="deckControls">
         <div class="deck-search-wrap">
           <span class="deck-search-icon">&#128269;</span>
-          <input type="text" id="deckSearchInput" class="deck-search" placeholder="Search…" autocomplete="off">
+          <input type="text" id="deckSearchInput" class="deck-search" placeholder="Searchâ€¦" autocomplete="off">
           <button class="deck-search-clear" id="deckSearchClear" style="display:none;" type="button">&#10005;</button>
         </div>
         <select id="deckSortSelect" class="deck-sort-select" title="Sort decks">
           <option value="manual">Manual</option>
-          <option value="name-asc">Name A→Z</option>
-          <option value="name-desc">Name Z→A</option>
+          <option value="name-asc">Name Aâ†’Z</option>
+          <option value="name-desc">Name Zâ†’A</option>
           <option value="edited">Last edited</option>
           <option value="created">Date created</option>
         </select>
@@ -1091,7 +1091,7 @@
       </div>
     </aside>
 
-    <!-- ── Builder Main ── -->
+    <!-- â”€â”€ Builder Main â”€â”€ -->
     <main class="builder-main" id="builderMain">
 
       <!-- Canvas area -->
@@ -1158,7 +1158,7 @@
         </button>
         <div class="finished-panel-body" id="finishedPanelBody">
           <div class="finished-search-wrap">
-            <input id="finishedSearch" class="finished-search" type="text" placeholder="Search presentations…">
+            <input id="finishedSearch" class="finished-search" type="text" placeholder="Search presentationsâ€¦">
           </div>
           <div id="finishedList"></div>
         </div>
@@ -1168,7 +1168,7 @@
 
   </div>
 
-  <!-- ── Create / Rename Modal ── -->
+  <!-- â”€â”€ Create / Rename Modal â”€â”€ -->
   <div class="modal-backdrop" id="deckNameModal">
     <div class="modal-box">
       <div class="modal-title" id="deckNameModalTitle">New Deck</div>
@@ -1199,7 +1199,7 @@
     </div>
   </div>
 
-  <!-- ── Delete Confirm Modal ── -->
+  <!-- â”€â”€ Delete Confirm Modal â”€â”€ -->
   <div class="modal-backdrop" id="deleteDeckModal">
     <div class="modal-box">
       <div class="modal-title">Delete Deck?</div>
@@ -1211,7 +1211,7 @@
     </div>
   </div>
 
-  <!-- ── Remove Slide Confirm Modal ── -->
+  <!-- â”€â”€ Remove Slide Confirm Modal â”€â”€ -->
   <div class="modal-backdrop" id="removeSlideModal">
     <div class="modal-box">
       <div class="modal-title">Remove Slide?</div>
@@ -1223,7 +1223,7 @@
     </div>
   </div>
 
-  <!-- ── Slide Details (lineage) Modal ── -->
+  <!-- â”€â”€ Slide Details (lineage) Modal â”€â”€ -->
   <div class="modal-backdrop" id="slideDetailsModal">
     <div class="modal-box">
       <div class="modal-title">Slide Details</div>
@@ -1234,7 +1234,7 @@
     </div>
   </div>
 
-  <!-- ── Presentation History Modal ── -->
+  <!-- â”€â”€ Presentation History Modal â”€â”€ -->
   <div class="modal-backdrop" id="presHistoryModal">
     <div class="modal-box" style="max-width:420px;">
       <div class="modal-title">Presentation History</div>
@@ -1245,7 +1245,7 @@
     </div>
   </div>
 
-  <!-- ── Save as Presentation Modal ── -->
+  <!-- â”€â”€ Save as Presentation Modal â”€â”€ -->
   <div class="modal-backdrop" id="savePresModal">
     <div class="modal-box" style="max-width:480px;max-height:90vh;overflow-y:auto;">
       <div class="modal-title" id="savePresModalTitle">Save as Presentation</div>
@@ -1278,7 +1278,7 @@
               <span class="save-logo-hint" id="saveLogoHint"></span>
             </div>
           </div>
-          <span id="saveLogoError" style="display:none;font-size:11px;color:#f87171;margin-top:2px;">Required — upload an image for this presentation.</span>
+          <span id="saveLogoError" style="display:none;font-size:11px;color:#f87171;margin-top:2px;">Required â€” upload an image for this presentation.</span>
           <div id="savePresImageHelp" style="font-size:11px;color:#888;margin-top:6px;line-height:1.4;"></div>
           <label id="saveShowOnCoverRow" style="display:none;align-items:center;gap:8px;margin-top:8px;font-size:12px;color:#ccc;cursor:pointer;">
             <input type="checkbox" id="saveShowOnCover" checked style="cursor:pointer;">
@@ -1310,10 +1310,10 @@
     </div>
   </div>
 
-  <!-- ── Drawer Backdrop ── -->
+  <!-- â”€â”€ Drawer Backdrop â”€â”€ -->
   <div class="drawer-backdrop" id="drawerBackdrop"></div>
 
-  <!-- ── Deck Settings Drawer ── -->
+  <!-- â”€â”€ Deck Settings Drawer â”€â”€ -->
   <div class="deck-settings-drawer" id="deckSettingsDrawer">
     <div class="drawer-header">
       <span class="drawer-title">Deck Settings</span>
@@ -1325,13 +1325,13 @@
       <!-- Deck Name -->
       <div class="drawer-section">
         <div class="drawer-section-label">Deck Name</div>
-        <input class="drawer-input" id="drawerDeckName" type="text" placeholder="Deck name…" maxlength="80" autocomplete="off">
+        <input class="drawer-input" id="drawerDeckName" type="text" placeholder="Deck nameâ€¦" maxlength="80" autocomplete="off">
       </div>
 
       <!-- Brand Credit -->
       <div class="drawer-section">
         <div class="drawer-section-label">Credit Line</div>
-        <input class="drawer-input" id="drawerBrandCredit" type="text" placeholder="Your company name…" maxlength="80" autocomplete="off">
+        <input class="drawer-input" id="drawerBrandCredit" type="text" placeholder="Your company nameâ€¦" maxlength="80" autocomplete="off">
         <div style="font-size:11px;color:#666;margin-top:4px;">Shown as "by [name]" on cover slides</div>
       </div>
 
@@ -1398,7 +1398,7 @@
           </div>
           <div id="drawerHeroBgImageControls">
             <div class="drawer-hero-preview" id="drawerHeroPreview">
-              <span class="drawer-hero-placeholder" id="drawerHeroPlaceholder">No image — hover to pick focal point once uploaded</span>
+              <span class="drawer-hero-placeholder" id="drawerHeroPlaceholder">No image â€” hover to pick focal point once uploaded</span>
               <div class="drawer-focal-grid" id="drawerFocalGrid"></div>
             </div>
             <div class="drawer-img-actions">
@@ -1413,10 +1413,10 @@
             <div class="drawer-focal-wrap">
               <span class="drawer-focal-label">Focal grid</span>
               <select class="drawer-focal-select" id="drawerFocalSizeSelect">
-                <option value="2">2×2</option>
-                <option value="3" selected>3×3</option>
-                <option value="4">4×4</option>
-                <option value="5">5×5</option>
+                <option value="2">2Ã—2</option>
+                <option value="3" selected>3Ã—3</option>
+                <option value="4">4Ã—4</option>
+                <option value="5">5Ã—5</option>
               </select>
             </div>
             <div class="drawer-fit-wrap">
@@ -1441,20 +1441,20 @@
     </div>
   </div>
 
-  <!-- ── Premium Modal ── -->
+  <!-- â”€â”€ Premium Modal â”€â”€ -->
   <div class="modal-backdrop" id="premiumModal">
     <div class="modal-box">
       <div class="premium-icon">&#11088;</div>
       <div class="premium-title">Unlock Multiple Decks</div>
       <p class="premium-desc">
         The free plan includes one deck. Upgrade to Premium to create unlimited
-        named decks — each with its own slides, logo, and branding.
+        named decks â€” each with its own slides, logo, and branding.
       </p>
       <button class="premium-close" id="premiumClose">Maybe Later</button>
     </div>
   </div>
 
-  <!-- ── Style Picker Modal ── -->
+  <!-- â”€â”€ Style Picker Modal â”€â”€ -->
   <div class="style-picker-modal" id="stylePickerModal">
     <div class="style-picker-box">
       <div class="style-picker-header">
@@ -1479,7 +1479,7 @@
   </div>
 
   <script>
-    // ── State ──────────────────────────────────────────────────────────────────
+    // â”€â”€ State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     var decks           = [];
     var activeDeckId    = null;
     var deckSlides      = [];
@@ -1530,7 +1530,7 @@
       });
     }
 
-    // ── Library slide mode ─────────────────────────────────────────────────────
+    // â”€â”€ Library slide mode â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function enterLibrarySlideMode(slideId, slideName, deckId) {
       document.querySelector('.deck-sidebar').style.display = 'none';
       document.querySelector('.slide-panel').style.display = 'none';
@@ -1549,7 +1549,7 @@
       setupFeatureFab(slideId);
     }
 
-    // ── Slide-level features button (circled "f") ──────────────────────────────
+    // â”€â”€ Slide-level features button (circled "f") â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     var currentLibrarySlideId = null;
     function setupFeatureFab(slideId) {
       currentLibrarySlideId = slideId;
@@ -1592,14 +1592,14 @@
         .catch(function () {});
     }
 
-    // ── iframe → parent bridge ─────────────────────────────────────────────────
+    // â”€â”€ iframe â†’ parent bridge â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     window.addEventListener('message', function (e) {
       if (e.data && e.data.type === 'slide-image-change' && e.data.editKey === 'customer-logo') {
         deckCoverLogoSrc = e.data.src || '';
       }
     });
 
-    // ── Init ───────────────────────────────────────────────────────────────────
+    // â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     var _settingsReady = null;
     document.addEventListener('DOMContentLoaded', function () {
       _settingsReady = fetch('/api/settings').then(function (r) { return r.json(); }).then(function (res) {
@@ -1635,7 +1635,7 @@
       window.addEventListener('resize', scaleFrame);
     });
 
-    // ── Decks ──────────────────────────────────────────────────────────────────
+    // â”€â”€ Decks â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function loadDecks() {
       fetch('/api/decks').then(function (r) { return r.json(); }).then(function (res) {
         if (res.success) {
@@ -1650,9 +1650,9 @@
       });
     }
 
-    // Republish mode: reveal the "Publish → #id" button (hides normal Save). The dashboard's
+    // Republish mode: reveal the "Publish â†’ #id" button (hides normal Save). The dashboard's
     // "Edit on Builder" carries the already-filled details (name/company/contact/image/languages)
-    // in sessionStorage, so here you only tweak slides — clicking Publish commits directly from the
+    // in sessionStorage, so here you only tweak slides â€” clicking Publish commits directly from the
     // CURRENT active deck to the same id (no second form), then returns to the dashboard. If no
     // carried details exist (e.g. opened directly), it falls back to opening the edit form.
     function setupRepublishButton(presId) {
@@ -1675,7 +1675,7 @@
           // Commit directly with the carried details + the current active deck (slides tweaked here)
           btn.disabled = true;
           var orig = btn.innerHTML;
-          btn.textContent = 'Publishing…';
+          btn.textContent = 'Publishingâ€¦';
           fetch('/api/presentations/' + presId + '/republish', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -1698,7 +1698,7 @@
             .catch(function () { btn.disabled = false; btn.innerHTML = orig; alert('Publish failed'); });
           return;
         }
-        // Fallback: no carried details — open the edit form, save republishes to the same id
+        // Fallback: no carried details â€” open the edit form, save republishes to the same id
         fetch('/api/presentations/' + presId)
           .then(function (r) { return r.json(); })
           .then(function (res) {
@@ -1966,7 +1966,7 @@
         });
     }
 
-    // ── Slides ─────────────────────────────────────────────────────────────────
+    // â”€â”€ Slides â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function loadDeckSlides() {
       fetch('/api/deck').then(function (r) { return r.json(); }).then(function (res) {
         deckSlides = (res.success ? res.data.slides : []) || [];
@@ -2205,10 +2205,10 @@
           if (currentSlideId === slideId) clearCanvas();
           renderSlidePanel();
         })
-        .catch(function () { alert('Remove failed — check the server.'); });
+        .catch(function () { alert('Remove failed â€” check the server.'); });
     }
 
-    // ── Finished Presentations ─────────────────────────────────────────────────
+    // â”€â”€ Finished Presentations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     var cachedFinishedItems = [];
     var finishedSearchQuery = '';
     var publicBaseUrl = 'http://localhost:3000'; // overwritten by /api/settings
@@ -2264,7 +2264,7 @@
       var el = document.createElement('span');
       el.className = 'finished-item-link';
       el.textContent = '#' + p.id;
-      el.title = viewUrl + '\n\nClick to copy · Double-click to open';
+      el.title = viewUrl + '\n\nClick to copy Â· Double-click to open';
       var timer = null;
       el.addEventListener('click', function (e) {
         e.stopPropagation();
@@ -2360,17 +2360,17 @@
     function fpHistory(p) {
       var body = document.getElementById('presHistoryBody');
       function row(label, val) {
-        return '<div style="display:flex;gap:8px;"><span style="color:var(--muted);min-width:120px;">' + label + '</span><span>' + (val || '—') + '</span></div>';
+        return '<div style="display:flex;gap:8px;"><span style="color:var(--muted);min-width:120px;">' + label + '</span><span>' + (val || 'â€”') + '</span></div>';
       }
       body.innerHTML =
         row('ID',         p.id) +
-        row('Created',    p.createdAt || '—') +
-        row('Customer',   p.customerName || '—') +
-        row('Name',       p.presentationName || '—') +
-        row('Slides',     p.slideCount ? String(p.slideCount) : '—') +
-        row('Language',   p.defaultLanguage || '—') +
+        row('Created',    p.createdAt || 'â€”') +
+        row('Customer',   p.customerName || 'â€”') +
+        row('Name',       p.presentationName || 'â€”') +
+        row('Slides',     p.slideCount ? String(p.slideCount) : 'â€”') +
+        row('Language',   p.defaultLanguage || 'â€”') +
         row('Published',  p.publishedAt ? new Date(p.publishedAt).toLocaleString() : 'Not published') +
-        row('Last edit',  p.replacedAt  ? new Date(p.replacedAt).toLocaleString()  : '—');
+        row('Last edit',  p.replacedAt  ? new Date(p.replacedAt).toLocaleString()  : 'â€”');
       document.getElementById('presHistoryModal').classList.add('open');
     }
 
@@ -2433,7 +2433,7 @@
         var info = document.createElement('div');
         info.className = 'finished-item-info';
 
-        // ── Row 1: name + status badge ──
+        // â”€â”€ Row 1: name + status badge â”€â”€
         var row1 = document.createElement('div');
         row1.className = 'finished-item-row1';
 
@@ -2449,7 +2449,7 @@
         row1.appendChild(badge);
         info.appendChild(row1);
 
-        // ── Row 2: meta · link ──
+        // â”€â”€ Row 2: meta Â· link â”€â”€
         var row2 = document.createElement('div');
         row2.className = 'finished-item-row2';
 
@@ -2458,12 +2458,12 @@
         if (metaParts.length) {
           var metaEl = document.createElement('span');
           metaEl.className = 'finished-item-meta';
-          metaEl.textContent = metaParts.join(' · ');
+          metaEl.textContent = metaParts.join(' Â· ');
           row2.appendChild(metaEl);
           if (linkEl) {
             var sep = document.createElement('span');
             sep.className = 'finished-item-meta';
-            sep.textContent = ' · ';
+            sep.textContent = ' Â· ';
             row2.appendChild(sep);
           }
         }
@@ -2476,7 +2476,7 @@
       });
     }
 
-    // ── Save / Edit Presentation Modal (shared state) ─────────────────────────
+    // â”€â”€ Save / Edit Presentation Modal (shared state) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     var saveLogoData     = '';
     var saveLogoFilename = '';
     var saveLogoRequired = false;
@@ -2539,9 +2539,9 @@
       saveLogoData = ''; saveLogoFilename = '';
 
       // Presentation-image logic, driven by whether the cover template has a logo slot and an image:
-      //   Case A — cover has a slot + an uploaded image: prefill from it, used on cover + card, no toggle.
-      //   Case B — cover has a slot but no image: image required + "Also show on cover?" toggle (default on).
-      //   Case C — cover has no logo slot: image required, card-only, no toggle.
+      //   Case A â€” cover has a slot + an uploaded image: prefill from it, used on cover + card, no toggle.
+      //   Case B â€” cover has a slot but no image: image required + "Also show on cover?" toggle (default on).
+      //   Case C â€” cover has no logo slot: image required, card-only, no toggle.
       var coverToggleRow = document.getElementById('saveShowOnCoverRow');
       var coverToggle    = document.getElementById('saveShowOnCover');
       document.getElementById('saveLogoError').style.display = 'none';
@@ -2666,7 +2666,7 @@
 
         var btn = this;
         btn.disabled = true;
-        btn.textContent = 'Saving…';
+        btn.textContent = 'Savingâ€¦';
         fetch('/api/presentations', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -2702,12 +2702,12 @@
         }).catch(function () {
           btn.disabled = false;
           btn.textContent = pendingReplaceId ? 'Save Changes' : 'Save Presentation';
-          alert('Save failed — check the server.');
+          alert('Save failed â€” check the server.');
         });
       });
     }
 
-    // ── Deck name modal ────────────────────────────────────────────────────────
+    // â”€â”€ Deck name modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function openDeckNameModal(renameId, currentName) {
       pendingRenameId = renameId;
       var isRename = !!renameId;
@@ -2767,12 +2767,12 @@
       }
     }
 
-    // ── Premium modal ──────────────────────────────────────────────────────────
+    // â”€â”€ Premium modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function openPremiumModal() {
       document.getElementById('premiumModal').classList.add('open');
     }
 
-    // ── Dropdown helpers ───────────────────────────────────────────────────────
+    // â”€â”€ Dropdown helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function toggleDeckMenu(btn) {
       var id = btn.dataset.deckId;
       var drop = document.getElementById('ddrop-' + id);
@@ -2784,7 +2784,7 @@
       document.querySelectorAll('.deck-dropdown.open').forEach(function (d) { d.classList.remove('open'); });
     }
 
-    // ── Bind modals ────────────────────────────────────────────────────────────
+    // â”€â”€ Bind modals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function bindModals() {
       // Deck name modal
       document.getElementById('deckNameCancel').addEventListener('click', closeDeckNameModal);
@@ -2862,19 +2862,19 @@
       });
     }
 
-    // ── Helpers ────────────────────────────────────────────────────────────────
+    // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function esc(s) {
       if (s == null) return '';
       return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
     }
     function escQ(s) { return esc(s).replace(/'/g,"\\'"); }
 
-    // Read-only lineage view: Template → Library slide → Deck slide (rulebook §4)
+    // Read-only lineage view: Template â†’ Library slide â†’ Deck slide (rulebook Â§4)
     function showSlideDetails(slide) {
       function row(label, id, name) {
         return '<div style="margin:0 0 14px;">' +
           '<div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;">' + esc(label) + '</div>' +
-          '<div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--text);word-break:break-all;">' + (id ? esc(id) : '<span style="color:var(--muted);">—</span>') + '</div>' +
+          '<div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--text);word-break:break-all;">' + (id ? esc(id) : '<span style="color:var(--muted);">â€”</span>') + '</div>' +
           (name ? '<div style="font-size:12px;color:var(--muted);margin-top:1px;">' + esc(name) + '</div>' : '') +
         '</div>';
       }
@@ -2900,7 +2900,7 @@
       } catch (e) { return ''; }
     }
 
-    // ── Deck Settings Drawer ───────────────────────────────────────────────────
+    // â”€â”€ Deck Settings Drawer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function openDeckSettingsDrawer(deckId) {
       closeAllMenus();
       drawerDeckId = deckId;
@@ -3058,7 +3058,7 @@
           var cell = document.createElement('button');
           cell.className = 'drawer-focal-cell' + (pos === activePos ? ' active' : '');
           cell.dataset.pos = pos;
-          cell.title = xPct + '% · ' + yPct + '%';
+          cell.title = xPct + '% Â· ' + yPct + '%';
           cell.addEventListener('click', (function (p) {
             return function () {
               grid.querySelectorAll('.drawer-focal-cell').forEach(function (b) { b.classList.remove('active'); });
@@ -3076,7 +3076,7 @@
       document.getElementById('drawerCloseBtn').addEventListener('click', closeDeckSettingsDrawer);
       document.getElementById('drawerBackdrop').addEventListener('click', closeDeckSettingsDrawer);
 
-      // Deck name — save on blur
+      // Deck name â€” save on blur
       document.getElementById('drawerDeckName').addEventListener('blur', function () {
         var name = this.value.trim();
         if (!name || !drawerDeck || name === drawerDeck.name) return;
@@ -3086,7 +3086,7 @@
         if (e.key === 'Enter') this.blur();
       });
 
-      // Brand credit — save on blur, reload slide to reflect change
+      // Brand credit â€” save on blur, reload slide to reflect change
       document.getElementById('drawerBrandCredit').addEventListener('blur', function () {
         var val = this.value.trim();
         if (!drawerDeck || val === (drawerDeck.brandCredit || '')) return;
@@ -3249,7 +3249,7 @@
       });
     }
 
-    // ── Sidebar (mobile + collapse) ────────────────────────────────────────────
+    // â”€â”€ Sidebar (mobile + collapse) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function initSidebar() {
       var hamburger = document.getElementById('hamburgerBtn');
       var overlay   = document.getElementById('sidebarOverlay');
@@ -3277,7 +3277,7 @@
       } catch (e) {}
     }
 
-    // ── Style Picker Modal ────────────────────────────────────────────────────────
+    // â”€â”€ Style Picker Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function initStylePickerModal() {
       var modal       = document.getElementById('stylePickerModal');
       var closeBtn    = document.getElementById('stylePickerClose');
@@ -3324,7 +3324,7 @@
         if (!file) {
           iframe.style.display = 'none';
           hint.style.display = 'flex';
-          hint.textContent = 'Default — no style override';
+          hint.textContent = 'Default â€” no style override';
           selectedLbl.textContent = 'Default selected';
         } else {
           hint.style.display = 'none';

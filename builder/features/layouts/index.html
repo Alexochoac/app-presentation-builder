@@ -1,12 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Layouts — Presentation Builder</title>
+  <title>Layouts â€” Presentation Builder</title>
   <link rel="stylesheet" href="/shared/app-style.css">
   <style>
-    /* ── Layouts page ─────────────────────────────────────────── */
+    /* â”€â”€ Layouts page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
     /* Page header row */
     .page-header {
@@ -134,7 +134,7 @@
       background: var(--remove-hov-bg);
     }
 
-    /* ── Layout Builder ──────────────────────────────────────── */
+    /* â”€â”€ Layout Builder â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
     /* Builder top bar */
     .builder-topbar {
@@ -418,7 +418,7 @@
     }
     .chip-remove:hover { color: var(--remove-hov-fg); }
 
-    /* ── Component picker ────────────────────────────────────── */
+    /* â”€â”€ Component picker â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
     .picker-overlay {
       position: fixed;
@@ -482,7 +482,7 @@
     }
     .picker-cancel:hover { color: var(--text); border-color: var(--border-hov); }
 
-    /* ── Preview panel ────────────────────────────────────────── */
+    /* â”€â”€ Preview panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
     .builder-preview {
       flex: 1;
@@ -577,7 +577,7 @@
       padding: 40px 0;
     }
 
-    /* ── Mobile: single pane + bottom tabs ─────────────────────── */
+    /* â”€â”€ Mobile: single pane + bottom tabs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .bottom-tabs {
       display: none;
       position: fixed;
@@ -617,7 +617,7 @@
       justify-content: center;
     }
 
-    /* ── Responsive ──────────────────────────────────────────── */
+    /* â”€â”€ Responsive â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
     @media (max-width: 768px) {
       .builder-canvas,
@@ -707,7 +707,7 @@
         <span class="nav-icon">&#8617;</span>
         <span class="nav-label">Log out</span>
       </a>
-      <div class="sidebar-version">v1.3.1</div>
+      <div class="sidebar-version">v1.4.0</div>
     </div>
 
     <button class="sidebar-toggle" id="sidebarToggle" aria-label="Collapse sidebar">
@@ -718,7 +718,7 @@
   <!-- App Body -->
   <div class="app-body" id="appBody">
 
-    <!-- ══ Section A: Layouts Home ══════════════════════════════ -->
+    <!-- â•â• Section A: Layouts Home â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <div id="layoutsHome">
       <main class="main">
 
@@ -741,7 +741,7 @@
       </main>
     </div>
 
-    <!-- ══ Section B: Layout Builder ════════════════════════════ -->
+    <!-- â•â• Section B: Layout Builder â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <div id="layoutBuilder" class="hidden">
 
       <!-- Top bar -->
@@ -818,7 +818,7 @@
       if (saved) html.setAttribute('data-theme', saved);
     })();
 
-    // ── Sidebar JS ──────────────────────────────────────────────
+    // â”€â”€ Sidebar JS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     (function () {
       var sidebar   = document.getElementById('sidebar');
       var overlay   = document.getElementById('sidebarOverlay');
@@ -850,7 +850,7 @@
       });
     })();
 
-    // ── State ───────────────────────────────────────────────────
+    // â”€â”€ State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     var layouts       = [];
     var currentLayout = null; // { id, name, rows: [{ cols: [{ components: [] }] }] }
     var viewMode      = 'desktop'; // 'desktop' | 'mobile'
@@ -865,7 +865,7 @@
     // Component types available in the picker
     var COMPONENT_TYPES = ['Text Block', 'Title', 'Tabs', 'Carousel', 'Table', 'List', 'Button'];
 
-    // ── Layouts list ─────────────────────────────────────────────
+    // â”€â”€ Layouts list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     function loadLayouts() {
       fetch('/api/layouts')
@@ -976,7 +976,7 @@
         .catch(function () { loadLayouts(); });
     }
 
-    // ── Builder ──────────────────────────────────────────────────
+    // â”€â”€ Builder â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     function openBuilder(layout) {
       currentLayout = {
@@ -1010,7 +1010,7 @@
       scheduleSave();
     }
 
-    // ── Row / Col / Component manipulation ──────────────────────
+    // â”€â”€ Row / Col / Component manipulation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     function addRow() {
       if (!currentLayout) return;
@@ -1062,7 +1062,7 @@
       scheduleSave();
     }
 
-    // ── Render: Canvas ───────────────────────────────────────────
+    // â”€â”€ Render: Canvas â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     function renderCanvas() {
       var inner = document.getElementById('canvasInner');
@@ -1190,7 +1190,7 @@
       return chip;
     }
 
-    // ── Render: Preview ──────────────────────────────────────────
+    // â”€â”€ Render: Preview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     function renderPreview() {
       var inner = document.getElementById('previewInner');
@@ -1248,7 +1248,7 @@
       return colEl;
     }
 
-    // ── Component picker ─────────────────────────────────────────
+    // â”€â”€ Component picker â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     function openPicker(rowIdx, colIdx) {
       pickerTarget = { rowIdx: rowIdx, colIdx: colIdx };
@@ -1282,7 +1282,7 @@
       if (e.target === this) closePicker();
     });
 
-    // ── View mode (desktop / mobile preview) ─────────────────────
+    // â”€â”€ View mode (desktop / mobile preview) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     function setViewMode(mode) {
       viewMode = mode;
@@ -1300,7 +1300,7 @@
       renderPreview();
     }
 
-    // ── Mobile tab switching ──────────────────────────────────────
+    // â”€â”€ Mobile tab switching â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     function setActiveTab(tab) {
       activeTab = tab;
@@ -1326,7 +1326,7 @@
       }
     }
 
-    // ── Save ──────────────────────────────────────────────────────
+    // â”€â”€ Save â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     function scheduleSave() {
       if (saveTimer) clearTimeout(saveTimer);
@@ -1350,7 +1350,7 @@
       });
     }
 
-    // ── Init ──────────────────────────────────────────────────────
+    // â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     loadLayouts();
   </script>
 </body>
