@@ -1,12 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Slides â€” Presentation Builder</title>
+  <title>Slides — Presentation Builder</title>
   <link rel="stylesheet" href="/shared/app-style.css">
   <style>
-    /* â”€â”€ Page header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Page header ─────────────────────────────────────────────── */
 
     .page-header {
       display: flex;
@@ -28,7 +28,7 @@
       margin-top: 4px;
     }
 
-    /* â”€â”€ Pick-mode banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Pick-mode banner ────────────────────────────────────────── */
 
     .pick-banner {
       display: flex;
@@ -60,7 +60,7 @@
     }
     .pick-banner-cancel:hover { color: var(--text); border-color: var(--border-hov); }
 
-    /* â”€â”€ (tab bar removed â€” screens navigate via sidebar) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── (tab bar removed — screens navigate via sidebar) ────────── */
 
     .slides-tab {
       display: none;
@@ -82,11 +82,11 @@
       border-bottom-color: var(--accent);
     }
 
-    /* â”€â”€ Tab panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Tab panel ───────────────────────────────────────────────── */
 
     .tab-panel { }
 
-    /* â”€â”€ Empty state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Empty state ─────────────────────────────────────────────── */
 
     .empty-state {
       display: flex;
@@ -101,7 +101,7 @@
     .empty-title { font-size: 18px; font-weight: 600; color: var(--text); }
     .empty-desc  { font-size: 14px; color: var(--muted); max-width: 340px; line-height: 1.6; }
 
-    /* â”€â”€ Shared card grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Shared card grid ────────────────────────────────────────── */
 
     .cards-grid {
       display: grid;
@@ -109,9 +109,9 @@
       gap: 16px;
     }
 
-    /* â”€â”€ Template tab â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Template tab ────────────────────────────────────────────── */
 
-    /* â”€â”€ Templates toolbar â”€â”€ */
+    /* ── Templates toolbar ── */
     .tpl-filter-row { margin-bottom: 10px; }
     .tpl-filter-row .filter-pills { margin-bottom: 0; }
     .tpl-toolbar {
@@ -129,7 +129,7 @@
     .tpl-sort-select:hover { border-color: var(--border-hov); }
     .tpl-sort-select option { background: var(--bg); color: var(--text); }
 
-    /* â”€â”€ Templates list view â”€â”€ */
+    /* ── Templates list view ── */
     .tpl-list { display: flex; flex-direction: column; gap: 4px; }
     .tpl-list-row {
       display: flex; align-items: center; gap: 14px;
@@ -146,7 +146,7 @@
     .tpl-list-comps { display: flex; gap: 4px; flex-wrap: wrap; flex-shrink: 0; max-width: 240px; }
     .tpl-list-actions { display: flex; gap: 6px; flex-shrink: 0; }
 
-    /* â”€â”€ Drag handle (manual sort) â”€â”€ */
+    /* ── Drag handle (manual sort) ── */
     .tpl-drag-handle {
       cursor: grab; color: var(--muted); font-size: 14px;
       padding: 0 4px; flex-shrink: 0; user-select: none;
@@ -156,7 +156,7 @@
     .tpl-drag-handle:active { cursor: grabbing; }
     .tpl-drag-over { border-color: var(--accent) !important; background: var(--accent-dim) !important; }
 
-    /* â”€â”€ Per-template tags â”€â”€ */
+    /* ── Per-template tags ── */
     .tpl-card-tags { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
     .tpl-card-tag {
       display: inline-flex; align-items: center; gap: 3px;
@@ -196,7 +196,7 @@
     }
     .tpl-tag-picker-input:focus { border-color: var(--accent); }
 
-    /* â”€â”€ Category tag editing â”€â”€ */
+    /* ── Category tag editing ── */
     .tpl-filter-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
     .tpl-filter-row .filter-pills { margin-bottom: 0; flex: 1; }
     .filter-pill .pill-remove {
@@ -483,9 +483,9 @@
       flex-shrink: 0;
     }
 
-    /* â”€â”€ My Library tab â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── My Library tab ──────────────────────────────────────────── */
 
-    /* â”€â”€ My Library toolbar â”€â”€ */
+    /* ── My Library toolbar ── */
     .lib-toolbar {
       display: flex; align-items: center; gap: 12px;
       margin-bottom: 16px; flex-wrap: wrap;
@@ -510,7 +510,7 @@
     .lib-view-btn.active { background: var(--nav-active); color: var(--text); }
     .lib-view-btn:hover:not(.active) { background: var(--surface-hov); color: var(--text); }
 
-    /* â”€â”€ My Library body layout â”€â”€ */
+    /* ── My Library body layout ── */
     .lib-body { display: flex; gap: 0; min-height: 400px; }
     .lib-folders {
       width: 190px; flex-shrink: 0;
@@ -538,7 +538,7 @@
     .lib-content { flex: 1; overflow-y: auto; min-width: 0; }
     .lib-count-row { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
 
-    /* â”€â”€ List view â”€â”€ */
+    /* ── List view ── */
     .lib-list { display: flex; flex-direction: column; gap: 4px; }
     .lib-list-row {
       display: flex; align-items: center; gap: 14px;
@@ -734,7 +734,7 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    /* â”€â”€ Slide Builder tab â€” inline builder â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Slide Builder tab — inline builder ──────────────────────── */
 
     .slide-builder-tab {
       display: flex;
@@ -745,7 +745,7 @@
       overflow: hidden;
     }
 
-    /* â”€â”€ Builder top bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Builder top bar ─────────────────────────────────────────── */
 
     .builder-topbar {
       display: flex;
@@ -848,7 +848,7 @@
     }
     .btn-save-lib:hover { color: var(--text); border-color: var(--border-hov); }
 
-    /* â”€â”€ Builder body: split pane â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Builder body: split pane ────────────────────────────────── */
 
     .builder-body {
       display: flex;
@@ -857,7 +857,7 @@
       min-height: 0;
     }
 
-    /* â”€â”€ Canvas panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Canvas panel ────────────────────────────────────────────── */
 
     .builder-canvas {
       width: 50%;
@@ -1090,7 +1090,7 @@
     }
     .chip-remove:hover { color: var(--remove-hov-fg); }
 
-    /* â”€â”€ Component picker (overlay) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Component picker (overlay) ──────────────────────────────── */
 
     .picker-overlay {
       position: fixed;
@@ -1154,7 +1154,7 @@
     }
     .picker-cancel:hover { color: var(--text); border-color: var(--border-hov); }
 
-    /* â”€â”€ New Slide modal â€” centered popup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── New Slide modal — centered popup ────────────────────────── */
     #newSlideModal.picker-overlay {
       position: fixed;
       inset: 0;
@@ -1179,7 +1179,7 @@
       overflow: hidden;
     }
 
-    /* â”€â”€ Template Detail Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Template Detail Modal ───────────────────────────────────── */
     #tplDetailModal.picker-overlay {
       position: fixed;
       inset: 0;
@@ -1255,7 +1255,7 @@
     }
     .tpl-detail-style-row.active .tpl-detail-style-check { opacity: 1; }
 
-    /* â”€â”€ Sidebar submenu (Slides page) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Sidebar submenu (Slides page) ───────────────────────────── */
     .sidebar-nav-group { list-style: none; }
     .sidebar-submenu {
       list-style: none;
@@ -1279,7 +1279,7 @@
     /* Hide submenu text when sidebar is collapsed */
     .sidebar.collapsed .sidebar-submenu { display: none; }
 
-    /* â”€â”€ Preview panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Preview panel ───────────────────────────────────────────── */
 
     .builder-preview {
       flex: 1;
@@ -1297,7 +1297,7 @@
       overflow: auto;
     }
 
-    /* Desktop preview frame â€” 16:9 */
+    /* Desktop preview frame — 16:9 */
     .preview-frame-wrap {
       width: 100%;
       max-width: 100%;
@@ -1551,7 +1551,7 @@
       .save-status { display: none; }
     }
 
-    /* â”€â”€ Grouped picker â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Grouped picker ──────────────────────────────────────────────────────── */
 
     .picker-group-label {
       font-size: 10px;
@@ -1578,7 +1578,7 @@
     }
     .picker-item:hover .picker-item-desc { color: var(--accent); opacity: .75; }
 
-    /* â”€â”€ New preview component types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── New preview component types ─────────────────────────────── */
 
     .pv-image {
       background: var(--surface-hov);
@@ -1620,7 +1620,7 @@
       border-left: 2px solid var(--accent);
     }
 
-    /* â”€â”€ Row drag states â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Row drag states ─────────────────────────────────────────────────────── */
 
     .builder-row.dragging { opacity: 0.4; }
     .builder-row.drag-over {
@@ -1628,7 +1628,7 @@
       box-shadow: 0 0 0 1px var(--accent);
     }
 
-    /* â”€â”€ Preview popup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Preview popup ───────────────────────────────────────────── */
 
     .preview-popup-overlay {
       position: fixed;
@@ -1766,7 +1766,7 @@
       border: 2px solid rgba(255,255,255,.1);
     }
 
-    /* â”€â”€ New Slide Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── New Slide Modal ─────────────────────────────────────────── */
     .field {
       display: flex;
       flex-direction: column;
@@ -1820,7 +1820,7 @@
     }
     .lib-update-badge--ignored:hover { opacity: 1; }
 
-    /* Update review modal â€” overrides .picker-panel max-width */
+    /* Update review modal — overrides .picker-panel max-width */
     .picker-panel.update-review-modal {
       width: 560px;
       max-width: 95vw;
@@ -1859,7 +1859,7 @@
     .diff-row--same    { background: var(--surface); color: var(--text); }
     .diff-row-icon { font-size: 14px; min-width: 16px; }
 
-    /* â”€â”€ Template Creator Wizard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Template Creator Wizard ─────────────────────────────────── */
 
     .builder-mode-toggle {
       display: flex;
@@ -2138,7 +2138,7 @@
       flex-shrink: 0;
     }
 
-    /* â”€â”€ Wizard preview thumbnail + popup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Wizard preview thumbnail + popup ────────────────────────── */
 
     .wz-preview-thumb {
       position: relative;
@@ -2221,7 +2221,7 @@
       background: #fff;
     }
 
-    /* â”€â”€ Card Details (lineage) Modal â€” matches the deck-thumbnail modal in builder-ui â”€â”€ */
+    /* ── Card Details (lineage) Modal — matches the deck-thumbnail modal in builder-ui ── */
     .card-details-modal {
       display: none; position: fixed; inset: 0; z-index: 1000;
       background: rgba(0,0,0,.6); backdrop-filter: blur(4px);
@@ -2306,7 +2306,7 @@
         <span class="nav-icon">&#8617;</span>
         <span class="nav-label">Log out</span>
       </a>
-      <div class="sidebar-version">v1.4.0</div>
+      <div class="sidebar-version">v1.4.1</div>
     </div>
 
     <button class="sidebar-toggle" id="sidebarToggle" aria-label="Collapse sidebar">
@@ -2332,7 +2332,7 @@
         <a href="/builder" class="pick-banner-cancel">Cancel</a>
       </div>
 
-      <!-- â•â• Tab: My Library â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+      <!-- ══ Tab: My Library ══════════════════════════════════════ -->
       <div id="panel-library" class="tab-panel">
 
         <!-- Toolbar -->
@@ -2373,7 +2373,7 @@
         </div>
       </div><!-- /#panel-library -->
 
-      <!-- â•â• Tab: Templates â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+      <!-- ══ Tab: Templates ══════════════════════════════════════ -->
       <div id="panel-templates" class="tab-panel hidden">
 
         <!-- Row 1: filter pills (dynamically populated) -->
@@ -2385,7 +2385,7 @@
         <!-- Row 2: controls toolbar -->
         <div class="tpl-toolbar">
           <span class="tpl-count-row"><span id="templatesCount">0</span> templates</span>
-          <input type="text" class="lib-search" id="tplSearch" placeholder="Search templatesâ€¦" oninput="setTplSearch(this.value)" style="flex:1;max-width:220px;">
+          <input type="text" class="lib-search" id="tplSearch" placeholder="Search templates…" oninput="setTplSearch(this.value)" style="flex:1;max-width:220px;">
           <select class="tpl-sort-select" id="tplSortSelect" onchange="onTplSortChange(this.value)">
             <option value="name">Name A&#x2013;Z</option>
             <option value="name-desc">Name Z&#x2013;A</option>
@@ -2423,7 +2423,7 @@
 
       </div><!-- /#panel-templates -->
 
-      <!-- â•â• Tab: Slide Builder â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+      <!-- ══ Tab: Slide Builder ══════════════════════════════════ -->
       <div id="panel-builder" class="tab-panel hidden">
 
         <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px;text-align:center;gap:16px;">
@@ -2443,7 +2443,7 @@
     </main>
   </div><!-- /.app-body -->
 
-  <!-- â”€â”€ New Slide Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- ── New Slide Modal ─────────────────────────────────────────── -->
   <div class="picker-overlay hidden" id="newSlideModal">
     <div class="picker-panel">
 
@@ -2537,7 +2537,7 @@
       <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px;">
         <div>
           <label style="display:block;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;">Name</label>
-          <input id="importName" type="text" placeholder="Template nameâ€¦"
+          <input id="importName" type="text" placeholder="Template name…"
             style="width:100%;box-sizing:border-box;padding:9px 11px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-size:14px;font-family:var(--font);outline:none;">
         </div>
         <div style="display:flex;gap:12px;">
@@ -2545,7 +2545,7 @@
             <label style="display:block;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;">Category</label>
             <select id="importCategory"
               style="width:100%;padding:9px 11px;border-radius:var(--radius-btn);border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-size:14px;font-family:var(--font);outline:none;">
-              <option value="">Selectâ€¦</option>
+              <option value="">Select…</option>
               <option value="Cover">Cover</option>
               <option value="Content">Content</option>
               <option value="Visual">Visual</option>
@@ -2631,7 +2631,7 @@
   <!-- Toast -->
   <div class="toast" id="toast"></div>
 
-  <!-- â”€â”€ Card Details (lineage) Modal â”€â”€ -->
+  <!-- ── Card Details (lineage) Modal ── -->
   <div class="card-details-modal" id="cardDetailsModal">
     <div class="card-details-box">
       <div class="card-details-title" id="cardDetailsTitle">Details</div>
@@ -2649,7 +2649,7 @@
       if (saved) html.setAttribute('data-theme', saved);
     })();
 
-    // â”€â”€ Sidebar JS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Sidebar JS ──────────────────────────────────────────────────
     (function () {
       var sidebar   = document.getElementById('sidebar');
       var overlay   = document.getElementById('sidebarOverlay');
@@ -2681,7 +2681,7 @@
       });
     })();
 
-    // â”€â”€ Pick-mode state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Pick-mode state ─────────────────────────────────────────────
     var pickMode   = false;
     var pickDeckId = '';
     var pickDeckName = '';
@@ -2703,7 +2703,7 @@
       }
     })();
 
-    // â”€â”€ Global state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Global state ────────────────────────────────────────────────
     var activePageTab   = 'library';
     var htmlCatalog     = [];
     var librarySlides   = [];
@@ -2747,7 +2747,7 @@
           { name: 'Title',         desc: 'Large headline, optional subtitle below' },
           { name: 'Text Block',    desc: 'Body text, supports bold and inline links' },
           { name: 'List',          desc: 'Bullet or numbered list, items editable' },
-          { name: 'Section Label', desc: 'Small uppercase label â€” section intro' },
+          { name: 'Section Label', desc: 'Small uppercase label — section intro' },
           { name: 'Stat Block',    desc: 'Large number + label + optional sublabel' }
         ]
       },
@@ -2756,7 +2756,7 @@
         types: [
           { name: 'Tabs',     desc: 'Tab bar + panels, set tab count and labels' },
           { name: 'Carousel', desc: 'Image + caption slides, swipeable' },
-          { name: 'Button',   desc: 'CTA button â€” links to tab, slide, or URL' },
+          { name: 'Button',   desc: 'CTA button — links to tab, slide, or URL' },
           { name: 'Image',    desc: 'Single image with optional caption' },
           { name: 'Matrix',   desc: 'Grid of cells with headers and data rows' }
         ]
@@ -2779,7 +2779,7 @@
       'thirds':    '1/3 + 1/3 + 1/3'
     };
 
-    // â”€â”€ Tab switching â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Tab switching ────────────────────────────────────────────────
 
     var SCREEN_META = {
       library:   { h1: 'My Library',    sub: 'Browse and manage your slide library' },
@@ -2813,7 +2813,7 @@
         var subEl = document.querySelector('.page-subtitle');
         if (h1El)  h1El.textContent  = meta.h1;
         if (subEl) subEl.textContent = meta.sub;
-        document.title = meta.h1 + ' â€” Presentation Builder';
+        document.title = meta.h1 + ' — Presentation Builder';
       }
       // Update URL
       if (!_noPush) {
@@ -2824,7 +2824,7 @@
       }
     }
 
-    // â”€â”€ Toast â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Toast ────────────────────────────────────────────────────────
 
     var toastTimer = null;
     function showToast(msg) {
@@ -2835,7 +2835,7 @@
       toastTimer = setTimeout(function () { el.classList.remove('show'); }, 2800);
     }
 
-    // â”€â”€ Templates â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Templates ────────────────────────────────────────────────────
 
     function toggleCatFilter(cat) {
       if (activeCatFilters.has(cat)) {
@@ -2847,7 +2847,7 @@
       renderHtmlCatalog();
     }
 
-    // â”€â”€ Category tag management â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Category tag management ───────────────────────────────────────
 
     function saveTplCategoryDefs() {
       localStorage.setItem('tplCategoryDefs', JSON.stringify(tplCategoryDefs));
@@ -2890,7 +2890,7 @@
 
           var rm = document.createElement('span');
           rm.className = 'pill-remove';
-          rm.textContent = 'Ã—';
+          rm.textContent = '×';
           rm.title = 'Hide this tag';
           rm.addEventListener('click', function (e) { e.stopPropagation(); removeCategoryTag(d.value); });
           pill.appendChild(rm);
@@ -2937,7 +2937,7 @@
       if (!container || container.querySelector('.pill-add-input')) return;
       var input = document.createElement('input');
       input.type = 'text';
-      input.placeholder = 'Tag nameâ€¦';
+      input.placeholder = 'Tag name…';
       input.className = 'filter-pill pill-add-input';
       container.appendChild(input);
       input.focus();
@@ -3125,7 +3125,7 @@
       card.style.display = 'flex';
       card.style.flexDirection = 'column';
 
-      // â”€â”€ Select-mode support â”€â”€
+      // ── Select-mode support ──
       var checkBadge = document.createElement('span');
       checkBadge.className = 'tpl-select-check';
       card.appendChild(checkBadge);
@@ -3162,7 +3162,7 @@
         });
       }
 
-      // â”€â”€ Thumbnail â”€â”€
+      // ── Thumbnail ──
       var SLIDE_W = 1280, SLIDE_H = 720;
       var thumbW  = 260,  thumbH  = Math.round(260 * SLIDE_H / SLIDE_W);
       var scale   = thumbW / SLIDE_W;
@@ -3185,14 +3185,14 @@
       })(previewUrl);
       card.appendChild(thumbWrap);
 
-      // â”€â”€ Header: drag handle + name + category badge â”€â”€
+      // ── Header: drag handle + name + category badge ──
       var header = document.createElement('div');
       header.className = 'tpl-card-header';
 
       if (tplSort === 'manual') {
         var dragHandle = document.createElement('span');
         dragHandle.className = 'tpl-drag-handle';
-        dragHandle.textContent = 'â ‡';
+        dragHandle.textContent = '⠇';
         dragHandle.title = 'Drag to reorder';
         header.appendChild(dragHandle);
       }
@@ -3218,14 +3218,14 @@
         card.appendChild(desc);
       }
 
-      // â”€â”€ Component chips (editable) â”€â”€
+      // ── Component chips (editable) ──
       card.appendChild(buildTplComponentsRow(tpl));
 
-      // â”€â”€ Per-template tags â”€â”€
+      // ── Per-template tags ──
       var tagsRow = buildTplTagsRow(tpl);
       card.appendChild(tagsRow);
 
-      // â”€â”€ Actions: Use + â‹® dropdown â”€â”€
+      // ── Actions: Use + ⋮ dropdown ──
       var actions = document.createElement('div');
       actions.className = 'lib-card-actions';
 
@@ -3324,7 +3324,7 @@
         });
         var dragHandle = document.createElement('span');
         dragHandle.className = 'tpl-drag-handle';
-        dragHandle.textContent = 'â ‡';
+        dragHandle.textContent = '⠇';
         dragHandle.title = 'Drag to reorder';
         row.appendChild(dragHandle);
       }
@@ -3428,7 +3428,7 @@
       renderHtmlCatalog();
     }
 
-    // â”€â”€ Per-template tag helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Per-template tag helpers ─────────────────────────────────────
 
     function buildTplTagsRow(tpl) {
       var row = document.createElement('div');
@@ -3445,7 +3445,7 @@
 
             var rm = document.createElement('span');
             rm.className = 'tpl-card-tag-remove';
-            rm.textContent = 'Ã—';
+            rm.textContent = '×';
             rm.title = 'Remove tag';
             rm.addEventListener('click', function (e) {
               e.stopPropagation();
@@ -3503,7 +3503,7 @@
             chip.textContent = comp;
             var rm = document.createElement('span');
             rm.className = 'tpl-chip-remove';
-            rm.textContent = 'Ã—';
+            rm.textContent = '×';
             rm.title = 'Remove';
             rm.addEventListener('click', function (e) {
               e.stopPropagation();
@@ -3596,7 +3596,7 @@
       // Inline input for new tag
       var inp = document.createElement('input');
       inp.type = 'text';
-      inp.placeholder = 'Add or find tagâ€¦';
+      inp.placeholder = 'Add or find tag…';
       inp.className = 'tpl-tag-picker-input';
       picker.appendChild(inp);
 
@@ -3657,7 +3657,7 @@
       }, 0);
     }
 
-    // â”€â”€ Template card menu helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Template card menu helpers ────────────────────────────────────
 
     function makeTplDropItem(label, handler) {
       var item = document.createElement('div');
@@ -3749,7 +3749,7 @@
       openUrlPreviewPopup('/slides/template-preview/' + encodeURIComponent(tpl.id || '') + '?edit=1');
     }
 
-    // â”€â”€ Import Template â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Import Template ──────────────────────────────────────────────
 
     function openImportModal() {
       document.getElementById('importFileInput').value = '';
@@ -3775,28 +3775,28 @@
       checks.push({
         label:  'Root element has data-slide',
         status: root ? 'pass' : 'error',
-        msg:    root ? 'data-slide="' + root.getAttribute('data-slide') + '"' : 'Missing â€” required for slide identification'
+        msg:    root ? 'data-slide="' + root.getAttribute('data-slide') + '"' : 'Missing — required for slide identification'
       });
 
       var modeEl = doc.querySelector('[data-slide-mode]');
       checks.push({
         label:  'Root element has data-slide-mode',
         status: modeEl ? 'pass' : 'error',
-        msg:    modeEl ? 'mode: ' + modeEl.getAttribute('data-slide-mode') : 'Missing â€” required'
+        msg:    modeEl ? 'mode: ' + modeEl.getAttribute('data-slide-mode') : 'Missing — required'
       });
 
       var langKeys = doc.querySelectorAll('[data-lang-key]');
       checks.push({
         label:  'Translation keys (data-lang-key)',
         status: langKeys.length > 0 ? 'pass' : 'error',
-        msg:    langKeys.length > 0 ? langKeys.length + ' keys found' : 'No data-lang-key attributes â€” required'
+        msg:    langKeys.length > 0 ? langKeys.length + ' keys found' : 'No data-lang-key attributes — required'
       });
 
       var editEls = doc.querySelectorAll('[data-edit]');
       checks.push({
         label:  'Editable fields (data-edit)',
         status: editEls.length > 0 ? 'pass' : 'error',
-        msg:    editEls.length > 0 ? editEls.length + ' editable fields found' : 'No data-edit attributes â€” required'
+        msg:    editEls.length > 0 ? editEls.length + ' editable fields found' : 'No data-edit attributes — required'
       });
 
       var styleBlocks = doc.querySelectorAll('style');
@@ -3807,7 +3807,7 @@
       checks.push({
         label:  'No hardcoded hex colors in styles',
         status: hasHex ? 'warn' : 'pass',
-        msg:    hasHex ? 'Hardcoded colors found â€” prefer CSS variables' : 'No hardcoded colors detected'
+        msg:    hasHex ? 'Hardcoded colors found — prefer CSS variables' : 'No hardcoded colors detected'
       });
 
       var scriptBlocks = doc.querySelectorAll('script');
@@ -3818,7 +3818,7 @@
       checks.push({
         label:  'Analytics tracking (Track. calls)',
         status: hasTrack ? 'pass' : 'warn',
-        msg:    hasTrack ? 'Track calls found' : 'No Track. calls â€” consider adding analytics'
+        msg:    hasTrack ? 'Track calls found' : 'No Track. calls — consider adding analytics'
       });
 
       return checks;
@@ -3898,7 +3898,7 @@
 
       var btn = document.getElementById('importSubmitBtn');
       btn.disabled = true;
-      btn.textContent = 'Importingâ€¦';
+      btn.textContent = 'Importing…';
 
       fetch('/api/templates', {
         method:  'POST',
@@ -3994,7 +3994,7 @@
       return wrap;
     }
 
-    // â”€â”€ My Library â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── My Library ───────────────────────────────────────────────────
 
     function loadLibrary() {
       fetch('/api/slide-library')
@@ -4229,7 +4229,7 @@
       card.className = 'lib-card';
       card.id = 'lib-card-' + slide.id;
 
-      // â”€â”€ Select-mode support â”€â”€
+      // ── Select-mode support ──
       var checkBadge = document.createElement('span');
       checkBadge.className = 'tpl-select-check';
       card.appendChild(checkBadge);
@@ -4420,12 +4420,12 @@
         });
     }
 
-    // â”€â”€ Pick-mode actions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Pick-mode actions ────────────────────────────────────────────
 
     function pickAddSlide(librarySlideId) {
       var btn = event.target;
       btn.disabled = true;
-      btn.textContent = 'Addingâ€¦';
+      btn.textContent = 'Adding…';
       fetch('/api/deck/slides', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -4494,7 +4494,7 @@
       selectedLibIds.forEach(function (id) { ids.push(id); });
       if (!ids.length) return;
       var addBtn = document.getElementById('libAddSelectedBtn');
-      if (addBtn) { addBtn.textContent = 'Addingâ€¦'; addBtn.disabled = true; }
+      if (addBtn) { addBtn.textContent = 'Adding…'; addBtn.disabled = true; }
       var blockedMessages = [];
       var chain = Promise.resolve();
       ids.forEach(function (slideId) {
@@ -4596,7 +4596,7 @@
       selectedTplIds.forEach(function (id) { ids.push(id); });
       if (!ids.length) return;
       var addBtn = document.getElementById('tplAddSelectedBtn');
-      if (addBtn) { addBtn.textContent = 'Addingâ€¦'; addBtn.disabled = true; }
+      if (addBtn) { addBtn.textContent = 'Adding…'; addBtn.disabled = true; }
       var tpls = ids.map(function (id) {
         return htmlCatalog.find(function (t) { return t.id === id; });
       }).filter(Boolean);
@@ -4627,7 +4627,7 @@
         });
     }
 
-    // â”€â”€ New Slide Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── New Slide Modal ──────────────────────────────────────────────
 
     function openNewSlideModal(preselectedTemplate) {
       var modal = document.getElementById('newSlideModal');
@@ -4721,7 +4721,7 @@
       document.getElementById('newSlideModal').classList.add('hidden');
     }
 
-    // â”€â”€ Template Detail View â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Template Detail View ──────────────────────────────────────────
 
     function openTplDetail(tpl) {
       tplDetailTpl     = tpl;
@@ -4749,7 +4749,7 @@
       var noneRow = document.createElement('button');
       noneRow.className = 'tpl-detail-style-row' + (!tplDetailThemeId ? ' active' : '');
       noneRow.dataset.themeId = '';
-      noneRow.innerHTML = '<span class="tpl-detail-style-dot" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);"></span><span style="flex:1;">Default</span><span class="tpl-detail-style-check">âœ“</span>';
+      noneRow.innerHTML = '<span class="tpl-detail-style-dot" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);"></span><span style="flex:1;">Default</span><span class="tpl-detail-style-check">✓</span>';
       noneRow.addEventListener('click', function () { tplDetailSetTheme(null); });
       list.appendChild(noneRow);
 
@@ -4758,13 +4758,13 @@
         row.className = 'tpl-detail-style-row' + (tplDetailThemeId === th.file ? ' active' : '');
         row.dataset.themeId = th.file;
         var dot = '<span class="tpl-detail-style-dot" style="background:' + th.bgColor + ';box-shadow:inset 0 0 0 3px ' + (th.accentColor || th.bgColor) + ';"></span>';
-        row.innerHTML = dot + '<span style="flex:1;">' + th.name + '</span><span class="tpl-detail-style-check">âœ“</span>';
+        row.innerHTML = dot + '<span style="flex:1;">' + th.name + '</span><span class="tpl-detail-style-check">✓</span>';
         row.addEventListener('click', function () { tplDetailSetTheme(th.file); });
         list.appendChild(row);
       });
 
       if (allThemes.length === 0) {
-        list.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:8px;">No themes yet â€” server needs restart after first run.</div>';
+        list.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:8px;">No themes yet — server needs restart after first run.</div>';
       }
 
       modal.classList.remove('hidden');
@@ -4814,7 +4814,7 @@
         .catch(function () { showToast('Could not create slide. Try again.'); });
     }
 
-    // â”€â”€ Preview popup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Preview popup ─────────────────────────────────────────────────
 
     var popupViewport = 'desktop';
     var popupMode     = 'canvas'; // 'canvas' | 'url'
@@ -4823,19 +4823,19 @@
     var POPUP_CATEGORY_VIEWPORTS = {
       desktop: [
         { value: 'desktop', label: 'Fit to window' },
-        { value: 'w2560',   label: '2560 Ã— 1440' },
-        { value: 'w1920',   label: '1920 Ã— 1080' },
-        { value: 'w1280',   label: '1280 Ã— 720' },
-        { value: 'w1366',   label: '1366 Ã— 768' }
+        { value: 'w2560',   label: '2560 × 1440' },
+        { value: 'w1920',   label: '1920 × 1080' },
+        { value: 'w1280',   label: '1280 × 720' },
+        { value: 'w1366',   label: '1366 × 768' }
       ],
       tablet: [
-        { value: 't1024',   label: '1024 Ã— 768 (landscape)' },
-        { value: 't768',    label: '768 Ã— 1024 (portrait)' }
+        { value: 't1024',   label: '1024 × 768 (landscape)' },
+        { value: 't768',    label: '768 × 1024 (portrait)' }
       ],
       mobile: [
-        { value: 'm390',    label: '390 Ã— 844 (iPhone 14)' },
-        { value: 'mobile',  label: '375 Ã— 667 (iPhone SE)' },
-        { value: 'm360',    label: '360 Ã— 800 (Android)' }
+        { value: 'm390',    label: '390 × 844 (iPhone 14)' },
+        { value: 'mobile',  label: '375 × 667 (iPhone SE)' },
+        { value: 'm360',    label: '360 × 800 (Android)' }
       ]
     };
 
@@ -4875,7 +4875,7 @@
       popupMode = 'canvas';
       popupViewport = 'desktop';
       document.getElementById('previewPopup').classList.remove('hidden');
-      setPopupCategory('desktop'); // populates select + calls switchPopupViewport â†’ renderPopupPreview
+      setPopupCategory('desktop'); // populates select + calls switchPopupViewport → renderPopupPreview
     }
 
     function openUrlPreviewPopup(url) {
@@ -4883,7 +4883,7 @@
       popupPreviewUrl = url;
       popupViewport = 'desktop';
       document.getElementById('previewPopup').classList.remove('hidden');
-      setPopupCategory('desktop'); // populates select + calls switchPopupViewport â†’ renderUrlPreview
+      setPopupCategory('desktop'); // populates select + calls switchPopupViewport → renderUrlPreview
     }
 
     function renderUrlPreview() {
@@ -4896,7 +4896,7 @@
 
       var iframe = document.createElement('iframe');
       iframe.src = popupPreviewUrl;
-      // No sandbox â€” full interactivity required (carousels, tabs, buttons, lightboxes)
+      // No sandbox — full interactivity required (carousels, tabs, buttons, lightboxes)
 
       var isMobile = ['m390','mobile','m360'].indexOf(popupViewport) !== -1;
       var isTablet = ['t1024','t768'].indexOf(popupViewport) !== -1;
@@ -5011,7 +5011,7 @@
       if (e.target === this) closePreviewPopup();
     });
 
-    // â”€â”€ Modal backdrop click â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Modal backdrop click ──────────────────────────────────────────
 
     document.getElementById('newSlideModal').addEventListener('click', function (e) {
       if (e.target === this) closeNewSlideModal();
@@ -5025,9 +5025,9 @@
       if (e.key === 'Enter') createSlideFromDetail();
     });
 
-    // â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Init ──────────────────────────────────────────────────────────
 
-    // â”€â”€ Template Update Review Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Template Update Review Modal ─────────────────────────────────
     var _reviewSlide = null;
 
     function openUpdateReviewModal(slide) {
@@ -5073,7 +5073,7 @@
         rowEl.className = 'diff-row diff-row--same';
         rowEl.innerHTML =
           '<span class="diff-row-icon">&#9632;</span>' +
-          '<span>Row ' + (ri + 1) + ' â€” ' + (row.layout || 'full') + ' â€” ' + (components.join(', ') || 'empty') + '</span>';
+          '<span>Row ' + (ri + 1) + ' — ' + (row.layout || 'full') + ' — ' + (components.join(', ') || 'empty') + '</span>';
         section.appendChild(rowEl);
       });
 
@@ -5171,7 +5171,7 @@
       switchTab(tab, true);
     });
 
-    // â”€â”€ Card Details (lineage) modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Card Details (lineage) modal ──────────────────────────────
     function escHtml(s) {
       if (s == null) return '';
       return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -5180,7 +5180,7 @@
       function row(label, id, sub) {
         return '<div style="margin:0 0 14px;">' +
           '<div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;">' + escHtml(label) + '</div>' +
-          '<div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--text);word-break:break-all;">' + (id ? escHtml(id) : '<span style="color:var(--muted);">â€”</span>') + '</div>' +
+          '<div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--text);word-break:break-all;">' + (id ? escHtml(id) : '<span style="color:var(--muted);">—</span>') + '</div>' +
           (sub ? '<div style="font-size:12px;color:var(--muted);margin-top:1px;">' + escHtml(sub) + '</div>' : '') +
         '</div>';
       }
@@ -5188,7 +5188,7 @@
       document.getElementById('cardDetailsBody').innerHTML = rows.map(function (r) { return row(r.label, r.id, r.sub); }).join('');
       document.getElementById('cardDetailsModal').classList.add('open');
     }
-    // Shared â“˜ Details button (same glyph as the deck thumbnail)
+    // Shared ⓘ Details button (same glyph as the deck thumbnail)
     function makeInfoBtn(onClick) {
       var b = document.createElement('button');
       b.className = 'lib-card-gear-btn';

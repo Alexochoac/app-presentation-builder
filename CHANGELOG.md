@@ -5,6 +5,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [v1.4.1] — 2026-06-17
+
+### Fixed
+- Encoding corruption introduced during v1.4.0 release (PowerShell BOM added to HTML files, breaking special characters and fonts)
+
+---
+
 ## [v1.4.0] — 2026-06-17
 
 ### Added
