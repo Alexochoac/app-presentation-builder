@@ -1361,18 +1361,33 @@ app.get('/api/deck', function (req, res) {
       });
     });
 
-    // Resolve cover slide's customer logo for the active deck
+    // Resolve cover slide's customer logo for the active deck.
+    //  - coverLogoSrc: image currently uploaded into the cover's customer-logo slot (if any)
+    //  - coverHasLogoSlot: whether the cover template even exposes a customer-logo image slot
+    //    (some cover designs don't). Drives the "Save as Presentation" image logic.
+    // Cover detection mirrors the publish path: lib-cover or any template in the 'Cover' category.
     var coverLogoSrc = '';
+    var coverHasLogoSlot = false;
     var coverDeckSlide = deck.slides.find(function (s) {
       if (!s.librarySlideId) return false;
+      if (s.librarySlideId === 'lib-cover') return true;
       var lib = library.slides.find(function (l) { return l.id === s.librarySlideId; });
-      return lib && (lib.templateId === 'ls01-cover' || lib.templateId === 'ls26-cover');
+      if (!lib) return false;
+      var tpl = catalog.find(function (t) { return t.id === lib.templateId; });
+      return !!(tpl && tpl.category === 'Cover');
     });
     if (coverDeckSlide) {
       var coverLib = library.slides.find(function (l) { return l.id === coverDeckSlide.librarySlideId; });
       if (coverLib) {
         var raw = String(resolveSlideEdits(coverLib, activeDeckId)['customer-logo'] || '');
         if (raw) coverLogoSrc = raw.includes('<') ? (raw.match(/\bsrc="([^"]*)"/) || [])[1] || '' : raw;
+        var coverResolved = resolveTemplate(coverLib.templateId);
+        if (coverResolved) {
+          try {
+            var coverTplHtml = fs.readFileSync(coverResolved.filePath, 'utf8');
+            coverHasLogoSlot = /data-edit\s*=\s*["']customer-logo["']/.test(coverTplHtml);
+          } catch (e) { /* unreadable template — leave slot=false */ }
+        }
       }
     }
 
@@ -1387,7 +1402,7 @@ app.get('/api/deck', function (req, res) {
         return fs.existsSync(fp) ? fs.readFileSync(fp, 'utf8') : null;
       } catch (e) { return null; }
     })();
-    res.json({ success: true, data: deck, accentCss: deckAccentCss(deckCfg), styleCss: deckCfg.styleCss || null, finishCss: finishCss, coverLogoSrc: coverLogoSrc });
+    res.json({ success: true, data: deck, accentCss: deckAccentCss(deckCfg), styleCss: deckCfg.styleCss || null, finishCss: finishCss, coverLogoSrc: coverLogoSrc, coverHasLogoSlot: coverHasLogoSlot });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -2127,13 +2142,16 @@ function buildFrozenPresentation(presentation) {
 
   // Per-presentation cover overrides (never written back to library)
   var coverEdits = {};
+  // showCoverLogo: when false the user chose NOT to place the presentation image on the cover \u2014
+  // keep it on the presentation card only, and hide the cover's customer-logo card entirely.
+  var showCoverLogo = presentation.showCoverLogo !== false;
   if (presentation.customerName) {
     var sub = 'Proposal for ' + presentation.customerName;
     if (presentation.contactName)  sub += ' \u00b7 ' + presentation.contactName;
     if (presentation.contactTitle) sub += ', ' + presentation.contactTitle;
     coverEdits.subheadline = sub;
   }
-  if (presentation.customerLogoSrc) {
+  if (presentation.customerLogoSrc && showCoverLogo) {
     coverEdits['customer-logo']     = presentation.customerLogoSrc; // HTML cover slides (ls01, ls26)
     coverEdits['customer-logo-src'] = presentation.customerLogoSrc; // canvas cover slides
   }
@@ -2184,6 +2202,8 @@ function buildFrozenPresentation(presentation) {
     $('[contenteditable]').removeAttr('contenteditable');
     $('[spellcheck]').removeAttr('spellcheck');
     $('[data-edit="customer-logo"]').removeAttr('onclick').removeAttr('title');
+    // User opted out of the cover image: remove the whole customer-logo card (image + placeholder)
+    if (isCoverSlide && !showCoverLogo) $('[data-edit="customer-logo"]').remove();
     $('input[type="file"]').remove();
     bakeLanguageSpans($, s.librarySlideId);
     // Set data-slide to human-readable slug so Track events use consistent names
@@ -2219,6 +2239,7 @@ function buildFrozenPresentation(presentation) {
     $('[contenteditable]').removeAttr('contenteditable');
     $('[spellcheck]').removeAttr('spellcheck');
     $('[data-edit="customer-logo"]').removeAttr('onclick').removeAttr('title');
+    if (isCoverSlide && !showCoverLogo) $('[data-edit="customer-logo"]').remove();
     $('input[type="file"]').remove();
     bakeLanguageSpans($, s.librarySlideId);
     var slideSlug = (s.name || s.id).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -2598,27 +2619,25 @@ function buildFrozenPresentation(presentation) {
     '  });',
     '})();',
     '</script>',
-    '<div id="_pb-nav-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(0,0,0,0.72);backdrop-filter:blur(6px);display:flex;align-items:center;padding:0 16px;height:40px;font-family:sans-serif;font-size:13px;">',
-    '  <a id="_pb-back-btn" href="#" style="color:#fff;text-decoration:none;opacity:0.85;display:flex;align-items:center;gap:6px;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.85">',
-    '    <span style="font-size:16px;">&#8592;</span><span id="_pb-back-label">Back</span>',
-    '  </a>',
-    '</div>',
     '<script>',
     '(function () {',
-    '  var btn   = document.getElementById("_pb-back-btn");',
-    '  var label = document.getElementById("_pb-back-label");',
+    '  // Single top bar = the header. The left control (#fp-dash-btn) is context-aware:',
+    '  //   /finished/ internal preview → keep the Dashboard link (untouched).',
+    '  //   public link + company website → becomes the company-webpage link (opens in a new tab).',
+    '  //   public link + no website → removed (no Dashboard button on public links).',
+    '  var btn = document.getElementById("fp-dash-btn");',
+    '  if (!btn) return;',
+    '  if (window.location.pathname.indexOf("/finished/") === 0) return;',
     '  var websiteUrl   = ' + JSON.stringify(websiteHref) + ';',
     '  var websiteLabel = ' + JSON.stringify(websiteLabel) + ';',
-    '  if (window.location.pathname.indexOf("/finished/") === 0) {',
-    '    label.textContent = "Back";',
-    '    btn.href = "/";',
-    '  } else if (websiteUrl) {',
-    '    label.textContent = websiteLabel;',
+    '  if (websiteUrl) {',
     '    btn.href = websiteUrl;',
+    '    btn.textContent = "\\u2190 " + websiteLabel;',
     '    btn.target = "_blank";',
     '    btn.rel = "noopener noreferrer";',
     '  } else {',
-    '    document.getElementById("_pb-nav-bar").style.display = "none";',
+    '    btn.style.display = "none";',
+    '    if (btn.nextElementSibling) btn.nextElementSibling.style.display = "none";', // hide the trailing divider
     '  }',
     '})();',
     '</script>',
@@ -2984,6 +3003,7 @@ app.post('/api/presentations', function (req, res) {
       existing.contactName      = contactName;
       existing.contactTitle     = contactTitle;
       if (customerLogoSrc) existing.customerLogoSrc = customerLogoSrc;
+      existing.showCoverLogo    = body.showCoverLogo !== false;
       existing.slideCount     = slides.filter(function (s) { return s.visible; }).length;
       existing.slides         = slides;
       existing.defaultLanguage = repDefaultLang;
@@ -3010,6 +3030,7 @@ app.post('/api/presentations', function (req, res) {
       contactName:     contactName,
       contactTitle:    contactTitle,
       customerLogoSrc: customerLogoSrc,
+      showCoverLogo:   body.showCoverLogo !== false,
       slideCount:      slides.filter(function (s) { return s.visible; }).length,
       slides:          slides,
       defaultLanguage: defaultLanguage,

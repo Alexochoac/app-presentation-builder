@@ -177,6 +177,8 @@
       .template01-cover .hero-content { max-width: 58%; }
       .template01-cover-customer-logo.cl-size-2 ~ .hero-content { max-width: 48%; }
       .template01-cover-customer-logo.cl-size-3 ~ .hero-content { max-width: 40%; }
+      /* No logo card (published with "show on cover" off): text reclaims the full width. */
+      .template01-cover.template01-cover-no-logo .hero-content { max-width: none; }
     }
   </style>
 
@@ -192,6 +194,10 @@
     var logoContainer = slide.querySelector('.template01-cover-customer-logo');
     var logoInput     = slide.querySelector('#template01-cover-logo-file');
     var custImg       = slide.querySelector('.template01-cover-cust-img');
+
+    /* Published with "show on cover" off: the logo card is removed server-side. Let the hero
+       text reclaim the full width instead of staying capped to the (now empty) left column. */
+    if (!logoContainer) slide.classList.add('template01-cover-no-logo');
 
     /* Placeholder shows only when no logo is set; a restored/uploaded src shows the image */
     if (custImg && !custImg.getAttribute('src')) {
