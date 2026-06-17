@@ -2659,6 +2659,15 @@ function makePresId() {
   return String(max + 1).padStart(8, '0');
 }
 
+// Append an event to a presentation's history log (created / published / republished / edited).
+function pushPresEvent(pres, type, extra) {
+  if (!Array.isArray(pres.events)) pres.events = [];
+  var ev = { type: type, at: new Date().toISOString() };
+  if (extra && extra.deckId)   ev.deckId   = extra.deckId;
+  if (extra && extra.deckName) ev.deckName = extra.deckName;
+  pres.events.push(ev);
+}
+
 // POST /api/presentations/rebuild-all — regenerate all frozen HTML files
 app.post('/api/presentations/rebuild-all', function (req, res) {
   try {
@@ -3034,7 +3043,8 @@ app.post('/api/presentations', function (req, res) {
       slideCount:      slides.filter(function (s) { return s.visible; }).length,
       slides:          slides,
       defaultLanguage: defaultLanguage,
-      languages:       languages
+      languages:       languages,
+      events:          [{ type: 'created', at: new Date().toISOString() }]
     };
 
     data.presentations.unshift(presentation);

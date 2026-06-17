@@ -342,12 +342,6 @@
     .fp-card-name { flex: 1; min-width: 0; font-size: 13px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .fp-card-row2 { display: flex; align-items: center; gap: 0; min-width: 0; }
     .fp-card-meta { font-size: 11px; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
-    .fp-item-link {
-      font-size: 11px; color: var(--accent); cursor: pointer; white-space: nowrap;
-      overflow: hidden; text-overflow: ellipsis; flex: 1; min-width: 0; user-select: none;
-    }
-    .fp-item-link:hover { text-decoration: underline; }
-    .fp-item-link.copied { color: #4ade80; }
     .fp-status-badge {
       display: inline-flex; align-items: center; font-size: 9px; font-weight: 700;
       letter-spacing: .04em; padding: 1px 5px; border-radius: 999px; flex-shrink: 0;
@@ -356,6 +350,7 @@
     .fp-status-badge--draft { background: rgba(255,255,255,.06); color: var(--muted); }
     [data-theme="light"] .fp-status-badge--draft { background: rgba(0,0,0,.06); }
     .fp-status-badge--archived { background: rgba(251,146,60,.12); color: #f97316; }
+    .fp-status-badge--republished { background: rgba(99,102,241,.15); color: #818cf8; }
     .fp-item-actions { display: flex; align-items: center; flex-shrink: 0; }
     .fp-gear-btn {
       width: 28px; height: 28px; border: none; background: transparent;
@@ -426,10 +421,29 @@
       gap: 10px;
       position: relative;
     }
-    .fp-list.fp-grid-mode .fp-item-logo { width: 56px; height: 56px; font-size: 22px; border-radius: 10px; }
+    /* Grid mode: image-forward banner (~3x the old 56px thumbnail) */
+    .fp-list.fp-grid-mode .fp-item-logo { width: 100%; height: 116px; font-size: 34px; border-radius: 10px; }
+    .fp-list.fp-grid-mode .fp-item-logo img { object-fit: cover; }
     .fp-list.fp-grid-mode .fp-card-info { width: 100%; }
     .fp-list.fp-grid-mode .fp-card-row2 { flex-wrap: wrap; gap: 2px; }
-    .fp-list.fp-grid-mode .fp-item-actions { position: absolute; top: 10px; right: 10px; }
+    .fp-list.fp-grid-mode .fp-item-actions { position: absolute; top: 10px; right: 10px; z-index: 3; }
+    .fp-list.fp-grid-mode .fp-gear-btn { background: rgba(0,0,0,.45); backdrop-filter: blur(3px); color: #fff; }
+    .fp-list.fp-grid-mode .fp-gear-btn:hover { background: rgba(0,0,0,.7); color: #fff; }
+
+    /* Footer: live-only share link (left) + plain #id and "created x ago" (right) */
+    .fp-card-foot {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 8px; width: 100%; margin-top: 2px;
+    }
+    .fp-share-link {
+      font-size: 11px; color: var(--accent); cursor: pointer; white-space: nowrap;
+      user-select: none; display: inline-flex; align-items: center; gap: 3px;
+    }
+    .fp-share-link:hover { text-decoration: underline; }
+    .fp-share-link.copied { color: #4ade80; }
+    .fp-card-idwrap { display: flex; flex-direction: column; align-items: flex-end; margin-left: auto; }
+    .fp-card-id  { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .fp-card-ago { font-size: 10px; color: var(--muted); opacity: .8; }
 
     /* ── Metrics strip ── */
     .fp-metrics {
@@ -2161,13 +2175,14 @@
         return wrap;
       }
 
-      function buildFpLinkEl(p) {
-        var viewUrl = p.publishedAt
-          ? publicBaseUrl + '/public/' + p.id + '/'
-          : window.location.origin + '/view/' + p.id;
+      // Live-only public link. Returns null for drafts (no public link until published & live).
+      function buildFpShareEl(p) {
+        if (!p.publishedAt) return null;
+        var viewUrl = publicBaseUrl + '/public/' + p.id + '/';
         var span = document.createElement('span');
-        span.className = 'fp-item-link';
-        span.textContent = '#' + p.id;
+        span.className = 'fp-share-link';
+        var LABEL = '🔗 Share public link';
+        span.textContent = LABEL;
         span.title = viewUrl + '\n\nClick to copy · Double-click to open';
         var clickTimer = null;
         span.addEventListener('click', function (e) {
@@ -2359,20 +2374,52 @@
         var body  = document.getElementById('fpHistoryBody');
         var modal = document.getElementById('fpHistoryModal');
         if (!body || !modal) return;
+        function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]; }); }
+
         var rows = [
-          ['ID', '#' + p.id],
-          ['Name', p.presentationName || '—'],
-          ['Customer', p.customerName || '—'],
-          ['Created', p.createdAt || '—'],
-          ['Published', p.publishedAt ? timeAgo(p.publishedAt) + ' (' + p.publishedAt.slice(0, 10) + ')' : 'Not published'],
+          ['ID', '#' + esc(p.id)],
+          ['Name', esc(p.presentationName) || '—'],
+          ['Customer', esc(p.customerName) || '—'],
           ['Slides', p.slideCount != null ? p.slideCount : '—'],
-          ['Languages', (p.languages || []).join(', ') || '—']
+          ['Languages', esc((p.languages || []).join(', ')) || '—']
         ];
-        body.innerHTML = rows.map(function (r) {
+        var summaryHtml = rows.map(function (r) {
           return '<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);">' +
             '<span style="width:80px;flex-shrink:0;color:var(--muted);">' + r[0] + '</span>' +
             '<span style="flex:1;color:var(--text);word-break:break-all;">' + r[1] + '</span></div>';
         }).join('');
+
+        // Event timeline — real log, or synthesized from timestamps for older presentations
+        var events = (Array.isArray(p.events) && p.events.length) ? p.events.slice() : (function () {
+          var out = [];
+          if (p.createdAt)   out.push({ type: 'created',     at: p.createdAt });
+          if (p.publishedAt) out.push({ type: 'published',   at: p.publishedAt });
+          if (p.replacedAt)  out.push({ type: 'republished', at: p.replacedAt });
+          if (p.editedAt)    out.push({ type: 'edited',      at: p.editedAt });
+          return out;
+        })();
+        events.sort(function (a, b) { return (a.at || '') < (b.at || '') ? 1 : -1; }); // newest first
+        var LABELS = { created: 'Created', published: 'Published', republished: 'Republished', edited: 'Edited' };
+        function fmt(at) {
+          if (!at) return '';
+          var d = new Date(at.length <= 10 ? at + 'T00:00:00' : at);
+          return isNaN(d.getTime()) ? esc(at) : d.toLocaleDateString() + ' · ' + timeAgo(at);
+        }
+
+        var timelineHtml = '<div style="margin-top:14px;margin-bottom:4px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">History</div>';
+        if (!events.length) {
+          timelineHtml += '<div style="padding:8px 0;color:var(--muted);">No events recorded.</div>';
+        } else {
+          timelineHtml += events.map(function (ev) {
+            var label = LABELS[ev.type] || esc(ev.type);
+            var extra = (ev.deckName && (ev.type === 'republished' || ev.type === 'published')) ? ' · from “' + esc(ev.deckName) + '”' : '';
+            return '<div style="display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);">' +
+              '<span style="flex:1;color:var(--text);">' + label + extra + '</span>' +
+              '<span style="color:var(--muted);white-space:nowrap;">' + fmt(ev.at) + '</span></div>';
+          }).join('');
+        }
+
+        body.innerHTML = summaryHtml + timelineHtml;
         modal.style.display = 'flex';
       }
 
@@ -2435,28 +2482,28 @@
             }
             row1.appendChild(nameEl);
             row1.appendChild(badge);
+            // Secondary pill: shown only when an actual 'republished' event exists (never on first publish)
+            var hasRepublish = Array.isArray(p.events) && p.events.some(function (e) { return e.type === 'republished'; });
+            if (!p.archivedAt && hasRepublish) {
+              var rep = document.createElement('span');
+              rep.className = 'fp-status-badge fp-status-badge--republished';
+              rep.textContent = '↻ Republished';
+              if (p.replacedAt) rep.title = 'Last republished ' + timeAgo(p.replacedAt);
+              row1.appendChild(rep);
+            }
             info.appendChild(row1);
 
-            // Row 2: meta + link
-            var row2 = document.createElement('div');
-            row2.className = 'fp-card-row2';
-            var metaParts = [];
-            if (p.customerName && p.customerName !== p.presentationName) metaParts.push(p.customerName);
-            var dateStr = timeAgo(p.publishedAt || p.createdAt);
-            if (dateStr) metaParts.push(dateStr);
-            var linkEl = buildFpLinkEl(p);
-            if (metaParts.length > 0) {
+            // Row 2: company
+            if (p.customerName && p.customerName !== p.presentationName) {
+              var row2 = document.createElement('div');
+              row2.className = 'fp-card-row2';
               var metaSpan = document.createElement('span');
               metaSpan.className = 'fp-card-meta';
-              metaSpan.textContent = metaParts.join(' · ');
+              metaSpan.textContent = p.customerName;
+              metaSpan.title = p.customerName;
               row2.appendChild(metaSpan);
-              var sep = document.createElement('span');
-              sep.className = 'fp-card-meta';
-              sep.textContent = ' · ';
-              row2.appendChild(sep);
+              info.appendChild(row2);
             }
-            row2.appendChild(linkEl);
-            info.appendChild(row2);
 
             // Metrics strip
             var metricsEl = document.createElement('div');
@@ -2464,6 +2511,28 @@
             metricsEl.dataset.presId = p.id;
             metricsEl.innerHTML = '<span class="fp-metric-loading">loading metrics…</span>';
             info.appendChild(metricsEl);
+
+            // Footer: live-only share link (left) + plain #id and "created x ago" (right)
+            var foot = document.createElement('div');
+            foot.className = 'fp-card-foot';
+            var shareEl = buildFpShareEl(p);
+            if (shareEl) foot.appendChild(shareEl);
+            var idWrap = document.createElement('div');
+            idWrap.className = 'fp-card-idwrap';
+            var idEl = document.createElement('span');
+            idEl.className = 'fp-card-id';
+            idEl.textContent = '#' + p.id;
+            idWrap.appendChild(idEl);
+            var createdAgo = timeAgo(p.createdAt);
+            if (createdAgo) {
+              var agoEl = document.createElement('span');
+              agoEl.className = 'fp-card-ago';
+              agoEl.textContent = 'created ' + createdAgo;
+              if (p.createdAt) agoEl.title = 'Created ' + new Date(p.createdAt).toLocaleString();
+              idWrap.appendChild(agoEl);
+            }
+            foot.appendChild(idWrap);
+            info.appendChild(foot);
 
             li.appendChild(info);
 
