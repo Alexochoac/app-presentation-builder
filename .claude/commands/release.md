@@ -337,6 +337,20 @@ Each file has this pattern just below the Log out link — update the version nu
 <div class="sidebar-version">v{version}</div>
 ```
 
+> **⚠️ Encoding — do NOT corrupt these files (this bit us in v1.4.0).**
+> These HTML files are **UTF-8 without a BOM** and contain special characters (em-dashes `—`, box-drawing `──`, middots `·`, the `↻` glyph, emoji). Editing them with **PowerShell `Set-Content` / `Out-File` adds a UTF-8 BOM and re-encodes those characters into mojibake** (`—`→`â€"`, `──`→`â”€â”€`, `·`→`Â·`), which breaks fonts/characters in the UI. v1.4.0 shipped this corruption and v1.4.1 had to fix it.
+>
+> Rules:
+> - Change **only** the version line — use a precise in-place edit, never a full rewrite of the file.
+> - If you must use PowerShell, use `Set-Content -Encoding utf8NoBOM` (PowerShell 7); plain `Set-Content`/`Out-File` default to BOM/UTF-16. Prefer editing via the agent's Edit tool or `sed`, which preserve encoding.
+> - **Verify after editing** — no BOM and no mojibake:
+>   ```bash
+>   # BOM check — must print nothing:
+>   grep -rl $'\xef\xbb\xbf' builder/features/*/index.html
+>   # mojibake check — must print nothing:
+>   grep -rl 'â€\|â”€\|Â·' builder/features/*/index.html
+>   ```
+
 ---
 
 ## Step 9 — Commit, tag, push
