@@ -69,7 +69,6 @@ window.LSTable = (function () {
       'tr:hover .ls-row-drag{opacity:1;}',
       '.ls-row-drag:active{cursor:grabbing;}',
       'tr.ls-row-dragging{opacity:.4;background:rgba(232,113,26,.08)!important;}',
-      'tr.ls-row-dragover td{border-top:2px solid #E8711A!important;}',
       'tr.ls-row-hidden{display:none;}',
 
       /* ── Row hide button ── */
@@ -164,6 +163,54 @@ window.LSTable = (function () {
       else wrap.appendChild(addRowBtn);
     }
 
+    // ── Pointer-based row reorder (shared across rows) ────────────────────────
+    // Native HTML5 drag-and-drop on table rows is unreliable (and can't be
+    // initiated from a form-control handle), so we drive reordering from the
+    // handle's mousedown with document-level move/up listeners instead.
+    var draggingRow = null, rowMoved = false;
+
+    function startRowDrag(tr, e) {
+      e.preventDefault();
+      e.stopPropagation();
+      draggingRow = tr; rowMoved = false;
+      tr.classList.add('ls-row-dragging');
+      document.body.style.userSelect = 'none';
+      document.addEventListener('mousemove', onRowMove);
+      document.addEventListener('mouseup',   onRowUp);
+    }
+
+    function onRowMove(e) {
+      if (!draggingRow) return;
+      e.preventDefault();
+      var rows = Array.prototype.filter.call(tbody.children, function (r) {
+        return r.tagName === 'TR' && r !== draggingRow && !r.classList.contains('ls-row-hidden');
+      });
+      if (!rows.length) return;
+      var before = null;
+      for (var i = 0; i < rows.length; i++) {
+        var rect = rows[i].getBoundingClientRect();
+        if (e.clientY < rect.top + rect.height / 2) { before = rows[i]; break; }
+      }
+      // Only flag a real reorder (so a no-op drag doesn't trigger a spurious save).
+      if (before) {
+        if (draggingRow.nextSibling !== before) { tbody.insertBefore(draggingRow, before); rowMoved = true; }
+      } else {
+        var last = rows[rows.length - 1];
+        if (last.nextSibling !== draggingRow) { tbody.insertBefore(draggingRow, last.nextSibling); rowMoved = true; }
+      }
+    }
+
+    function onRowUp() {
+      document.removeEventListener('mousemove', onRowMove);
+      document.removeEventListener('mouseup',   onRowUp);
+      if (!draggingRow) return;
+      draggingRow.classList.remove('ls-row-dragging');
+      document.body.style.userSelect = '';
+      var moved = rowMoved;
+      draggingRow = null;
+      if (moved) saveTable(table);
+    }
+
     // ── First column resize handle ────────────────────────────────────────
     if (!window.PB_READONLY) {
       (function () {
@@ -253,43 +300,10 @@ window.LSTable = (function () {
         drag.setAttribute('data-builder-only', '');
         drag.textContent = '⠿';
         drag.title = 'Drag to reorder';
-        var _handlePressed = false;
-        drag.draggable = false; // prevent the icon itself from being a drag source
-        drag.addEventListener('mousedown', function () { _handlePressed = true; });
-        drag.addEventListener('mouseup',   function () { _handlePressed = false; });
+        drag.addEventListener('mousedown', function (e) { startRowDrag(tr, e); });
         drag.addEventListener('click',     function (e) { e.stopPropagation(); });
         drag.addEventListener('dblclick',  function (e) { e.stopPropagation(); });
         firstTd.insertBefore(drag, firstTd.firstChild);
-        tr.draggable = true; // permanently draggable; dragstart guards against non-handle drags
-
-        // Row drag & drop
-        tr.addEventListener('dragstart', function (ev) {
-          if (!_handlePressed) { ev.dataTransfer.effectAllowed = 'none'; return; }
-          ev.dataTransfer.effectAllowed = 'move';
-          tr.classList.add('ls-row-dragging');
-          tbody._dragSrc = tr;
-        });
-        tr.addEventListener('dragend', function () {
-          _handlePressed = false;
-          tr.classList.remove('ls-row-dragging');
-          tbody.querySelectorAll('tr').forEach(function (r) { r.classList.remove('ls-row-dragover'); });
-          saveTable(table);
-        });
-        tr.addEventListener('dragover', function (ev) {
-          ev.preventDefault();
-          tbody.querySelectorAll('tr').forEach(function (r) { r.classList.remove('ls-row-dragover'); });
-          if (tr !== tbody._dragSrc) tr.classList.add('ls-row-dragover');
-        });
-        tr.addEventListener('drop', function (ev) {
-          ev.stopPropagation();
-          var src = tbody._dragSrc;
-          if (src && src !== tr) {
-            var rows = Array.from(tbody.children);
-            if (rows.indexOf(src) < rows.indexOf(tr)) tbody.insertBefore(src, tr.nextSibling);
-            else tbody.insertBefore(src, tr);
-          }
-          tr.classList.remove('ls-row-dragover');
-        });
 
         // Hide / Delete button
         var hideBtn = document.createElement('button');

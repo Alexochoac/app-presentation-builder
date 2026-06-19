@@ -38,7 +38,6 @@ window.List = (function () {
       // Hidden / drag states
       'li.ls-list-hidden{display:none;}',
       'li.ls-list-dragging{opacity:.35;}',
-      'li.ls-list-dragover{border-top:2px solid #E8711A;}',
       // Editable state
       'li[contenteditable="true"]{outline:1px solid rgba(232,113,26,.5);border-radius:4px;background:rgba(232,113,26,.05);}',
       // Restore chip area
@@ -76,7 +75,54 @@ window.List = (function () {
       addBtn.textContent = '+ Add item';
       parent.appendChild(addBtn);
     }
-    var dragSrc     = null;
+    // ── Pointer-based reorder (shared across items) ───────────────────────────
+    // Native HTML5 drag-and-drop can't be initiated from a <button> handle —
+    // form controls swallow the gesture, so dragstart never fires on the parent
+    // <li>. We drive reordering from the handle's mousedown with document-level
+    // move/up listeners instead (same pattern as the table column-resize handle).
+    var dragging = null, dragMoved = false;
+
+    function startDrag(li, e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dragging = li; dragMoved = false;
+      li.classList.add('ls-list-dragging');
+      document.body.style.userSelect = 'none';
+      document.addEventListener('mousemove', onDragMove);
+      document.addEventListener('mouseup',   onDragUp);
+    }
+
+    function onDragMove(e) {
+      if (!dragging) return;
+      e.preventDefault();
+      var items = Array.prototype.filter.call(ul.querySelectorAll('li'), function (li) {
+        return li !== dragging && !li.classList.contains('ls-list-hidden');
+      });
+      if (!items.length) return;
+      var before = null;
+      for (var i = 0; i < items.length; i++) {
+        var rect = items[i].getBoundingClientRect();
+        if (e.clientY < rect.top + rect.height / 2) { before = items[i]; break; }
+      }
+      // Only flag a real reorder (so a no-op drag doesn't trigger a spurious save).
+      if (before) {
+        if (dragging.nextSibling !== before) { ul.insertBefore(dragging, before); dragMoved = true; }
+      } else {
+        var last = items[items.length - 1];
+        if (last.nextSibling !== dragging) { ul.insertBefore(dragging, last.nextSibling); dragMoved = true; }
+      }
+    }
+
+    function onDragUp() {
+      document.removeEventListener('mousemove', onDragMove);
+      document.removeEventListener('mouseup',   onDragUp);
+      if (!dragging) return;
+      dragging.classList.remove('ls-list-dragging');
+      document.body.style.userSelect = '';
+      var moved = dragMoved;
+      dragging = null;
+      if (moved) saveList();
+    }
 
     function itemLabel(li) {
       var c = li.cloneNode(true);
@@ -107,10 +153,8 @@ window.List = (function () {
         dragBtn.className = 'ls-list-item-btn ls-list-drag-btn';
         dragBtn.textContent = '⠿';
         dragBtn.title = 'Drag to reorder';
-        var _handlePressed = false;
-        dragBtn.draggable = false; // prevent the icon itself from being a drag source
-        dragBtn.addEventListener('mousedown', function () { _handlePressed = true; });
-        dragBtn.addEventListener('mouseup',   function () { _handlePressed = false; });
+        dragBtn.type = 'button';
+        dragBtn.addEventListener('mousedown', function (e) { startDrag(li, e); });
         dragBtn.addEventListener('click',     function (e) { e.stopPropagation(); });
         dragBtn.addEventListener('dblclick',  function (e) { e.stopPropagation(); });
 
@@ -149,7 +193,6 @@ window.List = (function () {
         ctrl.appendChild(dragBtn);
         ctrl.appendChild(hideBtn);
         li.appendChild(ctrl);
-        li.draggable = true; // permanently draggable; dragstart guards against non-handle drags
 
         // ── Double-click to edit ─────────────────────────────────────────────
         // Suppresses onclick (e.g. popover) during editing
@@ -170,35 +213,7 @@ window.List = (function () {
           if (e.key === 'Enter') { e.preventDefault(); li.blur(); }
           if (e.key === 'Escape') { li.blur(); }
         });
-
-        // ── Drag & drop reorder ──────────────────────────────────────────────
-        li.addEventListener('dragstart', function (ev) {
-          if (!_handlePressed) { ev.dataTransfer.effectAllowed = 'none'; return; }
-          ev.dataTransfer.effectAllowed = 'move';
-          dragSrc = li;
-          setTimeout(function () { li.classList.add('ls-list-dragging'); }, 0);
-        });
-        li.addEventListener('dragend', function () {
-          _handlePressed = false;
-          li.classList.remove('ls-list-dragging');
-          ul.querySelectorAll('li').forEach(function (r) { r.classList.remove('ls-list-dragover'); });
-        });
-        li.addEventListener('dragover', function (ev) {
-          ev.preventDefault();
-          ul.querySelectorAll('li').forEach(function (r) { r.classList.remove('ls-list-dragover'); });
-          if (li !== dragSrc) li.classList.add('ls-list-dragover');
-        });
-        li.addEventListener('drop', function (ev) {
-          ev.stopPropagation();
-          if (dragSrc && dragSrc !== li) {
-            var items = Array.from(ul.querySelectorAll('li'));
-            var si = items.indexOf(dragSrc), ti = items.indexOf(li);
-            if (si < ti) ul.insertBefore(dragSrc, li.nextSibling);
-            else         ul.insertBefore(dragSrc, li);
-          }
-          li.classList.remove('ls-list-dragover');
-          saveList();
-        });
+        // Drag handle reorder is wired on dragBtn.mousedown → startDrag (above).
       }
     }
 
