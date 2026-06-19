@@ -54,6 +54,49 @@
   --logo-filter:           brightness(0) invert(1);
 }
 
+/* ── Per-slide theme (data-theme on the .slide root) ──────────────────────────
+   Lets a single deck mix light and dark slides (deck base theme, Checkerboard,
+   or a per-slide override). The server stamps data-theme="light|dark" on the
+   cartridge root for plain (non-style-reference) decks; these rules re-point the
+   color tokens so text/background/logo all flip together and stay readable.
+   Higher specificity (0,1,1) than :root / finish-theme .slide rules (0,1,0). */
+.slide[data-theme="dark"] {
+  --bg:              #000;
+  --text:            #ffffff;
+  --text-muted:      #aaa;
+  --card-bg:         rgba(255,255,255,.05);
+  --card-border:     rgba(255,255,255,.10);
+  --card-shadow:     0 4px 20px rgba(0,0,0,.35);
+  --bg-card-hover:   rgba(255,255,255,.09);
+  --border-hover:    rgba(var(--accent-rgb),.32);
+  --nav-bg:          rgba(0,0,0,.65);
+  --nav-border:      rgba(255,255,255,.07);
+  --dot-inactive:    rgba(255,255,255,.18);
+  --counter:         #333;
+  --slide-hero-bg:   #070B1A;
+  --slide-hero-rgb:  7,11,26;
+  --logo-border:     rgba(255,255,255,.18);
+  --logo-filter:     brightness(0) invert(1);   /* white logo on a dark field */
+}
+.slide[data-theme="light"] {
+  --bg:              #f5f5f7;
+  --text:            #1d1d1f;
+  --text-muted:      rgba(0,0,0,.55);
+  --card-bg:         rgba(0,0,0,.04);
+  --card-border:     rgba(0,0,0,.10);
+  --card-shadow:     0 4px 20px rgba(0,0,0,.10);
+  --bg-card-hover:   rgba(0,0,0,.08);
+  --border-hover:    rgba(0,0,0,.28);
+  --nav-bg:          rgba(255,255,255,.80);
+  --nav-border:      rgba(0,0,0,.10);
+  --dot-inactive:    rgba(0,0,0,.22);
+  --counter:         #888;
+  --slide-hero-bg:   #f5f5f7;
+  --slide-hero-rgb:  245,245,247;
+  --logo-border:     rgba(0,0,0,.18);
+  --logo-filter:     brightness(0);              /* black logo on a light field */
+}
+
 /* ── Reset ── */
 * { margin:0; padding:0; box-sizing:border-box; }
 
@@ -170,7 +213,8 @@ body {
 .slide-logo-row img {
   height: 28px;
   width: auto;
-  filter: var(--logo-filter);   /* flips light/dark with the field (see --logo-filter) */
+  filter: var(--logo-filter);              /* flips light/dark with the field (see --logo-filter) */
+  opacity: var(--logo-opacity, .45);       /* faint watermark; --logo-filter keeps it contrasting */
 }
 .slide-logo-sep {
   width: 1px;

@@ -450,6 +450,22 @@
     }
     .feature-switch input:checked + .feature-switch-track { background: var(--accent-dim); border-color: var(--accent); }
     .feature-switch input:checked + .feature-switch-track::before { transform: translate(16px, -50%); background: var(--accent); }
+    /* Segmented control (per-slide theme override) */
+    .feature-divider { height: 1px; background: var(--border); margin: 12px 0; }
+    .feature-seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; flex-shrink: 0; }
+    .feature-seg-btn {
+      border: 0; background: transparent; color: var(--muted);
+      font-size: 11px; font-weight: 700; letter-spacing: .03em; padding: 5px 9px; cursor: pointer;
+      font-family: inherit; transition: background .15s, color .15s;
+    }
+    .feature-seg-btn + .feature-seg-btn { border-left: 1px solid var(--border); }
+    .feature-seg-btn:hover { color: var(--text); }
+    .feature-seg-btn.active { background: var(--accent-dim); color: var(--accent); }
+    .feature-seg.full { display: flex; width: 100%; margin-top: 8px; }
+    .feature-seg.full .feature-seg-btn { flex: 1 1 auto; text-align: center; white-space: nowrap; padding: 5px 6px; }
+    /* Active Checkerboard button previews its starting side (flips on each click) */
+    .feature-seg-btn.ck-start-dark  { background: #0a0a0f; color: #fff; box-shadow: inset 0 0 0 2px var(--accent); }
+    .feature-seg-btn.ck-start-light { background: #f5f5f7; color: #1d1d1f; box-shadow: inset 0 0 0 2px var(--accent); }
     .canvas-empty-state {
       position: absolute;
       inset: 0;
@@ -1133,6 +1149,24 @@
               </span>
             </label>
             <div class="feature-row-hint">Adds an in-slide image/text gallery viewers can open.</div>
+            <div class="feature-divider"></div>
+            <div class="feature-row">
+              <span class="feature-row-label">Theme</span>
+              <span class="feature-seg" id="themeScopeSeg">
+                <button type="button" class="feature-seg-btn" data-scope="deck">Deck</button>
+                <button type="button" class="feature-seg-btn" data-scope="slide">Slide</button>
+              </span>
+            </div>
+            <span class="feature-seg full" id="themeDeckSeg">
+              <button type="button" class="feature-seg-btn" data-deckval="light">Light</button>
+              <button type="button" class="feature-seg-btn" data-deckval="dark">Dark</button>
+              <button type="button" class="feature-seg-btn" data-deckval="checkerboard">Checkerboard</button>
+            </span>
+            <span class="feature-seg full" id="themeSlideSeg" style="display:none;">
+              <button type="button" class="feature-seg-btn" data-slideval="light">Light</button>
+              <button type="button" class="feature-seg-btn" data-slideval="dark">Dark</button>
+            </span>
+            <div class="feature-row-hint" id="themeHint">Deck theme applies to every slide.</div>
           </div>
         </div>
       </div>
@@ -1342,14 +1376,7 @@
         <div style="font-size:11px;color:#666;margin-top:4px;">Link shown on public presentation view</div>
       </div>
 
-      <!-- Theme -->
-      <div class="drawer-section">
-        <div class="drawer-section-label">Theme</div>
-        <div class="drawer-toggle-group">
-          <button class="drawer-theme-btn" data-val="dark">Dark</button>
-          <button class="drawer-theme-btn" data-val="light">Light</button>
-        </div>
-      </div>
+      <!-- Theme lives on the slide "f" feature button (deck / slide, light / dark / checkerboard) -->
 
       <!-- Primary Color -->
       <div class="drawer-section">
@@ -1556,7 +1583,60 @@
       var fab = document.getElementById('featureFab');
       var pop = document.getElementById('featurePop');
       var toggle = document.getElementById('featureGalleryToggle');
+      var scopeSeg = document.getElementById('themeScopeSeg');
+      var deckSeg  = document.getElementById('themeDeckSeg');
+      var slideSeg = document.getElementById('themeSlideSeg');
+      var themeHint = document.getElementById('themeHint');
       if (!fab) return;
+      function activeDeck() { return decks.find(function (d) { return d.id === activeDeckId; }) || {}; }
+      function reloadCanvas() {
+        var f = document.getElementById('slideFrame');
+        if (f && f.src) f.src = f.src;   // re-render the open slide
+      }
+      function reloadDeckWide() {              // deck-level change touches every slide
+        reloadCanvas();
+        document.querySelectorAll('.slide-thumb-frame iframe').forEach(function (f) { try { f.src = f.src; } catch (e) {} });
+      }
+      function mark(seg, attr, val) {
+        seg.querySelectorAll('.feature-seg-btn').forEach(function (b) { b.classList.toggle('active', b.dataset[attr] === val); });
+      }
+      // Paint the popover from the current slide override + deck state.
+      function renderThemeUI(override) {
+        var d = activeDeck();
+        var isSlide = (override === 'light' || override === 'dark');
+        mark(scopeSeg, 'scope', isSlide ? 'slide' : 'deck');
+        deckSeg.style.display  = isSlide ? 'none' : '';
+        slideSeg.style.display = isSlide ? '' : 'none';
+        if (isSlide) {
+          mark(slideSeg, 'slideval', override);
+          themeHint.textContent = 'Overrides just this slide.';
+        } else {
+          mark(deckSeg, 'deckval', d.checkerboard ? 'checkerboard' : (d.theme || 'dark'));
+          var ckBtn = deckSeg.querySelector('[data-deckval="checkerboard"]');
+          ckBtn.classList.toggle('ck-start-dark',  d.checkerboard && d.theme !== 'light');
+          ckBtn.classList.toggle('ck-start-light', d.checkerboard && d.theme === 'light');
+          themeHint.textContent = d.checkerboard
+            ? 'Alternates every slide — starts ' + ((d.theme === 'light') ? 'Light' : 'Dark') + '. Click Checkerboard again to flip the start.'
+            : 'Deck theme applies to every slide.';
+        }
+      }
+      function postOverride(val, cb) {
+        if (!currentLibrarySlideId) return;
+        fetch('/api/library/' + encodeURIComponent(currentLibrarySlideId) + '/features', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ themeOverride: val })
+        }).then(function (r) { return r.json(); })
+          .then(function (res) { if (res && res.success) cb(res.data.themeOverride || null); })
+          .catch(function () {});
+      }
+      function putDeck(patch, cb) {
+        fetch('/api/decks/' + encodeURIComponent(activeDeckId), {
+          method: 'PUT', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(patch)
+        }).then(function (r) { return r.json(); })
+          .then(function (res) { if (res && res.success) { var d = activeDeck(); Object.assign(d, res.data); cb(); } })
+          .catch(function () {});
+      }
       if (!fab._wired) {
         fab._wired = true;
         fab.addEventListener('click', function (e) {
@@ -1574,13 +1654,38 @@
             body: JSON.stringify({ galleryEnabled: toggle.checked })
           })
           .then(function (r) { return r.json(); })
-          .then(function (res) {
-            if (res && res.success) {
-              var f = document.getElementById('slideFrame');
-              if (f && f.src) f.src = f.src;   // reload canvas so the gallery button injects/removes
-            }
-          })
+          .then(function (res) { if (res && res.success) reloadCanvas(); })
           .catch(function () {});
+        });
+        // Scope: Deck = follow the deck (clears this slide's override); Slide = give it its own.
+        scopeSeg.querySelectorAll('.feature-seg-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            if (btn.dataset.scope === 'deck') {
+              postOverride(null, function () { renderThemeUI(null); reloadCanvas(); });
+            } else {
+              postOverride(activeDeck().theme || 'dark', function (ov) { renderThemeUI(ov); reloadCanvas(); });
+            }
+          });
+        });
+        // Deck values: Light/Dark turn checkerboard off; Checkerboard keeps the base as start.
+        deckSeg.querySelectorAll('.feature-seg-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var v = btn.dataset.deckval, d = activeDeck(), patch;
+            if (v === 'checkerboard') {
+              // First click turns it on (keeps current base as start);
+              // clicking again while on flips the starting side (dark ⇄ light).
+              patch = d.checkerboard ? { theme: (d.theme === 'light' ? 'dark' : 'light') } : { checkerboard: true };
+            } else {
+              patch = { theme: v, checkerboard: false };
+            }
+            putDeck(patch, function () { renderThemeUI(null); reloadDeckWide(); });
+          });
+        });
+        // Slide values: force this slide only.
+        slideSeg.querySelectorAll('.feature-seg-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            postOverride(btn.dataset.slideval, function (ov) { renderThemeUI(ov); reloadCanvas(); });
+          });
         });
       }
       fab.style.display = '';
@@ -1588,7 +1693,10 @@
       fab.classList.remove('active');
       fetch('/api/library/' + encodeURIComponent(slideId) + '/features')
         .then(function (r) { return r.json(); })
-        .then(function (res) { toggle.checked = !!(res.success && res.data && res.data.galleryEnabled); })
+        .then(function (res) {
+          toggle.checked = !!(res.success && res.data && res.data.galleryEnabled);
+          renderThemeUI(res.success && res.data ? res.data.themeOverride : null);
+        })
         .catch(function () {});
     }
 
@@ -2934,11 +3042,6 @@
       document.getElementById('drawerBrandCredit').value = deck.brandCredit || '';
       document.getElementById('drawerWebsiteUrl').value  = deck.websiteUrl  || '';
 
-      var theme = deck.theme || 'dark';
-      document.querySelectorAll('.drawer-theme-btn').forEach(function (btn) {
-        btn.classList.toggle('active', btn.dataset.val === theme);
-      });
-
       var color = (deck.colors && deck.colors.primary) || '#7B8FF8';
       document.getElementById('drawerPrimaryColor').value = color;
       document.getElementById('drawerColorPreview').style.background = color;
@@ -3105,14 +3208,6 @@
         if (e.key === 'Enter') this.blur();
       });
 
-      // Theme toggle
-      document.querySelectorAll('.drawer-theme-btn').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          document.querySelectorAll('.drawer-theme-btn').forEach(function (b) { b.classList.remove('active'); });
-          btn.classList.add('active');
-          saveDeckField({ theme: btn.dataset.val });
-        });
-      });
 
       // Primary color
       document.getElementById('drawerPrimaryColor').addEventListener('input', function () {
