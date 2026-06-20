@@ -5,6 +5,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [v1.4.3] — 2026-06-20
+
+### Fixed
+- **Tabs under checkerboard** — tab component (tabs.js) hardcoded orange/white colors that ignored the slide theme, making the active tab and add-button low-contrast/unreadable on light (flipped) slides. Now uses `var(--accent)` / `var(--text-muted)` / `var(--border)` so tabs flip correctly under any theme. Affected the technology slides (5/6/7) most, since they're built around tabs. Bonus: tabs now respect each deck's custom primary color.
+
+---
+
 ## [v1.4.2] — 2026-06-20
 
 ### Added

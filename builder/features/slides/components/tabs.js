@@ -45,8 +45,8 @@ window.Tabs = (function () {
 
       /* Individual tab button */
       '.ls-tab{padding:6px 20px;border-radius:100px;border:1px solid var(--border,rgba(255,255,255,.1));background:var(--bg-card,#111);color:var(--text-muted,rgba(255,255,255,.45));font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .2s;letter-spacing:.02em;white-space:nowrap;position:relative;}',
-      '.ls-tab:hover{border-color:#E8711A;color:#E8711A;}',
-      '.ls-tab.active{background:rgba(232,113,26,.15);border-color:#E8711A;color:#E8711A;}',
+      '.ls-tab:hover{border-color:var(--accent,#E8711A);color:var(--accent,#E8711A);}',
+      '.ls-tab.active{background:rgba(var(--accent-rgb,232,113,26),.15);border-color:var(--accent,#E8711A);color:var(--accent,#E8711A);}',
 
       /* Delete button on tab (builder-only) */
       '.ls-tab-del{position:absolute;top:-5px;right:-5px;width:16px;height:16px;border-radius:50%;background:rgba(180,30,30,.85);border:1px solid rgba(255,100,100,.3);color:#fff;font-size:9px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s,background .2s;font-family:inherit;padding:0;z-index:5;}',
@@ -54,8 +54,8 @@ window.Tabs = (function () {
       '.ls-tab-del:hover{background:rgba(220,40,40,1);}',
 
       /* Add tab button (builder-only) */
-      '.ls-tab-add{padding:5px 14px;border-radius:100px;border:1px dashed rgba(255,255,255,.18);background:transparent;color:rgba(255,255,255,.3);font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .2s;letter-spacing:.04em;flex-shrink:0;}',
-      '.ls-tab-add:hover{border-color:#E8711A;color:#E8711A;}',
+      '.ls-tab-add{padding:5px 14px;border-radius:100px;border:1px dashed var(--border,rgba(255,255,255,.18));background:transparent;color:var(--text-muted,rgba(255,255,255,.3));font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .2s;letter-spacing:.04em;flex-shrink:0;}',
+      '.ls-tab-add:hover{border-color:var(--accent,#E8711A);color:var(--accent,#E8711A);}',
 
       /* Panels container */
       '.ls-tab-panels{flex:1;min-height:0;position:relative;}',
@@ -270,7 +270,7 @@ window.Tabs = (function () {
           '<div class="ls-carousel" data-counter data-zoom-group style="flex:1;min-height:0;width:100%;">',
           '  <div class="ls-carousel-track">',
           '    <div class="ls-carousel-slide" style="display:flex;align-items:center;justify-content:center;">',
-          '      <span style="color:rgba(255,255,255,.2);font-size:13px;font-style:italic;">Add images with the + Image button</span>',
+          '      <span style="color:var(--text-muted,rgba(255,255,255,.2));font-size:13px;font-style:italic;">Add images with the + Image button</span>',
           '    </div>',
           '  </div>',
           '</div>',
