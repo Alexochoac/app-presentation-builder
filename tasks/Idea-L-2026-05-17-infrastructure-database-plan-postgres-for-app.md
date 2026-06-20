@@ -40,6 +40,24 @@ Migrate the app from single-user file-based (JSON in `builder/data/`) to a full 
 - Image compression on upload (max 1920px, optimise JPEG/PNG)
 - BYO S3 bucket option deferred to Phase 3 (enterprise feature)
 
+**Current File-Based Sustainability Issues (found 2026-06-19)**
+
+These are the specific problems observed in the current `builder/data/` layer that confirm why the migration is necessary before adding users:
+
+1. **`slide-library.json` grows with every deck edit** — Each library slide stores a `deckEdits` object with one key per deck. Every time any user edits a library slide for their deck, a new key is added into that shared file. At 10 users × 10 decks × 20 slides, you get 200 deck-edit buckets in one file, plus raw HTML blobs (e.g. `gallery-track`) that can be several KB each. `deckEdits` must move out of the library into a per-deck edits table.
+
+2. **`presentations.json` duplicates the full slide list per presentation** — Every published presentation stores a complete copy of its slide list (IDs, names, visibility), which already exists in `deck.json`. At 100 presentations × 15 slides = 1,500 redundant records in one never-trimmed file. Presentations should store only a reference/snapshot ID, not a full slide copy.
+
+3. **Translations store `previous` alongside `current`** — Every translated field carries `current`, `previous`, and `dirty` keys. The `previous` value doubles storage with no expiry. At 20 slides × 10 fields × 3 languages, `previous` alone doubles the translations file size. In Postgres, translation history should be a versioned rows pattern, not inline duplication.
+
+4. **`styleCss` blob embedded in `decks.json`** — Custom theme CSS (font imports + CSS variables) is stored as a raw multiline string inside the deck metadata with no size limit. In multi-user, that's one unbounded blob per deck per user in a shared file. Should be a separate column or file reference.
+
+5. **No concurrent write safety** — All data files (`presentations.json`, `decks.json`, `slide-library.json`) are single flat files. Two users saving simultaneously causes silent data loss — the second write overwrites the first. No locking, no versioning, no partial updates.
+
+6. **`activeDeckId` is a global singleton** — `decks.json` has one `activeDeckId` for the entire app. Multiple users would overwrite each other's active deck on every interaction. Must become a per-user/session value.
+
+**Migration priority:** Do the database migration *before* adding any real users. Once production data exists across these flat files, migrating becomes significantly harder.
+
 **Notes**
 - Use Supabase Cloud Free Tier (not self-hosted — self-hosted is 7+ Docker containers, too much ops overhead)
 - Free tier pauses DB after 7 days inactivity → upgrade to Pro ($25/mo) before going live with clients
