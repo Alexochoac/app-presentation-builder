@@ -87,7 +87,9 @@ app.get('/slides/deck-preview/:id', function (req, res) {
       slideEdits = Object.assign({}, slideEdits, { 'customer-logo': deckConfig.logo });
     }
 
-    var fragment = renderCartridge(resolved, { galleryEnabled: libSlide.galleryEnabled, rawEdits: slideEdits, deck: deckConfig, editable: !readonly });
+    var slidePos = deck.slides.filter(function (s) { return s.visible !== false; }).findIndex(function (s) { return s.id === id; });
+    var slideTheme = effectiveSlideTheme(deckConfig, libSlide, slidePos);
+    var fragment = renderCartridge(resolved, { galleryEnabled: libSlide.galleryEnabled, rawEdits: slideEdits, deck: deckConfig, editable: !readonly, theme: slideTheme });
     // In deck context, deck is the sole theming authority — never fall back to per-slide CSS
     var effectiveStyleCss = deckConfig.styleCss || null;
 
@@ -392,7 +394,9 @@ app.get('/slides/:deckSlideId.html', function (req, res, next) {
 
     var deckConfig = getDeckConfig(activeDeckId);
     var savedEdits = resolveSlideEdits(libSlide, activeDeckId);
-    var html = renderCartridge(resolved, { galleryEnabled: libSlide.galleryEnabled, rawEdits: savedEdits, deck: deckConfig, editable: true });
+    var slidePos = deck.slides.filter(function (s) { return s.visible !== false; }).findIndex(function (s) { return s.id === deckSlideId; });
+    var slideTheme = effectiveSlideTheme(deckConfig, libSlide, slidePos);
+    var html = renderCartridge(resolved, { galleryEnabled: libSlide.galleryEnabled, rawEdits: savedEdits, deck: deckConfig, editable: true, theme: slideTheme });
     res.type('text/html').send(html);
   } catch (err) {
     console.error('Deck slide render error:', err.message);
@@ -674,6 +678,45 @@ function extractBgColor(css) {
 
 function extractStyleCss(html, theme) {
   return buildThemeOverride(html, theme);
+}
+
+// The deck-wide :root override. Only style-reference decks carry one (it bakes a
+// bespoke palette). Plain decks theme per-slide via the data-theme attribute
+// (see effectiveSlideTheme / applyRootTheme + .slide[data-theme] rules in style.css).
+function deckStyleCss(deck) {
+  return (deck && deck.styleCss) || null;
+}
+
+// ── Per-slide light/dark theming ──────────────────────────────────────────────
+// Each rendered cartridge carries a data-theme="light|dark" attribute on its
+// root .slide; style.css turns that into the right color tokens. This lets a
+// single deck mix light and dark slides (Checkerboard / per-slide override).
+function flipTheme(t) { return t === 'light' ? 'dark' : 'light'; }
+
+// Resolve the theme for one slide:
+//   1. per-slide override (libSlide.themeOverride) wins, else
+//   2. Checkerboard flips light/dark by deck position (slide 1 = base), else
+//   3. the deck base theme.
+// Returns null for style-reference decks — those theme deck-wide via styleCss,
+// so we leave their cartridges un-attributed and let the baked palette govern.
+function effectiveSlideTheme(deckConfig, libSlide, position) {
+  if (deckConfig && deckConfig.styleRef) return null;
+  // Standalone (no deck) slide with its own baked style — leave it to that palette.
+  if (!deckConfig && libSlide && (libSlide.styleRef || libSlide.styleCss)) return null;
+  if (libSlide && (libSlide.themeOverride === 'light' || libSlide.themeOverride === 'dark')) {
+    return libSlide.themeOverride;
+  }
+  var base = (deckConfig && deckConfig.theme === 'light') ? 'light' : 'dark';
+  if (deckConfig && deckConfig.checkerboard && typeof position === 'number' && position >= 0) {
+    return (position % 2 === 0) ? base : flipTheme(base);
+  }
+  return base;
+}
+
+// Stamp data-theme onto the cartridge root (first element bearing class="slide").
+function applyRootTheme(html, theme) {
+  if (!theme) return html;
+  return html.replace(/<(\w+)([^>]*\bclass="slide\b[^"]*")/, '<$1 data-theme="' + theme + '"$2');
 }
 
 // ── Theme system ──────────────────────────────────────────────────────────────
@@ -1338,6 +1381,7 @@ function renderCartridge(resolved, opts) {
   var html = injectGallery(fs.readFileSync(resolved.filePath, 'utf8'), opts.galleryEnabled);
   html = applyEditsToHtml(html, edits, opts.editable);
   if (opts.deck) html = injectDeckBranding(html, opts.deck);
+  if (opts.theme) html = applyRootTheme(html, opts.theme);
   return html;
 }
 
@@ -1402,7 +1446,7 @@ app.get('/api/deck', function (req, res) {
         return fs.existsSync(fp) ? fs.readFileSync(fp, 'utf8') : null;
       } catch (e) { return null; }
     })();
-    res.json({ success: true, data: deck, accentCss: deckAccentCss(deckCfg), styleCss: deckCfg.styleCss || null, finishCss: finishCss, coverLogoSrc: coverLogoSrc, coverHasLogoSlot: coverHasLogoSlot });
+    res.json({ success: true, data: deck, deckId: activeDeckId, theme: deckCfg.theme || 'dark', checkerboard: !!deckCfg.checkerboard, accentCss: deckAccentCss(deckCfg), styleCss: deckStyleCss(deckCfg), finishCss: finishCss, coverLogoSrc: coverLogoSrc, coverHasLogoSlot: coverHasLogoSlot });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -1739,7 +1783,7 @@ app.put('/api/decks/:id', function (req, res) {
     var store = readDecks();
     var idx = store.decks.findIndex(function (d) { return d.id === id; });
     if (idx === -1) return res.status(404).json({ success: false, error: 'Deck not found' });
-    var allowed = ['name', 'theme', 'logo', 'heroBg', 'heroBgFocal', 'heroBgFocalGrid', 'heroBgFit', 'heroBgOpacity', 'heroBgType', 'heroBgColor', 'colors', 'brandCredit', 'websiteUrl'];
+    var allowed = ['name', 'theme', 'checkerboard', 'logo', 'heroBg', 'heroBgFocal', 'heroBgFocalGrid', 'heroBgFit', 'heroBgOpacity', 'heroBgType', 'heroBgColor', 'colors', 'brandCredit', 'websiteUrl'];
     var body = req.body || {};
     allowed.forEach(function (key) {
       if (body[key] !== undefined) store.decks[idx][key] = body[key];
@@ -1758,11 +1802,18 @@ app.put('/api/decks/:id', function (req, res) {
         }
       }
     }
-    // Re-extract styleCss when theme changes so dark/light mode is updated
-    if (body.theme !== undefined && store.decks[idx].styleRef) {
-      var tRefPath = path.join(STYLE_REFS_DIR, store.decks[idx].styleRef);
-      if (fs.existsSync(tRefPath)) {
-        store.decks[idx].styleCss = extractStyleCss(fs.readFileSync(tRefPath, 'utf8'), body.theme);
+    // Re-extract styleCss when theme changes so dark/light mode is updated.
+    if (body.theme !== undefined) {
+      if (store.decks[idx].styleRef) {
+        // Deck has a style reference: derive a deck-wide palette from that reference.
+        var tRefPath = path.join(STYLE_REFS_DIR, store.decks[idx].styleRef);
+        if (fs.existsSync(tRefPath)) {
+          store.decks[idx].styleCss = extractStyleCss(fs.readFileSync(tRefPath, 'utf8'), body.theme);
+        }
+      } else {
+        // Plain deck: theme is applied per-slide via the data-theme attribute, so
+        // there is no deck-wide override. (Lets Checkerboard / per-slide override work.)
+        store.decks[idx].styleCss = null;
       }
     }
     store.decks[idx].updatedAt = new Date().toISOString();
@@ -1919,21 +1970,26 @@ app.get('/api/library/:id/features', function (req, res) {
     var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
     var libSlide = library.slides.find(function (s) { return s.id === req.params.id; });
     if (!libSlide) return res.status(404).json({ success: false, error: 'Library slide not found' });
-    res.json({ success: true, data: { galleryEnabled: !!libSlide.galleryEnabled } });
+    res.json({ success: true, data: { galleryEnabled: !!libSlide.galleryEnabled, themeOverride: libSlide.themeOverride || null } });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
 });
 
 // POST /api/library/:id/features — set a slide-level feature flag (e.g. { galleryEnabled: true })
+//   themeOverride: 'light' | 'dark' force this slide's theme; null/'' clears (inherit deck).
 app.post('/api/library/:id/features', function (req, res) {
   try {
     var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
     var libSlide = library.slides.find(function (s) { return s.id === req.params.id; });
     if (!libSlide) return res.status(404).json({ success: false, error: 'Library slide not found' });
     if (typeof req.body.galleryEnabled === 'boolean') libSlide.galleryEnabled = req.body.galleryEnabled;
+    if (req.body.themeOverride !== undefined) {
+      libSlide.themeOverride = (req.body.themeOverride === 'light' || req.body.themeOverride === 'dark')
+        ? req.body.themeOverride : null;
+    }
     fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
-    res.json({ success: true, data: { galleryEnabled: !!libSlide.galleryEnabled } });
+    res.json({ success: true, data: { galleryEnabled: !!libSlide.galleryEnabled, themeOverride: libSlide.themeOverride || null } });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -2199,7 +2255,8 @@ function buildFrozenPresentation(presentation) {
       }
     }
 
-    var fragment = renderCartridge(resolved, { galleryEnabled: libSlide.galleryEnabled, rawEdits: edits, deck: presDeck, editable: false });
+    var slideTheme = effectiveSlideTheme(presDeck, libSlide, slideFragments.length);
+    var fragment = renderCartridge(resolved, { galleryEnabled: libSlide.galleryEnabled, rawEdits: edits, deck: presDeck, editable: false, theme: slideTheme });
 
     // Strip builder-only elements + contenteditable + logo change interactivity
     var $ = cheerio.load(fragment, { xmlMode: false });
@@ -2238,7 +2295,8 @@ function buildFrozenPresentation(presentation) {
       (resolved.tpl && resolved.tpl.category === 'Cover');
     if (isCoverSlide) Object.assign(edits, coverEdits);
 
-    var fragment = renderCartridge(resolved, { galleryEnabled: libSlide.galleryEnabled, rawEdits: edits, deck: presDeck, editable: false });
+    var slideTheme = effectiveSlideTheme(presDeck, libSlide, hiddenFragments.length);
+    var fragment = renderCartridge(resolved, { galleryEnabled: libSlide.galleryEnabled, rawEdits: edits, deck: presDeck, editable: false, theme: slideTheme });
     var $ = cheerio.load(fragment, { xmlMode: false });
     $('[data-builder-only],[data-ls-add-row],[data-ls-add],[data-ls-restore]').remove();
     $('[contenteditable]').removeAttr('contenteditable');
@@ -2269,7 +2327,7 @@ function buildFrozenPresentation(presentation) {
     '  <link rel="icon" type="image/svg+xml" href="' + PUBLIC_BASE_URL + '/favicon.ico">',
     '  <style>',
     slidesCss,
-    presDeck.styleCss || '',
+    deckStyleCss(presDeck) || '',
     accentCss || '',
   '  </style>',
   finishStyleTag(presDeck.styleRef),
@@ -3996,7 +4054,7 @@ app.get('/slides/library-preview/:id', function (req, res) {
       if (!resolved) return res.status(404).type('text/plain').send('Template not found');
       var slideEdits = deckId ? resolveSlideEdits(libSlide, deckId) : (libSlide.edits || {});
       // no-deck (deck=null): shows slide's own content with template's default logo, no branding
-      fragment = renderCartridge(resolved, { galleryEnabled: libSlide.galleryEnabled, rawEdits: slideEdits, deck: deckConfig, editable: false });
+      fragment = renderCartridge(resolved, { galleryEnabled: libSlide.galleryEnabled, rawEdits: slideEdits, deck: deckConfig, editable: false, theme: effectiveSlideTheme(deckConfig, libSlide) });
     }
 
     // If on a deck: deck is sole theme authority. If standalone: use slide's own theme.
@@ -4114,7 +4172,7 @@ app.get('/slides/library-edit/:id', function (req, res) {
       if (!resolved) return res.status(404).type('text/plain').send('Template not found');
 
       var baseEdits = resolveSlideEdits(libSlide, editDeckId);
-      fragment = renderCartridge(resolved, { galleryEnabled: libSlide.galleryEnabled, rawEdits: baseEdits, deck: deckConfig, editable: true });
+      fragment = renderCartridge(resolved, { galleryEnabled: libSlide.galleryEnabled, rawEdits: baseEdits, deck: deckConfig, editable: true, theme: effectiveSlideTheme(deckConfig, libSlide) });
     }
 
     // If editing in deck context: deck is sole theme authority. Standalone: use slide's own theme.

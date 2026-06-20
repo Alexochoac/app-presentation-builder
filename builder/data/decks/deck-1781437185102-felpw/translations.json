@@ -127,16 +127,16 @@
         }
       },
       "prob-list": {
-        "en": "<li>Email a 40MB .pptx and hope it opens</li><li>Fonts and layouts break on every other machine</li><li>\"Which version is the latest one?\"</li><li>No idea if the client ever opened it</li><li>Every edit means re-sending the whole file</li>",
+        "en": "<li>Email a 40MB .pptx and hope it opens</li><li>Fonts and layouts break on every other machine</li><li>\"Which version is the latest one?\"</li><li class=\"\">Every edit means re-sending the whole file</li><li>No idea if the client ever opened it</li>",
         "es": {
           "current": "<li>Envía un .pptx de 40MB y espera que se abra</li><li>Las fuentes y diseños se rompen en casi todas las máquinas</li><li>\"¿Cuál es la versión más reciente?\"</li><li>No tienes idea si el cliente lo abrió alguna vez</li><li>Cada edición significa reenviar el archivo completo</li>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<li>Envoyer un fichier .pptx de 40 Mo par e-mail et espérer qu'il s'ouvre</li><li>Les polices et les mises en page se cassent sur chaque autre ordinateur</li><li>« Quelle est la dernière version ? »</li><li>Aucune idée si le client l'a jamais ouvert</li><li>Chaque modification signifie renvoyer le fichier entier</li>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "tier-label-1": {
@@ -183,27 +183,27 @@
         "es": {
           "current": "<li>Comparte un enlace que siempre funciona</li><li>Perfecta resolución en todos los navegadores</li><li>Una versión en vivo, siempre actualizada</li><li>Ve exactamente quién vio qué</li><li>Edita una vez — el enlace se actualiza al instante</li>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "<li>Partager un lien qui fonctionne toujours</li><li>Impeccable dans chaque navigateur</li><li>Une seule version active, toujours à jour</li><li>Voir exactement qui a regardé quoi</li><li>Modifier une fois — le lien se met à jour instantanément</li>",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       }
     },
     "lib-1781437185692": {
       "credit": {
-        "en": "by YourBrand.com",
+        "en": "by Put A Presentation",
         "es": {
           "current": "por YourBrand.com",
           "previous": "por YourBrand.com",
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "par YourBrand.com",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "section-label": {
@@ -211,12 +211,12 @@
         "es": {
           "current": "TU CENTRO DE CONTROL",
           "previous": "TU CENTRO DE CONTROL",
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "VOTRE CENTRE DE COMMANDE",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "headline": {
@@ -224,12 +224,12 @@
         "es": {
           "current": "Conoce el Panel de Control",
           "previous": "Conoce el Panel",
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "Découvrez le Tableau de Bord",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       },
       "subtitle": {
@@ -237,12 +237,12 @@
         "es": {
           "current": "Todas las presentaciones en un solo lugar. Ve qué se ha publicado, quién está viendo y qué diapositivas están teniendo impacto, de un vistazo. ¡Llama a los espectadores cuando estén comprometidos!&nbsp;",
           "previous": "Todas las presentaciones en un solo lugar. Ve qué se publica, quién está viendo y qué decks tienen éxito, de un vistazo. [ Coloca tu captura de pantalla del Panel en el espacio a continuación. ]",
-          "dirty": false
+          "dirty": true
         },
         "fr": {
           "current": "Toutes les présentations en un seul endroit. Voyez ce qui est publié, qui regarde et quelles diapositives ont du succès, en un coup d'œil. Appelez les spectateurs quand ils sont engagés !&nbsp;",
           "previous": null,
-          "dirty": false
+          "dirty": true
         }
       }
     },

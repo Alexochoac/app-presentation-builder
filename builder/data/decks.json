@@ -1,12 +1,12 @@
 {
-  "activeDeckId": "deck-rebuild",
+  "activeDeckId": "deck-1781437185102-felpw",
   "decks": [
     {
       "id": "deck-rebuild",
       "name": "SoftSolution (rebuild)",
-      "theme": "light",
+      "theme": "dark",
       "createdAt": "2026-06-01T00:00:00.000Z",
-      "updatedAt": "2026-06-14T05:27:53.162Z",
+      "updatedAt": "2026-06-20T07:24:28.293Z",
       "logo": "/slides/uploads/LOGO_Softsolution_Black.jpg",
       "heroBg": "/slides/uploads/Panther_Eye.jpeg",
       "heroBgFocal": "25% 50%",
@@ -17,22 +17,29 @@
       "heroBgFit": "cover",
       "styleRef": null,
       "styleCss": null,
-      "heroBgOpacity": 100,
+      "heroBgOpacity": 83,
       "heroBgType": "image",
-      "brandCredit": "GlassQuality.com"
+      "brandCredit": "GlassQuality.com",
+      "websiteUrl": "glassquality.com",
+      "checkerboard": true
     },
     {
       "id": "deck-1781437185102-felpw",
       "name": "Why Switch from PowerPoint",
       "theme": "dark",
       "createdAt": "2026-06-14T11:39:45.102Z",
-      "updatedAt": "2026-06-14T12:12:22.532Z",
+      "updatedAt": "2026-06-17T06:41:52.448Z",
       "logo": "/slides/uploads/logo.svg",
       "heroBg": null,
       "heroBgFocal": "50% 50%",
       "colors": {
-        "primary": "#F5A623"
-      }
+        "primary": "#4326ab"
+      },
+      "styleRef": "terminal-code.html",
+      "styleCss": "@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');\n:root {\n  --bg: #0d1117;\n  --slide-hero-bg: #0d1117;\n  --slide-hero-rgb: 13,17,23;\n  --text: #39ff14;\n  --text-muted: rgba(255,255,255,.55);\n  --bg-card: rgba(255,255,255,.05);\n  --bg-card-hover: rgba(255,255,255,.09);\n  --border: rgba(255,255,255,.10);\n  --border-hover: rgba(255,255,255,.28);\n  --nav-bg: rgba(0,0,0,.65);\n  --nav-border: rgba(255,255,255,.08);\n  --dot-inactive: rgba(255,255,255,.18);\n  --counter: #555;\n}\nbody { font-family: 'Fira Code', 'JetBrains Mono', monospace; }\n",
+      "heroBgType": "color",
+      "brandCredit": "Put A Presentation",
+      "websiteUrl": "put-a-presentation.wbtm.io"
     }
   ]
 }
