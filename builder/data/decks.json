@@ -1,12 +1,12 @@
 {
-  "activeDeckId": "deck-rebuild",
+  "activeDeckId": "deck-1781437185102-felpw",
   "decks": [
     {
       "id": "deck-rebuild",
       "name": "SoftSolution (rebuild)",
       "theme": "dark",
       "createdAt": "2026-06-01T00:00:00.000Z",
-      "updatedAt": "2026-06-19T16:45:30.088Z",
+      "updatedAt": "2026-06-20T07:24:28.293Z",
       "logo": "/slides/uploads/LOGO_Softsolution_Black.jpg",
       "heroBg": "/slides/uploads/Panther_Eye.jpeg",
       "heroBgFocal": "25% 50%",
@@ -21,7 +21,7 @@
       "heroBgType": "image",
       "brandCredit": "GlassQuality.com",
       "websiteUrl": "glassquality.com",
-      "checkerboard": false
+      "checkerboard": true
     },
     {
       "id": "deck-1781437185102-felpw",
