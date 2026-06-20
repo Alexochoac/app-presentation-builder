@@ -5,6 +5,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [v1.4.2] — 2026-06-20
+
+### Added
+- **Themes** — Light/dark + checkerboard theme control on the slide `f` button
+
+### Fixed
+- List & table drag-reorder now works via pointer events
+
+---
+
 ## [v1.4.1] — 2026-06-17
 
 ### Fixed
