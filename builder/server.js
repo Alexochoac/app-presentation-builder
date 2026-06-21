@@ -291,14 +291,32 @@ app.use('/style-references', express.static(path.join(__dirname, 'style-referenc
 // (white-on-white) when the slide flips to light (Checkerboard / per-slide light theme).
 // Stripping the baked declaration lets the theme-aware CSS govern the colour again.
 // Only pure white (the dark default) is removed; intentional colours are left untouched.
-var BAKED_WHITE_RE = /(?<![-\w])(?:-webkit-text-fill-color|text-fill-color|color)\s*:\s*(?:white|#fff(?:fff)?|rgba?\(\s*255\s*,\s*255\s*,\s*255\s*(?:,[^)]*)?\))\s*;?/gi;
+// White comes in two baked forms: inline style (`color` / `-webkit-text-fill-color`)
+// and the legacy execCommand('foreColor') wrapper `<font color="#ffffff">`. The inline
+// form is stripped with a regex; the <font> wrapper is unwrapped with cheerio (regex
+// pairing of <font>…</font> proved unreliable). Intentional colours are left untouched.
+var WHITE_VAL = '(?:white|#fff(?:fff)?|rgba?\\(\\s*255\\s*,\\s*255\\s*,\\s*255\\s*(?:,[^)]*)?\\))';
+var BAKED_WHITE_RE = new RegExp('(?<![-\\w])(?:-webkit-text-fill-color|text-fill-color|color)\\s*:\\s*' + WHITE_VAL + '\\s*;?', 'gi');
+function isWhiteColorAttr(v) {
+  var c = String(v || '').toLowerCase().replace(/\s+/g, '');
+  return c === 'white' || c === '#fff' || c === '#ffffff' || /^rgba?\(255,255,255/.test(c);
+}
+function unwrapWhiteFonts(html) {
+  if (!/<font[^>]*color/i.test(html)) return html;
+  var $ = cheerio.load(html, { decodeEntities: false }, false);
+  var changed = false;
+  $('font[color]').each(function () {
+    if (isWhiteColorAttr($(this).attr('color'))) { $(this).replaceWith($(this).contents()); changed = true; }
+  });
+  return changed ? $.html() : html;
+}
 function sanitizeEditHtml(html) {
   if (typeof html !== 'string') return html;
   if (html.indexOf('255') === -1 && !/#fff|white/i.test(html)) return html;
-  return html
-    .replace(BAKED_WHITE_RE, '')
-    .replace(/;\s*;/g, '; ')           // collapse semicolons left by a removed decl
-    .replace(/style="\s*"/gi, '');     // drop now-empty style attributes
+  return unwrapWhiteFonts(html)         // unwrap legacy <font color="#fff"> wrappers
+    .replace(BAKED_WHITE_RE, '')        // strip baked inline white colour decls
+    .replace(/;\s*;/g, '; ')            // collapse semicolons left by a removed decl
+    .replace(/style="\s*"/gi, '');      // drop now-empty style attributes
 }
 function sanitizeEdits(edits) {
   if (edits && typeof edits === 'object') {

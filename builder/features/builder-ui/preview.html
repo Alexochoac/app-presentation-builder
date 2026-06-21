@@ -1599,8 +1599,11 @@
           html += '<td class="tc-cell-lang"><textarea class="tc-lang-list ' + cls + '" data-slide-id="' + sid + '" data-field-key="' + fk + '" data-lang="' + lang + '" rows="' + enRows + '" placeholder="one item per line…">' + escHtml(langLines) + '</textarea></td>';
         });
       } else {
+        // English is authored on the slide (contenteditable) so its inline styling — bold,
+        // accent <span>s, multi-colour phrases — is preserved. Editing it here would flatten
+        // it to plain text, so the English column is read-only (translators edit on the slide).
         var enPlain = stripHtmlTags(row.en || '').trim();
-        html += '<td class="tc-cell-en"><textarea class="tc-en-edit" data-slide-id="' + sid + '" data-field-key="' + fk + '" rows="2" style="width:100%;background:transparent;border:1px solid transparent;border-radius:6px;color:rgba(255,255,255,.8);font-size:12px;font-family:inherit;resize:vertical;min-height:36px;padding:4px 6px;line-height:1.4;">' + escHtml(enPlain) + '</textarea></td>';
+        html += '<td class="tc-cell-en"><textarea class="tc-en-edit" readonly title="Edit on the slide to keep styling" data-slide-id="' + sid + '" data-field-key="' + fk + '" rows="2" style="width:100%;background:transparent;border:1px solid transparent;border-radius:6px;color:rgba(255,255,255,.55);font-size:12px;font-family:inherit;resize:vertical;min-height:36px;padding:4px 6px;line-height:1.4;">' + escHtml(enPlain) + '</textarea></td>';
         activeLangs.forEach(function(lang) {
           var entry = row.langs && row.langs[lang];
           var val = entry && entry.current || '';

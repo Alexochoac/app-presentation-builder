@@ -5,6 +5,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [v1.4.5] — 2026-06-21
+
+### Fixed
+- **White-on-white text (follow-up to v1.4.4)** — caught the second baked-white format: the legacy `<font color="#ffffff">` wrapper from `execCommand('foreColor')` (v1.4.4 only handled inline `style` colors). The save-time sanitizer now also unwraps white `<font>` tags (via cheerio), and the cleanup script stripped the remaining 26 occurrences from existing content. Non-white `<font>` colors are preserved.
+- **Translation Center flattened English styling** — editing the English text in the TC saved plain text, destroying inline styling (bold, accent `<span>`s, multi-color phrases). The English column is now **read-only** — English is authored on the slide (where `contenteditable` preserves styling) and the TC is for translations. (Part 1 of 2; translation-side style preservation is a planned follow-up.)
+
+---
+
 ## [v1.4.4] — 2026-06-21
 
 ### Fixed
