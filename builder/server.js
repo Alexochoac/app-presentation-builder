@@ -283,6 +283,32 @@ app.use('/shared', express.static(path.join(__dirname, 'shared')));
 // ── Static: style reference previews ─────────────────────────────────────────
 app.use('/style-references', express.static(path.join(__dirname, 'style-references')));
 
+// ── Sanitize baked theme-default colours out of edited HTML ─────────────────────
+// contenteditable serializes the *computed* colour when text is edited — e.g. a title
+// or card edited while the slide is on the dark theme bakes `color: rgb(255,255,255)`
+// or `-webkit-text-fill-color: rgb(255,255,255)` into the inline style. Once persisted,
+// that hardcoded white overrides the theme variables and turns the text unreadable
+// (white-on-white) when the slide flips to light (Checkerboard / per-slide light theme).
+// Stripping the baked declaration lets the theme-aware CSS govern the colour again.
+// Only pure white (the dark default) is removed; intentional colours are left untouched.
+var BAKED_WHITE_RE = /(?<![-\w])(?:-webkit-text-fill-color|text-fill-color|color)\s*:\s*(?:white|#fff(?:fff)?|rgba?\(\s*255\s*,\s*255\s*,\s*255\s*(?:,[^)]*)?\))\s*;?/gi;
+function sanitizeEditHtml(html) {
+  if (typeof html !== 'string') return html;
+  if (html.indexOf('255') === -1 && !/#fff|white/i.test(html)) return html;
+  return html
+    .replace(BAKED_WHITE_RE, '')
+    .replace(/;\s*;/g, '; ')           // collapse semicolons left by a removed decl
+    .replace(/style="\s*"/gi, '');     // drop now-empty style attributes
+}
+function sanitizeEdits(edits) {
+  if (edits && typeof edits === 'object') {
+    Object.keys(edits).forEach(function (k) {
+      if (typeof edits[k] === 'string') edits[k] = sanitizeEditHtml(edits[k]);
+    });
+  }
+  return edits;
+}
+
 // Override [data-edit] elements inside a blob with individual saved edits.
 // This ensures per-slide edits from Translation Center take precedence over
 // shared template blob content (e.g. Osprey vs LineScanner on same template).
@@ -1589,7 +1615,7 @@ app.delete('/api/deck/slides/:id', function (req, res) {
 app.post('/api/deck/slides/:id/edits', function (req, res) {
   try {
     var id    = req.params.id;
-    var edits = req.body.edits;
+    var edits = sanitizeEdits(req.body.edits);
     if (!id || !edits) return res.status(400).json({ success: false, error: 'Missing id or edits' });
 
     var activeDeckId = getActiveDeckId();
@@ -1948,7 +1974,7 @@ app.post('/api/decks/:id/upload-hero-bg', function (req, res) {
 app.post('/api/library/:id/edits', function (req, res) {
   try {
     var id    = req.params.id;
-    var edits = req.body.edits;
+    var edits = sanitizeEdits(req.body.edits);
     if (!id || !edits) return res.status(400).json({ success: false, error: 'Missing id or edits' });
 
     var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
@@ -3808,7 +3834,7 @@ app.post('/api/templates/:id/defaultEdits', function (req, res) {
     return res.status(400).json({ success: false, error: 'Invalid id' });
   }
   try {
-    var edits = (req.body || {}).edits;
+    var edits = sanitizeEdits((req.body || {}).edits);
     if (!edits || typeof edits !== 'object') {
       return res.status(400).json({ success: false, error: 'edits object is required' });
     }
@@ -4294,7 +4320,7 @@ app.get('/slides/library-edit/:id', function (req, res) {
 app.post('/api/slide-library/:id/edits', function (req, res) {
   try {
     var id     = req.params.id;
-    var edits  = req.body.edits;
+    var edits  = sanitizeEdits(req.body.edits);
     var bucket = req.body.deckId || getActiveDeckId();
     if (!id || !edits) return res.status(400).json({ success: false, error: 'Missing id or edits' });
 
@@ -4817,7 +4843,7 @@ app.patch('/api/layouts/:id/deck', function (req, res) {
 // POST /api/save  { slide: 'slide-01-cover', edits: { badge: '...', headline: '...' } }
 app.post('/api/save', function (req, res) {
   var slide = req.body.slide;
-  var edits = req.body.edits;
+  var edits = sanitizeEdits(req.body.edits);
 
   if (!slide || !edits) {
     return res.status(400).json({ error: 'Missing slide or edits' });

@@ -5,6 +5,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [v1.4.4] — 2026-06-21
+
+### Fixed
+- **White-on-white text on light/checkerboard slides** — `contenteditable` baked the *computed* color (`color`/`-webkit-text-fill-color: rgb(255,255,255)`) into titles and card text when edited on a dark slide, so the text stayed white and became unreadable when the slide flipped to light. Two-part fix:
+  - **Prevention** — the server now strips baked theme-default white from edited HTML on save (`sanitizeEdits`), so it can't recur on future edits. Intentional colors (accent, `background-color`, `var(--…)`) are preserved.
+  - **Cleanup** — stripped the baked white from existing deck + library content (43 strings) via `scripts/clean-baked-white.js`.
+
+---
+
 ## [v1.4.3] — 2026-06-20
 
 ### Fixed
