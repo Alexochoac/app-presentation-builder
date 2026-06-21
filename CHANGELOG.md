@@ -5,6 +5,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [v1.4.6] — 2026-06-21
+
+### Fixed
+- **"Cannot GET /slides/…" (slide failed to render)** — a `contenteditable` edit could serialize a field's own wrapper *inside itself* (a `data-edit="headline"` nested within the headline value). At render, `applyEditsToHtml` re-applied that key into content that still contained it → infinite recursion → "Maximum call stack size exceeded" → the slide 404'd. Three-part fix:
+  - **Render guard** — `applyEditsToHtml` no longer re-injects a `data-edit` key already applied in the current chain, so a self-nested value can never recurse forever (any affected slide now renders).
+  - **Prevention** — the save sanitizer unwraps a self-referential `data-edit` of the same key before storing.
+  - **Cleanup** — `scripts/fix-nested-edits.js` unwrapped the 4 corrupted edits in existing content.
+
+---
+
 ## [v1.4.5] — 2026-06-21
 
 ### Fixed

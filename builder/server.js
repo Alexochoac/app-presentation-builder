@@ -318,10 +318,20 @@ function sanitizeEditHtml(html) {
     .replace(/;\s*;/g, '; ')            // collapse semicolons left by a removed decl
     .replace(/style="\s*"/gi, '');      // drop now-empty style attributes
 }
+// A saved edit value must never contain a [data-edit] with its OWN key. That self-nesting
+// (contenteditable serialising the field's own wrapper inside itself) makes applyEditsToHtml
+// recurse forever at render time. Unwrap any such descendant so only its inner content stays.
+function unwrapSelfNestedEdit(key, html) {
+  if (typeof html !== 'string' || html.indexOf('data-edit="' + key + '"') === -1) return html;
+  var $ = cheerio.load(html, { decodeEntities: false }, false);
+  var changed = false;
+  $('[data-edit="' + key + '"]').each(function () { $(this).replaceWith($(this).contents()); changed = true; });
+  return changed ? $.html() : html;
+}
 function sanitizeEdits(edits) {
   if (edits && typeof edits === 'object') {
     Object.keys(edits).forEach(function (k) {
-      if (typeof edits[k] === 'string') edits[k] = sanitizeEditHtml(edits[k]);
+      if (typeof edits[k] === 'string') edits[k] = sanitizeEditHtml(unwrapSelfNestedEdit(k, edits[k]));
     });
   }
   return edits;
@@ -362,18 +372,26 @@ function applyEditsToHtml(html, edits, editable) {
   // their individual edits recursively (inBlob=true). This mirrors applyEditsToBlob so
   // cartridge blobs (tabs, carousels) behave identically to the JS twins in EVERY render
   // path: preview, deck, and published. It is a no-op for slides without nested edits.
-  function applyOne(el, inBlob) {
+  function applyOne(el, inBlob, seen) {
     var $el = $(el);
     var key = $el.attr('data-edit');
     if (!key) return;
+    seen = seen || {};
     var isImgEdit = $el.attr('data-edit-type') === 'image';
     // Inside a blob, table.js owns its own state (saved through the blob); re-injecting
     // its individual edit would overwrite the live column/row collapse state. Skip it.
     var skipTable = inBlob && $el.attr('data-ls-table') !== undefined;
+    // Guard against self-referential edits: a corrupted value can contain a nested
+    // [data-edit] with the SAME key as an ancestor (contenteditable sometimes serialises an
+    // element's own wrapper inside itself). Re-injecting it recurses forever → stack overflow
+    // → the slide fails to render (404). Skip the re-injection for a key already applied in
+    // this chain; the contenteditable normalisation below still runs.
+    var selfNested = !!seen[key];
 
-    if (!isImgEdit && !skipTable && edits[key] !== undefined) {
+    if (!selfNested && !isImgEdit && !skipTable && edits[key] !== undefined) {
       $el.html(edits[key]);
-      $el.find('[data-edit]').each(function () { applyOne(this, true); });
+      var nextSeen = Object.assign({}, seen); nextSeen[key] = true;
+      $el.find('[data-edit]').each(function () { applyOne(this, true, nextSeen); });
     } else if (isImgEdit && edits[key] !== undefined) {
       var raw = String(edits[key] || '');
       var src = raw.includes('<') ? (raw.match(/\bsrc="([^"]*)"/) || [])[1] || '' : raw;
@@ -392,7 +410,7 @@ function applyEditsToHtml(html, edits, editable) {
     }
   }
 
-  $('[data-edit]').each(function () { applyOne(this, false); });
+  $('[data-edit]').each(function () { applyOne(this, false, {}); });
   return $.html();
 }
 
