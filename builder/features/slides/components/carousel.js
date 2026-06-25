@@ -142,14 +142,16 @@ window.Carousel = (function () {
     if (!track) return;
 
     // ── Nav buttons ─────────────────────────────────────────────────────────
+    // Nav arrows are VIEWER controls (needed to switch images in published output), not
+    // builder-only affordances — so they must NOT carry data-builder-only, or the published
+    // `.readonly [data-builder-only]{display:none}` rule hides them. The real builder-only
+    // controls (add/auto/fit/delete/move) stay gated behind `if (!window.PB_READONLY)` below.
     var prevBtn = document.createElement('button');
     prevBtn.className = 'ls-carousel-btn ls-carousel-prev';
-    prevBtn.setAttribute('data-builder-only', '');
     prevBtn.textContent = '‹';
 
     var nextBtn = document.createElement('button');
     nextBtn.className = 'ls-carousel-btn ls-carousel-next';
-    nextBtn.setAttribute('data-builder-only', '');
     nextBtn.textContent = '›';
 
     // Remove any stale controls left over from saved HTML before adding fresh ones

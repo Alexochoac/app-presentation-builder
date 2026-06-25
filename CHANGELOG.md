@@ -5,6 +5,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [v1.4.7] — 2026-06-25
+
+### Fixed
+- **Carousel next/prev buttons hidden in published presentations** — the nav arrows were created with `data-builder-only`, so the published `.readonly [data-builder-only]{display:none}` rule hid them on slides that use that broad rule (Products, Surface, Logo Check). The arrows are viewer controls, not builder-only, so the attribute is removed; the real builder-only controls (add/auto/fit/delete/move) stay gated behind `PB_READONLY`. Existing published presentations were rebuilt to re-inline the fixed component.
+
+---
+
 ## [v1.4.6] — 2026-06-21
 
 ### Fixed
