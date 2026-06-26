@@ -2006,6 +2006,110 @@ app.post('/api/decks/:id/upload-hero-bg', function (req, res) {
   }
 });
 
+// ── Customer logo from website URL ────────────────────────────────────────────
+// Fetches a binary resource over http/https into a Buffer, following up to 4
+// redirects. Resolves { buffer, contentType } or rejects on error / non-2xx.
+function fetchBuffer(url, redirectsLeft) {
+  if (redirectsLeft === undefined) redirectsLeft = 4;
+  return new Promise(function (resolve, reject) {
+    var lib = url.indexOf('https:') === 0 ? https : http;
+    var req = lib.get(url, { headers: { 'User-Agent': 'Mozilla/5.0 (logo-fetch)' } }, function (resp) {
+      var status = resp.statusCode || 0;
+      // Follow redirects
+      if (status >= 300 && status < 400 && resp.headers.location) {
+        resp.resume(); // drain
+        if (redirectsLeft <= 0) return reject(new Error('too many redirects'));
+        var next = new URL(resp.headers.location, url).toString();
+        return resolve(fetchBuffer(next, redirectsLeft - 1));
+      }
+      if (status < 200 || status >= 300) {
+        resp.resume();
+        return reject(new Error('HTTP ' + status));
+      }
+      var chunks = [];
+      resp.on('data', function (c) { chunks.push(c); });
+      resp.on('end', function () {
+        resolve({ buffer: Buffer.concat(chunks), contentType: resp.headers['content-type'] || '' });
+      });
+    });
+    req.on('error', reject);
+    req.setTimeout(8000, function () { req.destroy(new Error('timeout')); });
+  });
+}
+
+// Reduces any user-entered website ("https://www.acme.com/about") to a bare
+// domain ("acme.com") suitable for the logo API and homepage scrape.
+function normalizeDomain(input) {
+  var s = (input || '').trim();
+  if (!s) return '';
+  if (!/^https?:\/\//i.test(s)) s = 'http://' + s;
+  try {
+    var host = new URL(s).hostname.toLowerCase();
+    return host.replace(/^www\./, '');
+  } catch (e) { return ''; }
+}
+
+// True when the buffer looks like a usable raster/vector image (not an HTML
+// error page or a 1x1 tracking pixel).
+function looksLikeImage(contentType, buffer) {
+  return /^image\//i.test(contentType || '') && buffer && buffer.length > 512;
+}
+
+// Saves a fetched image buffer under a domain-derived name and returns the
+// public '/slides/uploads/<name>' path. Picks the extension from content-type.
+function saveFetchedLogo(domain, contentType, buffer) {
+  var ext = (contentType.split('/')[1] || 'png').split(';')[0].replace('svg+xml', 'svg').replace('x-icon', 'ico').replace('vnd.microsoft.icon', 'ico');
+  return dedupUpload(domain.replace(/[^a-z0-9]/gi, '-') + '-logo.' + ext, buffer);
+}
+
+// POST /api/fetch-customer-logo  { url: 'acme.com' }
+// → { success, src: '/slides/uploads/acme-logo.png', source: 'logo.dev'|'unavatar'|'scrape' }
+// Tries sources best-quality-first. The fetched logo only PRE-FILLS the cover/card
+// logo — the manual upload always overrides it, so a low-res hit is never a dead end.
+app.post('/api/fetch-customer-logo', async function (req, res) {
+  var domain = normalizeDomain(req.body && req.body.url);
+  if (!domain) return res.status(400).json({ success: false, error: 'A valid website URL is required' });
+
+  // 1) logo.dev — real high-resolution logos. Opt-in: only runs if a free
+  //    publishable token is set in .env (LOGODEV_TOKEN). Best quality.
+  if (process.env.LOGODEV_TOKEN) {
+    try {
+      var ld = await fetchBuffer('https://img.logo.dev/' + domain + '?size=512&format=png&token=' + process.env.LOGODEV_TOKEN);
+      if (looksLikeImage(ld.contentType, ld.buffer)) {
+        return res.json({ success: true, src: saveFetchedLogo(domain, ld.contentType, ld.buffer), source: 'logo.dev' });
+      }
+    } catch (e) { /* fall through */ }
+  }
+
+  // 2) unavatar.io — keyless aggregator (pulls from several public sources).
+  try {
+    var ua = await fetchBuffer('https://unavatar.io/' + domain + '?fallback=false');
+    if (looksLikeImage(ua.contentType, ua.buffer)) {
+      return res.json({ success: true, src: saveFetchedLogo(domain, ua.contentType, ua.buffer), source: 'unavatar' });
+    }
+  } catch (e) { /* fall through */ }
+
+  // 3) Scrape the homepage for the cleanest on-page logo image.
+  try {
+    var home = await fetchBuffer('https://' + domain + '/');
+    var $ = cheerio.load(home.buffer.toString('utf8'));
+    var candidate =
+      $('link[rel="apple-touch-icon"]').attr('href') ||
+      $('meta[property="og:image"]').attr('content') ||
+      $('meta[name="twitter:image"]').attr('content') ||
+      $('link[rel="icon"]').attr('href');
+    if (candidate) {
+      var imgUrl = new URL(candidate, 'https://' + domain + '/').toString();
+      var img = await fetchBuffer(imgUrl);
+      if (looksLikeImage(img.contentType, img.buffer)) {
+        return res.json({ success: true, src: saveFetchedLogo(domain, img.contentType, img.buffer), source: 'scrape' });
+      }
+    }
+  } catch (e) { /* fall through to not-found */ }
+
+  return res.status(404).json({ success: false, error: 'Could not find a logo for ' + domain + '. Please upload one manually.' });
+});
+
 // POST /api/library/:id/edits — save edits directly to a library slide
 app.post('/api/library/:id/edits', function (req, res) {
   try {
@@ -3095,6 +3199,7 @@ app.post('/api/presentations', function (req, res) {
     var presentationName = (body.presentationName || '').trim();
     var contactName  = (body.contactName  || '').trim();
     var contactTitle = (body.contactTitle || '').trim();
+    var customerUrl  = (body.customerUrl  || '').trim();
 
     // Save logo file if provided — store path in presentation record only, never in library
     var customerLogoSrc = '';
@@ -3138,6 +3243,7 @@ app.post('/api/presentations', function (req, res) {
       var repLanguages   = Array.isArray(body.languages) ? body.languages.filter(Boolean) : [];
       existing.presentationName = presentationName;
       existing.customerName     = customerName;
+      existing.customerUrl      = customerUrl;
       existing.contactName      = contactName;
       existing.contactTitle     = contactTitle;
       if (customerLogoSrc) existing.customerLogoSrc = customerLogoSrc;
@@ -3173,6 +3279,7 @@ app.post('/api/presentations', function (req, res) {
       deckId:          (body.deckId || '').trim(),
       presentationName: presentationName,
       customerName:    customerName,
+      customerUrl:     customerUrl,
       contactName:     contactName,
       contactTitle:    contactTitle,
       customerLogoSrc: customerLogoSrc,
@@ -3221,6 +3328,7 @@ app.put('/api/presentations/:id', function (req, res) {
 
     if (body.presentationName !== undefined) pres.presentationName = (body.presentationName || '').trim();
     if (body.customerName !== undefined) pres.customerName = (body.customerName || '').trim();
+    if (body.customerUrl  !== undefined) pres.customerUrl  = (body.customerUrl  || '').trim();
     if (body.contactName  !== undefined) pres.contactName  = (body.contactName  || '').trim();
     if (body.contactTitle !== undefined) pres.contactTitle = (body.contactTitle || '').trim();
 

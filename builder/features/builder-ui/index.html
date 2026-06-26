@@ -1290,6 +1290,14 @@
           <input class="modal-input" id="savePresCompany" type="text" placeholder="e.g. Acme Corp" maxlength="100" autocomplete="off">
         </div>
         <div class="modal-field">
+          <label class="modal-label" for="savePresWebsite">Company Website <span style="color:#888;font-weight:400;">(optional — fetches their logo)</span></label>
+          <div style="display:flex;gap:8px;align-items:stretch;">
+            <input class="modal-input" id="savePresWebsite" type="text" placeholder="e.g. acme.com" maxlength="200" autocomplete="off" style="flex:1;">
+            <button class="btn-logo-upload" id="fetchLogoBtn" type="button" style="white-space:nowrap;">Fetch logo</button>
+          </div>
+          <span id="fetchLogoStatus" style="display:none;font-size:11px;margin-top:4px;line-height:1.4;"></span>
+        </div>
+        <div class="modal-field">
           <label class="modal-label" for="savePresName">Presentation Name</label>
           <input class="modal-input" id="savePresName" type="text" placeholder="e.g. Q2 Demo" maxlength="100" autocomplete="off">
         </div>
@@ -2644,6 +2652,8 @@
       document.getElementById('savePresCompany').value = editPres ? (editPres.customerName     || '') : '';
       document.getElementById('savePresName').value    = editPres ? (editPres.presentationName || '') : '';
       document.getElementById('savePresContact').value = editPres ? (editPres.contactName      || '') : '';
+      document.getElementById('savePresWebsite').value = editPres ? (editPres.customerUrl       || '') : '';
+      document.getElementById('fetchLogoStatus').style.display = 'none';
       saveLogoData = ''; saveLogoFilename = '';
 
       // Presentation-image logic, driven by whether the cover template has a logo slot and an image:
@@ -2742,6 +2752,52 @@
         this.value = '';
       });
 
+      // Fetch the recipient company's logo from their website. The server saves it
+      // to uploads and returns a path; we pull that back as a data URL so it flows
+      // through the SAME state as a manual upload (preview + save payload), and the
+      // "Upload image" button still overrides it if the auto-fetched logo looks bad.
+      document.getElementById('fetchLogoBtn').addEventListener('click', function () {
+        var url    = document.getElementById('savePresWebsite').value.trim();
+        var status = document.getElementById('fetchLogoStatus');
+        if (!url) { document.getElementById('savePresWebsite').focus(); return; }
+        var btn = this;
+        btn.disabled = true;
+        var prevLabel = btn.textContent;
+        btn.textContent = 'Fetching…';
+        status.style.display = ''; status.style.color = '#888';
+        status.textContent = 'Looking for a logo at ' + url + '…';
+        fetch('/api/fetch-customer-logo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: url })
+        }).then(function (r) {
+          return r.json().then(function (j) { return { ok: r.ok, j: j }; });
+        }).then(function (res) {
+          if (!res.ok || !res.j.success) throw new Error(res.j.error || 'Could not fetch a logo.');
+          return fetch(res.j.src).then(function (r) { return r.blob(); }).then(function (blob) {
+            return new Promise(function (resolve) {
+              var fr = new FileReader();
+              fr.onload = function (e) { resolve({ dataUrl: e.target.result, src: res.j.src, source: res.j.source }); };
+              fr.readAsDataURL(blob);
+            });
+          });
+        }).then(function (out) {
+          saveLogoFilename = out.src.split('/').pop();
+          saveLogoData     = out.dataUrl;
+          setLogoPreview(saveLogoData, 'Fetched from website');
+          document.getElementById('saveLogoError').style.display = 'none';
+          document.getElementById('saveLogoRequiredMark').style.display = 'none';
+          status.style.color = '#4ade80';
+          status.textContent = '✓ Logo fetched (' + out.source + '). Not happy with it? Use “Upload image” to replace it.';
+        }).catch(function (err) {
+          status.style.color = '#f87171';
+          status.textContent = err.message;
+        }).then(function () {
+          btn.disabled = false;
+          btn.textContent = prevLabel;
+        });
+      });
+
       document.getElementById('saveShowOnCover').addEventListener('change', function () {
         saveShowOnCover = this.checked;
         updateImageHelp();
@@ -2782,6 +2838,7 @@
             deckId:           activeDeckId,
             replaceId:        pendingReplaceId || '',
             customerName:     company,
+            customerUrl:      document.getElementById('savePresWebsite').value.trim(),
             presentationName: document.getElementById('savePresName').value.trim(),
             contactName:      document.getElementById('savePresContact').value.trim(),
             logoFilename:     saveLogoFilename,
