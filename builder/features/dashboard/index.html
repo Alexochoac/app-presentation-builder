@@ -192,7 +192,7 @@
       color: var(--accent);
       background: color-mix(in srgb, var(--accent) 10%, var(--bg));
     }
-    #viewsPresDropdown, #engPresDropdown, #engDeckDropdown, #engDateDropdown { position: relative; }
+    #viewsPresDropdown, #engPresDropdown, #engDeckDropdown, #engDateDropdown, #engCountryDropdown { position: relative; }
     #viewsPresTrigger { cursor: pointer; user-select: none; }
     #viewsPresTrigger .chevron { font-size: 10px; opacity: .5; transition: transform .15s; }
     #viewsPresTrigger.open .chevron { transform: rotate(180deg); }
@@ -540,7 +540,7 @@
   <main class="main">
 
     <!-- Engagement Activity (collapsible, starts collapsed) -->
-    <section class="panel" style="margin-bottom:16px;overflow:visible;position:relative;z-index:10;">
+    <section class="panel" style="margin-bottom:16px;overflow:visible;position:relative;z-index:20;">
       <div class="panel-header" style="cursor:pointer;" id="engActHeader">
         <div>
           <h2 class="panel-title">Engagement Activity</h2>
@@ -595,6 +595,7 @@
           <div id="engEventsSpinner" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);">
             <span style="color:var(--muted);font-size:13px;">Loading&#8230;</span>
           </div>
+          <div id="engEventsPrompt" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;text-align:center;padding:0 24px;color:var(--muted);font-size:13px;"></div>
         </div>
         <!-- Events legend (shown in timeseries mode) -->
         <div id="engEventsLegend" style="display:none;flex-wrap:wrap;gap:8px;margin-top:8px;font-size:11px;color:var(--muted);"></div>
@@ -613,6 +614,13 @@
               <span class="chevron" style="margin-left:4px;">&#9660;</span>
             </button>
             <div id="engPresMenu" class="views-floating-menu"></div>
+          </div>
+          <div id="engCountryDropdown">
+            <button id="engCountryTrigger" class="views-tab" type="button">
+              <span id="engCountryLabel">All countries</span>
+              <span class="chevron" style="margin-left:4px;">&#9660;</span>
+            </button>
+            <div id="engCountryMenu" class="views-floating-menu"></div>
           </div>
           <button id="engCustomDateBtn" type="button">
             <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.7;flex-shrink:0;"><rect x="2" y="4" width="16" height="14" rx="2"/><line x1="2" y1="8" x2="18" y2="8"/><line x1="6" y1="2" x2="6" y2="6"/><line x1="14" y1="2" x2="14" y2="6"/></svg>
@@ -1354,6 +1362,17 @@
       var engYMax       = 0;     // y-axis max — grows via niceMax, never shrinks
       var SLIDE_COLORS  = ['#6366f1','#f59e0b','#10b981','#ef4444','#3b82f6','#a855f7','#14b8a6','#f97316','#84cc16','#ec4899','#06b6d4','#8b5cf6'];
 
+      // ── Country filter (dashboard-wide) ───────────────────────────
+      // Shared on window so the card-metrics batch fetch (separate scope) reads the same selection.
+      window.PBCountry = window.PBCountry || { list: [], op: 'is' }; // op: 'is' | 'isnot'
+      var _engCountries = []; // [{country, visitors, pageviews}] — full list, fetched once
+      function pbCountryParam() {
+        var c = window.PBCountry;
+        if (!c.list.length) return '';
+        return '&country=' + encodeURIComponent(c.list.join(',')) + '&countryOp=' + c.op;
+      }
+      window.pbCountryParam = pbCountryParam;
+
       function niceMax(val) {
         if (val <= 10)   return 10;
         if (val <= 20)   return 20;
@@ -1388,6 +1407,7 @@
         if (e.target.closest('#engDateDropdown')) return;
         if (e.target.closest('#engPresDropdown')) return;
         if (e.target.closest('#engDeckDropdown')) return;
+        if (e.target.closest('#engCountryDropdown')) return;
         setOpen(body.style.display === 'none');
       });
 
@@ -1540,6 +1560,7 @@
         var dates = getEngDates();
         var url = '/api/analytics/pageviews-multi?startAt=' + dates.startAt + '&endAt=' + dates.endAt;
         if (activeIds.length) url += '&presIds=' + activeIds.join(',');
+        url += pbCountryParam();
         fetch(url)
           .then(function (r) { return r.json(); })
           .then(function (r) {
@@ -1561,15 +1582,35 @@
         if (el) el.style.display = show ? 'flex' : 'none';
       }
 
+      // Shows a centered message over the events chart (e.g. "pick a deck"); '' hides it.
+      function showEventsPrompt(msg) {
+        var p = document.getElementById('engEventsPrompt');
+        var c = document.getElementById('engEventsChart');
+        if (p) { p.textContent = msg || ''; p.style.display = msg ? 'flex' : 'none'; }
+        if (c) c.style.visibility = msg ? 'hidden' : 'visible';
+        if (msg) {
+          if (eventsChart) { eventsChart.destroy(); eventsChart = null; }
+          document.getElementById('engEventsLegend').style.display = 'none';
+        }
+      }
+
       function loadEventsChart() {
+        // Slide events only make sense within ONE deck — otherwise identical slide IDs
+        // reused across decks get summed into one bar. Require a single deck selection.
+        if (engDeckId === null) {
+          showEventsPrompt('Pick a deck above to see slide popularity for that deck');
+          return;
+        }
+        showEventsPrompt('');
         var activeIds = getActivePresIds();
         if (activeIds === null) { buildPopularityChart([]); return; }
         var dates  = getEngDates();
         var params = '?startAt=' + dates.startAt + '&endAt=' + dates.endAt;
         if (activeIds.length) params += '&presIds=' + activeIds.join(',');
+        params += pbCountryParam();
 
         if (engDrillSlide) {
-          fetch('/api/analytics/slide-events' + params + '&eventName=' + encodeURIComponent(engDrillSlide))
+          fetch('/api/analytics/slide-interactions' + params + '&eventName=' + encodeURIComponent(engDrillSlide))
             .then(function (r) { return r.json(); })
             .then(function (r) {
               if (!r.success) return;
@@ -1602,7 +1643,8 @@
         if (!canvas) return;
         var dark = document.documentElement.getAttribute('data-theme') !== 'light';
         if (eventsChart) { eventsChart.destroy(); eventsChart = null; }
-        document.getElementById('engEventsLegend').innerHTML = '';
+        var popLegend = document.getElementById('engEventsLegend');
+        popLegend.innerHTML = ''; popLegend.style.display = 'none';
         if (!data.length) return;
         var labels = data.map(function (d) { return d.label; });
         var counts = data.map(function (d) { return d.count; });
@@ -1640,7 +1682,7 @@
                 bodyColor: dark ? 'rgba(255,255,255,.6)' : 'rgba(0,0,0,.6)',
                 borderColor: dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)',
                 borderWidth: 1, padding: 10, cornerRadius: 8,
-                callbacks: { footer: function () { return 'Click to break down by presentation'; } }
+                callbacks: { footer: function () { return 'Click to see in-slide interactions'; } }
               }
             },
             scales: {
@@ -1711,43 +1753,134 @@
         });
       }
 
+      // Color the drill doughnut by interaction COMPONENT (button/tab/carousel/...),
+      // so same-kind interactions share a hue. The raw label is '<component>-<name>-<action>'.
+      var COMPONENT_COLORS = {
+        button:    '#6366f1',
+        tab:       '#10b981',
+        carousel:  '#f59e0b',
+        image:     '#ef4444',
+        link:      '#3b82f6',
+        video:     '#a855f7',
+        accordion: '#14b8a6',
+        hotspot:   '#ec4899',
+        toggle:    '#84cc16'
+      };
+      var OTHER_COLOR = '#9ca3af';
+      function componentOf(raw) {
+        if (!raw) return 'other';
+        return String(raw).split('-')[0].toLowerCase() || 'other';
+      }
+
+      // Drill view: ONE slide's in-slide interactions as a doughnut.
+      // Top-N individual slices + a collapsed "Other" (its tooltip lists the tail,
+      // descending). Sliced by interaction, colored by component, total in the center.
       function buildDrillChart(data) {
         var canvas = document.getElementById('engEventsChart');
         if (!canvas) return;
         var dark = document.documentElement.getAttribute('data-theme') !== 'light';
         if (eventsChart) { eventsChart.destroy(); eventsChart = null; }
-        document.getElementById('engEventsLegend').innerHTML = '';
-        if (!data.length) return;
-        var labels = data.map(function (d) { return d.label; });
-        var counts = data.map(function (d) { return d.count; });
-        var bgColors = data.map(function (_, i) { return SLIDE_COLORS[i % SLIDE_COLORS.length] + 'bf'; });
-        var brColors = data.map(function (_, i) { return SLIDE_COLORS[i % SLIDE_COLORS.length]; });
-        var dataMax = counts.reduce(function (m, v) { return Math.max(m, v); }, 0);
-        var yMax = updateYMax(dataMax);
+        var legend = document.getElementById('engEventsLegend');
+        legend.innerHTML = '';
+        legend.style.display = 'none';
+        if (!data.length) { showEventsPrompt('No in-slide interactions recorded for this slide yet'); return; }
+
+        // Server returns data sorted by count desc. Keep the top N, collapse the rest.
+        var TOP_N = 7;
+        var top  = data.slice(0, TOP_N);
+        var tail = data.slice(TOP_N);
+        var total = data.reduce(function (s, d) { return s + d.count; }, 0);
+
+        var slices = top.map(function (d) {
+          return { label: d.label, count: d.count, component: componentOf(d.raw), isOther: false };
+        });
+        if (tail.length) {
+          var tailTotal = tail.reduce(function (s, d) { return s + d.count; }, 0);
+          slices.push({ label: 'Other (' + tail.length + ' more)', count: tailTotal, component: 'other', isOther: true, tail: tail });
+        }
+        var colors = slices.map(function (s) {
+          return s.isOther ? OTHER_COLOR : (COMPONENT_COLORS[s.component] || OTHER_COLOR);
+        });
+
+        // Draws the slide's total event count in the doughnut hole.
+        var centerText = {
+          id: 'drillCenterText',
+          afterDraw: function (chart) {
+            var meta = chart.getDatasetMeta(0);
+            if (!meta || !meta.data || !meta.data[0]) return;
+            var ctx = chart.ctx, x = meta.data[0].x, y = meta.data[0].y;
+            ctx.save();
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillStyle = dark ? '#fff' : '#000';
+            ctx.font = '600 22px sans-serif';
+            ctx.fillText(String(total), x, y - 6);
+            ctx.fillStyle = dark ? 'rgba(255,255,255,.5)' : 'rgba(0,0,0,.5)';
+            ctx.font = '11px sans-serif';
+            ctx.fillText('events', x, y + 14);
+            ctx.restore();
+          }
+        };
+
         eventsChart = new Chart(canvas, {
-          type: 'bar',
+          type: 'doughnut',
           data: {
-            labels: labels,
-            datasets: [{ label: 'Events', data: counts, backgroundColor: bgColors, borderColor: brColors, borderWidth: 0, borderRadius: 3, borderSkipped: false, maxBarThickness: 48 }]
+            labels: slices.map(function (s) { return s.label; }),
+            datasets: [{
+              data: slices.map(function (s) { return s.count; }),
+              backgroundColor: colors,
+              borderColor: dark ? '#1c1c1e' : '#fff',
+              borderWidth: 2,
+              hoverOffset: 6
+            }]
           },
           options: {
             responsive: true, maintainAspectRatio: false,
+            cutout: '62%',
             plugins: {
               legend: { display: false },
               tooltip: {
                 backgroundColor: dark ? '#1c1c1e' : '#fff',
                 titleColor: dark ? '#fff' : '#000',
-                bodyColor: dark ? 'rgba(255,255,255,.6)' : 'rgba(0,0,0,.6)',
+                bodyColor: dark ? 'rgba(255,255,255,.7)' : 'rgba(0,0,0,.7)',
                 borderColor: dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)',
-                borderWidth: 1, padding: 10, cornerRadius: 8
+                borderWidth: 1, padding: 10, cornerRadius: 8,
+                callbacks: {
+                  label: function (ctx) {
+                    var s = slices[ctx.dataIndex];
+                    var pct = total ? Math.round(s.count / total * 100) : 0;
+                    return ' ' + s.count + ' events (' + pct + '%)';
+                  },
+                  afterBody: function (items) {
+                    if (!items.length) return '';
+                    var s = slices[items[0].dataIndex];
+                    if (!s.isOther) return '';
+                    var lines = s.tail.slice(0, 12).map(function (d) { return '• ' + d.label + ': ' + d.count; });
+                    if (s.tail.length > 12) lines.push('…and ' + (s.tail.length - 12) + ' more');
+                    return lines;
+                  }
+                }
               }
-            },
-            scales: {
-              x: { grid: { display: false }, ticks: { color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 }, maxRotation: 30 }, border: { display: false } },
-              y: { beginAtZero: true, max: yMax, grid: { color: dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)' }, ticks: { precision: 0, color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 } }, border: { display: false } }
             }
-          }
+          },
+          plugins: [centerText]
         });
+
+        // Legend maps each color to its component kind (only kinds present), plus Other.
+        var present = {};
+        slices.forEach(function (s) { if (!s.isOther) present[s.component] = true; });
+        legend.style.display = 'flex';
+        Object.keys(present).forEach(function (comp) { addDrillLegendDot(legend, COMPONENT_COLORS[comp] || OTHER_COLOR, comp); });
+        if (tail.length) addDrillLegendDot(legend, OTHER_COLOR, 'Other');
+      }
+
+      function addDrillLegendDot(legend, color, text) {
+        var item = document.createElement('span');
+        item.style.cssText = 'display:flex;align-items:center;gap:4px;text-transform:capitalize;';
+        var dot = document.createElement('span');
+        dot.style.cssText = 'width:10px;height:10px;border-radius:50%;background:' + color + ';flex-shrink:0;';
+        item.appendChild(dot);
+        item.appendChild(document.createTextNode(text));
+        legend.appendChild(item);
       }
 
       function updateSubModeBtn() {
@@ -2045,6 +2178,160 @@
         deckTrigger.classList.toggle('open', open);
       });
 
+      // ── Country filter dropdown (dashboard-wide) ──────────────────
+      var _regionNames = null;
+      try { _regionNames = new Intl.DisplayNames(['en'], { type: 'region' }); } catch (e) {}
+      function countryName(code) {
+        if (!code) return code;
+        if (_regionNames) { try { return _regionNames.of(code) || code; } catch (e) {} }
+        return code;
+      }
+
+      function updateEngCountryLabel() {
+        var el = document.getElementById('engCountryLabel');
+        var c  = window.PBCountry;
+        if (!c.list.length) { el.textContent = 'All countries'; return; }
+        var extra = c.list.length > 1 ? ' +' + (c.list.length - 1) : '';
+        el.textContent = (c.op === 'isnot' ? 'Not ' : '') + countryName(c.list[0]) + extra;
+      }
+
+      // Reload everything that respects the country filter: engagement charts + card metrics.
+      function reloadCountryFilter() {
+        loadEngagement();
+        document.dispatchEvent(new Event('pbCountryChanged'));
+      }
+
+      function buildEngCountryMenu() {
+        var menu = document.getElementById('engCountryMenu');
+        menu.innerHTML = '';
+
+        // is / is not toggle
+        var opWrap = document.createElement('div');
+        opWrap.style.cssText = 'display:flex;gap:4px;padding:8px 8px 6px;border-bottom:1px solid var(--border);';
+        ['is', 'isnot'].forEach(function (op) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.textContent = op === 'is' ? 'is' : 'is not';
+          var active = window.PBCountry.op === op;
+          btn.style.cssText = 'flex:1;padding:5px 8px;border-radius:6px;cursor:pointer;font-size:12px;' +
+            (active ? 'background:var(--accent,#E8711A);color:#fff;border:1px solid transparent;'
+                    : 'background:var(--bg);color:var(--text);border:1px solid var(--border);');
+          btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            window.PBCountry.op = op;
+            buildEngCountryMenu();
+            updateEngCountryLabel();
+            if (window.PBCountry.list.length) reloadCountryFilter();
+          });
+          opWrap.appendChild(btn);
+        });
+        menu.appendChild(opWrap);
+
+        // Search box
+        var searchWrap = document.createElement('div');
+        searchWrap.style.cssText = 'padding:6px 8px 4px;';
+        var searchInput = document.createElement('input');
+        searchInput.type = 'search';
+        searchInput.placeholder = 'Search country…';
+        searchInput.style.cssText = 'width:100%;box-sizing:border-box;padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:12px;outline:none;';
+        searchWrap.appendChild(searchInput);
+        menu.appendChild(searchWrap);
+
+        // "All countries" reset row
+        var allRow = document.createElement('label');
+        allRow.className = 'sort-option eng-check-row';
+        allRow.style.cssText = 'display:flex;align-items:center;gap:8px;cursor:pointer;border-bottom:1px solid var(--border);margin-bottom:2px;';
+        var allChk = document.createElement('input');
+        allChk.type = 'checkbox';
+        allChk.checked = window.PBCountry.list.length === 0;
+        allChk.style.cssText = 'accent-color:var(--accent,#E8711A);cursor:pointer;';
+        allRow.appendChild(allChk);
+        var allLbl = document.createElement('span');
+        allLbl.textContent = 'All countries';
+        allRow.appendChild(allLbl);
+        allChk.addEventListener('change', function (e) {
+          e.stopPropagation();
+          if (allChk.checked) {
+            window.PBCountry.list = [];
+            updateEngCountryLabel();
+            buildEngCountryMenu();
+            reloadCountryFilter();
+          } else { allChk.checked = window.PBCountry.list.length === 0; }
+        });
+        menu.appendChild(allRow);
+
+        // Per-country rows (skip null/unknown — can't filter on it, and "is not" keeps it anyway)
+        var listWrap = document.createElement('div');
+        listWrap.style.cssText = 'max-height:220px;overflow-y:auto;';
+        menu.appendChild(listWrap);
+
+        function renderRows(filter) {
+          listWrap.innerHTML = '';
+          var q = (filter || '').toLowerCase();
+          _engCountries.forEach(function (c) {
+            var code = c.country;
+            if (!code) return;
+            var name = countryName(code);
+            if (q && name.toLowerCase().indexOf(q) === -1 && code.toLowerCase().indexOf(q) === -1) return;
+            var row = document.createElement('label');
+            row.className = 'sort-option eng-check-row';
+            row.style.cssText = 'display:flex;align-items:center;gap:8px;cursor:pointer;';
+            var chk = document.createElement('input');
+            chk.type = 'checkbox';
+            chk.checked = window.PBCountry.list.indexOf(code) !== -1;
+            chk.style.cssText = 'accent-color:var(--accent,#E8711A);cursor:pointer;';
+            chk.addEventListener('change', function (e) {
+              e.stopPropagation();
+              var arr = window.PBCountry.list;
+              if (chk.checked) { if (arr.indexOf(code) === -1) arr.push(code); }
+              else { window.PBCountry.list = arr.filter(function (k) { return k !== code; }); }
+              allChk.checked = window.PBCountry.list.length === 0;
+              updateEngCountryLabel();
+              reloadCountryFilter();
+            });
+            row.appendChild(chk);
+            var lbl = document.createElement('span');
+            lbl.style.cssText = 'flex:1;';
+            lbl.textContent = name;
+            row.appendChild(lbl);
+            var cnt = document.createElement('span');
+            cnt.style.cssText = 'opacity:.5;font-size:11px;';
+            cnt.textContent = c.visitors;
+            row.appendChild(cnt);
+            listWrap.appendChild(row);
+          });
+          if (!listWrap.children.length) {
+            var empty = document.createElement('div');
+            empty.style.cssText = 'padding:8px 12px;opacity:.5;font-size:12px;';
+            empty.textContent = _engCountries.length ? 'No match' : 'No country data yet';
+            listWrap.appendChild(empty);
+          }
+        }
+
+        searchInput.addEventListener('input', function () { renderRows(this.value); });
+        searchInput.addEventListener('click', function (e) { e.stopPropagation(); });
+        renderRows('');
+      }
+
+      function loadCountryList() {
+        fetch('/api/analytics/countries?startAt=0&endAt=' + Date.now())
+          .then(function (r) { return r.json(); })
+          .then(function (r) {
+            if (!r.success) return;
+            _engCountries = r.data || [];
+            buildEngCountryMenu();
+          })
+          .catch(function () {});
+      }
+
+      var countryTrigger = document.getElementById('engCountryTrigger');
+      var countryMenu    = document.getElementById('engCountryMenu');
+      countryTrigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var open = countryMenu.classList.toggle('open');
+        countryTrigger.classList.toggle('open', open);
+      });
+
       // Wire up once presentations + decks are available from pub-activity script
       document.addEventListener('engPresentationsReady', function (e) {
         var detail = e.detail || {};
@@ -2054,6 +2341,7 @@
         _engLivePres     = _engAllLivePres;
         buildEngDeckMenu();
         buildEngPresMenu();
+        loadCountryList();
       });
 
       // Close dropdowns on outside click
@@ -2064,6 +2352,8 @@
         presTrigger.classList.remove('open');
         deckMenu.classList.remove('open');
         deckTrigger.classList.remove('open');
+        countryMenu.classList.remove('open');
+        countryTrigger.classList.remove('open');
       });
     })();
   </script>
@@ -2165,12 +2455,15 @@
         _batchTimer = setTimeout(function () {
           var startAt = Date.now() - 30 * 86400000;
           var endAt   = Date.now();
-          fetch('/api/analytics/batch?startAt=' + startAt + '&endAt=' + endAt)
+          var country = window.pbCountryParam ? window.pbCountryParam() : '';
+          fetch('/api/analytics/batch?startAt=' + startAt + '&endAt=' + endAt + country)
             .then(function (r) { return r.json(); })
             .then(function (r) { if (r.success) injectMetrics(r.data); })
             .catch(function () {});
         }, 200);
       }
+      // Re-fetch card metrics when the dashboard-wide country filter changes.
+      document.addEventListener('pbCountryChanged', scheduleBatchFetch);
 
       function fmtDuration(ms) {
         if (!ms) return '0s';

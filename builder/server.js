@@ -1048,22 +1048,46 @@ function getUmamiDb() {
   return _umamiDb;
 }
 
+// Builds an optional `session` JOIN + country WHERE for analytics queries.
+// opts = { country: ['LU', ...], countryOp: 'is' | 'isnot' }. nextIdx = next $N param number.
+// Returns { join, where, params } — concat params onto the query's param array, in order.
+// When no country filter is active, returns empty strings so the base query is unchanged.
+function countrySql(opts, nextIdx) {
+  var list = opts && opts.country;
+  if (!list || !list.length) return { join: '', where: '', params: [] };
+  var where = opts.countryOp === 'isnot'
+    ? ' AND (s.country != ALL($' + nextIdx + ') OR s.country IS NULL)'  // keep unknown-country visitors when excluding
+    : ' AND s.country = ANY($' + nextIdx + ')';
+  return { join: ' JOIN session s ON s.session_id = we.session_id', where: where, params: [list] };
+}
+
+// Parses the dashboard-wide country filter off a request.
+// Returns { country: ['LU', ...], countryOp: 'is' | 'isnot' } ('is' is the default).
+function parseCountryOpts(req) {
+  var raw  = (req.query.country || '').trim();
+  var list = raw ? raw.split(',').map(function (s) { return s.trim().toUpperCase(); }).filter(Boolean) : [];
+  return { country: list, countryOp: req.query.countryOp === 'isnot' ? 'isnot' : 'is' };
+}
+
 // Returns per-URL pageview + visitor counts for an array of url_paths.
 // Result: { '/finished/00000001/': { pageviews: 5, visitors: 2 }, ... }
-function dbPresStats(urlPaths, startMs, endMs, cb) {
+function dbPresStats(urlPaths, startMs, endMs, opts, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, {});
   var siteId = null;
   try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, {});
+  var params = [siteId, urlPaths, startMs, endMs];
+  var cc = countrySql(opts, params.length + 1);
+  params = params.concat(cc.params);
   db.query(
-    'SELECT url_path, COUNT(*) AS pageviews, COUNT(DISTINCT session_id) AS visitors ' +
-    'FROM website_event ' +
-    'WHERE website_id = $1 AND url_path = ANY($2) AND event_type = 1 ' +
-    '  AND created_at >= to_timestamp($3::bigint / 1000.0) ' +
-    '  AND created_at <  to_timestamp($4::bigint / 1000.0) ' +
-    'GROUP BY url_path',
-    [siteId, urlPaths, startMs, endMs],
+    'SELECT we.url_path, COUNT(*) AS pageviews, COUNT(DISTINCT we.session_id) AS visitors ' +
+    'FROM website_event we' + cc.join + ' ' +
+    'WHERE we.website_id = $1 AND we.url_path = ANY($2) AND we.event_type = 1 ' +
+    '  AND we.created_at >= to_timestamp($3::bigint / 1000.0) ' +
+    '  AND we.created_at <  to_timestamp($4::bigint / 1000.0)' + cc.where + ' ' +
+    'GROUP BY we.url_path',
+    params,
     function (err, result) {
       if (err) return cb(err);
       var out = {};
@@ -1112,10 +1136,11 @@ function slugToTitle(slug) {
   return slug.replace(/-/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
 }
 
-// Returns slide event counts grouped by event_name for a set of url_paths.
-// Pass eventNames array to restrict to specific events (null = all slide-* events).
+// Returns slide VIEW counts grouped by event_name (one row per slide) — powers the
+// popularity chart. Counts only '<slide name>-view' labelled events (slide navigations),
+// not interactions. Pass eventNames array to restrict to specific events.
 // Result: [{ event, label, count }] sorted by count desc.
-function dbSlideEvents(urlPaths, startMs, endMs, eventNames, cb) {
+function dbSlideEvents(urlPaths, startMs, endMs, eventNames, opts, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, []);
   var siteId = null;
@@ -1123,14 +1148,19 @@ function dbSlideEvents(urlPaths, startMs, endMs, eventNames, cb) {
   if (!siteId) return cb(null, []);
   var params = [siteId, urlPaths, startMs, endMs];
   var extra = '';
-  if (eventNames && eventNames.length) { params.push(eventNames); extra = ' AND event_name = ANY($5)'; }
+  if (eventNames && eventNames.length) { params.push(eventNames); extra = ' AND we.event_name = ANY($' + params.length + ')'; }
+  var cc = countrySql(opts, params.length + 1);
+  params = params.concat(cc.params);
   db.query(
-    'SELECT event_name, COUNT(*) AS cnt ' +
-    'FROM website_event ' +
-    "WHERE website_id = $1 AND url_path = ANY($2) AND event_type = 2 AND event_name LIKE 'slide-%'" + extra +
-    '  AND created_at >= to_timestamp($3::bigint / 1000.0) ' +
-    '  AND created_at <  to_timestamp($4::bigint / 1000.0) ' +
-    'GROUP BY event_name ORDER BY cnt DESC',
+    'SELECT we.event_name, COUNT(*) AS cnt ' +
+    'FROM website_event we ' +
+    // Popularity = slide VIEWS only. View events carry a '<slide name>-view' label
+    // (fired on slide navigation in the published deck); interactions never end in '-view'.
+    "JOIN event_data ed ON ed.website_event_id = we.event_id AND ed.data_key = 'label' AND ed.string_value LIKE '%-view'" + cc.join + ' ' +
+    "WHERE we.website_id = $1 AND we.url_path = ANY($2) AND we.event_type = 2 AND we.event_name LIKE 'slide-%'" + extra +
+    '  AND we.created_at >= to_timestamp($3::bigint / 1000.0) ' +
+    '  AND we.created_at <  to_timestamp($4::bigint / 1000.0)' + cc.where + ' ' +
+    'GROUP BY we.event_name ORDER BY cnt DESC',
     params,
     function (err, result) {
       if (err) return cb(err);
@@ -1142,9 +1172,10 @@ function dbSlideEvents(urlPaths, startMs, endMs, eventNames, cb) {
   );
 }
 
-// Returns day-by-day event counts per event_name.
+// Returns day-by-day slide VIEW counts per event_name (the "Over time" sub-mode).
+// Counts only '<slide name>-view' events, matching the popularity chart (not interactions).
 // Result: { days: ['2026-05-01', ...], series: [{ event, label, values: [N, ...] }] }
-function dbSlideEventSeries(urlPaths, startMs, endMs, eventNames, cb) {
+function dbSlideEventSeries(urlPaths, startMs, endMs, eventNames, opts, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, { days: [], series: [] });
   var siteId = null;
@@ -1152,13 +1183,17 @@ function dbSlideEventSeries(urlPaths, startMs, endMs, eventNames, cb) {
   if (!siteId) return cb(null, { days: [], series: [] });
   var params = [siteId, urlPaths, startMs, endMs];
   var extra = '';
-  if (eventNames && eventNames.length) { params.push(eventNames); extra = ' AND event_name = ANY($5)'; }
+  if (eventNames && eventNames.length) { params.push(eventNames); extra = ' AND we.event_name = ANY($' + params.length + ')'; }
+  var cc = countrySql(opts, params.length + 1);
+  params = params.concat(cc.params);
   db.query(
-    "SELECT TO_CHAR(created_at AT TIME ZONE '" + localTzString() + "', 'YYYY-MM-DD') AS day, event_name, COUNT(*) AS cnt " +
-    'FROM website_event ' +
-    "WHERE website_id = $1 AND url_path = ANY($2) AND event_type = 2 AND event_name LIKE 'slide-%'" + extra +
-    '  AND created_at >= to_timestamp($3::bigint / 1000.0) ' +
-    '  AND created_at <  to_timestamp($4::bigint / 1000.0) ' +
+    "SELECT TO_CHAR(we.created_at AT TIME ZONE '" + localTzString() + "', 'YYYY-MM-DD') AS day, we.event_name, COUNT(*) AS cnt " +
+    'FROM website_event we ' +
+    // Views only — same '<slide name>-view' filter as the popularity chart, so both sub-modes match.
+    "JOIN event_data ed ON ed.website_event_id = we.event_id AND ed.data_key = 'label' AND ed.string_value LIKE '%-view'" + cc.join + ' ' +
+    "WHERE we.website_id = $1 AND we.url_path = ANY($2) AND we.event_type = 2 AND we.event_name LIKE 'slide-%'" + extra +
+    '  AND we.created_at >= to_timestamp($3::bigint / 1000.0) ' +
+    '  AND we.created_at <  to_timestamp($4::bigint / 1000.0)' + cc.where + ' ' +
     'GROUP BY 1, 2 ORDER BY 1, 2',
     params,
     function (err, result) {
@@ -1183,25 +1218,98 @@ function dbSlideEventSeries(urlPaths, startMs, endMs, eventNames, cb) {
 
 // Returns per-presentation event counts for a specific slide event (drill-down).
 // Result: [{ label, count }] sorted by count desc.
-function dbSlideEventByPres(urlPaths, presMap, startMs, endMs, eventName, cb) {
+function dbSlideEventByPres(urlPaths, presMap, startMs, endMs, eventName, opts, cb) {
+  var db = getUmamiDb();
+  if (!db || !urlPaths.length) return cb(null, []);
+  var siteId = null;
+  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  if (!siteId) return cb(null, []);
+  var params = [siteId, urlPaths, startMs, endMs, eventName];
+  var cc = countrySql(opts, params.length + 1);
+  params = params.concat(cc.params);
+  db.query(
+    'SELECT we.url_path, COUNT(*) AS cnt ' +
+    'FROM website_event we' + cc.join + ' ' +
+    'WHERE we.website_id = $1 AND we.url_path = ANY($2) AND we.event_type = 2 AND we.event_name = $5 ' +
+    '  AND we.created_at >= to_timestamp($3::bigint / 1000.0) ' +
+    '  AND we.created_at <  to_timestamp($4::bigint / 1000.0)' + cc.where + ' ' +
+    'GROUP BY we.url_path ORDER BY cnt DESC',
+    params,
+    function (err, result) {
+      if (err) return cb(err);
+      var out = (result.rows || []).map(function (r) {
+        var presId = r.url_path.replace(/^\/public\//, '').replace(/\/$/, '');
+        return { label: presMap[presId] || presId, count: parseInt(r.cnt, 10) };
+      });
+      cb(null, out);
+    }
+  );
+}
+
+// Returns pageview + visitor counts per country across the given url_paths.
+// Result: [{ country, pageviews, visitors }] sorted by visitors desc. country may be null (unknown).
+// Powers the dashboard-wide country filter list and the geo breakdown — intentionally unfiltered by country.
+function dbCountries(urlPaths, startMs, endMs, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, []);
   var siteId = null;
   try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, []);
   db.query(
-    'SELECT url_path, COUNT(*) AS cnt ' +
-    'FROM website_event ' +
-    'WHERE website_id = $1 AND url_path = ANY($2) AND event_type = 2 AND event_name = $5 ' +
-    '  AND created_at >= to_timestamp($3::bigint / 1000.0) ' +
-    '  AND created_at <  to_timestamp($4::bigint / 1000.0) ' +
-    'GROUP BY url_path ORDER BY cnt DESC',
-    [siteId, urlPaths, startMs, endMs, eventName],
+    'SELECT s.country AS country, COUNT(*) AS pageviews, COUNT(DISTINCT we.session_id) AS visitors ' +
+    'FROM website_event we JOIN session s ON s.session_id = we.session_id ' +
+    'WHERE we.website_id = $1 AND we.url_path = ANY($2) AND we.event_type = 1 ' +
+    '  AND we.created_at >= to_timestamp($3::bigint / 1000.0) ' +
+    '  AND we.created_at <  to_timestamp($4::bigint / 1000.0) ' +
+    'GROUP BY s.country ORDER BY visitors DESC',
+    [siteId, urlPaths, startMs, endMs],
     function (err, result) {
       if (err) return cb(err);
       var out = (result.rows || []).map(function (r) {
-        var presId = r.url_path.replace(/^\/public\//, '').replace(/\/$/, '');
-        return { label: presMap[presId] || presId, count: parseInt(r.cnt, 10) };
+        return { country: r.country ? r.country.trim() : null, pageviews: parseInt(r.pageviews, 10), visitors: parseInt(r.visitors, 10) };
+      });
+      cb(null, out);
+    }
+  );
+}
+
+// Tracker labels are '<component>-<name>-<action>' (e.g. 'button-whatsapp-click', 'carousel-Belt Detail-next').
+// Renders one as a readable string: 'whatsapp (button · click)'. Falls back to the raw label.
+function prettyInteraction(label) {
+  if (!label) return '(no label)';
+  var parts = label.split('-');
+  if (parts.length < 3) return label;
+  var component = parts[0];
+  var action    = parts[parts.length - 1];
+  var name      = parts.slice(1, -1).join('-');
+  return name + ' (' + component + ' · ' + action + ')';
+}
+
+// Drill-down: breaks ONE slide event down by its in-slide interaction label (from event_data).
+// Result: [{ label, count }] sorted by count desc — label is the readable interaction string.
+function dbSlideInteractions(urlPaths, startMs, endMs, eventName, opts, cb) {
+  var db = getUmamiDb();
+  if (!db || !urlPaths.length || !eventName) return cb(null, []);
+  var siteId = null;
+  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  if (!siteId) return cb(null, []);
+  var params = [siteId, urlPaths, startMs, endMs, eventName];
+  var cc = countrySql(opts, params.length + 1);
+  params = params.concat(cc.params);
+  db.query(
+    'SELECT ed.string_value AS label, COUNT(*) AS cnt ' +
+    'FROM website_event we ' +
+    "JOIN event_data ed ON ed.website_event_id = we.event_id AND ed.data_key = 'label'" + cc.join + ' ' +
+    'WHERE we.website_id = $1 AND we.url_path = ANY($2) AND we.event_type = 2 AND we.event_name = $5 ' +
+    "  AND ed.string_value NOT LIKE '%-view' " +  // exclude slide-view events — those belong to the popularity chart
+    '  AND we.created_at >= to_timestamp($3::bigint / 1000.0) ' +
+    '  AND we.created_at <  to_timestamp($4::bigint / 1000.0)' + cc.where + ' ' +
+    'GROUP BY ed.string_value ORDER BY cnt DESC',
+    params,
+    function (err, result) {
+      if (err) return cb(err);
+      var out = (result.rows || []).map(function (r) {
+        return { label: prettyInteraction(r.label), raw: r.label, count: parseInt(r.cnt, 10) };
       });
       cb(null, out);
     }
@@ -2959,7 +3067,7 @@ app.get('/api/analytics/batch', function (req, res) {
     var startMs = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
     var endMs   = parseInt(req.query.endAt)   || Date.now();
     var urlPaths = ids.map(function (id) { return '/public/' + id + '/'; });
-    dbPresStats(urlPaths, startMs, endMs, function (err, statsMap) {
+    dbPresStats(urlPaths, startMs, endMs, parseCountryOpts(req), function (err, statsMap) {
       if (err) return res.status(500).json({ success: false, error: err.message });
       var result = {};
       ids.forEach(function (id) {
@@ -3035,21 +3143,24 @@ app.get('/api/analytics/pageviews-by-pres', function (req, res) {
 
 // Returns aggregated time series AND per-presentation breakdown in one query.
 // Result: { pageviews: [{x,y}], sessions: [{x,y}], breakdown: [{ id, name, pageviews, sessions }] }
-function dbPresTimeSeriesWithBreakdown(urlPaths, presMap, startMs, endMs, cb) {
+function dbPresTimeSeriesWithBreakdown(urlPaths, presMap, startMs, endMs, opts, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, { pageviews: [], sessions: [], breakdown: [] });
   var siteId = null;
   try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, { pageviews: [], sessions: [], breakdown: [] });
+  var params = [siteId, urlPaths, startMs, endMs];
+  var cc = countrySql(opts, params.length + 1);
+  params = params.concat(cc.params);
   db.query(
-    "SELECT url_path, TO_CHAR(created_at AT TIME ZONE '" + localTzString() + "', 'YYYY-MM-DD') AS day, " +
-    '       COUNT(*) AS pageviews, COUNT(DISTINCT session_id) AS visitors ' +
-    'FROM website_event ' +
-    'WHERE website_id = $1 AND url_path = ANY($2) AND event_type = 1 ' +
-    '  AND created_at >= to_timestamp($3::bigint / 1000.0) ' +
-    '  AND created_at <  to_timestamp($4::bigint / 1000.0) ' +
+    "SELECT we.url_path, TO_CHAR(we.created_at AT TIME ZONE '" + localTzString() + "', 'YYYY-MM-DD') AS day, " +
+    '       COUNT(*) AS pageviews, COUNT(DISTINCT we.session_id) AS visitors ' +
+    'FROM website_event we' + cc.join + ' ' +
+    'WHERE we.website_id = $1 AND we.url_path = ANY($2) AND we.event_type = 1 ' +
+    '  AND we.created_at >= to_timestamp($3::bigint / 1000.0) ' +
+    '  AND we.created_at <  to_timestamp($4::bigint / 1000.0)' + cc.where + ' ' +
     'GROUP BY 1, 2 ORDER BY 2, 1',
-    [siteId, urlPaths, startMs, endMs],
+    params,
     function (err, result) {
       if (err) return cb(err);
       var DAY  = 86400000;
@@ -3104,7 +3215,7 @@ app.get('/api/analytics/pageviews-multi', function (req, res) {
         ? ((p.customerName || '') + (p.customerName ? ' — ' : '') + p.presentationName)
         : (p.customerName || p.id);
     });
-    dbPresTimeSeriesWithBreakdown(urlPaths, presMap, startAt, endAt, function (err, data) {
+    dbPresTimeSeriesWithBreakdown(urlPaths, presMap, startAt, endAt, parseCountryOpts(req), function (err, data) {
       if (err) return res.status(500).json({ success: false, error: err.message });
       res.json({ success: true, data: data });
     });
@@ -3123,7 +3234,7 @@ app.get('/api/analytics/events', function (req, res) {
     var targets   = requested ? livePres.filter(function (p) { return requested.indexOf(p.id) !== -1; }) : livePres;
     if (targets.length === 0) return res.json({ success: true, data: [] });
     var urlPaths = targets.map(function (p) { return '/public/' + p.id + '/'; });
-    dbSlideEvents(urlPaths, startAt, endAt, null, function (err, data) {
+    dbSlideEvents(urlPaths, startAt, endAt, null, parseCountryOpts(req), function (err, data) {
       if (err) return res.status(500).json({ success: false, error: err.message });
       res.json({ success: true, data: data });
     });
@@ -3143,7 +3254,7 @@ app.get('/api/analytics/event-series', function (req, res) {
     if (targets.length === 0) return res.json({ success: true, data: { days: [], series: [] } });
     var urlPaths = targets.map(function (p) { return '/public/' + p.id + '/'; });
     var evNames  = req.query.eventNames ? req.query.eventNames.split(',').map(function (s) { return s.trim(); }) : null;
-    dbSlideEventSeries(urlPaths, startAt, endAt, evNames, function (err, data) {
+    dbSlideEventSeries(urlPaths, startAt, endAt, evNames, parseCountryOpts(req), function (err, data) {
       if (err) return res.status(500).json({ success: false, error: err.message });
       res.json({ success: true, data: data });
     });
@@ -3170,7 +3281,46 @@ app.get('/api/analytics/slide-events', function (req, res) {
         ? ((p.customerName || '') + (p.customerName ? ' — ' : '') + p.presentationName)
         : (p.customerName || p.id);
     });
-    dbSlideEventByPres(urlPaths, presMap, startAt, endAt, eventName, function (err, data) {
+    dbSlideEventByPres(urlPaths, presMap, startAt, endAt, eventName, parseCountryOpts(req), function (err, data) {
+      if (err) return res.status(500).json({ success: false, error: err.message });
+      res.json({ success: true, data: data });
+    });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// GET /api/analytics/slide-interactions?startAt=<ms>&endAt=<ms>&presIds=&eventName=<event>
+// Drill-down: breaks one slide event down by its in-slide interaction label (tab/button/carousel/image).
+app.get('/api/analytics/slide-interactions', function (req, res) {
+  try {
+    var pdata     = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var startAt   = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
+    var endAt     = parseInt(req.query.endAt)   || Date.now();
+    var eventName = (req.query.eventName || '').trim();
+    if (!eventName) return res.json({ success: true, data: [] });
+    var livePres  = (pdata.presentations || []).filter(function (p) { return p.publishedAt && !p.archivedAt; });
+    var requested = req.query.presIds ? req.query.presIds.split(',').map(function (s) { return s.trim(); }) : null;
+    var targets   = requested ? livePres.filter(function (p) { return requested.indexOf(p.id) !== -1; }) : livePres;
+    if (targets.length === 0) return res.json({ success: true, data: [] });
+    var urlPaths = targets.map(function (p) { return '/public/' + p.id + '/'; });
+    dbSlideInteractions(urlPaths, startAt, endAt, eventName, parseCountryOpts(req), function (err, data) {
+      if (err) return res.status(500).json({ success: false, error: err.message });
+      res.json({ success: true, data: data });
+    });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// GET /api/analytics/countries?startAt=<ms>&endAt=<ms>
+// Country list (with counts) across ALL presentations — powers the dashboard-wide country filter.
+// Not itself country-filtered, so the full list is always available regardless of the active filter.
+app.get('/api/analytics/countries', function (req, res) {
+  try {
+    var pdata   = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var ids     = (pdata.presentations || []).map(function (p) { return p.id; });
+    if (ids.length === 0) return res.json({ success: true, data: [] });
+    var startAt = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
+    var endAt   = parseInt(req.query.endAt)   || Date.now();
+    var urlPaths = ids.map(function (id) { return '/public/' + id + '/'; });
+    dbCountries(urlPaths, startAt, endAt, function (err, data) {
       if (err) return res.status(500).json({ success: false, error: err.message });
       res.json({ success: true, data: data });
     });
