@@ -3292,8 +3292,12 @@ app.get('/api/analytics/pageviews-multi', function (req, res) {
         ? ((p.customerName || '') + (p.customerName ? ' — ' : '') + p.presentationName)
         : (p.customerName || p.id);
     });
+    var companyById = {};
+    targets.forEach(function (p) { companyById[p.id] = p.customerName || p.presentationName || p.id; });
     dbPresTimeSeriesWithBreakdown(urlPaths, presMap, startAt, endAt, parseCountryOpts(req), function (err, data) {
       if (err) return res.status(500).json({ success: false, error: err.message });
+      // Attach the company (customer) per breakdown item so the chart can stack by company.
+      (data.breakdown || []).forEach(function (b) { b.company = companyById[b.id] || b.name; });
       res.json({ success: true, data: data });
     });
   } catch (e) { res.status(500).json({ success: false, error: e.message }); }

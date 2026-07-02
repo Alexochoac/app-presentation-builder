@@ -1467,22 +1467,30 @@
           html += '</div>';
 
           if (_engBreakdown.length > 1) {
-            var rows = _engBreakdown.slice()
-              .map(function (p) {
-                return { name: p.name, pv: p.pageviews[idx] ? p.pageviews[idx].y : 0, vs: p.sessions[idx] ? p.sessions[idx].y : 0 };
-              })
-              .sort(function (a, b) { return b.pv - a.pv; });
-            html += '<div style="font-size:11px;color:' + muted + ';border-top:1px solid ' + border + ';padding-top:6px;margin-bottom:4px;">By presentation</div>';
-            html += '<div style="overflow-y:auto;max-height:150px;">';
-            rows.forEach(function (r) {
-              var dim = r.pv === 0 ? 'opacity:.35;' : '';
-              html += '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:2px 0;font-size:11px;' + dim + '">';
-              html += '<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + r.name.replace(/"/g, '&quot;') + '">' + r.name + '</span>';
-              html += '<span style="flex-shrink:0;color:' + muted + ';font-variant-numeric:tabular-nums;">' + r.pv + '&nbsp;/&nbsp;' + r.vs + '</span>';
-              html += '</div>';
+            // Roll the day's breakdown up by company, and show only companies with activity.
+            var byCo = {};
+            _engBreakdown.forEach(function (p) {
+              var key = p.company || p.name;
+              var pv  = p.pageviews[idx] ? p.pageviews[idx].y : 0;
+              var vs  = p.sessions[idx]  ? p.sessions[idx].y  : 0;
+              var g = byCo[key] || (byCo[key] = { name: key, pv: 0, vs: 0 });
+              g.pv += pv; g.vs += vs;
             });
-            html += '</div>';
-            html += '<div style="font-size:10px;color:' + muted + ';margin-top:5px;border-top:1px solid ' + border + ';padding-top:4px;">views / visitors · a visitor on 2 decks counts in both, so these can exceed the day total</div>';
+            var rows = Object.keys(byCo).map(function (k) { return byCo[k]; })
+              .filter(function (r) { return r.pv > 0 || r.vs > 0; })
+              .sort(function (a, b) { return b.pv - a.pv; });
+            if (rows.length) {
+              html += '<div style="font-size:11px;color:' + muted + ';border-top:1px solid ' + border + ';padding-top:6px;margin-bottom:4px;">By company</div>';
+              html += '<div style="overflow-y:auto;max-height:150px;">';
+              rows.forEach(function (r) {
+                html += '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:2px 0;font-size:11px;">';
+                html += '<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + r.name.replace(/"/g, '&quot;') + '">' + r.name + '</span>';
+                html += '<span style="flex-shrink:0;color:' + muted + ';font-variant-numeric:tabular-nums;">' + r.pv + '&nbsp;/&nbsp;' + r.vs + '</span>';
+                html += '</div>';
+              });
+              html += '</div>';
+              html += '<div style="font-size:10px;color:' + muted + ';margin-top:5px;border-top:1px solid ' + border + ';padding-top:4px;">views / visitors · a visitor active on several companies is counted in each, so rows can exceed the day total</div>';
+            }
           }
           html += '<div style="font-size:10px;color:' + muted + ';margin-top:' + (_engBreakdown.length > 1 ? 0 : 6) + 'px;">Click bars to see slide events</div>';
 
@@ -1501,18 +1509,58 @@
           tip.style.top  = Math.max(0, tooltip.caretY - 24) + 'px';
         }
 
+        var labels = pageviews.map(function (p) {
+          var d = new Date((p.x || p.t) + 'T00:00:00');
+          return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        });
+
+        // With 2+ presentations, stack pageviews per deck (top-6 + "Other") so a spike is
+        // visibly attributable to a deck, and overlay unique visitors as a line (it de-dupes
+        // across decks, so it can't stack). One deck → the original grouped Pageviews/Visitors.
+        var stacked = _engBreakdown.length > 1;
+        var datasets;
+        if (stacked) {
+          // Aggregate the per-presentation breakdown by COMPANY so segments/legend read by customer.
+          var byCompany = {};
+          _engBreakdown.forEach(function (p) {
+            var key = p.company || p.name;
+            var g = byCompany[key] || (byCompany[key] = { name: key, series: labels.map(function () { return 0; }), total: 0 });
+            (p.pageviews || []).forEach(function (x, idx) { var y = x.y || 0; g.series[idx] += y; g.total += y; });
+          });
+          var ranked = Object.keys(byCompany).map(function (k) { return byCompany[k]; })
+            .sort(function (a, b) { return b.total - a.total; });
+          var TOP = 6;
+          var top = ranked.slice(0, TOP), rest = ranked.slice(TOP);
+          datasets = top.map(function (d, i) {
+            return {
+              label: d.name, data: d.series,
+              backgroundColor: SLIDE_COLORS[i % SLIDE_COLORS.length] + 'cc',
+              stack: 'pv', borderWidth: 0, borderRadius: 2, borderSkipped: false, maxBarThickness: 42
+            };
+          });
+          if (rest.length) {
+            var otherData = labels.map(function (_, idx) {
+              return rest.reduce(function (s, d) { return s + (d.series[idx] || 0); }, 0);
+            });
+            datasets.push({ label: 'Other (' + rest.length + ')', data: otherData, backgroundColor: '#9ca3afcc',
+              stack: 'pv', borderWidth: 0, borderRadius: 2, borderSkipped: false, maxBarThickness: 42 });
+          }
+          datasets.push({
+            type: 'line', label: 'Visitors', data: sessions.map(function (p) { return p.y; }),
+            borderColor: 'rgba(99,179,237,.95)', backgroundColor: 'rgba(99,179,237,.15)',
+            borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.35, fill: false, order: 0
+          });
+        } else {
+          datasets = [
+            { label: 'Pageviews', data: pageviews.map(function (p) { return p.y; }), backgroundColor: 'rgba(245,166,35,0.75)', borderColor: '#F5A623', borderWidth: 0, borderRadius: 3, borderSkipped: false },
+            { label: 'Visitors',  data: sessions.map(function (p) { return p.y; }),  backgroundColor: 'rgba(99,179,237,0.65)', borderColor: 'rgba(99,179,237,.8)', borderWidth: 0, borderRadius: 3, borderSkipped: false }
+          ];
+        }
+        buildEngLegend(stacked, datasets);
+
         engChart = new Chart(canvas, {
           type: 'bar',
-          data: {
-            labels: pageviews.map(function (p) {
-              var d = new Date((p.x || p.t) + 'T00:00:00');
-              return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-            }),
-            datasets: [
-              { label: 'Pageviews', data: pageviews.map(function (p) { return p.y; }), backgroundColor: 'rgba(245,166,35,0.75)', borderColor: '#F5A623', borderWidth: 0, borderRadius: 3, borderSkipped: false },
-              { label: 'Visitors',  data: sessions.map(function (p) { return p.y; }),  backgroundColor: 'rgba(99,179,237,0.65)', borderColor: 'rgba(99,179,237,.8)', borderWidth: 0, borderRadius: 3, borderSkipped: false }
-            ]
-          },
+          data: { labels: labels, datasets: datasets },
           options: {
             responsive: true,
             maintainAspectRatio: false,
@@ -1529,11 +1577,13 @@
             },
             scales: {
               x: {
+                stacked: stacked,
                 grid: { color: dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)', drawBorder: false },
                 ticks: { color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 }, maxRotation: 0 },
                 border: { display: false }
               },
               y: {
+                stacked: stacked,
                 beginAtZero: true, max: yMax,
                 grid: { color: dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)', drawBorder: false },
                 ticks: { precision: 0, color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 } },
@@ -1542,6 +1592,61 @@
             }
           }
         });
+      }
+
+      // An ⓘ affordance for the legend (reuses the KPI popover styles). openRight flips the
+      // popover to open rightward so a left-edge icon's popover doesn't clip off-panel.
+      function legendInfo(title, body, openRight) {
+        var wrap = document.createElement('span');
+        wrap.className = 'kpi-info';
+        var ic = document.createElement('span');
+        ic.textContent = 'ⓘ'; ic.tabIndex = 0;
+        ic.style.cssText = 'font-size:11px;color:var(--muted);opacity:.55;cursor:help;';
+        wrap.appendChild(ic);
+        var pop = document.createElement('div');
+        pop.className = 'kpi-pop';
+        if (openRight) pop.style.cssText = 'left:0;right:auto;';
+        pop.innerHTML = '<div style="font-weight:600;margin-bottom:4px;">' + title + '</div><div>' + body + '</div>';
+        wrap.appendChild(pop);
+        return wrap;
+      }
+
+      // Rebuilds the pageviews-chart legend: per-company swatches (+ Visitors line) when
+      // stacked, or the classic Pageviews/Visitors pair for a single presentation.
+      function buildEngLegend(stacked, datasets) {
+        var legend = document.getElementById('engLegend');
+        if (!legend) return;
+        legend.innerHTML = '';
+        legend.style.flexWrap = 'wrap';
+        function item(color, text, isLine, infoEl) {
+          var span = document.createElement('span');
+          span.style.cssText = 'display:flex;align-items:center;gap:5px;';
+          var sw = document.createElement('span');
+          sw.style.cssText = 'width:12px;height:' + (isLine ? '0;border-top:3px solid ' + color : '12px;background:' + color) + ';border-radius:2px;display:inline-block;';
+          span.appendChild(sw);
+          span.appendChild(document.createTextNode(text));
+          if (infoEl) span.appendChild(infoEl);
+          legend.appendChild(span);
+        }
+        if (stacked) {
+          var head = document.createElement('span');
+          head.style.cssText = 'display:flex;align-items:center;gap:4px;color:var(--muted);';
+          head.appendChild(document.createTextNode('By company'));
+          head.appendChild(legendInfo('Pageviews by company',
+            'Each colored bar segment is one company’s pageviews that day, stacked to the daily total. The busiest companies are shown individually; the rest are grouped into “Other”.', true));
+          legend.appendChild(head);
+          datasets.forEach(function (ds) {
+            if (ds.type === 'line') {
+              item(ds.borderColor, ds.label, true, legendInfo('Visitors',
+                'Unique visitors per day — de-duplicated across companies, so a person who viewed several decks counts once. Drawn as a line (not stacked) so you can compare reach against total pageviews.'));
+            } else {
+              item(ds.backgroundColor, ds.label, false);
+            }
+          });
+        } else {
+          item('#F5A623', 'Pageviews', false);
+          item('rgba(99,179,237,.8)', 'Visitors', false);
+        }
       }
 
       // ── Load data ─────────────────────────────────────────────────
