@@ -1099,6 +1099,47 @@ function dbPresStats(urlPaths, startMs, endMs, opts, cb) {
   );
 }
 
+// Aggregate KPI totals across ALL url_paths in one window — true distinct visitors
+// (a visitor who viewed two decks counts once), not a sum of per-deck visitors.
+// repeatVisitors = visitors who viewed on more than one calendar day (came back);
+// new visitors = visitors - repeatVisitors. Keyed by session_id to match the rest
+// of the dashboard. Result: { pageviews, visitors, repeatVisitors }.
+function dbKpiTotals(urlPaths, startMs, endMs, opts, cb) {
+  var db = getUmamiDb();
+  var zero = { pageviews: 0, visitors: 0, repeatVisitors: 0 };
+  if (!db || !urlPaths.length) return cb(null, zero);
+  var siteId = null;
+  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  if (!siteId) return cb(null, zero);
+  var params = [siteId, urlPaths, startMs, endMs];
+  var cc = countrySql(opts, params.length + 1);
+  params = params.concat(cc.params);
+  var tz = localTzString();
+  db.query(
+    'WITH ev AS (' +
+    '  SELECT we.session_id AS session_id, we.created_at AS created_at ' +
+    '  FROM website_event we' + cc.join + ' ' +
+    '  WHERE we.website_id = $1 AND we.url_path = ANY($2) AND we.event_type = 1 ' +
+    '    AND we.created_at >= to_timestamp($3::bigint / 1000.0) ' +
+    '    AND we.created_at <  to_timestamp($4::bigint / 1000.0)' + cc.where +
+    ') ' +
+    'SELECT (SELECT COUNT(*) FROM ev) AS pageviews, ' +
+    '       (SELECT COUNT(DISTINCT session_id) FROM ev) AS visitors, ' +
+    '       (SELECT COUNT(*) FROM (SELECT session_id FROM ev GROUP BY session_id ' +
+    "          HAVING COUNT(DISTINCT TO_CHAR(created_at AT TIME ZONE '" + tz + "', 'YYYY-MM-DD')) > 1) r) AS repeat_visitors",
+    params,
+    function (err, result) {
+      if (err) return cb(err);
+      var r = (result.rows && result.rows[0]) || {};
+      cb(null, {
+        pageviews:      parseInt(r.pageviews, 10) || 0,
+        visitors:       parseInt(r.visitors, 10) || 0,
+        repeatVisitors: parseInt(r.repeat_visitors, 10) || 0
+      });
+    }
+  );
+}
+
 // Returns a day-by-day time series aggregated across multiple url_paths.
 // Result: { pageviews: [{x, y}], sessions: [{x, y}] } — zero-filled for days with no data.
 function dbPresTimeSeries(urlPaths, startMs, endMs, cb) {
@@ -3079,6 +3120,33 @@ app.get('/api/analytics/batch', function (req, res) {
   } catch (e) { res.status(500).json({ success: false, error: e.message }); }
 });
 
+// GET /api/analytics/kpis?startAt=&endAt=&presIds=&country=&countryOp=
+// Aggregate totals for the selected window AND the equal-length window immediately
+// before it, so the UI can show period-over-period deltas. Powers the KPI strip.
+// Result: { current: { pageviews, visitors }, previous: { pageviews, visitors } }.
+app.get('/api/analytics/kpis', function (req, res) {
+  try {
+    var pdata     = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var startAt   = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
+    var endAt     = parseInt(req.query.endAt)   || Date.now();
+    var livePres  = (pdata.presentations || []).filter(function (p) { return p.publishedAt && !p.archivedAt; });
+    var requested = req.query.presIds ? req.query.presIds.split(',').map(function (s) { return s.trim(); }) : null;
+    var targets   = requested ? livePres.filter(function (p) { return requested.indexOf(p.id) !== -1; }) : livePres;
+    var empty     = { pageviews: 0, visitors: 0 };
+    if (targets.length === 0) return res.json({ success: true, data: { current: empty, previous: empty } });
+    var urlPaths = targets.map(function (p) { return '/public/' + p.id + '/'; });
+    var opts     = parseCountryOpts(req);
+    var span     = Math.max(1, endAt - startAt);
+    dbKpiTotals(urlPaths, startAt, endAt, opts, function (err, current) {
+      if (err) return res.status(500).json({ success: false, error: err.message });
+      dbKpiTotals(urlPaths, startAt - span, startAt, opts, function (err2, previous) {
+        if (err2) return res.status(500).json({ success: false, error: err2.message });
+        res.json({ success: true, data: { current: current, previous: previous } });
+      });
+    });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
 // GET /api/analytics/pageviews?startAt=<ms>&endAt=<ms>&presId=<id>
 app.get('/api/analytics/pageviews', function (req, res) {
   if (!UMAMI_USER) return res.json({ success: false, error: 'Umami not configured' });
@@ -3152,14 +3220,20 @@ function dbPresTimeSeriesWithBreakdown(urlPaths, presMap, startMs, endMs, opts, 
   var params = [siteId, urlPaths, startMs, endMs];
   var cc = countrySql(opts, params.length + 1);
   params = params.concat(cc.params);
+  // GROUPING SETS gives us, in one pass: rows grouped by (day) alone = TRUE daily totals
+  // with visitors de-duped across all decks (url_path comes back NULL); and rows grouped by
+  // (url_path, day) = the per-deck breakdown. Summing per-deck visitors would double-count a
+  // visitor who viewed multiple decks, so the daily total must come from the (day)-only set.
   db.query(
-    "SELECT we.url_path, TO_CHAR(we.created_at AT TIME ZONE '" + localTzString() + "', 'YYYY-MM-DD') AS day, " +
-    '       COUNT(*) AS pageviews, COUNT(DISTINCT we.session_id) AS visitors ' +
-    'FROM website_event we' + cc.join + ' ' +
-    'WHERE we.website_id = $1 AND we.url_path = ANY($2) AND we.event_type = 1 ' +
-    '  AND we.created_at >= to_timestamp($3::bigint / 1000.0) ' +
-    '  AND we.created_at <  to_timestamp($4::bigint / 1000.0)' + cc.where + ' ' +
-    'GROUP BY 1, 2 ORDER BY 2, 1',
+    'SELECT url_path, day, COUNT(*) AS pageviews, COUNT(DISTINCT session_id) AS visitors ' +
+    'FROM (' +
+    "  SELECT we.url_path AS url_path, TO_CHAR(we.created_at AT TIME ZONE '" + localTzString() + "', 'YYYY-MM-DD') AS day, we.session_id AS session_id " +
+    '  FROM website_event we' + cc.join + ' ' +
+    '  WHERE we.website_id = $1 AND we.url_path = ANY($2) AND we.event_type = 1 ' +
+    '    AND we.created_at >= to_timestamp($3::bigint / 1000.0) ' +
+    '    AND we.created_at <  to_timestamp($4::bigint / 1000.0)' + cc.where +
+    ') e ' +
+    'GROUP BY GROUPING SETS ((day), (url_path, day)) ORDER BY day',
     params,
     function (err, result) {
       if (err) return cb(err);
@@ -3172,11 +3246,14 @@ function dbPresTimeSeriesWithBreakdown(urlPaths, presMap, startMs, endMs, opts, 
       (result.rows || []).forEach(function (r) {
         var pv = parseInt(r.pageviews, 10);
         var vs = parseInt(r.visitors,  10);
-        if (!byDay[r.day]) byDay[r.day] = { pv: 0, vs: 0 };
-        byDay[r.day].pv += pv;
-        byDay[r.day].vs += vs;
-        if (!byUrlDay[r.url_path]) byUrlDay[r.url_path] = {};
-        byUrlDay[r.url_path][r.day] = { pv: pv, vs: vs };
+        if (r.url_path === null) {
+          // (day)-only grouping set → true daily totals, visitors unique across decks.
+          byDay[r.day] = { pv: pv, vs: vs };
+        } else {
+          // (url_path, day) grouping set → per-deck breakdown (may sum to more than the daily total).
+          if (!byUrlDay[r.url_path]) byUrlDay[r.url_path] = {};
+          byUrlDay[r.url_path][r.day] = { pv: pv, vs: vs };
+        }
       });
       var pageviews = days.map(function (d) { return { x: d, y: byDay[d] ? byDay[d].pv : 0 }; });
       var sessions  = days.map(function (d) { return { x: d, y: byDay[d] ? byDay[d].vs : 0 }; });

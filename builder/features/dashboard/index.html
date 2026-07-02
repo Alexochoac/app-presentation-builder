@@ -172,6 +172,17 @@
     }
     .views-floating-menu.open { display: block; }
     [data-theme="light"] .views-floating-menu { background: #fff; border-color: rgba(0,0,0,0.1); box-shadow: 0 10px 36px rgba(0,0,0,.15); }
+    /* KPI tile info popover (hover the ⓘ) */
+    .kpi-info { position: relative; display: inline-flex; }
+    .kpi-pop {
+      display: none; position: absolute; top: calc(100% + 6px); right: 0; width: 240px; z-index: 9999;
+      background: #111; border: 1px solid rgba(255,255,255,0.12); border-radius: 10px;
+      padding: 10px 12px; box-shadow: 0 10px 36px rgba(0,0,0,.7);
+      font-size: 11.5px; line-height: 1.5; color: rgba(255,255,255,.85);
+      text-transform: none; letter-spacing: normal; font-weight: 400; white-space: normal;
+    }
+    [data-theme="light"] .kpi-pop { background: #fff; border-color: rgba(0,0,0,0.1); box-shadow: 0 10px 36px rgba(0,0,0,.15); color: rgba(0,0,0,.8); }
+    .kpi-info:hover .kpi-pop, .kpi-info:focus-within .kpi-pop { display: block; }
     [data-theme="light"] .views-floating-menu .sort-option { color: rgba(0,0,0,.75); }
     [data-theme="light"] .views-floating-menu .sort-option:hover { background: rgba(0,0,0,.05); color: #000; }
     .views-tab {
@@ -575,6 +586,8 @@
           <button id="engDrillBack" class="views-tab" type="button">&#8592; Back</button>
           <span id="engDrillTitle" style="font-size:13px;color:var(--muted);"></span>
         </div>
+        <!-- KPI strip (pageviews mode); tiles rendered by renderKpis() -->
+        <div id="engKpiStrip" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:14px;"></div>
         <!-- Pageviews legend -->
         <div id="engLegend" style="display:flex;gap:14px;font-size:11px;color:var(--muted);margin-bottom:12px;">
           <span style="display:flex;align-items:center;gap:5px;">
@@ -1469,7 +1482,7 @@
               html += '</div>';
             });
             html += '</div>';
-            html += '<div style="font-size:10px;color:' + muted + ';margin-top:5px;border-top:1px solid ' + border + ';padding-top:4px;">views / visitors</div>';
+            html += '<div style="font-size:10px;color:' + muted + ';margin-top:5px;border-top:1px solid ' + border + ';padding-top:4px;">views / visitors · a visitor on 2 decks counts in both, so these can exceed the day total</div>';
           }
           html += '<div style="font-size:10px;color:' + muted + ';margin-top:' + (_engBreakdown.length > 1 ? 0 : 6) + 'px;">Click bars to see slide events</div>';
 
@@ -1554,7 +1567,142 @@
         return []; // no deck filter = server default (all Live)
       }
 
+      // ── KPI strip ─────────────────────────────────────────────────
+      var _kpiData      = null;     // last fetched { current, previous }
+      var _kpiSplitMode = 'pct';    // 'pct' | 'count' — New/Repeat tile display
+
+      function loadKpis() {
+        if (!document.getElementById('engKpiStrip')) return;
+        var activeIds = getActivePresIds();
+        if (activeIds === null) { _kpiData = null; renderKpis(); return; }
+        var dates = getEngDates();
+        var url = '/api/analytics/kpis?startAt=' + dates.startAt + '&endAt=' + dates.endAt;
+        if (activeIds.length) url += '&presIds=' + activeIds.join(',');
+        url += pbCountryParam();
+        fetch(url)
+          .then(function (r) { return r.json(); })
+          .then(function (r) { if (r.success) { _kpiData = r.data; renderKpis(); } })
+          .catch(function () {});
+      }
+
+      // Δ vs previous period → { text, dir }. dir: up | down | flat | new.
+      function kpiDelta(cur, prev) {
+        if (!prev) return cur > 0 ? { text: 'new', dir: 'new' } : { text: '—', dir: 'flat' };
+        var pct = Math.round((cur - prev) / prev * 100);
+        if (pct === 0) return { text: '0%', dir: 'flat' };
+        return { text: (pct > 0 ? '+' : '') + pct + '%', dir: pct > 0 ? 'up' : 'down' };
+      }
+
+      // Label row with an ⓘ info affordance (native tooltip explains the metric on hover).
+      function kpiLabelRow(labelHtml, info) {
+        var row = document.createElement('div');
+        row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:4px;';
+        var lbl = document.createElement('span');
+        lbl.innerHTML = labelHtml;
+        lbl.style.cssText = 'font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);';
+        row.appendChild(lbl);
+        if (info) {
+          var wrap = document.createElement('span');
+          wrap.className = 'kpi-info';
+          var ic = document.createElement('span');
+          ic.textContent = 'ⓘ';
+          ic.tabIndex = 0;
+          ic.style.cssText = 'font-size:11px;color:var(--muted);opacity:.55;cursor:help;flex-shrink:0;';
+          wrap.appendChild(ic);
+          var pop = document.createElement('div');
+          pop.className = 'kpi-pop';
+          var h = '<div style="font-weight:600;margin-bottom:4px;">' + info.title + '</div><div>' + info.body + '</div>';
+          if (info.example) h += '<div style="margin-top:6px;"><b>Example:</b> ' + info.example + '</div>';
+          pop.innerHTML = h;
+          wrap.appendChild(pop);
+          row.appendChild(wrap);
+        }
+        return row;
+      }
+
+      function kpiTile(label, value, delta, info) {
+        var tile = document.createElement('div');
+        tile.style.cssText = 'border:1px solid var(--border);border-radius:10px;padding:10px 12px;background:var(--bg);';
+        tile.appendChild(kpiLabelRow(label, info));
+        var val = document.createElement('div');
+        val.textContent = value;
+        val.style.cssText = 'font-size:22px;font-weight:600;color:var(--text);font-variant-numeric:tabular-nums;line-height:1.1;';
+        tile.appendChild(val);
+        if (delta) {
+          var color = delta.dir === 'up' ? '#10b981' : delta.dir === 'down' ? '#ef4444'
+                    : delta.dir === 'new' ? 'var(--accent,#E8711A)' : 'var(--muted)';
+          var arrow = delta.dir === 'up' ? '▲ ' : delta.dir === 'down' ? '▼ ' : '';
+          var dEl = document.createElement('div');
+          dEl.textContent = arrow + delta.text;
+          dEl.title = 'vs the previous period of equal length';
+          dEl.style.cssText = 'font-size:11px;margin-top:3px;color:' + color + ';font-variant-numeric:tabular-nums;';
+          tile.appendChild(dEl);
+        }
+        return tile;
+      }
+
+      // New / Returning split — New in the standard value color, Returning in green.
+      // Click to toggle % ↔ count. New = unique visitors − returning.
+      function kpiSplitTile(newCount, repeatCount, info) {
+        var total = newCount + repeatCount;
+        var tile = document.createElement('div');
+        tile.style.cssText = 'border:1px solid var(--border);border-radius:10px;padding:10px 12px;background:var(--bg);cursor:pointer;user-select:none;';
+        tile.appendChild(kpiLabelRow('New / <span style="color:#10b981;">Returning</span>', info));
+        var row = document.createElement('div');
+        row.style.cssText = 'display:flex;align-items:baseline;gap:6px;font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1;';
+        var a = document.createElement('span'); a.style.color = 'var(--text)';
+        var sep = document.createElement('span'); sep.textContent = '/'; sep.style.cssText = 'color:var(--muted);font-weight:400;font-size:16px;';
+        var b = document.createElement('span'); b.style.color = '#10b981';
+        if (_kpiSplitMode === 'pct') {
+          var np = total ? Math.round(newCount / total * 100) : 0;
+          a.textContent = np + '%'; b.textContent = (total ? 100 - np : 0) + '%';
+        } else {
+          a.textContent = newCount; b.textContent = repeatCount;
+        }
+        row.appendChild(a); row.appendChild(sep); row.appendChild(b);
+        tile.appendChild(row);
+        var hint = document.createElement('div');
+        hint.textContent = _kpiSplitMode === 'pct' ? 'share · tap for count' : 'visitors · tap for %';
+        hint.style.cssText = 'font-size:10px;margin-top:3px;color:var(--muted);';
+        tile.appendChild(hint);
+        tile.addEventListener('click', function () {
+          _kpiSplitMode = _kpiSplitMode === 'pct' ? 'count' : 'pct';
+          renderKpis();
+        });
+        return tile;
+      }
+
+      function renderKpis() {
+        var strip = document.getElementById('engKpiStrip');
+        if (!strip) return;
+        var d = _kpiData;
+        if (!d) { strip.innerHTML = ''; return; }
+        var cur = d.current, prev = d.previous;
+        var ppvCur  = cur.visitors  ? cur.pageviews  / cur.visitors  : 0;
+        var ppvPrev = prev.visitors ? prev.pageviews / prev.visitors : 0;
+        strip.innerHTML = '';
+        strip.appendChild(kpiTile('Pageviews', String(cur.pageviews), kpiDelta(cur.pageviews, prev.pageviews), {
+          title: 'Pageviews',
+          body: 'Total times your presentation pages were opened in the selected period. One visitor can generate many pageviews.',
+          example: 'The ▲/▼ % compares to the previous period of equal length — 120 views this week vs 100 last week → ▲ 20%.'
+        }));
+        strip.appendChild(kpiTile('Unique Visitors', String(cur.visitors), kpiDelta(cur.visitors, prev.visitors), {
+          title: 'Unique Visitors',
+          body: 'Distinct people who viewed your presentations — counted once each, even across several decks or return visits.',
+          example: '12 visitors this week vs 8 last week → ▲ 50%.'
+        }));
+        strip.appendChild(kpiTile('Pages / visitor', ppvCur.toFixed(1), kpiDelta(Math.round(ppvCur * 10), Math.round(ppvPrev * 10)), {
+          title: 'Pages / visitor',
+          body: 'Average pageviews per unique visitor (Pageviews ÷ Unique Visitors). Higher means people browse more slides per visit.',
+          example: '120 pageviews ÷ 12 visitors = 10.0 pages each.'
+        }));
+        // New/Returning tile intentionally hidden: needs a persistent visitor id (distinct_id
+        // is empty and session_id rotates each visit), so it can't be computed honestly yet.
+        // kpiSplitTile() + repeatVisitors are kept for when identity tracking lands (see task).
+      }
+
       function loadPageviewsChart() {
+        loadKpis();
         var activeIds = getActivePresIds();
         if (activeIds === null) { _engBreakdown = []; buildEngBarChart([], []); return; }
         var dates = getEngDates();
@@ -1894,6 +2042,7 @@
         document.getElementById('engEventsHeader').style.display    = isEvents ? 'flex' : 'none';
         document.getElementById('engDrillHeader').style.display     = 'none';
         document.getElementById('engLegend').style.display          = isEvents ? 'none' : 'flex';
+        document.getElementById('engKpiStrip').style.display        = isEvents ? 'none' : 'grid';
         document.getElementById('engBarChartWrap').style.display    = isEvents ? 'none' : '';
         document.getElementById('engEventsChartWrap').style.display = isEvents ? ''     : 'none';
         document.getElementById('engEventsLegend').style.display    = (isEvents && engEventsMode === 'timeseries') ? 'flex' : 'none';
