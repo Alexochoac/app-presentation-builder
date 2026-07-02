@@ -1437,12 +1437,32 @@
         tip.addEventListener('mouseleave', function () { tip.style.display = 'none'; });
       }());
 
-      function buildEngBarChart(pageviews, sessions) {
+      function movingAvg(values, win) {
+        return values.map(function (_, i) {
+          var slice = values.slice(Math.max(0, i - win + 1), i + 1);
+          var sum = slice.reduce(function (s, v) { return s + v; }, 0);
+          return Math.round((sum / slice.length) * 10) / 10;
+        });
+      }
+
+      // Moving-average window auto-scaled to the number of days in view (0 = too short to smooth).
+      // ~month → weekly (7), quarter → 14, up to a year → 30, multi-year → 90/365.
+      function maWindow(days) {
+        if (days < 12)    return 0;
+        if (days <= 45)   return 7;
+        if (days <= 120)  return 14;
+        if (days <= 400)  return 30;
+        if (days <= 1000) return 90;
+        return 365;
+      }
+
+      function buildEngBarChart(pageviews, sessions, prevPageviews) {
         var canvas = document.getElementById('engBarChart');
         if (!canvas) return;
         var dark = document.documentElement.getAttribute('data-theme') !== 'light';
         if (engChart) { engChart.destroy(); engChart = null; }
-        var dataMax = (pageviews.concat(sessions)).reduce(function (m, p) { return Math.max(m, p.y || 0); }, 0);
+        prevPageviews = prevPageviews || [];
+        var dataMax = pageviews.concat(sessions).concat(prevPageviews).reduce(function (m, p) { return Math.max(m, p.y || 0); }, 0);
         var yMax = updateYMax(dataMax);
 
         function externalTooltip(context) {
@@ -1556,6 +1576,21 @@
             { label: 'Visitors',  data: sessions.map(function (p) { return p.y; }),  backgroundColor: 'rgba(99,179,237,0.65)', borderColor: 'rgba(99,179,237,.8)', borderWidth: 0, borderRadius: 3, borderSkipped: false }
           ];
         }
+
+        // Trend overlays (both modes): a 7-day moving average (only with enough days to be
+        // meaningful) and a faint previous-period ghost line (only when there's prior data).
+        var pvSeries = pageviews.map(function (p) { return p.y || 0; });
+        var maWin = maWindow(pvSeries.length);
+        if (maWin) {
+          datasets.push({ type: 'line', label: maWin + '-day avg', data: movingAvg(pvSeries, maWin),
+            borderColor: '#F5A623', borderWidth: 2, borderDash: [5, 3], pointRadius: 0, tension: 0.35, fill: false, order: 0 });
+        }
+        var prevSeries = prevPageviews.map(function (p) { return p.y || 0; });
+        if (prevSeries.some(function (v) { return v > 0; })) {
+          var ghost = pvSeries.map(function (_, i) { return prevSeries[i] || 0; });
+          datasets.push({ type: 'line', label: 'Previous period', data: ghost,
+            borderColor: dark ? 'rgba(255,255,255,.35)' : 'rgba(0,0,0,.28)', borderWidth: 1.5, borderDash: [3, 3], pointRadius: 0, tension: 0.35, fill: false, order: 1 });
+        }
         buildEngLegend(stacked, datasets);
 
         engChart = new Chart(canvas, {
@@ -1611,21 +1646,44 @@
         return wrap;
       }
 
-      // Rebuilds the pageviews-chart legend: per-company swatches (+ Visitors line) when
-      // stacked, or the classic Pageviews/Visitors pair for a single presentation.
+      // Info popover for the overlay lines, keyed by dataset label.
+      function legendInfoFor(label) {
+        if (label === 'Visitors') return legendInfo('Visitors',
+          'Unique visitors per day — de-duplicated across companies, so a person who viewed several decks counts once.');
+        if (label.indexOf('-day avg') !== -1) return legendInfo('Moving average',
+          'A ' + label.replace(' avg', '') + ' moving average of total pageviews. The window auto-scales to the range you’re viewing (wider view → wider smoothing), so it always shows the trend without flattening it.');
+        if (label === 'Previous period') return legendInfo('Previous period',
+          'Total pageviews from the equal-length window immediately before this one, aligned day-for-day — a dashed baseline to compare against.');
+        return null;
+      }
+
+      // Rebuilds the pageviews-chart legend from the datasets: per-company swatches when
+      // stacked (or Pageviews/Visitors bars when single), plus any overlay lines with info.
       function buildEngLegend(stacked, datasets) {
         var legend = document.getElementById('engLegend');
         if (!legend) return;
         legend.innerHTML = '';
         legend.style.flexWrap = 'wrap';
-        function item(color, text, isLine, infoEl) {
+        function item(datasetIndex, color, text, isLine, infoEl) {
           var span = document.createElement('span');
-          span.style.cssText = 'display:flex;align-items:center;gap:5px;';
+          span.style.cssText = 'display:flex;align-items:center;gap:5px;cursor:pointer;user-select:none;';
+          span.title = 'Click to show / hide';
           var sw = document.createElement('span');
-          sw.style.cssText = 'width:12px;height:' + (isLine ? '0;border-top:3px solid ' + color : '12px;background:' + color) + ';border-radius:2px;display:inline-block;';
+          sw.style.cssText = 'width:12px;height:' + (isLine ? '0;border-top:3px solid ' + color : '12px;background:' + color) + ';border-radius:2px;display:inline-block;flex-shrink:0;';
           span.appendChild(sw);
-          span.appendChild(document.createTextNode(text));
+          var txt = document.createElement('span');
+          txt.textContent = text;
+          span.appendChild(txt);
           if (infoEl) span.appendChild(infoEl);
+          span.addEventListener('click', function (e) {
+            if (e.target.closest && e.target.closest('.kpi-info')) return; // ignore clicks on the ⓘ
+            if (!engChart) return;
+            var vis = engChart.isDatasetVisible(datasetIndex);
+            engChart.setDatasetVisibility(datasetIndex, !vis);
+            engChart.update();
+            span.style.opacity = vis ? '.4' : '1';
+            txt.style.textDecoration = vis ? 'line-through' : 'none';
+          });
           legend.appendChild(span);
         }
         if (stacked) {
@@ -1633,20 +1691,13 @@
           head.style.cssText = 'display:flex;align-items:center;gap:4px;color:var(--muted);';
           head.appendChild(document.createTextNode('By company'));
           head.appendChild(legendInfo('Pageviews by company',
-            'Each colored bar segment is one company’s pageviews that day, stacked to the daily total. The busiest companies are shown individually; the rest are grouped into “Other”.', true));
+            'Each colored bar segment is one company’s pageviews that day, stacked to the daily total. The busiest companies are shown individually; the rest are grouped into “Other”. Click a company to hide/show it.', true));
           legend.appendChild(head);
-          datasets.forEach(function (ds) {
-            if (ds.type === 'line') {
-              item(ds.borderColor, ds.label, true, legendInfo('Visitors',
-                'Unique visitors per day — de-duplicated across companies, so a person who viewed several decks counts once. Drawn as a line (not stacked) so you can compare reach against total pageviews.'));
-            } else {
-              item(ds.backgroundColor, ds.label, false);
-            }
-          });
-        } else {
-          item('#F5A623', 'Pageviews', false);
-          item('rgba(99,179,237,.8)', 'Visitors', false);
         }
+        datasets.forEach(function (ds, i) {
+          if (ds.type === 'line') item(i, ds.borderColor, ds.label, true, legendInfoFor(ds.label));
+          else item(i, ds.backgroundColor || '#888', ds.label, false);
+        });
       }
 
       // ── Load data ─────────────────────────────────────────────────
@@ -1809,19 +1860,25 @@
       function loadPageviewsChart() {
         loadKpis();
         var activeIds = getActivePresIds();
-        if (activeIds === null) { _engBreakdown = []; buildEngBarChart([], []); return; }
+        if (activeIds === null) { _engBreakdown = []; buildEngBarChart([], [], []); return; }
         var dates = getEngDates();
-        var url = '/api/analytics/pageviews-multi?startAt=' + dates.startAt + '&endAt=' + dates.endAt;
-        if (activeIds.length) url += '&presIds=' + activeIds.join(',');
-        url += pbCountryParam();
-        fetch(url)
-          .then(function (r) { return r.json(); })
-          .then(function (r) {
-            if (!r.success || !r.data) return;
-            _engBreakdown = r.data.breakdown || [];
-            buildEngBarChart(r.data.pageviews || [], r.data.sessions || []);
-          })
-          .catch(function () {});
+        var span  = Math.max(1, dates.endAt - dates.startAt);
+        function pvUrl(startAt, endAt) {
+          var u = '/api/analytics/pageviews-multi?startAt=' + startAt + '&endAt=' + endAt;
+          if (activeIds.length) u += '&presIds=' + activeIds.join(',');
+          return u + pbCountryParam();
+        }
+        // Current window + the equal-length window before it (for the previous-period ghost line).
+        Promise.all([
+          fetch(pvUrl(dates.startAt, dates.endAt)).then(function (r) { return r.json(); }),
+          fetch(pvUrl(dates.startAt - span, dates.startAt)).then(function (r) { return r.json(); })
+        ]).then(function (res) {
+          var cur = res[0], prev = res[1];
+          if (!cur.success || !cur.data) return;
+          _engBreakdown = cur.data.breakdown || [];
+          var prevPv = (prev.success && prev.data) ? (prev.data.pageviews || []) : [];
+          buildEngBarChart(cur.data.pageviews || [], cur.data.sessions || [], prevPv);
+        }).catch(function () {});
       }
 
       function loadEngagement() {
