@@ -1192,20 +1192,24 @@ function dbSlideEvents(urlPaths, startMs, endMs, eventNames, opts, cb) {
   var cc = countrySql(opts, params.length + 1);
   params = params.concat(cc.params);
   db.query(
-    'SELECT we.event_name, COUNT(*) AS cnt ' +
+    // Popularity = slide VIEWS (cnt); also return the INTERACTION count per slide so the UI can
+    // disable drilling into slides with none. View events carry a '<slide name>-view' label;
+    // interactions never end in '-view'. Join all labels, split with FILTER, keep slides with views.
+    'SELECT we.event_name, ' +
+    "       COUNT(*) FILTER (WHERE ed.string_value LIKE '%-view')     AS cnt, " +
+    "       COUNT(*) FILTER (WHERE ed.string_value NOT LIKE '%-view') AS interactions " +
     'FROM website_event we ' +
-    // Popularity = slide VIEWS only. View events carry a '<slide name>-view' label
-    // (fired on slide navigation in the published deck); interactions never end in '-view'.
-    "JOIN event_data ed ON ed.website_event_id = we.event_id AND ed.data_key = 'label' AND ed.string_value LIKE '%-view'" + cc.join + ' ' +
+    "JOIN event_data ed ON ed.website_event_id = we.event_id AND ed.data_key = 'label'" + cc.join + ' ' +
     "WHERE we.website_id = $1 AND we.url_path = ANY($2) AND we.event_type = 2 AND we.event_name LIKE 'slide-%'" + extra +
     '  AND we.created_at >= to_timestamp($3::bigint / 1000.0) ' +
     '  AND we.created_at <  to_timestamp($4::bigint / 1000.0)' + cc.where + ' ' +
-    'GROUP BY we.event_name ORDER BY cnt DESC',
+    "GROUP BY we.event_name HAVING COUNT(*) FILTER (WHERE ed.string_value LIKE '%-view') > 0 ORDER BY cnt DESC",
     params,
     function (err, result) {
       if (err) return cb(err);
       var out = (result.rows || []).map(function (r) {
-        return { event: r.event_name, label: slugToTitle(r.event_name.replace(/^slide-/, '')), count: parseInt(r.cnt, 10) };
+        return { event: r.event_name, label: slugToTitle(r.event_name.replace(/^slide-/, '')),
+                 count: parseInt(r.cnt, 10), interactions: parseInt(r.interactions, 10) || 0 };
       });
       cb(null, out);
     }
