@@ -1462,7 +1462,9 @@
         var dark = document.documentElement.getAttribute('data-theme') !== 'light';
         if (engChart) { engChart.destroy(); engChart = null; }
         prevPageviews = prevPageviews || [];
-        var dataMax = pageviews.concat(sessions).concat(prevPageviews).reduce(function (m, p) { return Math.max(m, p.y || 0); }, 0);
+        // Scale to the current period only — the previous-period ghost line must NOT feed the
+        // (monotonic) y-max, or a busy prior window would permanently inflate the axis.
+        var dataMax = pageviews.concat(sessions).reduce(function (m, p) { return Math.max(m, p.y || 0); }, 0);
         var yMax = updateYMax(dataMax);
 
         function externalTooltip(context) {
@@ -1566,7 +1568,7 @@
               stack: 'pv', borderWidth: 0, borderRadius: 2, borderSkipped: false, maxBarThickness: 42 });
           }
           datasets.push({
-            type: 'line', label: 'Visitors', data: sessions.map(function (p) { return p.y; }),
+            type: 'line', label: 'Visitors', data: sessions.map(function (p) { return p.y; }), stack: 'line-visitors',
             borderColor: 'rgba(99,179,237,.95)', backgroundColor: 'rgba(99,179,237,.15)',
             borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.35, fill: false, order: 0
           });
@@ -1581,14 +1583,16 @@
         // meaningful) and a faint previous-period ghost line (only when there's prior data).
         var pvSeries = pageviews.map(function (p) { return p.y || 0; });
         var maWin = maWindow(pvSeries.length);
+        // Each overlay line gets its OWN stack id so a stacked y-axis (multi-company mode)
+        // doesn't pile them on top of each other — each renders at its true value from 0.
         if (maWin) {
-          datasets.push({ type: 'line', label: maWin + '-day avg', data: movingAvg(pvSeries, maWin),
+          datasets.push({ type: 'line', label: maWin + '-day avg', data: movingAvg(pvSeries, maWin), stack: 'line-ma',
             borderColor: '#F5A623', borderWidth: 2, borderDash: [5, 3], pointRadius: 0, tension: 0.35, fill: false, order: 0 });
         }
         var prevSeries = prevPageviews.map(function (p) { return p.y || 0; });
         if (prevSeries.some(function (v) { return v > 0; })) {
           var ghost = pvSeries.map(function (_, i) { return prevSeries[i] || 0; });
-          datasets.push({ type: 'line', label: 'Previous period', data: ghost,
+          datasets.push({ type: 'line', label: 'Previous period', data: ghost, stack: 'line-prev',
             borderColor: dark ? 'rgba(255,255,255,.35)' : 'rgba(0,0,0,.28)', borderWidth: 1.5, borderDash: [3, 3], pointRadius: 0, tension: 0.35, fill: false, order: 1 });
         }
         buildEngLegend(stacked, datasets);
@@ -1871,7 +1875,9 @@
         // Current window + the equal-length window before it (for the previous-period ghost line).
         Promise.all([
           fetch(pvUrl(dates.startAt, dates.endAt)).then(function (r) { return r.json(); }),
-          fetch(pvUrl(dates.startAt - span, dates.startAt)).then(function (r) { return r.json(); })
+          // The previous-window fetch only feeds the faint ghost line — if it fails, swallow it
+          // and render the current chart anyway (degrade to no ghost) rather than blanking.
+          fetch(pvUrl(dates.startAt - span, dates.startAt)).then(function (r) { return r.json(); }).catch(function () { return {}; })
         ]).then(function (res) {
           var cur = res[0], prev = res[1];
           if (!cur.success || !cur.data) return;
@@ -1905,10 +1911,11 @@
       }
 
       function loadEventsChart() {
-        // Slide events only make sense within ONE deck — otherwise identical slide IDs
-        // reused across decks get summed into one bar. Require a single deck selection.
-        if (engDeckId === null) {
-          showEventsPrompt('Pick a deck above to see slide popularity for that deck');
+        // Slide events only make sense within ONE deck — otherwise identical slide IDs reused
+        // across decks sum into one bar. A specific presentation selection is also unambiguous
+        // (one deck's slides), so only prompt when neither a deck nor a presentation is chosen.
+        if (engDeckId === null && engPresIds.length === 0) {
+          showEventsPrompt('Pick a deck or a presentation above to see slide popularity');
           return;
         }
         showEventsPrompt('');

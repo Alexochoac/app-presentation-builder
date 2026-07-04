@@ -1114,27 +1114,26 @@ function dbKpiTotals(urlPaths, startMs, endMs, opts, cb) {
   var params = [siteId, urlPaths, startMs, endMs];
   var cc = countrySql(opts, params.length + 1);
   params = params.concat(cc.params);
-  var tz = localTzString();
   db.query(
     'WITH ev AS (' +
-    '  SELECT we.session_id AS session_id, we.created_at AS created_at ' +
+    '  SELECT we.session_id AS session_id ' +
     '  FROM website_event we' + cc.join + ' ' +
     '  WHERE we.website_id = $1 AND we.url_path = ANY($2) AND we.event_type = 1 ' +
     '    AND we.created_at >= to_timestamp($3::bigint / 1000.0) ' +
     '    AND we.created_at <  to_timestamp($4::bigint / 1000.0)' + cc.where +
     ') ' +
     'SELECT (SELECT COUNT(*) FROM ev) AS pageviews, ' +
-    '       (SELECT COUNT(DISTINCT session_id) FROM ev) AS visitors, ' +
-    '       (SELECT COUNT(*) FROM (SELECT session_id FROM ev GROUP BY session_id ' +
-    "          HAVING COUNT(DISTINCT TO_CHAR(created_at AT TIME ZONE '" + tz + "', 'YYYY-MM-DD')) > 1) r) AS repeat_visitors",
+    '       (SELECT COUNT(DISTINCT session_id) FROM ev) AS visitors',
     params,
     function (err, result) {
       if (err) return cb(err);
       var r = (result.rows && result.rows[0]) || {};
       cb(null, {
-        pageviews:      parseInt(r.pageviews, 10) || 0,
-        visitors:       parseInt(r.visitors, 10) || 0,
-        repeatVisitors: parseInt(r.repeat_visitors, 10) || 0
+        pageviews: parseInt(r.pageviews, 10) || 0,
+        visitors:  parseInt(r.visitors, 10) || 0,
+        // repeat_visitors subquery removed while the New/Returning tile is hidden — it was the
+        // heaviest part of this query and ran on every KPI load. Re-add it with the tile (see task).
+        repeatVisitors: 0
       });
     }
   );
@@ -3398,8 +3397,10 @@ app.get('/api/analytics/countries', function (req, res) {
     var pdata   = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
     var ids     = (pdata.presentations || []).map(function (p) { return p.id; });
     if (ids.length === 0) return res.json({ success: true, data: [] });
-    var startAt = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
-    var endAt   = parseInt(req.query.endAt)   || Date.now();
+    // startAt=0 means "all time" — parse explicitly so 0 isn't treated as missing (falsy).
+    var sRaw    = parseInt(req.query.startAt, 10);
+    var startAt = isNaN(sRaw) ? (Date.now() - 30 * 86400000) : sRaw;
+    var endAt   = parseInt(req.query.endAt) || Date.now();
     var urlPaths = ids.map(function (id) { return '/public/' + id + '/'; });
     dbCountries(urlPaths, startAt, endAt, function (err, data) {
       if (err) return res.status(500).json({ success: false, error: err.message });
