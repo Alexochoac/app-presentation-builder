@@ -2,9 +2,22 @@
 title: Dashboard — Engagement — Country filter, deck-scoped drill, audience insights
 type: Feature
 priority: M
-status: in-progress
+status: done
 area: dashboard-ui
+completed_at: 2026-07-06
 ---
+
+## Implementation Summary (2026-07-06, shipped in v1.4.8)
+Shipped as the v1.4.8 dashboard analytics overhaul. Delivered:
+- **Engagement country filter** (dashboard-wide, is/is-not) — session-JOIN plumbing threaded through the analytics proxy.
+- **Deck-scoped slide drill** — popularity shows one deck at a time in deck order; clicking a slide reveals its in-slide events (event_data labels).
+- **Click-to-drill by company** + **per-slide deck benchmark** rings.
+- **View / interaction split** and **ranked events drill**.
+- **KPI strip**, plus richer charts: pageviews stacked by company, unique-visitors line, auto-scaling moving average, previous-period ghost line, legend toggle, clickable slide rings.
+- Dashboard correctness fixes from code review.
+
+First release deployed to the Hetzner VPS (`aoc-server`). See CHANGELOG v1.4.8.
+
 
 Improve the Engagement Activity chart: add a dashboard-wide **country filter** (is / is not,
 searchable, checkboxes) to exclude our own visits; fix the slide-popularity drill so it shows

@@ -205,6 +205,16 @@ All content slides now use this structure:
 - [x] **Favicon** — `icon.svg` served at `/favicon.ico` (public, no auth); published presentations include `<link rel="icon">` (2026-06-15)
 - [x] **Cloudflare Access bypass** — `/public/*` exempt from Zero Trust auth so presentations load without login (2026-06-15)
 - [x] **v1.3.1 released** — favicon patch, Docker image updated in-place on production stack (2026-06-15)
+- [x] **v1.4.0 released** — Edit+Republish flow, image-forward finished cards, Finish blocks for all 34 themes, adaptive brand-logo contrast (`--logo-filter`), cover customer-logo fill/fit + size controls; single-language non-English render fix (2026-06-17)
+- [x] **v1.4.1 released** — hotfix for encoding corruption from v1.4.0 (PowerShell BOM mojibake in HTML files); release checklist gained the UTF-8-no-BOM / edit-only-the-version-line guardrails (2026-06-17)
+- [x] **v1.4.2 released** — Themes: light/dark + checkerboard control on the slide `f` button; list & table drag-reorder via pointer events (2026-06-20)
+- [x] **v1.4.3 released** — tabs.js now flips with the slide theme (`var(--accent)`/`--text-muted`/`--border`) instead of hardcoded orange/white (2026-06-20)
+- [x] **v1.4.4 + v1.4.5 released** — white-on-white text fix: server `sanitizeEdits` strips baked theme-default white (inline `color` + legacy `<font color>`) on save; `scripts/clean-baked-white.js` cleaned existing content; Translation Center English column made read-only to stop style flattening (2026-06-21)
+- [x] **v1.4.6 released** — "Cannot GET /slides/…" render recursion fix: `applyEditsToHtml` guards against re-injecting an already-applied `data-edit` key; save sanitizer unwraps self-nested edits; `scripts/fix-nested-edits.js` cleanup (2026-06-21)
+- [x] **v1.4.7 released** — carousel next/prev arrows no longer hidden in published presentations (removed `data-builder-only` from viewer controls); affected presentations rebuilt (2026-06-25)
+- [x] **Production moved to Hetzner VPS `aoc-server`** — app-stack Docker Compose (builder + umami + umami-db), image from ghcr.io pinned to version tag; public via Cloudflare Tunnel `aoc-server` → `builder:3000` at `put-a-presentation.wbtm.io`; umami analytics DB migrated mini-PC→VPS (2770 events preserved); data lives on the VPS and persists across releases; mini-PC flow retired (2026-06-27 to 06-29)
+- [x] **v1.4.8 released** — Analytics dashboard overhaul (KPI strip, click-to-drill by company, per-slide deck benchmarks, ranked events drill, view/interaction split, engagement country filter; richer charts: company-stacked pageviews, unique-visitors line, moving average, previous-period ghost line, legend toggle); fetch customer logo from company website. First VPS-deployed release. Completes `Feature-M-2026-06-27` engagement task (2026-07-06)
+- [x] **Release command hardened** — `/release` now documents SSH must run via the PowerShell tool (git bash can't read the Windows OpenSSH config → `Permission denied (publickey)`) + remote commands passed single-line to avoid `sed` breakage; recorded in project memory (2026-07-06)
 
 ## Phase Roadmap
 - **Phase 1** (current) — Local app, single user, build + publish
@@ -212,4 +222,4 @@ All content slides now use this structure:
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-Last updated: 2026-06-15 (session 22)
+Last updated: 2026-07-06 (session 23)
