@@ -58,8 +58,31 @@ These are the specific problems observed in the current `builder/data/` layer th
 
 **Migration priority:** Do the database migration *before* adding any real users. Once production data exists across these flat files, migrating becomes significantly harder.
 
+## ✅ DECISION CONFIRMED (2026-07-04): Supabase Cloud
+
+Backend = **Supabase Cloud** (managed Postgres + Auth + Storage + Row-Level Security).
+
+**Why (updated rationale):** the original note said "not self-hosted — too much ops." Since then we
+now run Postgres comfortably on the Hetzner VPS, so self-hosting is *viable*. But Supabase is still the
+pick — **the DB is the easy part of multi-user; auth + file storage + per-team access control are the
+hard part, and Supabase hands us all three out of the box.** Fastest path to a working multi-user app.
+Supabase is just Postgres underneath, so the schema + data migration is portable — we can move to the
+VPS later if we ever want to drop the SaaS.
+
+**Free tier (verified 2026-07-04):** $0 — 500 MB Postgres · 1 GB storage · 5 GB egress · 50,000 monthly
+active users · 2 active projects · **pauses after 1 week idle**. Pro $25/mo removes the pause (8 GB DB,
+100 GB storage). Free tier is enough to build + test the whole migration; go Pro before real clients.
+
+## ▶️ NEXT SESSION STARTS HERE — Phase 1 (Foundation)
+1. Create a Supabase Cloud project (dev) → grab URL + anon key + service role key.
+2. `npm install @supabase/supabase-js` in `builder/`.
+3. Add creds to `builder/.env` (never hardcode) → test the connection.
+Then proceed to Phase 2 (schema) above.
+
+**Current app state to migrate FROM (confirmed this session):**
+- Data: flat JSON in `builder/data/` (`decks.json`, `presentations.json`, `slide-library.json`, `settings`).
+- Auth: `.env` user/pass via `builder/features/auth/auth.js` + **in-memory** express-session (8h cookie) → becomes Supabase Auth + Postgres-backed sessions.
+
 **Notes**
-- Use Supabase Cloud Free Tier (not self-hosted — self-hosted is 7+ Docker containers, too much ops overhead)
-- Free tier pauses DB after 7 days inactivity → upgrade to Pro ($25/mo) before going live with clients
-- Local dev connects directly to Supabase Cloud dev project
-- Deploy app to Railway or Render when ready for production
+- Local dev connects directly to the Supabase Cloud dev project.
+- App already deployed to the VPS (done: [Feature-H-2026-06-20-...deploy-docker-app-to-vps.md](done/Feature-H-2026-06-20-infrastructure-deploy-docker-app-to-vps.md)) — for prod, the VPS just needs the Supabase URL/keys in its `.env`; image + code otherwise unchanged.
