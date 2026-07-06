@@ -5,6 +5,18 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [v1.4.8] — 2026-07-06
+
+### Added
+- **Analytics dashboard overhaul** — KPI strip, click-to-drill by company, per-slide deck benchmarks, ranked events drill, view/interaction split, and an engagement country filter.
+- **Richer charts** — pageviews stacked by company, unique-visitors line, auto-scaling moving average, previous-period ghost line, legend toggle, deck-order sort, and clickable slide rings.
+- **Fetch customer logo from company website** — the builder can pull a customer's logo directly from their site.
+
+### Fixed
+- Dashboard correctness fixes from code review.
+
+---
+
 ## [v1.4.7] — 2026-06-25
 
 ### Fixed
