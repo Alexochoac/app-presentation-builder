@@ -1,5 +1,5 @@
 ---
-description: Full release — build Docker image, push to ghcr.io, deploy standalone compose, update CHANGELOG, create GitHub Release.
+description: Full release — build Docker image, push to ghcr.io, deploy to the VPS (aoc-server), update CHANGELOG, create GitHub Release.
 ---
 
 # Release — App Presentation Builder
@@ -8,9 +8,10 @@ description: Full release — build Docker image, push to ghcr.io, deploy standa
 
 - **App source:** `C:/Users/Alex/Alex-Projects/active/App-presentation-builder/builder`
 - **Image registry:** `ghcr.io/alexochoac/app-presentation-builder`
-- **Prod compose root:** `C:/Users/Alex/put-a-presentation/` ← each version lives in its own subfolder here
+- **Production:** Hetzner VPS `aoc-server` (157.90.29.119) — app at `/home/alex/app-stack/`, connect with `ssh aoc-server`
+- **Public URL:** `https://put-a-presentation.wbtm.io` (Cloudflare Tunnel `aoc-server` → `builder:3000`)
 - **Project root:** `C:/Users/Alex/Alex-Projects/active/App-presentation-builder`
-- **Prod data (previous version):** `C:/Users/Alex/put-a-presentation/{previous-version}/`
+- **Prod data:** lives ON the VPS under `app-stack/{data,uploads,finished-presentations}` + volume `umami-db-data` — persists across releases, never copied
 
 ---
 
@@ -43,96 +44,53 @@ Examples: `v1.1.0`, `v1.2.0`, `v2.0.0`
 
 ---
 
-## Deployment Model — Standalone Compose Per Version
+## Deployment Model — VPS (single app-stack)
 
-Each version of Put.A.Presentation runs as its **own standalone Docker Compose project**, separate from n8n and from other versions.
+Production runs on the **Hetzner VPS `aoc-server`** (157.90.29.119) as one Docker
+Compose project named `put-a-presentation`, in `/home/alex/app-stack/`. Connect with
+`ssh aoc-server`.
 
-**Folder structure on the host machine:**
-```
-C:/Users/Alex/put-a-presentation/
-├── v1.1.0/
-│   ├── docker-compose.yml
-│   ├── .env
-│   ├── data/
-│   ├── uploads/
-│   └── finished-presentations/
-└── v1.2.0/          ← next release goes here
-    └── ...
-```
+Three services (do NOT recreate umami on an app release):
+- `builder` — the app (container `app-{version}`), image pulled from ghcr.io, pinned to the version tag
+- `umami` — analytics (pinned by image digest — see project memory `project_vps_server.md`)
+- `umami-db` — PostgreSQL for umami
 
-Each compose stack contains **3 services**:
-- `builder` — the App Presentation Builder
-- `umami` — Umami analytics
-- `umami-db` — PostgreSQL for Umami
+**Data lives ON the VPS and persists across releases** — bind mounts under
+`app-stack/` (`data/`, `uploads/`, `finished-presentations/`) + named volume
+`umami-db-data`. A release NEVER copies or touches data.
 
-Each version has its own isolated data, analytics, and volumes.
+**Public access:** cloudflared (in `/home/alex/personal-stack/`, on the `edge`
+Docker network) routes `put-a-presentation.wbtm.io → builder:3000` and
+`put-a-presentation-umami.wbtm.io → umami:3000`. **Tunnel routes do NOT change on a release.**
 
-### Port Assignment
+So shipping a new version = build + push the image, then bump the `builder` image
+tag on the VPS and recreate only that container.
 
-Each version needs unique host ports — check what's already in use before assigning:
-
-```bash
-docker ps --format "table {{.Names}}\t{{.Ports}}"
-```
-
-For v1.1.0 the ports used were:
-- Builder: **3005**
-- Umami: **3004**
-- Umami DB: **5434**
-
-Assign the next free ports for each new version. Update `docker-compose.yml` in the version folder before starting the stack.
-
-The compose project name must use hyphens only (no dots):
-```bash
-docker compose -p put-a-presentation-v1-1-0 up -d
-```
+> **RETIRED (2026-06-29):** the old mini-PC flow — version folders under
+> `C:/Users/Alex/put-a-presentation/`, per-version ports, `host.docker.internal`,
+> copying data forward, the `n8n-mini-pc` tunnel — is no longer used. Production is the VPS.
 
 ---
 
-## Patch Release — Update Builder Only (Same Stack)
+## Quick redeploy (TL;DR)
 
-Use this when you bump only the **PATCH** number and want to update the running builder container without touching umami, umami-db, or creating a new compose folder.
+After build + push, ship to the VPS — swaps the `builder` image tag and recreates
+only that container (umami/umami-db untouched, data untouched):
 
-**Step 1 — Build and push:**
 ```bash
-docker build \
-  -t ghcr.io/alexochoac/app-presentation-builder:{version} \
-  -t ghcr.io/alexochoac/app-presentation-builder:latest \
-  "C:/Users/Alex/Alex-Projects/active/App-presentation-builder/builder"
-
-docker push ghcr.io/alexochoac/app-presentation-builder:{version}
-docker push ghcr.io/alexochoac/app-presentation-builder:latest
+ssh aoc-server
+cd app-stack
+sed -i 's#app-presentation-builder:v[0-9.]*#app-presentation-builder:{version}#' docker-compose.yml
+sed -i 's/container_name: app-v[0-9.]*/container_name: app-{version}/' docker-compose.yml
+docker compose pull builder
+docker compose up -d builder
 ```
 
-**Step 2 — Update the image tag in the compose file:**
-```
-C:/Users/Alex/put-a-presentation/{current-version}/docker-compose.yml
-```
-Change `image: ghcr.io/alexochoac/app-presentation-builder:{old}` → `:{new}`
-
-**Step 3 — Update `.env` if new env vars were added:**
-```
-C:/Users/Alex/put-a-presentation/{current-version}/.env
-```
-Compare with `builder/.env.prod` — add any missing vars.
-
-**Step 4 — Recreate only the builder container (stay on same network):**
-```bash
-cd "C:/Users/Alex/put-a-presentation/{current-version}"
-docker compose -p put-a-presentation-{version-with-hyphens} up -d --no-deps --pull always builder
-```
-
-> **Critical:** always pass `-p put-a-presentation-{version-with-hyphens}` so the new builder joins the **existing** network where umami and umami-db already live. Without it, Docker creates a new network and `umami:3000` / `umami-db:5432` become unreachable.
-
-**Step 5 — Verify:**
-```bash
-docker exec {builder-container} wget -qO- http://localhost:3000/api/settings
-# Should return success:true with correct publicBaseUrl and umamiBaseUrl
-```
+Full procedure with prep + verify is the numbered steps below.
 
 ---
 
-## Required env vars (builder/.env.prod and prod .env)
+## Required env vars (lives in `/home/alex/app-stack/.env` on the VPS)
 
 | Var | Example | Purpose |
 |-----|---------|---------|
@@ -143,28 +101,16 @@ docker exec {builder-container} wget -qO- http://localhost:3000/api/settings
 | `UMAMI_BASE_URL` | `https://put-a-presentation-umami.wbtm.io` | Public URL for umami tracking script |
 | `UMAMI_API_URL` | `http://umami:3000` | Internal Docker URL for server-side API calls |
 | `UMAMI_USERNAME` | `admin` | Umami admin login |
-| `UMAMI_PASSWORD` | `...` | Umami admin password |
-| `UMAMI_WEBSITE_ID` | `69508062-...` | Umami website ID for this environment (overrides settings.json) |
+| `UMAMI_PASSWORD` | `...` | Umami admin password (must match the umami admin account) |
+| `UMAMI_WEBSITE_ID` | `69508062-...` | Umami website ID (overrides settings.json — this value wins) |
 | `UMAMI_DB_URL` | `postgresql://umami:umami@umami-db:5432/umami` | Direct Postgres connection for analytics queries |
 | `GITHUB_TOKEN` | `ghp_...` | Token for git push to publish presentations |
-| `REPO_ROOT` | `/repo` | Path to the repo root inside the container |
 
-> `UMAMI_API_URL` should be `http://umami:3000` (Docker service name) inside containers.
-> `UMAMI_DB_URL` should use `umami-db:5432` inside Docker, `localhost:5434` for local dev.
+> `UMAMI_API_URL` / `UMAMI_DB_URL` use the Docker service names `umami` / `umami-db` (same compose network).
 > `PUBLIC_BASE_URL` must be set — without it the server defaults to `http://localhost:3000` and public links break.
-> `/api/settings` is intentionally public (no auth) so the login page and UI can read `publicBaseUrl` before the user logs in.
-
----
-
-## Analytics Tracking — Local vs Public
-
-The Umami tracking script injected into published presentations uses `UMAMI_BASE_URL` from `.env`.
-In local dev this is `http://localhost:3003` — only accessible from your machine.
-Presentations shared externally will have `localhost` baked in and **external viewers will not be tracked**.
-
-Before sharing presentations with real customers:
-1. Update `UMAMI_BASE_URL` in `.env.prod` to the public Umami URL (e.g. `https://umami.wbtm.io`)
-2. Rebuild and release a new version so the published HTML gets the public script URL injected
+> `UMAMI_WEBSITE_ID` takes precedence over `settings.json`'s `umamiWebsiteId` everywhere in code (`UMAMI_WEBSITE_ID || settings.umamiWebsiteId`).
+> `/api/settings` is intentionally public (no auth) so the login page can read `publicBaseUrl` before login.
+> If new env vars are added in a release, update the VPS `.env` before `docker compose up -d`.
 
 ---
 
@@ -184,7 +130,62 @@ Keep it as bullet points — used in CHANGELOG.md and GitHub Release.
 
 ---
 
-## Step 3 — Build image
+## Step 3 — Pre-build prep (BEFORE building — both get baked into the image)
+
+### 3a — Update sidebar version label
+
+Update the `v{old}` string to `v{version}` in the `.sidebar-version` div across all 5 sidebar files:
+
+- `builder/features/builder-ui/index.html`
+- `builder/features/dashboard/index.html`
+- `builder/features/layouts/index.html`
+- `builder/features/settings/index.html`
+- `builder/features/slides/index.html`
+
+Each file has this pattern just below the Log out link:
+
+```html
+<div class="sidebar-version">v{version}</div>
+```
+
+> **⚠️ Must be done BEFORE the build** — the version label is baked into the image. Updating after means a full rebuild.
+>
+> **⚠️ Encoding — do NOT corrupt these files (this bit us in v1.4.0).**
+> These HTML files are **UTF-8 without a BOM** and contain special characters (em-dashes `—`, box-drawing `──`, middots `·`, the `↻` glyph, emoji). Editing them with **PowerShell `Set-Content` / `Out-File` adds a UTF-8 BOM and re-encodes those characters into mojibake** (`—`→`â€"`, `──`→`â”€â”€`, `·`→`Â·`), which breaks fonts/characters in the UI.
+>
+> Rules:
+> - Change **only** the version line — use a precise in-place edit, never a full rewrite of the file.
+> - If you must use PowerShell, use `Set-Content -Encoding utf8NoBOM` (PowerShell 7); plain `Set-Content`/`Out-File` default to BOM/UTF-16. Prefer the agent's Edit tool or `sed`, which preserve encoding.
+> - **Verify after editing** — no BOM and no mojibake:
+>   ```bash
+>   grep -rl $'\xef\xbb\xbf' builder/features/*/index.html   # BOM check — must print nothing
+>   grep -rl 'â€\|â”€\|Â·' builder/features/*/index.html       # mojibake check — must print nothing
+>   ```
+
+### 3b — Scrub localhost URLs from data files
+
+Image URLs saved during local dev may be absolute `http://localhost:3000/...` instead of relative `/slides/uploads/...`. These break in production (mixed-content over HTTPS).
+
+```bash
+grep -rl "http://localhost:3000" builder/data/
+```
+
+If any files are found, strip the host prefix, e.g.:
+
+```bash
+sed -i 's|http://localhost:3000/slides/uploads/|/slides/uploads/|g' builder/data/decks/default/translations.json builder/data/slide-library.json
+# add any other files grep found
+```
+
+Verify zero matches remain, then commit the cleaned files before building:
+
+```bash
+grep -r "http://localhost:3000" builder/data/
+```
+
+---
+
+## Step 4 — Build image
 
 ```bash
 docker build \
@@ -197,120 +198,54 @@ Stop if it fails.
 
 ---
 
-## Step 4 — Push to ghcr.io
+## Step 5 — Push to ghcr.io
 
 ```bash
 docker push ghcr.io/alexochoac/app-presentation-builder:{version}
 docker push ghcr.io/alexochoac/app-presentation-builder:latest
 ```
 
-Stop if it fails.
+Stop if it fails. (The VPS pulls from ghcr.io — it's already authenticated with a `read:packages` token.)
 
 ---
 
-## Step 5 — Deploy standalone compose
+## Step 6 — Deploy to the VPS
 
-**5a — Check free ports:**
+Swap the `builder` image tag and recreate only that container. **No data copy, no tunnel change.**
+
 ```bash
-docker ps --format "table {{.Names}}\t{{.Ports}}"
-```
-Pick 3 free ports for builder, umami, and umami-db.
+ssh aoc-server
+cd app-stack
 
-**5b — Create version folder and copy config:**
-```bash
-mkdir -p "C:/Users/Alex/put-a-presentation/{version}"
-cp "C:/Users/Alex/Alex-Projects/active/App-presentation-builder/docker-compose.yml" \
-   "C:/Users/Alex/put-a-presentation/{version}/docker-compose.yml"
-cp "C:/Users/Alex/Alex-Projects/active/App-presentation-builder/builder/.env.prod" \
-   "C:/Users/Alex/put-a-presentation/{version}/.env"
-```
+# bump the builder image tag + container name to the new version:
+sed -i 's#app-presentation-builder:v[0-9.]*#app-presentation-builder:{version}#' docker-compose.yml
+sed -i 's/container_name: app-v[0-9.]*/container_name: app-{version}/' docker-compose.yml
 
-**5c — Update ports in the copied docker-compose.yml** to the free ports identified in 5a.
-Also change the `builder` service from `build: ./builder` to:
-```yaml
-image: ghcr.io/alexochoac/app-presentation-builder:{version}
-```
-And update volume paths to be relative (no hardcoded source paths).
-
-**5d — Start the stack:**
-```bash
-cd "C:/Users/Alex/put-a-presentation/{version}"
-docker compose -p put-a-presentation-{version-with-hyphens} up -d
+# if new env vars were added this release, edit ./.env first, then:
+docker compose pull builder
+docker compose up -d builder    # recreates ONLY builder; umami + umami-db keep running
 ```
 
 ---
 
-## Step 6 — Copy prod data
-
-Copy the previous version's data into the new version so it starts with all existing decks, slides, and presentations — not empty.
+## Step 7 — Verify
 
 ```bash
-# Stop builder first
-docker stop {new-builder-container-name}
-
-# Clear any placeholder data
-rm -rf "C:/Users/Alex/put-a-presentation/{version}/data"
-rm -rf "C:/Users/Alex/put-a-presentation/{version}/uploads"
-rm -rf "C:/Users/Alex/put-a-presentation/{version}/finished-presentations"
-
-# Fresh copy from previous prod version
-cp -r "C:/Users/Alex/put-a-presentation/{previous-version}/data" \
-      "C:/Users/Alex/put-a-presentation/{version}/data"
-cp -r "C:/Users/Alex/put-a-presentation/{previous-version}/uploads" \
-      "C:/Users/Alex/put-a-presentation/{version}/uploads"
-cp -r "C:/Users/Alex/put-a-presentation/{previous-version}/finished-presentations" \
-      "C:/Users/Alex/put-a-presentation/{version}/finished-presentations"
-
-# Restart builder
-docker start {new-builder-container-name}
+# on the VPS:
+docker compose ps
+docker exec app-{version} wget -qO- http://localhost:3000/api/settings | head -c 200
+# expect success:true with publicBaseUrl https://put-a-presentation.wbtm.io
 ```
 
----
+From anywhere, load `https://put-a-presentation.wbtm.io` and confirm the new version (sidebar shows `v{version}`).
 
-## Step 7 — Update Cloudflare tunnel route
-
-The tunnel is named **n8n-mini-pc** in Cloudflare Zero Trust.
-
-1. Go to [one.dash.cloudflare.com](https://one.dash.cloudflare.com) → **Networks → Tunnels**
-2. Click **n8n-mini-pc** → **Published application routes**
-3. Edit the `put-a-presentation.wbtm.io` row
-4. Change the service to: `http://host.docker.internal:{new-builder-port}`
-5. Save — goes live in ~30 seconds
-
-Note: use `host.docker.internal` (not a container name) because the new stack is on a different Docker network than the tunnel.
-
----
-
-## Step 7b — Scrub localhost URLs from data files
-
-Image URLs saved during local development may have been stored as absolute `http://localhost:3000/...` paths instead of relative `/slides/uploads/...` paths. These break in production (mixed content errors over HTTPS).
-
-Run this before building the image:
-
-```bash
-grep -rl "http://localhost:3000" builder/data/
-```
-
-If any files are found, strip the host prefix:
-
-```bash
-sed -i 's|http://localhost:3000/slides/uploads/|/slides/uploads/|g' builder/data/decks/default/translations.json builder/data/slide-library.json
-# add any other files grep found
-```
-
-Verify zero matches remain:
-
-```bash
-grep -r "http://localhost:3000" builder/data/
-```
-
-Commit the cleaned files before building.
+**Roll back** if needed: set the image tag back to the previous version and `docker compose up -d builder`.
 
 ---
 
 ## Step 8 — Update CHANGELOG.md
 
-If not already done, add a new entry at the top of the release history:
+Add a new entry at the top of the release history:
 
 ```markdown
 ## [{version}] — {today's date}
@@ -321,43 +256,11 @@ If not already done, add a new entry at the top of the release history:
 
 ---
 
-## Step 8b — Update sidebar version label
-
-Update the `v{old}` string to `v{version}` in the `.sidebar-version` div across all 5 sidebar files:
-
-- `builder/features/builder-ui/index.html`
-- `builder/features/dashboard/index.html`
-- `builder/features/layouts/index.html`
-- `builder/features/settings/index.html`
-- `builder/features/slides/index.html`
-
-Each file has this pattern just below the Log out link — update the version number in all of them:
-
-```html
-<div class="sidebar-version">v{version}</div>
-```
-
-> **⚠️ Encoding — do NOT corrupt these files (this bit us in v1.4.0).**
-> These HTML files are **UTF-8 without a BOM** and contain special characters (em-dashes `—`, box-drawing `──`, middots `·`, the `↻` glyph, emoji). Editing them with **PowerShell `Set-Content` / `Out-File` adds a UTF-8 BOM and re-encodes those characters into mojibake** (`—`→`â€"`, `──`→`â”€â”€`, `·`→`Â·`), which breaks fonts/characters in the UI. v1.4.0 shipped this corruption and v1.4.1 had to fix it.
->
-> Rules:
-> - Change **only** the version line — use a precise in-place edit, never a full rewrite of the file.
-> - If you must use PowerShell, use `Set-Content -Encoding utf8NoBOM` (PowerShell 7); plain `Set-Content`/`Out-File` default to BOM/UTF-16. Prefer editing via the agent's Edit tool or `sed`, which preserve encoding.
-> - **Verify after editing** — no BOM and no mojibake:
->   ```bash
->   # BOM check — must print nothing:
->   grep -rl $'\xef\xbb\xbf' builder/features/*/index.html
->   # mojibake check — must print nothing:
->   grep -rl 'â€\|â”€\|Â·' builder/features/*/index.html
->   ```
-
----
-
 ## Step 9 — Commit, tag, push
 
 ```bash
 cd "C:/Users/Alex/Alex-Projects/active/App-presentation-builder"
-git add CHANGELOG.md .claude/commands/release.md
+git add CHANGELOG.md .claude/commands/release.md builder/features/*/index.html builder/data/
 git commit -m "chore: release {version}"
 git tag {version}
 git push origin master
@@ -385,9 +288,18 @@ docker pull ghcr.io/alexochoac/app-presentation-builder:{version}
 ## Step 11 — Confirm
 
 Report:
-- Image: `ghcr.io/alexochoac/app-presentation-builder:{version}` ✅
-- Compose stack running at `C:/Users/Alex/put-a-presentation/{version}/` ✅
-- Cloudflare route updated → `https://put-a-presentation.wbtm.io` ✅
-- Prod data copied — decks, slides, presentations intact ✅
+- Image: `ghcr.io/alexochoac/app-presentation-builder:{version}` pushed to ghcr.io ✅
+- VPS `app-stack` updated — `builder` recreated as `app-{version}` ✅
+- Live at `https://put-a-presentation.wbtm.io` — new version verified (sidebar `v{version}`) ✅
+- Data + analytics intact (persisted on the VPS, never touched) ✅
 - GitHub Release link ✅
 - CHANGELOG.md updated ✅
+
+---
+
+## Analytics tracking note
+
+The umami tracking script injected into published presentations uses `UMAMI_BASE_URL`
+(`https://put-a-presentation-umami.wbtm.io`) + `UMAMI_WEBSITE_ID` (`69508062-...`).
+These are stable on the VPS — published presentations keep tracking across releases.
+Only change them if the umami host or website changes (then re-publish affected presentations).
