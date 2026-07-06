@@ -1,19 +1,19 @@
 # Project Map — App Presentation Builder
 
-Last updated: 2026-06-15 (session 22)
+Last updated: 2026-07-06 (session 24)
 
 ---
 
 ## Overview
 
-A local web app for building customized sales presentations for Softsolution's LineScanner glass inspection product. Sales reps log in, manage slide decks, customize slides, and publish to GitHub Pages / Cloudflare Pages.
+A web app for building customized sales presentations for Softsolution's LineScanner glass inspection product. Sales reps log in, manage slide decks, customize slides, and publish self-contained frozen HTML presentations.
 
-**Status:** Active — Phase 1 in development. Current prod version: **v1.3.1**
-**Runs locally at:** `http://localhost:3000`
-**Start command:** `cd builder && node server.js`
-**Prod URL:** `https://put-a-presentation.wbtm.io` (Docker + Cloudflare Tunnel)
-**Publish model:** Presentations freeze locally → served at `/public/:id/` from the builder itself (GitHub Pages publish removed in v1.3.0)
-**Flow:** Login → Dashboard → Builder (`/builder`) → Slides (`/slides`) → Settings (`/settings`)
+**Status:** Active — Phase 1 complete. Current prod version: **v1.4.8**
+**Dev (local):** `http://localhost:3000` — run with `cd builder && node server.js`
+**Production:** Hetzner VPS `aoc-server` (157.90.29.119) — Docker Compose `app-stack`, public at `https://put-a-presentation.wbtm.io` via Cloudflare Tunnel
+**Prod data:** Lives on the VPS (bind mounts under `app-stack/`), persists across releases, never copied
+**Publish model:** Presentations freeze → self-contained HTML at `finished-presentations/:id/index.html` → served at `/public/:id/` (public, no auth)
+**Flow:** Login → Dashboard (analytics + finished presentations) → Builder (deck mgmt) → Slides (library/templates) → Settings
 
 ---
 
@@ -139,19 +139,22 @@ Three panels stacked vertically:
 - **Recent Activity** inside as collapsible subsection (`pb-recentact-collapsed`, default open) — last 10 published
 
 ### 3. Engagement Analytics (below Publication Activity, **starts collapsed**)
-Full analytics panel with two chart modes and a 4-level drill-down filter hierarchy.
+Full analytics panel with multiple chart modes, drill-down capabilities, and a country filter.
 
 **Filter hierarchy (left to right in filter bar):**
-- `#engDeckDropdown` — All Decks → specific deck (filters `#engPresDropdown` to that deck's Live presentations)
-- `#engPresDropdown` — All Presentations → specific presentation (multi-select)
+- `#engCountryFilter` — **Country filter (dashboard-wide, v1.4.8+)** — is/is-not toggle, searchable multi-select, counts per country; filters ALL dashboard cards + all analytics charts; via `GET /api/analytics/countries` (session JOIN)
+- `#engDeckDropdown` — All Decks → specific deck (one deck at a time for popularity view)
+- `#engPresDropdown` — All Presentations → specific presentation (multi-select; if empty = all from active scope)
 - Date range dropdown (same options as Publication Activity) — default 7 days
 
 **State variables (key):**
 ```js
+engCountries   // [] = all; specific entries = filter is/is-not
+engCountryOp   // 'is' | 'is-not'
 engMode        // 'pageviews' | 'events'
 engEventsMode  // 'popularity' | 'timeseries'  (only relevant when engMode='events')
-engDrillSlide  // null | slide-id string (drill into one slide's per-pres breakdown)
-engDeckId      // null | deck-id string
+engDrillSlide  // null | slide-id string (drill into one slide's in-slide events)
+engDeckId      // null | deck-id string (popularity shows ONE deck only; "Pick a deck" if none)
 engPresIds     // [] = all from current scope; specific IDs = filtered
 _engAllLivePres // master list, never filtered — source of truth
 _engLivePres   // active list — filtered by deck when engDeckId is set
@@ -165,15 +168,21 @@ engYMax        // sticky max: only grows, never shrinks (niceMax() steps: 10,20,
 - Returns `null` → caller renders empty chart without API call
 
 **Chart modes:**
-- **Pageviews mode** — bar chart (Chart.js 4), x=date, y=pageviews+sessions overlay. External HTML tooltip (scrollable per-presentation breakdown). Click a bar → enters Events mode.
-- **Events mode / Popularity** — horizontal bar chart sorted by event frequency. Click a bar → drills to per-presentation breakdown for that slide.
-- **Events mode / Over Time** — line chart per slide, colored, date x-axis. Slide color legend below chart.
+- **Pageviews mode** — stacked bar chart (Chart.js 4), x=date, y=pageviews stacked by company. Company legend clickable to toggle visibility; unique-visitors line overlay, auto-scaling moving average, previous-period ghost line. External HTML tooltip (scrollable per-presentation breakdown). Click a bar → enters Events mode.
+- **Events mode / Popularity** — horizontal bar chart of slide interactions (sorted by frequency). **Deck-scoped: shows one deck only** (ordered by slide sequence from `/api/decks`). Click a slide → drills to **in-slide events** (per-interaction breakdown for that one slide via `GET /api/analytics/slide-interactions?eventName=slide-<id>`).
+- **Events mode / Over Time** — line chart per slide, colored, date x-axis. Slide color legend below chart; clickable to toggle visibility.
 - **Back button** — exits drill → exits events → returns to pageviews.
 - Single toggle button flips Popularity ↔ Over Time.
+- **KPI strip** (v1.4.8+) — headline metrics: total pageviews, unique visitors, bounce rate, CTA conversions, top traffic source (referrer).
 
 **External tooltip (pageviews bar chart):**
 - `pointer-events:auto` HTML div, 180ms hide delay, mouseenter on tooltip cancels hide
 - Shows date, totals (pageviews orange / sessions blue), scrollable list of all presentations sorted by views desc (max-height 150px overflow-y:auto)
+
+**New endpoints (v1.4.8):**
+- `GET /api/analytics/countries` — distinct countries from session table JOIN
+- `GET /api/analytics/slide-interactions?startAt=&endAt=&presIds=&eventName=<eventName>` — per-interaction breakdown for a specific slide (`event_data` labels)
+- `GET /api/analytics/referrers` — traffic source breakdown (referrer_domain from website_event)
 
 ### Key CSS notes
 - `.panel` has `overflow:hidden` in `app-style.css` — date dropdowns use `overflow:visible` inline to escape
@@ -306,6 +315,7 @@ Global-only settings (per-deck settings moved to Builder deck drawer):
 | POST | `/api/presentations/:id/duplicate` | Clone with new customer info |
 | POST | `/api/presentations/:id/publish` | Freeze deck → `finished-presentations/:id/index.html`; returns `{ success, url }` |
 | POST | `/api/presentations/rebuild-all` | Regenerate all frozen HTML files |
+| POST | `/api/fetch-customer-logo` | **NEW (v1.4.8)** — `{ url: 'company.com' }` → fetches logo from website via logo.dev/unavatar/homepage scrape; returns `{ success, src, source }` |
 | GET | `/public/:presId/` | **Public, no auth** — static: serves frozen output (images via `../shared/`) |
 | GET | `/finished/:presId/` | Static: serves frozen output (auth required) |
 | GET | `/view/:id` | Redirect to `/finished/:id/` if frozen exists; else live viewer |
@@ -314,16 +324,19 @@ Global-only settings (per-deck settings moved to Builder deck drawer):
 ### Analytics (Umami proxy + direct Postgres)
 | Method | Path | What it does |
 |--------|------|-------------|
-| GET | `/api/analytics/batch?startAt=&endAt=` | Stats for all presentations in parallel (visitors, visits, pageviews, bounces, totaltime) |
-| GET | `/api/analytics/presentation/:id?startAt=&endAt=` | Stats for one presentation by URL `/finished/:id/` |
-| GET | `/api/analytics/pageviews-multi?startAt=&endAt=&presIds=` | Time-series pageviews + sessions + per-presentation breakdown; `presIds` CSV optional (omit = all Live) |
-| GET | `/api/analytics/events?startAt=&endAt=&presIds=` | Slide event popularity (click counts per slide-id, sorted desc) |
-| GET | `/api/analytics/event-series?startAt=&endAt=&slideId=&presIds=` | Time-series events per-day for one slide, grouped by presentation |
-| GET | `/api/analytics/slide-events?startAt=&endAt=&slideId=&presId=` | Per-slide event breakdown for one presentation |
+| GET | `/api/analytics/batch?startAt=&endAt=&country=&countryOp=` | Stats for all presentations in parallel (visitors, visits, pageviews, bounces, totaltime); country filter optional (v1.4.8+) |
+| GET | `/api/analytics/presentation/:id?startAt=&endAt=&country=&countryOp=` | Stats for one presentation by URL `/finished/:id/`; country filter optional |
+| GET | `/api/analytics/pageviews-multi?startAt=&endAt=&presIds=&country=&countryOp=` | Time-series pageviews + sessions + per-presentation breakdown; `presIds` CSV optional (omit = all Live); country filter optional |
+| GET | `/api/analytics/events?startAt=&endAt=&presIds=&country=&countryOp=` | Slide event popularity (click counts per slide-id, sorted desc); country filter optional |
+| GET | `/api/analytics/event-series?startAt=&endAt=&slideId=&presIds=&country=&countryOp=` | Time-series events per-day for one slide, grouped by presentation; country filter optional |
+| GET | `/api/analytics/slide-events?startAt=&endAt=&slideId=&presId=&country=&countryOp=` | Per-slide event breakdown for one presentation; country filter optional |
+| GET | `/api/analytics/countries?startAt=&endAt=` | **NEW (v1.4.8)** — distinct countries (session JOIN), returns `[{ country, count }]` |
+| GET | `/api/analytics/slide-interactions?startAt=&endAt=&presIds=&eventName=&country=&countryOp=` | **NEW (v1.4.8)** — in-slide event breakdown (from event_data labels) for a specific slide; returns `{ label, count }` per interaction |
+| GET | `/api/analytics/referrers?startAt=&endAt=&presIds=&country=&countryOp=` | **NEW (v1.4.8)** — traffic source breakdown (referrer_domain), sorted by count |
 
 **Umami auth pattern:** Server calls `POST /api/auth/login` with `UMAMI_USERNAME` + `UMAMI_PASSWORD` (self-hosted v1 has no API key UI). JWT cached 23h. Results cached 15min. `getUmamiToken(cb)` + `umamiGet(path, cb)` helpers.
 
-**Direct Postgres pattern (for analytics endpoints the Umami API can't filter):** `pg.Pool` reads from `UMAMI_DB_URL`. Queries `website_event` table — `event_type=1` = pageview, `event_type=2` = custom event. Slide events: `event_name LIKE 'slide-%'` from URLs matching `/finished/*/`. `dbPresTimeSeriesWithBreakdown()` runs a single GROUP BY `url_path + day` query and returns `{ pageviews, sessions, breakdown }`.
+**Direct Postgres pattern (v1.4.8+):** `pg.Pool` reads from `UMAMI_DB_URL`. All analytics endpoints support `country` / `countryOp` params (added via session table JOIN). Queries `website_event` table — `event_type=1` = pageview, `event_type=2` = custom event. Slide events: `event_name LIKE 'slide-%'` from URLs matching `/finished/*/`. `dbPresTimeSeriesWithBreakdown()` runs a single GROUP BY `url_path + day` query and returns `{ pageviews, sessions, breakdown }`.
 
 **`slugToTitle(slug)` helper:** converts `slide-cover-main` → `Cover Main` for display.
 
@@ -508,39 +521,45 @@ All slides now use the **cartridge model** via `renderCartridge(resolved, opts)`
 
 ## Docker & Deployment
 
-- **Dockerfile:** `builder/Dockerfile` — Node 20 Alpine, `npm install --omit=dev`, `node server.js`
-- **Dev compose:** `docker-compose.yml` (project root) — builds from source, mounts `builder/data/` + `builder/.../uploads/` + `finished-presentations/`
-- **Image registry:** `ghcr.io/alexochoac/app-presentation-builder` — v1.3.1 + latest published
-- **Current prod version:** v1.3.1 (running in `v1.1.0/` folder — updated builder in-place)
-- **Prod stack:** `C:/Users/Alex/put-a-presentation/v1.1.0/` — project `put-a-presentation-v1-1-0`; builder on port 3005, umami on 3004, umami-db on 5434
-- **Data source:** prod data is a full copy of master working files (`builder/data/`, `builder/features/slides/uploads/`, `finished-presentations/`) — copied in at release time
-- **Release workflow:** documented in `.claude/commands/release.md`. ⚠️ Sidebar version label must be updated in 5 HTML files BEFORE `docker build` (baked into image)
-- **Cloudflare Access:** `/public/*` is bypassed (no auth) so published presentations load without login
+**Status:** Production moved to **Hetzner VPS** (v1.4.8+); old mini-PC flow retired.
 
-**Volume mounts (prod):**
-| Host path | Container path |
-|------|-----------|
-| `put-a-presentation/v1.1.0/data/` | `/app/data` |
-| `put-a-presentation/v1.1.0/uploads/` | `/app/features/slides/uploads` |
-| `put-a-presentation/v1.1.0/finished-presentations/` | `/finished-presentations` |
+- **Dockerfile:** `builder/Dockerfile` — Node 20 Alpine, `npm install --omit=dev`, `node server.js`
+- **Dev compose:** `docker-compose.yml` (project root) — builds from source, mounts `builder/data/` + `builder/features/slides/uploads/` + `finished-presentations/`
+- **Image registry:** `ghcr.io/alexochoac/app-presentation-builder` — v1.4.8 current, latest tag follows master
+- **Production server:** Hetzner CX (8 GB RAM, Ubuntu 26.04), `aoc-server` (157.90.29.119), SSH via `ssh aoc-server` (Windows OpenSSH config)
+- **Prod stack:** `/home/alex/app-stack/` on VPS — Docker Compose project `put-a-presentation` with 3 services:
+  - `builder` — the app (image pinned to version tag, e.g. `v1.4.8`)
+  - `umami` — analytics (pinned by image digest; see project memory `project_vps_server.md`)
+  - `umami-db` — PostgreSQL for umami (named volume `umami-db-data`)
+- **Data source:** lives ON the VPS under `app-stack/` (bind mounts: `data/`, `uploads/`, `finished-presentations/`) — persists across releases, NEVER copied
+- **Public access:** Cloudflare Tunnel `aoc-server` routes `put-a-presentation.wbtm.io → builder:3000` and `put-a-presentation-umami.wbtm.io → umami:3000`. Tunnel config in `/home/alex/personal-stack/`; tunnels do NOT change on release.
+- **Release workflow:** documented in `.claude/commands/release.md` (v1.4.8+, VPS-based). ⚠️ Sidebar version label must be updated in 5 HTML files BEFORE `docker build` (baked into image). ⚠️ Run SSH commands via PowerShell (not git bash) — git bash can't read Windows OpenSSH config.
+- **Cloudflare Access:** `/public/*` bypassed (no auth) so published presentations load without login. `/finished/*` auth required.
+
+**Volume mounts (prod VPS):**
+| Host path | Container path | Purpose |
+|-----------|---|---|
+| `/home/alex/app-stack/data/` | `/app/data` | Decks, slides, settings |
+| `/home/alex/app-stack/uploads/` | `/app/features/slides/uploads` | Deck/presentation images |
+| `/home/alex/app-stack/finished-presentations/` | `/finished-presentations` | Frozen output (self-contained HTML) |
+| named volume `umami-db-data` | `/var/lib/postgresql/data` | Analytics database |
 
 ---
 
 ## What's Next
 
 **H-priority (bugs to fix first):**
-1. **Save reliability** — MutationObserver safety net + remove language-guard block (`Issue-H-2026-06-12`)
-2. **Translation Center — HTML formatting** — merge plain text back into English HTML on save (`Issue-H-2026-06-12`)
-3. **Drag-and-drop review** — diagnose pointer-events stacking before fixing (`Issue-H-2026-06-13`)
+1. **Save reliability (H)** — `preview.html` only saves on `input`, `slide-carousel-save`, `slide-image-change`, `beforeunload`. Language guard blocks saves in non-English preview. Root cause in `Issue-H-2026-06-12-builder-slide-editor-save-reliability-inconsistent.md`. Fix: MutationObserver safety net + remove language guard.
+2. **Translation Center — HTML formatting (H)** — `stripHtmlTags()` strips inline HTML before textarea render; plain text saved back, losing bold/italic/spans. Fix: merge plain text back into English HTML structure on save (same as `linesToListHtml()` for lists). `Issue-H-2026-06-12-builder-translation-center-non-list-fields-lose-html-formatting.md`.
+3. **Drag-and-drop review (H)** — list/table row drag handle not reliably clickable; CSS hover overlay competes with pointer events. Needs full diagnosis before fix. `Issue-H-2026-06-13-builder-list-table-components-drag-drop-full-review.md`.
+4. **Gallery overlay not adopting finish style (M)** — checkerboard/light theme not applied to gallery overlays. `Issue-M-2026-06-16-themes-gallery-overlay-not-adopting-finish-style.md`.
 
 **M-priority features:**
-4. **Carousel video support** — add video items to carousel component (`Feature-M-2026-06-14`)
-5. **Universal features detail expand popup** — per-feature expand modal (`Feature-M-2026-06-12`)
-6. **Viewer fullscreen** — native Fullscreen API for published presentations (`Feature-M-2026-06-12`)
-7. **Dashboard — Engagement chart filter** — live-only filter, multi-select dropdown (`Feature-M`)
-8. **Dashboard — Events chart** — slide popularity + time-series + drill-down sub-events
+5. **Customer logo fetch quality upgrade (M)** — add `LOGODEV_TOKEN` to env for real logo.dev API access (vs keyless unavatar). `Improvement-M-2026-06-26-builder-presentation-creation-customer-logo-fetch-upgrade-quality.md`.
+6. **App UI icons standardise (M)** — minimalist icon set across all pages. `Improvement-M-2026-04-30-app-ui-icons-standardise-minimalist.md`.
+7. **fpDelete modal (M)** — replace native `confirm()` with proper modal in builder-ui Finished Presentations delete flow (dashboard already has proper modal).
 
-**L-priority / ideas:**
-9. **Template update notifications** — "Update available" badge in My Library
-10. **App UI icons standardise** — minimalist icon set across all pages
-11. **fpDelete modal** — replace native `confirm()` with proper modal
+**L-priority / Phase 2 planning:**
+8. **Navigation back + force save (L)** — no modal on back navigation. `Idea-L-2026-04-24-builder-navigation-back-force-save-no-modal.md`.
+9. **Database plan — Postgres (L)** — Phase 2 prep: transition from file-based JSON to multi-user Postgres + Supabase. `Idea-L-2026-05-17-infrastructure-database-plan-postgres-for-app.md`.
+10. **Template update notifications (L)** — "Update available" badge in My Library when template author updates a template you're using.
