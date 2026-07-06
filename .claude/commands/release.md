@@ -88,6 +88,17 @@ docker compose up -d builder
 
 Full procedure with prep + verify is the numbered steps below.
 
+> **⚠️ Run VPS/SSH commands through PowerShell, not the Bash (git bash) tool.**
+> The `aoc-server` alias, its `HostName`/`User`, and the `hetzner_personal`
+> IdentityFile live in the **Windows OpenSSH** config (`C:/Users/Alex/.ssh/config`).
+> Git bash's `ssh` doesn't read that config and fails with
+> `Permission denied (publickey)`. Use the **PowerShell tool** for every `ssh aoc-server ...`.
+>
+> Also: pass the remote command as a **single line** (`;`-separated), not with
+> `\`-newline continuations — line-continuations get mangled in transit and
+> break remote `sed` (`unterminated 's' command`). Example:
+> `ssh aoc-server "cd app-stack; sed -i '...' docker-compose.yml; docker compose pull builder; docker compose up -d builder"`
+
 ---
 
 ## Required env vars (lives in `/home/alex/app-stack/.env` on the VPS)
