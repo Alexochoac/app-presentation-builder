@@ -580,6 +580,7 @@
         <div id="engEventsHeader" style="display:none;align-items:center;gap:8px;margin-bottom:10px;">
           <button id="engBackToPageviews" class="views-tab" type="button">&#8592; Pageviews</button>
           <button id="engSubModeBtn" class="views-tab" type="button">Over time</button>
+          <button id="engPopSortBtn" class="views-tab" type="button">Sort: Deck order</button>
         </div>
         <!-- Drill-down header (hidden by default) -->
         <div id="engDrillHeader" style="display:none;align-items:center;gap:8px;margin-bottom:10px;">
@@ -603,7 +604,7 @@
           <canvas id="engBarChart"></canvas>
           <div id="engChartTooltip" style="display:none;position:absolute;z-index:50;border-radius:10px;padding:10px 12px;min-width:200px;max-width:260px;font-size:12px;pointer-events:auto;box-shadow:0 8px 32px rgba(0,0,0,.4);"></div>
         </div>
-        <!-- Events chart (hidden in pageviews mode) -->
+        <!-- Events chart (hidden in pageviews mode). Height grows to fit the drill's ranked bars. -->
         <div id="engEventsChartWrap" style="display:none;position:relative;height:240px;">
           <canvas id="engEventsChart"></canvas>
           <div id="engEventsSpinner" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);">
@@ -1371,6 +1372,7 @@
       var _engDecks      = [];    // list of all decks
       var engMode       = 'pageviews'; // 'pageviews' | 'events'
       var engEventsMode = 'popularity'; // 'popularity' | 'timeseries'
+      var engPopSort    = 'deck';       // popularity bar order: 'deck' (slide order) | 'popularity' (views desc)
       var engDrillSlide = null;  // null | event name string when in drill-down
       var eventsChart   = null;
       var engYMax       = 0;     // y-axis max — grows via niceMax, never shrinks
@@ -1569,7 +1571,7 @@
             var otherData = labels.map(function (_, idx) {
               return rest.reduce(function (s, d) { return s + (d.series[idx] || 0); }, 0);
             });
-            datasets.push({ label: 'Other (' + rest.length + ')', data: otherData, backgroundColor: '#9ca3afcc',
+            datasets.push({ label: 'Other (' + rest.length + ')', data: otherData, backgroundColor: '#9ca3afcc', isOther: true,
               stack: 'pv', borderWidth: 0, borderRadius: 2, borderSkipped: false, maxBarThickness: 42 });
           }
           datasets.push({
@@ -1613,7 +1615,7 @@
               if (!elements || !elements.length) return;
               if (stacked) {
                 var ds = datasets[elements[0].datasetIndex];
-                if (ds && ds.type !== 'line' && String(ds.label).indexOf('Other') !== 0) {
+                if (ds && ds.type !== 'line' && !ds.isOther) {
                   drillToCompany(ds.label);   // company segment → that company's slides
                   return;
                 }
@@ -1950,18 +1952,18 @@
             .catch(function () {});
         } else if (engEventsMode === 'popularity') {
           var bench   = deckBenchmarkContext();
-          var presReq = fetch('/api/analytics/events' + params).then(function (r) { return r.json(); });
+          var presReq = fetch('/api/analytics/events' + params).then(function (r) { return r.json(); }).catch(function () { return {}; });
           if (bench) {
-            // Also fetch the deck's per-slide totals (all its presentations) → per-slide average benchmark.
-            var dp = '?startAt=' + dates.startAt + '&endAt=' + dates.endAt + '&presIds=' + bench.presIds.join(',') + pbCountryParam();
-            var deckReq = fetch('/api/analytics/events' + dp).then(function (r) { return r.json(); }).catch(function () { return {}; });
-            Promise.all([presReq, deckReq]).then(function (res) {
-              if (!res[0].success) return;
-              var benchmark = (res[1] && res[1].success) ? computeDeckBenchmark(res[1].data || [], bench) : null;
+            // Peer benchmark: the deck's OTHER presentations' per-slide totals + active-peer count.
+            var bp = '?startAt=' + dates.startAt + '&endAt=' + dates.endAt + '&presIds=' + bench.peerIds.join(',') + pbCountryParam();
+            var benchReq = fetch('/api/analytics/slide-benchmark' + bp).then(function (r) { return r.json(); }).catch(function () { return {}; });
+            Promise.all([presReq, benchReq]).then(function (res) {
+              if (!res[0].success) { buildPopularityChart([], null); return; }   // primary failed → clear, don't leave stale
+              var benchmark = (res[1] && res[1].success) ? computeDeckBenchmark(res[0].data || [], res[1].data, bench) : null;
               buildPopularityChart(res[0].data || [], benchmark);
             }).catch(function () {});
           } else {
-            presReq.then(function (r) { if (r.success) buildPopularityChart(r.data || [], null); }).catch(function () {});
+            presReq.then(function (r) { buildPopularityChart(r.success ? (r.data || []) : [], null); }).catch(function () {});
           }
         } else {
           showEventsSpinner(true);
@@ -1976,12 +1978,54 @@
         }
       }
 
-      // From deck-wide per-slide view totals → per-slide average (÷ presentations) + headline numbers.
-      function computeDeckBenchmark(deckData, ctx) {
-        var avgBySlide = {}, total = 0;
-        deckData.forEach(function (d) { avgBySlide[d.event] = d.count / ctx.presCount; total += d.count; });
-        return { avgBySlide: avgBySlide, deckTotal: total, avgPerPres: Math.round(total / ctx.presCount),
-                 presCount: ctx.presCount, deckName: ctx.deckName };
+      // Peer benchmark: this presentation's per-slide views (presData) vs the average of the deck's
+      // OTHER presentations. Averages divide by the peers that ACTUALLY had views (not diluted by
+      // inactive ones), and exclude the selected presentation itself. Returns null if no peer data.
+      function computeDeckBenchmark(presData, benchData, ctx) {
+        var active = (benchData && benchData.activePresentations) || 0;
+        if (!active) return null;
+        var avgBySlide = {}, peerTotal = 0;
+        (benchData.perSlide || []).forEach(function (d) { avgBySlide[d.event] = d.count / active; peerTotal += d.count; });
+        var selectedTotal = presData.reduce(function (s, d) { return s + d.count; }, 0);
+        return {
+          avgBySlide:     avgBySlide,                        // per-slide peer average (unrounded)
+          peerAvgPerPres: Math.round(peerTotal / active),    // avg views per other presentation
+          deckTotal:      selectedTotal + peerTotal,         // all deck presentations (this + peers)
+          deckPresCount:  ctx.deckPresCount,
+          deckName:       ctx.deckName
+        };
+      }
+
+      // Same slug rule the publisher uses to set data-slide (server.js): name → lowercase,
+      // non-alphanumerics → '-', trimmed. So the analytics event 'slide-<slug>' matches back here.
+      function slugifySlideName(name) {
+        return String(name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      }
+
+      // The deck currently in scope (explicit deck filter, else the deck of the selected
+      // presentation) → its canonical slide order as { slugToPos: {slug: 0-based}, count }.
+      // Order is taken from the deck presentation with the most visible slides (a full deck copy).
+      // Returns null when there is no single deck context (so the chart falls back to names).
+      function deckSlideOrder() {
+        var deckId = engDeckId;
+        if (deckId === null && engPresIds.length) {
+          var p0 = _engAllLivePres.find(function (p) { return p.id === engPresIds[0]; });
+          deckId = p0 ? p0.deckId : null;
+        }
+        if (deckId === null) return null;
+        var deckPres = _engAllLivePres.filter(function (p) { return p.deckId === deckId; });
+        if (!deckPres.length) return null;
+        var rep = deckPres.reduce(function (best, p) {
+          var n = (p.slides || []).filter(function (s) { return s.visible !== false; }).length;
+          return n > best.n ? { p: p, n: n } : best;
+        }, { p: null, n: -1 }).p;
+        if (!rep) return null;
+        var slugToPos = {}, pos = 0;
+        (rep.slides || []).forEach(function (s) {
+          if (s.visible === false) return;
+          slugToPos[slugifySlideName(s.name || s.id)] = pos++;
+        });
+        return { slugToPos: slugToPos, count: pos };
       }
 
       function buildPopularityChart(data, benchmark) {
@@ -1991,17 +2035,46 @@
         if (eventsChart) { eventsChart.destroy(); eventsChart = null; }
         var popLegend = document.getElementById('engEventsLegend');
         popLegend.innerHTML = ''; popLegend.style.display = 'none';
+        var popWrap = document.getElementById('engEventsChartWrap');
+        if (popWrap) popWrap.style.height = '240px';   // reset the drill's grown height
         if (!data.length) return;
         var tickColor = dark ? 'rgba(255,255,255,.8)' : 'rgba(0,0,0,.6)';
-        var labels = data.map(function (d) { return d.label; });
+
+        // Ordering. Default = deck slide order (bars numbered 1..N by their place in the deck);
+        // toggle = most-viewed first. data arrives from the server sorted by views desc; work on a
+        // COPY and re-sort so every derived array (colors, borders, benchmark) stays index-aligned.
+        var order = deckSlideOrder();
+        var posOf = function (d) {
+          var slug = d.event.replace(/^slide-/, '');
+          return (order && order.slugToPos[slug] != null) ? order.slugToPos[slug] : Infinity;
+        };
+        data = data.slice();
+        if (engPopSort === 'deck' && order) {
+          data.sort(function (a, b) {
+            var pa = posOf(a), pb = posOf(b);
+            if (pa !== pb) return pa - pb;   // deck position first…
+            return b.count - a.count;        // …slides not in the deck order fall to the end, by views
+          });
+        }
+        // Labels: deck-position numbers when we have a deck (readable + compact); the slide name
+        // moves to the tooltip title. No deck context → keep the names on the axis.
+        var labels = data.map(function (d) {
+          if (!order) return d.label;
+          var pos = order.slugToPos[d.event.replace(/^slide-/, '')];
+          return pos != null ? String(pos + 1) : '·';   // '·' = slide not in the deck's current order
+        });
         var counts = data.map(function (d) { return d.count; });
-        // Bars keep their normal colors; slides with no interactions just aren't clickable
-        // (handled in onClick/onHover below), not greyed out.
+        // Bars keep their normal colors. Slides that HAVE in-slide interactions (clickable → drill)
+        // get a ring: a solid outline tracing the bar's perimeter as a drill affordance. Slides
+        // with no interactions get no outline (not greyed out) — see onClick/onHover below.
         var bgColors = data.map(function (_, i) { return SLIDE_COLORS[i % SLIDE_COLORS.length] + 'bf'; });
         var brColors = data.map(function (_, i) { return SLIDE_COLORS[i % SLIDE_COLORS.length]; });
+        var borderWidths = data.map(function (d) { return d.interactions ? 2 : 0; });
         var maxes = counts.slice();
         if (benchmark) data.forEach(function (d) { maxes.push(benchmark.avgBySlide[d.event] || 0); });
-        var yMax = updateYMax(maxes.reduce(function (m, v) { return Math.max(m, v); }, 0));
+        // Local nice max — the events charts must NOT feed the shared, monotonic engYMax (which
+        // belongs to the daily pageviews chart), or the benchmark would inflate that chart's axis.
+        var yMax = niceMax(maxes.reduce(function (m, v) { return Math.max(m, v); }, 0));
 
         // Idea 1 benchmark: draw the deck-average tick across each slide's bar.
         var avgTicks = {
@@ -2024,7 +2097,7 @@
           type: 'bar',
           data: {
             labels: labels,
-            datasets: [{ label: 'Slide views', data: counts, backgroundColor: bgColors, borderColor: brColors, borderWidth: 0, borderRadius: 3, borderSkipped: false, maxBarThickness: 48 }]
+            datasets: [{ label: 'Slide views', data: counts, backgroundColor: bgColors, borderColor: brColors, borderWidth: borderWidths, borderRadius: 3, borderSkipped: false, maxBarThickness: 48 }]
           },
           options: {
             responsive: true, maintainAspectRatio: false,
@@ -2054,12 +2127,17 @@
                 borderColor: dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)',
                 borderWidth: 1, padding: 10, cornerRadius: 8,
                 callbacks: {
+                  title: function (items) {
+                    var d = items.length ? data[items[0].dataIndex] : null;   // axis shows a number → name goes here
+                    if (!d) return '';
+                    return order ? (labels[items[0].dataIndex] + '. ' + d.label) : d.label;
+                  },
                   afterBody: function (items) {
                     if (!benchmark || !items.length) return '';
-                    var d = data[items[0].dataIndex], avg = Math.round(benchmark.avgBySlide[d.event] || 0);
-                    if (!avg) return 'Deck avg: 0';
+                    var d = data[items[0].dataIndex], avg = benchmark.avgBySlide[d.event] || 0;   // unrounded
+                    if (avg <= 0) return 'Others’ avg: 0';
                     var pct = Math.round((d.count - avg) / avg * 100);
-                    return 'Deck avg: ' + avg + '  (' + (pct >= 0 ? '+' : '') + pct + '%)';
+                    return 'Others’ avg: ' + (Math.round(avg * 10) / 10) + '  (' + (pct >= 0 ? '+' : '') + pct + '%)';
                   },
                   footer: function (items) {
                     var d = items.length ? data[items[0].dataIndex] : null;
@@ -2069,7 +2147,7 @@
               }
             },
             scales: {
-              x: { grid: { display: false }, ticks: { color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 }, maxRotation: 30 }, border: { display: false } },
+              x: { grid: { display: false }, ticks: { color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 }, maxRotation: order ? 0 : 30, autoSkip: !order }, border: { display: false } },
               y: { beginAtZero: true, max: yMax, grid: { color: dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)' }, ticks: { precision: 0, color: dark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.4)', font: { size: 11 } }, border: { display: false } }
             }
           },
@@ -2080,8 +2158,8 @@
         if (benchmark) {
           popLegend.style.display = 'flex';
           popLegend.innerHTML =
-            '<span style="display:flex;align-items:center;gap:5px;"><span style="width:14px;height:0;border-top:2px solid ' + tickColor + ';display:inline-block;"></span>Deck average per slide</span>' +
-            '<span style="opacity:.75;">Deck “' + benchmark.deckName + '”: ' + benchmark.deckTotal + ' views · ' + benchmark.presCount + ' presentations · avg ' + benchmark.avgPerPres + '/pres</span>';
+            '<span style="display:flex;align-items:center;gap:5px;"><span style="width:14px;height:0;border-top:2px solid ' + tickColor + ';display:inline-block;"></span>Other presentations’ average per slide</span>' +
+            '<span style="opacity:.75;">Deck “' + escHtml(benchmark.deckName) + '”: ' + benchmark.deckTotal + ' views · ' + benchmark.deckPresCount + ' presentations · others avg ' + benchmark.peerAvgPerPres + '/pres</span>';
         }
       }
 
@@ -2090,6 +2168,8 @@
         if (!canvas) return;
         var dark = document.documentElement.getAttribute('data-theme') !== 'light';
         if (eventsChart) { eventsChart.destroy(); eventsChart = null; }
+        var tsWrap = document.getElementById('engEventsChartWrap');
+        if (tsWrap) tsWrap.style.height = '240px';   // reset the drill's grown height
         var legend = document.getElementById('engEventsLegend');
         legend.innerHTML = '';
         legend.style.display = (data.series && data.series.length) ? 'flex' : 'none';
@@ -2164,102 +2244,99 @@
         return String(raw).split('-')[0].toLowerCase() || 'other';
       }
 
-      // Drill view: ONE slide's in-slide interactions as a doughnut.
-      // Top-N individual slices + a collapsed "Other" (its tooltip lists the tail,
-      // descending). Sliced by interaction, colored by component, total in the center.
+      // ── Interaction drill (one slide) ────────────────────────────────────────────
+      // ONE slide's in-slide interactions as a ranked horizontal bar chart: one bar per
+      // interaction, sorted most→least, colored by component, with the raw count and its share
+      // of the slide's total interactions drawn at the bar end. Top N shown; the rest collapse
+      // into a single "Other" bar. A component color key sits below.
+      var DRILL_TOP_N = 9;
+      function capitalize(s) { s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
+
+      // Human interaction name out of a raw label '<component>-<name>-<action>'.
+      function interactionName(raw) {
+        var parts = String(raw || '').split('-');
+        return parts.length >= 3 ? parts.slice(1, -1).join('-').trim() : String(raw || '');
+      }
+
       function buildDrillChart(data) {
         var canvas = document.getElementById('engEventsChart');
         if (!canvas) return;
         var dark = document.documentElement.getAttribute('data-theme') !== 'light';
         if (eventsChart) { eventsChart.destroy(); eventsChart = null; }
         var legend = document.getElementById('engEventsLegend');
-        legend.innerHTML = '';
-        legend.style.display = 'none';
-        if (!data.length) { showEventsPrompt('No in-slide interactions recorded for this slide yet'); return; }
+        legend.innerHTML = ''; legend.style.display = 'none';
+        var wrap = document.getElementById('engEventsChartWrap');
+        if (!data.length) { if (wrap) wrap.style.height = '240px'; showEventsPrompt('No in-slide interactions recorded for this slide yet'); return; }
+        showEventsPrompt('');
 
-        // Server returns data sorted by count desc. Keep the top N, collapse the rest.
-        var TOP_N = 7;
-        var top  = data.slice(0, TOP_N);
-        var tail = data.slice(TOP_N);
         var total = data.reduce(function (s, d) { return s + d.count; }, 0);
+        var top = data.slice(0, DRILL_TOP_N), tail = data.slice(DRILL_TOP_N);
+        var rows = top.map(function (d) { return { name: interactionName(d.raw), count: d.count, component: componentOf(d.raw), isOther: false }; });
+        if (tail.length) rows.push({ name: 'Other (' + tail.length + ' more)', count: tail.reduce(function (s, d) { return s + d.count; }, 0), component: 'other', isOther: true, tail: tail });
+        var colors = rows.map(function (r) { return COMPONENT_COLORS[r.component] || OTHER_COLOR; });
 
-        var slices = top.map(function (d) {
-          return { label: d.label, count: d.count, component: componentOf(d.raw), isOther: false };
-        });
-        if (tail.length) {
-          var tailTotal = tail.reduce(function (s, d) { return s + d.count; }, 0);
-          slices.push({ label: 'Other (' + tail.length + ' more)', count: tailTotal, component: 'other', isOther: true, tail: tail });
-        }
-        var colors = slices.map(function (s) {
-          return s.isOther ? OTHER_COLOR : (COMPONENT_COLORS[s.component] || OTHER_COLOR);
-        });
+        // Grow the chart so bars stay readable no matter how many interactions there are.
+        if (wrap) wrap.style.height = Math.min(Math.max(rows.length * 34 + 26, 150), 400) + 'px';
 
-        // Draws the slide's total event count in the doughnut hole.
-        var centerText = {
-          id: 'drillCenterText',
-          afterDraw: function (chart) {
-            var meta = chart.getDatasetMeta(0);
-            if (!meta || !meta.data || !meta.data[0]) return;
-            var ctx = chart.ctx, x = meta.data[0].x, y = meta.data[0].y;
-            ctx.save();
-            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            ctx.fillStyle = dark ? '#fff' : '#000';
-            ctx.font = '600 22px sans-serif';
-            ctx.fillText(String(total), x, y - 6);
-            ctx.fillStyle = dark ? 'rgba(255,255,255,.5)' : 'rgba(0,0,0,.5)';
-            ctx.font = '11px sans-serif';
-            ctx.fillText('events', x, y + 14);
+        var tickColor = dark ? 'rgba(255,255,255,.75)' : 'rgba(0,0,0,.65)';
+
+        // Draw "<count>  <pct>%" just past the end of each bar.
+        var valueLabels = {
+          id: 'drillBarValues',
+          afterDatasetsDraw: function (chart) {
+            var meta = chart.getDatasetMeta(0), ctx = chart.ctx;
+            ctx.save(); ctx.textBaseline = 'middle'; ctx.textAlign = 'left'; ctx.font = '600 11px sans-serif';
+            ctx.fillStyle = dark ? 'rgba(255,255,255,.9)' : 'rgba(0,0,0,.7)';
+            rows.forEach(function (r, i) {
+              var bar = meta.data[i]; if (!bar) return;
+              var pct = total ? Math.round(r.count / total * 100) : 0;
+              ctx.fillText(r.count + '  ' + pct + '%', bar.x + 8, bar.y);
+            });
             ctx.restore();
           }
         };
 
         eventsChart = new Chart(canvas, {
-          type: 'doughnut',
+          type: 'bar',
           data: {
-            labels: slices.map(function (s) { return s.label; }),
-            datasets: [{
-              data: slices.map(function (s) { return s.count; }),
-              backgroundColor: colors,
-              borderColor: dark ? '#1c1c1e' : '#fff',
-              borderWidth: 2,
-              hoverOffset: 6
-            }]
+            labels: rows.map(function (r) { return r.name; }),
+            datasets: [{ data: rows.map(function (r) { return r.count; }), backgroundColor: colors.map(function (c) { return c + 'd9'; }), borderColor: colors, borderWidth: 0, borderRadius: 4, borderSkipped: false, maxBarThickness: 26 }]
           },
           options: {
+            indexAxis: 'y',
             responsive: true, maintainAspectRatio: false,
-            cutout: '62%',
+            layout: { padding: { right: 52 } },   // room for the value label past the longest bar
             plugins: {
               legend: { display: false },
               tooltip: {
-                backgroundColor: dark ? '#1c1c1e' : '#fff',
-                titleColor: dark ? '#fff' : '#000',
+                backgroundColor: dark ? '#1c1c1e' : '#fff', titleColor: dark ? '#fff' : '#000',
                 bodyColor: dark ? 'rgba(255,255,255,.7)' : 'rgba(0,0,0,.7)',
                 borderColor: dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)',
                 borderWidth: 1, padding: 10, cornerRadius: 8,
                 callbacks: {
-                  label: function (ctx) {
-                    var s = slices[ctx.dataIndex];
-                    var pct = total ? Math.round(s.count / total * 100) : 0;
-                    return ' ' + s.count + ' events (' + pct + '%)';
-                  },
+                  title: function (items) { var r = items.length ? rows[items[0].dataIndex] : null; return r ? (r.isOther ? r.name : r.name + ' (' + r.component + ')') : ''; },
+                  label: function (ctx) { var r = rows[ctx.dataIndex], pct = total ? Math.round(r.count / total * 100) : 0; return ' ' + r.count + ' events (' + pct + '%)'; },
                   afterBody: function (items) {
-                    if (!items.length) return '';
-                    var s = slices[items[0].dataIndex];
-                    if (!s.isOther) return '';
-                    var lines = s.tail.slice(0, 12).map(function (d) { return '• ' + d.label + ': ' + d.count; });
-                    if (s.tail.length > 12) lines.push('…and ' + (s.tail.length - 12) + ' more');
+                    var r = items.length ? rows[items[0].dataIndex] : null;
+                    if (!r || !r.isOther) return '';
+                    var lines = r.tail.slice(0, 12).map(function (d) { return '• ' + interactionName(d.raw) + ': ' + d.count; });
+                    if (r.tail.length > 12) lines.push('…and ' + (r.tail.length - 12) + ' more');
                     return lines;
                   }
                 }
               }
+            },
+            scales: {
+              x: { beginAtZero: true, grid: { color: dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)' }, ticks: { precision: 0, color: tickColor, font: { size: 11 } }, border: { display: false } },
+              y: { grid: { display: false }, ticks: { color: tickColor, font: { size: 11 }, autoSkip: false, callback: function (v) { var s = this.getLabelForValue(v); return s.length > 24 ? s.slice(0, 23) + '…' : s; } }, border: { display: false } }
             }
           },
-          plugins: [centerText]
+          plugins: [valueLabels]
         });
 
-        // Legend maps each color to its component kind (only kinds present), plus Other.
+        // Component color key (kinds present), plus Other.
         var present = {};
-        slices.forEach(function (s) { if (!s.isOther) present[s.component] = true; });
+        rows.forEach(function (r) { if (!r.isOther) present[r.component] = true; });
         legend.style.display = 'flex';
         Object.keys(present).forEach(function (comp) { addDrillLegendDot(legend, COMPONENT_COLORS[comp] || OTHER_COLOR, comp); });
         if (tail.length) addDrillLegendDot(legend, OTHER_COLOR, 'Other');
@@ -2278,6 +2355,16 @@
       function updateSubModeBtn() {
         var btn = document.getElementById('engSubModeBtn');
         if (btn) btn.textContent = engEventsMode === 'popularity' ? 'Over time' : 'Popularity';
+        updatePopSortBtn();
+      }
+
+      // The deck-order / most-viewed toggle only applies to the popularity bars, not the
+      // over-time line — hide it in timeseries mode.
+      function updatePopSortBtn() {
+        var btn = document.getElementById('engPopSortBtn');
+        if (!btn) return;
+        btn.textContent = engPopSort === 'deck' ? 'Sort: Deck order' : 'Sort: Most viewed';
+        btn.style.display = engEventsMode === 'popularity' ? '' : 'none';
       }
 
       function switchEngMode(mode) {
@@ -2288,7 +2375,7 @@
         document.getElementById('engLegend').style.display          = isEvents ? 'none' : 'flex';
         document.getElementById('engKpiStrip').style.display        = isEvents ? 'none' : 'grid';
         document.getElementById('engBarChartWrap').style.display    = isEvents ? 'none' : '';
-        document.getElementById('engEventsChartWrap').style.display = isEvents ? ''     : 'none';
+        document.getElementById('engEventsChartWrap').style.display = isEvents ? '' : 'none';
         document.getElementById('engEventsLegend').style.display    = (isEvents && engEventsMode === 'timeseries') ? 'flex' : 'none';
         updateSubModeBtn();
         if (!isEvents) {
@@ -2317,6 +2404,7 @@
 
       // ── Click-to-drill: a company bar → that company's slide popularity ───────────
       function companyKey(p) { return p.customerName || p.presentationName || p.id; }
+      function escHtml(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
       // Programmatically apply a deck selection (mirrors the deck dropdown), used when drilling.
       function applyDeckSelection(deckId) {
@@ -2384,15 +2472,16 @@
         p.appendChild(wrap);
       }
 
-      // Deck benchmark context for the slide-popularity view: when the selected presentation(s)
-      // belong to a deck that has OTHER presentations, we overlay the deck's per-slide average.
-      // Returns { presIds, presCount, deckName } or null.
+      // Deck benchmark context: only for a SINGLE selected presentation, compared against the deck's
+      // OTHER presentations (peers). Same scale (one presentation's bars vs a peer average), self
+      // excluded. Returns { peerIds, deckPresCount, deckName } or null.
       function deckBenchmarkContext() {
-        if (engDeckId === null || engPresIds.length === 0) return null;
+        if (engDeckId === null || engPresIds.length !== 1) return null;
         var deckPres = _engAllLivePres.filter(function (p) { return p.deckId === engDeckId; });
-        if (deckPres.length <= engPresIds.length) return null;   // no others to benchmark against
+        var peers = deckPres.filter(function (p) { return p.id !== engPresIds[0]; });
+        if (!peers.length) return null;   // no other presentations to benchmark against
         var deck = _engDecks.find(function (d) { return d.id === engDeckId; });
-        return { presIds: deckPres.map(function (p) { return p.id; }), presCount: deckPres.length, deckName: deck ? deck.name : 'deck' };
+        return { peerIds: peers.map(function (p) { return p.id; }), deckPresCount: deckPres.length, deckName: deck ? deck.name : 'deck' };
       }
 
       // ── Date range dropdown ───────────────────────────────────────
@@ -2468,7 +2557,15 @@
         loadEventsChart();
       });
 
-      // ── Drill-down back (returns to popularity) ───────────────────
+      // ── Popularity bar order (Deck order ↔ Most viewed) ──
+      document.getElementById('engPopSortBtn').addEventListener('click', function () {
+        engPopSort = engPopSort === 'deck' ? 'popularity' : 'deck';
+        updatePopSortBtn();
+        if (eventsChart) { eventsChart.destroy(); eventsChart = null; }
+        loadEventsChart();
+      });
+
+      // ── Drill-down back (returns to slide popularity) ─────────────
       document.getElementById('engDrillBack').addEventListener('click', function () {
         engDrillSlide = null;
         document.getElementById('engDrillHeader').style.display = 'none';

@@ -1216,6 +1216,40 @@ function dbSlideEvents(urlPaths, startMs, endMs, eventNames, opts, cb) {
   );
 }
 
+// Deck benchmark: per-slide VIEW totals across a set of (peer) presentations, PLUS the number of
+// those presentations that actually had views — so the client can average over ACTIVE peers only
+// (not diluted by presentations with zero views). Result: { perSlide:[{event,count}], activePresentations }.
+function dbSlideBenchmark(urlPaths, startMs, endMs, opts, cb) {
+  var db = getUmamiDb();
+  if (!db || !urlPaths.length) return cb(null, { perSlide: [], activePresentations: 0 });
+  var siteId = null;
+  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  if (!siteId) return cb(null, { perSlide: [], activePresentations: 0 });
+  var params = [siteId, urlPaths, startMs, endMs];
+  var cc = countrySql(opts, params.length + 1);
+  params = params.concat(cc.params);
+  db.query(
+    'WITH v AS (' +
+    '  SELECT we.url_path AS url_path, we.event_name AS event_name ' +
+    '  FROM website_event we ' +
+    "  JOIN event_data ed ON ed.website_event_id = we.event_id AND ed.data_key = 'label' AND ed.string_value LIKE '%-view'" + cc.join + ' ' +
+    "  WHERE we.website_id = $1 AND we.url_path = ANY($2) AND we.event_type = 2 AND we.event_name LIKE 'slide-%' " +
+    '    AND we.created_at >= to_timestamp($3::bigint / 1000.0) ' +
+    '    AND we.created_at <  to_timestamp($4::bigint / 1000.0)' + cc.where +
+    ') ' +
+    'SELECT event_name, COUNT(*) AS cnt, (SELECT COUNT(DISTINCT url_path) FROM v) AS active FROM v GROUP BY event_name',
+    params,
+    function (err, result) {
+      if (err) return cb(err);
+      var rows = result.rows || [];
+      cb(null, {
+        perSlide: rows.map(function (r) { return { event: r.event_name, count: parseInt(r.cnt, 10) }; }),
+        activePresentations: rows.length ? parseInt(rows[0].active, 10) : 0
+      });
+    }
+  );
+}
+
 // Returns day-by-day slide VIEW counts per event_name (the "Over time" sub-mode).
 // Counts only '<slide name>-view' events, matching the popularity chart (not interactions).
 // Result: { days: ['2026-05-01', ...], series: [{ event, label, values: [N, ...] }] }
@@ -3319,6 +3353,26 @@ app.get('/api/analytics/events', function (req, res) {
     if (targets.length === 0) return res.json({ success: true, data: [] });
     var urlPaths = targets.map(function (p) { return '/public/' + p.id + '/'; });
     dbSlideEvents(urlPaths, startAt, endAt, null, parseCountryOpts(req), function (err, data) {
+      if (err) return res.status(500).json({ success: false, error: err.message });
+      res.json({ success: true, data: data });
+    });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// GET /api/analytics/slide-benchmark?startAt=<ms>&endAt=<ms>&presIds=<peer ids>
+// Per-slide view totals across the given (peer) presentations + how many of them had any views.
+// Powers the deck-average benchmark on the slide-popularity chart.
+app.get('/api/analytics/slide-benchmark', function (req, res) {
+  try {
+    var pdata     = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var startAt   = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
+    var endAt     = parseInt(req.query.endAt)   || Date.now();
+    var livePres  = (pdata.presentations || []).filter(function (p) { return p.publishedAt && !p.archivedAt; });
+    var requested = req.query.presIds ? req.query.presIds.split(',').map(function (s) { return s.trim(); }) : null;
+    var targets   = requested ? livePres.filter(function (p) { return requested.indexOf(p.id) !== -1; }) : livePres;
+    if (targets.length === 0) return res.json({ success: true, data: { perSlide: [], activePresentations: 0 } });
+    var urlPaths = targets.map(function (p) { return '/public/' + p.id + '/'; });
+    dbSlideBenchmark(urlPaths, startAt, endAt, parseCountryOpts(req), function (err, data) {
       if (err) return res.status(500).json({ success: false, error: err.message });
       res.json({ success: true, data: data });
     });
