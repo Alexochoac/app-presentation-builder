@@ -24,17 +24,22 @@ real clients. Uploads stay on VPS disk; Supabase Storage is Phase 6 (optional, l
 - [x] Add URL + publishable + secret keys to builder/.env (gitignored) + document in .env.example
 - [x] Verify live connection
 
-### Phase 2 — Schema (all tables, one migration)
-- [ ] Write builder/scripts/schema.sql: teams (seed default), settings, decks, user_active_deck,
+### Phase 2 — Schema (all tables, one migration) ✅ DONE (2026-07-11)
+- [x] Write builder/scripts/schema.sql: teams (seed default), settings, decks, user_active_deck,
       templates, languages, slide_library, deck_slide_edits, deck_slides, deck_translation_meta,
       deck_translations, presentations, presentation_events
-- [ ] team_id on every business table now; string IDs kept as PKs; JSONB only for dynamic blobs
-- [ ] Run in Supabase SQL editor; confirm tables + auto-RLS present
+- [x] team_id on every business table now; string IDs kept as PKs; JSONB only for dynamic blobs
+- [x] Run in Supabase SQL editor; confirmed all 13 tables + default team seeded
+- [x] Grant service_role access (we chose "don't auto-expose tables" at setup; grants added to schema.sql)
 
-### Phase 3 — Import script
-- [ ] Build builder/scripts/import-to-supabase.js (service_role key, idempotent upserts, FK order,
-      --dry-run, per-table counts, validation pass that deep-compares Postgres vs source JSON)
-- [ ] Non-destructive: never delete JSON; keep as backup until verified
+### Phase 3 — Import script ✅ DONE (2026-07-11)
+- [x] Build builder/scripts/import-to-supabase.js (service_role key, idempotent upserts, FK order,
+      --dry-run, per-table counts, validation pass comparing Postgres counts vs source)
+- [x] Non-destructive: never delete JSON; keep as backup until verified
+- [x] Imported + verified all 13 tables (827 translation rows, 21 deck_slide_edits, 5 presentations)
+- [x] Orphan cleanup: skipped stale edits/presentation refs from 2 deleted decks (qm51y, k0md2)
+- [x] Schema tweaks found during import: added archived_at (presentations), favorites
+      (deck_translation_meta); dropped presentations.deck_id FK so frozen snapshots outlive decks
 
 ### Phase 4 — Write-through cache module
 - [ ] Build builder/lib/store.js: load all tables into memory on boot, sync reads from cache,
