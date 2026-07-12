@@ -50,13 +50,61 @@ real clients. Uploads stay on VPS disk; Supabase Storage is Phase 6 (optional, l
 - [x] Not wired into server.js yet (app still reads JSON) — cutover is Phase 5, slice by slice.
 
 ### Phase 5 — Domain cutover (vertical slices, verify + approve each before next)
-- [ ] Slice 0 — foundation: teams/languages/templates (import + cache helpers)
-- [ ] Slice 1 — settings: swap readSettings/writeSettings; verify render byte-identical
-- [ ] Slice 2 — decks: decks + deck_slides + translations (normalized, drop `previous`) +
-      user_active_deck; swap deck/translation helpers; verify active-deck persists + render identical
-- [ ] Slice 3 — slide library + deckEdits split: verify a per-deck edit writes ONE deck_slide_edits
-      row and leaves the library base row untouched (proves issue #1 fixed)
-- [ ] Slice 4 — presentations + events table; verify publish/republish appends events, HTML on disk
+
+Tables + data are ALREADY done (Phases 2–3). So each slice = **swap helper bodies in
+server.js (reads, then writes) → verify → get approval → next.** Every slice starts with a
+read-before-swap pass to confirm its exact call sites (line numbers drift). All 5 slices add
+their domain helpers on top of store.js's cache + write queue (Phase 4). Reads stay synchronous;
+writes update cache synchronously then enqueueUpsert/enqueueDelete to Postgres. JSON files stay
+as rollback backup until every slice is verified in prod.
+
+**DECISION carried into each slice — writes:** once reads come from cache, writes MUST update
+cache + DB or the cache goes stale. Open question per slice: also keep writing the JSON file
+(dual-write, safest rollback) vs. write cache+DB only (JSON frozen as pre-migration backup).
+Decide at the top of Slice 0 and apply consistently.
+
+- [ ] **Slice 0 — foundation: languages + templates** (teams already seeded; canvas store
+      `slide-templates.json` is EMPTY + out of scope — leave on JSON)
+  - [x] Read-before-swap: sites confirmed 2026-07-12 (line refs in the steps below)
+  - [ ] Add `getTemplate(id)` + `getLanguages()` helpers (read from `store.cache`)
+  - [ ] Swap `resolveTemplate()` body (server.js:1027) → `cache.templates.get(id)` — covers all
+        9 resolver call sites (81, 454, 1676, 1935, 2579, 2642, 4240, 4513, 4631)
+  - [ ] Swap the ~9 direct catalog reads (`readFileSync(TEMPLATE_CATALOG_PATH)`: 1642, 3987,
+        4040, 4081, 4095, 4113, 4241, 4275, 4296) → cache
+  - [ ] Swap the 3 language reads (`LANGUAGES_PATH`: 4788, 4848, 5039) → `cache.languages`
+        (static, read-only)
+  - [ ] Cut over 5 template writes (create/edit/delete: 4070, 4085, 4103, 4122, 4279) →
+        cache + `enqueueUpsert('templates', …)` — **first real use of the write queue**
+  - [ ] Verify: template resolution renders identically; language dropdowns populate; create/
+        edit/delete a template → row updates in Postgres + reflects live without reboot
+- [ ] **Slice 1 — settings** (singleton → one team row)
+  - [ ] Read-before-swap: locate readSettings/writeSettings (plan ref server.js:1493) + call sites
+  - [ ] Swap `readSettings` → `cache.settings.get(TEAM)`; `writeSettings` → cache + upsert
+  - [ ] Verify: `GET /api/settings` byte-identical; edit a logo → row updates → render unchanged
+        (HTML diff before/after)
+- [ ] **Slice 2 — decks + deck_slides + translations + user_active_deck**
+  - [ ] Read-before-swap: decks/translation helpers (plan ref server.js:1842–1912, ~4738);
+        grep `.previous` to confirm only the dirty-check reads it before relying on the drop
+  - [ ] Swap readDecks/writeDecks/readDeckById/writeDeckById/getDeckConfig/getActiveDeckId +
+        translation helpers; `getActiveDeckId` reads `user_active_deck` for the sentinel user
+        (signature unchanged)
+  - [ ] Verify: deck list matches; active-deck switch persists across reboot; deck preview render
+        byte-identical; an English edit flips the right `dirty` flags
+- [ ] **Slice 3 — slide library + deckEdits split**
+  - [ ] Read-before-swap: the ~27 inline `readFileSync(LIBRARY_PATH)` reads + ~15 writes
+  - [ ] Add readLibrary/writeLibrarySlide/readDeckSlideEdits/writeDeckSlideEdits; `resolveSlideEdits`
+        reads `deck_slide_edits` from cache — **all-or-nothing, no blend**
+  - [ ] Verify: library list identical; a per-deck edit writes ONE `deck_slide_edits` row and
+        leaves the library base row untouched (**proves issue #1 fixed**); render every slide of
+        every deck and diff HTML vs pre-migration
+- [ ] **Slice 4 — presentations + events table**
+  - [ ] Read-before-swap: the ~24 read / ~11 write inline sites; `buildFrozenPresentation`
+        (plan ref server.js:2339, async POST-only) swapped last
+  - [ ] Add readPresentations/readPresentationById/writePresentation/appendPresentationEvent
+  - [ ] Verify: list + detail identical; publish → row + `published` event + frozen HTML on disk;
+        republish → `replaced_at` + appended `republished` event (prior events NOT overwritten —
+        **proves the events-table win**)
+- [ ] **Wrap-up:** all slices verified in prod → archive JSON to `data/_migrated-backup/` (not delete)
 
 ### Later phases (separate tasks, NOT this one)
 - [ ] Phase 3 (auth) — Supabase Auth + registration + Postgres-backed sessions
