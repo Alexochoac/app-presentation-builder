@@ -41,10 +41,13 @@ real clients. Uploads stay on VPS disk; Supabase Storage is Phase 6 (optional, l
 - [x] Schema tweaks found during import: added archived_at (presentations), favorites
       (deck_translation_meta); dropped presentations.deck_id FK so frozen snapshots outlive decks
 
-### Phase 4 — Write-through cache module
-- [ ] Build builder/lib/store.js: load all tables into memory on boot, sync reads from cache,
+### Phase 4 — Write-through cache module ✅ DONE (2026-07-12)
+- [x] Build builder/lib/store.js: load all tables into memory on boot, sync reads from cache,
       writes update cache + serialized per-table Postgres upsert queue, error logging,
       // MULTI-INSTANCE cache-invalidation marker
+- [x] Smoke-tested loadAll(): all 13 tables load, counts match verified import
+      (827 translations, 21 deck_slide_edits, 5 presentations). Write queue built, exercised in Phase 5.
+- [x] Not wired into server.js yet (app still reads JSON) — cutover is Phase 5, slice by slice.
 
 ### Phase 5 — Domain cutover (vertical slices, verify + approve each before next)
 - [ ] Slice 0 — foundation: teams/languages/templates (import + cache helpers)
