@@ -58,10 +58,11 @@ their domain helpers on top of store.js's cache + write queue (Phase 4). Reads s
 writes update cache synchronously then enqueueUpsert/enqueueDelete to Postgres. JSON files stay
 as rollback backup until every slice is verified in prod.
 
-**DECISION carried into each slice — writes:** once reads come from cache, writes MUST update
-cache + DB or the cache goes stale. Open question per slice: also keep writing the JSON file
-(dual-write, safest rollback) vs. write cache+DB only (JSON frozen as pre-migration backup).
-Decide at the top of Slice 0 and apply consistently.
+**DECISION (2026-07-12) — writes = cache + DB only, JSON frozen.** Once a domain cuts over,
+writes update `store.cache` + `enqueueUpsert` to Postgres; the JSON file is NOT written (frozen
+pre-migration snapshot). Postgres is the source of truth from cutover on. **Rollback caveat:**
+reverting a slice means pointing reads back at the frozen JSON, so any edits made AFTER cutover
+exist only in the DB and would be lost on rollback → verify each slice THOROUGHLY before the next.
 
 - [ ] **Slice 0 — foundation: languages + templates** (teams already seeded; canvas store
       `slide-templates.json` is EMPTY + out of scope — leave on JSON)

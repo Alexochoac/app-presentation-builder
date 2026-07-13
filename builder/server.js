@@ -11,6 +11,7 @@ const session  = require('express-session');
 const { requireAuth, registerAuthRoutes } = require('./features/auth/auth');
 const { translate } = require('./lib/translator');
 const { generateHtml } = require('./lib/template-generator');
+const store = require('./lib/store'); // write-through Supabase cache (Phase 5 cutover, slice by slice)
 
 // ── Deployment config ─────────────────────────────────────────────────────────
 // REPO_ROOT: path to the git repo root — used for writing finished-presentations.
@@ -5565,8 +5566,16 @@ app.post('/api/clone-slide', function (req, res) {
 // deck it seeded from data/deck.json — Step H Tier 2. The rebuild is complete and
 // deck-rebuild is the sole deck; re-running the migration would resurrect default.)
 
-app.listen(PORT, function () {
-  console.log('Builder running at http://localhost:' + PORT);
-  console.log('Preview:  http://localhost:' + PORT + '/builder/preview.html');
-  setupUmamiWebsite();
+// Load the Supabase cache BEFORE serving — reads will come from it slice by
+// slice (Phase 5). Fail fast if it can't load: serving with an empty cache
+// would break every migrated read. (loadAll retries once for transient skew.)
+store.loadAll().then(function () {
+  app.listen(PORT, function () {
+    console.log('Builder running at http://localhost:' + PORT);
+    console.log('Preview:  http://localhost:' + PORT + '/builder/preview.html');
+    setupUmamiWebsite();
+  });
+}).catch(function (err) {
+  console.error('[startup] FATAL: could not load data cache from Supabase —', err.message);
+  process.exit(1);
 });

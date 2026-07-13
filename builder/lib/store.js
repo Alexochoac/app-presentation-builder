@@ -78,13 +78,13 @@ async function fetchAll(table, orderCol) {
   return rows;
 }
 
-// Fill the cache from Postgres. Call once on boot BEFORE serving requests.
-async function loadAll() {
-  const [
-    settings, templates, languages, decks, library, activeDeck,
-    deckSlides, deckSlideEdits, translationMeta, translations,
-    presentations, events,
-  ] = await Promise.all([
+// small delay (used to ride out the transient "JWT issued at future" clock skew)
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Pull every table in parallel. Retried once by loadAll() because a cold boot
+// can hit a transient clock-skew rejection ("JWT issued at future").
+function fetchEverything() {
+  return Promise.all([
     fetchAll('settings'),
     fetchAll('templates'),
     fetchAll('languages'),
@@ -98,6 +98,23 @@ async function loadAll() {
     fetchAll('presentations'),
     fetchAll('presentation_events'),
   ]);
+}
+
+// Fill the cache from Postgres. Call once on boot BEFORE serving requests.
+async function loadAll() {
+  let fetched;
+  try {
+    fetched = await fetchEverything();
+  } catch (err) {
+    console.warn(`[store] load failed (${err.message}) — retrying once in 1.5s…`);
+    await sleep(1500);
+    fetched = await fetchEverything(); // let a second failure throw to the caller (fail-fast boot)
+  }
+  const [
+    settings, templates, languages, decks, library, activeDeck,
+    deckSlides, deckSlideEdits, translationMeta, translations,
+    presentations, events,
+  ] = fetched;
 
   cache.settings.clear();
   settings.forEach((r) => cache.settings.set(r.team_id, r));
