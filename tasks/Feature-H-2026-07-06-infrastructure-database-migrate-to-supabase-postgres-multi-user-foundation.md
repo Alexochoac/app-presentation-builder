@@ -77,11 +77,34 @@ exist only in the DB and would be lost on rollback → verify each slice THOROUG
         field (incl. createdAt); languages content+order identical; write path round-trips
         create/patch/delete to Postgres with HTML entities preserved, 13 real templates intact;
         live boot serves cache-backed routes. (JSONB reorders object keys — irrelevant, keyed lookup.)
-- [ ] **Slice 1 — settings** (singleton → one team row)
-  - [ ] Read-before-swap: locate readSettings/writeSettings (plan ref server.js:1493) + call sites
-  - [ ] Swap `readSettings` → `cache.settings.get(TEAM)`; `writeSettings` → cache + upsert
-  - [ ] Verify: `GET /api/settings` byte-identical; edit a logo → row updates → render unchanged
-        (HTML diff before/after)
+- [ ] **Slice 1 — settings** (singleton → one team row) — READ-BEFORE-SWAP DONE 2026-07-16
+  - Surface confirmed (line numbers are post-Slice-0; re-grep to be safe):
+    - Helpers: `readSettings()` server.js:1587 (try JSON.parse SETTINGS_PATH, catch → `{}`),
+      `writeSettings(data)` server.js:1591 (writeFileSync whole object).
+    - `readSettings()` callers (10): 48, 421, 486, 494, 515, 528, 551, 1554, 1572, 2441 — auto-covered by swapping the body.
+    - `writeSettings()` callers (4): 496, 517, 533, 553 — auto-covered by swapping the body.
+    - DIRECT `fs.readFileSync(SETTINGS_PATH)` bypassing the helper (~13): umami siteId fallbacks
+      1134,1168,1204,1243,1282,1316,1359,1390,1428,3311 (`…|| JSON.parse(readFileSync).umamiWebsiteId`)
+      + full-settings reads 3180, 3247, 3265 → replace all with `readSettings()` (now cache-backed).
+    - DIRECT `fs.writeFileSync(SETTINGS_PATH)` bypassing the helper (1): 1574 → replace with `writeSettings(s)`.
+  - Field map (settings.json camelCase ↔ settings table snake_case) — ALL 10 keys map, no orphans:
+    umamiWebsiteId↔umami_website_id, homepageUrl↔homepage_url, homepageLabel↔homepage_label,
+    logos↔logos, logosOnAllSlides↔logos_on_all_slides, heroBg↔hero_bg, heroBgFocal↔hero_bg_focal,
+    heroBgFocalGrid↔hero_bg_focal_grid, defaultPrimaryColor↔default_primary_color,
+    defaultDeckTheme↔default_deck_theme. (DB-only extras: team_id, updated_at.)
+  - [ ] Add `dbSettingsToApp(row)` (snake→camel, return `{}` if row missing) + `appSettingsToDb(obj)`
+        (camel→snake + `team_id: TEAM` + `updated_at: new Date().toISOString()`). Mirror the
+        template reshaper pattern (server.js ~1030). No timestamptz gotcha here.
+  - [ ] Swap `readSettings()` body → `dbSettingsToApp(store.cache.settings.get(store.TEAM))`.
+  - [ ] Swap `writeSettings(data)` body → `var row = appSettingsToDb(data); store.cache.settings.set(store.TEAM, row);`
+        then **fire-and-forget** `store.enqueueUpsert('settings', row, 'team_id')` (keeps writeSettings
+        SYNCHRONOUS so all callers incl. the non-async 1572–1574 site are unchanged; queue logs
+        failures. Settings = low-stakes per plan §2. Alt: await if you want stronger durability.)
+  - [ ] Swap the ~13 direct reads + 1 direct write listed above to the helpers.
+  - [ ] Fidelity pre-check already green: 9 scalar fields identical; `logos` matches modulo JSONB
+        key order (harmless — keyed lookup). Re-run after swap.
+  - [ ] Verify (live, on restarted server): `GET /api/settings` matches; edit a logo / homepage →
+        settings row updates in Postgres (query directly) → render unchanged → persists across reboot.
 - [ ] **Slice 2 — decks + deck_slides + translations + user_active_deck**
   - [ ] Read-before-swap: decks/translation helpers (plan ref server.js:1842–1912, ~4738);
         grep `.previous` to confirm only the dirty-check reads it before relying on the drop
