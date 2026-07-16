@@ -64,20 +64,19 @@ pre-migration snapshot). Postgres is the source of truth from cutover on. **Roll
 reverting a slice means pointing reads back at the frozen JSON, so any edits made AFTER cutover
 exist only in the DB and would be lost on rollback → verify each slice THOROUGHLY before the next.
 
-- [ ] **Slice 0 — foundation: languages + templates** (teams already seeded; canvas store
-      `slide-templates.json` is EMPTY + out of scope — leave on JSON)
-  - [x] Read-before-swap: sites confirmed 2026-07-12 (line refs in the steps below)
-  - [ ] Add `getTemplate(id)` + `getLanguages()` helpers (read from `store.cache`)
-  - [ ] Swap `resolveTemplate()` body (server.js:1027) → `cache.templates.get(id)` — covers all
-        9 resolver call sites (81, 454, 1676, 1935, 2579, 2642, 4240, 4513, 4631)
-  - [ ] Swap the ~9 direct catalog reads (`readFileSync(TEMPLATE_CATALOG_PATH)`: 1642, 3987,
-        4040, 4081, 4095, 4113, 4241, 4275, 4296) → cache
-  - [ ] Swap the 3 language reads (`LANGUAGES_PATH`: 4788, 4848, 5039) → `cache.languages`
-        (static, read-only)
-  - [ ] Cut over 5 template writes (create/edit/delete: 4070, 4085, 4103, 4122, 4279) →
-        cache + `enqueueUpsert('templates', …)` — **first real use of the write queue**
-  - [ ] Verify: template resolution renders identically; language dropdowns populate; create/
-        edit/delete a template → row updates in Postgres + reflects live without reboot
+- [x] **Slice 0 — foundation: languages + templates** ✅ DONE (2026-07-16) (teams already
+      seeded; canvas store `slide-templates.json` is EMPTY + out of scope — left on JSON)
+  - [x] Read-before-swap: sites confirmed 2026-07-12
+  - [x] Step A: wired store.loadAll() into boot (fail-fast) + loader retry for JWT skew (commit c6ba1eb)
+  - [x] Step B: added dbTemplateToApp reshaper + getCatalog/getTemplate; swapped resolveTemplate
+        body (covers 9 resolver sites) + 4 read-only catalog reads. createdAt normalized ISO 'Z'.
+  - [x] Step C: added getLanguages(); swapped 3 language reads → cache (content + order identical)
+  - [x] Step D: cut over 5 template writes (POST/DELETE/PATCH/duplicate/defaultEdits) → cache +
+        enqueueUpsert/enqueueDelete (awaited), NO JSON write. First real use of the write queue.
+  - [x] Verify: read fidelity — all 13 templates match cache-vs-JSON on every render-relevant
+        field (incl. createdAt); languages content+order identical; write path round-trips
+        create/patch/delete to Postgres with HTML entities preserved, 13 real templates intact;
+        live boot serves cache-backed routes. (JSONB reorders object keys — irrelevant, keyed lookup.)
 - [ ] **Slice 1 — settings** (singleton → one team row)
   - [ ] Read-before-swap: locate readSettings/writeSettings (plan ref server.js:1493) + call sites
   - [ ] Swap `readSettings` → `cache.settings.get(TEAM)`; `writeSettings` → cache + upsert

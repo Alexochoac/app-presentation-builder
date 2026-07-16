@@ -1023,11 +1023,66 @@ function getTranslationsPath(deckId) {
   return path.join(__dirname, 'data', 'decks', deckId || 'default', 'translations.json');
 }
 
-// Resolve a template by id from either the canvas builder store or the HTML catalog.
-// Returns { source: 'canvas'|'html', tpl, filePath? } or null.
+// ── Templates domain (Phase 5 Slice 0) — reads served from the Supabase cache ──
+// Reshape a DB `templates` row back to the camelCase catalog shape callers
+// expect (matches the old templates.json entries). team_id/updated_at dropped.
+// NOTE: `defaultTheme` (read once at /slides/template-preview) is NOT in the DB
+// schema — no current template sets it, so it stays undefined exactly as before.
+function dbTemplateToApp(row) {
+  if (!row) return null;
+  var t = {
+    id:           row.id,
+    name:         row.name,
+    category:     row.category,
+    slideMode:    row.slide_mode,
+    components:   row.components || [],
+    file:         row.file,
+    // timestamptz comes back as '…+00:00'; normalize to the ISO '…Z' the JSON used.
+    createdAt:    row.created_at ? new Date(row.created_at).toISOString() : null,
+    defaultEdits: row.default_edits || {}
+  };
+  if (row.tags && row.tags.length) t.tags = row.tags;
+  return t;
+}
+
+// The whole HTML template catalog as an array (was: JSON.parse(templates.json)).
+function getCatalog() {
+  var out = [];
+  store.cache.templates.forEach(function (row) { out.push(dbTemplateToApp(row)); });
+  return out;
+}
+
+// One template by id, in the old catalog shape, or null.
+function getTemplate(id) {
+  return dbTemplateToApp(store.cache.templates.get(id));
+}
+
+// The language reference list [{ code, name }] (was: JSON.parse(languages.json).languages).
+function getLanguages() {
+  return store.cache.languages;
+}
+
+// Inverse of dbTemplateToApp: app/catalog shape (camelCase) → DB `templates` row.
+// team_id null (templates are shared today, matching the import).
+function appTemplateToDb(t) {
+  return {
+    id:            t.id,
+    team_id:       null,
+    name:          t.name,
+    category:      t.category || null,
+    slide_mode:    t.slideMode || null,
+    file:          t.file,
+    components:    t.components || [],
+    tags:          t.tags || [],
+    default_edits: t.defaultEdits || {},
+    created_at:    t.createdAt || null
+  };
+}
+
+// Resolve a template by id from the HTML catalog (now cache-backed).
+// Returns { source: 'html', tpl, filePath } or null.
 function resolveTemplate(templateId) {
-  var catalog  = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
-  var htmlTpl  = catalog.find(function (t) { return t.id === templateId; });
+  var htmlTpl = getTemplate(templateId);
   if (htmlTpl) {
     return {
       source:   'html',
@@ -1640,7 +1695,7 @@ app.get('/api/deck', function (req, res) {
     var activeDeckId = getActiveDeckId();
     var deck    = readDeckById(activeDeckId);
     var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
-    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
+    var catalog = getCatalog();
 
     deck.slides = deck.slides.map(function (slide) {
       if (!slide.librarySlideId) return slide;
@@ -3985,7 +4040,7 @@ app.get('/api/slide-templates', function (req, res) {
 // GET /api/templates — return the HTML slide template catalog; ?category=CTA to filter
 app.get('/api/templates', function (req, res) {
   try {
-    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
+    var catalog = getCatalog();
     var category = req.query.category;
     if (category) {
       catalog = catalog.filter(function (t) {
@@ -4002,7 +4057,7 @@ app.get('/api/templates', function (req, res) {
 // Generator mode (preferred): { id, name, category, slideMode, layout, blocks }
 // Direct mode (backward compat): { id, name, category, slideMode, components, html }
 // Writes the HTML to features/slides/slide-[NN]-[slug].html, appends entry to templates.json
-app.post('/api/templates', function (req, res) {
+app.post('/api/templates', async function (req, res) {
   try {
     var body = req.body || {};
     var id        = (body.id       || '').trim();
@@ -4038,8 +4093,7 @@ app.post('/api/templates', function (req, res) {
       return res.status(400).json({ success: false, error: 'category must be one of: ' + validCategories.join(', ') });
     }
 
-    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
-    if (catalog.find(function (t) { return t.id === id; })) {
+    if (store.cache.templates.has(id)) {
       return res.status(409).json({ success: false, error: 'Template id already exists: ' + id });
     }
 
@@ -4067,8 +4121,9 @@ app.post('/api/templates', function (req, res) {
       file:       fileRef,
       createdAt:  new Date().toISOString()
     };
-    catalog.push(entry);
-    fs.writeFileSync(TEMPLATE_CATALOG_PATH, JSON.stringify(catalog, null, 2), 'utf8');
+    var dbRow = appTemplateToDb(entry);
+    store.cache.templates.set(id, dbRow);
+    await store.enqueueUpsert('templates', dbRow, 'id');
 
     res.status(201).json({ success: true, data: entry });
   } catch (err) {
@@ -4077,13 +4132,13 @@ app.post('/api/templates', function (req, res) {
 });
 
 // DELETE /api/templates/:id — deregister a template (keeps the HTML file)
-app.delete('/api/templates/:id', function (req, res) {
+app.delete('/api/templates/:id', async function (req, res) {
   try {
-    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
-    var idx     = catalog.findIndex(function (t) { return t.id === req.params.id; });
-    if (idx === -1) return res.status(404).json({ success: false, error: 'Template not found: ' + req.params.id });
-    catalog.splice(idx, 1);
-    fs.writeFileSync(TEMPLATE_CATALOG_PATH, JSON.stringify(catalog, null, 2), 'utf8');
+    if (!store.cache.templates.has(req.params.id)) {
+      return res.status(404).json({ success: false, error: 'Template not found: ' + req.params.id });
+    }
+    store.cache.templates.delete(req.params.id);
+    await store.enqueueDelete('templates', { id: req.params.id });
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -4091,36 +4146,37 @@ app.delete('/api/templates/:id', function (req, res) {
 });
 
 // PATCH /api/templates/:id — update name and/or category of a template entry
-app.patch('/api/templates/:id', function (req, res) {
+app.patch('/api/templates/:id', async function (req, res) {
   try {
-    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
-    var idx     = catalog.findIndex(function (t) { return t.id === req.params.id; });
-    if (idx === -1) return res.status(404).json({ success: false, error: 'Template not found: ' + req.params.id });
+    var tpl = getTemplate(req.params.id);
+    if (!tpl) return res.status(404).json({ success: false, error: 'Template not found: ' + req.params.id });
     var body = req.body || {};
-    if (body.name       !== undefined) catalog[idx].name       = String(body.name).trim();
-    if (body.category   !== undefined) catalog[idx].category   = String(body.category).trim();
-    if (body.tags       !== undefined) catalog[idx].tags       = Array.isArray(body.tags) ? body.tags : [];
-    if (body.components !== undefined) catalog[idx].components = Array.isArray(body.components) ? body.components : [];
-    fs.writeFileSync(TEMPLATE_CATALOG_PATH, JSON.stringify(catalog, null, 2), 'utf8');
-    res.json({ success: true, data: catalog[idx] });
+    if (body.name       !== undefined) tpl.name       = String(body.name).trim();
+    if (body.category   !== undefined) tpl.category   = String(body.category).trim();
+    if (body.tags       !== undefined) tpl.tags       = Array.isArray(body.tags) ? body.tags : [];
+    if (body.components !== undefined) tpl.components = Array.isArray(body.components) ? body.components : [];
+    var dbRow = appTemplateToDb(tpl);
+    store.cache.templates.set(tpl.id, dbRow);
+    await store.enqueueUpsert('templates', dbRow, 'id');
+    res.json({ success: true, data: tpl });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
 });
 
 // POST /api/templates/:id/duplicate — clone a template entry (shares the same HTML file)
-app.post('/api/templates/:id/duplicate', function (req, res) {
+app.post('/api/templates/:id/duplicate', async function (req, res) {
   try {
-    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
-    var src = catalog.find(function (t) { return t.id === req.params.id; });
+    var src = getTemplate(req.params.id);
     if (!src) return res.status(404).json({ success: false, error: 'Template not found: ' + req.params.id });
     var baseId = src.id + '-copy';
     var newId  = baseId;
     var n = 1;
-    while (catalog.find(function (t) { return t.id === newId; })) { newId = baseId + '-' + (++n); }
+    while (store.cache.templates.has(newId)) { newId = baseId + '-' + (++n); }
     var copy = Object.assign({}, src, { id: newId, name: src.name + ' (copy)', createdAt: new Date().toISOString() });
-    catalog.push(copy);
-    fs.writeFileSync(TEMPLATE_CATALOG_PATH, JSON.stringify(catalog, null, 2), 'utf8');
+    var dbRow = appTemplateToDb(copy);
+    store.cache.templates.set(newId, dbRow);
+    await store.enqueueUpsert('templates', dbRow, 'id');
     res.status(201).json({ success: true, data: copy });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -4239,7 +4295,7 @@ app.post('/api/library', function (req, res) {
     }
 
     var resolved = resolveTemplate(templateId);
-    var catalog  = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
+    var catalog  = getCatalog();
     var tplEntry = catalog.find(function (t) { return t.id === templateId; });
     var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
 
@@ -4263,7 +4319,7 @@ app.post('/api/library', function (req, res) {
 });
 
 // POST /api/templates/:id/defaultEdits — save default edit values for a template
-app.post('/api/templates/:id/defaultEdits', function (req, res) {
+app.post('/api/templates/:id/defaultEdits', async function (req, res) {
   var id = req.params.id;
   if (!/^[a-z0-9-]+$/i.test(id)) {
     return res.status(400).json({ success: false, error: 'Invalid id' });
@@ -4273,11 +4329,12 @@ app.post('/api/templates/:id/defaultEdits', function (req, res) {
     if (!edits || typeof edits !== 'object') {
       return res.status(400).json({ success: false, error: 'edits object is required' });
     }
-    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
-    var tpl = catalog.find(function (t) { return t.id === id; });
+    var tpl = getTemplate(id);
     if (!tpl) return res.status(404).json({ success: false, error: 'Template not found' });
     tpl.defaultEdits = edits;
-    fs.writeFileSync(TEMPLATE_CATALOG_PATH, JSON.stringify(catalog, null, 2), 'utf8');
+    var dbRow = appTemplateToDb(tpl);
+    store.cache.templates.set(id, dbRow);
+    await store.enqueueUpsert('templates', dbRow, 'id');
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -4294,7 +4351,7 @@ app.get('/slides/template-preview/:id', function (req, res) {
   var styleQuery = (req.query.style || '').replace(/[^a-z0-9._-]/gi, '');
   var themeQuery = (req.query.theme || '').replace(/[^a-z0-9._-]/gi, '');
   try {
-    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
+    var catalog = getCatalog();
     var tpl = catalog.find(function (t) { return t.id === id; });
     if (!tpl) return res.status(404).type('text/plain').send('Template not found: ' + id);
 
@@ -4786,8 +4843,7 @@ app.get('/slides/builder',   function (_req, res) { res.sendFile(path.join(__dir
 // ── API: languages ────────────────────────────────────────────────────────────
 app.get('/api/languages', function (_req, res) {
   try {
-    var data = JSON.parse(fs.readFileSync(LANGUAGES_PATH, 'utf8'));
-    res.json({ success: true, data: data.languages });
+    res.json({ success: true, data: getLanguages() });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -4846,7 +4902,7 @@ app.post('/api/translations/translate', async function (req, res) {
     const deckId = getActiveDeckId();
     const t = readTranslations(deckId);
     const targetLanguages = (req.body && req.body.languages) || t.languages.filter(l => l !== 'en');
-    const langList = JSON.parse(fs.readFileSync(LANGUAGES_PATH, 'utf8')).languages;
+    const langList = getLanguages();
 
     // Per-slide mode: slideId + sourceFields: { fieldKey: englishText }
     const slideId      = req.body && req.body.slideId;
@@ -5037,7 +5093,7 @@ app.post('/api/translations/translate-all', async function (req, res) {
 
     var deckId = getActiveDeckId();
     var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
-    var langList = JSON.parse(fs.readFileSync(LANGUAGES_PATH, 'utf8')).languages;
+    var langList = getLanguages();
     var t = readTranslations(deckId);
     if (!t.slides) t.slides = {};
 
