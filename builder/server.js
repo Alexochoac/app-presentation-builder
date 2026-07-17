@@ -1131,7 +1131,7 @@ function dbPresStats(urlPaths, startMs, endMs, opts, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, {});
   var siteId = null;
-  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || readSettings().umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, {});
   var params = [siteId, urlPaths, startMs, endMs];
   var cc = countrySql(opts, params.length + 1);
@@ -1165,7 +1165,7 @@ function dbKpiTotals(urlPaths, startMs, endMs, opts, cb) {
   var zero = { pageviews: 0, visitors: 0, repeatVisitors: 0 };
   if (!db || !urlPaths.length) return cb(null, zero);
   var siteId = null;
-  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || readSettings().umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, zero);
   var params = [siteId, urlPaths, startMs, endMs];
   var cc = countrySql(opts, params.length + 1);
@@ -1201,7 +1201,7 @@ function dbPresTimeSeries(urlPaths, startMs, endMs, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, { pageviews: [], sessions: [] });
   var siteId = null;
-  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || readSettings().umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, { pageviews: [], sessions: [] });
   db.query(
     "SELECT TO_CHAR(created_at AT TIME ZONE '" + localTzString() + "', 'YYYY-MM-DD') AS day, " +
@@ -1240,7 +1240,7 @@ function dbSlideEvents(urlPaths, startMs, endMs, eventNames, opts, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, []);
   var siteId = null;
-  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || readSettings().umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, []);
   var params = [siteId, urlPaths, startMs, endMs];
   var extra = '';
@@ -1279,7 +1279,7 @@ function dbSlideBenchmark(urlPaths, startMs, endMs, opts, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, { perSlide: [], activePresentations: 0 });
   var siteId = null;
-  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || readSettings().umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, { perSlide: [], activePresentations: 0 });
   var params = [siteId, urlPaths, startMs, endMs];
   var cc = countrySql(opts, params.length + 1);
@@ -1313,7 +1313,7 @@ function dbSlideEventSeries(urlPaths, startMs, endMs, eventNames, opts, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, { days: [], series: [] });
   var siteId = null;
-  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || readSettings().umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, { days: [], series: [] });
   var params = [siteId, urlPaths, startMs, endMs];
   var extra = '';
@@ -1356,7 +1356,7 @@ function dbSlideEventByPres(urlPaths, presMap, startMs, endMs, eventName, opts, 
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, []);
   var siteId = null;
-  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || readSettings().umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, []);
   var params = [siteId, urlPaths, startMs, endMs, eventName];
   var cc = countrySql(opts, params.length + 1);
@@ -1387,7 +1387,7 @@ function dbCountries(urlPaths, startMs, endMs, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, []);
   var siteId = null;
-  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || readSettings().umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, []);
   db.query(
     'SELECT s.country AS country, COUNT(*) AS pageviews, COUNT(DISTINCT we.session_id) AS visitors ' +
@@ -1425,7 +1425,7 @@ function dbSlideInteractions(urlPaths, startMs, endMs, eventName, opts, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length || !eventName) return cb(null, []);
   var siteId = null;
-  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || readSettings().umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, []);
   var params = [siteId, urlPaths, startMs, endMs, eventName];
   var cc = countrySql(opts, params.length + 1);
@@ -1571,7 +1571,7 @@ function setupUmamiWebsite() {
             if (!d.id) throw new Error('unexpected response: ' + raw);
             var s = readSettings();
             s.umamiWebsiteId = d.id;
-            fs.writeFileSync(SETTINGS_PATH, JSON.stringify(s, null, 2), 'utf8');
+            writeSettings(s);
             console.log('[umami] website created and saved, id:', d.id);
           } catch (e) { console.warn('[umami] setup error:', e.message); }
         });
@@ -1584,12 +1584,55 @@ function setupUmamiWebsite() {
   setTimeout(function () { trySetup(12); }, 15000); // wait 15s for Umami to boot, then try up to 12× every 10s
 }
 
+// ── Settings domain (Phase 5 Slice 1) — served from the Supabase cache ──
+// Reshape the DB `settings` row (one per team) back to the camelCase object the
+// app used to read from settings.json. team_id/updated_at are DB-only, dropped.
+// When the row is absent (never happens once the cache is loaded) fall back to
+// the SAME default object the old file-read used, so behavior is identical.
+function dbSettingsToApp(row) {
+  if (!row) return { logos: [], logosOnAllSlides: true, heroBg: '', heroBgFocal: '50% 50%', heroBgFocalGrid: 3 };
+  return {
+    umamiWebsiteId:      row.umami_website_id,
+    homepageUrl:         row.homepage_url,
+    homepageLabel:       row.homepage_label,
+    logos:               row.logos || [],
+    logosOnAllSlides:    row.logos_on_all_slides,
+    heroBg:              row.hero_bg,
+    heroBgFocal:         row.hero_bg_focal,
+    heroBgFocalGrid:     row.hero_bg_focal_grid,
+    defaultPrimaryColor: row.default_primary_color,
+    defaultDeckTheme:    row.default_deck_theme
+  };
+}
+
+// Inverse: camelCase settings object → DB `settings` row (adds team scope + stamp).
+// Every writeSettings caller does a full read-modify-write, so all 10 keys are
+// present; unknown keys (e.g. umamiBaseUrl injected by GET) are simply ignored.
+function appSettingsToDb(obj) {
+  obj = obj || {};
+  return {
+    team_id:               store.TEAM,
+    umami_website_id:      obj.umamiWebsiteId != null ? obj.umamiWebsiteId : null,
+    homepage_url:          obj.homepageUrl != null ? obj.homepageUrl : null,
+    homepage_label:        obj.homepageLabel != null ? obj.homepageLabel : null,
+    logos:                 obj.logos || [],
+    logos_on_all_slides:   obj.logosOnAllSlides != null ? obj.logosOnAllSlides : null,
+    hero_bg:               obj.heroBg != null ? obj.heroBg : null,
+    hero_bg_focal:         obj.heroBgFocal != null ? obj.heroBgFocal : null,
+    hero_bg_focal_grid:    obj.heroBgFocalGrid != null ? obj.heroBgFocalGrid : null,
+    default_primary_color: obj.defaultPrimaryColor != null ? obj.defaultPrimaryColor : null,
+    default_deck_theme:    obj.defaultDeckTheme != null ? obj.defaultDeckTheme : null,
+    updated_at:            new Date().toISOString()
+  };
+}
+
 function readSettings() {
-  try { return JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')); }
-  catch (e) { return { logos: [], logosOnAllSlides: true, heroBg: '', heroBgFocal: '50% 50%', heroBgFocalGrid: 3 }; }
+  return dbSettingsToApp(store.cache.settings.get(store.TEAM));
 }
 function writeSettings(data) {
-  fs.writeFileSync(SETTINGS_PATH, JSON.stringify(data, null, 2), 'utf8');
+  var row = appSettingsToDb(data);
+  store.cache.settings.set(store.TEAM, row);
+  store.enqueueUpsert('settings', row, 'team_id'); // fire-and-forget; queue logs failures
 }
 function hexToRgb(hex) {
   var m = (hex || '').replace('#', '').match(/^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
@@ -3177,7 +3220,7 @@ app.get('/api/presentations', function (req, res) {
 app.get('/api/analytics/presentation/:id', function (req, res) {
   if (!UMAMI_USER) return res.json({ success: false, error: 'Umami not configured' });
   try {
-    var settings  = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8'));
+    var settings  = readSettings();
     var websiteId = UMAMI_WEBSITE_ID || settings.umamiWebsiteId;
     if (!websiteId) return res.json({ success: false, error: 'umamiWebsiteId not set' });
     var startAt = req.query.startAt || String(Date.now() - 30 * 86400000);
@@ -3244,7 +3287,7 @@ app.get('/api/analytics/kpis', function (req, res) {
 app.get('/api/analytics/pageviews', function (req, res) {
   if (!UMAMI_USER) return res.json({ success: false, error: 'Umami not configured' });
   try {
-    var settings  = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8'));
+    var settings  = readSettings();
     var websiteId = UMAMI_WEBSITE_ID || settings.umamiWebsiteId;
     var startAt   = req.query.startAt || String(Date.now() - 30 * 86400000);
     var endAt     = req.query.endAt   || String(Date.now());
@@ -3262,7 +3305,7 @@ app.get('/api/analytics/pageviews', function (req, res) {
 app.get('/api/analytics/pageviews-by-pres', function (req, res) {
   if (!UMAMI_USER) return res.json({ success: false, error: 'Umami not configured' });
   try {
-    var settings  = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8'));
+    var settings  = readSettings();
     var websiteId = UMAMI_WEBSITE_ID || settings.umamiWebsiteId;
     var startAt   = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
     var endAt     = parseInt(req.query.endAt)   || Date.now();
@@ -3308,7 +3351,7 @@ function dbPresTimeSeriesWithBreakdown(urlPaths, presMap, startMs, endMs, opts, 
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, { pageviews: [], sessions: [], breakdown: [] });
   var siteId = null;
-  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || readSettings().umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, { pageviews: [], sessions: [], breakdown: [] });
   var params = [siteId, urlPaths, startMs, endMs];
   var cc = countrySql(opts, params.length + 1);
