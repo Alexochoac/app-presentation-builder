@@ -13,7 +13,7 @@
  *
  * Restructures applied during the move (per the plan/task):
  *   - deckEdits split OUT of slide_library into deck_slide_edits (one row per deck×slide).
- *   - translations normalized into deck_translations, dropping the duplicate `previous`.
+ *   - translations normalized into deck_translations (kept `previous` — it powers the TC Restore button).
  *   - presentation events split into their own table.
  */
 require('dotenv').config();
@@ -174,7 +174,8 @@ function buildTranslations() {
           const isObj = v && typeof v === 'object';
           rows.push({
             deck_id: d.id, library_slide_id: slideId, field_key: fieldKey, lang,
-            value: isObj ? val(v.current) : val(v),          // drop `previous`
+            value: isObj ? val(v.current) : val(v),
+            previous: isObj ? val(v.previous) : null,        // prior translation → TC "Restore" button
             dirty: isObj ? !!v.dirty : false,
             team_id: TEAM,
           });

@@ -1891,12 +1891,12 @@ app.post('/api/deck/slides', function (req, res) {
     // If deck has no style and this slide brings a legacy .html styleRef, promote it to the deck
     // (.css theme files are per-slide; don't promote them to deck level)
     if (!deckConfig.styleRef && libSlide.styleRef && libSlide.styleCss && libSlide.styleRef.endsWith('.html')) {
-      var decksStore = JSON.parse(fs.readFileSync(DECKS_PATH, 'utf8'));
+      var decksStore = readDecks();
       var deckIdx = decksStore.decks.findIndex(function (d) { return d.id === activeDeckId; });
       if (deckIdx !== -1) {
         decksStore.decks[deckIdx].styleRef = libSlide.styleRef;
         decksStore.decks[deckIdx].styleCss = libSlide.styleCss;
-        fs.writeFileSync(DECKS_PATH, JSON.stringify(decksStore, null, 2), 'utf8');
+        writeDecks(decksStore);
       }
     }
 
@@ -1976,12 +1976,100 @@ app.post('/api/deck/slides/:id/edits', function (req, res) {
 
 // ── API: decks (named deck management) ────────────────────────────────────────
 
-function readDecks() {
-  try { return JSON.parse(fs.readFileSync(DECKS_PATH, 'utf8')); }
-  catch (e) { return { activeDeckId: 'deck-rebuild', decks: [] }; }
+// ── deck reshapers (Slice 2: decks + user_active_deck are cache-backed) ───────
+// decks table row → the deck object the app reads from decks.json's decks[].
+function dbDeckToApp(row) {
+  if (!row) return null;
+  return {
+    id: row.id, name: row.name, theme: row.theme,
+    // normalize timestamptz ('…+00:00') back to the JSON's ISO-'Z' form (matches Slice 0)
+    createdAt: row.created_at ? new Date(row.created_at).toISOString() : null,
+    updatedAt: row.updated_at ? new Date(row.updated_at).toISOString() : null,
+    logo: row.logo, heroBg: row.hero_bg, heroBgFocal: row.hero_bg_focal,
+    colors: row.colors || {}, heroBgFocalGrid: row.hero_bg_focal_grid,
+    heroBgFit: row.hero_bg_fit, styleRef: row.style_ref, styleCss: row.style_css,
+    heroBgOpacity: row.hero_bg_opacity, heroBgType: row.hero_bg_type,
+    heroBgColor: row.hero_bg_color, brandCredit: row.brand_credit,
+    websiteUrl: row.website_url, checkerboard: row.checkerboard
+  };
 }
+// Inverse: app deck object → decks table row. `title` lives in deck.json (owned by
+// writeDeckById), NOT the deck list, so preserve the cached title here — otherwise
+// a deck-list save would blank the title column.
+function appDeckToDb(d) {
+  var existing = store.cache.decks.get(d.id);
+  return {
+    id: d.id, team_id: store.TEAM, name: d.name,
+    theme: d.theme != null ? d.theme : null,
+    title: existing ? (existing.title || '') : '',
+    logo: d.logo != null ? d.logo : null,
+    hero_bg: d.heroBg != null ? d.heroBg : null,
+    hero_bg_focal: d.heroBgFocal != null ? d.heroBgFocal : null,
+    hero_bg_focal_grid: d.heroBgFocalGrid != null ? d.heroBgFocalGrid : null,
+    hero_bg_fit: d.heroBgFit != null ? d.heroBgFit : null,
+    hero_bg_opacity: d.heroBgOpacity != null ? d.heroBgOpacity : null,
+    hero_bg_type: d.heroBgType != null ? d.heroBgType : null,
+    hero_bg_color: d.heroBgColor != null ? d.heroBgColor : null,
+    style_ref: d.styleRef != null ? d.styleRef : null,
+    style_css: d.styleCss != null ? d.styleCss : null,
+    brand_credit: d.brandCredit != null ? d.brandCredit : null,
+    website_url: d.websiteUrl != null ? d.websiteUrl : null,
+    checkerboard: d.checkerboard != null ? d.checkerboard : null,
+    colors: d.colors || {},
+    created_at: d.createdAt != null ? d.createdAt : null,
+    updated_at: d.updatedAt != null ? d.updatedAt : null
+  };
+}
+
+// single-user stand-in key until auth; activeDeckId stays single-valued (plan risk #4)
+var ACTIVE_DECK_KEY = store.TEAM + ':' + store.SENTINEL_USER;
+
+function readDecks() {
+  var decks = [];
+  store.cache.decks.forEach(function (row) { decks.push(dbDeckToApp(row)); });
+  // preserve the old decks.json array order (creation order)
+  decks.sort(function (a, b) {
+    return String(a.createdAt || '').localeCompare(String(b.createdAt || ''));
+  });
+  return { activeDeckId: getActiveDeckId(), decks: decks };
+}
+
+// Every caller does a full read-modify-write of { activeDeckId, decks[] }, so this
+// reconciles the whole set against the cache: upsert present decks, delete any that
+// disappeared, and move the active pointer. Cache updates are synchronous (next read
+// is correct); DB writes are ordered so the active pointer moves OFF a deck before it
+// is deleted (user_active_deck.deck_id has NO on-delete-cascade).
 function writeDecks(data) {
-  fs.writeFileSync(DECKS_PATH, JSON.stringify(data, null, 2), 'utf8');
+  var incoming = (data && data.decks) || [];
+  var incomingIds = {};
+  incoming.forEach(function (d) { incomingIds[d.id] = true; });
+
+  var removed = [];
+  store.cache.decks.forEach(function (_row, id) { if (!incomingIds[id]) removed.push(id); });
+
+  var rows = incoming.map(function (d) {
+    var row = appDeckToDb(d);
+    store.cache.decks.set(d.id, row);
+    return row;
+  });
+  removed.forEach(function (id) { store.cache.decks.delete(id); });
+
+  var active = data && data.activeDeckId;
+  if (active) store.cache.userActiveDeck.set(ACTIVE_DECK_KEY, active);
+
+  (async function () {
+    try {
+      if (rows.length) await store.enqueueUpsert('decks', rows, 'id');
+      if (active) {
+        await store.enqueueUpsert('user_active_deck',
+          { team_id: store.TEAM, user_id: store.SENTINEL_USER, deck_id: active, updated_at: new Date().toISOString() },
+          'team_id,user_id');
+      }
+      for (var i = 0; i < removed.length; i++) {
+        await store.enqueueDelete('decks', { id: removed[i] }); // FK cascade clears deck children
+      }
+    } catch (e) { /* store queue logs the failure loudly */ }
+  })();
 }
 function makeDeckId() {
   return 'deck-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
@@ -2001,24 +2089,48 @@ function localTzString() {
   return (off <= 0 ? '+' : '-') + String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
 }
 function getDeckConfig(deckId) {
-  var store = readDecks();
-  return store.decks.find(function (d) { return d.id === deckId; }) || {};
+  return dbDeckToApp(store.cache.decks.get(deckId)) || {};
 }
 function getDeckPath(deckId) {
   return path.join(DECKS_DIR_PATH, deckId, 'deck.json');
 }
 function readDeckById(deckId) {
-  var p = getDeckPath(deckId);
-  if (fs.existsSync(p)) return JSON.parse(fs.readFileSync(p, 'utf8'));
-  return { title: '', slides: [] };
+  var row = store.cache.decks.get(deckId);
+  var slides = (store.cache.deckSlides.get(deckId) || []).map(function (s) {
+    return { id: s.slide_ref_id, visible: s.visible, librarySlideId: s.library_slide_id };
+  });
+  return { title: row ? (row.title || '') : '', slides: slides };
 }
+// Persists deck.json's { title, slides }: title → decks.title (preserving brand
+// columns), slides → deck_slides (full rebuild). Skips slides whose library slide
+// isn't in the store yet (mirrors import skip-missing → avoids a NOT NULL FK error).
 function writeDeckById(deckId, data) {
-  var dir = path.join(DECKS_DIR_PATH, deckId);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(getDeckPath(deckId), JSON.stringify(data, null, 2), 'utf8');
+  var title = (data && data.title != null) ? data.title : '';
+  var slides = (data && data.slides) || [];
+
+  var row = store.cache.decks.get(deckId);
+  if (row) { row.title = title; store.cache.decks.set(deckId, row); }
+
+  var slideRows = [];
+  slides.forEach(function (sl, i) {
+    if (!sl.librarySlideId || !store.cache.library.has(sl.librarySlideId)) return;
+    slideRows.push({
+      deck_id: deckId, library_slide_id: sl.librarySlideId, slide_ref_id: sl.id,
+      position: i, visible: sl.visible !== false
+    });
+  });
+  store.cache.deckSlides.set(deckId, slideRows.slice());
+
+  (async function () {
+    try {
+      if (row) await store.enqueueUpsert('decks', row, 'id');
+      await store.enqueueDelete('deck_slides', { deck_id: deckId });
+      if (slideRows.length) await store.enqueueUpsert('deck_slides', slideRows, 'deck_id,slide_ref_id');
+    } catch (e) { /* store queue logs the failure loudly */ }
+  })();
 }
 function getActiveDeckId() {
-  return readDecks().activeDeckId || 'deck-rebuild';
+  return store.cache.userActiveDeck.get(ACTIVE_DECK_KEY) || 'deck-rebuild';
 }
 function resolveSlideEdits(libSlide, deckId) {
   if (libSlide.deckEdits) {
@@ -4893,15 +5005,75 @@ app.get('/api/languages', function (_req, res) {
 });
 
 // ── API: translations ─────────────────────────────────────────────────────────
-function readTranslations(deckId) {
-  try { return JSON.parse(fs.readFileSync(getTranslationsPath(deckId), 'utf8')); }
-  catch (e) {
-    return { languages: ['en'], defaultLanguage: 'en', slides: {} };
-  }
+// ── translation reshapers (Slice 2: deck_translations + meta cache-backed) ────
+// Flat deck_translations rows → the nested { slides: { slideId: { fieldKey: {
+//   en: <source string>, es: { current, previous, dirty }, … } } } } shape.
+// `en` is a scalar source row (lang='en'); every other lang is a {current,previous,
+// dirty} object. `previous` powers the Translation Center "↻ Restore" button.
+function dbTranslationsToApp(deckId) {
+  var meta = store.cache.translationMeta.get(deckId);
+  var rows = store.cache.translations.get(deckId) || [];
+  var slides = {};
+  rows.forEach(function (r) {
+    if (!slides[r.library_slide_id]) slides[r.library_slide_id] = {};
+    var field = slides[r.library_slide_id][r.field_key];
+    if (!field) { field = {}; slides[r.library_slide_id][r.field_key] = field; }
+    if (r.lang === 'en') {
+      field.en = r.value;
+    } else {
+      field[r.lang] = { current: r.value, previous: r.previous != null ? r.previous : null, dirty: !!r.dirty };
+    }
+  });
+  return {
+    languages: meta ? meta.languages : ['en'],
+    defaultLanguage: meta ? meta.default_language : 'en',
+    favorites: meta ? (meta.favorites || []) : [],
+    slides: slides
+  };
 }
 
+function readTranslations(deckId) {
+  return dbTranslationsToApp(deckId);
+}
+
+// Persists the whole translations object: meta (languages/default/favorites) +
+// every slide×field×lang entry. Upsert-only (no prune) — the app never deletes
+// individual entries (removing a language leaves its rows, matching the old
+// whole-file rewrite), so this stays faithful while avoiding any wipe-on-failure.
 function writeTranslations(data, deckId) {
-  fs.writeFileSync(getTranslationsPath(deckId), JSON.stringify(data, null, 2), 'utf8');
+  data = data || {};
+  var metaRow = {
+    deck_id: deckId, team_id: store.TEAM,
+    languages: data.languages || ['en'],
+    default_language: data.defaultLanguage || 'en',
+    favorites: data.favorites || []
+  };
+  store.cache.translationMeta.set(deckId, metaRow);
+
+  var rows = [];
+  var slides = data.slides || {};
+  Object.keys(slides).forEach(function (slideId) {
+    var fields = slides[slideId] || {};
+    Object.keys(fields).forEach(function (fieldKey) {
+      var byLang = fields[fieldKey];
+      if (!byLang || typeof byLang !== 'object') return;
+      Object.keys(byLang).forEach(function (lang) {
+        var v = byLang[lang];
+        var isObj = v && typeof v === 'object';
+        rows.push({
+          deck_id: deckId, library_slide_id: slideId, field_key: fieldKey, lang: lang,
+          value: isObj ? (v.current != null ? v.current : null) : (v != null ? v : null),
+          previous: isObj ? (v.previous != null ? v.previous : null) : null,
+          dirty: isObj ? !!v.dirty : false,
+          team_id: store.TEAM
+        });
+      });
+    });
+  });
+  store.cache.translations.set(deckId, rows);
+
+  store.enqueueUpsert('deck_translation_meta', metaRow, 'deck_id');
+  if (rows.length) store.enqueueUpsert('deck_translations', rows, 'deck_id,library_slide_id,field_key,lang');
 }
 
 // Mark per-slide translation entries dirty when English edits are saved.
@@ -5616,8 +5788,11 @@ app.post('/api/clone-slide', function (req, res) {
   }
 });
 
-// ── Startup: rebuild library slide decks[] (runs every boot) ─────────────────
-(function rebuildSlideDecks() {
+// ── Startup: rebuild library slide decks[] (called after the cache loads) ────
+// MUST run AFTER store.loadAll(): it reads decks via readDecks()/readDeckById(),
+// which are now cache-backed (Slice 2). Running it before the cache is populated
+// would see zero decks and wipe every library slide's decks[].
+function rebuildSlideDecks() {
   if (!fs.existsSync(LIBRARY_PATH)) return;
 
   var libData   = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
@@ -5659,7 +5834,7 @@ app.post('/api/clone-slide', function (req, res) {
 
   fs.writeFileSync(LIBRARY_PATH, JSON.stringify(libData, null, 2), 'utf8');
   console.log('[startup] Rebuilt decks[] on library slides');
-})();
+}
 
 // (Removed: one-time per-deck slide-isolation migration + the legacy `default`
 // deck it seeded from data/deck.json — Step H Tier 2. The rebuild is complete and
@@ -5669,6 +5844,7 @@ app.post('/api/clone-slide', function (req, res) {
 // slice (Phase 5). Fail fast if it can't load: serving with an empty cache
 // would break every migrated read. (loadAll retries once for transient skew.)
 store.loadAll().then(function () {
+  rebuildSlideDecks(); // cache-backed now — must run after loadAll(), never before
   app.listen(PORT, function () {
     console.log('Builder running at http://localhost:' + PORT);
     console.log('Preview:  http://localhost:' + PORT + '/builder/preview.html');

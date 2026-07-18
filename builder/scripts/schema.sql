@@ -150,6 +150,7 @@ create table if not exists deck_translations (
   field_key        text not null,
   lang             text not null,
   value            text,
+  previous         text,                          -- prior translation for this lang (powers the TC "Restore" button)
   dirty            boolean not null default false,
   team_id          uuid not null references teams(id),
   primary key (deck_id, library_slide_id, field_key, lang)

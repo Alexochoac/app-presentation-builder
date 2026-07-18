@@ -109,14 +109,32 @@ exist only in the DB and would be lost on rollback → verify each slice THOROUG
     (`localStorage['pb-theme']`), NEVER in settings.json/Postgres — untouched by this migration. It only
     LOOKED related because the separate New-Deck-Defaults "Default Theme" also read light. App-theme
     dark-on-reboot quirk logged as its own task (see Bug-M-2026-07-17 app-appearance-theme…).
-- [ ] **Slice 2 — decks + deck_slides + translations + user_active_deck**
-  - [ ] Read-before-swap: decks/translation helpers (plan ref server.js:1842–1912, ~4738);
-        grep `.previous` to confirm only the dirty-check reads it before relying on the drop
-  - [ ] Swap readDecks/writeDecks/readDeckById/writeDeckById/getDeckConfig/getActiveDeckId +
-        translation helpers; `getActiveDeckId` reads `user_active_deck` for the sentinel user
-        (signature unchanged)
-  - [ ] Verify: deck list matches; active-deck switch persists across reboot; deck preview render
-        byte-identical; an English edit flips the right `dirty` flags
+- [x] **Slice 2 — decks + deck_slides + translations + user_active_deck** ✅ DONE (2026-07-18)
+  - [x] Read-before-swap: confirmed sites — readDecks/writeDecks server.js:1979/1983, getDeckConfig
+        :2003, readDeckById/writeDeckById :2010/:2015, getActiveDeckId :2020, readTranslations/
+        writeTranslations :4896/:4903. **`.previous` grep OVERTURNED the drop plan (risk #6):** it is
+        NOT dead bloat — it powers the Translation Center "↻ Restore" feature (254 live non-null
+        values) via `/api/translations/restore` + `openTranslationPanel`. `previous` ≠ the English
+        source (English is stored separately). **User approved PRESERVING it.**
+  - [x] Schema deviation: `alter table deck_translations add column previous text` (schema.sql
+        updated); backfilled 254 previous values via `scripts/backfill-translation-previous.js`
+        (deck_translations ONLY — a full re-import would clobber the already-cut-over settings/
+        templates); `import-to-supabase.js buildTranslations` fixed to keep previous going forward.
+  - [x] Swapped readDecks/writeDecks/readDeckById/writeDeckById/getDeckConfig/getActiveDeckId +
+        readTranslations/writeTranslations to cache (dbDeckToApp/appDeckToDb + dbTranslationsToApp
+        reshapers). `getActiveDeckId` reads `user_active_deck` for the sentinel user. writeDecks
+        orders the active-pointer upsert BEFORE deck deletes (user_active_deck has no cascade);
+        writeDeckById rebuilds deck_slides + preserves brand columns; both preserve the field the
+        other owns (title vs brand). Redirected 1 direct DECKS_PATH write (styleRef promotion).
+        FIXED boot ordering: `rebuildSlideDecks()` now runs AFTER `store.loadAll()` (was a load-time
+        IIFE that would read the empty cache and wipe library decks[]).
+  - [x] Verify: read-fidelity script = byte-identical (deck list + all fields incl. timestamps,
+        title + slide order/visibility, translations incl. 254 previous round-tripped). Live on
+        restarted new-code server: active-deck switch landed in Postgres (user_active_deck, fresh
+        stamp) while JSON stayed frozen + survived reboot; English edit flipped es/fr `dirty=true`
+        (en stays false); TC "." edits landed in deck_translations.value; previous preserved through
+        edits. NOTE: the "↻ Restore" button is only in the per-field popup, not the TC grid — logged
+        as Issue-M-2026-07-18-builder-translation-center-restore-button-add-to-grid (not a mig bug).
 - [ ] **Slice 3 — slide library + deckEdits split**
   - [ ] Read-before-swap: the ~27 inline `readFileSync(LIBRARY_PATH)` reads + ~15 writes
   - [ ] Add readLibrary/writeLibrarySlide/readDeckSlideEdits/writeDeckSlideEdits; `resolveSlideEdits`
