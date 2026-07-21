@@ -135,13 +135,37 @@ exist only in the DB and would be lost on rollback → verify each slice THOROUG
         (en stays false); TC "." edits landed in deck_translations.value; previous preserved through
         edits. NOTE: the "↻ Restore" button is only in the per-field popup, not the TC grid — logged
         as Issue-M-2026-07-18-builder-translation-center-restore-button-add-to-grid (not a mig bug).
-- [ ] **Slice 3 — slide library + deckEdits split**
-  - [ ] Read-before-swap: the ~27 inline `readFileSync(LIBRARY_PATH)` reads + ~15 writes
-  - [ ] Add readLibrary/writeLibrarySlide/readDeckSlideEdits/writeDeckSlideEdits; `resolveSlideEdits`
-        reads `deck_slide_edits` from cache — **all-or-nothing, no blend**
-  - [ ] Verify: library list identical; a per-deck edit writes ONE `deck_slide_edits` row and
-        leaves the library base row untouched (**proves issue #1 fixed**); render every slide of
-        every deck and diff HTML vs pre-migration
+- [x] **Slice 3 — slide library + deckEdits split** ✅ DONE (2026-07-21)
+  - [x] Read-before-swap: mapped ~27 LIBRARY_PATH reads + ~15 writes + 10 deckEdits sites.
+        **Cleanup wins (user asked to prune obvious dead code during the move):**
+        (a) 5 slide fields were silently dropped by the original import — 4 are LIVE and were
+        recovered as columns (`template_version`, `template_update_ignored_at`, `style_ref`,
+        `style_css`); the 5th, `themeId`, is **write-only dead** (redundant with style_ref/css) →
+        NOT migrated, and its write at the create endpoint was removed.
+        (b) stored `decks[]` usage list is **derivable** — `/api/slide-library` already recomputed
+        it — so it is no longer stored; `readLibrary()` rebuilds it from `deck_slides`.
+  - [x] Schema deviations (schema.sql updated): added `slide_library.position` (My Library renders
+        in server order and does NOT sort client-side → needed a deterministic ORDER BY) + the 4
+        recovered columns. Resynced via `scripts/resync-library-to-supabase.js` (slide_library +
+        deck_slide_edits ONLY — library was still JSON-source so this also caught post-import drift;
+        valid deck ids read from Postgres, 7 orphan deckEdits buckets for deleted decks skipped).
+        `import-to-supabase.js buildLibrary` updated to carry position + the 4 columns.
+  - [x] Added `readLibrary()` (reconstructs deckEdits from `deck_slide_edits` + decks[] from
+        `deck_slides` so `resolveSlideEdits` and all ~27 readers stay UNCHANGED — all-or-nothing
+        preserved) + `writeLibrary()` (base → slide_library incl. position; each deckEdits bucket →
+        ONE deck_slide_edits row; upsert-only; handles slide deletion w/ FK cascade). Swapped ~27
+        reads + ~14 writes. `store.js` loads slide_library ORDER BY position. `findImageUsage` now
+        scans live data (also catches deck logo/heroBg it missed before). `rebuildSlideDecks` →
+        `enforceOneDeckPerSlide` (decks[] is derived now; no library-file write). Fixed a real
+        ordering bug in deck-duplicate: `writeLibrary` MUST precede `writeDeckById` (deck_slides FK).
+  - [x] Verify: read-fidelity script PASS — 26 slides identical order, base fields (incl. 4 recovered
+        columns) identical, 21 deck×slide buckets identical, `resolveSlideEdits` byte-identical for
+        every in-deck slide. Live on restarted new-code server: a cover edit wrote ONE
+        `deck_slide_edits` row (headline), left the slide_library base row untouched, total edit rows
+        stayed 21 (updated in place, library does NOT grow) — **issue #1 fixed**. JSON frozen.
+        ACCEPTED divergence (user 2026-07-21): 5 unassigned "(Copy)" leftovers of deleted deck k0md2
+        had deckEdits only for that dead deck → old code previewed them blank; now they fall back to
+        their real global edits. In no live deck → zero render/presentation/translation impact.
 - [ ] **Slice 4 — presentations + events table**
   - [ ] Read-before-swap: the ~24 read / ~11 write inline sites; `buildFrozenPresentation`
         (plan ref server.js:2339, async POST-only) swapped last

@@ -107,9 +107,16 @@ create table if not exists slide_library (
   edits           jsonb not null default '{}',    -- global default edits
   gallery_enabled boolean not null default false,
   theme_override  text,
+  position                   int,                  -- library display order (My Library does NOT sort client-side)
+  template_version           int,                  -- drives the "template update available" badge
+  template_update_ignored_at text,                 -- ISO string; set when a user dismisses an update
+  style_ref                  text,                 -- per-slide legacy .html/.css style ref (no-deck preview)
+  style_css                  text,                 -- per-slide extracted CSS (no-deck preview)
   created_at      timestamptz,
   updated_at      timestamptz not null default now()
 );
+-- NOTE: the legacy slide-level `themeId` field is intentionally NOT migrated — it was
+-- write-only (redundant with style_ref/style_css). Its write was removed in Slice 3.
 
 -- ── 7. Deck × slide edits (THE deckEdits split — fixes sustainability issue #1)
 -- One row per (deck, library slide). Library no longer grows per deck edit.

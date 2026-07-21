@@ -75,7 +75,7 @@ app.get('/slides/deck-preview/:id', function (req, res) {
     if (!deckSlide || !deckSlide.librarySlideId) {
       return res.status(404).type('text/plain').send('Deck slide not found: ' + id);
     }
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
     var libSlide = library.slides.find(function (s) { return s.id === deckSlide.librarySlideId; });
     if (!libSlide) return res.status(404).type('text/plain').send('Library slide not found');
 
@@ -448,7 +448,7 @@ app.get('/slides/:deckSlideId.html', function (req, res, next) {
     var deckSlide = deck.slides.find(function (s) { return s.id === deckSlideId; });
     if (!deckSlide || !deckSlide.librarySlideId) return next();
 
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
     var libSlide = library.slides.find(function (s) { return s.id === deckSlide.librarySlideId; });
     if (!libSlide) return next();
 
@@ -1737,7 +1737,7 @@ app.get('/api/deck', function (req, res) {
   try {
     var activeDeckId = getActiveDeckId();
     var deck    = readDeckById(activeDeckId);
-    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library = readLibrary();
     var catalog = getCatalog();
 
     deck.slides = deck.slides.map(function (slide) {
@@ -1851,7 +1851,7 @@ app.post('/api/deck/slides', function (req, res) {
   if (!librarySlideId) return res.status(400).json({ success: false, error: 'librarySlideId is required' });
 
   try {
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
     var libSlide = library.slides.find(function (s) { return s.id === librarySlideId; });
     if (!libSlide) return res.status(404).json({ success: false, error: 'Library slide not found' });
 
@@ -1881,12 +1881,8 @@ app.post('/api/deck/slides', function (req, res) {
     }
     writeDeckById(activeDeckId, deck);
 
-    // Track which decks include this library slide so library-preview can use deck context
-    if (!Array.isArray(libSlide.decks)) libSlide.decks = [];
-    if (!libSlide.decks.some(function (d) { return d.id === activeDeckId; })) {
-      libSlide.decks.push({ id: activeDeckId, name: deckConfig.name || activeDeckId });
-      fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
-    }
+    // (removed: manual decks[] bookkeeping — deck membership is DERIVED now, rebuilt
+    //  by readLibrary() from the deck_slides row writeDeckById just wrote above.)
 
     // If deck has no style and this slide brings a legacy .html styleRef, promote it to the deck
     // (.css theme files are per-slide; don't promote them to deck level)
@@ -1918,11 +1914,11 @@ app.delete('/api/deck/slides/:id', function (req, res) {
 
     // Remove this deck from the library slide's decks[] so thumbnail reverts to no-deck render
     if (removing && removing.librarySlideId) {
-      var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+      var library  = readLibrary();
       var libSlide = library.slides.find(function (s) { return s.id === removing.librarySlideId; });
       if (libSlide && Array.isArray(libSlide.decks)) {
         libSlide.decks = libSlide.decks.filter(function (d) { return d.id !== activeDeckId; });
-        fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+        writeLibrary(library);
       }
     }
 
@@ -1944,14 +1940,14 @@ app.post('/api/deck/slides/:id/edits', function (req, res) {
     var deckSlide = deck.slides.find(function (s) { return s.id === id; });
     if (!deckSlide) return res.status(404).json({ success: false, error: 'Deck slide not found' });
 
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
     var libSlide = library.slides.find(function (s) { return s.id === deckSlide.librarySlideId; });
     if (!libSlide) return res.status(404).json({ success: false, error: 'Library slide not found' });
 
     if (!libSlide.deckEdits) libSlide.deckEdits = {};
     if (!libSlide.deckEdits[activeDeckId]) libSlide.deckEdits[activeDeckId] = {};
     libSlide.deckEdits[activeDeckId] = Object.assign({}, libSlide.deckEdits[activeDeckId], edits);
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
     markSlideTranslationsDirty(deckSlide.librarySlideId, edits, activeDeckId);
 
     // Propagate cover logo change to all presentations in this deck
@@ -2132,6 +2128,125 @@ function writeDeckById(deckId, data) {
 function getActiveDeckId() {
   return store.cache.userActiveDeck.get(ACTIVE_DECK_KEY) || 'deck-rebuild';
 }
+// ── library reshapers (Slice 3: slide_library + deck_slide_edits cache-backed) ─
+// slide_library row → the slide object the app reads from slide-library.json.
+// `deckEdits` and `decks[]` are NOT columns: they are rebuilt from deck_slide_edits
+// and deck_slides so every existing reader keeps working unchanged — including
+// resolveSlideEdits, whose all-or-nothing check keys off `deckEdits` being PRESENT.
+function dbLibrarySlideToApp(row, deckEdits, decks) {
+  var slide = {
+    id: row.id,
+    name: row.name,
+    templateId: row.template_id,
+    edits: row.edits || {}
+  };
+  if (row.template_version != null) slide.templateVersion = row.template_version;
+  if (deckEdits) slide.deckEdits = deckEdits;   // omitted when the slide has no per-deck rows
+  slide.decks = decks || [];                    // derived usage list (never stored)
+  slide.galleryEnabled = !!row.gallery_enabled;
+  slide.themeOverride = row.theme_override;
+  if (row.style_ref != null) slide.styleRef = row.style_ref;
+  if (row.style_css != null) slide.styleCss = row.style_css;
+  if (row.template_update_ignored_at != null) slide.templateUpdateIgnoredAt = row.template_update_ignored_at;
+  if (row.created_at != null) slide.createdAt = row.created_at;
+  return slide;
+}
+
+// Inverse: app slide object → slide_library row. `position` is the array index, which
+// preserves My Library's display order (that grid renders in server order, no client sort).
+function appLibrarySlideToDb(slide, position) {
+  return {
+    id: slide.id, team_id: store.TEAM, name: slide.name,
+    template_id: slide.templateId != null ? slide.templateId : null,
+    edits: slide.edits || {},
+    gallery_enabled: !!slide.galleryEnabled,
+    theme_override: slide.themeOverride != null ? slide.themeOverride : null,
+    position: position,
+    template_version: slide.templateVersion != null ? slide.templateVersion : null,
+    template_update_ignored_at: slide.templateUpdateIgnoredAt != null ? slide.templateUpdateIgnoredAt : null,
+    style_ref: slide.styleRef != null ? slide.styleRef : null,
+    style_css: slide.styleCss != null ? slide.styleCss : null,
+    created_at: slide.createdAt != null ? slide.createdAt : null
+  };
+}
+
+function readLibrary() {
+  // deck_slide_edits cache is keyed deck → slide; regroup it by slide
+  var editsBySlide = {};
+  store.cache.deckSlideEdits.forEach(function (libMap, deckId) {
+    libMap.forEach(function (edits, libId) {
+      if (!editsBySlide[libId]) editsBySlide[libId] = {};
+      editsBySlide[libId][deckId] = edits;
+    });
+  });
+  // deck membership, rebuilt from deck_slides (replaces the old stored decks[])
+  var decksBySlide = {};
+  store.cache.deckSlides.forEach(function (rows, deckId) {
+    var deckRow = store.cache.decks.get(deckId);
+    if (!deckRow) return;
+    rows.forEach(function (r) {
+      if (!decksBySlide[r.library_slide_id]) decksBySlide[r.library_slide_id] = [];
+      decksBySlide[r.library_slide_id].push({ id: deckId, name: deckRow.name || deckId });
+    });
+  });
+
+  var slides = [];
+  store.cache.library.forEach(function (row) {
+    slides.push(dbLibrarySlideToApp(row, editsBySlide[row.id], decksBySlide[row.id]));
+  });
+  return { slides: slides };
+}
+
+// Whole-library reconcile — every caller does a read-modify-write of { slides: [...] }.
+// Base fields → slide_library; each deckEdits bucket → ONE deck_slide_edits row (THE
+// split: the library no longer grows per deck edit). decks[] is derived, never stored.
+// deck_slide_edits are upsert-only: the app never removes an individual bucket (slide
+// or deck deletion cascades instead), which matches the old whole-file rewrite.
+function writeLibrary(library) {
+  var incoming = (library && library.slides) || [];
+  var incomingIds = {};
+  incoming.forEach(function (s) { incomingIds[s.id] = true; });
+
+  var removed = [];
+  store.cache.library.forEach(function (_row, id) { if (!incomingIds[id]) removed.push(id); });
+
+  var libRows = [];
+  var editRows = [];
+  incoming.forEach(function (slide, i) {
+    var row = appLibrarySlideToDb(slide, i);
+    store.cache.library.set(slide.id, row);
+    libRows.push(row);
+
+    if (!slide.deckEdits) return;
+    Object.keys(slide.deckEdits).forEach(function (deckId) {
+      if (!store.cache.decks.has(deckId)) return; // orphan bucket (deck deleted) — skip, FK would reject
+      var edits = slide.deckEdits[deckId] || {};
+      if (!store.cache.deckSlideEdits.has(deckId)) store.cache.deckSlideEdits.set(deckId, new Map());
+      store.cache.deckSlideEdits.get(deckId).set(slide.id, edits);
+      editRows.push({ deck_id: deckId, library_slide_id: slide.id, team_id: store.TEAM, edits: edits });
+    });
+  });
+
+  removed.forEach(function (id) {
+    store.cache.library.delete(id);
+    store.cache.deckSlideEdits.forEach(function (libMap) { libMap.delete(id); });
+    // deleting the slide_library row cascades deck_slides too — mirror that in the cache
+    store.cache.deckSlides.forEach(function (rows, deckId) {
+      store.cache.deckSlides.set(deckId, rows.filter(function (r) { return r.library_slide_id !== id; }));
+    });
+  });
+
+  (async function () {
+    try {
+      if (libRows.length) await store.enqueueUpsert('slide_library', libRows, 'id');
+      if (editRows.length) await store.enqueueUpsert('deck_slide_edits', editRows, 'deck_id,library_slide_id');
+      for (var i = 0; i < removed.length; i++) {
+        await store.enqueueDelete('slide_library', { id: removed[i] }); // cascades deck_slide_edits + deck_slides
+      }
+    } catch (e) { /* store queue logs the failure loudly */ }
+  })();
+}
+
 function resolveSlideEdits(libSlide, deckId) {
   if (libSlide.deckEdits) {
     return Object.assign({}, libSlide.deckEdits[deckId] || {});
@@ -2322,7 +2437,7 @@ app.post('/api/decks/:id/duplicate', function (req, res) {
     // Deep-clone: create a new library slide for each slide in the source deck
     var srcDeck  = readDeckById(id);
     var newDeck  = JSON.parse(JSON.stringify(srcDeck));
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
     var libChanged = false;
     var counter  = 0;
 
@@ -2349,8 +2464,10 @@ app.post('/api/decks/:id/duplicate', function (req, res) {
       });
     });
 
+    // Library FIRST: deck_slides.library_slide_id is an FK onto slide_library, so the
+    // cloned slides must exist before the new deck's slide rows reference them.
+    if (libChanged) writeLibrary(library);
     writeDeckById(copy.id, newDeck);
-    if (libChanged) fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
     res.json({ success: true, data: copy });
   } catch (e) {
     res.status(500).json({ success: false, error: e.message });
@@ -2514,12 +2631,12 @@ app.post('/api/library/:id/edits', function (req, res) {
     var edits = sanitizeEdits(req.body.edits);
     if (!id || !edits) return res.status(400).json({ success: false, error: 'Missing id or edits' });
 
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
     var libSlide = library.slides.find(function (s) { return s.id === id; });
     if (!libSlide) return res.status(404).json({ success: false, error: 'Library slide not found' });
 
     libSlide.edits = Object.assign({}, libSlide.edits || {}, edits);
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
     markSlideTranslationsDirty(id, edits);
     res.json({ ok: true });
   } catch (err) {
@@ -2530,7 +2647,7 @@ app.post('/api/library/:id/edits', function (req, res) {
 // GET /api/library/:id/features — read a library slide's slide-level feature flags
 app.get('/api/library/:id/features', function (req, res) {
   try {
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
     var libSlide = library.slides.find(function (s) { return s.id === req.params.id; });
     if (!libSlide) return res.status(404).json({ success: false, error: 'Library slide not found' });
     res.json({ success: true, data: { galleryEnabled: !!libSlide.galleryEnabled, themeOverride: libSlide.themeOverride || null } });
@@ -2543,7 +2660,7 @@ app.get('/api/library/:id/features', function (req, res) {
 //   themeOverride: 'light' | 'dark' force this slide's theme; null/'' clears (inherit deck).
 app.post('/api/library/:id/features', function (req, res) {
   try {
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
     var libSlide = library.slides.find(function (s) { return s.id === req.params.id; });
     if (!libSlide) return res.status(404).json({ success: false, error: 'Library slide not found' });
     if (typeof req.body.galleryEnabled === 'boolean') libSlide.galleryEnabled = req.body.galleryEnabled;
@@ -2551,7 +2668,7 @@ app.post('/api/library/:id/features', function (req, res) {
       libSlide.themeOverride = (req.body.themeOverride === 'light' || req.body.themeOverride === 'dark')
         ? req.body.themeOverride : null;
     }
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
     res.json({ success: true, data: { galleryEnabled: !!libSlide.galleryEnabled, themeOverride: libSlide.themeOverride || null } });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -2592,7 +2709,7 @@ function buildFrozenPresentation(presentation) {
   fs.mkdirSync(outDir,    { recursive: true });
   fs.mkdirSync(assetDir,  { recursive: true });
 
-  var library   = JSON.parse(fs.readFileSync(LIBRARY_PATH,  'utf8'));
+  var library   = readLibrary();
   var appSettings = readSettings();
   var presDeck  = getDeckConfig(presentation.deckId || getActiveDeckId());
   var accentCss = deckAccentCss(presDeck);
@@ -3695,7 +3812,7 @@ app.post('/api/presentations', function (req, res) {
     var activeDeckId = getActiveDeckId();
     var deck    = readDeckById(activeDeckId);
     var deckMeta = (readDecks().decks || []).find(function (d) { return d.id === activeDeckId; }) || {};
-    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library = readLibrary();
 
     var presentationName = (body.presentationName || '').trim();
     var contactName  = (body.contactName  || '').trim();
@@ -4066,7 +4183,7 @@ app.post('/api/presentations/:id/republish', function (req, res) {
 
     // Re-snapshot the chosen deck's slides (mirrors the Save-as-Presentation snapshot)
     var deck    = readDeckById(deckId);
-    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library = readLibrary();
     var slides  = (deck.slides || []).map(function (s) {
       var lib = library.slides.find(function (l) { return l.id === s.librarySlideId; });
       return { id: s.id, librarySlideId: s.librarySlideId, name: (lib && lib.name) || s.id, visible: s.visible !== false };
@@ -4134,7 +4251,7 @@ app.get('/view/:id', function (req, res) {
 // GET /api/slide-library — return the slide library catalog with deck membership
 app.get('/api/slide-library', function (req, res) {
   try {
-    var library   = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library   = readLibrary();
     var templates = JSON.parse(fs.readFileSync(TEMPLATES_PATH, 'utf8'));
     var tplMap    = {};
     templates.forEach(function (t) { tplMap[t.id] = t; });
@@ -4341,7 +4458,7 @@ app.post('/api/templates/:id/duplicate', async function (req, res) {
 // PATCH /api/slide-library/:id — update name (and/or other top-level fields) of a library slide
 app.patch('/api/slide-library/:id', function (req, res) {
   try {
-    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library = readLibrary();
     var slide = library.slides.find(function (s) { return s.id === req.params.id; });
     if (!slide) return res.status(404).json({ success: false, error: 'Slide not found' });
     var allowed = ['name'];
@@ -4349,7 +4466,7 @@ app.patch('/api/slide-library/:id', function (req, res) {
     allowed.forEach(function (key) {
       if (body[key] !== undefined) slide[key] = String(body[key]).trim() || slide[key];
     });
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
     res.json({ success: true, data: slide });
   } catch (e) {
     res.status(500).json({ success: false, error: e.message });
@@ -4359,7 +4476,7 @@ app.patch('/api/slide-library/:id', function (req, res) {
 // POST /api/slide-library/:id/duplicate — duplicate a library slide
 app.post('/api/slide-library/:id/duplicate', function (req, res) {
   try {
-    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library = readLibrary();
     var src = library.slides.find(function (s) { return s.id === req.params.id; });
     if (!src) return res.status(404).json({ success: false, error: 'Slide not found' });
     var copy = Object.assign({}, JSON.parse(JSON.stringify(src)), {
@@ -4369,7 +4486,7 @@ app.post('/api/slide-library/:id/duplicate', function (req, res) {
       deckEdits: {}
     });
     library.slides.push(copy);
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
     res.json({ success: true, data: copy });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -4379,7 +4496,7 @@ app.post('/api/slide-library/:id/duplicate', function (req, res) {
 // POST /api/slide-library/:id/accept-update — apply new template structure, bump templateVersion
 app.post('/api/slide-library/:id/accept-update', function (req, res) {
   try {
-    var library   = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library   = readLibrary();
     var templates = JSON.parse(fs.readFileSync(TEMPLATES_PATH, 'utf8'));
     var slide     = library.slides.find(function (s) { return s.id === req.params.id; });
     if (!slide) return res.status(404).json({ success: false, error: 'Slide not found' });
@@ -4389,7 +4506,7 @@ app.post('/api/slide-library/:id/accept-update', function (req, res) {
     // Apply new template structure; existing edits are preserved (they live in slide.edits)
     slide.templateVersion = tpl.version || 1;
     delete slide.templateUpdateIgnoredAt;
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
     res.json({ success: true, data: slide });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -4399,11 +4516,11 @@ app.post('/api/slide-library/:id/accept-update', function (req, res) {
 // POST /api/slide-library/:id/ignore-update — mark template update as ignored
 app.post('/api/slide-library/:id/ignore-update', function (req, res) {
   try {
-    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library = readLibrary();
     var slide   = library.slides.find(function (s) { return s.id === req.params.id; });
     if (!slide) return res.status(404).json({ success: false, error: 'Slide not found' });
     slide.templateUpdateIgnoredAt = new Date().toISOString();
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -4413,9 +4530,9 @@ app.post('/api/slide-library/:id/ignore-update', function (req, res) {
 // DELETE /api/slide-library/:id — remove an entry from the slide library by id
 app.delete('/api/slide-library/:id', function (req, res) {
   try {
-    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library = readLibrary();
     library.slides = library.slides.filter(function (e) { return e.id !== req.params.id; });
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -4452,7 +4569,7 @@ app.post('/api/library', function (req, res) {
     var resolved = resolveTemplate(templateId);
     var catalog  = getCatalog();
     var tplEntry = catalog.find(function (t) { return t.id === templateId; });
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
 
     var edits = (tplEntry && tplEntry.defaultEdits) ? JSON.parse(JSON.stringify(tplEntry.defaultEdits)) : {};
 
@@ -4464,9 +4581,9 @@ app.post('/api/library', function (req, res) {
       edits: edits
     };
     if (slideStyleRef) { newSlide.styleRef = slideStyleRef; newSlide.styleCss = slideStyleCss; }
-    if (rawThemeId && rawThemeId.endsWith('.css')) newSlide.themeId = rawThemeId;
+    // (removed: newSlide.themeId — write-only dead data, redundant with styleRef/styleCss)
     library.slides.push(newSlide);
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
     res.json({ success: true, data: newSlide });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -4704,7 +4821,7 @@ app.get('/slides/library-preview/:id', function (req, res) {
     return res.status(400).type('text/plain').send('Invalid id');
   }
   try {
-    var library   = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library   = readLibrary();
     var libSlide  = library.slides.find(function (s) { return s.id === id; });
     if (!libSlide) return res.status(404).type('text/plain').send('Library slide not found');
 
@@ -4824,7 +4941,7 @@ app.get('/slides/library-edit/:id', function (req, res) {
     return res.status(400).type('text/plain').send('Invalid id');
   }
   try {
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
     var libSlide = library.slides.find(function (s) { return s.id === id; });
     if (!libSlide) return res.status(404).type('text/plain').send('Library slide not found');
 
@@ -4971,14 +5088,14 @@ app.post('/api/slide-library/:id/edits', function (req, res) {
     var bucket = req.body.deckId || getActiveDeckId();
     if (!id || !edits) return res.status(400).json({ success: false, error: 'Missing id or edits' });
 
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
     var libSlide = library.slides.find(function (s) { return s.id === id; });
     if (!libSlide) return res.status(404).json({ success: false, error: 'Library slide not found' });
 
     if (!libSlide.deckEdits) libSlide.deckEdits = {};
     if (!libSlide.deckEdits[bucket]) libSlide.deckEdits[bucket] = {};
     libSlide.deckEdits[bucket] = Object.assign({}, libSlide.deckEdits[bucket], edits);
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -5230,7 +5347,7 @@ app.get('/api/translations/fields-summary', function (req, res) {
   try {
     var activeDeckId = getActiveDeckId();
     var deck    = readDeckById(activeDeckId);
-    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library = readLibrary();
     var t       = readTranslations(activeDeckId);
     var rows    = [];
 
@@ -5307,7 +5424,7 @@ app.post('/api/translations/translate-all', async function (req, res) {
     }
 
     var deckId = getActiveDeckId();
-    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library = readLibrary();
     var langList = getLanguages();
     var t = readTranslations(deckId);
     if (!t.slides) t.slides = {};
@@ -5639,12 +5756,17 @@ function findImageUsage(name) {
   function scan(label, file) {
     try { if (fs.readFileSync(file, 'utf8').indexOf(needle) !== -1) hits.push(label); } catch (e) {}
   }
-  scan('library', LIBRARY_PATH);
-  scan('presentations', PRESENTATIONS_PATH);
+  // Library + decks are cache-backed now; their JSON files are frozen snapshots, so
+  // scan the live data instead (this also catches deck branding logo/heroBg, which
+  // the old per-deck deck.json scan never covered).
+  function scanData(label, data) {
+    try { if (JSON.stringify(data).indexOf(needle) !== -1) hits.push(label); } catch (e) {}
+  }
+  scanData('library', readLibrary());
+  scan('presentations', PRESENTATIONS_PATH); // still JSON until Slice 4
   try {
-    fs.readdirSync(DECKS_DIR_PATH).forEach(function (d) {
-      var dp = path.join(DECKS_DIR_PATH, d, 'deck.json');
-      if (fs.existsSync(dp)) scan('deck:' + d, dp);
+    readDecks().decks.forEach(function (d) {
+      scanData('deck:' + d.id, [d, readDeckById(d.id)]);
     });
   } catch (e) {}
   var slidesDir = path.join(__dirname, 'features', 'slides');
@@ -5768,12 +5890,12 @@ app.post('/api/clone-slide', function (req, res) {
     fs.writeFileSync(newFile, $.html(), 'utf8');
 
     // --- 5. Update slide-library.json ---
-    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library = readLibrary();
     var sourceEntry = library.find(function (e) { return e.id === sourceId; });
     var sourceLabel = sourceEntry ? sourceEntry.label : namePart;
     var newEntry = { id: newId, label: 'Clone of ' + sourceLabel, category: 'custom' };
     library.push(newEntry);
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
 
     // --- 6. Update deck.json ---
     var cloneActiveDeckId = getActiveDeckId();
@@ -5788,42 +5910,32 @@ app.post('/api/clone-slide', function (req, res) {
   }
 });
 
-// ── Startup: rebuild library slide decks[] (called after the cache loads) ────
-// MUST run AFTER store.loadAll(): it reads decks via readDecks()/readDeckById(),
-// which are now cache-backed (Slice 2). Running it before the cache is populated
-// would see zero decks and wipe every library slide's decks[].
-function rebuildSlideDecks() {
-  if (!fs.existsSync(LIBRARY_PATH)) return;
+// ── Startup: enforce 1-slide-per-deck (called after the cache loads) ─────────
+// Deck membership is DERIVED now — readLibrary() rebuilds each slide's decks[] from
+// deck_slides — so there is no stored list to rebuild and no library file to write
+// (slide-library.json is a frozen snapshot post-Slice-3). All this still does is
+// repair the rare case of one library slide sitting in two decks: first deck wins.
+// MUST run AFTER store.loadAll() — every read here is cache-backed.
+function enforceOneDeckPerSlide() {
+  var owner    = {}; // librarySlideId -> deckId that keeps it
+  var removals = {}; // deckId -> [librarySlideId, ...]
 
-  var libData   = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
-  var deckStore = readDecks();
-
-  // Reset decks[] on every slide, then repopulate from deck.json slide lists.
-  // Enforce 1-slide-per-deck: first deck found (deckStore order) wins; slide is removed
-  // from any subsequent deck that also contains it.
-  libData.slides.forEach(function (ls) { ls.decks = []; });
-
-  var slideRemovals = {}; // deckId -> [librarySlideId, ...]
-
-  deckStore.decks.forEach(function (deckMeta) {
-    var deckData = readDeckById(deckMeta.id);
-    (deckData.slides || []).forEach(function (ds) {
+  readDecks().decks.forEach(function (deckMeta) {
+    (readDeckById(deckMeta.id).slides || []).forEach(function (ds) {
       if (!ds.librarySlideId) return;
-      var ls = libData.slides.find(function (s) { return s.id === ds.librarySlideId; });
-      if (!ls) return;
-      if (ls.decks.length > 0) {
-        console.log('[startup] WARNING: slide "' + (ls.name || ls.id) + '" in multiple decks — keeping "' + ls.decks[0].id + '", removing from "' + deckMeta.id + '"');
-        if (!slideRemovals[deckMeta.id]) slideRemovals[deckMeta.id] = [];
-        slideRemovals[deckMeta.id].push(ds.librarySlideId);
-        return;
+      if (owner[ds.librarySlideId]) {
+        console.log('[startup] WARNING: slide "' + ds.librarySlideId + '" in multiple decks — keeping "' +
+          owner[ds.librarySlideId] + '", removing from "' + deckMeta.id + '"');
+        if (!removals[deckMeta.id]) removals[deckMeta.id] = [];
+        removals[deckMeta.id].push(ds.librarySlideId);
+      } else {
+        owner[ds.librarySlideId] = deckMeta.id;
       }
-      ls.decks.push({ id: deckMeta.id, name: deckMeta.name || deckMeta.id });
     });
   });
 
-  // Remove slides from the extra decks
-  Object.keys(slideRemovals).forEach(function (deckId) {
-    var ids    = slideRemovals[deckId];
+  Object.keys(removals).forEach(function (deckId) {
+    var ids    = removals[deckId];
     var dkData = readDeckById(deckId);
     dkData.slides = dkData.slides.filter(function (s) {
       return !s.librarySlideId || ids.indexOf(s.librarySlideId) === -1;
@@ -5831,9 +5943,6 @@ function rebuildSlideDecks() {
     writeDeckById(deckId, dkData);
     console.log('[startup] Removed ' + ids.length + ' duplicate slide(s) from deck "' + deckId + '"');
   });
-
-  fs.writeFileSync(LIBRARY_PATH, JSON.stringify(libData, null, 2), 'utf8');
-  console.log('[startup] Rebuilt decks[] on library slides');
 }
 
 // (Removed: one-time per-deck slide-isolation migration + the legacy `default`
@@ -5844,7 +5953,7 @@ function rebuildSlideDecks() {
 // slice (Phase 5). Fail fast if it can't load: serving with an empty cache
 // would break every migrated read. (loadAll retries once for transient skew.)
 store.loadAll().then(function () {
-  rebuildSlideDecks(); // cache-backed now — must run after loadAll(), never before
+  enforceOneDeckPerSlide(); // cache-backed now — must run after loadAll(), never before
   app.listen(PORT, function () {
     console.log('Builder running at http://localhost:' + PORT);
     console.log('Preview:  http://localhost:' + PORT + '/builder/preview.html');

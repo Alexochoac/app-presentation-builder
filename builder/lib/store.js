@@ -89,7 +89,7 @@ function fetchEverything() {
     fetchAll('templates'),
     fetchAll('languages'),
     fetchAll('decks'),
-    fetchAll('slide_library'),
+    fetchAll('slide_library', 'position'), // My Library renders in server order — must be deterministic
     fetchAll('user_active_deck'),
     fetchAll('deck_slides'),
     fetchAll('deck_slide_edits'),

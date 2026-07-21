@@ -120,11 +120,19 @@ function buildActiveDeck() {
   return [{ team_id: TEAM, user_id: SENTINEL_USER, deck_id: id }];
 }
 
+// NOTE: the slide-level `themeId` is intentionally NOT carried — it is write-only dead
+// data (redundant with style_ref/style_css, which the theme resolves into).
 function buildLibrary() {
-  return library.map((s) => ({
+  return library.map((s, i) => ({
     id: s.id, team_id: TEAM, name: s.name, template_id: val(s.templateId),
     edits: s.edits || {}, gallery_enabled: !!s.galleryEnabled,
-    theme_override: val(s.themeOverride), created_at: val(s.createdAt),
+    theme_override: val(s.themeOverride),
+    position: i,                        // library display order (My Library does not sort)
+    template_version: val(s.templateVersion),
+    template_update_ignored_at: val(s.templateUpdateIgnoredAt),
+    style_ref: val(s.styleRef),
+    style_css: val(s.styleCss),
+    created_at: val(s.createdAt),
   }));
 }
 
