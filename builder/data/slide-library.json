@@ -666,15 +666,15 @@
       "decks": [
         {
           "id": "deck-1781437185102-felpw",
-          "name": "Why Switch from PowerPoint"
+          "name": "Why Switch from PowerPoint."
         }
       ],
       "deckEdits": {
         "deck-1781437185102-felpw": {
           "badge": "Sales Enablement · 2026",
-          "headline": "Stop using PowerPoint&nbsp;<div>Start using&nbsp;<span class=\"blue\">Put A Presentation</span><br></div>",
+          "headline": "Pause using PowerPoint&nbsp;<div>Start using&nbsp;<span class=\"blue\">Put A Presentation</span><br></div>",
           "subheadline": "The web-native way to build, share, and track sales presentations — no files, no plugins, no version chaos.",
-          "credit": "by Put A Presentation",
+          "credit": "by Put A Presentation.",
           "customer-logo": "/slides/uploads/Stephane-Blanc.jpg",
           "gallery-track": "\n  <div class=\"ls-gallery-slide ls-gallery-slide--text\"><div class=\"ls-gallery-stat\">\n    <span class=\"ls-gallery-label\" contenteditable=\"\" spellcheck=\"false\">Section Title</span>\n    <span class=\"ls-gallery-number\" contenteditable=\"\" spellcheck=\"false\">Key Fact</span>\n    <span class=\"ls-gallery-body-text\" contenteditable=\"\" spellcheck=\"false\">Description text here</span>\n  </div></div>\n",
           "cover-logo-size": "2",
@@ -703,7 +703,7 @@
       "decks": [
         {
           "id": "deck-1781437185102-felpw",
-          "name": "Why Switch from PowerPoint"
+          "name": "Why Switch from PowerPoint."
         }
       ],
       "deckEdits": {
@@ -734,7 +734,7 @@
       "decks": [
         {
           "id": "deck-1781437185102-felpw",
-          "name": "Why Switch from PowerPoint"
+          "name": "Why Switch from PowerPoint."
         }
       ],
       "deckEdits": {
@@ -763,7 +763,7 @@
       "decks": [
         {
           "id": "deck-1781437185102-felpw",
-          "name": "Why Switch from PowerPoint"
+          "name": "Why Switch from PowerPoint."
         }
       ],
       "deckEdits": {
@@ -799,7 +799,7 @@
       "decks": [
         {
           "id": "deck-1781437185102-felpw",
-          "name": "Why Switch from PowerPoint"
+          "name": "Why Switch from PowerPoint."
         }
       ],
       "deckEdits": {
@@ -831,12 +831,7 @@
         "headline": "Your Presentation <span class=\"blue\">Headline.</span>",
         "subheadline": "Proposal for [Customer] · [Name], [Title]."
       },
-      "decks": [
-        {
-          "id": "deck-1783341482133-k0md2",
-          "name": "Why Switch from PowerPoint (Copy)"
-        }
-      ],
+      "decks": [],
       "deckEdits": {
         "deck-1783341482133-k0md2": {
           "badge": "Sales Enablement · 2026",
@@ -868,12 +863,7 @@
         "col-header-ben": "With [Your Solution]",
         "ben-list": "<li>A clear advantage delivered every shift, automatically</li><li>Consistent, dependable results you can stand behind</li><li>Keeps pace at full speed with no blind spots</li><li>A documented trail you can show to customers</li><li>Lower cost of quality and fewer downstream surprises</li>"
       },
-      "decks": [
-        {
-          "id": "deck-1783341482133-k0md2",
-          "name": "Why Switch from PowerPoint (Copy)"
-        }
-      ],
+      "decks": [],
       "deckEdits": {
         "deck-1783341482133-k0md2": {
           "section-label": "THE HONEST COMPARISON",
@@ -899,12 +889,7 @@
         "headline": "Your headline <span class=\"blue\">goes here</span>",
         "subtitle": "A short supporting sentence about this slide."
       },
-      "decks": [
-        {
-          "id": "deck-1783341482133-k0md2",
-          "name": "Why Switch from PowerPoint (Copy)"
-        }
-      ],
+      "decks": [],
       "deckEdits": {
         "deck-1783341482133-k0md2": {
           "section-label": "YOUR COMMAND CENTER",
@@ -928,12 +913,7 @@
         "headline": "Your headline <span class=\"blue\">goes here</span>",
         "subtitle": "A short supporting sentence about this slide."
       },
-      "decks": [
-        {
-          "id": "deck-1783341482133-k0md2",
-          "name": "Why Switch from PowerPoint (Copy)"
-        }
-      ],
+      "decks": [],
       "deckEdits": {
         "deck-1783341482133-k0md2": {
           "section-label": "BUILD WITHOUT DESIGN SKILLS",
@@ -964,12 +944,7 @@
         "contact-phone": "+00 000 000 000",
         "contact-email": "yourname@example.com"
       },
-      "decks": [
-        {
-          "id": "deck-1783341482133-k0md2",
-          "name": "Why Switch from PowerPoint (Copy)"
-        }
-      ],
+      "decks": [],
       "deckEdits": {
         "deck-1783341482133-k0md2": {
           "section-label": "READY?",
