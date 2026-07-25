@@ -166,14 +166,36 @@ exist only in the DB and would be lost on rollback → verify each slice THOROUG
         ACCEPTED divergence (user 2026-07-21): 5 unassigned "(Copy)" leftovers of deleted deck k0md2
         had deckEdits only for that dead deck → old code previewed them blank; now they fall back to
         their real global edits. In no live deck → zero render/presentation/translation impact.
-- [ ] **Slice 4 — presentations + events table**
-  - [ ] Read-before-swap: the ~24 read / ~11 write inline sites; `buildFrozenPresentation`
-        (plan ref server.js:2339, async POST-only) swapped last
-  - [ ] Add readPresentations/readPresentationById/writePresentation/appendPresentationEvent
-  - [ ] Verify: list + detail identical; publish → row + `published` event + frozen HTML on disk;
-        republish → `replaced_at` + appended `republished` event (prior events NOT overwritten —
-        **proves the events-table win**)
-- [ ] **Wrap-up:** all slices verified in prod → archive JSON to `data/_migrated-backup/` (not delete)
+- [x] **Slice 4 — presentations + events table** ✅ DONE (2026-07-25)
+  - [x] Read-before-swap: confirmed 26 reads + 11 writes; `buildFrozenPresentation` (server.js:2705)
+        NEVER read the presentation store (takes the object as arg; only writes frozen HTML to disk) —
+        so nothing to swap there. **KEY FINDING: no schema drift AND no ALTER TABLE needed** — Postgres
+        matched presentations.json field-for-field (5/5 records, 11/11 events, slides JSONB canonically
+        identical), so the resync was a proven no-op and **skipped** (user-approved). One deviation from
+        the brief's "no gap": `editedAt` was written (server.js:4144) with no column; its only reader is
+        a dashboard fallback that can't fire (the same endpoint appends an `edited` EVENT on the next
+        line) → **dropped as dead** (user-approved, like Slice 3's `themeId`).
+  - [x] Added dbPresentationToApp/dbPresEventToApp/appPresentationToDb reshapers (created_at date used
+        as-is; *_at timestamptz → ISO-'Z'), readPresentations (newest-first by descending id —
+        reproduces the old unshift order, NO `position` column needed unlike Slice 3), readPresentationById,
+        writePresentation, and **appendPresentationEvent (INSERTs one presentation_events row — the win:
+        republish appends, never rewrites the list)**. Removed pushPresEvent. Swapped all 26 reads →
+        readPresentations(); 11 writes → base/writePresentation, events/appendPresentationEvent,
+        delete/enqueueDelete (FK cascade drops events). publish/republish/save/delete/duplicate await the
+        upsert (create awaits base FIRST so the event's FK parent exists); archive/unarchive/PUT/edit/
+        cover-logo fire-and-forget. findImageUsage now scans live data. presentations.deck_id has NO FK
+        (frozen snapshot outlives its deck). slides stay a frozen JSONB snapshot (plan risk #5).
+  - [x] Verify: read-fidelity script (scratchpad/verify-slice4.js) PASS — 5 presentations byte-identical
+        on every field incl. slides JSONB + timestamps, 11 events identical in order. Live on restarted
+        new-code server: published a new presentation (00000006) → row + frozen HTML on disk
+        (finished-presentations/00000006/index.html); republish → `replaced_at` set + a `republished`
+        event APPENDED as its own bigserial row (id14) with `created`(id12)+`published`(id13) LEFT INTACT
+        — **events-table win proven**. presentations.json stayed frozen at 5 records (00000006 DB-only).
+- [x] **Wrap-up** ✅ DONE (2026-07-25): all 5 slices verified → archived the 6 migrated JSON files
+      (settings, decks, slide-library, presentations, templates, languages) + the `decks/` per-deck
+      folder to `data/_migrated-backup/` via `git mv` (moved, NOT deleted). Left live (out of scope,
+      still JSON-backed): slide-templates.json, layouts.json, layout-skeletons.json. Migrated-file path
+      consts in server.js are now dead (never read) — confirmed no surviving fs reads before the move.
 
 ### Later phases (separate tasks, NOT this one)
 - [ ] Phase 3 (auth) — Supabase Auth + registration + Postgres-backed sessions

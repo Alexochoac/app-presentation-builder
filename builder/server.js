@@ -1956,12 +1956,10 @@ app.post('/api/deck/slides/:id/edits', function (req, res) {
     if (isCoverEdit) {
       var raw = String(edits['customer-logo'] || '');
       var newLogoSrc = raw.includes('<') ? (raw.match(/\bsrc="([^"]*)"/) || [])[1] || '' : raw;
-      var presData = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
-      var changed = false;
+      var presData = readPresentations();
       (presData.presentations || []).forEach(function (p) {
-        if (p.deckId === activeDeckId) { p.customerLogoSrc = newLogoSrc; changed = true; }
+        if (p.deckId === activeDeckId) { p.customerLogoSrc = newLogoSrc; writePresentation(p); }
       });
-      if (changed) fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(presData, null, 2), 'utf8');
     }
 
     res.json({ ok: true });
@@ -3395,9 +3393,119 @@ function buildFrozenPresentation(presentation) {
   return outDir;
 }
 
+// ── Presentations: cache-backed helpers (Slice 4) ─────────────────────────────
+// Rebuild the old presentation object from a presentations row + its events rows.
+// `created_at` is a DATE column ('YYYY-MM-DD' string) → used as-is; the *_at
+// timestamptz columns normalize back to the JSON's ISO-'Z' form (matches
+// dbDeckToApp). Optional timestamps are included only when set, mirroring the
+// original JSON shape. `slides` stays a FROZEN JSONB snapshot (plan risk #5 — a
+// published presentation renders as it did at publish time; never de-dupe to live rows).
+function dbPresEventToApp(e) {
+  var out = { type: e.type, at: e.at ? new Date(e.at).toISOString() : e.at };
+  if (e.deck_id)   out.deckId   = e.deck_id;
+  if (e.deck_name) out.deckName = e.deck_name;
+  return out;
+}
+function dbPresentationToApp(row, events) {
+  if (!row) return null;
+  var p = {
+    id:               row.id,
+    createdAt:        row.created_at,                       // date column: already 'YYYY-MM-DD'
+    deckId:           row.deck_id || '',
+    presentationName: row.presentation_name || '',
+    customerName:     row.customer_name || '',
+    customerUrl:      row.customer_url == null ? '' : row.customer_url,
+    contactName:      row.contact_name || '',
+    contactTitle:     row.contact_title == null ? '' : row.contact_title,
+    customerLogoSrc:  row.customer_logo_src || '',
+    showCoverLogo:    row.show_cover_logo !== false,
+    slideCount:       row.slide_count,
+    slides:           row.slides || [],
+    defaultLanguage:  row.default_language || 'en',
+    languages:        row.languages || [],
+    events:           (events || []).map(dbPresEventToApp)
+  };
+  if (row.published_at) p.publishedAt = new Date(row.published_at).toISOString();
+  if (row.replaced_at)  p.replacedAt  = new Date(row.replaced_at).toISOString();
+  if (row.archived_at)  p.archivedAt  = new Date(row.archived_at).toISOString();
+  return p;
+}
+// Inverse: app presentation object → presentations table row (base fields only;
+// events append separately). team_id fixed until auth; created_by stays null.
+function appPresentationToDb(p) {
+  return {
+    id:                p.id,
+    team_id:           store.TEAM,
+    deck_id:           p.deckId || null,
+    presentation_name: p.presentationName != null ? p.presentationName : null,
+    customer_name:     p.customerName != null ? p.customerName : null,
+    customer_url:      p.customerUrl != null ? p.customerUrl : null,
+    contact_name:      p.contactName != null ? p.contactName : null,
+    contact_title:     p.contactTitle != null ? p.contactTitle : null,
+    customer_logo_src: p.customerLogoSrc != null ? p.customerLogoSrc : null,
+    show_cover_logo:   p.showCoverLogo !== false,
+    slide_count:       p.slideCount != null ? p.slideCount : null,
+    slides:            p.slides || [],
+    default_language:  p.defaultLanguage || 'en',
+    languages:         p.languages || [],
+    created_at:        p.createdAt || null,   // 'YYYY-MM-DD' → date column
+    published_at:      p.publishedAt || null,
+    replaced_at:       p.replacedAt || null,
+    archived_at:       p.archivedAt || null
+  };
+}
+// Read the whole list, newest-first. JSON was unshift-ordered (newest id first);
+// ids are max+1 counters, so descending numeric id reproduces that order exactly
+// (no `position` column needed, unlike the library in Slice 3).
+function readPresentations() {
+  var list = [];
+  store.cache.presentations.forEach(function (row) {
+    list.push(dbPresentationToApp(row, store.cache.presentationEvents.get(row.id)));
+  });
+  list.sort(function (a, b) { return parseInt(b.id, 10) - parseInt(a.id, 10); });
+  return { presentations: list };
+}
+function readPresentationById(id) {
+  var row = store.cache.presentations.get(id);
+  if (!row) return null;
+  return dbPresentationToApp(row, store.cache.presentationEvents.get(id));
+}
+// Upsert one presentation's base row (NOT its events). Updates the cache
+// synchronously so the next read is correct; returns the enqueue promise so
+// high-stakes callers (publish/republish/save/delete) can await it. NO JSON write.
+function writePresentation(pres) {
+  var row = appPresentationToDb(pres);
+  store.cache.presentations.set(pres.id, row);
+  return store.enqueueUpsert('presentations', row, 'id');
+}
+// Append ONE event to a presentation — the events-table win: republish APPENDS a
+// row, it never rewrites the whole list. Mutates the passed app object's events[]
+// (so the HTTP response carries it), pushes a DB-shaped row into the cache bucket,
+// and INSERTs a presentation_events row (bigserial id auto-assigned). Returns the
+// enqueue promise. The parent presentation row must already exist (FK) — on create,
+// await writePresentation() first.
+function appendPresentationEvent(pres, type, extra) {
+  var at = new Date().toISOString();
+  var appEv = { type: type, at: at };
+  if (extra && extra.deckId)   appEv.deckId   = extra.deckId;
+  if (extra && extra.deckName) appEv.deckName = extra.deckName;
+  if (!Array.isArray(pres.events)) pres.events = [];
+  pres.events.push(appEv);
+
+  var dbEv = {
+    presentation_id: pres.id,
+    type:            type,
+    at:              at,
+    deck_id:         (extra && extra.deckId)   || null,
+    deck_name:       (extra && extra.deckName) || null
+  };
+  if (!store.cache.presentationEvents.has(pres.id)) store.cache.presentationEvents.set(pres.id, []);
+  store.cache.presentationEvents.get(pres.id).push(dbEv);
+  return store.enqueueUpsert('presentation_events', dbEv);
+}
+
 function makePresId() {
-  var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
-  var ids = (data.presentations || []).map(function (p) {
+  var ids = readPresentations().presentations.map(function (p) {
     var n = parseInt(p.id, 10);
     return isNaN(n) ? 0 : n;
   });
@@ -3405,19 +3513,10 @@ function makePresId() {
   return String(max + 1).padStart(8, '0');
 }
 
-// Append an event to a presentation's history log (created / published / republished / edited).
-function pushPresEvent(pres, type, extra) {
-  if (!Array.isArray(pres.events)) pres.events = [];
-  var ev = { type: type, at: new Date().toISOString() };
-  if (extra && extra.deckId)   ev.deckId   = extra.deckId;
-  if (extra && extra.deckName) ev.deckName = extra.deckName;
-  pres.events.push(ev);
-}
-
 // POST /api/presentations/rebuild-all — regenerate all frozen HTML files
 app.post('/api/presentations/rebuild-all', function (req, res) {
   try {
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var data = readPresentations();
     var presentations = data.presentations || [];
     var rebuilt = 0;
     var errors = [];
@@ -3438,7 +3537,7 @@ app.post('/api/presentations/rebuild-all', function (req, res) {
 // GET /api/presentations — list all finished presentations
 app.get('/api/presentations', function (req, res) {
   try {
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var data = readPresentations();
     res.json({ success: true, data: data.presentations || [] });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -3467,7 +3566,7 @@ app.get('/api/analytics/presentation/:id', function (req, res) {
 // Uses direct Postgres query — Umami API ignores URL filters in this version.
 app.get('/api/analytics/batch', function (req, res) {
   try {
-    var pdata   = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pdata   = readPresentations();
     var ids     = (pdata.presentations || []).map(function (p) { return p.id; });
     if (ids.length === 0) return res.json({ success: true, data: {} });
     var startMs = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
@@ -3491,7 +3590,7 @@ app.get('/api/analytics/batch', function (req, res) {
 // Result: { current: { pageviews, visitors }, previous: { pageviews, visitors } }.
 app.get('/api/analytics/kpis', function (req, res) {
   try {
-    var pdata     = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pdata     = readPresentations();
     var startAt   = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
     var endAt     = parseInt(req.query.endAt)   || Date.now();
     var livePres  = (pdata.presentations || []).filter(function (p) { return p.publishedAt && !p.archivedAt; });
@@ -3640,7 +3739,7 @@ function dbPresTimeSeriesWithBreakdown(urlPaths, presMap, startMs, endMs, opts, 
 // Uses direct Postgres — Umami API ignores URL filters in this version.
 app.get('/api/analytics/pageviews-multi', function (req, res) {
   try {
-    var pdata   = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pdata   = readPresentations();
     var startAt = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
     var endAt   = parseInt(req.query.endAt)   || Date.now();
 
@@ -3672,7 +3771,7 @@ app.get('/api/analytics/pageviews-multi', function (req, res) {
 // Returns slide event counts per event_name, aggregated across selected Live presentations.
 app.get('/api/analytics/events', function (req, res) {
   try {
-    var pdata   = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pdata   = readPresentations();
     var startAt = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
     var endAt   = parseInt(req.query.endAt)   || Date.now();
     var livePres  = (pdata.presentations || []).filter(function (p) { return p.publishedAt && !p.archivedAt; });
@@ -3692,7 +3791,7 @@ app.get('/api/analytics/events', function (req, res) {
 // Powers the deck-average benchmark on the slide-popularity chart.
 app.get('/api/analytics/slide-benchmark', function (req, res) {
   try {
-    var pdata     = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pdata     = readPresentations();
     var startAt   = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
     var endAt     = parseInt(req.query.endAt)   || Date.now();
     var livePres  = (pdata.presentations || []).filter(function (p) { return p.publishedAt && !p.archivedAt; });
@@ -3711,7 +3810,7 @@ app.get('/api/analytics/slide-benchmark', function (req, res) {
 // Returns day-by-day event counts per event_name for time-series view.
 app.get('/api/analytics/event-series', function (req, res) {
   try {
-    var pdata   = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pdata   = readPresentations();
     var startAt = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
     var endAt   = parseInt(req.query.endAt)   || Date.now();
     var livePres  = (pdata.presentations || []).filter(function (p) { return p.publishedAt && !p.archivedAt; });
@@ -3731,7 +3830,7 @@ app.get('/api/analytics/event-series', function (req, res) {
 // Drill-down: returns per-presentation event counts for a specific slide event.
 app.get('/api/analytics/slide-events', function (req, res) {
   try {
-    var pdata     = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pdata     = readPresentations();
     var startAt   = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
     var endAt     = parseInt(req.query.endAt)   || Date.now();
     var eventName = (req.query.eventName || '').trim();
@@ -3758,7 +3857,7 @@ app.get('/api/analytics/slide-events', function (req, res) {
 // Drill-down: breaks one slide event down by its in-slide interaction label (tab/button/carousel/image).
 app.get('/api/analytics/slide-interactions', function (req, res) {
   try {
-    var pdata     = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pdata     = readPresentations();
     var startAt   = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
     var endAt     = parseInt(req.query.endAt)   || Date.now();
     var eventName = (req.query.eventName || '').trim();
@@ -3780,7 +3879,7 @@ app.get('/api/analytics/slide-interactions', function (req, res) {
 // Not itself country-filtered, so the full list is always available regardless of the active filter.
 app.get('/api/analytics/countries', function (req, res) {
   try {
-    var pdata   = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pdata   = readPresentations();
     var ids     = (pdata.presentations || []).map(function (p) { return p.id; });
     if (ids.length === 0) return res.json({ success: true, data: [] });
     // startAt=0 means "all time" — parse explicitly so 0 isn't treated as missing (falsy).
@@ -3796,7 +3895,7 @@ app.get('/api/analytics/countries', function (req, res) {
 });
 
 // POST /api/presentations — save a new finished presentation (snapshot of current deck + customer info)
-app.post('/api/presentations', function (req, res) {
+app.post('/api/presentations', async function (req, res) {
   var body = req.body || {};
   var replaceId = (body.replaceId || '').trim();
 
@@ -3846,7 +3945,7 @@ app.post('/api/presentations', function (req, res) {
       };
     });
 
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var data = readPresentations();
 
     if (replaceId) {
       var idx = data.presentations.findIndex(function (p) { return p.id === replaceId; });
@@ -3877,9 +3976,9 @@ app.post('/api/presentations', function (req, res) {
       if (repFirstPub) existing.publishedAt = repNow;
       else if (repWasPub) existing.replacedAt = repNow;  // re-publish of an already-live presentation
       var repDeckName = (deckMeta && deckMeta.name) || activeDeckId;
-      pushPresEvent(existing, repFirstPub ? 'published' : (repWasPub ? 'republished' : 'edited'),
+      var evP = appendPresentationEvent(existing, repFirstPub ? 'published' : (repWasPub ? 'republished' : 'edited'),
         { deckId: activeDeckId, deckName: repDeckName });
-      fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+      await Promise.all([writePresentation(existing), evP]);   // high-stakes: confirm both landed
       try {
         buildFrozenPresentation(existing);
       } catch (buildErr) {
@@ -3906,11 +4005,11 @@ app.post('/api/presentations', function (req, res) {
       slides:          slides,
       defaultLanguage: defaultLanguage,
       languages:       languages,
-      events:          [{ type: 'created', at: new Date().toISOString() }]
+      events:          []
     };
 
-    data.presentations.unshift(presentation);
-    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+    await writePresentation(presentation);              // base row first — the event's FK parent
+    await appendPresentationEvent(presentation, 'created');
 
     try {
       buildFrozenPresentation(presentation);
@@ -3927,7 +4026,7 @@ app.post('/api/presentations', function (req, res) {
 // GET /api/presentations/:id — return a single finished presentation
 app.get('/api/presentations/:id', function (req, res) {
   try {
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var data = readPresentations();
     var pres = (data.presentations || []).find(function (p) { return p.id === req.params.id; });
     if (!pres) return res.status(404).json({ success: false, error: 'Not found' });
     res.json({ success: true, data: pres });
@@ -3940,7 +4039,7 @@ app.get('/api/presentations/:id', function (req, res) {
 app.put('/api/presentations/:id', function (req, res) {
   try {
     var body = req.body || {};
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var data = readPresentations();
     var pres = (data.presentations || []).find(function (p) { return p.id === req.params.id; });
     if (!pres) return res.status(404).json({ success: false, error: 'Not found' });
 
@@ -3962,7 +4061,7 @@ app.put('/api/presentations/:id', function (req, res) {
       }
     }
 
-    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+    writePresentation(pres);
 
     try { buildFrozenPresentation(pres); } catch (e) { console.error('Rebuild failed:', e.message); }
 
@@ -3973,17 +4072,16 @@ app.put('/api/presentations/:id', function (req, res) {
 });
 
 // DELETE /api/presentations/:id — hard delete (only permitted on archived presentations)
-app.delete('/api/presentations/:id', function (req, res) {
+app.delete('/api/presentations/:id', async function (req, res) {
   try {
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
-    var idx  = (data.presentations || []).findIndex(function (p) { return p.id === req.params.id; });
-    if (idx === -1) return res.status(404).json({ success: false, error: 'Not found' });
-    var pres = data.presentations[idx];
+    var pres = readPresentationById(req.params.id);
+    if (!pres) return res.status(404).json({ success: false, error: 'Not found' });
     if (!pres.archivedAt) {
       return res.status(400).json({ success: false, error: 'Presentation must be archived before it can be deleted.' });
     }
-    data.presentations.splice(idx, 1);
-    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2));
+    store.cache.presentations.delete(req.params.id);
+    store.cache.presentationEvents.delete(req.params.id);
+    await store.enqueueDelete('presentations', { id: req.params.id }); // FK cascade clears its events
     var frozenDir = path.join(__dirname, '..', 'finished-presentations', req.params.id);
     if (fs.existsSync(frozenDir)) {
       fs.rmSync(frozenDir, { recursive: true, force: true });
@@ -3997,11 +4095,11 @@ app.delete('/api/presentations/:id', function (req, res) {
 // POST /api/presentations/:id/archive — soft-delete (sets archivedAt, hides from main list)
 app.post('/api/presentations/:id/archive', function (req, res) {
   try {
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var data = readPresentations();
     var pres = (data.presentations || []).find(function (p) { return p.id === req.params.id; });
     if (!pres) return res.status(404).json({ success: false, error: 'Not found' });
     pres.archivedAt = new Date().toISOString();
-    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+    writePresentation(pres);
     res.json({ success: true, data: pres });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -4011,11 +4109,11 @@ app.post('/api/presentations/:id/archive', function (req, res) {
 // POST /api/presentations/:id/unarchive — restore from archive
 app.post('/api/presentations/:id/unarchive', function (req, res) {
   try {
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var data = readPresentations();
     var pres = (data.presentations || []).find(function (p) { return p.id === req.params.id; });
     if (!pres) return res.status(404).json({ success: false, error: 'Not found' });
-    delete pres.archivedAt;
-    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+    delete pres.archivedAt;                // appPresentationToDb maps missing → archived_at: null
+    writePresentation(pres);
     res.json({ success: true, data: pres });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -4023,14 +4121,14 @@ app.post('/api/presentations/:id/unarchive', function (req, res) {
 });
 
 // POST /api/presentations/:id/duplicate — copy a presentation with new customer info
-app.post('/api/presentations/:id/duplicate', function (req, res) {
+app.post('/api/presentations/:id/duplicate', async function (req, res) {
   var body = req.body || {};
   var customerName = (body.customerName || '').trim();
   if (!customerName) {
     return res.status(400).json({ success: false, error: 'customerName is required' });
   }
   try {
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var data = readPresentations();
     var src  = (data.presentations || []).find(function (p) { return p.id === req.params.id; });
     if (!src) return res.status(404).json({ success: false, error: 'Not found' });
 
@@ -4069,9 +4167,7 @@ app.post('/api/presentations/:id/duplicate', function (req, res) {
       languages:       src.languages || []
     };
 
-    data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
-    data.presentations.unshift(presentation);
-    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+    await writePresentation(presentation);   // no event on duplicate (mirrors the old shape)
 
     try {
       buildFrozenPresentation(presentation);
@@ -4085,14 +4181,13 @@ app.post('/api/presentations/:id/duplicate', function (req, res) {
   }
 });
 
-app.post('/api/presentations/:id/publish', function (req, res) {
+app.post('/api/presentations/:id/publish', async function (req, res) {
   var id = req.params.id;
   if (!/^[a-z0-9-]+$/i.test(id)) {
     return res.status(400).json({ success: false, error: 'Invalid presentation id' });
   }
 
-  var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
-  var pres = (data.presentations || []).find(function (p) { return p.id === id; });
+  var pres = readPresentationById(id);
   if (!pres) return res.status(404).json({ success: false, error: 'Presentation not found' });
 
   var publicUrl = PUBLIC_BASE_URL + '/public/' + id;
@@ -4108,11 +4203,9 @@ app.post('/api/presentations/:id/publish', function (req, res) {
 
   // Record publishedAt on first publish (keep existing value on republish)
   try {
-    var pdata = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
-    var prec  = (pdata.presentations || []).find(function (p) { return p.id === id; });
-    if (prec && !prec.publishedAt) {
-      prec.publishedAt = new Date().toISOString();
-      fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(pdata, null, 2), 'utf8');
+    if (pres && !pres.publishedAt) {
+      pres.publishedAt = new Date().toISOString();
+      await writePresentation(pres);
     }
   } catch (e) { /* non-fatal */ }
 
@@ -4129,7 +4222,7 @@ app.post('/api/presentations/:id/edit', function (req, res) {
     return res.status(400).json({ success: false, error: 'Invalid presentation id' });
   }
   try {
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var data = readPresentations();
     var pres = (data.presentations || []).find(function (p) { return p.id === id; });
     if (!pres) return res.status(404).json({ success: false, error: 'Presentation not found' });
     if (pres.archivedAt) return res.status(400).json({ success: false, error: 'Cannot edit an archived presentation' });
@@ -4141,9 +4234,8 @@ app.post('/api/presentations/:id/edit', function (req, res) {
     pres.presentationName = (body.presentationName || '').trim();
     pres.customerName     = customerName;
     pres.contactName      = (body.contactName || '').trim();
-    pres.editedAt         = new Date().toISOString();
-    pushPresEvent(pres, 'edited');
-    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+    appendPresentationEvent(pres, 'edited');   // timeline reads this event (editedAt dropped — dead)
+    writePresentation(pres);
 
     // Refresh the frozen file so the new name shows on the cover — but only if the source deck
     // still exists (rebuilding from a deleted deck would strip deck-specific content).
@@ -4162,7 +4254,7 @@ app.post('/api/presentations/:id/edit', function (req, res) {
 // POST /api/presentations/:id/republish { deckId } — rebuild the presentation from the chosen
 // deck's CURRENT slides + branding (re-snapshot), keeping the same id / public link / metadata.
 // Used by the dashboard "Republish now" and the builder's republish-mode Publish button.
-app.post('/api/presentations/:id/republish', function (req, res) {
+app.post('/api/presentations/:id/republish', async function (req, res) {
   var id = req.params.id;
   if (!/^[a-z0-9-]+$/i.test(id)) {
     return res.status(400).json({ success: false, error: 'Invalid presentation id' });
@@ -4176,7 +4268,7 @@ app.post('/api/presentations/:id/republish', function (req, res) {
       return res.status(404).json({ success: false, error: 'Deck not found' });
     }
 
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var data = readPresentations();
     var pres = (data.presentations || []).find(function (p) { return p.id === id; });
     if (!pres) return res.status(404).json({ success: false, error: 'Presentation not found' });
     if (pres.archivedAt) return res.status(400).json({ success: false, error: 'Cannot republish an archived presentation' });
@@ -4220,8 +4312,8 @@ app.post('/api/presentations/:id/republish', function (req, res) {
     if (!rpWasPub) pres.publishedAt = rpNow;   // first publish
     else pres.replacedAt = rpNow;              // actual re-publish
     var rpDeckName = (decks.find(function (d) { return d.id === deckId; }) || {}).name || deckId;
-    pushPresEvent(pres, rpWasPub ? 'republished' : 'published', { deckId: deckId, deckName: rpDeckName });
-    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+    var evP = appendPresentationEvent(pres, rpWasPub ? 'republished' : 'published', { deckId: deckId, deckName: rpDeckName });
+    await Promise.all([writePresentation(pres), evP]);   // high-stakes: confirm both landed (event APPENDED, not overwritten)
 
     try { buildFrozenPresentation(pres); }
     catch (buildErr) { return res.status(500).json({ success: false, error: 'Build failed: ' + buildErr.message }); }
@@ -5763,7 +5855,7 @@ function findImageUsage(name) {
     try { if (JSON.stringify(data).indexOf(needle) !== -1) hits.push(label); } catch (e) {}
   }
   scanData('library', readLibrary());
-  scan('presentations', PRESENTATIONS_PATH); // still JSON until Slice 4
+  scanData('presentations', readPresentations()); // cache-backed now (Slice 4)
   try {
     readDecks().decks.forEach(function (d) {
       scanData('deck:' + d.id, [d, readDeckById(d.id)]);
