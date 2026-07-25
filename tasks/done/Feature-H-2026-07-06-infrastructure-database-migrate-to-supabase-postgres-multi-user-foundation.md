@@ -2,7 +2,8 @@
 title: Infrastructure — Database — Migrate to Supabase Postgres — Multi-user foundation
 type: Feature
 priority: H
-status: pending
+status: done
+completed_at: 2026-07-25 16:05
 area: other
 ---
 
@@ -206,3 +207,44 @@ exist only in the DB and would be lost on rollback → verify each slice THOROUG
 - resolveSlideEdits stays all-or-nothing (no blend); presentation slides stay a frozen JSONB snapshot;
   `previous`-drop is one-way (grep `.previous` first); HTML/entities must round-trip unescaped;
   activeDeckId stays single-valued until auth.
+
+## Implementation Summary
+
+**Problem.** The builder stored all data as flat JSON files in `builder/data/` (single-user,
+last-writer-wins whole-file rewrites, an ever-growing `slide-library.json`, a global `activeDeckId`
+singleton, and an unbounded `presentations.events` list). This blocked the move to multi-user SaaS.
+
+**Approach.** Fixed the sustainability problems DURING the move (not a lift-and-shift). Backend =
+Supabase Cloud Postgres (dev project `presentation-builder-dev`, ref `gognjsavzxavtzwrcsfa`). A
+write-through in-memory cache (`builder/lib/store.js`) keeps the ~30 hot readers SYNCHRONOUS (loads
+all 13 tables on boot, reads from cache, writes update cache + a serialized per-table upsert queue).
+Cut over one vertical slice at a time, verifying each live before the next. JSON stayed as frozen
+rollback backup until every slice was verified.
+
+**Files changed / created.**
+- `builder/scripts/schema.sql` — 13-table Postgres schema (teams seeded, team_id on every business
+  table, string PKs kept, JSONB only for dynamic blobs).
+- `builder/scripts/import-to-supabase.js` — idempotent importer + validation pass; plus per-slice
+  resync scripts (`backfill-translation-previous.js`, `resync-library-to-supabase.js`).
+- `builder/lib/store.js` — the write-through cache + Supabase service_role client + write queue.
+- `builder/server.js` — swapped every domain's helper bodies (reads → cache, writes → cache +
+  enqueueUpsert/enqueueDelete), keeping all signatures synchronous.
+
+**Slices delivered.** Phase 1 foundation → Phase 2 schema → Phase 3 import → Phase 4 cache module →
+Phase 5 cutover in 5 slices: (0) templates + languages, (1) settings, (2) decks + deck_slides +
+translations + user_active_deck (commit 90a7484), (3) slide library + deckEdits split — the
+per-deck-edit table that fixes the forever-growing library (commit 7e63a9b), (4) presentations +
+events — split the audit trail into its own append-only table (commit c22249e).
+
+**Notable fixes/decisions found during the move.** Preserved the translation `previous` field (the
+plan said drop it as bloat; the grep proved it powers the TC "↻ Restore" feature — user-approved
+keep). Recovered 4 slide columns the original import had silently dropped; dropped `themeId` and
+`editedAt` as verified dead code. Added `slide_library.position` for deterministic My-Library order.
+Presentations keep a frozen `slides` JSONB snapshot and a no-FK `deck_id` so a published presentation
+outlives its deck. Every slice was verified byte-identical (read-fidelity scripts) and live in the
+running app before commit.
+
+**Wrap-up.** Archived the 6 migrated JSON files + the `decks/` folder to `data/_migrated-backup/`
+(`git mv`, not deleted). `slide-templates.json` / `layouts.json` / `layout-skeletons.json` stay live
+(canvas/zone-builder store, out of scope). Later work (auth, teams/RLS, uploads→Storage) is tracked
+as separate tasks — the schema already carries `team_id`/`created_by` so none need a re-migration.
