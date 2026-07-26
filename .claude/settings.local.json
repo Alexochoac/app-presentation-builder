@@ -8,7 +8,8 @@
       "PowerShell(git push origin v1.4.3)",
       "Bash(node --check server.js)",
       "Bash(node -e ' *)",
-      "Bash(node \"/c/Users/Alex/AppData/Local/Temp/claude/c--Users-Alex-Alex-Projects-active-App-presentation-builder/63576e14-35a6-48a3-a37b-7a7ac51568e0/scratchpad/verify-slice4.js\")"
+      "Bash(node \"/c/Users/Alex/AppData/Local/Temp/claude/c--Users-Alex-Alex-Projects-active-App-presentation-builder/63576e14-35a6-48a3-a37b-7a7ac51568e0/scratchpad/verify-slice4.js\")",
+      "WebFetch(domain:supabase.com)"
     ]
   }
 }
