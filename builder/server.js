@@ -11,6 +11,7 @@ const session  = require('express-session');
 const { requireAuth, registerAuthRoutes } = require('./features/auth/auth');
 const { translate } = require('./lib/translator');
 const { generateHtml } = require('./lib/template-generator');
+const store = require('./lib/store'); // write-through Supabase cache (Phase 5 cutover, slice by slice)
 
 // ── Deployment config ─────────────────────────────────────────────────────────
 // REPO_ROOT: path to the git repo root — used for writing finished-presentations.
@@ -74,7 +75,7 @@ app.get('/slides/deck-preview/:id', function (req, res) {
     if (!deckSlide || !deckSlide.librarySlideId) {
       return res.status(404).type('text/plain').send('Deck slide not found: ' + id);
     }
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
     var libSlide = library.slides.find(function (s) { return s.id === deckSlide.librarySlideId; });
     if (!libSlide) return res.status(404).type('text/plain').send('Library slide not found');
 
@@ -447,7 +448,7 @@ app.get('/slides/:deckSlideId.html', function (req, res, next) {
     var deckSlide = deck.slides.find(function (s) { return s.id === deckSlideId; });
     if (!deckSlide || !deckSlide.librarySlideId) return next();
 
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
     var libSlide = library.slides.find(function (s) { return s.id === deckSlide.librarySlideId; });
     if (!libSlide) return next();
 
@@ -1022,11 +1023,66 @@ function getTranslationsPath(deckId) {
   return path.join(__dirname, 'data', 'decks', deckId || 'default', 'translations.json');
 }
 
-// Resolve a template by id from either the canvas builder store or the HTML catalog.
-// Returns { source: 'canvas'|'html', tpl, filePath? } or null.
+// ── Templates domain (Phase 5 Slice 0) — reads served from the Supabase cache ──
+// Reshape a DB `templates` row back to the camelCase catalog shape callers
+// expect (matches the old templates.json entries). team_id/updated_at dropped.
+// NOTE: `defaultTheme` (read once at /slides/template-preview) is NOT in the DB
+// schema — no current template sets it, so it stays undefined exactly as before.
+function dbTemplateToApp(row) {
+  if (!row) return null;
+  var t = {
+    id:           row.id,
+    name:         row.name,
+    category:     row.category,
+    slideMode:    row.slide_mode,
+    components:   row.components || [],
+    file:         row.file,
+    // timestamptz comes back as '…+00:00'; normalize to the ISO '…Z' the JSON used.
+    createdAt:    row.created_at ? new Date(row.created_at).toISOString() : null,
+    defaultEdits: row.default_edits || {}
+  };
+  if (row.tags && row.tags.length) t.tags = row.tags;
+  return t;
+}
+
+// The whole HTML template catalog as an array (was: JSON.parse(templates.json)).
+function getCatalog() {
+  var out = [];
+  store.cache.templates.forEach(function (row) { out.push(dbTemplateToApp(row)); });
+  return out;
+}
+
+// One template by id, in the old catalog shape, or null.
+function getTemplate(id) {
+  return dbTemplateToApp(store.cache.templates.get(id));
+}
+
+// The language reference list [{ code, name }] (was: JSON.parse(languages.json).languages).
+function getLanguages() {
+  return store.cache.languages;
+}
+
+// Inverse of dbTemplateToApp: app/catalog shape (camelCase) → DB `templates` row.
+// team_id null (templates are shared today, matching the import).
+function appTemplateToDb(t) {
+  return {
+    id:            t.id,
+    team_id:       null,
+    name:          t.name,
+    category:      t.category || null,
+    slide_mode:    t.slideMode || null,
+    file:          t.file,
+    components:    t.components || [],
+    tags:          t.tags || [],
+    default_edits: t.defaultEdits || {},
+    created_at:    t.createdAt || null
+  };
+}
+
+// Resolve a template by id from the HTML catalog (now cache-backed).
+// Returns { source: 'html', tpl, filePath } or null.
 function resolveTemplate(templateId) {
-  var catalog  = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
-  var htmlTpl  = catalog.find(function (t) { return t.id === templateId; });
+  var htmlTpl = getTemplate(templateId);
   if (htmlTpl) {
     return {
       source:   'html',
@@ -1075,7 +1131,7 @@ function dbPresStats(urlPaths, startMs, endMs, opts, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, {});
   var siteId = null;
-  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || readSettings().umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, {});
   var params = [siteId, urlPaths, startMs, endMs];
   var cc = countrySql(opts, params.length + 1);
@@ -1109,7 +1165,7 @@ function dbKpiTotals(urlPaths, startMs, endMs, opts, cb) {
   var zero = { pageviews: 0, visitors: 0, repeatVisitors: 0 };
   if (!db || !urlPaths.length) return cb(null, zero);
   var siteId = null;
-  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || readSettings().umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, zero);
   var params = [siteId, urlPaths, startMs, endMs];
   var cc = countrySql(opts, params.length + 1);
@@ -1145,7 +1201,7 @@ function dbPresTimeSeries(urlPaths, startMs, endMs, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, { pageviews: [], sessions: [] });
   var siteId = null;
-  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || readSettings().umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, { pageviews: [], sessions: [] });
   db.query(
     "SELECT TO_CHAR(created_at AT TIME ZONE '" + localTzString() + "', 'YYYY-MM-DD') AS day, " +
@@ -1184,7 +1240,7 @@ function dbSlideEvents(urlPaths, startMs, endMs, eventNames, opts, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, []);
   var siteId = null;
-  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || readSettings().umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, []);
   var params = [siteId, urlPaths, startMs, endMs];
   var extra = '';
@@ -1223,7 +1279,7 @@ function dbSlideBenchmark(urlPaths, startMs, endMs, opts, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, { perSlide: [], activePresentations: 0 });
   var siteId = null;
-  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || readSettings().umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, { perSlide: [], activePresentations: 0 });
   var params = [siteId, urlPaths, startMs, endMs];
   var cc = countrySql(opts, params.length + 1);
@@ -1257,7 +1313,7 @@ function dbSlideEventSeries(urlPaths, startMs, endMs, eventNames, opts, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, { days: [], series: [] });
   var siteId = null;
-  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || readSettings().umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, { days: [], series: [] });
   var params = [siteId, urlPaths, startMs, endMs];
   var extra = '';
@@ -1300,7 +1356,7 @@ function dbSlideEventByPres(urlPaths, presMap, startMs, endMs, eventName, opts, 
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, []);
   var siteId = null;
-  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || readSettings().umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, []);
   var params = [siteId, urlPaths, startMs, endMs, eventName];
   var cc = countrySql(opts, params.length + 1);
@@ -1331,7 +1387,7 @@ function dbCountries(urlPaths, startMs, endMs, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, []);
   var siteId = null;
-  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || readSettings().umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, []);
   db.query(
     'SELECT s.country AS country, COUNT(*) AS pageviews, COUNT(DISTINCT we.session_id) AS visitors ' +
@@ -1369,7 +1425,7 @@ function dbSlideInteractions(urlPaths, startMs, endMs, eventName, opts, cb) {
   var db = getUmamiDb();
   if (!db || !urlPaths.length || !eventName) return cb(null, []);
   var siteId = null;
-  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || readSettings().umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, []);
   var params = [siteId, urlPaths, startMs, endMs, eventName];
   var cc = countrySql(opts, params.length + 1);
@@ -1515,7 +1571,7 @@ function setupUmamiWebsite() {
             if (!d.id) throw new Error('unexpected response: ' + raw);
             var s = readSettings();
             s.umamiWebsiteId = d.id;
-            fs.writeFileSync(SETTINGS_PATH, JSON.stringify(s, null, 2), 'utf8');
+            writeSettings(s);
             console.log('[umami] website created and saved, id:', d.id);
           } catch (e) { console.warn('[umami] setup error:', e.message); }
         });
@@ -1528,12 +1584,55 @@ function setupUmamiWebsite() {
   setTimeout(function () { trySetup(12); }, 15000); // wait 15s for Umami to boot, then try up to 12× every 10s
 }
 
+// ── Settings domain (Phase 5 Slice 1) — served from the Supabase cache ──
+// Reshape the DB `settings` row (one per team) back to the camelCase object the
+// app used to read from settings.json. team_id/updated_at are DB-only, dropped.
+// When the row is absent (never happens once the cache is loaded) fall back to
+// the SAME default object the old file-read used, so behavior is identical.
+function dbSettingsToApp(row) {
+  if (!row) return { logos: [], logosOnAllSlides: true, heroBg: '', heroBgFocal: '50% 50%', heroBgFocalGrid: 3 };
+  return {
+    umamiWebsiteId:      row.umami_website_id,
+    homepageUrl:         row.homepage_url,
+    homepageLabel:       row.homepage_label,
+    logos:               row.logos || [],
+    logosOnAllSlides:    row.logos_on_all_slides,
+    heroBg:              row.hero_bg,
+    heroBgFocal:         row.hero_bg_focal,
+    heroBgFocalGrid:     row.hero_bg_focal_grid,
+    defaultPrimaryColor: row.default_primary_color,
+    defaultDeckTheme:    row.default_deck_theme
+  };
+}
+
+// Inverse: camelCase settings object → DB `settings` row (adds team scope + stamp).
+// Every writeSettings caller does a full read-modify-write, so all 10 keys are
+// present; unknown keys (e.g. umamiBaseUrl injected by GET) are simply ignored.
+function appSettingsToDb(obj) {
+  obj = obj || {};
+  return {
+    team_id:               store.TEAM,
+    umami_website_id:      obj.umamiWebsiteId != null ? obj.umamiWebsiteId : null,
+    homepage_url:          obj.homepageUrl != null ? obj.homepageUrl : null,
+    homepage_label:        obj.homepageLabel != null ? obj.homepageLabel : null,
+    logos:                 obj.logos || [],
+    logos_on_all_slides:   obj.logosOnAllSlides != null ? obj.logosOnAllSlides : null,
+    hero_bg:               obj.heroBg != null ? obj.heroBg : null,
+    hero_bg_focal:         obj.heroBgFocal != null ? obj.heroBgFocal : null,
+    hero_bg_focal_grid:    obj.heroBgFocalGrid != null ? obj.heroBgFocalGrid : null,
+    default_primary_color: obj.defaultPrimaryColor != null ? obj.defaultPrimaryColor : null,
+    default_deck_theme:    obj.defaultDeckTheme != null ? obj.defaultDeckTheme : null,
+    updated_at:            new Date().toISOString()
+  };
+}
+
 function readSettings() {
-  try { return JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')); }
-  catch (e) { return { logos: [], logosOnAllSlides: true, heroBg: '', heroBgFocal: '50% 50%', heroBgFocalGrid: 3 }; }
+  return dbSettingsToApp(store.cache.settings.get(store.TEAM));
 }
 function writeSettings(data) {
-  fs.writeFileSync(SETTINGS_PATH, JSON.stringify(data, null, 2), 'utf8');
+  var row = appSettingsToDb(data);
+  store.cache.settings.set(store.TEAM, row);
+  store.enqueueUpsert('settings', row, 'team_id'); // fire-and-forget; queue logs failures
 }
 function hexToRgb(hex) {
   var m = (hex || '').replace('#', '').match(/^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
@@ -1638,8 +1737,8 @@ app.get('/api/deck', function (req, res) {
   try {
     var activeDeckId = getActiveDeckId();
     var deck    = readDeckById(activeDeckId);
-    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
-    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
+    var library = readLibrary();
+    var catalog = getCatalog();
 
     deck.slides = deck.slides.map(function (slide) {
       if (!slide.librarySlideId) return slide;
@@ -1752,7 +1851,7 @@ app.post('/api/deck/slides', function (req, res) {
   if (!librarySlideId) return res.status(400).json({ success: false, error: 'librarySlideId is required' });
 
   try {
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
     var libSlide = library.slides.find(function (s) { return s.id === librarySlideId; });
     if (!libSlide) return res.status(404).json({ success: false, error: 'Library slide not found' });
 
@@ -1782,22 +1881,18 @@ app.post('/api/deck/slides', function (req, res) {
     }
     writeDeckById(activeDeckId, deck);
 
-    // Track which decks include this library slide so library-preview can use deck context
-    if (!Array.isArray(libSlide.decks)) libSlide.decks = [];
-    if (!libSlide.decks.some(function (d) { return d.id === activeDeckId; })) {
-      libSlide.decks.push({ id: activeDeckId, name: deckConfig.name || activeDeckId });
-      fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
-    }
+    // (removed: manual decks[] bookkeeping — deck membership is DERIVED now, rebuilt
+    //  by readLibrary() from the deck_slides row writeDeckById just wrote above.)
 
     // If deck has no style and this slide brings a legacy .html styleRef, promote it to the deck
     // (.css theme files are per-slide; don't promote them to deck level)
     if (!deckConfig.styleRef && libSlide.styleRef && libSlide.styleCss && libSlide.styleRef.endsWith('.html')) {
-      var decksStore = JSON.parse(fs.readFileSync(DECKS_PATH, 'utf8'));
+      var decksStore = readDecks();
       var deckIdx = decksStore.decks.findIndex(function (d) { return d.id === activeDeckId; });
       if (deckIdx !== -1) {
         decksStore.decks[deckIdx].styleRef = libSlide.styleRef;
         decksStore.decks[deckIdx].styleCss = libSlide.styleCss;
-        fs.writeFileSync(DECKS_PATH, JSON.stringify(decksStore, null, 2), 'utf8');
+        writeDecks(decksStore);
       }
     }
 
@@ -1819,11 +1914,11 @@ app.delete('/api/deck/slides/:id', function (req, res) {
 
     // Remove this deck from the library slide's decks[] so thumbnail reverts to no-deck render
     if (removing && removing.librarySlideId) {
-      var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+      var library  = readLibrary();
       var libSlide = library.slides.find(function (s) { return s.id === removing.librarySlideId; });
       if (libSlide && Array.isArray(libSlide.decks)) {
         libSlide.decks = libSlide.decks.filter(function (d) { return d.id !== activeDeckId; });
-        fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+        writeLibrary(library);
       }
     }
 
@@ -1845,14 +1940,14 @@ app.post('/api/deck/slides/:id/edits', function (req, res) {
     var deckSlide = deck.slides.find(function (s) { return s.id === id; });
     if (!deckSlide) return res.status(404).json({ success: false, error: 'Deck slide not found' });
 
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
     var libSlide = library.slides.find(function (s) { return s.id === deckSlide.librarySlideId; });
     if (!libSlide) return res.status(404).json({ success: false, error: 'Library slide not found' });
 
     if (!libSlide.deckEdits) libSlide.deckEdits = {};
     if (!libSlide.deckEdits[activeDeckId]) libSlide.deckEdits[activeDeckId] = {};
     libSlide.deckEdits[activeDeckId] = Object.assign({}, libSlide.deckEdits[activeDeckId], edits);
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
     markSlideTranslationsDirty(deckSlide.librarySlideId, edits, activeDeckId);
 
     // Propagate cover logo change to all presentations in this deck
@@ -1861,12 +1956,10 @@ app.post('/api/deck/slides/:id/edits', function (req, res) {
     if (isCoverEdit) {
       var raw = String(edits['customer-logo'] || '');
       var newLogoSrc = raw.includes('<') ? (raw.match(/\bsrc="([^"]*)"/) || [])[1] || '' : raw;
-      var presData = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
-      var changed = false;
+      var presData = readPresentations();
       (presData.presentations || []).forEach(function (p) {
-        if (p.deckId === activeDeckId) { p.customerLogoSrc = newLogoSrc; changed = true; }
+        if (p.deckId === activeDeckId) { p.customerLogoSrc = newLogoSrc; writePresentation(p); }
       });
-      if (changed) fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(presData, null, 2), 'utf8');
     }
 
     res.json({ ok: true });
@@ -1877,12 +1970,100 @@ app.post('/api/deck/slides/:id/edits', function (req, res) {
 
 // ── API: decks (named deck management) ────────────────────────────────────────
 
-function readDecks() {
-  try { return JSON.parse(fs.readFileSync(DECKS_PATH, 'utf8')); }
-  catch (e) { return { activeDeckId: 'deck-rebuild', decks: [] }; }
+// ── deck reshapers (Slice 2: decks + user_active_deck are cache-backed) ───────
+// decks table row → the deck object the app reads from decks.json's decks[].
+function dbDeckToApp(row) {
+  if (!row) return null;
+  return {
+    id: row.id, name: row.name, theme: row.theme,
+    // normalize timestamptz ('…+00:00') back to the JSON's ISO-'Z' form (matches Slice 0)
+    createdAt: row.created_at ? new Date(row.created_at).toISOString() : null,
+    updatedAt: row.updated_at ? new Date(row.updated_at).toISOString() : null,
+    logo: row.logo, heroBg: row.hero_bg, heroBgFocal: row.hero_bg_focal,
+    colors: row.colors || {}, heroBgFocalGrid: row.hero_bg_focal_grid,
+    heroBgFit: row.hero_bg_fit, styleRef: row.style_ref, styleCss: row.style_css,
+    heroBgOpacity: row.hero_bg_opacity, heroBgType: row.hero_bg_type,
+    heroBgColor: row.hero_bg_color, brandCredit: row.brand_credit,
+    websiteUrl: row.website_url, checkerboard: row.checkerboard
+  };
 }
+// Inverse: app deck object → decks table row. `title` lives in deck.json (owned by
+// writeDeckById), NOT the deck list, so preserve the cached title here — otherwise
+// a deck-list save would blank the title column.
+function appDeckToDb(d) {
+  var existing = store.cache.decks.get(d.id);
+  return {
+    id: d.id, team_id: store.TEAM, name: d.name,
+    theme: d.theme != null ? d.theme : null,
+    title: existing ? (existing.title || '') : '',
+    logo: d.logo != null ? d.logo : null,
+    hero_bg: d.heroBg != null ? d.heroBg : null,
+    hero_bg_focal: d.heroBgFocal != null ? d.heroBgFocal : null,
+    hero_bg_focal_grid: d.heroBgFocalGrid != null ? d.heroBgFocalGrid : null,
+    hero_bg_fit: d.heroBgFit != null ? d.heroBgFit : null,
+    hero_bg_opacity: d.heroBgOpacity != null ? d.heroBgOpacity : null,
+    hero_bg_type: d.heroBgType != null ? d.heroBgType : null,
+    hero_bg_color: d.heroBgColor != null ? d.heroBgColor : null,
+    style_ref: d.styleRef != null ? d.styleRef : null,
+    style_css: d.styleCss != null ? d.styleCss : null,
+    brand_credit: d.brandCredit != null ? d.brandCredit : null,
+    website_url: d.websiteUrl != null ? d.websiteUrl : null,
+    checkerboard: d.checkerboard != null ? d.checkerboard : null,
+    colors: d.colors || {},
+    created_at: d.createdAt != null ? d.createdAt : null,
+    updated_at: d.updatedAt != null ? d.updatedAt : null
+  };
+}
+
+// single-user stand-in key until auth; activeDeckId stays single-valued (plan risk #4)
+var ACTIVE_DECK_KEY = store.TEAM + ':' + store.SENTINEL_USER;
+
+function readDecks() {
+  var decks = [];
+  store.cache.decks.forEach(function (row) { decks.push(dbDeckToApp(row)); });
+  // preserve the old decks.json array order (creation order)
+  decks.sort(function (a, b) {
+    return String(a.createdAt || '').localeCompare(String(b.createdAt || ''));
+  });
+  return { activeDeckId: getActiveDeckId(), decks: decks };
+}
+
+// Every caller does a full read-modify-write of { activeDeckId, decks[] }, so this
+// reconciles the whole set against the cache: upsert present decks, delete any that
+// disappeared, and move the active pointer. Cache updates are synchronous (next read
+// is correct); DB writes are ordered so the active pointer moves OFF a deck before it
+// is deleted (user_active_deck.deck_id has NO on-delete-cascade).
 function writeDecks(data) {
-  fs.writeFileSync(DECKS_PATH, JSON.stringify(data, null, 2), 'utf8');
+  var incoming = (data && data.decks) || [];
+  var incomingIds = {};
+  incoming.forEach(function (d) { incomingIds[d.id] = true; });
+
+  var removed = [];
+  store.cache.decks.forEach(function (_row, id) { if (!incomingIds[id]) removed.push(id); });
+
+  var rows = incoming.map(function (d) {
+    var row = appDeckToDb(d);
+    store.cache.decks.set(d.id, row);
+    return row;
+  });
+  removed.forEach(function (id) { store.cache.decks.delete(id); });
+
+  var active = data && data.activeDeckId;
+  if (active) store.cache.userActiveDeck.set(ACTIVE_DECK_KEY, active);
+
+  (async function () {
+    try {
+      if (rows.length) await store.enqueueUpsert('decks', rows, 'id');
+      if (active) {
+        await store.enqueueUpsert('user_active_deck',
+          { team_id: store.TEAM, user_id: store.SENTINEL_USER, deck_id: active, updated_at: new Date().toISOString() },
+          'team_id,user_id');
+      }
+      for (var i = 0; i < removed.length; i++) {
+        await store.enqueueDelete('decks', { id: removed[i] }); // FK cascade clears deck children
+      }
+    } catch (e) { /* store queue logs the failure loudly */ }
+  })();
 }
 function makeDeckId() {
   return 'deck-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
@@ -1902,25 +2083,168 @@ function localTzString() {
   return (off <= 0 ? '+' : '-') + String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
 }
 function getDeckConfig(deckId) {
-  var store = readDecks();
-  return store.decks.find(function (d) { return d.id === deckId; }) || {};
+  return dbDeckToApp(store.cache.decks.get(deckId)) || {};
 }
 function getDeckPath(deckId) {
   return path.join(DECKS_DIR_PATH, deckId, 'deck.json');
 }
 function readDeckById(deckId) {
-  var p = getDeckPath(deckId);
-  if (fs.existsSync(p)) return JSON.parse(fs.readFileSync(p, 'utf8'));
-  return { title: '', slides: [] };
+  var row = store.cache.decks.get(deckId);
+  var slides = (store.cache.deckSlides.get(deckId) || []).map(function (s) {
+    return { id: s.slide_ref_id, visible: s.visible, librarySlideId: s.library_slide_id };
+  });
+  return { title: row ? (row.title || '') : '', slides: slides };
 }
+// Persists deck.json's { title, slides }: title → decks.title (preserving brand
+// columns), slides → deck_slides (full rebuild). Skips slides whose library slide
+// isn't in the store yet (mirrors import skip-missing → avoids a NOT NULL FK error).
 function writeDeckById(deckId, data) {
-  var dir = path.join(DECKS_DIR_PATH, deckId);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(getDeckPath(deckId), JSON.stringify(data, null, 2), 'utf8');
+  var title = (data && data.title != null) ? data.title : '';
+  var slides = (data && data.slides) || [];
+
+  var row = store.cache.decks.get(deckId);
+  if (row) { row.title = title; store.cache.decks.set(deckId, row); }
+
+  var slideRows = [];
+  slides.forEach(function (sl, i) {
+    if (!sl.librarySlideId || !store.cache.library.has(sl.librarySlideId)) return;
+    slideRows.push({
+      deck_id: deckId, library_slide_id: sl.librarySlideId, slide_ref_id: sl.id,
+      position: i, visible: sl.visible !== false
+    });
+  });
+  store.cache.deckSlides.set(deckId, slideRows.slice());
+
+  (async function () {
+    try {
+      if (row) await store.enqueueUpsert('decks', row, 'id');
+      await store.enqueueDelete('deck_slides', { deck_id: deckId });
+      if (slideRows.length) await store.enqueueUpsert('deck_slides', slideRows, 'deck_id,slide_ref_id');
+    } catch (e) { /* store queue logs the failure loudly */ }
+  })();
 }
 function getActiveDeckId() {
-  return readDecks().activeDeckId || 'deck-rebuild';
+  return store.cache.userActiveDeck.get(ACTIVE_DECK_KEY) || 'deck-rebuild';
 }
+// ── library reshapers (Slice 3: slide_library + deck_slide_edits cache-backed) ─
+// slide_library row → the slide object the app reads from slide-library.json.
+// `deckEdits` and `decks[]` are NOT columns: they are rebuilt from deck_slide_edits
+// and deck_slides so every existing reader keeps working unchanged — including
+// resolveSlideEdits, whose all-or-nothing check keys off `deckEdits` being PRESENT.
+function dbLibrarySlideToApp(row, deckEdits, decks) {
+  var slide = {
+    id: row.id,
+    name: row.name,
+    templateId: row.template_id,
+    edits: row.edits || {}
+  };
+  if (row.template_version != null) slide.templateVersion = row.template_version;
+  if (deckEdits) slide.deckEdits = deckEdits;   // omitted when the slide has no per-deck rows
+  slide.decks = decks || [];                    // derived usage list (never stored)
+  slide.galleryEnabled = !!row.gallery_enabled;
+  slide.themeOverride = row.theme_override;
+  if (row.style_ref != null) slide.styleRef = row.style_ref;
+  if (row.style_css != null) slide.styleCss = row.style_css;
+  if (row.template_update_ignored_at != null) slide.templateUpdateIgnoredAt = row.template_update_ignored_at;
+  if (row.created_at != null) slide.createdAt = row.created_at;
+  return slide;
+}
+
+// Inverse: app slide object → slide_library row. `position` is the array index, which
+// preserves My Library's display order (that grid renders in server order, no client sort).
+function appLibrarySlideToDb(slide, position) {
+  return {
+    id: slide.id, team_id: store.TEAM, name: slide.name,
+    template_id: slide.templateId != null ? slide.templateId : null,
+    edits: slide.edits || {},
+    gallery_enabled: !!slide.galleryEnabled,
+    theme_override: slide.themeOverride != null ? slide.themeOverride : null,
+    position: position,
+    template_version: slide.templateVersion != null ? slide.templateVersion : null,
+    template_update_ignored_at: slide.templateUpdateIgnoredAt != null ? slide.templateUpdateIgnoredAt : null,
+    style_ref: slide.styleRef != null ? slide.styleRef : null,
+    style_css: slide.styleCss != null ? slide.styleCss : null,
+    created_at: slide.createdAt != null ? slide.createdAt : null
+  };
+}
+
+function readLibrary() {
+  // deck_slide_edits cache is keyed deck → slide; regroup it by slide
+  var editsBySlide = {};
+  store.cache.deckSlideEdits.forEach(function (libMap, deckId) {
+    libMap.forEach(function (edits, libId) {
+      if (!editsBySlide[libId]) editsBySlide[libId] = {};
+      editsBySlide[libId][deckId] = edits;
+    });
+  });
+  // deck membership, rebuilt from deck_slides (replaces the old stored decks[])
+  var decksBySlide = {};
+  store.cache.deckSlides.forEach(function (rows, deckId) {
+    var deckRow = store.cache.decks.get(deckId);
+    if (!deckRow) return;
+    rows.forEach(function (r) {
+      if (!decksBySlide[r.library_slide_id]) decksBySlide[r.library_slide_id] = [];
+      decksBySlide[r.library_slide_id].push({ id: deckId, name: deckRow.name || deckId });
+    });
+  });
+
+  var slides = [];
+  store.cache.library.forEach(function (row) {
+    slides.push(dbLibrarySlideToApp(row, editsBySlide[row.id], decksBySlide[row.id]));
+  });
+  return { slides: slides };
+}
+
+// Whole-library reconcile — every caller does a read-modify-write of { slides: [...] }.
+// Base fields → slide_library; each deckEdits bucket → ONE deck_slide_edits row (THE
+// split: the library no longer grows per deck edit). decks[] is derived, never stored.
+// deck_slide_edits are upsert-only: the app never removes an individual bucket (slide
+// or deck deletion cascades instead), which matches the old whole-file rewrite.
+function writeLibrary(library) {
+  var incoming = (library && library.slides) || [];
+  var incomingIds = {};
+  incoming.forEach(function (s) { incomingIds[s.id] = true; });
+
+  var removed = [];
+  store.cache.library.forEach(function (_row, id) { if (!incomingIds[id]) removed.push(id); });
+
+  var libRows = [];
+  var editRows = [];
+  incoming.forEach(function (slide, i) {
+    var row = appLibrarySlideToDb(slide, i);
+    store.cache.library.set(slide.id, row);
+    libRows.push(row);
+
+    if (!slide.deckEdits) return;
+    Object.keys(slide.deckEdits).forEach(function (deckId) {
+      if (!store.cache.decks.has(deckId)) return; // orphan bucket (deck deleted) — skip, FK would reject
+      var edits = slide.deckEdits[deckId] || {};
+      if (!store.cache.deckSlideEdits.has(deckId)) store.cache.deckSlideEdits.set(deckId, new Map());
+      store.cache.deckSlideEdits.get(deckId).set(slide.id, edits);
+      editRows.push({ deck_id: deckId, library_slide_id: slide.id, team_id: store.TEAM, edits: edits });
+    });
+  });
+
+  removed.forEach(function (id) {
+    store.cache.library.delete(id);
+    store.cache.deckSlideEdits.forEach(function (libMap) { libMap.delete(id); });
+    // deleting the slide_library row cascades deck_slides too — mirror that in the cache
+    store.cache.deckSlides.forEach(function (rows, deckId) {
+      store.cache.deckSlides.set(deckId, rows.filter(function (r) { return r.library_slide_id !== id; }));
+    });
+  });
+
+  (async function () {
+    try {
+      if (libRows.length) await store.enqueueUpsert('slide_library', libRows, 'id');
+      if (editRows.length) await store.enqueueUpsert('deck_slide_edits', editRows, 'deck_id,library_slide_id');
+      for (var i = 0; i < removed.length; i++) {
+        await store.enqueueDelete('slide_library', { id: removed[i] }); // cascades deck_slide_edits + deck_slides
+      }
+    } catch (e) { /* store queue logs the failure loudly */ }
+  })();
+}
+
 function resolveSlideEdits(libSlide, deckId) {
   if (libSlide.deckEdits) {
     return Object.assign({}, libSlide.deckEdits[deckId] || {});
@@ -2111,7 +2435,7 @@ app.post('/api/decks/:id/duplicate', function (req, res) {
     // Deep-clone: create a new library slide for each slide in the source deck
     var srcDeck  = readDeckById(id);
     var newDeck  = JSON.parse(JSON.stringify(srcDeck));
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
     var libChanged = false;
     var counter  = 0;
 
@@ -2138,8 +2462,10 @@ app.post('/api/decks/:id/duplicate', function (req, res) {
       });
     });
 
+    // Library FIRST: deck_slides.library_slide_id is an FK onto slide_library, so the
+    // cloned slides must exist before the new deck's slide rows reference them.
+    if (libChanged) writeLibrary(library);
     writeDeckById(copy.id, newDeck);
-    if (libChanged) fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
     res.json({ success: true, data: copy });
   } catch (e) {
     res.status(500).json({ success: false, error: e.message });
@@ -2303,12 +2629,12 @@ app.post('/api/library/:id/edits', function (req, res) {
     var edits = sanitizeEdits(req.body.edits);
     if (!id || !edits) return res.status(400).json({ success: false, error: 'Missing id or edits' });
 
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
     var libSlide = library.slides.find(function (s) { return s.id === id; });
     if (!libSlide) return res.status(404).json({ success: false, error: 'Library slide not found' });
 
     libSlide.edits = Object.assign({}, libSlide.edits || {}, edits);
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
     markSlideTranslationsDirty(id, edits);
     res.json({ ok: true });
   } catch (err) {
@@ -2319,7 +2645,7 @@ app.post('/api/library/:id/edits', function (req, res) {
 // GET /api/library/:id/features — read a library slide's slide-level feature flags
 app.get('/api/library/:id/features', function (req, res) {
   try {
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
     var libSlide = library.slides.find(function (s) { return s.id === req.params.id; });
     if (!libSlide) return res.status(404).json({ success: false, error: 'Library slide not found' });
     res.json({ success: true, data: { galleryEnabled: !!libSlide.galleryEnabled, themeOverride: libSlide.themeOverride || null } });
@@ -2332,7 +2658,7 @@ app.get('/api/library/:id/features', function (req, res) {
 //   themeOverride: 'light' | 'dark' force this slide's theme; null/'' clears (inherit deck).
 app.post('/api/library/:id/features', function (req, res) {
   try {
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
     var libSlide = library.slides.find(function (s) { return s.id === req.params.id; });
     if (!libSlide) return res.status(404).json({ success: false, error: 'Library slide not found' });
     if (typeof req.body.galleryEnabled === 'boolean') libSlide.galleryEnabled = req.body.galleryEnabled;
@@ -2340,7 +2666,7 @@ app.post('/api/library/:id/features', function (req, res) {
       libSlide.themeOverride = (req.body.themeOverride === 'light' || req.body.themeOverride === 'dark')
         ? req.body.themeOverride : null;
     }
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
     res.json({ success: true, data: { galleryEnabled: !!libSlide.galleryEnabled, themeOverride: libSlide.themeOverride || null } });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -2381,7 +2707,7 @@ function buildFrozenPresentation(presentation) {
   fs.mkdirSync(outDir,    { recursive: true });
   fs.mkdirSync(assetDir,  { recursive: true });
 
-  var library   = JSON.parse(fs.readFileSync(LIBRARY_PATH,  'utf8'));
+  var library   = readLibrary();
   var appSettings = readSettings();
   var presDeck  = getDeckConfig(presentation.deckId || getActiveDeckId());
   var accentCss = deckAccentCss(presDeck);
@@ -3067,9 +3393,119 @@ function buildFrozenPresentation(presentation) {
   return outDir;
 }
 
+// ── Presentations: cache-backed helpers (Slice 4) ─────────────────────────────
+// Rebuild the old presentation object from a presentations row + its events rows.
+// `created_at` is a DATE column ('YYYY-MM-DD' string) → used as-is; the *_at
+// timestamptz columns normalize back to the JSON's ISO-'Z' form (matches
+// dbDeckToApp). Optional timestamps are included only when set, mirroring the
+// original JSON shape. `slides` stays a FROZEN JSONB snapshot (plan risk #5 — a
+// published presentation renders as it did at publish time; never de-dupe to live rows).
+function dbPresEventToApp(e) {
+  var out = { type: e.type, at: e.at ? new Date(e.at).toISOString() : e.at };
+  if (e.deck_id)   out.deckId   = e.deck_id;
+  if (e.deck_name) out.deckName = e.deck_name;
+  return out;
+}
+function dbPresentationToApp(row, events) {
+  if (!row) return null;
+  var p = {
+    id:               row.id,
+    createdAt:        row.created_at,                       // date column: already 'YYYY-MM-DD'
+    deckId:           row.deck_id || '',
+    presentationName: row.presentation_name || '',
+    customerName:     row.customer_name || '',
+    customerUrl:      row.customer_url == null ? '' : row.customer_url,
+    contactName:      row.contact_name || '',
+    contactTitle:     row.contact_title == null ? '' : row.contact_title,
+    customerLogoSrc:  row.customer_logo_src || '',
+    showCoverLogo:    row.show_cover_logo !== false,
+    slideCount:       row.slide_count,
+    slides:           row.slides || [],
+    defaultLanguage:  row.default_language || 'en',
+    languages:        row.languages || [],
+    events:           (events || []).map(dbPresEventToApp)
+  };
+  if (row.published_at) p.publishedAt = new Date(row.published_at).toISOString();
+  if (row.replaced_at)  p.replacedAt  = new Date(row.replaced_at).toISOString();
+  if (row.archived_at)  p.archivedAt  = new Date(row.archived_at).toISOString();
+  return p;
+}
+// Inverse: app presentation object → presentations table row (base fields only;
+// events append separately). team_id fixed until auth; created_by stays null.
+function appPresentationToDb(p) {
+  return {
+    id:                p.id,
+    team_id:           store.TEAM,
+    deck_id:           p.deckId || null,
+    presentation_name: p.presentationName != null ? p.presentationName : null,
+    customer_name:     p.customerName != null ? p.customerName : null,
+    customer_url:      p.customerUrl != null ? p.customerUrl : null,
+    contact_name:      p.contactName != null ? p.contactName : null,
+    contact_title:     p.contactTitle != null ? p.contactTitle : null,
+    customer_logo_src: p.customerLogoSrc != null ? p.customerLogoSrc : null,
+    show_cover_logo:   p.showCoverLogo !== false,
+    slide_count:       p.slideCount != null ? p.slideCount : null,
+    slides:            p.slides || [],
+    default_language:  p.defaultLanguage || 'en',
+    languages:         p.languages || [],
+    created_at:        p.createdAt || null,   // 'YYYY-MM-DD' → date column
+    published_at:      p.publishedAt || null,
+    replaced_at:       p.replacedAt || null,
+    archived_at:       p.archivedAt || null
+  };
+}
+// Read the whole list, newest-first. JSON was unshift-ordered (newest id first);
+// ids are max+1 counters, so descending numeric id reproduces that order exactly
+// (no `position` column needed, unlike the library in Slice 3).
+function readPresentations() {
+  var list = [];
+  store.cache.presentations.forEach(function (row) {
+    list.push(dbPresentationToApp(row, store.cache.presentationEvents.get(row.id)));
+  });
+  list.sort(function (a, b) { return parseInt(b.id, 10) - parseInt(a.id, 10); });
+  return { presentations: list };
+}
+function readPresentationById(id) {
+  var row = store.cache.presentations.get(id);
+  if (!row) return null;
+  return dbPresentationToApp(row, store.cache.presentationEvents.get(id));
+}
+// Upsert one presentation's base row (NOT its events). Updates the cache
+// synchronously so the next read is correct; returns the enqueue promise so
+// high-stakes callers (publish/republish/save/delete) can await it. NO JSON write.
+function writePresentation(pres) {
+  var row = appPresentationToDb(pres);
+  store.cache.presentations.set(pres.id, row);
+  return store.enqueueUpsert('presentations', row, 'id');
+}
+// Append ONE event to a presentation — the events-table win: republish APPENDS a
+// row, it never rewrites the whole list. Mutates the passed app object's events[]
+// (so the HTTP response carries it), pushes a DB-shaped row into the cache bucket,
+// and INSERTs a presentation_events row (bigserial id auto-assigned). Returns the
+// enqueue promise. The parent presentation row must already exist (FK) — on create,
+// await writePresentation() first.
+function appendPresentationEvent(pres, type, extra) {
+  var at = new Date().toISOString();
+  var appEv = { type: type, at: at };
+  if (extra && extra.deckId)   appEv.deckId   = extra.deckId;
+  if (extra && extra.deckName) appEv.deckName = extra.deckName;
+  if (!Array.isArray(pres.events)) pres.events = [];
+  pres.events.push(appEv);
+
+  var dbEv = {
+    presentation_id: pres.id,
+    type:            type,
+    at:              at,
+    deck_id:         (extra && extra.deckId)   || null,
+    deck_name:       (extra && extra.deckName) || null
+  };
+  if (!store.cache.presentationEvents.has(pres.id)) store.cache.presentationEvents.set(pres.id, []);
+  store.cache.presentationEvents.get(pres.id).push(dbEv);
+  return store.enqueueUpsert('presentation_events', dbEv);
+}
+
 function makePresId() {
-  var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
-  var ids = (data.presentations || []).map(function (p) {
+  var ids = readPresentations().presentations.map(function (p) {
     var n = parseInt(p.id, 10);
     return isNaN(n) ? 0 : n;
   });
@@ -3077,19 +3513,10 @@ function makePresId() {
   return String(max + 1).padStart(8, '0');
 }
 
-// Append an event to a presentation's history log (created / published / republished / edited).
-function pushPresEvent(pres, type, extra) {
-  if (!Array.isArray(pres.events)) pres.events = [];
-  var ev = { type: type, at: new Date().toISOString() };
-  if (extra && extra.deckId)   ev.deckId   = extra.deckId;
-  if (extra && extra.deckName) ev.deckName = extra.deckName;
-  pres.events.push(ev);
-}
-
 // POST /api/presentations/rebuild-all — regenerate all frozen HTML files
 app.post('/api/presentations/rebuild-all', function (req, res) {
   try {
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var data = readPresentations();
     var presentations = data.presentations || [];
     var rebuilt = 0;
     var errors = [];
@@ -3110,7 +3537,7 @@ app.post('/api/presentations/rebuild-all', function (req, res) {
 // GET /api/presentations — list all finished presentations
 app.get('/api/presentations', function (req, res) {
   try {
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var data = readPresentations();
     res.json({ success: true, data: data.presentations || [] });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -3121,7 +3548,7 @@ app.get('/api/presentations', function (req, res) {
 app.get('/api/analytics/presentation/:id', function (req, res) {
   if (!UMAMI_USER) return res.json({ success: false, error: 'Umami not configured' });
   try {
-    var settings  = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8'));
+    var settings  = readSettings();
     var websiteId = UMAMI_WEBSITE_ID || settings.umamiWebsiteId;
     if (!websiteId) return res.json({ success: false, error: 'umamiWebsiteId not set' });
     var startAt = req.query.startAt || String(Date.now() - 30 * 86400000);
@@ -3139,7 +3566,7 @@ app.get('/api/analytics/presentation/:id', function (req, res) {
 // Uses direct Postgres query — Umami API ignores URL filters in this version.
 app.get('/api/analytics/batch', function (req, res) {
   try {
-    var pdata   = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pdata   = readPresentations();
     var ids     = (pdata.presentations || []).map(function (p) { return p.id; });
     if (ids.length === 0) return res.json({ success: true, data: {} });
     var startMs = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
@@ -3163,7 +3590,7 @@ app.get('/api/analytics/batch', function (req, res) {
 // Result: { current: { pageviews, visitors }, previous: { pageviews, visitors } }.
 app.get('/api/analytics/kpis', function (req, res) {
   try {
-    var pdata     = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pdata     = readPresentations();
     var startAt   = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
     var endAt     = parseInt(req.query.endAt)   || Date.now();
     var livePres  = (pdata.presentations || []).filter(function (p) { return p.publishedAt && !p.archivedAt; });
@@ -3188,7 +3615,7 @@ app.get('/api/analytics/kpis', function (req, res) {
 app.get('/api/analytics/pageviews', function (req, res) {
   if (!UMAMI_USER) return res.json({ success: false, error: 'Umami not configured' });
   try {
-    var settings  = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8'));
+    var settings  = readSettings();
     var websiteId = UMAMI_WEBSITE_ID || settings.umamiWebsiteId;
     var startAt   = req.query.startAt || String(Date.now() - 30 * 86400000);
     var endAt     = req.query.endAt   || String(Date.now());
@@ -3206,7 +3633,7 @@ app.get('/api/analytics/pageviews', function (req, res) {
 app.get('/api/analytics/pageviews-by-pres', function (req, res) {
   if (!UMAMI_USER) return res.json({ success: false, error: 'Umami not configured' });
   try {
-    var settings  = JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8'));
+    var settings  = readSettings();
     var websiteId = UMAMI_WEBSITE_ID || settings.umamiWebsiteId;
     var startAt   = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
     var endAt     = parseInt(req.query.endAt)   || Date.now();
@@ -3252,7 +3679,7 @@ function dbPresTimeSeriesWithBreakdown(urlPaths, presMap, startMs, endMs, opts, 
   var db = getUmamiDb();
   if (!db || !urlPaths.length) return cb(null, { pageviews: [], sessions: [], breakdown: [] });
   var siteId = null;
-  try { siteId = UMAMI_WEBSITE_ID || JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')).umamiWebsiteId; } catch (e) {}
+  try { siteId = UMAMI_WEBSITE_ID || readSettings().umamiWebsiteId; } catch (e) {}
   if (!siteId) return cb(null, { pageviews: [], sessions: [], breakdown: [] });
   var params = [siteId, urlPaths, startMs, endMs];
   var cc = countrySql(opts, params.length + 1);
@@ -3312,7 +3739,7 @@ function dbPresTimeSeriesWithBreakdown(urlPaths, presMap, startMs, endMs, opts, 
 // Uses direct Postgres — Umami API ignores URL filters in this version.
 app.get('/api/analytics/pageviews-multi', function (req, res) {
   try {
-    var pdata   = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pdata   = readPresentations();
     var startAt = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
     var endAt   = parseInt(req.query.endAt)   || Date.now();
 
@@ -3344,7 +3771,7 @@ app.get('/api/analytics/pageviews-multi', function (req, res) {
 // Returns slide event counts per event_name, aggregated across selected Live presentations.
 app.get('/api/analytics/events', function (req, res) {
   try {
-    var pdata   = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pdata   = readPresentations();
     var startAt = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
     var endAt   = parseInt(req.query.endAt)   || Date.now();
     var livePres  = (pdata.presentations || []).filter(function (p) { return p.publishedAt && !p.archivedAt; });
@@ -3364,7 +3791,7 @@ app.get('/api/analytics/events', function (req, res) {
 // Powers the deck-average benchmark on the slide-popularity chart.
 app.get('/api/analytics/slide-benchmark', function (req, res) {
   try {
-    var pdata     = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pdata     = readPresentations();
     var startAt   = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
     var endAt     = parseInt(req.query.endAt)   || Date.now();
     var livePres  = (pdata.presentations || []).filter(function (p) { return p.publishedAt && !p.archivedAt; });
@@ -3383,7 +3810,7 @@ app.get('/api/analytics/slide-benchmark', function (req, res) {
 // Returns day-by-day event counts per event_name for time-series view.
 app.get('/api/analytics/event-series', function (req, res) {
   try {
-    var pdata   = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pdata   = readPresentations();
     var startAt = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
     var endAt   = parseInt(req.query.endAt)   || Date.now();
     var livePres  = (pdata.presentations || []).filter(function (p) { return p.publishedAt && !p.archivedAt; });
@@ -3403,7 +3830,7 @@ app.get('/api/analytics/event-series', function (req, res) {
 // Drill-down: returns per-presentation event counts for a specific slide event.
 app.get('/api/analytics/slide-events', function (req, res) {
   try {
-    var pdata     = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pdata     = readPresentations();
     var startAt   = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
     var endAt     = parseInt(req.query.endAt)   || Date.now();
     var eventName = (req.query.eventName || '').trim();
@@ -3430,7 +3857,7 @@ app.get('/api/analytics/slide-events', function (req, res) {
 // Drill-down: breaks one slide event down by its in-slide interaction label (tab/button/carousel/image).
 app.get('/api/analytics/slide-interactions', function (req, res) {
   try {
-    var pdata     = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pdata     = readPresentations();
     var startAt   = parseInt(req.query.startAt) || (Date.now() - 30 * 86400000);
     var endAt     = parseInt(req.query.endAt)   || Date.now();
     var eventName = (req.query.eventName || '').trim();
@@ -3452,7 +3879,7 @@ app.get('/api/analytics/slide-interactions', function (req, res) {
 // Not itself country-filtered, so the full list is always available regardless of the active filter.
 app.get('/api/analytics/countries', function (req, res) {
   try {
-    var pdata   = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var pdata   = readPresentations();
     var ids     = (pdata.presentations || []).map(function (p) { return p.id; });
     if (ids.length === 0) return res.json({ success: true, data: [] });
     // startAt=0 means "all time" — parse explicitly so 0 isn't treated as missing (falsy).
@@ -3468,7 +3895,7 @@ app.get('/api/analytics/countries', function (req, res) {
 });
 
 // POST /api/presentations — save a new finished presentation (snapshot of current deck + customer info)
-app.post('/api/presentations', function (req, res) {
+app.post('/api/presentations', async function (req, res) {
   var body = req.body || {};
   var replaceId = (body.replaceId || '').trim();
 
@@ -3484,7 +3911,7 @@ app.post('/api/presentations', function (req, res) {
     var activeDeckId = getActiveDeckId();
     var deck    = readDeckById(activeDeckId);
     var deckMeta = (readDecks().decks || []).find(function (d) { return d.id === activeDeckId; }) || {};
-    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library = readLibrary();
 
     var presentationName = (body.presentationName || '').trim();
     var contactName  = (body.contactName  || '').trim();
@@ -3518,7 +3945,7 @@ app.post('/api/presentations', function (req, res) {
       };
     });
 
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var data = readPresentations();
 
     if (replaceId) {
       var idx = data.presentations.findIndex(function (p) { return p.id === replaceId; });
@@ -3549,9 +3976,9 @@ app.post('/api/presentations', function (req, res) {
       if (repFirstPub) existing.publishedAt = repNow;
       else if (repWasPub) existing.replacedAt = repNow;  // re-publish of an already-live presentation
       var repDeckName = (deckMeta && deckMeta.name) || activeDeckId;
-      pushPresEvent(existing, repFirstPub ? 'published' : (repWasPub ? 'republished' : 'edited'),
+      var evP = appendPresentationEvent(existing, repFirstPub ? 'published' : (repWasPub ? 'republished' : 'edited'),
         { deckId: activeDeckId, deckName: repDeckName });
-      fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+      await Promise.all([writePresentation(existing), evP]);   // high-stakes: confirm both landed
       try {
         buildFrozenPresentation(existing);
       } catch (buildErr) {
@@ -3578,11 +4005,11 @@ app.post('/api/presentations', function (req, res) {
       slides:          slides,
       defaultLanguage: defaultLanguage,
       languages:       languages,
-      events:          [{ type: 'created', at: new Date().toISOString() }]
+      events:          []
     };
 
-    data.presentations.unshift(presentation);
-    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+    await writePresentation(presentation);              // base row first — the event's FK parent
+    await appendPresentationEvent(presentation, 'created');
 
     try {
       buildFrozenPresentation(presentation);
@@ -3599,7 +4026,7 @@ app.post('/api/presentations', function (req, res) {
 // GET /api/presentations/:id — return a single finished presentation
 app.get('/api/presentations/:id', function (req, res) {
   try {
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var data = readPresentations();
     var pres = (data.presentations || []).find(function (p) { return p.id === req.params.id; });
     if (!pres) return res.status(404).json({ success: false, error: 'Not found' });
     res.json({ success: true, data: pres });
@@ -3612,7 +4039,7 @@ app.get('/api/presentations/:id', function (req, res) {
 app.put('/api/presentations/:id', function (req, res) {
   try {
     var body = req.body || {};
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var data = readPresentations();
     var pres = (data.presentations || []).find(function (p) { return p.id === req.params.id; });
     if (!pres) return res.status(404).json({ success: false, error: 'Not found' });
 
@@ -3634,7 +4061,7 @@ app.put('/api/presentations/:id', function (req, res) {
       }
     }
 
-    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+    writePresentation(pres);
 
     try { buildFrozenPresentation(pres); } catch (e) { console.error('Rebuild failed:', e.message); }
 
@@ -3645,17 +4072,16 @@ app.put('/api/presentations/:id', function (req, res) {
 });
 
 // DELETE /api/presentations/:id — hard delete (only permitted on archived presentations)
-app.delete('/api/presentations/:id', function (req, res) {
+app.delete('/api/presentations/:id', async function (req, res) {
   try {
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
-    var idx  = (data.presentations || []).findIndex(function (p) { return p.id === req.params.id; });
-    if (idx === -1) return res.status(404).json({ success: false, error: 'Not found' });
-    var pres = data.presentations[idx];
+    var pres = readPresentationById(req.params.id);
+    if (!pres) return res.status(404).json({ success: false, error: 'Not found' });
     if (!pres.archivedAt) {
       return res.status(400).json({ success: false, error: 'Presentation must be archived before it can be deleted.' });
     }
-    data.presentations.splice(idx, 1);
-    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2));
+    store.cache.presentations.delete(req.params.id);
+    store.cache.presentationEvents.delete(req.params.id);
+    await store.enqueueDelete('presentations', { id: req.params.id }); // FK cascade clears its events
     var frozenDir = path.join(__dirname, '..', 'finished-presentations', req.params.id);
     if (fs.existsSync(frozenDir)) {
       fs.rmSync(frozenDir, { recursive: true, force: true });
@@ -3669,11 +4095,11 @@ app.delete('/api/presentations/:id', function (req, res) {
 // POST /api/presentations/:id/archive — soft-delete (sets archivedAt, hides from main list)
 app.post('/api/presentations/:id/archive', function (req, res) {
   try {
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var data = readPresentations();
     var pres = (data.presentations || []).find(function (p) { return p.id === req.params.id; });
     if (!pres) return res.status(404).json({ success: false, error: 'Not found' });
     pres.archivedAt = new Date().toISOString();
-    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+    writePresentation(pres);
     res.json({ success: true, data: pres });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -3683,11 +4109,11 @@ app.post('/api/presentations/:id/archive', function (req, res) {
 // POST /api/presentations/:id/unarchive — restore from archive
 app.post('/api/presentations/:id/unarchive', function (req, res) {
   try {
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var data = readPresentations();
     var pres = (data.presentations || []).find(function (p) { return p.id === req.params.id; });
     if (!pres) return res.status(404).json({ success: false, error: 'Not found' });
-    delete pres.archivedAt;
-    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+    delete pres.archivedAt;                // appPresentationToDb maps missing → archived_at: null
+    writePresentation(pres);
     res.json({ success: true, data: pres });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -3695,14 +4121,14 @@ app.post('/api/presentations/:id/unarchive', function (req, res) {
 });
 
 // POST /api/presentations/:id/duplicate — copy a presentation with new customer info
-app.post('/api/presentations/:id/duplicate', function (req, res) {
+app.post('/api/presentations/:id/duplicate', async function (req, res) {
   var body = req.body || {};
   var customerName = (body.customerName || '').trim();
   if (!customerName) {
     return res.status(400).json({ success: false, error: 'customerName is required' });
   }
   try {
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var data = readPresentations();
     var src  = (data.presentations || []).find(function (p) { return p.id === req.params.id; });
     if (!src) return res.status(404).json({ success: false, error: 'Not found' });
 
@@ -3741,9 +4167,7 @@ app.post('/api/presentations/:id/duplicate', function (req, res) {
       languages:       src.languages || []
     };
 
-    data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
-    data.presentations.unshift(presentation);
-    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+    await writePresentation(presentation);   // no event on duplicate (mirrors the old shape)
 
     try {
       buildFrozenPresentation(presentation);
@@ -3757,14 +4181,13 @@ app.post('/api/presentations/:id/duplicate', function (req, res) {
   }
 });
 
-app.post('/api/presentations/:id/publish', function (req, res) {
+app.post('/api/presentations/:id/publish', async function (req, res) {
   var id = req.params.id;
   if (!/^[a-z0-9-]+$/i.test(id)) {
     return res.status(400).json({ success: false, error: 'Invalid presentation id' });
   }
 
-  var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
-  var pres = (data.presentations || []).find(function (p) { return p.id === id; });
+  var pres = readPresentationById(id);
   if (!pres) return res.status(404).json({ success: false, error: 'Presentation not found' });
 
   var publicUrl = PUBLIC_BASE_URL + '/public/' + id;
@@ -3780,11 +4203,9 @@ app.post('/api/presentations/:id/publish', function (req, res) {
 
   // Record publishedAt on first publish (keep existing value on republish)
   try {
-    var pdata = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
-    var prec  = (pdata.presentations || []).find(function (p) { return p.id === id; });
-    if (prec && !prec.publishedAt) {
-      prec.publishedAt = new Date().toISOString();
-      fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(pdata, null, 2), 'utf8');
+    if (pres && !pres.publishedAt) {
+      pres.publishedAt = new Date().toISOString();
+      await writePresentation(pres);
     }
   } catch (e) { /* non-fatal */ }
 
@@ -3801,7 +4222,7 @@ app.post('/api/presentations/:id/edit', function (req, res) {
     return res.status(400).json({ success: false, error: 'Invalid presentation id' });
   }
   try {
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var data = readPresentations();
     var pres = (data.presentations || []).find(function (p) { return p.id === id; });
     if (!pres) return res.status(404).json({ success: false, error: 'Presentation not found' });
     if (pres.archivedAt) return res.status(400).json({ success: false, error: 'Cannot edit an archived presentation' });
@@ -3813,9 +4234,8 @@ app.post('/api/presentations/:id/edit', function (req, res) {
     pres.presentationName = (body.presentationName || '').trim();
     pres.customerName     = customerName;
     pres.contactName      = (body.contactName || '').trim();
-    pres.editedAt         = new Date().toISOString();
-    pushPresEvent(pres, 'edited');
-    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+    appendPresentationEvent(pres, 'edited');   // timeline reads this event (editedAt dropped — dead)
+    writePresentation(pres);
 
     // Refresh the frozen file so the new name shows on the cover — but only if the source deck
     // still exists (rebuilding from a deleted deck would strip deck-specific content).
@@ -3834,7 +4254,7 @@ app.post('/api/presentations/:id/edit', function (req, res) {
 // POST /api/presentations/:id/republish { deckId } — rebuild the presentation from the chosen
 // deck's CURRENT slides + branding (re-snapshot), keeping the same id / public link / metadata.
 // Used by the dashboard "Republish now" and the builder's republish-mode Publish button.
-app.post('/api/presentations/:id/republish', function (req, res) {
+app.post('/api/presentations/:id/republish', async function (req, res) {
   var id = req.params.id;
   if (!/^[a-z0-9-]+$/i.test(id)) {
     return res.status(400).json({ success: false, error: 'Invalid presentation id' });
@@ -3848,14 +4268,14 @@ app.post('/api/presentations/:id/republish', function (req, res) {
       return res.status(404).json({ success: false, error: 'Deck not found' });
     }
 
-    var data = JSON.parse(fs.readFileSync(PRESENTATIONS_PATH, 'utf8'));
+    var data = readPresentations();
     var pres = (data.presentations || []).find(function (p) { return p.id === id; });
     if (!pres) return res.status(404).json({ success: false, error: 'Presentation not found' });
     if (pres.archivedAt) return res.status(400).json({ success: false, error: 'Cannot republish an archived presentation' });
 
     // Re-snapshot the chosen deck's slides (mirrors the Save-as-Presentation snapshot)
     var deck    = readDeckById(deckId);
-    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library = readLibrary();
     var slides  = (deck.slides || []).map(function (s) {
       var lib = library.slides.find(function (l) { return l.id === s.librarySlideId; });
       return { id: s.id, librarySlideId: s.librarySlideId, name: (lib && lib.name) || s.id, visible: s.visible !== false };
@@ -3892,8 +4312,8 @@ app.post('/api/presentations/:id/republish', function (req, res) {
     if (!rpWasPub) pres.publishedAt = rpNow;   // first publish
     else pres.replacedAt = rpNow;              // actual re-publish
     var rpDeckName = (decks.find(function (d) { return d.id === deckId; }) || {}).name || deckId;
-    pushPresEvent(pres, rpWasPub ? 'republished' : 'published', { deckId: deckId, deckName: rpDeckName });
-    fs.writeFileSync(PRESENTATIONS_PATH, JSON.stringify(data, null, 2), 'utf8');
+    var evP = appendPresentationEvent(pres, rpWasPub ? 'republished' : 'published', { deckId: deckId, deckName: rpDeckName });
+    await Promise.all([writePresentation(pres), evP]);   // high-stakes: confirm both landed (event APPENDED, not overwritten)
 
     try { buildFrozenPresentation(pres); }
     catch (buildErr) { return res.status(500).json({ success: false, error: 'Build failed: ' + buildErr.message }); }
@@ -3923,7 +4343,7 @@ app.get('/view/:id', function (req, res) {
 // GET /api/slide-library — return the slide library catalog with deck membership
 app.get('/api/slide-library', function (req, res) {
   try {
-    var library   = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library   = readLibrary();
     var templates = JSON.parse(fs.readFileSync(TEMPLATES_PATH, 'utf8'));
     var tplMap    = {};
     templates.forEach(function (t) { tplMap[t.id] = t; });
@@ -3984,7 +4404,7 @@ app.get('/api/slide-templates', function (req, res) {
 // GET /api/templates — return the HTML slide template catalog; ?category=CTA to filter
 app.get('/api/templates', function (req, res) {
   try {
-    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
+    var catalog = getCatalog();
     var category = req.query.category;
     if (category) {
       catalog = catalog.filter(function (t) {
@@ -4001,7 +4421,7 @@ app.get('/api/templates', function (req, res) {
 // Generator mode (preferred): { id, name, category, slideMode, layout, blocks }
 // Direct mode (backward compat): { id, name, category, slideMode, components, html }
 // Writes the HTML to features/slides/slide-[NN]-[slug].html, appends entry to templates.json
-app.post('/api/templates', function (req, res) {
+app.post('/api/templates', async function (req, res) {
   try {
     var body = req.body || {};
     var id        = (body.id       || '').trim();
@@ -4037,8 +4457,7 @@ app.post('/api/templates', function (req, res) {
       return res.status(400).json({ success: false, error: 'category must be one of: ' + validCategories.join(', ') });
     }
 
-    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
-    if (catalog.find(function (t) { return t.id === id; })) {
+    if (store.cache.templates.has(id)) {
       return res.status(409).json({ success: false, error: 'Template id already exists: ' + id });
     }
 
@@ -4066,8 +4485,9 @@ app.post('/api/templates', function (req, res) {
       file:       fileRef,
       createdAt:  new Date().toISOString()
     };
-    catalog.push(entry);
-    fs.writeFileSync(TEMPLATE_CATALOG_PATH, JSON.stringify(catalog, null, 2), 'utf8');
+    var dbRow = appTemplateToDb(entry);
+    store.cache.templates.set(id, dbRow);
+    await store.enqueueUpsert('templates', dbRow, 'id');
 
     res.status(201).json({ success: true, data: entry });
   } catch (err) {
@@ -4076,13 +4496,13 @@ app.post('/api/templates', function (req, res) {
 });
 
 // DELETE /api/templates/:id — deregister a template (keeps the HTML file)
-app.delete('/api/templates/:id', function (req, res) {
+app.delete('/api/templates/:id', async function (req, res) {
   try {
-    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
-    var idx     = catalog.findIndex(function (t) { return t.id === req.params.id; });
-    if (idx === -1) return res.status(404).json({ success: false, error: 'Template not found: ' + req.params.id });
-    catalog.splice(idx, 1);
-    fs.writeFileSync(TEMPLATE_CATALOG_PATH, JSON.stringify(catalog, null, 2), 'utf8');
+    if (!store.cache.templates.has(req.params.id)) {
+      return res.status(404).json({ success: false, error: 'Template not found: ' + req.params.id });
+    }
+    store.cache.templates.delete(req.params.id);
+    await store.enqueueDelete('templates', { id: req.params.id });
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -4090,36 +4510,37 @@ app.delete('/api/templates/:id', function (req, res) {
 });
 
 // PATCH /api/templates/:id — update name and/or category of a template entry
-app.patch('/api/templates/:id', function (req, res) {
+app.patch('/api/templates/:id', async function (req, res) {
   try {
-    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
-    var idx     = catalog.findIndex(function (t) { return t.id === req.params.id; });
-    if (idx === -1) return res.status(404).json({ success: false, error: 'Template not found: ' + req.params.id });
+    var tpl = getTemplate(req.params.id);
+    if (!tpl) return res.status(404).json({ success: false, error: 'Template not found: ' + req.params.id });
     var body = req.body || {};
-    if (body.name       !== undefined) catalog[idx].name       = String(body.name).trim();
-    if (body.category   !== undefined) catalog[idx].category   = String(body.category).trim();
-    if (body.tags       !== undefined) catalog[idx].tags       = Array.isArray(body.tags) ? body.tags : [];
-    if (body.components !== undefined) catalog[idx].components = Array.isArray(body.components) ? body.components : [];
-    fs.writeFileSync(TEMPLATE_CATALOG_PATH, JSON.stringify(catalog, null, 2), 'utf8');
-    res.json({ success: true, data: catalog[idx] });
+    if (body.name       !== undefined) tpl.name       = String(body.name).trim();
+    if (body.category   !== undefined) tpl.category   = String(body.category).trim();
+    if (body.tags       !== undefined) tpl.tags       = Array.isArray(body.tags) ? body.tags : [];
+    if (body.components !== undefined) tpl.components = Array.isArray(body.components) ? body.components : [];
+    var dbRow = appTemplateToDb(tpl);
+    store.cache.templates.set(tpl.id, dbRow);
+    await store.enqueueUpsert('templates', dbRow, 'id');
+    res.json({ success: true, data: tpl });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
 });
 
 // POST /api/templates/:id/duplicate — clone a template entry (shares the same HTML file)
-app.post('/api/templates/:id/duplicate', function (req, res) {
+app.post('/api/templates/:id/duplicate', async function (req, res) {
   try {
-    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
-    var src = catalog.find(function (t) { return t.id === req.params.id; });
+    var src = getTemplate(req.params.id);
     if (!src) return res.status(404).json({ success: false, error: 'Template not found: ' + req.params.id });
     var baseId = src.id + '-copy';
     var newId  = baseId;
     var n = 1;
-    while (catalog.find(function (t) { return t.id === newId; })) { newId = baseId + '-' + (++n); }
+    while (store.cache.templates.has(newId)) { newId = baseId + '-' + (++n); }
     var copy = Object.assign({}, src, { id: newId, name: src.name + ' (copy)', createdAt: new Date().toISOString() });
-    catalog.push(copy);
-    fs.writeFileSync(TEMPLATE_CATALOG_PATH, JSON.stringify(catalog, null, 2), 'utf8');
+    var dbRow = appTemplateToDb(copy);
+    store.cache.templates.set(newId, dbRow);
+    await store.enqueueUpsert('templates', dbRow, 'id');
     res.status(201).json({ success: true, data: copy });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -4129,7 +4550,7 @@ app.post('/api/templates/:id/duplicate', function (req, res) {
 // PATCH /api/slide-library/:id — update name (and/or other top-level fields) of a library slide
 app.patch('/api/slide-library/:id', function (req, res) {
   try {
-    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library = readLibrary();
     var slide = library.slides.find(function (s) { return s.id === req.params.id; });
     if (!slide) return res.status(404).json({ success: false, error: 'Slide not found' });
     var allowed = ['name'];
@@ -4137,7 +4558,7 @@ app.patch('/api/slide-library/:id', function (req, res) {
     allowed.forEach(function (key) {
       if (body[key] !== undefined) slide[key] = String(body[key]).trim() || slide[key];
     });
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
     res.json({ success: true, data: slide });
   } catch (e) {
     res.status(500).json({ success: false, error: e.message });
@@ -4147,7 +4568,7 @@ app.patch('/api/slide-library/:id', function (req, res) {
 // POST /api/slide-library/:id/duplicate — duplicate a library slide
 app.post('/api/slide-library/:id/duplicate', function (req, res) {
   try {
-    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library = readLibrary();
     var src = library.slides.find(function (s) { return s.id === req.params.id; });
     if (!src) return res.status(404).json({ success: false, error: 'Slide not found' });
     var copy = Object.assign({}, JSON.parse(JSON.stringify(src)), {
@@ -4157,7 +4578,7 @@ app.post('/api/slide-library/:id/duplicate', function (req, res) {
       deckEdits: {}
     });
     library.slides.push(copy);
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
     res.json({ success: true, data: copy });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -4167,7 +4588,7 @@ app.post('/api/slide-library/:id/duplicate', function (req, res) {
 // POST /api/slide-library/:id/accept-update — apply new template structure, bump templateVersion
 app.post('/api/slide-library/:id/accept-update', function (req, res) {
   try {
-    var library   = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library   = readLibrary();
     var templates = JSON.parse(fs.readFileSync(TEMPLATES_PATH, 'utf8'));
     var slide     = library.slides.find(function (s) { return s.id === req.params.id; });
     if (!slide) return res.status(404).json({ success: false, error: 'Slide not found' });
@@ -4177,7 +4598,7 @@ app.post('/api/slide-library/:id/accept-update', function (req, res) {
     // Apply new template structure; existing edits are preserved (they live in slide.edits)
     slide.templateVersion = tpl.version || 1;
     delete slide.templateUpdateIgnoredAt;
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
     res.json({ success: true, data: slide });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -4187,11 +4608,11 @@ app.post('/api/slide-library/:id/accept-update', function (req, res) {
 // POST /api/slide-library/:id/ignore-update — mark template update as ignored
 app.post('/api/slide-library/:id/ignore-update', function (req, res) {
   try {
-    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library = readLibrary();
     var slide   = library.slides.find(function (s) { return s.id === req.params.id; });
     if (!slide) return res.status(404).json({ success: false, error: 'Slide not found' });
     slide.templateUpdateIgnoredAt = new Date().toISOString();
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -4201,9 +4622,9 @@ app.post('/api/slide-library/:id/ignore-update', function (req, res) {
 // DELETE /api/slide-library/:id — remove an entry from the slide library by id
 app.delete('/api/slide-library/:id', function (req, res) {
   try {
-    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library = readLibrary();
     library.slides = library.slides.filter(function (e) { return e.id !== req.params.id; });
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -4238,9 +4659,9 @@ app.post('/api/library', function (req, res) {
     }
 
     var resolved = resolveTemplate(templateId);
-    var catalog  = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
+    var catalog  = getCatalog();
     var tplEntry = catalog.find(function (t) { return t.id === templateId; });
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
 
     var edits = (tplEntry && tplEntry.defaultEdits) ? JSON.parse(JSON.stringify(tplEntry.defaultEdits)) : {};
 
@@ -4252,9 +4673,9 @@ app.post('/api/library', function (req, res) {
       edits: edits
     };
     if (slideStyleRef) { newSlide.styleRef = slideStyleRef; newSlide.styleCss = slideStyleCss; }
-    if (rawThemeId && rawThemeId.endsWith('.css')) newSlide.themeId = rawThemeId;
+    // (removed: newSlide.themeId — write-only dead data, redundant with styleRef/styleCss)
     library.slides.push(newSlide);
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
     res.json({ success: true, data: newSlide });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -4262,7 +4683,7 @@ app.post('/api/library', function (req, res) {
 });
 
 // POST /api/templates/:id/defaultEdits — save default edit values for a template
-app.post('/api/templates/:id/defaultEdits', function (req, res) {
+app.post('/api/templates/:id/defaultEdits', async function (req, res) {
   var id = req.params.id;
   if (!/^[a-z0-9-]+$/i.test(id)) {
     return res.status(400).json({ success: false, error: 'Invalid id' });
@@ -4272,11 +4693,12 @@ app.post('/api/templates/:id/defaultEdits', function (req, res) {
     if (!edits || typeof edits !== 'object') {
       return res.status(400).json({ success: false, error: 'edits object is required' });
     }
-    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
-    var tpl = catalog.find(function (t) { return t.id === id; });
+    var tpl = getTemplate(id);
     if (!tpl) return res.status(404).json({ success: false, error: 'Template not found' });
     tpl.defaultEdits = edits;
-    fs.writeFileSync(TEMPLATE_CATALOG_PATH, JSON.stringify(catalog, null, 2), 'utf8');
+    var dbRow = appTemplateToDb(tpl);
+    store.cache.templates.set(id, dbRow);
+    await store.enqueueUpsert('templates', dbRow, 'id');
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -4293,7 +4715,7 @@ app.get('/slides/template-preview/:id', function (req, res) {
   var styleQuery = (req.query.style || '').replace(/[^a-z0-9._-]/gi, '');
   var themeQuery = (req.query.theme || '').replace(/[^a-z0-9._-]/gi, '');
   try {
-    var catalog = JSON.parse(fs.readFileSync(TEMPLATE_CATALOG_PATH, 'utf8'));
+    var catalog = getCatalog();
     var tpl = catalog.find(function (t) { return t.id === id; });
     if (!tpl) return res.status(404).type('text/plain').send('Template not found: ' + id);
 
@@ -4491,7 +4913,7 @@ app.get('/slides/library-preview/:id', function (req, res) {
     return res.status(400).type('text/plain').send('Invalid id');
   }
   try {
-    var library   = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library   = readLibrary();
     var libSlide  = library.slides.find(function (s) { return s.id === id; });
     if (!libSlide) return res.status(404).type('text/plain').send('Library slide not found');
 
@@ -4611,7 +5033,7 @@ app.get('/slides/library-edit/:id', function (req, res) {
     return res.status(400).type('text/plain').send('Invalid id');
   }
   try {
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
     var libSlide = library.slides.find(function (s) { return s.id === id; });
     if (!libSlide) return res.status(404).type('text/plain').send('Library slide not found');
 
@@ -4758,14 +5180,14 @@ app.post('/api/slide-library/:id/edits', function (req, res) {
     var bucket = req.body.deckId || getActiveDeckId();
     if (!id || !edits) return res.status(400).json({ success: false, error: 'Missing id or edits' });
 
-    var library  = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library  = readLibrary();
     var libSlide = library.slides.find(function (s) { return s.id === id; });
     if (!libSlide) return res.status(404).json({ success: false, error: 'Library slide not found' });
 
     if (!libSlide.deckEdits) libSlide.deckEdits = {};
     if (!libSlide.deckEdits[bucket]) libSlide.deckEdits[bucket] = {};
     libSlide.deckEdits[bucket] = Object.assign({}, libSlide.deckEdits[bucket], edits);
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -4785,23 +5207,82 @@ app.get('/slides/builder',   function (_req, res) { res.sendFile(path.join(__dir
 // ── API: languages ────────────────────────────────────────────────────────────
 app.get('/api/languages', function (_req, res) {
   try {
-    var data = JSON.parse(fs.readFileSync(LANGUAGES_PATH, 'utf8'));
-    res.json({ success: true, data: data.languages });
+    res.json({ success: true, data: getLanguages() });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
 });
 
 // ── API: translations ─────────────────────────────────────────────────────────
-function readTranslations(deckId) {
-  try { return JSON.parse(fs.readFileSync(getTranslationsPath(deckId), 'utf8')); }
-  catch (e) {
-    return { languages: ['en'], defaultLanguage: 'en', slides: {} };
-  }
+// ── translation reshapers (Slice 2: deck_translations + meta cache-backed) ────
+// Flat deck_translations rows → the nested { slides: { slideId: { fieldKey: {
+//   en: <source string>, es: { current, previous, dirty }, … } } } } shape.
+// `en` is a scalar source row (lang='en'); every other lang is a {current,previous,
+// dirty} object. `previous` powers the Translation Center "↻ Restore" button.
+function dbTranslationsToApp(deckId) {
+  var meta = store.cache.translationMeta.get(deckId);
+  var rows = store.cache.translations.get(deckId) || [];
+  var slides = {};
+  rows.forEach(function (r) {
+    if (!slides[r.library_slide_id]) slides[r.library_slide_id] = {};
+    var field = slides[r.library_slide_id][r.field_key];
+    if (!field) { field = {}; slides[r.library_slide_id][r.field_key] = field; }
+    if (r.lang === 'en') {
+      field.en = r.value;
+    } else {
+      field[r.lang] = { current: r.value, previous: r.previous != null ? r.previous : null, dirty: !!r.dirty };
+    }
+  });
+  return {
+    languages: meta ? meta.languages : ['en'],
+    defaultLanguage: meta ? meta.default_language : 'en',
+    favorites: meta ? (meta.favorites || []) : [],
+    slides: slides
+  };
 }
 
+function readTranslations(deckId) {
+  return dbTranslationsToApp(deckId);
+}
+
+// Persists the whole translations object: meta (languages/default/favorites) +
+// every slide×field×lang entry. Upsert-only (no prune) — the app never deletes
+// individual entries (removing a language leaves its rows, matching the old
+// whole-file rewrite), so this stays faithful while avoiding any wipe-on-failure.
 function writeTranslations(data, deckId) {
-  fs.writeFileSync(getTranslationsPath(deckId), JSON.stringify(data, null, 2), 'utf8');
+  data = data || {};
+  var metaRow = {
+    deck_id: deckId, team_id: store.TEAM,
+    languages: data.languages || ['en'],
+    default_language: data.defaultLanguage || 'en',
+    favorites: data.favorites || []
+  };
+  store.cache.translationMeta.set(deckId, metaRow);
+
+  var rows = [];
+  var slides = data.slides || {};
+  Object.keys(slides).forEach(function (slideId) {
+    var fields = slides[slideId] || {};
+    Object.keys(fields).forEach(function (fieldKey) {
+      var byLang = fields[fieldKey];
+      if (!byLang || typeof byLang !== 'object') return;
+      Object.keys(byLang).forEach(function (lang) {
+        var v = byLang[lang];
+        var isObj = v && typeof v === 'object';
+        rows.push({
+          deck_id: deckId, library_slide_id: slideId, field_key: fieldKey, lang: lang,
+          value: isObj ? (v.current != null ? v.current : null) : (v != null ? v : null),
+          previous: isObj ? (v.previous != null ? v.previous : null) : null,
+          dirty: isObj ? !!v.dirty : false,
+          team_id: store.TEAM
+        });
+      });
+    });
+  });
+  store.cache.translations.set(deckId, rows);
+
+  store.enqueueUpsert('deck_translation_meta', metaRow, 'deck_id');
+  if (rows.length) store.enqueueUpsert('deck_translations', rows, 'deck_id,library_slide_id,field_key,lang');
 }
 
 // Mark per-slide translation entries dirty when English edits are saved.
@@ -4845,7 +5326,7 @@ app.post('/api/translations/translate', async function (req, res) {
     const deckId = getActiveDeckId();
     const t = readTranslations(deckId);
     const targetLanguages = (req.body && req.body.languages) || t.languages.filter(l => l !== 'en');
-    const langList = JSON.parse(fs.readFileSync(LANGUAGES_PATH, 'utf8')).languages;
+    const langList = getLanguages();
 
     // Per-slide mode: slideId + sourceFields: { fieldKey: englishText }
     const slideId      = req.body && req.body.slideId;
@@ -4958,7 +5439,7 @@ app.get('/api/translations/fields-summary', function (req, res) {
   try {
     var activeDeckId = getActiveDeckId();
     var deck    = readDeckById(activeDeckId);
-    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library = readLibrary();
     var t       = readTranslations(activeDeckId);
     var rows    = [];
 
@@ -5035,8 +5516,8 @@ app.post('/api/translations/translate-all', async function (req, res) {
     }
 
     var deckId = getActiveDeckId();
-    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
-    var langList = JSON.parse(fs.readFileSync(LANGUAGES_PATH, 'utf8')).languages;
+    var library = readLibrary();
+    var langList = getLanguages();
     var t = readTranslations(deckId);
     if (!t.slides) t.slides = {};
 
@@ -5367,12 +5848,17 @@ function findImageUsage(name) {
   function scan(label, file) {
     try { if (fs.readFileSync(file, 'utf8').indexOf(needle) !== -1) hits.push(label); } catch (e) {}
   }
-  scan('library', LIBRARY_PATH);
-  scan('presentations', PRESENTATIONS_PATH);
+  // Library + decks are cache-backed now; their JSON files are frozen snapshots, so
+  // scan the live data instead (this also catches deck branding logo/heroBg, which
+  // the old per-deck deck.json scan never covered).
+  function scanData(label, data) {
+    try { if (JSON.stringify(data).indexOf(needle) !== -1) hits.push(label); } catch (e) {}
+  }
+  scanData('library', readLibrary());
+  scanData('presentations', readPresentations()); // cache-backed now (Slice 4)
   try {
-    fs.readdirSync(DECKS_DIR_PATH).forEach(function (d) {
-      var dp = path.join(DECKS_DIR_PATH, d, 'deck.json');
-      if (fs.existsSync(dp)) scan('deck:' + d, dp);
+    readDecks().decks.forEach(function (d) {
+      scanData('deck:' + d.id, [d, readDeckById(d.id)]);
     });
   } catch (e) {}
   var slidesDir = path.join(__dirname, 'features', 'slides');
@@ -5496,12 +5982,12 @@ app.post('/api/clone-slide', function (req, res) {
     fs.writeFileSync(newFile, $.html(), 'utf8');
 
     // --- 5. Update slide-library.json ---
-    var library = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
+    var library = readLibrary();
     var sourceEntry = library.find(function (e) { return e.id === sourceId; });
     var sourceLabel = sourceEntry ? sourceEntry.label : namePart;
     var newEntry = { id: newId, label: 'Clone of ' + sourceLabel, category: 'custom' };
     library.push(newEntry);
-    fs.writeFileSync(LIBRARY_PATH, JSON.stringify(library, null, 2), 'utf8');
+    writeLibrary(library);
 
     // --- 6. Update deck.json ---
     var cloneActiveDeckId = getActiveDeckId();
@@ -5516,39 +6002,32 @@ app.post('/api/clone-slide', function (req, res) {
   }
 });
 
-// ── Startup: rebuild library slide decks[] (runs every boot) ─────────────────
-(function rebuildSlideDecks() {
-  if (!fs.existsSync(LIBRARY_PATH)) return;
+// ── Startup: enforce 1-slide-per-deck (called after the cache loads) ─────────
+// Deck membership is DERIVED now — readLibrary() rebuilds each slide's decks[] from
+// deck_slides — so there is no stored list to rebuild and no library file to write
+// (slide-library.json is a frozen snapshot post-Slice-3). All this still does is
+// repair the rare case of one library slide sitting in two decks: first deck wins.
+// MUST run AFTER store.loadAll() — every read here is cache-backed.
+function enforceOneDeckPerSlide() {
+  var owner    = {}; // librarySlideId -> deckId that keeps it
+  var removals = {}; // deckId -> [librarySlideId, ...]
 
-  var libData   = JSON.parse(fs.readFileSync(LIBRARY_PATH, 'utf8'));
-  var deckStore = readDecks();
-
-  // Reset decks[] on every slide, then repopulate from deck.json slide lists.
-  // Enforce 1-slide-per-deck: first deck found (deckStore order) wins; slide is removed
-  // from any subsequent deck that also contains it.
-  libData.slides.forEach(function (ls) { ls.decks = []; });
-
-  var slideRemovals = {}; // deckId -> [librarySlideId, ...]
-
-  deckStore.decks.forEach(function (deckMeta) {
-    var deckData = readDeckById(deckMeta.id);
-    (deckData.slides || []).forEach(function (ds) {
+  readDecks().decks.forEach(function (deckMeta) {
+    (readDeckById(deckMeta.id).slides || []).forEach(function (ds) {
       if (!ds.librarySlideId) return;
-      var ls = libData.slides.find(function (s) { return s.id === ds.librarySlideId; });
-      if (!ls) return;
-      if (ls.decks.length > 0) {
-        console.log('[startup] WARNING: slide "' + (ls.name || ls.id) + '" in multiple decks — keeping "' + ls.decks[0].id + '", removing from "' + deckMeta.id + '"');
-        if (!slideRemovals[deckMeta.id]) slideRemovals[deckMeta.id] = [];
-        slideRemovals[deckMeta.id].push(ds.librarySlideId);
-        return;
+      if (owner[ds.librarySlideId]) {
+        console.log('[startup] WARNING: slide "' + ds.librarySlideId + '" in multiple decks — keeping "' +
+          owner[ds.librarySlideId] + '", removing from "' + deckMeta.id + '"');
+        if (!removals[deckMeta.id]) removals[deckMeta.id] = [];
+        removals[deckMeta.id].push(ds.librarySlideId);
+      } else {
+        owner[ds.librarySlideId] = deckMeta.id;
       }
-      ls.decks.push({ id: deckMeta.id, name: deckMeta.name || deckMeta.id });
     });
   });
 
-  // Remove slides from the extra decks
-  Object.keys(slideRemovals).forEach(function (deckId) {
-    var ids    = slideRemovals[deckId];
+  Object.keys(removals).forEach(function (deckId) {
+    var ids    = removals[deckId];
     var dkData = readDeckById(deckId);
     dkData.slides = dkData.slides.filter(function (s) {
       return !s.librarySlideId || ids.indexOf(s.librarySlideId) === -1;
@@ -5556,17 +6035,23 @@ app.post('/api/clone-slide', function (req, res) {
     writeDeckById(deckId, dkData);
     console.log('[startup] Removed ' + ids.length + ' duplicate slide(s) from deck "' + deckId + '"');
   });
-
-  fs.writeFileSync(LIBRARY_PATH, JSON.stringify(libData, null, 2), 'utf8');
-  console.log('[startup] Rebuilt decks[] on library slides');
-})();
+}
 
 // (Removed: one-time per-deck slide-isolation migration + the legacy `default`
 // deck it seeded from data/deck.json — Step H Tier 2. The rebuild is complete and
 // deck-rebuild is the sole deck; re-running the migration would resurrect default.)
 
-app.listen(PORT, function () {
-  console.log('Builder running at http://localhost:' + PORT);
-  console.log('Preview:  http://localhost:' + PORT + '/builder/preview.html');
-  setupUmamiWebsite();
+// Load the Supabase cache BEFORE serving — reads will come from it slice by
+// slice (Phase 5). Fail fast if it can't load: serving with an empty cache
+// would break every migrated read. (loadAll retries once for transient skew.)
+store.loadAll().then(function () {
+  enforceOneDeckPerSlide(); // cache-backed now — must run after loadAll(), never before
+  app.listen(PORT, function () {
+    console.log('Builder running at http://localhost:' + PORT);
+    console.log('Preview:  http://localhost:' + PORT + '/builder/preview.html');
+    setupUmamiWebsite();
+  });
+}).catch(function (err) {
+  console.error('[startup] FATAL: could not load data cache from Supabase —', err.message);
+  process.exit(1);
 });

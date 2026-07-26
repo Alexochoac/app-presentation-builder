@@ -107,9 +107,16 @@ create table if not exists slide_library (
   edits           jsonb not null default '{}',    -- global default edits
   gallery_enabled boolean not null default false,
   theme_override  text,
+  position                   int,                  -- library display order (My Library does NOT sort client-side)
+  template_version           int,                  -- drives the "template update available" badge
+  template_update_ignored_at text,                 -- ISO string; set when a user dismisses an update
+  style_ref                  text,                 -- per-slide legacy .html/.css style ref (no-deck preview)
+  style_css                  text,                 -- per-slide extracted CSS (no-deck preview)
   created_at      timestamptz,
   updated_at      timestamptz not null default now()
 );
+-- NOTE: the legacy slide-level `themeId` field is intentionally NOT migrated — it was
+-- write-only (redundant with style_ref/style_css). Its write was removed in Slice 3.
 
 -- ── 7. Deck × slide edits (THE deckEdits split — fixes sustainability issue #1)
 -- One row per (deck, library slide). Library no longer grows per deck edit.
@@ -137,7 +144,8 @@ create table if not exists deck_translation_meta (
   deck_id          text primary key references decks(id) on delete cascade,
   team_id          uuid not null references teams(id),
   languages        jsonb not null default '["en"]',
-  default_language text not null default 'en'
+  default_language text not null default 'en',
+  favorites        jsonb not null default '[]'   -- favorited language codes (Translation Center UI)
 );
 
 -- ── 10. Deck translations (normalized — drops the `previous` bloat, issue #3) ─
@@ -149,6 +157,7 @@ create table if not exists deck_translations (
   field_key        text not null,
   lang             text not null,
   value            text,
+  previous         text,                          -- prior translation for this lang (powers the TC "Restore" button)
   dirty            boolean not null default false,
   team_id          uuid not null references teams(id),
   primary key (deck_id, library_slide_id, field_key, lang)
@@ -159,7 +168,7 @@ create table if not exists presentations (
   id                text primary key,             -- keep existing "00000004" style
   team_id           uuid not null references teams(id),
   created_by        uuid,                         -- future rep user; nullable now
-  deck_id           text references decks(id),
+  deck_id           text,                         -- NO FK: a frozen presentation must survive its deck being deleted
   presentation_name text,
   customer_name     text,
   customer_url      text,
@@ -173,7 +182,8 @@ create table if not exists presentations (
   languages         jsonb not null default '[]',
   created_at        date,
   published_at      timestamptz,
-  replaced_at       timestamptz
+  replaced_at       timestamptz,
+  archived_at       timestamptz
 );
 
 -- ── 12. Presentation events (audit trail split out; grows unbounded) ─────────
@@ -195,6 +205,24 @@ create index if not exists idx_deck_translations_deck  on deck_translations(deck
 create index if not exists idx_presentations_team      on presentations(team_id);
 create index if not exists idx_presentations_deck      on presentations(deck_id);
 create index if not exists idx_pres_events_pres        on presentation_events(presentation_id);
+
+-- ── Idempotent migrations (bring an already-created DB up to date) ───────────
+-- Safe on a fresh DB too (the CREATEs above already include these).
+alter table presentations         drop constraint if exists presentations_deck_id_fkey;   -- frozen snapshots outlive decks
+alter table presentations         add  column      if not exists archived_at timestamptz;
+alter table deck_translation_meta add  column      if not exists favorites   jsonb not null default '[]';
+
+-- ── Grants: let the server's service_role key use these tables ───────────────
+-- At project setup we chose "don't auto-expose new tables" (secure default), so
+-- the Data API roles get NO access until we grant it. Grant full access to
+-- service_role ONLY — the trusted server key (it already bypasses RLS). The
+-- public 'anon' / 'authenticated' roles stay locked out until real RLS policies
+-- land in Phase 5. `alter default privileges` covers any tables we add later.
+grant usage on schema public to service_role;
+grant all privileges on all tables    in schema public to service_role;
+grant all privileges on all sequences in schema public to service_role;
+alter default privileges in schema public grant all on tables    to service_role;
+alter default privileges in schema public grant all on sequences to service_role;
 
 -- ============================================================================
 -- End of schema. Next: run builder/scripts/import-to-supabase.js to load data.
