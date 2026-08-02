@@ -59,6 +59,13 @@ app.get('/favicon.ico',    function (_req, res) { res.sendFile(path.join(__dirna
 // ── Protect everything below this line ───────────────────────────────────────
 app.use(requireAuth);
 
+// GET /api/me — the current logged-in user (any authenticated user)
+app.get('/api/me', function (req, res) {
+  var u = (req.session && req.session.user) || null;
+  if (!u) return res.status(401).json({ success: false, error: 'Not logged in' });
+  res.json({ success: true, data: { email: u.email, id: u.id } });
+});
+
 // ── User administration (admin-gated) ─────────────────────────────────────────
 // Manage login accounts without touching the Supabase dashboard. Uses the
 // service_role client's admin API. Admin = ADMIN_EMAILS allowlist (see auth.js).
