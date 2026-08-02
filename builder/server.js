@@ -8,7 +8,7 @@ const https    = require('https');
 const http     = require('http');
 const cheerio  = require('cheerio');
 const session  = require('express-session');
-const { requireAuth, registerAuthRoutes } = require('./features/auth/auth');
+const { requireAuth, requireAdmin, isAdmin, registerAuthRoutes } = require('./features/auth/auth');
 const { translate } = require('./lib/translator');
 const { generateHtml } = require('./lib/template-generator');
 const store = require('./lib/store'); // write-through Supabase cache (Phase 5 cutover, slice by slice)
@@ -58,6 +58,51 @@ app.get('/favicon.ico',    function (_req, res) { res.sendFile(path.join(__dirna
 
 // ── Protect everything below this line ───────────────────────────────────────
 app.use(requireAuth);
+
+// ── User administration (admin-gated) ─────────────────────────────────────────
+// Manage login accounts without touching the Supabase dashboard. Uses the
+// service_role client's admin API. Admin = ADMIN_EMAILS allowlist (see auth.js).
+// NOTE: no per-user data isolation yet — every account shares the one default
+// team until Phase 5 (RLS + teams). Keep this admin-gated; do NOT open public signup.
+
+// GET /admin/users — the user-management page (redirect non-admins away)
+app.get('/admin/users', function (req, res) {
+  if (!isAdmin(req)) return res.redirect('/');
+  res.sendFile(path.join(__dirname, 'features/auth/users.html'));
+});
+
+// GET /api/users — list existing accounts
+app.get('/api/users', requireAdmin, async function (req, res) {
+  try {
+    const { data, error } = await store.supabase.auth.admin.listUsers({ page: 1, perPage: 200 });
+    if (error) return res.status(500).json({ success: false, error: error.message });
+    const users = (data.users || []).map(function (u) {
+      return { id: u.id, email: u.email, createdAt: u.created_at, lastSignInAt: u.last_sign_in_at };
+    });
+    res.json({ success: true, data: users });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// POST /api/users { email, password } — create a new account (auto-confirmed, so
+// no confirmation email is needed — matches the Path-A "no email" scope)
+app.post('/api/users', requireAdmin, async function (req, res) {
+  const email = ((req.body || {}).email || '').trim();
+  const password = ((req.body || {}).password || '');
+  if (!email || !password) {
+    return res.status(400).json({ success: false, error: 'Email and password are required.' });
+  }
+  try {
+    const { data, error } = await store.supabase.auth.admin.createUser({
+      email: email, password: password, email_confirm: true
+    });
+    if (error) return res.status(400).json({ success: false, error: error.message });
+    res.json({ success: true, data: { id: data.user.id, email: data.user.email } });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
 
 // ── Slide preview wrapper ─────────────────────────────────────────────────────
 // GET /slides/deck-preview/:id — renders a deck slide and wraps it in the full HTML preview shell
