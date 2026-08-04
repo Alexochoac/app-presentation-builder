@@ -27,7 +27,23 @@ app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: false }));
 
 // ── Sessions ──────────────────────────────────────────────────────────────────
+// Postgres-backed store (connect-pg-simple) so logins survive server restarts
+// and can be shared across instances later. Falls back to the in-memory store
+// if SUPABASE_DB_URL isn't set, so the app still boots without it.
+let sessionStore; // undefined → express-session uses its default MemoryStore
+if (process.env.SUPABASE_DB_URL) {
+  const PgSession = require('connect-pg-simple')(session);
+  const sessionPool = new (require('pg').Pool)({
+    connectionString: process.env.SUPABASE_DB_URL,
+    ssl: { rejectUnauthorized: false }
+  });
+  sessionStore = new PgSession({ pool: sessionPool, createTableIfMissing: true });
+  console.log('[session] Postgres-backed session store enabled');
+} else {
+  console.warn('[session] SUPABASE_DB_URL not set — using in-memory sessions (lost on restart)');
+}
 app.use(session({
+  store: sessionStore,
   secret: process.env.SESSION_SECRET || 'dev-secret-change-me',
   resave: false,
   saveUninitialized: false,
