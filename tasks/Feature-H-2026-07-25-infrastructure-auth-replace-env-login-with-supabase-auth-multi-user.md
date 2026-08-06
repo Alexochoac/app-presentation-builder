@@ -38,9 +38,19 @@ execution checklist (same relationship the migration task had to the Idea-L deci
       5 sidebar pages. Commit af4209a.
 - [x] **Postgres-backed sessions** — `connect-pg-simple` against `SUPABASE_DB_URL` (auto-creates
       `public.session`); falls back to in-memory if unset. Survives restarts — verified. Commit 5b6a625.
-- [ ] **Social login** — Google → LinkedIn → Slack (see Path C above + steps below). ← NEXT
-- [ ] Wire the logged-in user id into the data model (`created_by`, per-user active deck) — partly Phase 5.
-- [ ] Wrap Phase 3 + open PR (branch `feat/auth-supabase`, not yet pushed).
+- [x] **Social login** — provider-agnostic OAuth flow (server → Supabase `/authorize` → provider →
+      `/auth/callback` reads the URL-hash token → `POST /auth/session` validates via `getUser` → session).
+      **Google** (commit ea58131) + **LinkedIn (OIDC)** (commit 42b9ea7) both verified live. **Slack
+      dropped** — not needed. Flow is provider-agnostic, so Slack/others are a button + provider config away.
+- [~] **Wrap Phase 3 + open PR** — this session (branch `feat/auth-supabase` pushed; PR opened).
+- [ ] **Deferred → Phase 5:** wire the logged-in `req.session.user.id` into the data model
+      (`created_by`, per-user active deck) — only matters once there's per-user differentiation, which
+      is Phase 5 (teams + roles + RLS). Everything still keys on `SENTINEL_USER` today.
+- [ ] **Deferred (Path B):** email verification + self-serve password reset (needs custom SMTP).
+
+**Phase 3 status: login goal COMPLETE.** Real per-user accounts (email+password + Google + LinkedIn),
+admin user management, "signed in as", and restart-proof Postgres sessions — all verified live. The
+only unbuilt items are deliberate deferrals (Phase 5 data-model wiring, Path B email).
 
 **Explicitly OUT of scope here (each a clear follow-on):**
 - **Path B — email verification + self-serve password reset** → needs a custom SMTP provider
