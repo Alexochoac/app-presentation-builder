@@ -6,7 +6,11 @@ const path = require('path');
 const store = require('../../lib/store');
 
 // Routes that don't require a login
-const PUBLIC_PATHS = ['/auth/login', '/auth/logout'];
+const PUBLIC_PATHS = ['/auth/login', '/auth/logout', '/auth/callback', '/auth/session'];
+
+// Social login providers we allow → their Supabase provider id. (LinkedIn's
+// current provider is "linkedin_oidc"; Slack's is "slack_oidc".)
+const SOCIAL_PROVIDERS = { google: 'google', linkedin: 'linkedin_oidc', slack: 'slack_oidc' };
 
 // Admin gate. Until Phase 5 brings real roles + RLS, "admin" is a simple email
 // allowlist from .env: ADMIN_EMAILS=you@example.com,teammate@example.com. If it
@@ -75,6 +79,45 @@ function registerAuthRoutes(app) {
     req.session.destroy(function () {
       res.redirect('/auth/login');
     });
+  });
+
+  // ── Social login (OAuth) ────────────────────────────────────────────────────
+  // GET /auth/login/:provider — kick off social login. We redirect to Supabase's
+  // authorize endpoint, which bounces to the provider and back to /auth/callback
+  // with the session tokens in the URL hash (implicit flow — no PKCE verifier to
+  // persist across requests, which is the trap for server-side OAuth).
+  app.get('/auth/login/:provider', function (req, res) {
+    const provider = SOCIAL_PROVIDERS[req.params.provider];
+    if (!provider) return res.redirect('/auth/login?error=1');
+    // redirect_to must be allow-listed in Supabase → Auth → URL Configuration.
+    // (For prod behind a proxy, set `trust proxy` so req.protocol is correct.)
+    const redirectTo = req.protocol + '://' + req.get('host') + '/auth/callback';
+    const url = process.env.SUPABASE_URL + '/auth/v1/authorize?provider=' + provider +
+      '&redirect_to=' + encodeURIComponent(redirectTo);
+    res.redirect(url);
+  });
+
+  // GET /auth/callback — the provider returns tokens in the URL hash, which the
+  // server never sees. Serve a tiny page that reads the hash and posts the token back.
+  app.get('/auth/callback', function (req, res) {
+    res.sendFile(path.join(__dirname, 'callback.html'));
+  });
+
+  // POST /auth/session { access_token } — validate the Supabase token and start our
+  // express-session. This is where a social login becomes a logged-in app session.
+  app.post('/auth/session', async function (req, res) {
+    const token = (req.body && req.body.access_token) || '';
+    if (!token) return res.status(400).json({ success: false, error: 'Missing token' });
+    try {
+      const { data, error } = await store.supabaseAuth.auth.getUser(token);
+      if (error || !data || !data.user) {
+        return res.status(401).json({ success: false, error: 'Invalid token' });
+      }
+      req.session.user = { id: data.user.id, email: data.user.email };
+      return res.json({ success: true });
+    } catch (e) {
+      return res.status(500).json({ success: false, error: e.message });
+    }
   });
 }
 
