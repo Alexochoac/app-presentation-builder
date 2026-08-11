@@ -153,6 +153,16 @@ next.
 
 ## Gotchas
 - Auth ≠ isolation: do NOT enable open public signup before Phase-5 RLS (⚠️ above).
+- **Social login IS a signup path.** `getUser(token)` proves a token is genuine, not that its owner
+  may use the app — Supabase mints an account for any Google/LinkedIn user who finishes the flow.
+  Caught in PR #1 review: `/auth/session` now checks an `ALLOWED_EMAILS` allowlist (falls back to
+  `ADMIN_EMAILS`) and **fails closed** — unset means social login is off, not open. Belt-and-braces:
+  also turn off "Allow new users to sign up" in Supabase → Auth, which covers direct API signup
+  outside this app.
+- Build the OAuth `redirect_to` from `PUBLIC_BASE_URL`, never `req.protocol`/`req.get('host')` —
+  behind the VPS proxy those report the internal `http://` hop and the redirect fails Supabase's
+  allowlist. `PUBLIC_BASE_URL` starting with `https://` is also what switches on `trust proxy` +
+  the `secure` session cookie.
 - Built-in Supabase email = 2/hr, testing only → that's WHY Path A turns confirmation off and Path B
   (SMTP) is deferred. Password reset is admin-driven until B lands.
 - GitHub *login* scope ≠ GitHub *publish* token scope — keep them separate from the publish idea.

@@ -23,6 +23,11 @@ const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL  || 'http://localhost:3000';
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
+// Served over HTTPS? Then we're behind the VPS reverse proxy, so trust its
+// X-Forwarded-Proto (express-session needs req.secure to send a secure cookie).
+const IS_HTTPS = PUBLIC_BASE_URL.startsWith('https://');
+if (IS_HTTPS) app.set('trust proxy', 1);
+
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: false }));
 
@@ -47,7 +52,12 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'dev-secret-change-me',
   resave: false,
   saveUninitialized: false,
-  cookie: { httpOnly: true, maxAge: 1000 * 60 * 60 * 8 } // 8 hours
+  cookie: {
+    httpOnly: true,
+    secure: IS_HTTPS,   // HTTPS-only cookie in prod; stays off for local http dev
+    sameSite: 'lax',    // survives the OAuth redirect back from the provider
+    maxAge: 1000 * 60 * 60 * 8 // 8 hours
+  }
 }));
 
 // ── Public assets (no auth required) ─────────────────────────────────────────
@@ -57,7 +67,7 @@ app.use('/shared/brand', express.static(path.join(__dirname, 'shared/brand')));
 app.use('/public', express.static(path.join(__dirname, '..', 'finished-presentations')));
 
 // ── Auth routes (login / logout) ──────────────────────────────────────────────
-registerAuthRoutes(app);
+registerAuthRoutes(app, { publicBaseUrl: PUBLIC_BASE_URL });
 
 // Public config endpoint — must be before requireAuth so the login page can read publicBaseUrl.
 app.get('/api/settings', function (_req, res) {

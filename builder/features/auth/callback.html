@@ -27,8 +27,14 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ access_token: token })
       })
-        .then(function (r) { return r.json(); })
-        .then(function (res) { location.replace(res && res.success ? '/' : '/auth/login?error=1'); })
+        .then(function (r) {
+          // 403 = the account authenticated fine but isn't on the allowlist —
+          // worth its own message, since retrying won't help.
+          var code = r.status === 403 ? 'notallowed' : '1';
+          return r.json().then(function (res) {
+            location.replace(res && res.success ? '/' : '/auth/login?error=' + code);
+          });
+        })
         .catch(function () { location.replace('/auth/login?error=1'); });
     })();
   </script>

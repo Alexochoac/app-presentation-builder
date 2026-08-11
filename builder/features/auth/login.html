@@ -137,9 +137,17 @@
   </div>
 
   <script>
-    // Show error if redirected back with ?error=1
-    if (new URLSearchParams(location.search).get('error')) {
-      document.getElementById('errorMsg').classList.add('show');
+    // Show an error if redirected back with ?error=… ("disabled" and "notallowed"
+    // come from the social-login allowlist gate in auth.js).
+    var ERRORS = {
+      disabled:   'Social login is not configured. Set ALLOWED_EMAILS in .env to enable it.',
+      notallowed: 'That account is not allowed to sign in. Ask an admin to add it to ALLOWED_EMAILS.'
+    };
+    var err = new URLSearchParams(location.search).get('error');
+    if (err) {
+      var box = document.getElementById('errorMsg');
+      if (ERRORS[err]) box.textContent = ERRORS[err];
+      box.classList.add('show');
     }
   </script>
 </body>
