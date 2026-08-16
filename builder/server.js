@@ -8,7 +8,7 @@ const https    = require('https');
 const http     = require('http');
 const cheerio  = require('cheerio');
 const session  = require('express-session');
-const { requireAuth, registerAuthRoutes } = require('./features/auth/auth');
+const { requireAuth, requireAdmin, isAdmin, registerAuthRoutes } = require('./features/auth/auth');
 const { translate } = require('./lib/translator');
 const { generateHtml } = require('./lib/template-generator');
 const store = require('./lib/store'); // write-through Supabase cache (Phase 5 cutover, slice by slice)
@@ -23,15 +23,41 @@ const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL  || 'http://localhost:3000';
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
+// Served over HTTPS? Then we're behind the VPS reverse proxy, so trust its
+// X-Forwarded-Proto (express-session needs req.secure to send a secure cookie).
+const IS_HTTPS = PUBLIC_BASE_URL.startsWith('https://');
+if (IS_HTTPS) app.set('trust proxy', 1);
+
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: false }));
 
 // ── Sessions ──────────────────────────────────────────────────────────────────
+// Postgres-backed store (connect-pg-simple) so logins survive server restarts
+// and can be shared across instances later. Falls back to the in-memory store
+// if SUPABASE_DB_URL isn't set, so the app still boots without it.
+let sessionStore; // undefined → express-session uses its default MemoryStore
+if (process.env.SUPABASE_DB_URL) {
+  const PgSession = require('connect-pg-simple')(session);
+  const sessionPool = new (require('pg').Pool)({
+    connectionString: process.env.SUPABASE_DB_URL,
+    ssl: { rejectUnauthorized: false }
+  });
+  sessionStore = new PgSession({ pool: sessionPool, createTableIfMissing: true });
+  console.log('[session] Postgres-backed session store enabled');
+} else {
+  console.warn('[session] SUPABASE_DB_URL not set — using in-memory sessions (lost on restart)');
+}
 app.use(session({
+  store: sessionStore,
   secret: process.env.SESSION_SECRET || 'dev-secret-change-me',
   resave: false,
   saveUninitialized: false,
-  cookie: { httpOnly: true, maxAge: 1000 * 60 * 60 * 8 } // 8 hours
+  cookie: {
+    httpOnly: true,
+    secure: IS_HTTPS,   // HTTPS-only cookie in prod; stays off for local http dev
+    sameSite: 'lax',    // survives the OAuth redirect back from the provider
+    maxAge: 1000 * 60 * 60 * 8 // 8 hours
+  }
 }));
 
 // ── Public assets (no auth required) ─────────────────────────────────────────
@@ -41,7 +67,7 @@ app.use('/shared/brand', express.static(path.join(__dirname, 'shared/brand')));
 app.use('/public', express.static(path.join(__dirname, '..', 'finished-presentations')));
 
 // ── Auth routes (login / logout) ──────────────────────────────────────────────
-registerAuthRoutes(app);
+registerAuthRoutes(app, { publicBaseUrl: PUBLIC_BASE_URL });
 
 // Public config endpoint — must be before requireAuth so the login page can read publicBaseUrl.
 app.get('/api/settings', function (_req, res) {
@@ -58,6 +84,58 @@ app.get('/favicon.ico',    function (_req, res) { res.sendFile(path.join(__dirna
 
 // ── Protect everything below this line ───────────────────────────────────────
 app.use(requireAuth);
+
+// GET /api/me — the current logged-in user (any authenticated user)
+app.get('/api/me', function (req, res) {
+  var u = (req.session && req.session.user) || null;
+  if (!u) return res.status(401).json({ success: false, error: 'Not logged in' });
+  res.json({ success: true, data: { email: u.email, id: u.id } });
+});
+
+// ── User administration (admin-gated) ─────────────────────────────────────────
+// Manage login accounts without touching the Supabase dashboard. Uses the
+// service_role client's admin API. Admin = ADMIN_EMAILS allowlist (see auth.js).
+// NOTE: no per-user data isolation yet — every account shares the one default
+// team until Phase 5 (RLS + teams). Keep this admin-gated; do NOT open public signup.
+
+// GET /admin/users — the user-management page (redirect non-admins away)
+app.get('/admin/users', function (req, res) {
+  if (!isAdmin(req)) return res.redirect('/');
+  res.sendFile(path.join(__dirname, 'features/auth/users.html'));
+});
+
+// GET /api/users — list existing accounts
+app.get('/api/users', requireAdmin, async function (req, res) {
+  try {
+    const { data, error } = await store.supabase.auth.admin.listUsers({ page: 1, perPage: 200 });
+    if (error) return res.status(500).json({ success: false, error: error.message });
+    const users = (data.users || []).map(function (u) {
+      return { id: u.id, email: u.email, createdAt: u.created_at, lastSignInAt: u.last_sign_in_at };
+    });
+    res.json({ success: true, data: users });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// POST /api/users { email, password } — create a new account (auto-confirmed, so
+// no confirmation email is needed — matches the Path-A "no email" scope)
+app.post('/api/users', requireAdmin, async function (req, res) {
+  const email = ((req.body || {}).email || '').trim();
+  const password = ((req.body || {}).password || '');
+  if (!email || !password) {
+    return res.status(400).json({ success: false, error: 'Email and password are required.' });
+  }
+  try {
+    const { data, error } = await store.supabase.auth.admin.createUser({
+      email: email, password: password, email_confirm: true
+    });
+    if (error) return res.status(400).json({ success: false, error: error.message });
+    res.json({ success: true, data: { id: data.user.id, email: data.user.email } });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
 
 // ── Slide preview wrapper ─────────────────────────────────────────────────────
 // GET /slides/deck-preview/:id — renders a deck slide and wraps it in the full HTML preview shell

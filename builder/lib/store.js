@@ -36,6 +36,17 @@ const supabase = createClient(
   { auth: { autoRefreshToken: false, persistSession: false } }
 );
 
+// A second client using the ANON (publishable) key — for USER-facing auth calls
+// only (signInWithPassword, signInWithOAuth, exchangeCodeForSession, signOut).
+// Kept separate from the service_role client above, which is admin-only and
+// bypasses RLS. We drive auth server-side and keep our own express-session, so
+// this client does not persist its own session.
+const supabaseAuth = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY,
+  { auth: { autoRefreshToken: false, persistSession: false } }
+);
+
 // Fixed ids shared with the import script (single-user stand-ins until auth).
 const TEAM = '00000000-0000-0000-0000-000000000001';          // seeded default team
 const SENTINEL_USER = '11111111-1111-1111-1111-111111111111'; // single-user until Supabase Auth
@@ -222,6 +233,7 @@ function logWriteError(op, table, error, payload) {
 
 module.exports = {
   supabase,
+  supabaseAuth,
   cache,
   loadAll,
   isReady,

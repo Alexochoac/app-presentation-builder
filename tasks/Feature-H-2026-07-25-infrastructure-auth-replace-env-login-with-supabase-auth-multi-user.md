@@ -20,10 +20,37 @@ execution checklist (same relationship the migration task had to the Idea-L deci
 **Build first = Path A + Path C, NO transactional email:**
 - **A — email + password**, with email confirmation **turned OFF** in Supabase (so no signup/confirm
   email is sent — dodges the built-in 2-emails/hour testing limit).
-- **C — social login**: "Sign in with Google and/or GitHub" (both free on the Supabase Free tier;
-  the provider verifies identity, so no email and no password storage on our side).
+- **C — social login** (all free on the Supabase Free tier; the provider verifies identity, so no
+  email and no password storage on our side). **Providers decided 2026-08-05: Google, LinkedIn,
+  Slack** — build/verify order **Google → LinkedIn → Slack**. Google first so we debug the OAuth
+  flow against a moderate provider (not the fiddliest); LinkedIn is the top-priority provider for the
+  audience; Slack last. **GitHub dropped** — the sales-team audience won't have GitHub accounts.
 - Both feed the **same** Supabase Auth user table and the same express-session, so they coexist.
 - **Postgres-backed sessions** (replace the in-memory `express-session` MemoryStore).
+
+## Progress (this session)
+
+- [x] **Increment 1 — email + password login** (Supabase `signInWithPassword`; anon-key client in
+      store.js; `.env` fallback kept then removed after live verify; login.html → email). Commit 1558a49.
+- [x] **Increment 2 — admin user management** — `isAdmin`/`requireAdmin` on an `ADMIN_EMAILS`
+      allowlist; `/admin/users` page + `GET/POST /api/users` (create auto-confirmed). Commit 1558a49.
+- [x] **"Signed in as <email>"** in the sidebar — `GET /api/me` + shared `/shared/user-chip.js` on all
+      5 sidebar pages. Commit af4209a.
+- [x] **Postgres-backed sessions** — `connect-pg-simple` against `SUPABASE_DB_URL` (auto-creates
+      `public.session`); falls back to in-memory if unset. Survives restarts — verified. Commit 5b6a625.
+- [x] **Social login** — provider-agnostic OAuth flow (server → Supabase `/authorize` → provider →
+      `/auth/callback` reads the URL-hash token → `POST /auth/session` validates via `getUser` → session).
+      **Google** (commit ea58131) + **LinkedIn (OIDC)** (commit 42b9ea7) both verified live. **Slack
+      dropped** — not needed. Flow is provider-agnostic, so Slack/others are a button + provider config away.
+- [~] **Wrap Phase 3 + open PR** — this session (branch `feat/auth-supabase` pushed; PR opened).
+- [ ] **Deferred → Phase 5:** wire the logged-in `req.session.user.id` into the data model
+      (`created_by`, per-user active deck) — only matters once there's per-user differentiation, which
+      is Phase 5 (teams + roles + RLS). Everything still keys on `SENTINEL_USER` today.
+- [ ] **Deferred (Path B):** email verification + self-serve password reset (needs custom SMTP).
+
+**Phase 3 status: login goal COMPLETE.** Real per-user accounts (email+password + Google + LinkedIn),
+admin user management, "signed in as", and restart-proof Postgres sessions — all verified live. The
+only unbuilt items are deliberate deferrals (Phase 5 data-model wiring, Path B email).
 
 **Explicitly OUT of scope here (each a clear follow-on):**
 - **Path B — email verification + self-serve password reset** → needs a custom SMTP provider
@@ -75,9 +102,10 @@ next.
 
 ### 1. Supabase Auth setup (dashboard + config)
 - [ ] In the Supabase project: enable **Email** provider, **turn OFF "Confirm email"** (Path A).
-- [ ] Enable **Google** and/or **GitHub** providers (Path C): register an OAuth app with each
-      provider, paste client id/secret into Supabase, add the redirect URL
-      (`<app>/auth/callback`) to both Supabase and the provider's allowed callbacks.
+- [ ] Enable providers (Path C) — **Google → LinkedIn → Slack**, one at a time (GitHub dropped): for
+      each, register an OAuth app with the provider, paste client id/secret into Supabase, add the
+      redirect URL (`<app>/auth/callback`) to both Supabase's Redirect URLs allowlist and the
+      provider's allowed callbacks. Wire + verify Google end-to-end first, then add the others.
 - [ ] Keep self-serve signup effectively closed (see ⚠️): either disable public signups in Supabase
       Auth settings, or gate `/auth/register` behind an admin check. Decide which.
 - [ ] Add the **anon/publishable key** to `builder/.env` (+ `.env.example`). service_role already present.
@@ -125,6 +153,16 @@ next.
 
 ## Gotchas
 - Auth ≠ isolation: do NOT enable open public signup before Phase-5 RLS (⚠️ above).
+- **Social login IS a signup path.** `getUser(token)` proves a token is genuine, not that its owner
+  may use the app — Supabase mints an account for any Google/LinkedIn user who finishes the flow.
+  Caught in PR #1 review: `/auth/session` now checks an `ALLOWED_EMAILS` allowlist (falls back to
+  `ADMIN_EMAILS`) and **fails closed** — unset means social login is off, not open. Belt-and-braces:
+  also turn off "Allow new users to sign up" in Supabase → Auth, which covers direct API signup
+  outside this app.
+- Build the OAuth `redirect_to` from `PUBLIC_BASE_URL`, never `req.protocol`/`req.get('host')` —
+  behind the VPS proxy those report the internal `http://` hop and the redirect fails Supabase's
+  allowlist. `PUBLIC_BASE_URL` starting with `https://` is also what switches on `trust proxy` +
+  the `secure` session cookie.
 - Built-in Supabase email = 2/hr, testing only → that's WHY Path A turns confirmation off and Path B
   (SMTP) is deferred. Password reset is admin-driven until B lands.
 - GitHub *login* scope ≠ GitHub *publish* token scope — keep them separate from the publish idea.
