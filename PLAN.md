@@ -101,16 +101,31 @@ Designed to start as a local single-user tool and grow into a full multi-user Sa
 - [ ] DB migration system (e.g. node-postgres + plain SQL migrations)
 
 ### Auth & Accounts
-- [ ] User registration + email verification
-- [ ] Username/password + GitHub OAuth
-- [ ] Password reset flow
+- [x] **Real per-user accounts** — Supabase Auth, email + password *(done 2026-08-16, PR #1)*
+- [x] **Social login** — Google + LinkedIn (OIDC) *(done; Slack dropped, GitHub dropped)*
+- [x] **Postgres-backed sessions** — survive server restarts
+- [x] **Admin-gated account creation** at `/admin/users` — no open signup by design
+- [ ] Email verification + password reset — needs custom SMTP *(Path B, deferred)*
 - [ ] User profile page
 
 ### Teams & Permissions
+> **Phase 5 — the next real build.** Execution plan:
+> [`tasks/Feature-H-2026-08-21-…phase5-teams-roles-rls.md`](tasks/Feature-H-2026-08-21-infrastructure-auth-phase5-teams-roles-rls.md)
+>
+> Today every account shares one "Default team" and the server queries with the
+> **service_role** key, which bypasses RLS. **Auth ≠ isolation:** logging in as different
+> users currently shows identical data, and that is expected until this ships.
+
+- [ ] `team_members` table + role model (`admin` | `rep`)
+- [ ] Session carries `team_id` + `role`; RBAC middleware replaces the `ADMIN_EMAILS` allowlist
+- [ ] Team-scoped data layer — retire the hardcoded `store.TEAM` / `SENTINEL_USER` stand-ins
+- [ ] Real `created_by` attribution + per-user active deck
+- [ ] RLS policies (defense-in-depth — see the plan's "Big Decision" on why the synchronous
+      cache and DB-enforced RLS are mutually exclusive)
 - [ ] Company admin role — manages master presentation, can do everything
 - [ ] Sales rep role — can create/edit customer presentations, cannot edit master
-- [ ] Invite team members by email
 - [ ] Team member management (add, remove, change role)
+- [ ] Invite team members by email — *blocked on SMTP; admin-creates-account until then*
 
 ### Company Setup (cloud)
 - [ ] All Phase 1 company features, stored in database
