@@ -12,7 +12,12 @@
       "WebFetch(domain:supabase.com)",
       "Bash(git switch *)",
       "Bash(git commit -q -m 'docs\\(task\\): record Phase 3 progress + social-login provider decision *)",
-      "Bash(gh pr *)"
+      "Bash(gh pr *)",
+      "Bash(git checkout *)",
+      "Bash(git commit *)",
+      "Read(//tmp/**)",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('.claude/settings.local.json','utf8'\\)\\); console.log\\('valid JSON'\\)\")",
+      "Bash(git commit -q -m 'chore\\(config\\): allow gh pr / git checkout / git commit *)"
     ]
   }
 }
