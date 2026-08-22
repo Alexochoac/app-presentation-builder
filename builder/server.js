@@ -89,7 +89,7 @@ app.use(requireAuth);
 app.get('/api/me', function (req, res) {
   var u = (req.session && req.session.user) || null;
   if (!u) return res.status(401).json({ success: false, error: 'Not logged in' });
-  res.json({ success: true, data: { email: u.email, id: u.id } });
+  res.json({ success: true, data: { email: u.email, id: u.id, teamId: u.teamId, role: u.role } });
 });
 
 // ── User administration (admin-gated) ─────────────────────────────────────────
@@ -104,34 +104,102 @@ app.get('/admin/users', function (req, res) {
   res.sendFile(path.join(__dirname, 'features/auth/users.html'));
 });
 
-// GET /api/users — list existing accounts
+// GET /api/users — list accounts in the caller's team, with their role.
+// Driven off team_members (not auth.users) so it shows THIS team's people, not
+// every account in the Supabase project.
 app.get('/api/users', requireAdmin, async function (req, res) {
   try {
-    const { data, error } = await store.supabase.auth.admin.listUsers({ page: 1, perPage: 200 });
+    const teamId = req.session.user.teamId;
+    const { data: members, error: mErr } = await store.supabase
+      .from('team_members').select('user_id, role, created_at').eq('team_id', teamId);
+    if (mErr) return res.status(500).json({ success: false, error: mErr.message });
+
+    // auth.users isn't joinable from PostgREST, so resolve emails via the admin API.
+    const { data, error } = await store.supabase.auth.admin.listUsers({ page: 1, perPage: 1000 });
     if (error) return res.status(500).json({ success: false, error: error.message });
-    const users = (data.users || []).map(function (u) {
-      return { id: u.id, email: u.email, createdAt: u.created_at, lastSignInAt: u.last_sign_in_at };
-    });
+    const byId = new Map((data.users || []).map(function (u) { return [u.id, u]; }));
+
+    const users = (members || []).map(function (m) {
+      const u = byId.get(m.user_id) || {};
+      return {
+        id: m.user_id, email: u.email || '(unknown)', role: m.role,
+        createdAt: u.created_at, lastSignInAt: u.last_sign_in_at
+      };
+    }).sort(function (a, b) { return (a.email || '').localeCompare(b.email || ''); });
+
     res.json({ success: true, data: users });
   } catch (e) {
     res.status(500).json({ success: false, error: e.message });
   }
 });
 
-// POST /api/users { email, password } — create a new account (auto-confirmed, so
-// no confirmation email is needed — matches the Path-A "no email" scope)
+// POST /api/users { email, password, role } — create an account (auto-confirmed,
+// so no confirmation email is needed — matches the Path-A "no email" scope) AND
+// add it to the caller's team. The membership is what actually lets them log in;
+// an account without one is refused at the door (see auth.js loadMembership).
 app.post('/api/users', requireAdmin, async function (req, res) {
-  const email = ((req.body || {}).email || '').trim();
-  const password = ((req.body || {}).password || '');
+  const body     = req.body || {};
+  const email    = (body.email || '').trim();
+  const password = (body.password || '');
+  const role     = (body.role || 'rep').trim();
+
   if (!email || !password) {
     return res.status(400).json({ success: false, error: 'Email and password are required.' });
   }
+  if (role !== 'admin' && role !== 'rep') {
+    return res.status(400).json({ success: false, error: 'Role must be "admin" or "rep".' });
+  }
+
   try {
     const { data, error } = await store.supabase.auth.admin.createUser({
       email: email, password: password, email_confirm: true
     });
     if (error) return res.status(400).json({ success: false, error: error.message });
-    res.json({ success: true, data: { id: data.user.id, email: data.user.email } });
+
+    const { error: mErr } = await store.supabase.from('team_members').insert({
+      team_id: req.session.user.teamId, user_id: data.user.id, role: role
+    });
+    if (mErr) {
+      // Don't leave an orphan account that can authenticate but never log in.
+      await store.supabase.auth.admin.deleteUser(data.user.id).catch(function () {});
+      return res.status(500).json({ success: false,
+        error: 'Account created but team membership failed — rolled back. ' + mErr.message });
+    }
+
+    res.json({ success: true, data: { id: data.user.id, email: data.user.email, role: role } });
+  } catch (e) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// PATCH /api/users/:id { role } — change a member's role within the caller's team.
+// Guards the last admin: demoting the only one would lock the team out of its
+// own user management with no way back in through the UI.
+app.patch('/api/users/:id', requireAdmin, async function (req, res) {
+  const teamId = req.session.user.teamId;
+  const role   = ((req.body || {}).role || '').trim();
+  if (role !== 'admin' && role !== 'rep') {
+    return res.status(400).json({ success: false, error: 'Role must be "admin" or "rep".' });
+  }
+  try {
+    if (role === 'rep') {
+      const { data: admins, error: aErr } = await store.supabase
+        .from('team_members').select('user_id').eq('team_id', teamId).eq('role', 'admin');
+      if (aErr) return res.status(500).json({ success: false, error: aErr.message });
+      const isLastAdmin = (admins || []).length <= 1 && (admins || []).some(function (a) {
+        return a.user_id === req.params.id;
+      });
+      if (isLastAdmin) {
+        return res.status(400).json({ success: false, error: 'This is the team\'s only admin — promote someone else first.' });
+      }
+    }
+    const { error } = await store.supabase.from('team_members')
+      .update({ role: role }).eq('team_id', teamId).eq('user_id', req.params.id);
+    if (error) return res.status(500).json({ success: false, error: error.message });
+
+    // The change lands in the target user's session on their next login — their
+    // express-session still holds the old role until then.
+    res.json({ success: true, data: { id: req.params.id, role: role } });
   } catch (e) {
     res.status(500).json({ success: false, error: e.message });
   }

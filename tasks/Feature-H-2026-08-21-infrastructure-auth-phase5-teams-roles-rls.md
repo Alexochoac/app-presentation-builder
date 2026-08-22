@@ -116,6 +116,31 @@ B before onboarding a second paying company.
 
 ---
 
+## Progress
+
+- [x] **Step 1 — `team_members` + backfills** (`builder/scripts/phase5-teams.sql`). Applied in one
+      transaction; **verified idempotent** by re-running (identical state). 3 users → default team as
+      `admin`; `presentations.created_by` 6×NULL → alex@wbtm.io; sentinel `user_active_deck` row
+      replaced by 3 real per-user rows.
+- [x] **Step 2 — session carries `teamId` + `role`** from `team_members`, on **both** login paths.
+      No membership ⇒ **refused** (`?error=noteam` / 403 `code:'noteam'`), never defaulted into a team.
+      `requireAuth` now also requires `teamId`, so pre-Phase-5 sessions still in the Postgres store
+      are treated as expired and self-heal via one re-login.
+- [x] **Step 3 — RBAC replaces `ADMIN_EMAILS`.** `requireRole(role)` reads `req.session.user.role`;
+      `isAdmin` is now DB-backed. `ADMIN_EMAILS` survives *only* as the ALLOWED_EMAILS fallback.
+      `/api/users` is team-scoped + shows roles; `POST /api/users` takes a role and creates the
+      membership (rolling back the account if that insert fails); `PATCH /api/users/:id` changes a
+      role behind a last-admin guard.
+- [x] **Step 6 (brought forward) — admin UI**: role picker on create, per-row role selector, "you"
+      badge on self.
+
+**Verified live** (throwaway accounts, cleaned up after): orphan account with no membership → refused
+with `error=noteam` and **no session granted**; `rep` → `/api/users` 403 + `/admin/users` redirect;
+`admin` → 200 + full member list; a second team's admin saw **only their own team's members**;
+last-admin self-demotion → 400, refused, team keeps its admin; stale pre-Phase-5 cookie → 401.
+
+⏭ **Next: step 4 (team-scoped data layer) — needs the Option A/B call first.**
+
 ## Build order
 
 Each step ships and is verified before the next. Same restart-before-testing gotcha as every

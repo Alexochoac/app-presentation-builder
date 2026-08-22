@@ -28,11 +28,14 @@
         body: JSON.stringify({ access_token: token })
       })
         .then(function (r) {
-          // 403 = the account authenticated fine but isn't on the allowlist —
-          // worth its own message, since retrying won't help.
-          var code = r.status === 403 ? 'notallowed' : '1';
           return r.json().then(function (res) {
-            location.replace(res && res.success ? '/' : '/auth/login?error=' + code);
+            if (res && res.success) return location.replace('/');
+            // 403 = authenticated fine, but refused — either not on the sign-in
+            // allowlist or not a member of any team. Retrying won't help, so say
+            // which it was. The server tags the team case with code:'noteam'.
+            var code = '1';
+            if (r.status === 403) code = (res && res.code === 'noteam') ? 'noteam' : 'notallowed';
+            location.replace('/auth/login?error=' + code);
           });
         })
         .catch(function () { location.replace('/auth/login?error=1'); });

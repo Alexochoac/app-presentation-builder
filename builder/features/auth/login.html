@@ -141,7 +141,8 @@
     // come from the social-login allowlist gate in auth.js).
     var ERRORS = {
       disabled:   'Social login is not configured. Set ALLOWED_EMAILS in .env to enable it.',
-      notallowed: 'That account is not allowed to sign in. Ask an admin to add it to ALLOWED_EMAILS.'
+      notallowed: 'That account is not allowed to sign in. Ask an admin to add it to ALLOWED_EMAILS.',
+      noteam:     'That account isn’t a member of any team yet. Ask an admin to add you.'
     };
     var err = new URLSearchParams(location.search).get('error');
     if (err) {

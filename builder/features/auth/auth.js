@@ -1,6 +1,8 @@
 // ── Auth middleware & routes ──────────────────────────────────────────────────
 // Handles login/logout and protects all builder routes.
 // Phase 3: real per-user accounts via Supabase Auth (email + password).
+// Phase 5: the session also carries the user's team + role, read from the
+//          `team_members` table. Roles come from the DB now, not from .env.
 
 const path = require('path');
 const store = require('../../lib/store');
@@ -18,18 +20,16 @@ function parseEmailList(raw) {
     .filter(Boolean);
 }
 
-// Admin gate. Until Phase 5 brings real roles + RLS, "admin" is a simple email
-// allowlist from .env: ADMIN_EMAILS=you@example.com,teammate@example.com. If it
-// is left unset, every logged-in user is treated as admin (single-user friendly)
-// — set ADMIN_EMAILS to lock user-management down to specific people.
+// ADMIN_EMAILS is no longer the admin gate — `team_members.role` is (Phase 5).
+// It survives only as the fallback for ALLOWED_EMAILS below, so an existing .env
+// keeps working. Warn if someone is still relying on it to mean "admin".
 const ADMIN_EMAILS = parseEmailList(process.env.ADMIN_EMAILS);
 
-// Sign-in gate for SOCIAL login only. Password accounts can only be created by
-// an admin via /api/users, but social login is an implicit *signup* path —
-// Supabase mints an account for any Google/LinkedIn user who completes the flow.
-// Until Phase 5 brings teams + RLS, every account lands in the same default team
-// and sees all data, so an allowlist is the only thing between a stranger and
-// everything. Fails CLOSED: no allowlist configured → no social login.
+// Sign-in gate for SOCIAL login. Password accounts can only be created by an
+// admin via /api/users, but social login is an implicit *signup* path — Supabase
+// mints an account for any Google/LinkedIn user who completes the flow. This is
+// a SEPARATE job from roles: it decides who may authenticate at all, before any
+// team membership is looked up. Fails CLOSED — no allowlist, no social login.
 // Falls back to ADMIN_EMAILS so a solo setup only needs one variable.
 const ALLOWED_EMAILS = parseEmailList(process.env.ALLOWED_EMAILS || process.env.ADMIN_EMAILS);
 
@@ -38,33 +38,68 @@ function isAllowedEmail(email) {
   return ALLOWED_EMAILS.indexOf((email || '').toLowerCase()) !== -1;
 }
 
+// Look up which team a user belongs to, and as what. Returns null if they have
+// no membership — the caller MUST treat that as "refuse the login". Do not
+// invent a default team: silently dropping an unknown account into the shared
+// team is exactly the hole that let a stranger in before db08fc4.
+// A user in several teams isn't a thing yet; take the earliest and revisit when
+// team-switching ships.
+async function loadMembership(userId) {
+  const { data, error } = await store.supabase
+    .from('team_members')
+    .select('team_id, role')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: true })
+    .limit(1);
+  if (error) {
+    console.warn('[auth] team_members lookup failed:', error.message);
+    return null; // fail closed — a broken lookup must not grant access
+  }
+  return (data && data[0]) || null;
+}
+
 function isAdmin(req) {
-  if (!req.session || !req.session.user) return false;
-  if (ADMIN_EMAILS.length === 0) return true; // no allowlist configured → allow
-  return ADMIN_EMAILS.indexOf((req.session.user.email || '').toLowerCase()) !== -1;
+  return !!(req.session && req.session.user && req.session.user.role === 'admin');
 }
 
 // Start a logged-in session. Regenerates the session id first, so a cookie an
 // attacker planted before login can't be replayed once we grant access (session
 // fixation) — which matters more now that sessions persist in Postgres.
-function startSession(req, user, done) {
+// `membership` is required: no membership, no session.
+function startSession(req, user, membership, done) {
   req.session.regenerate(function (err) {
     if (err) return done(err);
-    req.session.user = { id: user.id, email: user.email };
+    req.session.user = {
+      id: user.id,
+      email: user.email,
+      teamId: membership.team_id,
+      role: membership.role
+    };
     req.session.save(done);
   });
 }
 
-// Middleware for admin-only routes (JSON 403 — these are all API/admin routes).
-function requireAdmin(req, res, next) {
-  if (isAdmin(req)) return next();
-  return res.status(403).json({ success: false, error: 'Admin access required.' });
+// Middleware factory for role-gated routes (JSON 403 — these are API/admin routes).
+function requireRole(role) {
+  return function (req, res, next) {
+    var u = req.session && req.session.user;
+    if (u && u.role === role) return next();
+    return res.status(403).json({ success: false, error: 'Requires the "' + role + '" role.' });
+  };
 }
+
+// Back-compat alias for the existing admin-only routes.
+const requireAdmin = requireRole('admin');
 
 // Middleware: redirect to /login if not authenticated (JSON 401 for API calls)
 function requireAuth(req, res, next) {
   if (PUBLIC_PATHS.includes(req.path)) return next();
-  if (req.session && req.session.user) return next();
+  // `teamId` is required, not just `user`. Sessions minted BEFORE Phase 5 are
+  // still sitting in the Postgres session store and carry no team or role —
+  // they'd otherwise sail past this check and then hit `undefined` teamId deeper
+  // in. Treating them as expired forces one clean re-login instead, so the
+  // upgrade self-heals without truncating the session table by hand.
+  if (req.session && req.session.user && req.session.user.teamId) return next();
   if (req.path.startsWith('/api/')) {
     return res.status(401).json({ success: false, error: 'Session expired. Please reload and log in again.' });
   }
@@ -78,10 +113,6 @@ function requireAuth(req, res, next) {
 function registerAuthRoutes(app, opts) {
   const publicBaseUrl = ((opts && opts.publicBaseUrl) || 'http://localhost:3000').replace(/\/+$/, '');
 
-  if (ADMIN_EMAILS.length === 0) {
-    console.warn('[auth] ADMIN_EMAILS not set — every logged-in user can manage users. ' +
-      'Set ADMIN_EMAILS in .env to restrict this.');
-  }
   if (ALLOWED_EMAILS.length === 0) {
     console.warn('[auth] Neither ALLOWED_EMAILS nor ADMIN_EMAILS is set — social login is ' +
       'DISABLED (it would let any Google/LinkedIn account in). Set one in .env to enable it.');
@@ -101,7 +132,13 @@ function registerAuthRoutes(app, opts) {
     try {
       const { data, error } = await store.supabaseAuth.auth.signInWithPassword({ email, password });
       if (!error && data && data.user) {
-        return startSession(req, data.user, function (err) {
+        // Authenticated, but not yet authorised — they need a team.
+        const membership = await loadMembership(data.user.id);
+        if (!membership) {
+          console.warn('[auth] Login refused — no team membership:', data.user.email);
+          return res.redirect('/auth/login?error=noteam');
+        }
+        return startSession(req, data.user, membership, function (err) {
           if (err) {
             console.warn('[auth] Session start failed:', err.message);
             return res.redirect('/auth/login?error=1');
@@ -165,7 +202,14 @@ function registerAuthRoutes(app, opts) {
         console.warn('[auth] Blocked social login for non-allowlisted email:', data.user.email);
         return res.status(403).json({ success: false, error: 'This account is not allowed to sign in.' });
       }
-      return startSession(req, data.user, function (err) {
+      // Allowlisted, but still needs a team — same rule as password login.
+      const membership = await loadMembership(data.user.id);
+      if (!membership) {
+        console.warn('[auth] Social login refused — no team membership:', data.user.email);
+        return res.status(403).json({ success: false, code: 'noteam',
+          error: 'This account is not a member of any team yet.' });
+      }
+      return startSession(req, data.user, membership, function (err) {
         if (err) return res.status(500).json({ success: false, error: 'Could not start session.' });
         res.json({ success: true });
       });
@@ -175,4 +219,4 @@ function registerAuthRoutes(app, opts) {
   });
 }
 
-module.exports = { requireAuth, requireAdmin, isAdmin, registerAuthRoutes };
+module.exports = { requireAuth, requireAdmin, requireRole, isAdmin, loadMembership, registerAuthRoutes };

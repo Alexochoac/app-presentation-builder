@@ -46,6 +46,17 @@
       transition:border-color .15s;
     }
     input:focus{border-color:var(--accent)}
+    select{
+      width:100%;padding:10px 13px;background:var(--surface-2);border:1px solid var(--line);
+      border-radius:9px;color:var(--text);font-size:14px;font-family:inherit;outline:none;
+    }
+    select:focus{border-color:var(--accent)}
+    td select{padding:5px 8px;font-size:13px;border-radius:7px}
+    .badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:800;
+           letter-spacing:.04em;text-transform:uppercase}
+    .badge.admin{background:rgba(245,166,35,.15);color:var(--accent);border:1px solid rgba(245,166,35,.35)}
+    .badge.rep{background:rgba(139,152,166,.14);color:var(--muted);border:1px solid var(--line)}
+    .you{font-size:11px;color:var(--muted);font-weight:600;margin-left:6px}
     button{
       padding:10px 18px;background:linear-gradient(135deg,var(--accent),var(--accent-2));
       border:none;border-radius:9px;color:#000;font-size:14px;font-weight:800;cursor:pointer;
@@ -90,9 +101,17 @@
           <label for="password">Password</label>
           <input type="password" id="password" name="password" autocomplete="new-password" required>
         </div>
+        <div class="field" style="flex:0 0 130px;min-width:130px">
+          <label for="role">Role</label>
+          <select id="role" name="role">
+            <option value="rep" selected>Rep</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
         <button type="submit" id="addBtn">Create user</button>
       </form>
-      <p class="hint">Password must be at least 6 characters.</p>
+      <p class="hint">Password must be at least 6 characters. <strong>Rep</strong> — builds customer
+      presentations. <strong>Admin</strong> — also manages the master deck, slide library, and users.</p>
       <div class="msg" id="msg"></div>
     </div>
 
@@ -100,10 +119,10 @@
       <h2>Existing users</h2>
       <table>
         <thead>
-          <tr><th>Email</th><th>Created</th><th>Last sign-in</th></tr>
+          <tr><th>Email</th><th>Role</th><th>Created</th><th>Last sign-in</th></tr>
         </thead>
         <tbody id="userRows">
-          <tr><td colspan="3" class="empty">Loading…</td></tr>
+          <tr><td colspan="4" class="empty">Loading…</td></tr>
         </tbody>
       </table>
     </div>
@@ -128,23 +147,60 @@
       });
     }
 
+    var meId = null;
+
+    // Role cell: a picker for everyone except yourself. Self-demotion is blocked
+    // in the UI because it's almost never intended; the server independently
+    // guards the last-admin case, which is the one that would lock the team out.
+    function roleCell(u){
+      if(u.id === meId){
+        return '<td><span class="badge ' + esc(u.role) + '">' + esc(u.role) + '</span>' +
+               '<span class="you">you</span></td>';
+      }
+      return '<td><select class="roleSel" data-id="' + esc(u.id) + '">' +
+             '<option value="rep"' + (u.role === 'rep' ? ' selected' : '') + '>Rep</option>' +
+             '<option value="admin"' + (u.role === 'admin' ? ' selected' : '') + '>Admin</option>' +
+             '</select></td>';
+    }
+
     function loadUsers(){
       fetch('/api/users').then(function(r){ return r.json(); }).then(function(res){
         if(!res.success){
-          rows.innerHTML = '<tr><td colspan="3" class="empty">' + esc(res.error || 'Could not load users.') + '</td></tr>';
+          rows.innerHTML = '<tr><td colspan="4" class="empty">' + esc(res.error || 'Could not load users.') + '</td></tr>';
           return;
         }
         if(!res.data.length){
-          rows.innerHTML = '<tr><td colspan="3" class="empty">No users yet.</td></tr>';
+          rows.innerHTML = '<tr><td colspan="4" class="empty">No users yet.</td></tr>';
           return;
         }
         rows.innerHTML = res.data.map(function(u){
           return '<tr><td class="email">' + esc(u.email) + '</td>' +
+                 roleCell(u) +
                  '<td class="dim">' + fmt(u.createdAt) + '</td>' +
                  '<td class="dim">' + fmt(u.lastSignInAt) + '</td></tr>';
         }).join('');
+
+        Array.prototype.forEach.call(document.querySelectorAll('.roleSel'), function(sel){
+          sel.addEventListener('change', function(){
+            var id = sel.getAttribute('data-id'), prev = sel.getAttribute('data-prev') || '';
+            sel.disabled = true;
+            fetch('/api/users/' + encodeURIComponent(id), {
+              method:'PATCH',
+              headers:{'Content-Type':'application/json'},
+              body:JSON.stringify({ role: sel.value })
+            }).then(function(r){ return r.json(); }).then(function(res){
+              sel.disabled = false;
+              if(!res.success){ showMsg(res.error || 'Could not change role.', 'err'); loadUsers(); return; }
+              showMsg('Role updated — takes effect the next time they sign in.', 'ok');
+            }).catch(function(){
+              sel.disabled = false;
+              showMsg('Network error — role not changed.', 'err');
+              loadUsers();
+            });
+          });
+        });
       }).catch(function(){
-        rows.innerHTML = '<tr><td colspan="3" class="empty">Could not load users.</td></tr>';
+        rows.innerHTML = '<tr><td colspan="4" class="empty">Could not load users.</td></tr>';
       });
     }
 
@@ -153,15 +209,16 @@
       var btn = document.getElementById('addBtn');
       var email = document.getElementById('email').value.trim();
       var password = document.getElementById('password').value;
+      var role = document.getElementById('role').value;
       btn.disabled = true;
       fetch('/api/users', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({ email: email, password: password })
+        body:JSON.stringify({ email: email, password: password, role: role })
       }).then(function(r){ return r.json(); }).then(function(res){
         btn.disabled = false;
         if(!res.success){ showMsg(res.error || 'Could not create user.', 'err'); return; }
-        showMsg('Created ' + res.data.email + '.', 'ok');
+        showMsg('Created ' + res.data.email + ' as ' + res.data.role + '.', 'ok');
         document.getElementById('addForm').reset();
         loadUsers();
       }).catch(function(){
@@ -170,7 +227,11 @@
       });
     });
 
-    loadUsers();
+    // Resolve "who am I" before the first render so the self row shows a badge
+    // instead of a picker. Falls through to rendering either way.
+    fetch('/api/me').then(function(r){ return r.json(); }).then(function(res){
+      if(res && res.success && res.data) meId = res.data.id;
+    }).catch(function(){ /* non-fatal */ }).then(loadUsers);
   </script>
 </body>
 </html>
