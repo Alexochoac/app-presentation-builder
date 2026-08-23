@@ -139,7 +139,49 @@ with `error=noteam` and **no session granted**; `rep` → `/api/users` 403 + `/a
 `admin` → 200 + full member list; a second team's admin saw **only their own team's members**;
 last-admin self-demotion → 400, refused, team keeps its admin; stale pre-Phase-5 cookie → 401.
 
-⏭ **Next: step 4 (team-scoped data layer) — needs the Option A/B call first.**
+- [x] **Step 5 — RLS policies** (`builder/scripts/phase5-rls.sql`, re-runnable). 17 policies +
+      `is_team_member()` / `has_team_role()` SECURITY DEFINER helpers (definer avoids infinite
+      recursion when a policy on `team_members` queries `team_members`). GRANTs opened to
+      `authenticated` for the first time — previously it was locked out twice over (no grants AND
+      RLS-with-no-policies). `session` explicitly revoked from `authenticated`.
+      **Verified by `builder/scripts/verify-rls.js` — 21/21 checks with REAL user JWTs:** team B saw
+      0 rows of team A's decks/library/presentations/settings/translations/edits/slides; insert
+      stamped with team A → rejected by policy; update/delete of team A → 0 rows; rosters not
+      cross-visible; anon sees nothing; service_role still bypasses (the app depends on it).
+
+## ⚠️ DECISION MADE (2026-08-23): **Option B — the database enforces**
+
+User chose DB-enforced isolation over app-layer scoping, understanding it's the larger build.
+The Big Decision section above is superseded: **B is the plan.** Step 5 (above) is B's first half
+and is DONE. The app half remains.
+
+### What's left — the app half (B2)
+
+The database is now the enforcer, but **the server still connects as service_role, which bypasses
+every policy**. So today's isolation is theoretical: correct at the DB, unused by the app. Nothing
+is broken — but nothing is protected either, until this lands.
+
+**The design that makes B tractable without rewriting `renderCartridge()`:**
+make the cache a *projection of what RLS allowed*, rather than making every read async.
+
+- Per-request middleware `await ensureTeamLoaded(req)` fills `cache[teamId]` if absent, using a
+  client carrying **the user's JWT**. RLS filters at load time, so that team's cache can only ever
+  contain that team's rows.
+- Hot readers stay **synchronous**, just team-keyed: `readSettings(teamId)` reads `cache[teamId]`.
+  A reader that forgets its filter physically cannot reach another team's data — the rows aren't
+  in that cache.
+- One `await` per request, not one per slide. The render tree is untouched.
+
+**Two real complications to solve, not hand-wave:**
+1. **Token expiry.** Supabase access tokens last ~1h; the express-session lasts 8h. The session must
+   store the `refresh_token` too and refresh before a cache load, or mid-session loads start failing.
+2. **The write-behind queue.** `enqueueUpsert`/`flush` are decoupled from the request — by flush
+   time the user's token may be gone. Either capture the token with the queued item, or keep writes
+   on service_role with explicit team stamping (weaker, but writes already carry `team_id`).
+   **Decide this explicitly; don't let it default.**
+
+**Then:** replace the ~10 `store.TEAM` sites + 2 `SENTINEL_USER` sites, stamp `created_by` on
+create, and re-run the step-7 verification (two teams, two logins, different data).
 
 ## Build order
 
