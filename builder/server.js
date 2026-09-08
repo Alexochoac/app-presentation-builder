@@ -9,9 +9,19 @@ const http     = require('http');
 const cheerio  = require('cheerio');
 const session  = require('express-session');
 const { requireAuth, requireAdmin, isAdmin, registerAuthRoutes } = require('./features/auth/auth');
+const { makeTeamContext } = require('./features/auth/team-context');
 const { translate } = require('./lib/translator');
 const { generateHtml } = require('./lib/template-generator');
-const store = require('./lib/store'); // write-through Supabase cache (Phase 5 cutover, slice by slice)
+const store = require('./lib/store'); // per-team write-through Supabase cache
+const ctx   = require('./lib/ctx');   // per-request { teamId, userId } — see lib/ctx.js
+
+// The cache Maps for the team this request belongs to. Every team-scoped reader
+// and writer below goes through here, so "which team's data is this?" is answered
+// in exactly one place. Throws outside a request context rather than guessing —
+// that throw is the guard rail, don't defeat it with a default team.
+function tc() {
+  return store.cacheFor(ctx.teamId());
+}
 
 // ── Deployment config ─────────────────────────────────────────────────────────
 // REPO_ROOT: path to the git repo root — used for writing finished-presentations.
@@ -69,13 +79,13 @@ app.use('/public', express.static(path.join(__dirname, '..', 'finished-presentat
 // ── Auth routes (login / logout) ──────────────────────────────────────────────
 registerAuthRoutes(app, { publicBaseUrl: PUBLIC_BASE_URL });
 
-// Public config endpoint — must be before requireAuth so the login page can read publicBaseUrl.
-app.get('/api/settings', function (_req, res) {
-  var data = readSettings();
-  data.umamiBaseUrl  = UMAMI_BASE_URL;
-  data.publicBaseUrl = PUBLIC_BASE_URL;
-  res.json({ success: true, data: data });
-});
+// (A duplicate GET /api/settings used to sit here, before requireAuth, "so the
+// login page can read publicBaseUrl". Nothing unauthenticated actually fetches it
+// — login.html and callback.html don't — and being first in the chain it shadowed
+// the real one below, serving the whole settings row, logos included, to anyone
+// who asked. Settings are team data now, so this copy is gone; the identical
+// route in the settings section below (already behind requireAuth and the team
+// context) is the only one.)
 
 // Public static assets — must be before requireAuth so shared/readonly presentations can load images
 app.use('/slides/uploads', express.static(path.join(__dirname, 'features/slides/uploads')));
@@ -84,6 +94,12 @@ app.get('/favicon.ico',    function (_req, res) { res.sendFile(path.join(__dirna
 
 // ── Protect everything below this line ───────────────────────────────────────
 app.use(requireAuth);
+
+// ── Bind the request to its team, and load that team's data AS THE USER ──────
+// One await per request. Everything below can read team data synchronously via
+// tc(); nothing below can reach another team's rows, because they were never
+// fetched into this team's cache. See features/auth/team-context.js.
+app.use(makeTeamContext({ onFirstTeamLoad: enforceOneDeckPerSlide }));
 
 // GET /api/me — the current logged-in user (any authenticated user)
 app.get('/api/me', function (req, res) {
@@ -1192,24 +1208,33 @@ function dbTemplateToApp(row) {
 }
 
 // The whole HTML template catalog as an array (was: JSON.parse(templates.json)).
+// Templates are GLOBAL (store.globals), not team-scoped — see the note on
+// appTemplateToDb below.
 function getCatalog() {
   var out = [];
-  store.cache.templates.forEach(function (row) { out.push(dbTemplateToApp(row)); });
+  store.globals.templates.forEach(function (row) { out.push(dbTemplateToApp(row)); });
   return out;
 }
 
 // One template by id, in the old catalog shape, or null.
 function getTemplate(id) {
-  return dbTemplateToApp(store.cache.templates.get(id));
+  return dbTemplateToApp(store.globals.templates.get(id));
 }
 
 // The language reference list [{ code, name }] (was: JSON.parse(languages.json).languages).
 function getLanguages() {
-  return store.cache.languages;
+  return store.globals.languages;
 }
 
 // Inverse of dbTemplateToApp: app/catalog shape (camelCase) → DB `templates` row.
-// team_id null (templates are shared today, matching the import).
+//
+// team_id stays NULL — templates are deliberately GLOBAL, not team-scoped. The
+// RLS policy already allows every team to read a NULL-team template, and a
+// template's HTML lives at a filesystem path that is not team-scoped either
+// (features/slides/slide-NN-*.html). Stamping the row with a team while the file
+// stays shared would look like isolation without being any. Making templates and
+// their files team-owned together is Phase 6 work; until then this is one shared
+// catalog, on purpose.
 function appTemplateToDb(t) {
   return {
     id:            t.id,
@@ -1688,17 +1713,33 @@ function umamiGet(apiPath, cb) {
 
 // Auto-setup: creates the Umami website entry on first start if umamiWebsiteId is missing.
 // Retries for up to ~2 minutes to give Umami time to boot.
+//
+// This runs at BOOT — no request, no session, therefore no team context and no
+// loaded cache to read. It also can't sensibly mean "every team": Umami is one
+// deployment-wide analytics site. So it works directly against the bootstrap
+// team's `settings` row with service_role, deliberately outside the cache, and
+// patches the cache afterwards only if that team happens to be loaded already.
+// This is the ONLY remaining user of a hardcoded team id, and it is provisioning,
+// not data access.
+function bootstrapSettingsRow(cb) {
+  store.supabase.from('settings').select('*').eq('team_id', store.BOOTSTRAP_TEAM).limit(1)
+    .then(function (r) { cb(r.error ? r.error : null, (r.data && r.data[0]) || null); },
+          function (e) { cb(e, null); });
+}
+
 function setupUmamiWebsite() {
   if (!UMAMI_USER) return;
   function trySetup(attemptsLeft) {
-    if (attemptsLeft <= 0) { console.warn('[umami] setup gave up — set umamiWebsiteId manually in settings.json'); return; }
+    if (attemptsLeft <= 0) { console.warn('[umami] setup gave up — set umamiWebsiteId manually in Settings'); return; }
     getUmamiToken(function (err, token) {
       if (err) {
         console.log('[umami] not ready yet, retrying in 10s… (' + attemptsLeft + ' attempts left)');
         return setTimeout(function () { trySetup(attemptsLeft - 1); }, 10000);
       }
-      var settings = readSettings();
-      if (UMAMI_WEBSITE_ID || settings.umamiWebsiteId) { console.log('[umami] website already configured:', UMAMI_WEBSITE_ID || settings.umamiWebsiteId); return; }
+      bootstrapSettingsRow(function (rowErr, settingsRow) {
+      if (rowErr) { console.warn('[umami] could not read settings:', rowErr.message); return; }
+      var existingId = UMAMI_WEBSITE_ID || (settingsRow && settingsRow.umami_website_id);
+      if (existingId) { console.log('[umami] website already configured:', existingId); return; }
       var domain = (PUBLIC_BASE_URL).replace(/^https?:\/\//, '');
       var body   = JSON.stringify({ name: 'Put.A.Presentation', domain: domain });
       var url    = new URL('/api/websites', UMAMI_API_URL);
@@ -1715,16 +1756,28 @@ function setupUmamiWebsite() {
           try {
             var d = JSON.parse(raw);
             if (!d.id) throw new Error('unexpected response: ' + raw);
-            var s = readSettings();
-            s.umamiWebsiteId = d.id;
-            writeSettings(s);
-            console.log('[umami] website created and saved, id:', d.id);
+            // Direct service_role write — no ctx, so it can't go through the
+            // team-guarded write queue. Column-level update, not a full-row
+            // upsert, so it can't clobber settings a user changed meanwhile.
+            store.supabase.from('settings')
+              .update({ umami_website_id: d.id, updated_at: new Date().toISOString() })
+              .eq('team_id', store.BOOTSTRAP_TEAM)
+              .then(function (r) {
+                if (r.error) return console.warn('[umami] could not save website id:', r.error.message);
+                // Keep an already-loaded cache in step; otherwise the next load picks it up.
+                if (store.isTeamLoaded(store.BOOTSTRAP_TEAM)) {
+                  var cached = store.cacheFor(store.BOOTSTRAP_TEAM).settings.get(store.BOOTSTRAP_TEAM);
+                  if (cached) cached.umami_website_id = d.id;
+                }
+                console.log('[umami] website created and saved, id:', d.id);
+              }, function (e) { console.warn('[umami] could not save website id:', e.message); });
           } catch (e) { console.warn('[umami] setup error:', e.message); }
         });
       });
       req.on('error', function () { setTimeout(function () { trySetup(attemptsLeft - 1); }, 10000); });
       req.write(body);
       req.end();
+      }); // bootstrapSettingsRow
     });
   }
   setTimeout(function () { trySetup(12); }, 15000); // wait 15s for Umami to boot, then try up to 12× every 10s
@@ -1757,7 +1810,7 @@ function dbSettingsToApp(row) {
 function appSettingsToDb(obj) {
   obj = obj || {};
   return {
-    team_id:               store.TEAM,
+    team_id:               ctx.teamId(),
     umami_website_id:      obj.umamiWebsiteId != null ? obj.umamiWebsiteId : null,
     homepage_url:          obj.homepageUrl != null ? obj.homepageUrl : null,
     homepage_label:        obj.homepageLabel != null ? obj.homepageLabel : null,
@@ -1773,11 +1826,13 @@ function appSettingsToDb(obj) {
 }
 
 function readSettings() {
-  return dbSettingsToApp(store.cache.settings.get(store.TEAM));
+  var teamId = ctx.teamId();
+  return dbSettingsToApp(store.cacheFor(teamId).settings.get(teamId));
 }
 function writeSettings(data) {
+  var teamId = ctx.teamId();
   var row = appSettingsToDb(data);
-  store.cache.settings.set(store.TEAM, row);
+  store.cacheFor(teamId).settings.set(teamId, row);
   store.enqueueUpsert('settings', row, 'team_id'); // fire-and-forget; queue logs failures
 }
 function hexToRgb(hex) {
@@ -2137,9 +2192,9 @@ function dbDeckToApp(row) {
 // writeDeckById), NOT the deck list, so preserve the cached title here — otherwise
 // a deck-list save would blank the title column.
 function appDeckToDb(d) {
-  var existing = store.cache.decks.get(d.id);
+  var existing = tc().decks.get(d.id);
   return {
-    id: d.id, team_id: store.TEAM, name: d.name,
+    id: d.id, team_id: ctx.teamId(), name: d.name,
     theme: d.theme != null ? d.theme : null,
     title: existing ? (existing.title || '') : '',
     logo: d.logo != null ? d.logo : null,
@@ -2161,12 +2216,17 @@ function appDeckToDb(d) {
   };
 }
 
-// single-user stand-in key until auth; activeDeckId stays single-valued (plan risk #4)
-var ACTIVE_DECK_KEY = store.TEAM + ':' + store.SENTINEL_USER;
+// user_active_deck is keyed (team, user) — the active deck is PER USER, so two
+// people on the same team can sit on different decks without fighting. (Was a
+// single hardcoded team:sentinel key; the sentinel row was replaced by real
+// per-user rows in step 1.)
+function activeDeckKey() {
+  return ctx.teamId() + ':' + ctx.userId();
+}
 
 function readDecks() {
   var decks = [];
-  store.cache.decks.forEach(function (row) { decks.push(dbDeckToApp(row)); });
+  tc().decks.forEach(function (row) { decks.push(dbDeckToApp(row)); });
   // preserve the old decks.json array order (creation order)
   decks.sort(function (a, b) {
     return String(a.createdAt || '').localeCompare(String(b.createdAt || ''));
@@ -2184,31 +2244,36 @@ function writeDecks(data) {
   var incomingIds = {};
   incoming.forEach(function (d) { incomingIds[d.id] = true; });
 
+  var cache = tc();
   var removed = [];
-  store.cache.decks.forEach(function (_row, id) { if (!incomingIds[id]) removed.push(id); });
+  cache.decks.forEach(function (_row, id) { if (!incomingIds[id]) removed.push(id); });
 
   var rows = incoming.map(function (d) {
     var row = appDeckToDb(d);
-    store.cache.decks.set(d.id, row);
+    cache.decks.set(d.id, row);
     return row;
   });
-  removed.forEach(function (id) { store.cache.decks.delete(id); });
+  removed.forEach(function (id) { cache.decks.delete(id); });
 
   var active = data && data.activeDeckId;
-  if (active) store.cache.userActiveDeck.set(ACTIVE_DECK_KEY, active);
+  if (active) cache.userActiveDeck.set(activeDeckKey(), active);
 
   (async function () {
     try {
       if (rows.length) await store.enqueueUpsert('decks', rows, 'id');
       if (active) {
         await store.enqueueUpsert('user_active_deck',
-          { team_id: store.TEAM, user_id: store.SENTINEL_USER, deck_id: active, updated_at: new Date().toISOString() },
+          { team_id: ctx.teamId(), user_id: ctx.userId(), deck_id: active, updated_at: new Date().toISOString() },
           'team_id,user_id');
       }
       for (var i = 0; i < removed.length; i++) {
         await store.enqueueDelete('decks', { id: removed[i] }); // FK cascade clears deck children
       }
-    } catch (e) { /* store queue logs the failure loudly */ }
+    } catch (e) {
+      // The queue logs its own DB failures. A TeamScopeError, though, is thrown
+      // synchronously by the write guard and would vanish here — surface it.
+      if (e instanceof store.TeamScopeError) console.error(e.message);
+    }
   })();
 }
 function makeDeckId() {
@@ -2229,14 +2294,15 @@ function localTzString() {
   return (off <= 0 ? '+' : '-') + String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
 }
 function getDeckConfig(deckId) {
-  return dbDeckToApp(store.cache.decks.get(deckId)) || {};
+  return dbDeckToApp(tc().decks.get(deckId)) || {};
 }
 function getDeckPath(deckId) {
   return path.join(DECKS_DIR_PATH, deckId, 'deck.json');
 }
 function readDeckById(deckId) {
-  var row = store.cache.decks.get(deckId);
-  var slides = (store.cache.deckSlides.get(deckId) || []).map(function (s) {
+  var cache = tc();
+  var row = cache.decks.get(deckId);
+  var slides = (cache.deckSlides.get(deckId) || []).map(function (s) {
     return { id: s.slide_ref_id, visible: s.visible, librarySlideId: s.library_slide_id };
   });
   return { title: row ? (row.title || '') : '', slides: slides };
@@ -2248,29 +2314,45 @@ function writeDeckById(deckId, data) {
   var title = (data && data.title != null) ? data.title : '';
   var slides = (data && data.slides) || [];
 
-  var row = store.cache.decks.get(deckId);
-  if (row) { row.title = title; store.cache.decks.set(deckId, row); }
+  var cache = tc();
+  var row = cache.decks.get(deckId);
+  if (row) { row.title = title; cache.decks.set(deckId, row); }
 
   var slideRows = [];
   slides.forEach(function (sl, i) {
-    if (!sl.librarySlideId || !store.cache.library.has(sl.librarySlideId)) return;
+    if (!sl.librarySlideId || !cache.library.has(sl.librarySlideId)) return;
     slideRows.push({
       deck_id: deckId, library_slide_id: sl.librarySlideId, slide_ref_id: sl.id,
       position: i, visible: sl.visible !== false
     });
   });
-  store.cache.deckSlides.set(deckId, slideRows.slice());
+  cache.deckSlides.set(deckId, slideRows.slice());
 
   (async function () {
     try {
       if (row) await store.enqueueUpsert('decks', row, 'id');
       await store.enqueueDelete('deck_slides', { deck_id: deckId });
       if (slideRows.length) await store.enqueueUpsert('deck_slides', slideRows, 'deck_id,slide_ref_id');
-    } catch (e) { /* store queue logs the failure loudly */ }
+    } catch (e) {
+      // The queue logs its own DB failures. A TeamScopeError, though, is thrown
+      // synchronously by the write guard and would vanish here — surface it.
+      if (e instanceof store.TeamScopeError) console.error(e.message);
+    }
   })();
 }
+// This user's active deck, within this user's team. Falls back to the team's
+// oldest deck rather than a hardcoded id: 'deck-rebuild' belongs to the default
+// team, and handing it to a different team would be a dangling pointer.
 function getActiveDeckId() {
-  return store.cache.userActiveDeck.get(ACTIVE_DECK_KEY) || 'deck-rebuild';
+  var cache = tc();
+  var active = cache.userActiveDeck.get(activeDeckKey());
+  if (active && cache.decks.has(active)) return active;
+
+  var oldest = null;
+  cache.decks.forEach(function (row) {
+    if (!oldest || String(row.created_at || '') < String(oldest.created_at || '')) oldest = row;
+  });
+  return oldest ? oldest.id : (active || 'deck-rebuild');
 }
 // ── library reshapers (Slice 3: slide_library + deck_slide_edits cache-backed) ─
 // slide_library row → the slide object the app reads from slide-library.json.
@@ -2300,7 +2382,7 @@ function dbLibrarySlideToApp(row, deckEdits, decks) {
 // preserves My Library's display order (that grid renders in server order, no client sort).
 function appLibrarySlideToDb(slide, position) {
   return {
-    id: slide.id, team_id: store.TEAM, name: slide.name,
+    id: slide.id, team_id: ctx.teamId(), name: slide.name,
     template_id: slide.templateId != null ? slide.templateId : null,
     edits: slide.edits || {},
     gallery_enabled: !!slide.galleryEnabled,
@@ -2315,9 +2397,10 @@ function appLibrarySlideToDb(slide, position) {
 }
 
 function readLibrary() {
+  var cache = tc();
   // deck_slide_edits cache is keyed deck → slide; regroup it by slide
   var editsBySlide = {};
-  store.cache.deckSlideEdits.forEach(function (libMap, deckId) {
+  cache.deckSlideEdits.forEach(function (libMap, deckId) {
     libMap.forEach(function (edits, libId) {
       if (!editsBySlide[libId]) editsBySlide[libId] = {};
       editsBySlide[libId][deckId] = edits;
@@ -2325,8 +2408,8 @@ function readLibrary() {
   });
   // deck membership, rebuilt from deck_slides (replaces the old stored decks[])
   var decksBySlide = {};
-  store.cache.deckSlides.forEach(function (rows, deckId) {
-    var deckRow = store.cache.decks.get(deckId);
+  cache.deckSlides.forEach(function (rows, deckId) {
+    var deckRow = cache.decks.get(deckId);
     if (!deckRow) return;
     rows.forEach(function (r) {
       if (!decksBySlide[r.library_slide_id]) decksBySlide[r.library_slide_id] = [];
@@ -2335,7 +2418,7 @@ function readLibrary() {
   });
 
   var slides = [];
-  store.cache.library.forEach(function (row) {
+  cache.library.forEach(function (row) {
     slides.push(dbLibrarySlideToApp(row, editsBySlide[row.id], decksBySlide[row.id]));
   });
   return { slides: slides };
@@ -2351,32 +2434,34 @@ function writeLibrary(library) {
   var incomingIds = {};
   incoming.forEach(function (s) { incomingIds[s.id] = true; });
 
+  var cache  = tc();
+  var teamId = ctx.teamId();
   var removed = [];
-  store.cache.library.forEach(function (_row, id) { if (!incomingIds[id]) removed.push(id); });
+  cache.library.forEach(function (_row, id) { if (!incomingIds[id]) removed.push(id); });
 
   var libRows = [];
   var editRows = [];
   incoming.forEach(function (slide, i) {
     var row = appLibrarySlideToDb(slide, i);
-    store.cache.library.set(slide.id, row);
+    cache.library.set(slide.id, row);
     libRows.push(row);
 
     if (!slide.deckEdits) return;
     Object.keys(slide.deckEdits).forEach(function (deckId) {
-      if (!store.cache.decks.has(deckId)) return; // orphan bucket (deck deleted) — skip, FK would reject
+      if (!cache.decks.has(deckId)) return; // orphan bucket (deck deleted, or another team's) — skip
       var edits = slide.deckEdits[deckId] || {};
-      if (!store.cache.deckSlideEdits.has(deckId)) store.cache.deckSlideEdits.set(deckId, new Map());
-      store.cache.deckSlideEdits.get(deckId).set(slide.id, edits);
-      editRows.push({ deck_id: deckId, library_slide_id: slide.id, team_id: store.TEAM, edits: edits });
+      if (!cache.deckSlideEdits.has(deckId)) cache.deckSlideEdits.set(deckId, new Map());
+      cache.deckSlideEdits.get(deckId).set(slide.id, edits);
+      editRows.push({ deck_id: deckId, library_slide_id: slide.id, team_id: teamId, edits: edits });
     });
   });
 
   removed.forEach(function (id) {
-    store.cache.library.delete(id);
-    store.cache.deckSlideEdits.forEach(function (libMap) { libMap.delete(id); });
+    cache.library.delete(id);
+    cache.deckSlideEdits.forEach(function (libMap) { libMap.delete(id); });
     // deleting the slide_library row cascades deck_slides too — mirror that in the cache
-    store.cache.deckSlides.forEach(function (rows, deckId) {
-      store.cache.deckSlides.set(deckId, rows.filter(function (r) { return r.library_slide_id !== id; }));
+    cache.deckSlides.forEach(function (rows, deckId) {
+      cache.deckSlides.set(deckId, rows.filter(function (r) { return r.library_slide_id !== id; }));
     });
   });
 
@@ -2387,7 +2472,11 @@ function writeLibrary(library) {
       for (var i = 0; i < removed.length; i++) {
         await store.enqueueDelete('slide_library', { id: removed[i] }); // cascades deck_slide_edits + deck_slides
       }
-    } catch (e) { /* store queue logs the failure loudly */ }
+    } catch (e) {
+      // The queue logs its own DB failures. A TeamScopeError, though, is thrown
+      // synchronously by the write guard and would vanish here — surface it.
+      if (e instanceof store.TeamScopeError) console.error(e.message);
+    }
   })();
 }
 
@@ -3577,11 +3666,18 @@ function dbPresentationToApp(row, events) {
   return p;
 }
 // Inverse: app presentation object → presentations table row (base fields only;
-// events append separately). team_id fixed until auth; created_by stays null.
+// events append separately).
+//
+// `created_by` is real attribution now (step 1 backfilled the 6 NULL rows). Every
+// caller does a full-row upsert, so on an UPDATE we must carry the existing
+// creator forward — otherwise editing someone else's presentation would quietly
+// rewrite who made it.
 function appPresentationToDb(p) {
+  var existing = tc().presentations.get(p.id);
   return {
     id:                p.id,
-    team_id:           store.TEAM,
+    team_id:           ctx.teamId(),
+    created_by:        existing ? existing.created_by : ctx.userId(),
     deck_id:           p.deckId || null,
     presentation_name: p.presentationName != null ? p.presentationName : null,
     customer_name:     p.customerName != null ? p.customerName : null,
@@ -3604,24 +3700,26 @@ function appPresentationToDb(p) {
 // ids are max+1 counters, so descending numeric id reproduces that order exactly
 // (no `position` column needed, unlike the library in Slice 3).
 function readPresentations() {
+  var cache = tc();
   var list = [];
-  store.cache.presentations.forEach(function (row) {
-    list.push(dbPresentationToApp(row, store.cache.presentationEvents.get(row.id)));
+  cache.presentations.forEach(function (row) {
+    list.push(dbPresentationToApp(row, cache.presentationEvents.get(row.id)));
   });
   list.sort(function (a, b) { return parseInt(b.id, 10) - parseInt(a.id, 10); });
   return { presentations: list };
 }
 function readPresentationById(id) {
-  var row = store.cache.presentations.get(id);
+  var cache = tc();
+  var row = cache.presentations.get(id);
   if (!row) return null;
-  return dbPresentationToApp(row, store.cache.presentationEvents.get(id));
+  return dbPresentationToApp(row, cache.presentationEvents.get(id));
 }
 // Upsert one presentation's base row (NOT its events). Updates the cache
 // synchronously so the next read is correct; returns the enqueue promise so
 // high-stakes callers (publish/republish/save/delete) can await it. NO JSON write.
 function writePresentation(pres) {
-  var row = appPresentationToDb(pres);
-  store.cache.presentations.set(pres.id, row);
+  var row = appPresentationToDb(pres); // reads the existing row first — call before the cache.set below
+  tc().presentations.set(pres.id, row);
   return store.enqueueUpsert('presentations', row, 'id');
 }
 // Append ONE event to a presentation — the events-table win: republish APPENDS a
@@ -3645,18 +3743,22 @@ function appendPresentationEvent(pres, type, extra) {
     deck_id:         (extra && extra.deckId)   || null,
     deck_name:       (extra && extra.deckName) || null
   };
-  if (!store.cache.presentationEvents.has(pres.id)) store.cache.presentationEvents.set(pres.id, []);
-  store.cache.presentationEvents.get(pres.id).push(dbEv);
+  var cache = tc();
+  if (!cache.presentationEvents.has(pres.id)) cache.presentationEvents.set(pres.id, []);
+  cache.presentationEvents.get(pres.id).push(dbEv);
   return store.enqueueUpsert('presentation_events', dbEv);
 }
 
+// presentations.id is a GLOBAL primary key, so it cannot be minted from a
+// team-scoped max+1 any more: team B's highest id no longer sees team A's rows,
+// both teams would mint the same number, and the write queue's upsert(…, 'id')
+// would overwrite the other team's presentation — on service_role, so RLS
+// wouldn't catch it either. store.nextPresentationSeq() is primed once from a
+// global count at boot; this team's own ids are folded in as a belt-and-braces
+// check against a row created since.
 function makePresId() {
-  var ids = readPresentations().presentations.map(function (p) {
-    var n = parseInt(p.id, 10);
-    return isNaN(n) ? 0 : n;
-  });
-  var max = ids.length > 0 ? Math.max.apply(null, ids) : 0;
-  return String(max + 1).padStart(8, '0');
+  var seen = readPresentations().presentations.map(function (p) { return p.id; });
+  return String(store.nextPresentationSeq(seen)).padStart(8, '0');
 }
 
 // POST /api/presentations/rebuild-all — regenerate all frozen HTML files
@@ -4225,8 +4327,8 @@ app.delete('/api/presentations/:id', async function (req, res) {
     if (!pres.archivedAt) {
       return res.status(400).json({ success: false, error: 'Presentation must be archived before it can be deleted.' });
     }
-    store.cache.presentations.delete(req.params.id);
-    store.cache.presentationEvents.delete(req.params.id);
+    tc().presentations.delete(req.params.id);
+    tc().presentationEvents.delete(req.params.id);
     await store.enqueueDelete('presentations', { id: req.params.id }); // FK cascade clears its events
     var frozenDir = path.join(__dirname, '..', 'finished-presentations', req.params.id);
     if (fs.existsSync(frozenDir)) {
@@ -4603,7 +4705,7 @@ app.post('/api/templates', async function (req, res) {
       return res.status(400).json({ success: false, error: 'category must be one of: ' + validCategories.join(', ') });
     }
 
-    if (store.cache.templates.has(id)) {
+    if (store.globals.templates.has(id)) {
       return res.status(409).json({ success: false, error: 'Template id already exists: ' + id });
     }
 
@@ -4632,7 +4734,7 @@ app.post('/api/templates', async function (req, res) {
       createdAt:  new Date().toISOString()
     };
     var dbRow = appTemplateToDb(entry);
-    store.cache.templates.set(id, dbRow);
+    store.globals.templates.set(id, dbRow);
     await store.enqueueUpsert('templates', dbRow, 'id');
 
     res.status(201).json({ success: true, data: entry });
@@ -4644,10 +4746,10 @@ app.post('/api/templates', async function (req, res) {
 // DELETE /api/templates/:id — deregister a template (keeps the HTML file)
 app.delete('/api/templates/:id', async function (req, res) {
   try {
-    if (!store.cache.templates.has(req.params.id)) {
+    if (!store.globals.templates.has(req.params.id)) {
       return res.status(404).json({ success: false, error: 'Template not found: ' + req.params.id });
     }
-    store.cache.templates.delete(req.params.id);
+    store.globals.templates.delete(req.params.id);
     await store.enqueueDelete('templates', { id: req.params.id });
     res.json({ success: true });
   } catch (err) {
@@ -4666,7 +4768,7 @@ app.patch('/api/templates/:id', async function (req, res) {
     if (body.tags       !== undefined) tpl.tags       = Array.isArray(body.tags) ? body.tags : [];
     if (body.components !== undefined) tpl.components = Array.isArray(body.components) ? body.components : [];
     var dbRow = appTemplateToDb(tpl);
-    store.cache.templates.set(tpl.id, dbRow);
+    store.globals.templates.set(tpl.id, dbRow);
     await store.enqueueUpsert('templates', dbRow, 'id');
     res.json({ success: true, data: tpl });
   } catch (err) {
@@ -4682,10 +4784,10 @@ app.post('/api/templates/:id/duplicate', async function (req, res) {
     var baseId = src.id + '-copy';
     var newId  = baseId;
     var n = 1;
-    while (store.cache.templates.has(newId)) { newId = baseId + '-' + (++n); }
+    while (store.globals.templates.has(newId)) { newId = baseId + '-' + (++n); }
     var copy = Object.assign({}, src, { id: newId, name: src.name + ' (copy)', createdAt: new Date().toISOString() });
     var dbRow = appTemplateToDb(copy);
-    store.cache.templates.set(newId, dbRow);
+    store.globals.templates.set(newId, dbRow);
     await store.enqueueUpsert('templates', dbRow, 'id');
     res.status(201).json({ success: true, data: copy });
   } catch (err) {
@@ -4843,7 +4945,7 @@ app.post('/api/templates/:id/defaultEdits', async function (req, res) {
     if (!tpl) return res.status(404).json({ success: false, error: 'Template not found' });
     tpl.defaultEdits = edits;
     var dbRow = appTemplateToDb(tpl);
-    store.cache.templates.set(id, dbRow);
+    store.globals.templates.set(id, dbRow);
     await store.enqueueUpsert('templates', dbRow, 'id');
     res.json({ success: true });
   } catch (err) {
@@ -5366,8 +5468,9 @@ app.get('/api/languages', function (_req, res) {
 // `en` is a scalar source row (lang='en'); every other lang is a {current,previous,
 // dirty} object. `previous` powers the Translation Center "↻ Restore" button.
 function dbTranslationsToApp(deckId) {
-  var meta = store.cache.translationMeta.get(deckId);
-  var rows = store.cache.translations.get(deckId) || [];
+  var cache = tc();
+  var meta = cache.translationMeta.get(deckId);
+  var rows = cache.translations.get(deckId) || [];
   var slides = {};
   rows.forEach(function (r) {
     if (!slides[r.library_slide_id]) slides[r.library_slide_id] = {};
@@ -5397,13 +5500,15 @@ function readTranslations(deckId) {
 // whole-file rewrite), so this stays faithful while avoiding any wipe-on-failure.
 function writeTranslations(data, deckId) {
   data = data || {};
+  var cache  = tc();
+  var teamId = ctx.teamId();
   var metaRow = {
-    deck_id: deckId, team_id: store.TEAM,
+    deck_id: deckId, team_id: teamId,
     languages: data.languages || ['en'],
     default_language: data.defaultLanguage || 'en',
     favorites: data.favorites || []
   };
-  store.cache.translationMeta.set(deckId, metaRow);
+  cache.translationMeta.set(deckId, metaRow);
 
   var rows = [];
   var slides = data.slides || {};
@@ -5420,12 +5525,12 @@ function writeTranslations(data, deckId) {
           value: isObj ? (v.current != null ? v.current : null) : (v != null ? v : null),
           previous: isObj ? (v.previous != null ? v.previous : null) : null,
           dirty: isObj ? !!v.dirty : false,
-          team_id: store.TEAM
+          team_id: teamId
         });
       });
     });
   });
-  store.cache.translations.set(deckId, rows);
+  cache.translations.set(deckId, rows);
 
   store.enqueueUpsert('deck_translation_meta', metaRow, 'deck_id');
   if (rows.length) store.enqueueUpsert('deck_translations', rows, 'deck_id,library_slide_id,field_key,lang');
@@ -6148,12 +6253,16 @@ app.post('/api/clone-slide', function (req, res) {
   }
 });
 
-// ── Startup: enforce 1-slide-per-deck (called after the cache loads) ─────────
+// ── Repair: enforce 1-slide-per-deck (runs once per team, on first load) ─────
 // Deck membership is DERIVED now — readLibrary() rebuilds each slide's decks[] from
 // deck_slides — so there is no stored list to rebuild and no library file to write
 // (slide-library.json is a frozen snapshot post-Slice-3). All this still does is
 // repair the rare case of one library slide sitting in two decks: first deck wins.
-// MUST run AFTER store.loadAll() — every read here is cache-backed.
+//
+// This used to run once at boot, when one process-wide cache held everything.
+// There is no boot-time load any more — a team's data can't be read until one of
+// its members shows up with a token — so it runs from the team-context
+// middleware's onFirstTeamLoad hook, inside that team's context, once per team.
 function enforceOneDeckPerSlide() {
   var owner    = {}; // librarySlideId -> deckId that keeps it
   var removals = {}; // deckId -> [librarySlideId, ...]
@@ -6187,17 +6296,20 @@ function enforceOneDeckPerSlide() {
 // deck it seeded from data/deck.json — Step H Tier 2. The rebuild is complete and
 // deck-rebuild is the sole deck; re-running the migration would resurrect default.)
 
-// Load the Supabase cache BEFORE serving — reads will come from it slice by
-// slice (Phase 5). Fail fast if it can't load: serving with an empty cache
-// would break every migrated read. (loadAll retries once for transient skew.)
-store.loadAll().then(function () {
-  enforceOneDeckPerSlide(); // cache-backed now — must run after loadAll(), never before
+// Boot loads only the GLOBAL reference data — templates, languages, and the
+// presentation id counter. Team data deliberately is NOT loaded here: since
+// Phase 5 step 4 it is read with the user's own JWT so RLS decides what lands in
+// memory, and at boot there is no user. Each team's cache fills on that team's
+// first authenticated request (see features/auth/team-context.js).
+//
+// Still fail-fast: serving without the template catalog would break every render.
+store.loadGlobals().then(function () {
   app.listen(PORT, function () {
     console.log('Builder running at http://localhost:' + PORT);
     console.log('Preview:  http://localhost:' + PORT + '/builder/preview.html');
     setupUmamiWebsite();
   });
 }).catch(function (err) {
-  console.error('[startup] FATAL: could not load data cache from Supabase —', err.message);
+  console.error('[startup] FATAL: could not load global data from Supabase —', err.message);
   process.exit(1);
 });

@@ -15,17 +15,21 @@
     // The provider returns the session in the URL hash (#access_token=…). Read it,
     // exchange it for an app session on the server, then continue into the app.
     (function () {
-      var params = new URLSearchParams((location.hash || '').replace(/^#/, ''));
-      var token  = params.get('access_token');
-      var errMsg = params.get('error_description') || params.get('error');
-      if (!token) {
+      var params  = new URLSearchParams((location.hash || '').replace(/^#/, ''));
+      var token   = params.get('access_token');
+      // The refresh token goes to the server too: it now reads this user's team
+      // data AS them, and the ~1h access token can't carry an 8h session alone.
+      // The server verifies the pair before storing it.
+      var refresh = params.get('refresh_token');
+      var errMsg  = params.get('error_description') || params.get('error');
+      if (!token || !refresh) {
         location.replace('/auth/login?error=1' + (errMsg ? '&msg=' + encodeURIComponent(errMsg) : ''));
         return;
       }
       fetch('/auth/session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ access_token: token })
+        body: JSON.stringify({ access_token: token, refresh_token: refresh })
       })
         .then(function (r) {
           return r.json().then(function (res) {

@@ -6,6 +6,7 @@
 
 const path = require('path');
 const store = require('../../lib/store');
+const tokens = require('./tokens');
 
 // Routes that don't require a login
 const PUBLIC_PATHS = ['/auth/login', '/auth/logout', '/auth/callback', '/auth/session'];
@@ -66,7 +67,16 @@ function isAdmin(req) {
 // attacker planted before login can't be replayed once we grant access (session
 // fixation) — which matters more now that sessions persist in Postgres.
 // `membership` is required: no membership, no session.
-function startSession(req, user, membership, done) {
+//
+// `sbSession` is the Supabase session (access + refresh token). Since Phase 5
+// step 4 the server loads team data AS THE USER, so the session has to keep the
+// user's tokens — an express-session with no tokens can't fill a cache and is
+// treated as expired. It is required, not optional: a login path that forgets to
+// pass it would mint a session that dies on its very first data request.
+function startSession(req, user, membership, sbSession, done) {
+  if (!sbSession || !sbSession.access_token) {
+    return done(new Error('startSession: no Supabase session — cannot scope data reads to this user'));
+  }
   req.session.regenerate(function (err) {
     if (err) return done(err);
     req.session.user = {
@@ -75,6 +85,7 @@ function startSession(req, user, membership, done) {
       teamId: membership.team_id,
       role: membership.role
     };
+    tokens.put(req, sbSession);
     req.session.save(done);
   });
 }
@@ -138,7 +149,7 @@ function registerAuthRoutes(app, opts) {
           console.warn('[auth] Login refused — no team membership:', data.user.email);
           return res.redirect('/auth/login?error=noteam');
         }
-        return startSession(req, data.user, membership, function (err) {
+        return startSession(req, data.user, membership, data.session, function (err) {
           if (err) {
             console.warn('[auth] Session start failed:', err.message);
             return res.redirect('/auth/login?error=1');
@@ -185,11 +196,20 @@ function registerAuthRoutes(app, opts) {
     res.sendFile(path.join(__dirname, 'callback.html'));
   });
 
-  // POST /auth/session { access_token } — validate the Supabase token and start our
-  // express-session. This is where a social login becomes a logged-in app session.
+  // POST /auth/session { access_token, refresh_token } — validate the Supabase
+  // tokens and start our express-session. This is where a social login becomes a
+  // logged-in app session.
+  //
+  // The refresh token is new in Phase 5 step 4: the server now reads team data as
+  // the user, and an access token that lasts ~1h can't carry an 8h session on its
+  // own (see tokens.js). It arrives from the browser, so it is VERIFIED rather
+  // than trusted — we redeem it once and check it resolves to the same user as
+  // the access token. That also hands us a coherent, freshly-minted pair to store.
   app.post('/auth/session', async function (req, res) {
     const token = (req.body && req.body.access_token) || '';
+    const refreshToken = (req.body && req.body.refresh_token) || '';
     if (!token) return res.status(400).json({ success: false, error: 'Missing token' });
+    if (!refreshToken) return res.status(400).json({ success: false, error: 'Missing refresh token' });
     try {
       const { data, error } = await store.supabaseAuth.auth.getUser(token);
       if (error || !data || !data.user) {
@@ -209,7 +229,22 @@ function registerAuthRoutes(app, opts) {
         return res.status(403).json({ success: false, code: 'noteam',
           error: 'This account is not a member of any team yet.' });
       }
-      return startSession(req, data.user, membership, function (err) {
+
+      // Redeem the refresh token to prove it belongs to the same account. A
+      // mismatch means the two tokens didn't come from one login — refuse rather
+      // than store a session whose identity and credentials disagree.
+      const refreshed = await store.supabaseAuth.auth.refreshSession({ refresh_token: refreshToken });
+      if (refreshed.error || !refreshed.data || !refreshed.data.session) {
+        console.warn('[auth] Social login refused — refresh token rejected:',
+          (refreshed.error && refreshed.error.message) || 'no session returned');
+        return res.status(401).json({ success: false, error: 'Invalid refresh token' });
+      }
+      if (!refreshed.data.user || refreshed.data.user.id !== data.user.id) {
+        console.warn('[auth] Social login refused — token pair belongs to different accounts:', data.user.email);
+        return res.status(401).json({ success: false, error: 'Mismatched tokens' });
+      }
+
+      return startSession(req, data.user, membership, refreshed.data.session, function (err) {
         if (err) return res.status(500).json({ success: false, error: 'Could not start session.' });
         res.json({ success: true });
       });

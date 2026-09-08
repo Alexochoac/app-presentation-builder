@@ -155,33 +155,87 @@ User chose DB-enforced isolation over app-layer scoping, understanding it's the 
 The Big Decision section above is superseded: **B is the plan.** Step 5 (above) is B's first half
 and is DONE. The app half remains.
 
-### What's left — the app half (B2)
+- [x] **Step 4 — the app half (B2). DONE 2026-08-28.** The server no longer reads team data as
+      service_role. **Verified 29/29 by `builder/scripts/verify-team-isolation.js`** — two real
+      logins over HTTP, each seeing only its own team.
 
-The database is now the enforcer, but **the server still connects as service_role, which bypasses
-every policy**. So today's isolation is theoretical: correct at the DB, unused by the app. Nothing
-is broken — but nothing is protected either, until this lands.
+The design, as built: **the cache is a projection of what RLS allowed**, rather than every read
+becoming async.
 
-**The design that makes B tractable without rewriting `renderCartridge()`:**
-make the cache a *projection of what RLS allowed*, rather than making every read async.
+- `builder/lib/store.js` keeps **one cache per team** (`store.cacheFor(teamId)`), filled lazily by
+  `loadTeam(teamId, accessToken)` using a client carrying **the user's JWT**. RLS decides what lands
+  in memory, so a reader that forgets its filter cannot reach another team's rows — they were never
+  fetched. Boot loads only globals (templates, languages, the presentation-id counter).
+- `builder/features/auth/team-context.js` is the one `await` per request: refresh the token if
+  needed → `ensureTeamLoaded` → bind the context. **Not one await per slide; the render tree is
+  untouched and every reader stayed synchronous.**
+- `builder/lib/ctx.js` carries `{ teamId, userId, role }` through **AsyncLocalStorage** instead of a
+  `teamId` parameter. That was the call that kept this tractable: `readSettings`/`readDeckById`/
+  `resolveSlideEdits` are called from ~230 sites, many nested inside `renderCartridge()`, so a
+  parameter would have rippled through exactly the tree store.js exists to protect. Signatures are
+  unchanged; only the ~15 helper bodies moved to `tc()`. `ctx.teamId()` **throws** when there is no
+  request context — there is deliberately no default team to fall back to.
 
-- Per-request middleware `await ensureTeamLoaded(req)` fills `cache[teamId]` if absent, using a
-  client carrying **the user's JWT**. RLS filters at load time, so that team's cache can only ever
-  contain that team's rows.
-- Hot readers stay **synchronous**, just team-keyed: `readSettings(teamId)` reads `cache[teamId]`.
-  A reader that forgets its filter physically cannot reach another team's data — the rows aren't
-  in that cache.
-- One `await` per request, not one per slide. The render tree is untouched.
+**The two complications — decided, not hand-waved:**
 
-**Two real complications to solve, not hand-wave:**
-1. **Token expiry.** Supabase access tokens last ~1h; the express-session lasts 8h. The session must
-   store the `refresh_token` too and refresh before a cache load, or mid-session loads start failing.
-2. **The write-behind queue.** `enqueueUpsert`/`flush` are decoupled from the request — by flush
-   time the user's token may be gone. Either capture the token with the queued item, or keep writes
-   on service_role with explicit team stamping (weaker, but writes already carry `team_id`).
-   **Decide this explicitly; don't let it default.**
+1. **Token expiry → the session carries the whole bundle** (`access_token`, `refresh_token`,
+   `expires_at`), refreshed *on demand* in `builder/features/auth/tokens.js`, 60s before expiry, not
+   on a timer (sessions outlive the process; a timer would refresh for users who went home).
+   **Single-flight per session id** — a page load fires many parallel requests, and without that they
+   would all redeem the same rotating refresh token and race Supabase's reuse window. A refresh that
+   fails destroys the session and sends the user to `/auth/login?error=expired`; there is **no
+   fallback to service_role**, which would silently reopen the hole precisely when something is
+   already wrong. Verified: expiry→refresh, rotation persisted, 6 concurrent stale requests, and a
+   dead refresh token → 401 + session row gone.
 
-**Then:** replace the ~10 `store.TEAM` sites + 2 `SENTINEL_USER` sites, stamp `created_by` on
-create, and re-run the step-7 verification (two teams, two logins, different data).
+2. **The write-behind queue → writes STAY on service_role, with the team captured at *enqueue*
+   time.** The alternative — carrying the user's token with the queued item — was rejected for a
+   concrete reason: under RLS an `UPDATE`/`DELETE` that matches nothing returns **success with 0 rows
+   affected**, so the queue could not tell "wrote it" from "silently wrote nothing" on the app's
+   highest-stakes path (publish, deck save). Invisible data loss is worse than a documented bypass.
+   The insight that makes this safe rather than a cop-out: **the queue never needed the token, it
+   needed the team** — and the team is known synchronously at enqueue time, while `ctx` is still
+   bound. Only the network round-trip is deferred. `store.js` then enforces it:
+   - team-scoped tables — every row's `team_id` must equal the enqueuing request's team, or it
+     throws `TeamScopeError` **before** reaching Postgres;
+   - deletes get `team_id` merged into the match, so a delete aimed at another team matches nothing;
+   - `deck_slides` / `presentation_events` (no `team_id`) are checked against their parent in that
+     team's cache — the same rule the RLS `EXISTS` subquery uses, so app and DB agree;
+   - an undeclared table is refused rather than assumed safe.
+   This is **weaker than RLS on writes and is written down as such**: defence-in-depth over a cache
+   that already can't see other teams, not the only thing between two customers.
+
+**Also fixed on the way (would have been silent cross-team corruption):**
+`presentations.id` is a **global** PK minted as `max+1`. Once reads became team-scoped, team B's max
+no longer saw team A's rows, so both teams would mint the same id — and `upsert(…, 'id')` on
+service_role would have **overwritten** the other team's presentation, with RLS unable to stop it.
+Now primed once from a global count at boot (`store.nextPresentationSeq()`).
+
+**Other decisions made explicitly:**
+- **`deck_slides` / `presentation_events`: scoped via parent, no new column.** Matches the RLS
+  policies exactly, so there is one rule rather than two that can drift.
+- **Templates stay GLOBAL (`team_id IS NULL`), on purpose.** Their HTML lives at a filesystem path
+  that is not team-scoped (`features/slides/slide-NN-*.html`), so stamping the row while the file
+  stays shared would be isolation theatre. Templates+files together is Phase 6.
+- **`store.TEAM` / `SENTINEL_USER` are gone.** One constant survives — `store.BOOTSTRAP_TEAM` —
+  used *only* by the boot-time Umami provisioner, which has no request and writes its one column
+  directly via service_role, outside the cache and the queue. That is provisioning, not data access.
+- **`enforceOneDeckPerSlide()` moved from boot to a once-per-team first-load hook**, since there is
+  no boot-time team load any more.
+- **The duplicate `GET /api/settings` registered before `requireAuth` is deleted.** Being first in
+  the chain it shadowed the real one and served the whole settings row — logos included — to anyone
+  who asked. Nothing unauthenticated fetched it.
+- **`POST /auth/session` now requires `refresh_token`** and *verifies* it (redeems it once, checks it
+  resolves to the same user as the access token) rather than trusting a token posted by the browser.
+
+### Still open after step 4
+- Rep restrictions (step 3's last bullet): reps still aren't blocked from editing the master deck /
+  slide library server-side.
+- `finished-presentations/<id>/` is one shared filesystem namespace served unauthenticated at
+  `/public`. Ids are globally unique so there is no collision, but the id is the only secret —
+  unchanged by this phase, worth revisiting with Storage in Phase 6.
+- The cache is still single-instance (`// MULTI-INSTANCE:` note in store.js). Per-team caches make a
+  stale cross-team cache *worse*, not better — LISTEN/NOTIFY before scaling out.
 
 ## Build order
 
@@ -217,17 +271,19 @@ previous slice — **restart the server on new code or you are testing the old b
 - [ ] Rep restrictions per the roadmap: reps create/edit **customer presentations**; they cannot
       edit the master deck or slide library. Enforce server-side, then hide the UI.
 
-### 4. Team-scoped data layer — the real work
-- [ ] Re-key `cache.*` Maps by `team_id` (today `cache.settings` is keyed by team_id already;
-      `decks`, `slide_library`, `presentations` are not).
-- [ ] Hot readers take `teamId`: `readSettings(teamId)`, `readDeckById(teamId, id)`,
-      `getActiveDeckId(teamId, userId)`, `resolveSlideEdits(teamId, …)`. **Keep them synchronous.**
-- [ ] Replace all ~10 `store.TEAM` sites and 2 `SENTINEL_USER` sites with session values.
-- [ ] Stamp `created_by = req.session.user.id` on presentation create.
-- [ ] `templates.team_id IS NULL` = global — every template read is `team_id = $1 OR team_id IS NULL`.
-- [ ] `deck_slides` / `presentation_events` have no `team_id` — scope them through their parent,
-      or add the column. **Decide explicitly**; an unscoped child table is a leak path.
-- [ ] `languages` stays global — do not team-scope it.
+### 4. Team-scoped data layer — the real work ✅ DONE (see "the app half (B2)" above)
+- [x] Re-key the cache by team — became one cache object *per* team (`store.cacheFor(teamId)`),
+      filled through the user's JWT so RLS decides its contents.
+- [x] Hot readers stayed **synchronous** and kept their signatures — team comes from
+      AsyncLocalStorage (`lib/ctx.js`), not a parameter, so `renderCartridge()` was untouched.
+- [x] All `store.TEAM` / `SENTINEL_USER` sites replaced with session values.
+      `store.BOOTSTRAP_TEAM` survives only for the boot-time Umami provisioner.
+- [x] `created_by` stamped on presentation create, and *preserved* on update (every caller does a
+      full-row upsert, so editing would otherwise rewrite who made it).
+- [x] `templates.team_id IS NULL` = global — kept global deliberately (their HTML files are shared).
+- [x] `deck_slides` / `presentation_events` — **decided: scoped through their parent**, matching the
+      RLS `EXISTS` policies, enforced app-side by a parent-in-team-cache check in the write queue.
+- [x] `languages` stays global.
 
 ### 5. RLS policies (defense-in-depth under Option A)
 - [ ] Helper: `auth.uid()` → team via `team_members`.
@@ -244,14 +300,24 @@ previous slice — **restart the server on new code or you are testing the old b
       `team_members` row (an account with no membership can't log in — step 2).
 - [ ] Guard: cannot remove/demote the last admin of a team.
 
-### 7. Verify (the whole point)
-- [ ] Create a second team + a `rep` user. Log in as each. **Confirm they see different data.**
-      This is the acceptance test for the entire phase.
-- [ ] Rep cannot edit master deck / slide library — via the API directly, not just a hidden button.
-- [ ] Presentations show the real creator, not NULL.
-- [ ] Active deck is per-user: two users, two different active decks, no interference.
-- [ ] Public `/public/:id/` presentations still work logged-out (they must stay unauthenticated).
-- [ ] Existing single-team data is untouched and still loads.
+### 7. Verify (the whole point) — automated as `builder/scripts/verify-team-isolation.js`
+Run the server on a spare port, then
+`APP_URL=http://localhost:3010 node builder/scripts/verify-team-isolation.js`.
+It creates two throwaway users in two teams, drives real HTTP logins, and cleans up after itself
+(including a **fresh random team id each run** — a fixed one would be served the previous run's
+rows out of the server's per-team cache and fail for the wrong reason).
+
+- [x] Second team + second login. **They see different data** — A: 2 decks / 26 slides / 6
+      presentations; B: 0 / 0 / 0. **29/29 checks.**
+- [x] B can't reach A's rows by guessing an id (404), and can't switch onto A's deck (404).
+- [x] B's writes land in B, stamped with B's team, and A's counts don't move.
+- [x] Presentations show the real creator, not NULL.
+- [x] Active deck is per-user — A and B sit on different decks with no interference.
+- [x] Logged-out callers get 401 from `/api/settings` and `/api/decks`.
+- [x] Existing single-team data untouched and still loads (`verify-rls.js` still 21/21).
+- [ ] Rep cannot edit master deck / slide library — **still open**, see "Still open after step 4".
+- [ ] Public `/public/:id/` logged-out — unchanged by this phase (plain static files, no DB read),
+      not re-verified.
 
 ---
 
@@ -269,13 +335,20 @@ task). Phase 5 changes the schema, so the order matters:
 Either way: **merging Phase 5 ≠ deploying it.** The gate stands.
 
 ## Gotchas
-- **RLS is already ON with no policies** — the app survives purely on service_role. Adding a
-  policy does nothing until something stops using service_role. Don't mistake "policy exists" for
-  "isolation works."
 - **Never verify RLS with the service_role key.** It bypasses RLS; every test passes and proves
-  nothing. Use an anon-key client with a real user JWT.
+  nothing. Use an anon-key client with a real user JWT (`verify-rls.js`) — and separately verify the
+  *app* over HTTP (`verify-team-isolation.js`), because a correct policy proves nothing about a
+  server that was bypassing it.
+- **`ctx.teamId()` throwing is the guard rail, not a bug.** If a code path hits it, that path runs
+  outside a request and needs a context — do NOT "fix" it by adding a default team.
+- **Reads and writes are deliberately asymmetric**: reads go through the user's JWT (RLS enforces),
+  writes go through service_role stamped from `ctx` at enqueue time (the queue enforces). Don't
+  "tidy" one to match the other without reading why in the store.js header.
+- **Don't reuse a team id across test runs** against a live server — the per-team cache is keyed by
+  team id and lives for the process, so run two would be served run one's rows.
 - The sync cache is load-bearing for `renderCartridge()`. Making a hot reader async ripples through
-  the whole render tree — the reason store.js exists at all.
+  the whole render tree — the reason store.js exists at all. AsyncLocalStorage is what let step 4
+  team-scope those readers without touching a single call site.
 - `store.js` header still says "Phase 5 adds domain read/write helpers" — that numbering refers to
   the *data-migration* phases, not these product phases. Two different "Phase 5"s. Don't conflate.
 - Cache is single-instance (its own `// MULTI-INSTANCE:` note). Multi-team makes a stale cross-team
