@@ -18,7 +18,14 @@
       "Read(//tmp/**)",
       "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('.claude/settings.local.json','utf8'\\)\\); console.log\\('valid JSON'\\)\")",
       "Bash(node --check *)",
-      "Bash(node scripts/verify-rls.js)"
+      "Bash(node scripts/verify-rls.js)",
+      "Bash(awk -F: '$1<1750 || $1>6100')",
+      "Bash(node --check lib/store.js)",
+      "Bash(node --check lib/ctx.js)",
+      "Bash(node --check features/auth/auth.js)",
+      "Bash(node --check features/auth/tokens.js)",
+      "Bash(node --check features/auth/team-context.js)",
+      "Bash(awk 'NR>=2510 && NR<=2780 && /store\\\\.\\(enqueue|cacheFor|globals|flush|supabase|nextPresentationSeq|BOOTSTRAP\\)/ {print NR\": \"$0}' server.js)"
     ]
   }
 }
