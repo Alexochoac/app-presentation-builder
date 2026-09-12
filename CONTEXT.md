@@ -1,11 +1,14 @@
 # Presentation Builder — Project Context
 
-## What This Is
-A local Express app for building and publishing customizable HTML slide presentations.
-Sales teams use it to build customer-specific decks, then publish to GitHub Pages.
+> **Status is NOT tracked here — see [PLAN.md](PLAN.md).** This file is architecture
+> and slide/component conventions only. (It previously claimed "Phase 1, single
+> user, publish to GitHub Pages"; all three were long out of date.)
 
-## Current Phase
-**Phase 1** — Local app, single user, single company. Login portal + builder UI + publish to GitHub Pages.
+## What This Is
+A multi-user Express app for building and publishing customizable HTML slide
+presentations. Sales teams build customer-specific decks, which are frozen and
+served by the app at `/public/:id/`. Data lives in Supabase Postgres, with team
+isolation enforced by RLS.
 
 ## Architecture
 - `builder/server.js` — Express server, save/upload/clone APIs

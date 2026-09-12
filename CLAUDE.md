@@ -5,21 +5,29 @@ A web application that lets sales teams build customizable HTML presentations
 for their customers — starting as a local single-user tool and growing into
 a full multi-user SaaS platform.
 
-Current focus: **Phase 1** — local app, single user, single company, with login portal.
+**👉 Read [PLAN.md](PLAN.md) first — it holds current status, what's next, and what's pending.**
 
-For the full product roadmap see [PLAN.md](PLAN.md).
+Current focus: **Phase 2** — multi-user web app. Auth, teams, roles and real data
+isolation are done and on `master`; the blocker is the **prod-data-import gate**
+(no `/release` until prod's JSON data is imported into Supabase). See PLAN.md.
 
 ## Phase Overview
-- **Phase 1** (current) — Local app, single user/company, user portal, build & publish to GitHub Pages
-- **Phase 2** — Web SaaS, multi-user, teams + permissions
+- **Phase 1** — Local app, single user/company ✅ done
+- **Phase 2** (current) — Web SaaS, multi-user, teams + permissions — auth/teams/isolation ✅, SMTP-dependent bits deferred
 - **Phase 3** — Interactive slides (polls, Q&A), multiple companies per user
 - **Phase 4** — Advanced (white-label, AI, CRM integrations)
 
-## Tech Stack (Phase 1)
+⚠️ **Two "Phase" numberings exist.** The product phases above, and the Postgres
+migration's own 1–6 (where *its* "Phase 5" = Teams & Roles). "Phase 5" nearly
+always means the infrastructure one. Prefer names over numbers in new docs.
+
+## Tech Stack
 - Node.js + Express (builder server)
 - HTML / CSS / JavaScript (slides — no framework, self-contained fragments)
-- Auth: username/password + GitHub OAuth (planned)
-- No database yet — file-based (JSON configs, HTML files)
+- **Supabase Postgres** — all app data; RLS enforces team isolation
+- **Supabase Auth** — email+password and Google/LinkedIn social login; Postgres-backed sessions
+- Per-team write-through cache (`builder/lib/store.js`) filled with the user's own JWT
+- Publishing: frozen HTML per presentation, app-served at `/public/:id/`
 
 ## Project Structure
 ```
